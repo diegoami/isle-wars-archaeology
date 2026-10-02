@@ -10,6 +10,21 @@
       "id": "openai/gpt-6-luna",
       "variant": "high",
       "family": "openai"
+    },
+    "glm-5.3": {
+      "id": "opencode-go/glm-5.3",
+      "variant": "high",
+      "family": "glm"
+    },
+    "gpt-6-sol": {
+      "id": "openai/gpt-6-sol",
+      "variant": "high",
+      "family": "openai"
+    },
+    "deepseek-pro": {
+      "id": "opencode-go/deepseek-v4-pro",
+      "variant": "high",
+      "family": "deepseek"
     }
   },
   "implementer": {
