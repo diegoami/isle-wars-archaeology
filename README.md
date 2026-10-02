@@ -14,5 +14,6 @@ commit [archaeology.json](archaeology.json) pins.
 
 **No original game file is ever committed here, attached to a release, or sent to a cloud session.**
 The reference copies are the shareware/unregistered releases, which stay on the user's own machines.
-They are identified by hash in [artifacts/known.json](artifacts/README.md). CI enforces this with
-`tools/check_no_originals.py`.
+They are identified by hash in [artifacts/known.json](artifacts/README.md), through
+`tools/register_artifact.py`. CI enforces this with `tools/check_no_originals.py`, which also fails
+when a tracked file's bytes are those of a registered artifact.

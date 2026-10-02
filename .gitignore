@@ -1,33 +1,25 @@
 # Original game files never enter this repository (CLAUDE.md rule 18, U2). tools/check_no_originals.py
-# checks the same list in CI, because a .gitignore can be bypassed with `git add -f`.
-*.exe
-*.EXE
-*.com
-*.COM
-*.dll
-*.DLL
-*.ovl
-*.OVL
-*.hlp
-*.HLP
-*.cnt
-*.CNT
-*.zip
-*.ZIP
-*.iso
-*.ISO
-*.img
-*.IMG
-*.vhd
+# checks the same list in CI, because a .gitignore can be bypassed with `git add -f`. The patterns
+# are case-insensitive by character class, so `probe.Exe` and `probe.PNG` are caught too.
+*.[eE][xX][eE]
+*.[cC][oO][mM]
+*.[dD][lL][lL]
+*.[oO][vV][lL]
+*.[hH][lL][pP]
+*.[cC][nN][tT]
+*.[zZ][iI][pP]
+*.[iI][sS][oO]
+*.[iI][mM][gG]
+*.[vV][hH][dD]
+# Director Xtras are DLLs and carry the game's executable code.
+*.[xX]32
 originals/
 # Runtime state stays on the machine.
 prefix/
 *.wineprefix/
 dosbox-mount/
 # Evidence media go to the experiment's release as bundles, never into git (05 §4).
-*.sav
-*.SAV
-*.png
-*.mp4
-*.wav
-*.WAV
+*.[sS][aA][vV]
+*.[pP][nN][gG]
+*.[mM][pP]4
+*.[wW][aA][vV]
