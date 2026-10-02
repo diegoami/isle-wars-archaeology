@@ -3,20 +3,24 @@
 
 Usage: check_quotes.py <original> <sources.md> [--encoding NAME]
 
-Every blockquote line in the sources file (outside fenced code blocks) must occur in the
-original once whitespace is collapsed on both sides (runs of whitespace become one space and
-the ends are stripped), so a quote may wrap lines differently than the original. A
-blockquote line that is only a citation (`Islepro.txt:12-14`) is not a quote. The quoted
-characters must not exceed 25% of the original's characters; that 25% is a designed policy
-value (the user's instruction of 2026-10-02), not a finding from the games. Both sides are
-counted after the same collapse, and a quote repeated on several lines counts once, so a
-copy-paste cannot inflate or dodge the share.
+Every line whose first non-space character is `>` is a blockquote line and must
+occur in the original once whitespace is collapsed on both sides (runs of
+whitespace become one space and the ends are stripped), so a quote may wrap
+lines differently than the original. A blockquote line that is only a citation
+(`Islepro.txt:12-14`) is not a quote. The quoted characters must not exceed 25%
+of the original's characters; that 25% is a designed policy value (the user's
+instruction of 2026-10-02), not a finding from the games. Both sides are
+counted after the same collapse, and a quote repeated on several lines counts
+once, so a copy-paste cannot inflate or dodge the share.
 
-A fence is three backticks starting within the first three columns of a line; backticks
-indented further than that are an indented code block, not a fence, and change no fence
-state. Each failing quote is printed with its line number in the sources file, and when
-the share cap is exceeded, every quote counted toward the cap is printed with the
-sources-file line number of its first occurrence.
+Blockquote lines are recognised with no fence tracking: fenced code is not
+special-cased, so a `>` line inside a code fence is checked like any other, and
+a stray `>` in a code block makes the checker reject the file — it fails
+closed, the safe direction (the task never asked for code-fence handling, and
+each fence rule tried so far was a way to hide a copy; reviews R1 and round 2).
+Each failing quote is printed with its line number in the sources file, and
+when the share cap is exceeded, every quote counted toward the cap is printed
+with the sources-file line number of its first occurrence.
 
 The original is decoded with --encoding (default cp1252, the usual encoding of Windows-era
 plain text, so T04 can invoke the tool without a flag); the sources file is a repository
@@ -48,13 +52,6 @@ CITATION = re.compile(r"^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+:[0-9]+(?:-[0-9]+)?$")
 # the space that conventionally follows the marker.
 MARKERS = re.compile(r"^(?:\s*>)+\s*")
 
-# A Markdown fence: three backticks starting within the first three columns of the line
-# (CommonMark's limit for a fence). Backticks indented further (four spaces or a tab)
-# are an indented code block, not a fence, and must neither open nor close one; treating
-# them as a fence let a phantom fence swallow following blockquotes, so a near-whole copy
-# of the original passed unchecked (review R1).
-FENCE = re.compile(r"^ {0,3}```")
-
 USAGE = "check_quotes.py <original> <sources.md> [--encoding NAME]"
 
 
@@ -66,18 +63,16 @@ def collapse(text):
 def blockquote_lines(lines):
     """Yield (line number, collapsed content) for each `>` blockquote line in the sources.
 
-    A `>` line inside a fenced code block is code, not a blockquote, so it is skipped
-    (tests/test_check_quotes.py::test_fence_line_is_not_a_quote). A fence is three
-    backticks within the first three columns of a line; backticks indented further are
-    an indented code block, not a fence, so they neither open nor close one
-    (tests/test_check_quotes.py::test_quote_after_indented_code_line_is_checked and
-    ::test_indented_code_line_inside_fence_does_not_close_it).
+    Any line whose first non-space character is `>` counts, wherever it sits:
+    there is no fence tracking, so a `>` line inside a fenced code block is
+    checked like any other and rejects the file when it quotes nothing from
+    the original — the fail-closed direction
+    (tests/test_check_quotes.py::test_fence_content_quote_line_is_checked;
+    the reviewer's round-2 phantom-fence inputs are covered by
+    ::test_review_fence_inputs_then_whole_copy_exit_1).
     """
-    in_fence = False
     for number, line in enumerate(lines, 1):
-        if FENCE.match(line):
-            in_fence = not in_fence
-        if in_fence or not line.lstrip().startswith(">"):
+        if not line.lstrip().startswith(">"):
             continue
         content = collapse(MARKERS.sub("", line))
         if content:  # an empty blockquote line quotes nothing

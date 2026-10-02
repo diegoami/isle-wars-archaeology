@@ -75,45 +75,6 @@ class ValidQuotes(unittest.TestCase):
         code, out, err = run_checker(SYNTHETIC, sources)
         self.assertEqual(code, 0, err)
 
-    def test_fence_line_is_not_a_quote(self):
-        # The fenced `>` line occurs nowhere in the original: if it counted as a
-        # blockquote, the check would fail.
-        sources = "\n".join(
-            [
-                "# Notes",
-                "",
-                "> The quick brown fox jumps over the lazy dog once more.",
-                "",
-                "```text",
-                "> this fenced line is not a blockquote and is nowhere in the original",
-                "```",
-            ]
-        )
-        code, out, err = run_checker(SYNTHETIC, sources)
-        self.assertEqual(code, 0, err)
-
-    def test_indented_code_line_inside_fence_does_not_close_it(self):
-        # A fence closes only with backticks within the first three columns of
-        # the line (review R1): the four-space-indented (or tab-indented) ```
-        # line below is fenced code, not the closing fence, so the `>` line
-        # after it stays fenced and unchecked — it occurs nowhere in the
-        # original, so an early close would fail the check.
-        for closer in ("    ```", "\t```"):
-            with self.subTest(closer=repr(closer)):
-                sources = "\n".join(
-                    [
-                        "> The quick brown fox jumps over the lazy dog once more.",
-                        "",
-                        "```text",
-                        closer,
-                        "> this still fenced line occurs nowhere in the original",
-                        "```",
-                    ]
-                )
-                code, out, err = run_checker(SYNTHETIC, sources)
-                self.assertEqual(code, 0, err)
-
-
 class FailingQuotes(unittest.TestCase):
     def test_absent_quote_exits_1(self):
         sources = "\n".join(
@@ -128,34 +89,6 @@ class FailingQuotes(unittest.TestCase):
         self.assertIn("line 3:", out)
         self.assertIn("quote not in original", out)
         self.assertIn("This sentence appears nowhere in the synthetic original.", out)
-
-    def test_quote_after_indented_code_line_is_checked(self):
-        # Backticks indented four spaces (or one tab) are an indented code
-        # block, not a fence (review R1): the blockquote after them must still
-        # be checked, and this one is absent from the original. Without the
-        # fence fix the indented line opened a phantom fence, the blockquote
-        # was swallowed, and the check exited 0.
-        for opener in ("    ```text", "\t```text"):
-            with self.subTest(opener=repr(opener)):
-                sources = "\n".join(
-                    [
-                        opener,
-                        "> This sentence appears nowhere in the synthetic original.",
-                    ]
-                )
-                code, out, _ = run_checker(SYNTHETIC, sources)
-                self.assertEqual(code, 1)
-                self.assertIn("line 2:", out)
-                self.assertIn("quote not in original", out)
-
-    def test_whole_copy_after_indented_code_line_exits_1(self):
-        # The reviewer's adversarial case (review R1): the whole original
-        # quoted as one blockquote after a four-space-indented ``` line used to
-        # exit 0 reporting zero quotes; it must exit 1 over the cap.
-        whole = " ".join(SYNTHETIC.decode("cp1252").split())
-        code, out, _ = run_checker(SYNTHETIC, "    ```text\n> " + whole + "\n")
-        self.assertEqual(code, 1)
-        self.assertIn("25% cap", out)
 
     def test_share_over_25_percent_exits_1(self):
         # 11 of 40 characters is 27.5%: over the cap, while the quote itself is present.
@@ -206,6 +139,57 @@ class FailingQuotes(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("quote not in original", out)
         self.assertIn("25% cap", out)
+
+
+class FailClosed(unittest.TestCase):
+    """No fence tracking: every `>` line is checked wherever it sits, so a stray
+    `>` in a code block rejects the file — the safe direction (the task never
+    asked for code-fence handling, and each fence rule tried so far was a way
+    to hide a copy; reviews R1 and round 2)."""
+
+    def test_fence_content_quote_line_is_checked(self):
+        # The `>` line inside the fenced code block occurs nowhere in the
+        # original: with fence skipping it was ignored and the file passed;
+        # with no fence tracking it is a quote, so the file is rejected.
+        sources = "\n".join(
+            [
+                "# Notes",
+                "",
+                "> The quick brown fox jumps over the lazy dog once more.",
+                "",
+                "```text",
+                "> this fenced line is nowhere in the original and must fail",
+                "```",
+            ]
+        )
+        code, out, _ = run_checker(SYNTHETIC, sources)
+        self.assertEqual(code, 1)
+        self.assertIn("line 6:", out)
+        self.assertIn("quote not in original", out)
+        self.assertIn("this fenced line is nowhere in the original and must fail", out)
+
+    def test_review_fence_inputs_then_whole_copy_exit_1(self):
+        # The reviewer's round-2 adversarial inputs: a four-backtick fence
+        # containing a three-backtick line, and a three-backtick fence
+        # containing a ` ```not-a-close ` line. With fence skipping, both
+        # misparsed the real closer as an opener, the phantom fence swallowed
+        # the following blockquote copying 100% of the original, and the
+        # checker exited 0 reporting zero quotes. With no fence tracking the
+        # fence lines are just non-`>` lines, the copy is counted, and the
+        # check exits 1 over the cap.
+        whole = " ".join(SYNTHETIC.decode("cp1252").split())
+        fences = [
+            ["````text", "```", "````"],
+            ["```text", "```not-a-close", "```"],
+        ]
+        for fence in fences:
+            with self.subTest(fence="/".join(fence)):
+                sources = "\n".join([*fence, "> " + whole])
+                code, out, _ = run_checker(SYNTHETIC, sources)
+                self.assertEqual(code, 1)
+                self.assertIn("line 4:", out)
+                self.assertIn("counts toward the cap", out)
+                self.assertIn("25% cap", out)
 
 
 class Wrapping(unittest.TestCase):
