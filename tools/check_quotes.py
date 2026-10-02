@@ -12,6 +12,12 @@ value (the user's instruction of 2026-10-02), not a finding from the games. Both
 counted after the same collapse, and a quote repeated on several lines counts once, so a
 copy-paste cannot inflate or dodge the share.
 
+A fence is three backticks starting within the first three columns of a line; backticks
+indented further than that are an indented code block, not a fence, and change no fence
+state. Each failing quote is printed with its line number in the sources file, and when
+the share cap is exceeded, every quote counted toward the cap is printed with the
+sources-file line number of its first occurrence.
+
 The original is decoded with --encoding (default cp1252, the usual encoding of Windows-era
 plain text, so T04 can invoke the tool without a flag); the sources file is a repository
 file and is always UTF-8. Tests use synthetic text only; no game text is embedded here.
@@ -42,6 +48,13 @@ CITATION = re.compile(r"^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+:[0-9]+(?:-[0-9]+)?$")
 # the space that conventionally follows the marker.
 MARKERS = re.compile(r"^(?:\s*>)+\s*")
 
+# A Markdown fence: three backticks starting within the first three columns of the line
+# (CommonMark's limit for a fence). Backticks indented further (four spaces or a tab)
+# are an indented code block, not a fence, and must neither open nor close one; treating
+# them as a fence let a phantom fence swallow following blockquotes, so a near-whole copy
+# of the original passed unchecked (review R1).
+FENCE = re.compile(r"^ {0,3}```")
+
 USAGE = "check_quotes.py <original> <sources.md> [--encoding NAME]"
 
 
@@ -54,11 +67,15 @@ def blockquote_lines(lines):
     """Yield (line number, collapsed content) for each `>` blockquote line in the sources.
 
     A `>` line inside a fenced code block is code, not a blockquote, so it is skipped
-    (tests/test_check_quotes.py::test_fence_line_is_not_a_quote).
+    (tests/test_check_quotes.py::test_fence_line_is_not_a_quote). A fence is three
+    backticks within the first three columns of a line; backticks indented further are
+    an indented code block, not a fence, so they neither open nor close one
+    (tests/test_check_quotes.py::test_quote_after_indented_code_line_is_checked and
+    ::test_indented_code_line_inside_fence_does_not_close_it).
     """
     in_fence = False
     for number, line in enumerate(lines, 1):
-        if line.lstrip().startswith("```"):
+        if FENCE.match(line):
             in_fence = not in_fence
         if in_fence or not line.lstrip().startswith(">"):
             continue
@@ -68,26 +85,38 @@ def blockquote_lines(lines):
 
 
 def check(original_text, sources_lines):
-    """Return (failures, n_quotes, quoted_chars, original_chars); no failures means pass."""
+    """Return (failures, n_quotes, quoted_chars, original_chars); no failures means pass.
+
+    n_quotes counts distinct quotes: a quote repeated on several lines counts once
+    against the cap, and a cap failure reports each counted quote at the line of its
+    first occurrence (review R2).
+    """
     original = collapse(original_text)
     failures = []
-    quotes = []
+    quotes = {}  # content -> first line number; a repeated quote counts once
     for number, content in blockquote_lines(sources_lines):
         if CITATION.match(content):
             # A line that is only a citation points at the original; it is not quoted text
             # (tests/test_check_quotes.py::test_citation_line_is_not_a_quote).
             continue
-        quotes.append(content)
         if content not in original:
             failures.append(f"line {number}: quote not in original: {content}")
+        quotes.setdefault(content, number)
     # Distinct quotes only: a quote repeated on several lines counts once against the cap
     # (tests/test_check_quotes.py::test_repeated_quote_counts_once).
-    quoted_chars = sum(len(quote) for quote in set(quotes))
+    quoted_chars = sum(len(quote) for quote in quotes)
     if quoted_chars * CAP_DENOMINATOR > len(original) * CAP_NUMERATOR:
         # Integer comparison: exactly CAP_NUMERATOR/CAP_DENOMINATOR passes
         # (tests/test_check_quotes.py::test_share_exactly_25_percent_passes).
         # An empty original with a quote is over the cap by any measure
         # (tests/test_check_quotes.py::test_empty_original_with_quote_exits_1).
+        # Each quote counted toward the cap is reported at its first line, so a cap
+        # failure carries the sources-file line numbers the cap was computed from
+        # (review R2; tests/test_check_quotes.py::
+        # test_cap_failure_lists_line_of_each_counted_quote and
+        # ::test_cap_failure_lists_repeated_quote_once_at_first_line).
+        for quote, first_number in quotes.items():
+            failures.append(f"line {first_number}: quote counts toward the cap: {quote}")
         share = f"{100 * quoted_chars / len(original):.1f}%" if original else "100.0%"
         failures.append(
             f"quoted {quoted_chars} of {len(original)} characters ({share}), over the "
