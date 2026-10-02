@@ -46,6 +46,14 @@ indexed in `docs/tasks/README.md`.
    - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
      family is forced.
    - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
+   - **Budget routing** (the owner's decision, 2026-10-02): work goes where the credits are, not
+     evenly across families. On 2026-10-02 Claude and OpenAI had more credit than OpenCode (Go
+     and Z.AI), and this can change within days. So switching must stay cheap:
+     - every candidate stays probed, with a `harness.json` entry;
+     - each task file may name an alternate from another family;
+     - a switch is a one-line edit to the task file, with the budget reason in its commit message.
+
+     The owner says when the balance changes.
 
    This was the owner's decision on 2026-10-02. It overrides the family rule in the harness copies
    (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
