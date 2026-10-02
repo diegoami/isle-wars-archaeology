@@ -6,8 +6,8 @@ the issue's `status:*` label is the status (`gh issue list --label task --label 
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | T01 | The research repository: layout, knowledge map, guards (W0) | #1 | — |
-| T02 | Registration tools and the guards that use them (W1a prerequisite; folds #3) | — | T01 |
-| T03 | Artifact identity: Isle Wars Pro (W1a) | — | T02 |
-| T04 | Documentation map, part 1: Isle Wars Pro's own documents and the user's report (W2a) | — | T03, T06 |
-| T05 | Documentation map, part 2: public sources for both games (W2b) | — | T04 |
-| T06 | The quote checker (W2a prerequisite) | — | T02 |
+| T02 | Registration tools and the guards that use them (W1a prerequisite; folds #3) | #4 | T01 |
+| T03 | Artifact identity: Isle Wars Pro (W1a) | #5 | T02 |
+| T04 | Documentation map, part 1: Isle Wars Pro's own documents and the user's report (W2a) | #6 | T03, T06 |
+| T05 | Documentation map, part 2: public sources for both games (W2b) | #7 | T04 |
+| T06 | The quote checker (W2a prerequisite) | #8 | T02 |
