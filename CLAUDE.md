@@ -17,30 +17,30 @@ both by Soleau Software, built by controlled experiments on the original games, 
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. Each task file names its implementer and its reviewer, at effort `high` at most. Four families
-   are available:
-   - Claude: Sonnet, Opus and Fable, as `task-agent`;
-   - OpenAI: on the direct route;
-   - DeepSeek: on OpenCode Go;
-   - GLM: only on Z.AI's Coding Plan (`zai-coding-plan`).
+6. Each task file names its implementer and its reviewer, at effort `high` at most. Four families,
+   in two tiers:
 
-   The reviewer comes from another family than the implementer. When a constraint forces the same
-   family, the task file names it: OpenCode cannot reach the user's install or a cloud session
-   (L26). Use the cheapest model that does the job:
-   - **Code**: DeepSeek V4.1 Flash or GLM-5.3 implements, and GPT-6 Luna reviews.
-   - **A guard or tool whose failure would let an original or a copy through**: GPT-6 Sol reviews.
-     In T06 it found two bypasses that the implementer's own mutation tests missed (#9).
-   - **Research, or anything on the user's install**: Sonnet implements, and Luna reviews the
+   | Tier | Claude (`task-agent`) | OpenAI (direct) | DeepSeek (Go) | GLM (Z.AI Coding Plan only) |
+   | --- | --- | --- | --- | --- |
+   | Light, the default | Sonnet | GPT-6 Luna | V4.1 Flash | GLM-5.3 Flash |
+   | Heavy, only when the task file says why | Opus, Fable | GPT-6 Sol | V4 Pro | GLM-5.3 |
+
+   - **Family:** the reviewer comes from another family than the implementer. When a constraint
+     forces the same family, the task file names it: OpenCode cannot reach the user's install or a
+     cloud session (L26).
+   - **Code:** a light DeepSeek or GLM model implements, and Luna reviews.
+   - **Guards, and tools whose failure would let an original or a copy through:** Sol reviews. In
+     T06 it found two bypasses that the implementer's own mutation tests missed (#9).
+   - **Research, or anything on the user's install:** Sonnet implements, and Luna reviews the
      repository side. The main session runs the lines that read the install, and posts their
      output on the PR.
-   - **Work in a cloud session**: Sonnet implements, and Opus reviews. Only Claude runs there, so
-     the same family is forced.
+   - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
+     family is forced.
+   - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
 
-   A stronger model (Opus, Fable, GPT-6 Sol, DeepSeek V4 Pro) is used only when its task file says
-   why. Never Haiku. Gemini (cost), Kimi and Grok are not used. This was the owner's decision on
-   2026-10-02. It overrides the family rule in the harness copies (`docs/process.md`,
-   `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock` pins. `review.mjs`
-   refuses an OpenCode reviewer of the implementer's family.
+   This was the owner's decision on 2026-10-02. It overrides the family rule in the harness copies
+   (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
+   pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing

@@ -25,6 +25,11 @@
       "id": "zai-coding-plan/glm-5.3",
       "variant": "high",
       "family": "glm"
+    },
+    "zai-glm-5.3-flash": {
+      "id": "zai-coding-plan/glm-5.3-flash",
+      "variant": "high",
+      "family": "glm"
     }
   },
   "implementer": {
