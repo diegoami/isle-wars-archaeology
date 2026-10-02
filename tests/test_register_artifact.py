@@ -169,6 +169,36 @@ class CliTest(unittest.TestCase):
             strict = run_cli("check", str(data), manifest["id"], "--strict", cwd=repo)
             self.assertEqual(strict.returncode, 1, strict.stdout + strict.stderr)
 
+    def test_check_list_against_known_entry(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            data = Path(tmp) / "set"
+            write(data / "a.txt", b"alpha")
+            write(data / "sub" / "b.bin", b"bravo")
+            manifest = manifest_for(data)
+            (repo / "artifacts" / "known.json").write_text(
+                json.dumps({"sets": [{"manifest": manifest, "notes": "test"}]})
+            )
+            listing = Path(tmp) / "list.txt"
+            listing.write_text(
+                "".join(f"{f['sha256']}  {f['bytes']}  {f['path']}\n" for f in manifest["files"])
+            )
+
+            checked = run_cli("check", "--list", str(listing), manifest["id"], cwd=repo)
+            self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+            self.assertIn(f"ok: {manifest['id']}", checked.stdout)
+
+            changed_path = manifest["files"][0]["path"]
+            listing.write_text(
+                "".join(
+                    f"{'0' * 64 if f['path'] == changed_path else f['sha256']}  {f['bytes']}  {f['path']}\n"
+                    for f in manifest["files"]
+                )
+            )
+            changed = run_cli("check", "--list", str(listing), manifest["id"], cwd=repo)
+            self.assertEqual(changed.returncode, 1, changed.stdout + changed.stderr)
+            self.assertIn("sha256", changed.stdout)
+
     def test_validate_real_known_json_exits_zero(self):
         result = run_cli("validate", cwd=ROOT)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
