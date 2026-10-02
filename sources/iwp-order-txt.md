@@ -15,6 +15,12 @@
 - **Citation**: each quote is followed by `Order.txt:<line>`, the line numbers of the file as decoded.
   `tools/check_quotes.py` checks every `>` line against the original and caps the share quoted at 25%.
 
+## Publisher
+
+> SOLEAU SOFTWARE ORDER FORM
+
+Order.txt:1
+
 ## What is sold, and at what price
 
 > GAMES FOR WINDOWS $15 Each

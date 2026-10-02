@@ -19,9 +19,9 @@
 
 ## Title and publisher
 
-> Version 2.0 by Soleau Software, Inc.
-
-Islepro.txt:2-3
+The title block names the game, "Version 2.0" and "Soleau Software, Inc." (`Islepro.txt:1-3`). Nothing
+is quoted here: the version is recorded in the set manifest, and the publisher's name is quoted from
+[the order form](iwp-order-txt.md).
 
 ## Objective
 
@@ -56,20 +56,21 @@ Islepro.txt:25
 
 ## Reinforcement and resources
 
-> That number is divided by 3
+> you are given armies for the number of countries you occupy. That number is divided by 3
 
-Islepro.txt:27
+Islepro.txt:26-27
 
-Line 26-27 says the number is "armies for the number of countries you occupy"; the fragment above is
-the division only.
+> number of armies to place onto the board
+
+Islepro.txt:28
 
 > Each island gives you extra armies, if you totally control all its countries
 
 Islepro.txt:28-29
 
-> (Minimum is 2)
+> armies you have received for that turn. (Minimum is 2)
 
-Islepro.txt:42
+Islepro.txt:41-42
 
 The "island values are shown below" (line 30) is a figure of numbers laid out in rows with no island
 names (lines 32-36). The text does not say which number belongs to which island; this file does not
@@ -87,11 +88,11 @@ Islepro.txt:56
 
 Islepro.txt:58-59
 
-> lines from island to island which allow you to travel across the water (in ships)
+> lines from island to island which allow you to travel across the water
 
 Islepro.txt:59-60
 
-> your total number of armies in that grid is equal or greater than the number you're attacking
+> total number of armies in that grid is equal or greater than the number you're attacking
 
 Islepro.txt:61-62
 
@@ -109,9 +110,9 @@ Islepro.txt:72-73
 
 ## Losing the attacking army, conquest, move
 
-> you will forfeit not only the turn, but also the country to the defending army
+> If your attacking army ever gets down to 1, then you will forfeit not only the turn, but also the country
 
-Islepro.txt:80-81
+Islepro.txt:79-80
 
 > deplete the enemy to 0 armies
 
@@ -121,9 +122,9 @@ Islepro.txt:85
 
 Islepro.txt:88
 
-> either the [MOVE] button or the [PASS] button
+> finish your turn by pressing, either the [MOVE] button or the [PASS] button
 
-Islepro.txt:90
+Islepro.txt:89-90
 
 > move troops between two adjacent countries
 
@@ -131,29 +132,9 @@ Islepro.txt:95-96
 
 ## Cards
 
-> defeated an opposing army and captured a country then you will be given a card
+> captured a country then you will be given a card
 
 Islepro.txt:113-114
-
-> 5/8/15 Bonus Armies
-
-Islepro.txt:120
-
-> This card doubles your placement total
-
-Islepro.txt:123
-
-> Allows you to bomb any country
-
-Islepro.txt:125
-
-> protects you from a bomb drop on your own countries
-
-Islepro.txt:128
-
-> your cards are all taken away
-
-Islepro.txt:133
 
 ## Trading in cards
 
@@ -161,7 +142,7 @@ Islepro.txt:133
 
 Islepro.txt:141-142
 
-> they must be exchanged at the top of your turn
+> If you have a set, they must be exchanged at the top of your turn
 
 Islepro.txt:152
 
@@ -169,8 +150,8 @@ Islepro.txt:152
 
 Islepro.txt:159
 
-The text does not say what a trade-in is worth. The card list says "5/8/15 Bonus Armies" (line 120)
-and the example matches name "8 Armies" (lines 144-148); no table of values is given.
+The text does not say what a trade-in is worth, and this file quotes none of the card types; lines
+120-135 list them and lines 144-148 give examples of matches.
 
 ## Situations, disasters and production centres
 
@@ -178,11 +159,11 @@ and the example matches name "8 Armies" (lines 144-148); no table of values is g
 
 Islepro.txt:167
 
-> An Earthquake has hit the Islands (3 or 4 grids)
+> An Earthquake has hit the Islands
 
 Islepro.txt:171
 
-> Flooding has inundated some grids (3 or 4 grids)
+> Flooding has inundated some grids
 
 Islepro.txt:172
 
@@ -212,28 +193,20 @@ Islepro.txt:177-178
 
 Islepro.txt:189-190
 
-> have the computer play the game out
-
-Islepro.txt:191
-
 > If you are the victor, the game will end
 
 Islepro.txt:196
 
-> you do not control at least 10 countries then your score WILL be recorded as a loss
+> if you decide to quit in the middle of a game and you do not control at least 10 countries then your score WILL be recorded as a loss
 
 Islepro.txt:212-213
 
 ## Registration
 
-> allows for up to four human players to compete against each other
+> The registered version of ISLE WARS PRO allows for up to four human players to compete against each other
 
 Islepro.txt:223-224
 
-> starting levels of armies, frequency of disasters, clearing scoreboards, and changing your color to play and more...
+> You can control various options such as starting levels of armies, frequency of disasters, clearing scoreboards, and changing your color to play and more...
 
-Islepro.txt:225-226
-
-> only $15 (U.S.)
-
-Islepro.txt:228
+Islepro.txt:224-226
