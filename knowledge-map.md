@@ -30,6 +30,7 @@ the shareware/unregistered releases (U11), so what registration unlocks is `unkn
 | Randomness | unknown | unknown | — | — |
 | Victory and loss | unknown | unknown | — | — |
 | Surrender | unknown | unknown | — | — |
+| User interface (screens, input, feedback, presentation) | unknown | unknown | — | Added 2026-10-02: malpaco's UI must be at least as good as Pro's. Behaviour is observed; timing, rendering and UI claims need V3 or V4 (U8). |
 
 ## Secondary assertions (malpaco, unverified)
 

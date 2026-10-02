@@ -2,9 +2,18 @@
 
 An evidence-backed behavioural specification of *Isle Wars* (DOS, 1994) and *Isle Wars Pro* (Win9x),
 both by Soleau Software, built by controlled experiments on the original games, using the method of
-[game-archaeologist](https://github.com/diegoami/game-archaeologist). The process is
-`docs/process.md`; read it before running a task. Tasks are `docs/tasks/T<nn>.md`, indexed in
-`docs/tasks/README.md`.
+[game-archaeologist](https://github.com/diegoami/game-archaeologist).
+
+**What it is for** (the owner's decision, 2026-10-02): the specification feeds
+[malpaco](https://github.com/diegoami/malpaco), an original game inspired by *Isle Wars Pro*.
+malpaco should know its predecessor's strengths, and have a UI at least as good as Pro's. Its
+existing code was a technology proof of concept: its rules and numbers were guesses, and the game
+design will come from this repository's reviewed findings. The research also targets what the
+game needs. Everything learned, in both repositories, is recorded so that other projects can
+learn from it too.
+
+The process is `docs/process.md`; read it before running a task. Tasks are `docs/tasks/T<nn>.md`,
+indexed in `docs/tasks/README.md`.
 
 ## Rules
 1. The main session plans, runs `/run-task`, triages and talks to the user. It delegates (`/delegate`):
@@ -64,9 +73,11 @@ both by Soleau Software, built by controlled experiments on the original games, 
 
 ## This project
 18. **No original game files, ever** (game-archaeologist ADR-006, U2: no licence; explored, never
-    replicated). Executables, data and help files, and patched builds stay on the user's own
-    machines. They are never in this repository, a release, an issue or a cloud session. Tasks that
-    need them are C3/C4 only. `tools/check_no_originals.py` runs in CI.
+    copied). The game is an original work inspired by the originals: their code, assets, text and
+    name are never reused (owner, 2026-10-02). Only behaviour and design learned here passes to
+    malpaco, and no evidence ever does. Executables, data and help files, and patched builds stay
+    on the user's own machines. They are never in this repository, a release, an issue or a cloud
+    session. Tasks that need them are C3/C4 only. `tools/check_no_originals.py` runs in CI.
 19. **Two artifacts, every claim scoped** (U3, U11). DOS *Isle Wars* and Win9x *Isle Wars Pro*, the
     shareware/unregistered releases. A claim holds for both only when it is shown for each. What
     registration unlocks is `unknown`.
