@@ -65,8 +65,8 @@ both by Soleau Software, built by controlled experiments on the original games, 
     assets, and findings start `proposed`. Only the main session writes `spec/`, after review. Unknown
     stays `unknown`. This repository is private (U5).
 21. **Model trials** (the owner's decision, 2026-10-02). Rule 6's list exists to find out which
-    models are viable. After every implement or review run, add one comment to the model-trials
-    issue:
+    models are viable. After every implement or review run, the main session adds one comment to
+    the model-trials issue (implementers and reviewers post only on their own PR):
     - the model, its role and the task;
     - the exit code, the duration and the review round;
     - what the review caught or missed.
