@@ -7,6 +7,28 @@
       "formats/templates/",
       "vocabulary/"
     ],
-    "note": "formats v1 are provisional until A6 tags formats-v1; then pin the tag"
+    "note": "formats v1 are provisional until A6 tags formats-v1; then pin the tag",
+    "vendored": [
+      {
+        "path": "formats/artifact-set-1.schema.json",
+        "sha256": "0b5936d4aafc193d80889f695adf72e61426d6db6e48fbeeaad1309d0eb24258"
+      },
+      {
+        "path": "formats/examples/valid/artifact-set-1--toy.json",
+        "sha256": "d75a34b404f33b6bd0cbd6ae43c3b64ea532561396b370c507445e485c95699e"
+      },
+      {
+        "path": "formats/examples/invalid/artifact-set-1--bad-id-hash.json",
+        "sha256": "1286eff9a260e38c28848dbe262841f3c735d1aa310f07fb3bbaa42179ac17e7"
+      },
+      {
+        "path": "formats/examples/invalid/artifact-set-1--unknown-acquisition.json",
+        "sha256": "3b21af86028e9809fb6aa5c177167d532cd4d582608fd0ae3c41890e9ea1dd0e"
+      },
+      {
+        "path": "tests/formats/check_examples.py",
+        "sha256": "46de8db08852787932e2d57dbdd11d37d8b6eb16b7baa4648ebae87e814dc987"
+      }
+    ]
   }
 }
