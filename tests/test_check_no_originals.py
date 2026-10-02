@@ -60,6 +60,27 @@ class CheckNoOriginalsTest(unittest.TestCase):
             self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
             self.assertIn("a.x32", result.stdout)
 
+    def test_exe_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write(repo / "GAME.EXE", b"synthetic bytes, not a real executable")
+            git_add(repo, "GAME.EXE")
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("GAME.EXE", result.stdout)
+
+    def test_oversize_file_fails(self):
+        # The MAX_BYTES branch: a tracked file over 1 MB fails even with a harmless
+        # extension and unknown bytes. The payload is synthetic, in a temp repo only.
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write(repo / "big.bin", b"x" * (1024 * 1024 + 1))
+            git_add(repo, "big.bin")
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("big.bin", result.stdout)
+            self.assertIn("over 1048576", result.stdout)
+
     def test_clean_repo_passes(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = make_repo(tmp)

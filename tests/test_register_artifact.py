@@ -199,6 +199,23 @@ class CliTest(unittest.TestCase):
             self.assertEqual(changed.returncode, 1, changed.stdout + changed.stderr)
             self.assertIn("sha256", changed.stdout)
 
+    def test_missing_listed_file_fails_check(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            data = Path(tmp) / "set"
+            write(data / "a.txt", b"alpha")
+            write(data / "b.txt", b"bravo")
+            manifest = manifest_for(data)
+            (repo / "artifacts" / "known.json").write_text(
+                json.dumps({"sets": [{"manifest": manifest, "notes": "test"}]})
+            )
+
+            (data / "b.txt").unlink()
+            missing = run_cli("check", str(data), manifest["id"], cwd=repo)
+            self.assertEqual(missing.returncode, 1, missing.stdout + missing.stderr)
+            self.assertIn("b.txt: missing", missing.stdout)
+            self.assertNotIn(f"ok: {manifest['id']}", missing.stdout)
+
     def test_validate_real_known_json_exits_zero(self):
         result = run_cli("validate", cwd=ROOT)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
