@@ -1,0 +1,33 @@
+# Original game files never enter this repository (CLAUDE.md rule 18, U2). tools/check_no_originals.py
+# checks the same list in CI, because a .gitignore can be bypassed with `git add -f`.
+*.exe
+*.EXE
+*.com
+*.COM
+*.dll
+*.DLL
+*.ovl
+*.OVL
+*.hlp
+*.HLP
+*.cnt
+*.CNT
+*.zip
+*.ZIP
+*.iso
+*.ISO
+*.img
+*.IMG
+*.vhd
+originals/
+# Runtime state stays on the machine.
+prefix/
+*.wineprefix/
+dosbox-mount/
+# Evidence media go to the experiment's release as bundles, never into git (05 §4).
+*.sav
+*.SAV
+*.png
+*.mp4
+*.wav
+*.WAV
