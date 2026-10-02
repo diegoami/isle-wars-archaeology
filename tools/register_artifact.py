@@ -220,8 +220,9 @@ def cmd_check(args):
         observed, base_problems = hash_tree(args.source, manifest), []
     compared, unlisted = compare(observed, manifest, strict=args.strict)
     problems = base_problems + compared
-    for rel in unlisted:
-        print(f"unlisted: {rel}")
+    if not args.strict:
+        for rel in unlisted:
+            print(f"unlisted: {rel}")
     for problem in problems:
         print(problem)
     failed = bool(problems) or (args.strict and bool(unlisted))
