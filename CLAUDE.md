@@ -22,7 +22,9 @@ both by Soleau Software, built by controlled experiments on the original games, 
    Done-when line itself. The models allowed:
    - Claude Sonnet, Opus and Fable, as the `task-agent` type, which caps them at `high`;
    - OpenAI models, on the direct route;
-   - GLM and DeepSeek models, on OpenCode Go.
+   - GLM models, only through Z.AI's Coding Plan (`zai-coding-plan`), never OpenCode Go (owner,
+     2026-10-02);
+   - DeepSeek models, on OpenCode Go.
 
    An OpenCode model is probed (`switch-model.mjs --probe --dry-run`) before its first task. A task
    that reads the user's install, or runs in a cloud session, goes to Claude: OpenCode keeps every

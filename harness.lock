@@ -5,7 +5,7 @@ commit 74e53ae4708d425fcacdae93b5ff5ce39f1486b9
 copied 2026-10-02
 adapted CLAUDE.md  (project line; conditional rules kept or deleted per what applies; project section added)
 adapted docs/tasks/README.md  (this repository's task index)
-adapted harness.json  (model entries added per CLAUDE.md rule 6; probed 2026-10-02: glm-5.3 5 s, gpt-6-sol 6 s, deepseek-pro 6 s)
+adapted harness.json  (model entries added per CLAUDE.md rule 6; probed 2026-10-02: gpt-6-sol 6 s, deepseek-pro 6 s, zai-glm-5.3 6 s; GLM only via Z.AI)
 2f8e9cf140862021220021260d3e96b671ee44b323ba23d9ef89d7f1c023b6b1  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 bda67b96f233bee80031fbc135718145f167e186e77edd295719230ce29afb02  .claude/skills/delegate/SKILL.md
