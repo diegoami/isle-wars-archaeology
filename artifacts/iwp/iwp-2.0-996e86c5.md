@@ -19,17 +19,17 @@ in them (F001); a role marked "unconfirmed" is a guess from the name only.
 
 | Path | Bytes | Role |
 | --- | --- | --- |
-| `Islepro.exe` | 7150739 | The game: a PE32 (i386) Macromedia Director projector. |
-| `Islepro.txt` | 10572 | Document: the game directions, "Version 2.0". |
-| `Order.txt` | 3081 | Document: the Soleau Software order form. |
-| `Isleord.url` | 58 | Installer shortcut to the vendor's order page. |
-| `Islepro.url` | 47 | Installer shortcut to the vendor's home page. |
-| `xtras/DTTurnTable.x32` | 61440 | Xtra: DirectTransition Xtra ("Turn Table" transition). |
-| `xtras/FileIo.x32` | 25088 | Xtra: Macromedia FileIO. |
-| `xtras/PMatic.x32` | 351744 | Xtra: PrintOMatic (printing). |
+| `Islepro.exe` | 7150739 | The game: a PE32 (i386) Macromedia Director projector (F001, header offsets `0xcc`, `0xe0`, version resource `0x25be8`). |
+| `Islepro.txt` | 10572 | Document: the game directions, "Version 2.0" (line 2). |
+| `Order.txt` | 3081 | Document: the Soleau Software order form (line 1). |
+| `Isleord.url` | 58 | Installer shortcut to the vendor's order page (`URL=` on line 2). |
+| `Islepro.url` | 47 | Installer shortcut to the vendor's home page (`URL=` on line 2). |
+| `xtras/DTTurnTable.x32` | 61440 | Xtra: DirectTransition Xtra ("Turn Table" transition); strings at `0xd04c` and `0xd150`. |
+| `xtras/FileIo.x32` | 25088 | Xtra: Macromedia FileIO; string at `0x4bfc`. |
+| `xtras/PMatic.x32` | 351744 | Xtra: PrintOMatic (printing); string at `0x38f4f`. |
 | `xtras/PMATIC.reg` | 19 | Data beside the PrintOMatic Xtra; unconfirmed: its registration record. |
-| `xtras/Isledft.dat` | 15 | Game data, printable ASCII; unconfirmed: default settings. Candidate runtime write. |
-| `xtras/Islepro.dat` | 190 | Game data, printable ASCII; unconfirmed: scoreboard or settings. Candidate runtime write. |
+| `xtras/Isledft.dat` | 15 | Game data, printable ASCII over its whole length; unconfirmed: default settings. Candidate runtime write. |
+| `xtras/Islepro.dat` | 190 | Game data, printable ASCII over its whole length; unconfirmed: scoreboard or settings. Candidate runtime write. |
 | `xtras/Islepro.skr` | 13 | Game data, not text; role unknown. |
 
 ## Re-hash a copy on Windows

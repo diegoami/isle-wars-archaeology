@@ -14,7 +14,7 @@
 - The game's own document gives its version as 2.0 (`Islepro.txt` line 2). The label `iwp-2.0` rests on that line only.
 - `Islepro.exe` is a PE32 image for i386 (machine type `0x014c`, at offset `0xcc`), linked 1999-05-23 23:32:34 UTC (timestamp `0x37489012`, at offset `0xd0`).
 - The version resource inside `Islepro.exe` describes Macromedia Director Player 7.0.2r85, not the game. It is recorded here and is not the game's version.
-- The install has three Xtras (`DTTurnTable.x32`, `FileIo.x32`, `PMatic.x32`), each a PE32 i386 DLL whose internal strings name the Xtra.
+- The install has three Xtras (`DTTurnTable.x32`, `FileIo.x32`, `PMatic.x32`), each a PE32 i386 DLL (machine type at `0xe4`, `0xc4` and `0x84` respectively; PE32 magic and DLL flag in the table under Observations) whose internal strings name the Xtra.
 
 ## Method
 
@@ -38,15 +38,20 @@ Document (`Islepro.txt`, sha256 `f1e71098a0fb83c17891ed7a5d95acd0a129e1a0712cba3
 
 | Offset | Field | Value |
 | --- | --- | --- |
+| `0x0` | DOS signature | `MZ` |
 | `0x3c` | `e_lfanew` | `0xc8`; `PE\0\0` there |
 | `0xcc` | COFF machine | `0x014c` (i386) |
 | `0xce` | number of sections | 4: `.text`, `.rdata`, `.data`, `.rsrc` |
 | `0xd0` | COFF `TimeDateStamp` | `0x37489012` = 1999-05-23 23:32:34 UTC |
+| `0xde` | COFF characteristics | `0x010f` (executable image, 32-bit machine; the DLL bit `0x2000` is not set) |
 | `0xe0`, `0xe2` | optional header magic and linker version | magic `0x10b` (PE32), linker 5.10 |
 | `0x124`, `0x110` | subsystem, subsystem version | 2 (Windows GUI), 4.0 |
-| `0x27c00` | first byte after the last section's raw data | 6987923 more bytes to the end of the file (7150739); not decoded here |
-| `0x25be8` | start of the version resource (1748 bytes) | see below |
-| `0x25c10` | `VS_FIXEDFILEINFO` | file version 7.0.2.85, product version 7.0.2.85 |
+| `0x24c`, `0x248` | `.rsrc` section header: raw data pointer and raw size | `0x1a800` and `0xd400`; their sum, `0x27c00`, is the first byte after the last section's raw data |
+| `0x27c00` to end of file | bytes after the last section | 6987923 bytes (file size 7150739, from the filesystem); not decoded here |
+| `0x25be8` | start of the version resource (1748 bytes, from its resource data entry) | see below |
+| `0x25c10` | `VS_FIXEDFILEINFO` signature `0xfeef04bd` | present |
+| `0x25c18` | its file version (two DWORDs) | 7.0.2.85 |
+| `0x25c20` | its product version (two DWORDs) | 7.0.2.85 |
 
 The version resource strings (UTF-16-LE, two identical blocks; first block offsets):
 
@@ -60,7 +65,15 @@ The version resource strings (UTF-16-LE, two identical blocks; first block offse
 | ProductName | Macromedia Director | `0x25f18` |
 | ProductVersion | 7.0.2 | `0x25f64` |
 
-Xtras (all start with `MZ`; machine `0x014c`):
+Xtras. Each starts with `MZ` at `0x0`. PE header fields, as file offsets (`e_lfanew` is read at `0x3c`; the machine type is at `e_lfanew + 4`):
+
+| File | `e_lfanew` | Machine type | Characteristics | Optional header magic |
+| --- | --- | --- | --- | --- |
+| `xtras/DTTurnTable.x32` | `0xe0` | `0x014c` at `0xe4` | `0x210e` at `0xf6` (DLL bit `0x2000` set) | `0x10b` at `0xf8` |
+| `xtras/FileIo.x32` | `0xc0` | `0x014c` at `0xc4` | `0x210e` at `0xd6` (DLL bit set) | `0x10b` at `0xd8` |
+| `xtras/PMatic.x32` | `0x80` | `0x014c` at `0x84` | `0x210e` at `0x96` (DLL bit set) | `0x10b` at `0x98` |
+
+Link timestamps and name strings:
 
 | File | sha256 | PE link timestamp (offset) | Name strings (offset) |
 | --- | --- | --- | --- |
@@ -70,14 +83,14 @@ Xtras (all start with `MZ`; machine `0x014c`):
 
 The `DTTurnTable.x32` and `PMatic.x32` binaries also hold strings saying an unregistered copy of that Xtra prints a notice or does not work; those belong to the Xtras' own licensing, not to the game's (`0xd1a4` in `DTTurnTable.x32`, `0x38f36` in `PMatic.x32`).
 
-File timestamps in the install: `Islepro.exe` is dated 2012-07-04 and `Islepro.txt` 2012-07-01; the Xtras are dated 1999-2002 (read-only listing, 2026-10-02).
+File dates in the install are filesystem metadata, not a field in any file: `Islepro.exe` is dated 2012-07-04 and `Islepro.txt` 2012-07-01; the Xtras are dated 1999-2002 (read-only listing, 2026-10-02).
 
 ## Inferences
 
 - From `Islepro.txt` line 2: the vendor's own document calls this build version 2.0. The version belongs to the document, so a different build with the same document text would carry the same label; the id's hash is what tells them apart.
-- From the version resource and the `Otto.exe`/`OTTO` names: the executable is a Director 7.0.2 projector, and the bytes after the last section (observed above) would be the game's content. This is the usual Director layout, not shown here; the appended region is not decoded. The link timestamp (1999-05-23) is older than the file date (2012-07-04), which fits a projector shell built in 1999 around content added later.
-- From the link timestamp of `FileIo.x32` (1999-05-23, 70 seconds after the projector's) and its string "May 23 1999": the projector shell and FileIO come from the same Director 7.0.2r85 release.
-- From the machine type `0x014c`: the game is a 32-bit x86 program, as a Win9x game would be.
+- From the version resource (`FileDescription` at `0x25cec`, `InternalName` at `0x25d60`, `OriginalFilename` at `0x25ee4`): the executable is a Director 7.0.2 projector, and the bytes after the last section (observed above) would be the game's content. This is the usual Director layout, not shown here; the appended region is not decoded. The link timestamp (1999-05-23) is older than the file date (2012-07-04), which fits a projector shell built in 1999 around content added later.
+- From the link timestamp of `FileIo.x32` (`0xc8`, 1999-05-23, 70 seconds after the projector's at `0xd0`) and its string "May 23 1999" (`0x4bfc`): the projector shell and FileIO come from the same Director 7.0.2r85 release.
+- From the machine type `0x014c` (`0xcc`) and the PE32 magic `0x10b` (`0xe0`): the game executable is a 32-bit x86 program, as a Win9x game would be.
 
 ## Alternatives considered
 
