@@ -17,22 +17,30 @@ both by Soleau Software, built by controlled experiments on the original games, 
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. Each task file names its implementer and its reviewer, two different models, at effort `high`
-   at most. The family need not differ, so Opus may review Sonnet. The reviewer re-runs every
-   Done-when line itself. The models allowed:
-   - Claude Sonnet, Opus and Fable, as the `task-agent` type, which caps them at `high`;
-   - OpenAI models, on the direct route;
-   - GLM models, only through Z.AI's Coding Plan (`zai-coding-plan`), never OpenCode Go (owner,
-     2026-10-02);
-   - DeepSeek models, on OpenCode Go.
+6. Each task file names its implementer and its reviewer, at effort `high` at most. Four families
+   are available:
+   - Claude: Sonnet, Opus and Fable, as `task-agent`;
+   - OpenAI: on the direct route;
+   - DeepSeek: on OpenCode Go;
+   - GLM: only on Z.AI's Coding Plan (`zai-coding-plan`).
 
-   An OpenCode model is probed (`switch-model.mjs --probe --dry-run`) before its first task. A task
-   that reads the user's install, or runs in a cloud session, goes to Claude: OpenCode keeps every
-   model in its worktree (L26). Gemini (billed per token on OpenRouter) is out on cost. Kimi and
-   Grok are not on the owner's list. This was the owner's decision on
+   The reviewer comes from another family than the implementer. When a constraint forces the same
+   family, the task file names it: OpenCode cannot reach the user's install or a cloud session
+   (L26). Use the cheapest model that does the job:
+   - **Code**: DeepSeek V4.1 Flash or GLM-5.3 implements, and GPT-6 Luna reviews.
+   - **A guard or tool whose failure would let an original or a copy through**: GPT-6 Sol reviews.
+     In T06 it found two bypasses that the implementer's own mutation tests missed (#9).
+   - **Research, or anything on the user's install**: Sonnet implements, and Luna reviews the
+     repository side. The main session runs the lines that read the install, and posts their
+     output on the PR.
+   - **Work in a cloud session**: Sonnet implements, and Opus reviews. Only Claude runs there, so
+     the same family is forced.
+
+   A stronger model (Opus, Fable, GPT-6 Sol, DeepSeek V4 Pro) is used only when its task file says
+   why. Never Haiku. Gemini (cost), Kimi and Grok are not used. This was the owner's decision on
    2026-10-02. It overrides the family rule in the harness copies (`docs/process.md`,
    `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock` pins. `review.mjs`
-   still refuses an OpenCode reviewer of the implementer's family.
+   refuses an OpenCode reviewer of the implementer's family.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing
