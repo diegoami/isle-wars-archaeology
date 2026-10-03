@@ -28,23 +28,31 @@ indexed in `docs/tasks/README.md`.
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. Each task file names its implementer and its reviewer, at effort `high` at most. Four families,
-   in two tiers:
+6. Each task file names its implementer and its reviewer, at effort `high` at most, and says
+   whether the task is `easy` or `hard`, and why. The pairs (the owner's decision, 2026-10-03):
 
-   | Tier | Claude (`task-agent`) | OpenAI (direct) | DeepSeek (Go) | GLM (Z.AI Coding Plan only) |
+   | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
    | --- | --- | --- | --- | --- |
-   | Light, the default | Sonnet | GPT-6 Luna | V4.1 Flash | GLM-5.3 Flash |
-   | Heavy, only when the task file says why | Opus, Fable | GPT-6 Sol | V4 Pro | GLM-5.3 |
+   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-6 Luna (direct OpenAI) | Sonnet |
+   | Hard | DeepSeek V4.1 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
 
+   - **Hard** is any of:
+     - a guard, a gate, or a tool whose failure would let an original or a copy through (in T06
+       Sol found two bypasses that the implementer's own mutation tests missed, #9);
+     - a new mechanism across several files, or a new external dependency;
+     - a task whose earlier round found blocking bypasses.
+
+     Everything else is easy.
    - **Family:** the reviewer comes from another family than the implementer. When a constraint
      forces the same family, the task file names it: OpenCode cannot reach the user's install or a
      cloud session (L26).
-   - **Code:** a light DeepSeek or GLM model implements, and Luna reviews.
-   - **Guards, and tools whose failure would let an original or a copy through:** Sol reviews. In
-     T06 it found two bypasses that the implementer's own mutation tests missed (#9).
-   - **Research, or anything on the user's install:** Sonnet implements, and Luna reviews the
-     repository side. The main session runs the lines that read the install, and posts their
-     output on the PR.
+   - **Research, or anything on the user's install:** Sonnet implements, because OpenCode cannot
+     reach the install (L26). The reviewer follows the difficulty and reviews the repository side.
+     The main session runs the lines that read the install, and posts their output on the PR. If
+     no OpenCode reviewer is available, the Claude fallback would be the implementer's family:
+     escalate.
+   - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
+     Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
    - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
      family is forced. On 2026-10-03, `isolation: "remote"` silently ran T05's agents locally. A
      cloud brief therefore starts by checking the hostname and that `/mnt/c` is absent, and stops
@@ -58,7 +66,8 @@ indexed in `docs/tasks/README.md`.
      - when the owner calls a switch, it is applied to tasks not yet started (and to
        `harness.json`'s defaults when asked), with the owner's reason in the commit message.
 
-   This was the owner's decision on 2026-10-02. It overrides the family rule in the harness copies
+   The families and switching were the owner's decisions on 2026-10-02; the difficulty pairs on
+   2026-10-03. They override the family rule in the harness copies
    (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
    pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
 
