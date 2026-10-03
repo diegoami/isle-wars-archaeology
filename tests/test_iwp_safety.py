@@ -158,6 +158,16 @@ class LocationsTest(World):
             with self.subTest(bad=str(bad.name)), self.assertRaises(SystemExit):
                 locations.locations(self.env(IWP_PREFIX=str(bad)), need_prefix=True, need_bundles=True)
 
+    def test_this_repository_is_refused_even_without_a_git_entry(self):
+        with tempfile.TemporaryDirectory() as other:
+            other = Path(os.path.realpath(other))
+            plain = other / "plain-repo"
+            plain.mkdir()
+            with mock.patch.object(locations, "ROOT", plain):
+                for label, bad in {"inside it": plain / "prefix", "its parent": other}.items():
+                    with self.subTest(label), self.assertRaises(SystemExit):
+                        locations.locations(self.env(IWP_PREFIX=str(bad)), need_prefix=True, need_bundles=True)
+
     def test_a_link_into_a_checkout_is_followed_and_refused(self):
         (self.checkout / "p").mkdir()
         link = self.tmp / "innocent"
@@ -309,7 +319,25 @@ class SyncTest(World):
         self.assertEqual(tree(self.prefix), before)
         self.assertEqual(tree(game), {})
 
+    def test_a_game_directory_that_links_to_another_place_inside_the_prefix_is_refused_too(self):
+        other = self.prefix / "drive_c" / "other"
+        self.write(other / "a.txt", b"alpha")
+        self.write(other / "junk.txt", b"junk")
+        os.symlink(other, self.prefix / "drive_c" / "iwp")
+        before = tree(self.prefix)
+        self.refused(prefix.sync_game)
+        self.assertEqual(tree(self.prefix), before)
+
+    def test_game_destination_refuses_any_overlap_with_the_install_on_its_own(self):
+        game = self.prefix / "drive_c" / "iwp"
+        game.mkdir()
+        for label, install in {"install is the copy": game, "install contains the copy": game.parent}.items():
+            with self.subTest(label), self.assertRaises(SystemExit):
+                prefix.game_destination(self.prefix, install)
+        self.assertEqual(prefix.game_destination(self.prefix, self.install), game)
+
     def test_a_manifest_path_that_leaves_the_set_is_refused(self):
+        self.write(self.tmp / "escape.txt", b"x")          # a real, matching file one level above the install
         bad = dict(MANIFEST, files=[{"path": "../escape.txt", "bytes": 1, "sha256": sha(b"x")}])
         with mock.patch.object(prefix, "manifest", return_value=bad):
             self.assert_refused_and_install_intact("install changed")
@@ -699,6 +727,18 @@ class NetworkContractTest(World):
         with mock.patch.object(cycle.subprocess, "Popen", fake_popen), self.assertRaises(Stop):
             run_cycle.launch()
         self.assertEqual(seen[0][:2], ["unshare", "-n"])
+
+    def test_launch_verifies_isolation_right_after_starting_the_game(self):
+        class Stop(Exception):
+            pass
+
+        run_cycle = self.make_cycle()
+        (self.prefix / "drive_c" / "iwp").mkdir(parents=True)
+        with mock.patch.object(cycle.subprocess, "Popen", return_value=mock.MagicMock()), \
+                mock.patch.object(cycle, "poll", lambda *a, **k: None), \
+                mock.patch.object(run_cycle, "verify_isolation", side_effect=Stop), redirect_stdout(io.StringIO()):
+            with self.assertRaises(Stop):
+                run_cycle.launch()
 
     def verify(self, pid, mine, theirs, interfaces):
         run_cycle = self.make_cycle()
