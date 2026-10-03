@@ -41,6 +41,7 @@ ROOT = Path(__file__).resolve().parents[3]
 SCRIPT = Path(__file__).resolve()
 EXPERIMENT = "E001"
 SET_ID = "iwp-2.0-996e86c5"
+SUCCESSOR_ID = "iwp-2.0-3694a782"   # the same files with xtras/Isledft.dat declared a runtime write
 WINE = "/usr/lib/wine/wine"          # not on PATH on this machine (T08 task file)
 WINESERVER = "/usr/lib/wine/wineserver"
 DISPLAY = ":77"
@@ -48,6 +49,7 @@ MARK = "IWP_CYCLE_RUN"               # env marker on every child, to find strays
 
 # The title screen's geometry at 800x600, read off the screenshots of the exploration runs
 # (F002). Rectangles are x, y, w, h.
+STAGE = (800, 600)                   # the game's stage; the window follows the screen when larger
 SUBTITLE = (180, 335, 440, 25)       # "Unregistered Shareware Version", cyan text
 OPTIONS_LABEL = (280, 572, 80, 26)   # "Options": turns light green under the pointer
 OPTIONS_CLICK = (320, 585)
@@ -150,12 +152,13 @@ def png_bytes(width, height, rgb):
 class Screen:
     def __init__(self, width, height, env):
         self.width, self.height, self.env = width, height, env
+        self.ox = self.oy = 0       # where the game window's corner is on the root window
 
     def raw(self, crop=None):
         cmd = ["import", "-window", "root"]
         if crop:
             x, y, w, h = crop
-            cmd += ["-crop", f"{w}x{h}+{x}+{y}", "+repage"]
+            cmd += ["-crop", f"{w}x{h}+{x + self.ox}+{y + self.oy}", "+repage"]
         cmd += ["-depth", "8", "rgb:-"]
         return run(cmd, env=self.env).stdout
 
@@ -327,6 +330,12 @@ class Cycle:
         pos = re.search(r"Position: (\S+)", geometry).group(1)
         size = re.search(r"Geometry: (\S+)", geometry).group(1)
         self.window = wid
+        wx, wy = (int(v) for v in pos.split(","))
+        ww, wh = (int(v) for v in size.split("x"))
+        # On a screen larger than 800x600 the window fills the screen and the 800x600 stage sits
+        # centered in black (seen at 1024x768: stage at 112,84). Content coordinates are shifted so.
+        self.screen.ox, self.screen.oy = wx + max(0, (ww - STAGE[0]) // 2), wy + max(0, (wh - STAGE[1]) // 2)
+        self.observe(1, "process", "stage origin assumed from a centered 800x600 stage", f"{self.screen.ox},{self.screen.oy}")
         self.observe(1, "process", "Islepro window after launch (s)", waited)
         self.observe(1, "process", "Islepro window position and size", f"{pos} {size}")
         self.say(f"window after {waited} s at {pos}, size {size}")
@@ -346,9 +355,10 @@ class Cycle:
         return None
 
     def known_screen(self):
-        waited = poll(self.screen.title_up, 90, 0.25)
+        waited = poll(self.screen.title_up, 45, 0.25)
         if waited is None:
-            self.fail("the title screen's subtitle never appeared within 90 s")
+            self.shot("known-screen-timeout.png", 2)
+            self.fail("the title screen's subtitle never appeared within 45 s")
         stable = poll(self.screen.stable, 30, 0.1)
         if stable is None:
             self.fail("the screen never became stable")
@@ -370,7 +380,7 @@ class Cycle:
         'immediate' skips the wait: in exploration a click sent right after the move was dropped.
         """
         before = self.screen.raw(rect)
-        run(["xdotool", "mousemove", str(x), str(y)], env=self.env)
+        run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
         if self.args.click == "hover":
             hovered = poll(lambda: self.screen.raw(rect) != before, 5, 0.05)
             self.observe(step, "screen", f"{label} changed under the pointer (s)",
@@ -532,7 +542,6 @@ class Cycle:
         if os.environ.get("IWP_DIR"):
             run([sys.executable, str(ROOT / "setup" / "iwp" / "prefix.py"), "sync-game"], cwd=ROOT)
         restored = snapshot_tree(self.prefix)
-        _, _, still = diff_tree(pb, restored)
         added2, removed2, changed2 = diff_tree(pb, restored)
         ok = not (added2 or removed2 or changed2)
         self.observe(11, "file", "prefix after reset equals prefix before launch",
@@ -619,6 +628,11 @@ def next_run_id():
     return f"{EXPERIMENT}-r{(max(numbers) if numbers else 0) + 1:04d}"
 
 
+def record_set(args):
+    """The set a run is recorded under: the successor only when the run's input may write its file."""
+    return SUCCESSOR_ID if args.input == "save-default" else SET_ID
+
+
 def build_record(cycle, commit, machine, state_sha):
     args = cycle.args
     levels = [{"level": "I0", "what": "none"}]
@@ -630,7 +644,7 @@ def build_record(cycle, commit, machine, state_sha):
         "rep": args.rep,
         "code_commit": commit,
         "machine": machine,
-        "artifact": {"set": SET_ID, "variant": None},
+        "artifact": {"set": record_set(args), "variant": None},
         "runtime": {
             "driver": f"runtime/iwp/spike/cycle.py@{commit}",
             "platform": "linux-wsl2/wine-xvfb-xfwm4",
@@ -664,14 +678,15 @@ def build_manifest(cycle):
         files.append({"name": name, "bytes": path.stat().st_size, "sha256": digest,
                       "asset": f"{digest[:16]}-{name}", "class": klass})
     return {"schema": "evidence-manifest/1", "run_id": cycle.run_id, "experiment": EXPERIMENT,
-            "store": f"release:{EXPERIMENT}", "artifact": {"set": SET_ID, "variant": None}, "files": files}
+            "store": f"release:{EXPERIMENT}", "artifact": {"set": record_set(cycle.args), "variant": None},
+            "files": files}
 
 
 def parser():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--arm", default="control")
     ap.add_argument("--rep", type=int, default=1)
-    ap.add_argument("--size", default="800x600x16")
+    ap.add_argument("--size", default="800x600x24")
     ap.add_argument("--wm", choices=["xfwm4", "none"], default="xfwm4")
     ap.add_argument("--audio", choices=["off", "default"], default="off")
     ap.add_argument("--net", choices=["n0", "host"], default="n0")
