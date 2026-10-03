@@ -6,9 +6,11 @@ both by Soleau Software, built by controlled experiments on the original games, 
 
 **What it is for** (the owner's decision, 2026-10-02): the specification feeds
 [malpaco](https://github.com/diegoami/malpaco), an original game inspired by *Isle Wars Pro*.
-malpaco should know its predecessor's strengths, and have a UI at least as good as Pro's. Its
-existing code was a technology proof of concept: its rules and numbers were guesses, and the game
-design will come from this repository's reviewed findings. The research also targets what the
+malpaco should know its predecessor's strengths, and have a UI at least as good as Pro's. On
+2026-10-03 it restarted in TypeScript. The Godot proof of concept, whose rules and numbers were
+guesses, is archived as [malpaco-godot-poc](https://github.com/diegoami/malpaco-godot-poc); its
+research questions are in `questions/malpaco.md`. The game design will come from this
+repository's reviewed findings. The research also targets what the
 game needs. Everything learned, in both repositories, is recorded so that other projects can
 learn from it too.
 

@@ -1,6 +1,6 @@
 # Research questions from malpaco's rules
 
-Every rule and constant in malpaco's `RULES.md` and `SCENARIOS.md`, turned into a question about *Isle Wars* (DOS) and *Isle Wars Pro* (Win9x). **These are questions, not claims.** Every row is `unknown`: no row says how an original behaves, and nothing here changes [knowledge-map.md](../knowledge-map.md). malpaco is read at commit `2da373d` (private); every citation is `file:line` at that commit, and each quotation is no more than part of one line. Its own warning stands: its numbers were invented, so none is a lead on the originals' values.
+Every rule and constant in malpaco's `RULES.md` and `SCENARIOS.md` (the Godot proof of concept, now archived as `diegoami/malpaco-godot-poc`; all citations are at its commit `2da373d`), turned into a question about *Isle Wars* (DOS) and *Isle Wars Pro* (Win9x). **These are questions, not claims.** Every row is `unknown`: no row says how an original behaves, and nothing here changes [knowledge-map.md](../knowledge-map.md). malpaco is read at commit `2da373d` (private); every citation is `file:line` at that commit, and each quotation is no more than part of one line. Its own warning stands: its numbers were invented, so none is a lead on the originals' values.
 
 How to read a row:
 
@@ -267,7 +267,7 @@ The postmortem also records that format, lint, test and export gates stayed gree
 
 ## Coverage of malpaco's headings
 
-Every `##` and `###` heading of the two files, in file order, with the questions that cover it. The list is regenerated with `gh api 'repos/diegoami/malpaco/contents/RULES.md?ref=2da373d' -H 'Accept: application/vnd.github.raw' | grep -E '^#{2,3} '`, and the same for `SCENARIOS.md`.
+Every `##` and `###` heading of the two files, in file order, with the questions that cover it. The list is regenerated with `gh api 'repos/diegoami/malpaco-godot-poc/contents/RULES.md?ref=2da373d' -H 'Accept: application/vnd.github.raw' | grep -E '^#{2,3} '`, and the same for `SCENARIOS.md`.
 
 | File | Heading | Questions |
 | --- | --- | --- |

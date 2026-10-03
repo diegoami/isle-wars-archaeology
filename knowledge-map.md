@@ -39,11 +39,11 @@ The Basis column is the basis of every `documented` cell in the row (all `doc`).
 
 ## Secondary assertions (malpaco, unverified)
 
-[malpaco](https://github.com/diegoami/malpaco) is an earlier re-take of the Isle Wars ruleset, not a
+[malpaco](https://github.com/diegoami/malpaco-godot-poc), as archived in malpaco-godot-poc (the game now restarts in TypeScript as malpaco), is an earlier re-take of the Isle Wars ruleset, not a
 study of it. Its own `RULES.md` warns that "nothing in this document was reverse-engineered". These
 are its statements about the original games, kept so that W2 and the research questions can test
 them. **None is evidence. Each stays `unknown` until a primary source or a finding settles it.** All
-citations are at malpaco `6b533d7`.
+citations are at malpaco `6b533d7`, a commit that now lives in `diegoami/malpaco-godot-poc`.
 
 | Assertion | Game it names | Status | Source |
 | --- | --- | --- | --- |
