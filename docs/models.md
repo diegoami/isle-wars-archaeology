@@ -27,7 +27,7 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash` | GLM | **easy implementer**, the `harness.json` default |
 | `deepseek-flash` | DeepSeek V4.1 Flash, `opencode-go/deepseek-v4.1-flash` | DeepSeek | **hard implementer** (`--model deepseek-flash`) |
 | `luna` | GPT-6 Luna, `openai/gpt-6-luna`, the direct OpenAI route | OpenAI | **easy reviewer**, the `harness.json` default |
-| `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol` | OpenAI | **hard reviewer** (`--reviewer gpt-6.1-sol`); probed 2026-10-03, PONG in 5 s |
+| `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | **hard reviewer** (`--reviewer gpt-6.1-sol`), used sparingly; probed 2026-10-03 at `high`, PONG in 5 s |
 | `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
 | `deepseek-pro` | DeepSeek V4 Pro, `opencode-go/deepseek-v4-pro` | DeepSeek | probed, not in a pair |
 | `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3` | GLM | probed; implemented T06, and was tried as a calibration reviewer |
@@ -35,7 +35,14 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | (Claude) Opus | `task-agent`, `model: opus` | Claude | the hard fallback reviewer; the cloud reviewer |
 | (Claude) Fable | `task-agent`, `model: fable` | Claude | allowed, not used yet |
 
-Every model runs at effort `high`, never `max`. `max` was slower, with no gain (L27).
+Every model runs at effort `high`, never `max`. `max` was slower, with no gain (L27). **The
+exception is GPT-6.1 Sol** (the owner, 2026-10-03), which is used sparingly:
+- only for hard reviews;
+- at effort `low` (`harness.json`'s `gpt-6.1-sol` and `gpt-6-sol` entries);
+- at `medium` only when the task file says why;
+- never at `high`.
+
+Credit is not the reason, and is not a reason to raise it.
 
 **Never used:**
 - Haiku;
@@ -153,6 +160,35 @@ itself measure Jev against the main session, not against the truth. So every tas
 or an easy one whose review found blocking bypasses, says the call was wrong. At about 60 items,
 the decision `task-hard` is defined and trialled (`/jev`). Until then, the main session decides.
 Jev would give only the decision, so the main session still writes the reason.
+
+## Faster game cycles (Isle Wars Pro)
+
+These are not about models, but they set how long every research run takes, and so how much
+implementer and reviewer time a driver costs. Measured in T08's control runs, r0028–r0030:
+
+| Step | Seconds |
+| --- | --- |
+| Xvfb and the window manager ready | 0.1 |
+| game window appears | 0.4–0.5 |
+| title screen reached and stable | 6.6–6.7 |
+| hover, click Options, Options screen | under 0.1 |
+| exit through the game's Quit, then Exit Game | 14.7–14.8 |
+| Wine processes gone | 2.1 |
+
+- **The title screen is not a splash to skip.** "Unregistered Shareware Version" is the main menu.
+  The 6.6 s before it is the Director projector unpacking its runtime and Xtras. No binary is
+  patched to remove it: rule 18 stands, and stripping the unregistered notice would be a crack (the
+  owner, 2026-10-03).
+- **Terminate with Alt+F4 or `wineserver -k`,** not the menu's Quit:
+  - Alt+F4 takes 0.3–3.4 s;
+  - `wineserver -k` is immediate. It leaves Director's temp files, which reset removes.
+
+  The full quit path is tested once (T08), not in every cycle. This takes a cycle from about 25 s
+  to about 10 s.
+- **Relaunch less often.** A driver keeps the game running between trials, and starts each one
+  with New Game or a loaded save. The 6.6 s launch is paid once per session.
+- **Run in parallel.** Each run has its own Xvfb and namespaces, so prefixes can run side by side.
+- W5a, the minimal driver, adopts these, and measures the time per cycle over its 10 repeats.
 
 ## How a run is made
 

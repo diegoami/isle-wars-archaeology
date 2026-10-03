@@ -53,6 +53,8 @@ indexed in `docs/tasks/README.md`.
      escalate.
    - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
      Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
+   - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
+     `medium` only when the task file says why; never `high`. Every other model stays at `high`.
    - **Escalation after a heavy review** (the owner, 2026-10-03). The implementer moves up one step
      for the next round when either holds:
      - a review asks for rework with three or more blocking findings;
