@@ -13,3 +13,4 @@ the issue's `status:*` label is the status (`gh issue list --label task --label 
 | T06 | The quote checker (W2a prerequisite) | #8 | T02 |
 | T07 | malpaco's rules as research questions | #16 | — |
 | T08 | Runtime feasibility: Isle Wars Pro under Wine and Xvfb (W3a) | #24 | T03 |
+| T09 | Observable-state inventory: Isle Wars Pro (W4a; folds #27) | #29 | T08 |
