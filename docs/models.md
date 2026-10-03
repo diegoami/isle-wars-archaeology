@@ -223,6 +223,22 @@ implementer and reviewer time a driver costs. Measured in T08's control runs, r0
 
 ## How a run is made
 
+- **Every brief for a task that measures** (research, a runtime spike, a driver that times things,
+  static reading) ends with this standing paragraph. It is CLAUDE.md rule 20, from
+  game-archaeologist L207:
+
+  ```text
+  Measurements: write every output a finding or the PR may cite (run records, probe logs and
+  tables, timings, evidence captures by hash, static extracts) under a tracked path this task
+  owns, never only under scratch/, a cache or a machine-local folder. Originals stay out: record
+  their hashes. Commit and push after each batch of runs or probes, and at least every 30
+  minutes. Never delete or overwrite a measured output; a re-run writes new files beside the old,
+  and the finding says which it cites.
+  ```
+
+  The task file's Owns must name that tracked path, for example `runs/E<nnn>/**` or
+  `experiments/E<nnn>-*/measurements/**`.
+
 - **OpenCode implementer:**
   `node tools/harness/implement.mjs --task T<nn> --slug <slug> --issue <n> --brief <file> [--model <name>] [--env K=V]`,
   or `--fix <issue>` for a fix.

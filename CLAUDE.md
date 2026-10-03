@@ -127,6 +127,18 @@ indexed in `docs/tasks/README.md`.
     (`formats/run-1.schema.json` at the commit `archaeology.json` pins), evidence bundles are release
     assets, and findings start `proposed`. Only the main session writes `spec/`, after review. Unknown
     stays `unknown`. This repository is private (U5).
+    - **Measurements are committed as they are made, and never deleted** (game-archaeologist
+      `lessons.md` L207, and `method/research-protocol.md` §2 on its main, 2026-10-04).
+      - Every output a finding or a PR may cite is written under a tracked path the task owns, never
+        only under `scratch/`, a cache or a machine-local folder. That covers run records, probe
+        logs and tables, timings, evidence captures (by hash, with the bundle on the release) and
+        static extracts.
+      - Originals, and anything rule 18 keeps out, stay out: record their hashes instead.
+      - Commit and push after each batch of runs or probes, and at least every 30 minutes.
+      - Never delete or overwrite a measured output. A re-run writes new files beside the old
+        ones, and the finding says which ones it cites.
+      - This reaches every brief for a task that measures (research, runtime spikes, drivers that
+        time things, static reading), as the standing paragraph in `docs/models.md`.
 21. **Model trials** (the owner's decision, 2026-10-02). Rule 6's list exists to find out which
     models are viable. After every implement or review run, the main session adds one comment to
     the model-trials issue (implementers and reviewers post only on their own PR):
