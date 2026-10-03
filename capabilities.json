@@ -1,1 +1,42 @@
-{}
+{
+  "tool:python@>=3.11": {
+    "check": "python3 setup/iwp/token_check.py python",
+    "describes": "Python 3.11 or newer runs the cycle and the profile's helpers",
+    "cost": "cheap"
+  },
+  "tool:wine@9.0": {
+    "check": "python3 setup/iwp/token_check.py wine",
+    "describes": "Wine 9.0 with its 32-bit side, at the packaged path (not on PATH)",
+    "cost": "cheap"
+  },
+  "tool:xvfb": {
+    "check": "python3 setup/iwp/token_check.py xvfb",
+    "describes": "Xvfb, with xdpyinfo, xprop and ImageMagick import for the screen",
+    "cost": "cheap"
+  },
+  "tool:xfwm4": {
+    "check": "python3 setup/iwp/token_check.py xfwm4",
+    "describes": "the xfwm4 window manager (without one, clicks were dropped in IC2)",
+    "cost": "cheap"
+  },
+  "tool:xdotool": {
+    "check": "python3 setup/iwp/token_check.py xdotool",
+    "describes": "xdotool, the input path",
+    "cost": "cheap"
+  },
+  "facility:display": {
+    "check": "python3 setup/iwp/token_check.py display",
+    "describes": "an X display can be served: a throwaway Xvfb answers xdpyinfo",
+    "cost": "cheap"
+  },
+  "artifact:iwp-2.0-996e86c5": {
+    "check": "python3 setup/iwp/token_check.py artifact",
+    "describes": "the registered set matches in IWP_DIR (the install) and in the prefix's game copy",
+    "cost": "cheap"
+  },
+  "facility:iwp-prefix": {
+    "check": "python3 setup/iwp/token_check.py prefix",
+    "describes": "the Wine prefix exists, has no Z: and no absolute links, and holds the registered game copy",
+    "cost": "cheap"
+  }
+}
