@@ -44,7 +44,9 @@ indexed in `docs/tasks/README.md`.
      repository side. The main session runs the lines that read the install, and posts their
      output on the PR.
    - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
-     family is forced.
+     family is forced. On 2026-10-03, `isolation: "remote"` silently ran T05's agents locally. A
+     cloud brief therefore starts by checking the hostname and that `/mnt/c` is absent, and stops
+     if either check fails.
    - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
    - **Switching** (the owner's decision, 2026-10-02): the owner decides which models are in use,
      and switches them often, as credits and prices change. The main session does not choose
