@@ -772,9 +772,13 @@ class Cycle:
         else:
             self.note("file", f"{rel}: equals the install's file", f"no: the install's has {len(shipped)} bytes")
             if len(shipped) <= 4096 and len(data) <= 4096:
-                pairs = [f"0x{i:x} {shipped[i]:02x}>{data[i]:02x}" for i in range(min(len(shipped), len(data)))
-                         if shipped[i] != data[i]][:64]
-                self.note("file", f"{rel}: changed byte offsets, install>game copy", "; ".join(pairs) or "none in the common length")
+                common = min(len(shipped), len(data))
+                pairs = [f"0x{i:x} {shipped[i]:02x}>{data[i]:02x}" for i in range(common) if shipped[i] != data[i]][:64]
+                if len(data) > len(shipped):
+                    pairs.append(f"appended at 0x{len(shipped):x}: {data[len(shipped):][:16].hex()}")
+                elif len(data) < len(shipped):
+                    pairs.append(f"ends at 0x{len(data):x}, where the install's file goes on")
+                self.note("file", f"{rel}: changed byte offsets, install>game copy", "; ".join(pairs) or "none")
         if len(data) <= 64:
             self.note("file", f"raw:bytes[0x0:0x{len(data):x}] of {rel} as written by the game", data.hex())
 

@@ -240,8 +240,19 @@ class ReadGameFileTest(FakeWorld):
         self.write(self.install / "xtras" / "w.dat", b"1,0,0,2,")
         self.write(self.game / "xtras" / "w.dat", b"1,0,0,3,9")
         seen = self.read(made, "xtras/w.dat")
-        self.assertEqual(seen["xtras/w.dat: changed byte offsets, install>game copy"], "0x6 32>33")
+        self.assertEqual(seen["xtras/w.dat: changed byte offsets, install>game copy"], "0x6 32>33; appended at 0x8: 39")
         self.assertEqual(seen["raw:bytes[0x0:0x9] of xtras/w.dat as written by the game"], b"1,0,0,3,9".hex())
+
+    def test_bytes_appended_or_cut_off_are_named(self):
+        made = self.make()
+        self.write(self.install / "xtras" / "grow.dat", b"1,0,2")
+        self.write(self.game / "xtras" / "grow.dat", b"1,0,2,")
+        self.assertEqual(self.read(made, "xtras/grow.dat")["xtras/grow.dat: changed byte offsets, install>game copy"],
+                         "appended at 0x5: 2c")
+        self.write(self.install / "xtras" / "cut.dat", b"1,0,2,")
+        self.write(self.game / "xtras" / "cut.dat", b"1,0")
+        self.assertEqual(self.read(made, "xtras/cut.dat")["xtras/cut.dat: changed byte offsets, install>game copy"],
+                         "ends at 0x3, where the install's file goes on")
 
     def test_a_large_changed_file_gets_its_offsets_but_no_dump(self):
         made = self.make()
