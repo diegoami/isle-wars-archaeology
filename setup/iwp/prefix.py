@@ -4,22 +4,30 @@
 Commands (machine-local values come from the environment, never from this file):
     build          create the prefix (WINEARCH=win32, the PE header's machine type) when it is absent
     sync-game      make <prefix>/drive_c/iwp equal to the registered set, copied from IWP_DIR
-    strip-links    remove the Z: drive, the COM port links and every link that leaves the prefix
+    strip-links    remove the Z: drive, the COM port links and every link that leaves the prefix,
+                   and give every file with a second name (a hard link) a file of its own
     baseline       keep the registry files as they are now, for the cycle's reset (kept once)
     check          the prefix side of the profile: C: is drive_c, nothing else is mapped, no link
-                   leaves the prefix, the game copy is a real directory holding the registered set
+                   leaves the prefix, no file has a second name, nothing is mounted inside it or is
+                   one of the install's own files, and the game copy is a real directory holding
+                   the registered set as plain files of its own
 
 IWP_PREFIX is the prefix (outside every checkout). IWP_DIR is the install; it is read and hashed
 only, to copy files out of it into the prefix's C: drive (CLAUDE.md rule 18: it never enters the
 repository). Nothing here writes to IWP_DIR. Before any command mutates anything the locations are
 confined (locations.py): outside every checkout, not overlapping the install or each other. The
 game copy is refused when it, or a directory above it, is a link, or when it overlaps the install.
+
+Every write, removal and mode change goes through safeio.py: a copy is a new file renamed into
+place, never a write through an existing name, so a link or a second name (a hard link to the
+install, say) at the destination is replaced, not written through, and loses only its name.
 """
 import hashlib
 import importlib.util
 import json
 import os
-import shutil
+import re
+import stat
 import subprocess
 import sys
 import time
@@ -27,6 +35,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import locations  # noqa: E402
+import safeio  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 SET_ID = "iwp-2.0-996e86c5"
@@ -39,6 +48,12 @@ REG_FILES = ("system.reg", "user.reg", "userdef.reg", ".update-timestamp")
 def prefix_path():
     """The confined, canonical prefix (and, when set, the install and the baseline checked with it)."""
     return locations.locations(need_prefix=True)["IWP_PREFIX"]
+
+
+def install_from_env():
+    """The canonical install when IWP_DIR is set, else None (read only, for the inode checks)."""
+    value = os.environ.get("IWP_DIR")
+    return locations.real(value) if value and os.path.isabs(value) else None
 
 
 def sha256_file(path):
@@ -64,19 +79,106 @@ def _register_artifact():
     return module
 
 
-def verify_game_copy(game):
+# --- aliases: entries that are, or lead to, another place ---------------------------------------
+
+def install_inodes(install):
+    """{(st_dev, st_ino)} of the install and of every entry in it (read only, links not followed)."""
+    if install is None or not Path(install).is_dir():
+        return set()
+    found = {(os.lstat(install).st_dev, os.lstat(install).st_ino)}
+    for dirpath, dirnames, filenames in os.walk(install, followlinks=False):
+        for name in dirnames + filenames:
+            info = os.lstat(Path(dirpath) / name)
+            found.add((info.st_dev, info.st_ino))
+    return found
+
+
+def mount_points():
+    """Canonical mount points of this process's mount namespace, from /proc/self/mountinfo."""
+    try:
+        text = Path("/proc/self/mountinfo").read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+    points = []
+    for line in text.splitlines():
+        fields = line.split(" ")
+        if len(fields) > 4:
+            points.append(Path(re.sub(r"\\([0-7]{3})", lambda m: chr(int(m.group(1), 8)), fields[4])))
+    return points
+
+
+def foreign_entries(base):
+    """Relative paths (with why) under base, base included as ".", that belong to another place:
+    a mount point (a bind mount of the install, say), or an entry on another filesystem than
+    base's parent. Nothing may change or remove such an entry, since that would change the other
+    place, and nothing under it is looked into."""
+    base = Path(base)
+    found = [f"{(p.relative_to(base).as_posix() if p != base else '.')} is a mount point"
+             for p in mount_points() if locations.inside(p, base)]
+    reference = os.lstat(base.parent).st_dev
+    if os.lstat(base).st_dev != reference:
+        return sorted(set(found) | {". is on another filesystem"})
+    for dirpath, dirnames, filenames in os.walk(base, followlinks=False):
+        keep = []
+        for name in dirnames + filenames:
+            path = Path(dirpath) / name
+            if os.lstat(path).st_dev != reference:
+                found.append(f"{path.relative_to(base).as_posix()} is on another filesystem")
+            elif name in dirnames:
+                keep.append(name)
+        dirnames[:] = keep
+    return sorted(set(found))
+
+
+def extra_name_entries(base):
+    """[(relative path, lstat)] under base of regular files with more than one name (hard links),
+    and of devices, fifos and sockets. Writing such a file, or changing its mode, changes it for its
+    other names too, wherever they are (the install's own file, for a hard link to it)."""
+    found = []
+    for dirpath, dirnames, filenames in os.walk(base, followlinks=False):
+        for name in dirnames + filenames:
+            path = Path(dirpath) / name
+            info = os.lstat(path)
+            kind = stat.S_IFMT(info.st_mode)
+            if (kind == stat.S_IFREG and info.st_nlink > 1) or kind not in (stat.S_IFREG, stat.S_IFDIR, stat.S_IFLNK):
+                found.append((path.relative_to(base).as_posix(), info))
+    return sorted(found, key=lambda item: item[0])
+
+
+def extra_names(base, install=None):
+    """extra_name_entries as messages; a file that is one of the install's own says so."""
+    ids = install_inodes(install)
+    messages = []
+    for rel, info in extra_name_entries(base):
+        if stat.S_ISREG(info.st_mode):
+            whose = "; another is the install's" if (info.st_dev, info.st_ino) in ids else ""
+            messages.append(f"{rel} has {info.st_nlink} names (a hard link{whose})")
+        else:
+            messages.append(f"{rel} is a device, fifo or socket")
+    return messages
+
+
+def verify_game_copy(game, install=None):
     """Problems (a list of strings, empty when it is right) with a game copy against the registered set.
 
-    The same comparison as `register_artifact.py check --strict`: every listed file present with
-    its size and sha256, and no file outside the set (a runtime write of the set is allowed).
+    The same comparison as `register_artifact.py check --strict` (every listed file present with
+    its size and sha256, and no file outside the set; a runtime write of the set is allowed), and
+    every entry must be the copy's own: no link, no file with a second name, nothing mounted or
+    belonging to the install (IWP_DIR when `install` is not given).
     """
     game = Path(game)
     if game.is_symlink() or not game.is_dir():
         return [f"the game copy {game.name} is not a real directory"]
+    install = install_from_env() if install is None else install
+    problems = foreign_entries(game)
+    if problems:
+        return problems
+    problems += [f"{p.relative_to(game).as_posix()} is a link" for p in symlinks(game)]
+    problems += extra_names(game, install)
     tool = _register_artifact()
     wanted = manifest()
-    problems, unlisted = tool.compare(tool.hash_tree(game, wanted), wanted, strict=True)
-    return problems
+    differences, unlisted = tool.compare(tool.hash_tree(game, wanted), wanted, strict=True)
+    return problems + differences
 
 
 def wine_env(prefix, display=None):
@@ -165,6 +267,16 @@ def game_destination(prefix, install):
     return game
 
 
+def _entries(game):
+    """{relative path: lstat} of everything under game, links not followed (top-down order)."""
+    found = {}
+    for dirpath, dirnames, filenames in os.walk(game, followlinks=False):
+        for name in dirnames + filenames:
+            path = Path(dirpath) / name
+            found[path.relative_to(game).as_posix()] = os.lstat(path)
+    return found
+
+
 def sync_game():
     locs = locations.locations(need_prefix=True)
     prefix = locs["IWP_PREFIX"]
@@ -178,52 +290,49 @@ def sync_game():
         if Path(rel).is_absolute() or ".." in parts or not parts:
             sys.exit(f"{rel}: not a path inside the set")
     # Everything is checked before anything is changed: each source file is a regular file of the
-    # install with the registered sha256, or nothing is copied, removed or re-permissioned.
+    # install with the registered sha256, and nothing in the copy belongs to another place (a mount
+    # point, or another filesystem), or nothing is copied, removed or re-permissioned.
     for rel, entry in sorted(files.items()):
         src = source / rel
         if src.is_symlink() or not src.is_file():
             sys.exit(f"{rel}: the install has no such regular file; nothing changed")
         if sha256_file(src) != entry["sha256"]:
             sys.exit(f"{rel}: the install's file is not the registered one; nothing changed")
+    if game.exists():
+        foreign = foreign_entries(game)
+        if foreign:
+            sys.exit("the game copy holds another place's entries; nothing changed: " + "; ".join(foreign)[:300])
     copied, removed = [], []
-    game.mkdir(parents=True, exist_ok=True)
-    game_real = locations.real(game)
-    # The copy holds no links at all: a link is removed itself, never followed.
-    for dirpath, dirnames, filenames in os.walk(game, followlinks=False):
-        for name in dirnames + filenames:
-            path = Path(dirpath) / name
-            if path.is_symlink():
-                path.unlink()
-                removed.append(path.relative_to(game).as_posix())
-    for rel, entry in sorted(files.items()):
-        src, dst = source / rel, game / rel
-        if dst.is_file() and sha256_file(dst) == entry["sha256"]:
-            continue
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        if not locations.inside(locations.real(dst.parent), game_real):
-            sys.exit(f"{rel}: resolves outside the game copy")
-        if dst.exists():
-            dst.chmod(0o644)
-        shutil.copyfile(src, dst)
-        shutil.copystat(src, dst)
-        dst.chmod(0o644)     # writable: the Windows install is, and a read-only copy would hide writes
-        copied.append(rel)
-    for dirpath, dirnames, filenames in os.walk(game, topdown=False, followlinks=False):
-        for name in filenames + dirnames:
-            path = Path(dirpath) / name
-            rel = path.relative_to(game).as_posix()
-            if path.is_symlink():
-                path.unlink()                      # the link itself; never what it points at
+    try:
+        os.close(safeio.open_directory(game, create_below=prefix / "drive_c"))
+        listed_dirs = {p.as_posix() for rel in files for p in Path(rel).parents} - {"."}
+        # 1. Anything that is not a plain entry of the copy's own loses its name, and so does any
+        #    entry the set does not list or that stands where the other kind belongs. Removing a
+        #    name never changes what another name of the same file holds.
+        for rel, info in _entries(game).items():
+            plain_dir = stat.S_ISDIR(info.st_mode)
+            if plain_dir and rel in listed_dirs:
+                continue
+            if safeio.plain_file(info) and rel in files:
+                continue
+            if safeio.remove(game, rel):
                 removed.append(rel)
-            elif path.is_file() and rel not in files:
-                path.unlink()
-                removed.append(rel)
-            elif path.is_dir() and not any(path.iterdir()):
-                path.rmdir()
-    for dirpath, dirnames, _ in os.walk(game, followlinks=False):
-        for name in dirnames:
-            (Path(dirpath) / name).chmod(0o755)
-    game.chmod(0o755)
+        # 2. Each listed file that is not already the registered one is written as a new file and
+        #    renamed into place, its copied bytes checked against the registered sha256.
+        for rel, entry in sorted(files.items()):
+            if safeio.sha256_plain(game, rel) == entry["sha256"]:
+                continue
+            parent = game.joinpath(*Path(rel).parts[:-1])
+            safeio.write_file(parent, Path(rel).name, source=source / rel, exist="replace", mode=0o644,
+                              expect_sha256=entry["sha256"], create_below=game, times_from_source=True)
+            copied.append(rel)
+        # 3. Modes: writable files and directories, as on the Windows install (a read-only copy
+        #    would hide the game's writes), set through descriptors, never on a second name.
+        for rel, info in _entries(game).items():
+            safeio.set_mode(game, rel, 0o755 if stat.S_ISDIR(info.st_mode) else 0o644)
+        safeio.set_mode(game, "", 0o755)
+    except safeio.Refused as exc:
+        sys.exit(f"the game copy was not synchronised: {exc}")
     print(f"game copy: copied {len(copied)}, removed {len(removed)}")
     return 0
 
@@ -244,38 +353,48 @@ def escapes(link, prefix):
     return not locations.inside(locations.real(link), locations.real(prefix))
 
 
-def remove_entry(path):
-    if path.is_symlink() or path.is_file():
-        path.unlink()
-    elif path.is_dir():
-        shutil.rmtree(path)
-
-
 def strip_links():
     prefix = prefix_path()
+    foreign = foreign_entries(prefix)
+    if foreign:
+        sys.exit("the prefix holds another place's entries; nothing changed: " + "; ".join(foreign)[:300])
     removed = []
     devices = prefix / "dosdevices"
     if devices.is_symlink():
         sys.exit("dosdevices is a link; refused")
-    if devices.is_dir():
-        for entry in sorted(devices.iterdir()):
-            if entry.name != "c:":
-                remove_entry(entry)
-                removed.append(f"dosdevices/{entry.name}")
-        mapped = devices / "c:"
-        drive_c = locations.real(prefix / "drive_c")
-        if not mapped.is_symlink() or locations.real(mapped) != drive_c:
-            remove_entry(mapped)
-            os.symlink("../drive_c", mapped)
-            removed.append("dosdevices/c: (mapped again to drive_c)")
-    for link in symlinks(prefix):
-        rel = link.relative_to(prefix).as_posix()
-        if rel.startswith("dosdevices/") or not escapes(link, prefix):
-            continue
-        link.unlink()
-        if rel.startswith("drive_c/users/"):
-            link.mkdir()                 # a profile folder the host does not see
-        removed.append(rel)
+    try:
+        if devices.is_dir():
+            for entry in sorted(devices.iterdir()):
+                if entry.name != "c:":
+                    safeio.remove(prefix, f"dosdevices/{entry.name}")
+                    removed.append(f"dosdevices/{entry.name}")
+            mapped = devices / "c:"
+            drive_c = locations.real(prefix / "drive_c")
+            if not mapped.is_symlink() or locations.real(mapped) != drive_c:
+                safeio.remove(prefix, "dosdevices/c:")
+                safeio.make_link(prefix, "dosdevices/c:", "../drive_c")
+                removed.append("dosdevices/c: (mapped again to drive_c)")
+        for link in symlinks(prefix):
+            rel = link.relative_to(prefix).as_posix()
+            if rel.startswith("dosdevices/") or not escapes(link, prefix):
+                continue
+            safeio.remove(prefix, rel)
+            if rel.startswith("drive_c/users/"):
+                safeio.make_directory(prefix, rel)        # a profile folder the host does not see
+            removed.append(rel)
+        # A file with a second name gets a file of its own: the same bytes, written as a new file
+        # and renamed over this name; the other name keeps its file untouched.
+        for rel, info in extra_name_entries(prefix):
+            if not stat.S_ISREG(info.st_mode):
+                sys.exit(f"strip-links stopped: {rel} is a device, fifo or socket; remove it by hand")
+            path = prefix / rel
+            with safeio.open_source(path) as fh:
+                data = fh.read()
+            safeio.write_file(path.parent, path.name, data=data, exist="replace", mode=stat.S_IMODE(info.st_mode),
+                              replace_shared=True)
+            removed.append(f"{rel} (given a file of its own)")
+    except safeio.Refused as exc:
+        sys.exit(f"strip-links stopped: {exc}")
     print(f"links removed: {len(removed)}" + ("".join(f"\n  {r}" for r in removed)))
     return 0
 
@@ -286,16 +405,23 @@ def baseline():
     if (target / "system.reg").is_file():
         print("baseline exists")
         return 0
-    target.mkdir(parents=True, exist_ok=True)
-    for name in REG_FILES:
-        if (prefix / name).is_file():
-            shutil.copyfile(prefix / name, target / name)
+    try:
+        os.close(safeio.open_directory(target, create_below=target.parent))
+        for name in REG_FILES:
+            if (prefix / name).is_file() and not (prefix / name).is_symlink():
+                safeio.write_file(target, name, source=prefix / name, exist="replace")
+    except safeio.Refused as exc:
+        sys.exit(f"baseline not kept: {exc}")
     print("baseline kept")
     return 0
 
 
-def prefix_problems(prefix):
-    """What is wrong with a prefix as a place to run the game; [] when nothing is. Nothing is changed."""
+def prefix_problems(prefix, install=None):
+    """What is wrong with a prefix as a place to run the game; [] when nothing is. Nothing is changed.
+
+    `install` defaults to IWP_DIR; its inodes may appear nowhere in the prefix.
+    """
+    install = install_from_env() if install is None else install
     problems = []
     if not (prefix / "system.reg").is_file():
         problems.append("the prefix does not exist")
@@ -314,11 +440,16 @@ def prefix_problems(prefix):
             problems.append("dosdevices/c: is not a link")
         elif locations.real(mapped) != locations.real(drive_c):
             problems.append("dosdevices/c: does not map to drive_c")
+    foreign = foreign_entries(prefix)
+    problems += [f"belongs to another place: {p}" for p in foreign]
+    if foreign:
+        return problems              # nothing under another place is looked into
     for link in symlinks(prefix):
         if escapes(link, prefix):
             problems.append(f"link leaves the prefix: {link.relative_to(prefix).as_posix()}")
     game = drive_c / GAME_DIR
-    problems += [f"game copy: {p}" for p in verify_game_copy(game)]
+    problems += [p for p in extra_names(prefix, install) if not p.startswith(f"drive_c/{GAME_DIR}/")]
+    problems += [f"game copy: {p}" for p in verify_game_copy(game, install)]
     return problems
 
 

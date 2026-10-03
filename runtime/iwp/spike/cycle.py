@@ -19,7 +19,8 @@ Machine-local values come from the environment and are never written to a record
     E001_EXPLORE  where --explore writes its output (default: E001_BUNDLES)
     All three are confined before anything is mutated or launched (setup/iwp/locations.py): outside
     every checkout, not overlapping the install or each other.
-    IWP_DIR       the install; read and hashed only, to restore the game copy when it has changed
+    IWP_DIR       the install (required); read and hashed only, to restore the game copy when it has
+                  changed. Inside the run's mount namespace it is bound read-only before anything starts.
     E001_MACHINE  the machine id written to records (default: local)
 
 Usage: cycle.py [--arm NAME] [--size WxHxD] [--wm xfwm4|none] [--audio off|default]
@@ -27,12 +28,14 @@ Usage: cycle.py [--arm NAME] [--size WxHxD] [--wm xfwm4|none] [--audio off|defau
                 [--explore]   (--explore prints the result and writes no record)
 """
 import argparse
+import contextlib
 import hashlib
+import io
 import json
 import os
 import re
-import shutil
 import signal
+import stat
 import subprocess
 import sys
 import struct
@@ -45,6 +48,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "setup" / "iwp"))
 import locations  # noqa: E402
+import prefix as prefixlib  # noqa: E402
+import safeio  # noqa: E402
 SCRIPT = Path(__file__).resolve()
 EXPERIMENT = "E001"
 SET_ID = "iwp-2.0-996e86c5"
@@ -69,6 +74,10 @@ EXIT_CLICK = (688, 586)
 SAVE_DEFAULT = (135, 515, 187, 35)   # "Save as default" on the Options screen
 SAVE_CLICK = (228, 532)
 REG_FILES = ("system.reg", "user.reg", "userdef.reg", ".update-timestamp")
+
+
+class Abort(RuntimeError):
+    """A deliberate stop: `Cycle.fail()` has set the aborted status, with its reason, before raising it."""
 
 
 # --- small helpers ---------------------------------------------------------------------------
@@ -106,8 +115,19 @@ def poll(condition, timeout, interval=0.1):
 
 
 def confined_locations(args):
-    """The canonical, confined machine-local locations; SystemExit before anything is touched."""
-    return locations.locations(need_prefix=True, need_bundles=True, explore=args.explore)
+    """The canonical, confined machine-local locations; SystemExit before anything is touched.
+
+    IWP_DIR is required: the run binds it read-only, and the seal checks that no file of the prefix
+    shares an inode with it."""
+    found = locations.locations(need_prefix=True, need_bundles=True, explore=args.explore)
+    if "IWP_DIR" not in found:
+        raise SystemExit("IWP_DIR is not set; the run seals the install read-only and must know where it is")
+    return found
+
+
+def install_writable(path):
+    """True unless the install is on a read-only mount for this process (checked, never written)."""
+    return os.access(path, os.W_OK) or not (os.statvfs(path).f_flag & os.ST_RDONLY)
 
 
 def netns_of(pid):
@@ -212,8 +232,8 @@ class Screen:
         time.sleep(0.4)
         return first == self.raw()
 
-    def capture(self, path):
-        """One capture: returns (sha256 of the raw 8-bit RGB pixels, sha256 of the PNG file).
+    def capture(self, directory, name):
+        """One capture into directory/name: (sha256 of the raw 8-bit RGB pixels, sha256 of the PNG file).
 
         The PNG is written here, not by ImageMagick, because ImageMagick 6.9.12 wrote different
         bytes for identical pixels (observed: two conversions of one capture differed), and the
@@ -222,8 +242,9 @@ class Screen:
         data = self.raw()
         if len(data) != self.width * self.height * 3:
             raise RuntimeError(f"capture is {len(data)} bytes, not {self.width}x{self.height} RGB")
-        Path(path).write_bytes(png_bytes(self.width, self.height, data))
-        return sha256_bytes(data), sha256_file(path)
+        png = png_bytes(self.width, self.height, data)
+        safeio.write_file(directory, name, data=png, exist="new")
+        return sha256_bytes(data), sha256_bytes(png)
 
 
 # --- snapshots and diffs ---------------------------------------------------------------------
@@ -282,14 +303,15 @@ def listing_hash(tree):
 # --- the cycle -------------------------------------------------------------------------------
 
 class Cycle:
-    def __init__(self, args, run_id, prefix, bundles):
+    def __init__(self, args, run_id, prefix, bundles, install=None):
         self.args, self.run_id, self.prefix, self.bundles = args, run_id, prefix, bundles
+        self.install = install
         self.game = prefix / "drive_c" / "iwp"
         self.obs = []                # run/1 observations
         self.outputs = []            # (name, path, class) of bundle files
         self.log = []                # lines of the run log (a bundle file)
         self.procs = {}
-        self.workdir = Path(tempfile.mkdtemp(prefix="iwp-cycle-"))
+        self.workdir = locations.real(tempfile.mkdtemp(prefix="iwp-cycle-"))
         width, height, depth = (int(v) for v in args.size.split("x"))
         self.size = (width, height, depth)
         self.env = dict(os.environ, DISPLAY=DISPLAY, WINEPREFIX=str(prefix), WINEARCH="win32",
@@ -301,7 +323,10 @@ class Cycle:
             self.env["WINEDLLOVERRIDES"] += ";winepulse.drv=d;winealsa.drv=d;wineoss.drv=d"
             self.env.pop("PULSE_SERVER", None)
         self.screen = Screen(width, height, self.env)
-        self.status = "completed"
+        self.after_screen_ok = False
+        # "completed" is given only by complete(), at the end of a cycle that did every stage. Any
+        # other way out (fail(), an exception, an interruption) leaves an aborted status.
+        self.status = "running"
 
     def say(self, text):
         self.log.append(f"{time.strftime('%H:%M:%S')} {text}")
@@ -313,7 +338,50 @@ class Cycle:
     def fail(self, reason):
         self.status = f"aborted: {reason}"
         self.say(f"ABORT {reason}")
-        raise RuntimeError(reason)
+        raise Abort(reason)
+
+    def abort_later(self, reason):
+        """An aborted status for a fault found after the stages (terminate, reset, storing the
+        evidence). The first reason is the one recorded; every one is logged."""
+        if not self.status.startswith("aborted: "):
+            self.status = f"aborted: {reason}"
+        self.say(f"ABORT {reason}")
+
+    def complete(self):
+        """The only place a run becomes completed: every stage done, both screenshots taken, and the
+        click shown to have brought up the Options screen."""
+        have = {name for name, _, _ in self.outputs}
+        missing = [name for name in ("before.png", "after.png") if name not in have]
+        if missing:
+            self.fail("the cycle ended without " + " and ".join(missing))
+        if not self.after_screen_ok or not self.screen.options_up():
+            self.fail("the click did not bring up the Options screen")
+        if self.status == "running":
+            self.status = "completed"
+
+    # ---- seals
+
+    def protect_install(self):
+        """Bind the install read-only in this run's mount namespace, and abort unless it then is
+        read-only here: nothing in the run, the game included, can write to it."""
+        install = str(self.install)
+        bind = run(["mount", "--bind", install, install])
+        remount = run(["mount", "-o", "remount,bind,ro", install])
+        if bind.returncode != 0 or remount.returncode != 0 or install_writable(install):
+            self.fail("the install could not be made read-only inside the run")
+        self.observe(0, "process", "install bound read-only in the run's mount namespace", "yes")
+        self.say("install read-only inside the run")
+
+    def seal(self, when, step):
+        """Abort unless the prefix is safe to launch from (setup/iwp/prefix.py prefix_problems): C:
+        maps to drive_c and nothing else is mapped, no link leaves the prefix, no file has a second
+        name, nothing is mounted in it, and the game copy is the registered set as plain files of its
+        own. Run before anything starts, and again immediately before the game starts."""
+        problems = prefixlib.prefix_problems(self.prefix, self.install)
+        self.observe(step, "file", f"prefix seal {when}: problems found", len(problems))
+        if problems:
+            self.fail(f"the prefix is not safe to launch from ({when}): " + "; ".join(problems)[:300])
+        self.say(f"prefix seal {when}: ok")
 
     # ---- stages
 
@@ -347,9 +415,10 @@ class Cycle:
         self.say(f"xfwm4 registered after {waited} s")
 
     def launch(self):
+        self.seal("immediately before launch", 1)
         cmd = game_command()
         self.t_launch = time.monotonic()
-        with open(self.workdir / "wine.log", "wb") as log:
+        with safeio.create_stream(self.workdir, "wine.log") as log:
             self.procs["game"] = subprocess.Popen(cmd, cwd=self.game, env=self.env, stdout=log, stderr=log)
         self.say("launched: " + " ".join(cmd[:-1] + ["<game>"]))
         self.verify_isolation()
@@ -455,7 +524,7 @@ class Cycle:
 
     def shot(self, name, step):
         path = self.workdir / name
-        pixels, png = self.screen.capture(path)
+        pixels, png = self.screen.capture(self.workdir, name)
         self.outputs.append((name, path, "screenshot"))
         self.observe(step, "screen", f"{name} raw RGB8 pixels sha256", pixels)
         self.say(f"{name}: pixels {pixels[:16]}, file {png[:16]}")
@@ -533,7 +602,7 @@ class Cycle:
         self.observe(10, "process", "processes of this run still alive after terminate", len(left))
         self.say(f"processes still alive after terminate: {len(left)}")
         if left:
-            self.status = f"aborted: {len(left)} process(es) survived terminate"
+            self.abort_later(f"{len(left)} process(es) survived terminate")
 
     # ---- snapshots
 
@@ -565,7 +634,7 @@ class Cycle:
         self.observe(8, "file", "registry keys: added/removed/value-changed",
                      f"{len(rkeys_added)}/{len(rkeys_removed)}/{len(rkeys_changed)}")
         path = self.workdir / "changes.log"
-        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        safeio.write_file(self.workdir, "changes.log", data=("\n".join(lines) + "\n").encode(), exist="new")
         self.outputs.append(("changes.log", path, "log"))
         self.changes = lines
         return lines
@@ -575,18 +644,25 @@ class Cycle:
         _, pb, _ = self.snap_before
         _, pa, _ = self.snap_after
         added, _, _ = diff_tree(pb, pa)
-        for rel in sorted(added, reverse=True):
-            path = self.prefix / rel
-            if path.is_symlink() or path.is_file():
-                path.unlink()
-            elif path.is_dir():
-                shutil.rmtree(path)
-        baseline = Path(str(self.prefix) + ".baseline")
-        for name in REG_FILES:
-            if (baseline / name).is_file():
-                shutil.copyfile(baseline / name, self.prefix / name)
-        if os.environ.get("IWP_DIR"):
-            run([sys.executable, str(ROOT / "setup" / "iwp" / "prefix.py"), "sync-game"], cwd=ROOT)
+        try:
+            # What the run added loses its name, reached from the prefix without following any link:
+            # a link is removed, never followed; a directory is removed through descriptors.
+            for rel in sorted(added, reverse=True):
+                safeio.remove(self.prefix, rel)
+            baseline = Path(str(self.prefix) + ".baseline")
+            for name in REG_FILES:
+                source = baseline / name
+                if source.is_file() and not source.is_symlink():
+                    # a new file renamed over the prefix's, never a write through what is there
+                    safeio.write_file(self.prefix, name, source=source, exist="replace",
+                                      mode=stat.S_IMODE(source.stat().st_mode))
+        except safeio.Refused as exc:
+            self.abort_later(f"reset refused: {exc}")
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                prefixlib.sync_game()
+        except SystemExit as exc:
+            self.abort_later(f"reset could not synchronise the game copy: {exc}")
         restored = snapshot_tree(self.prefix)
         added2, removed2, changed2 = diff_tree(pb, restored)
         ok = not (added2 or removed2 or changed2)
@@ -594,58 +670,60 @@ class Cycle:
                      "yes" if ok else f"no: {len(added2)} added, {len(removed2)} removed, {len(changed2)} changed")
         self.say(f"reset: prefix equals its state before launch: {ok}")
         if not ok:
-            self.status = "aborted: reset did not restore the prefix"
+            self.abort_later("reset did not restore the prefix")
             self.say("  differing: " + ", ".join((added2 + removed2 + changed2)[:10]))
 
     # ---- main
 
     def execute(self):
+        """The cycle's stages, then its clean-up. Whatever happens, the run ends with a status:
+        "completed" from complete() only, "aborted: <why>" otherwise, and every clean-up stage runs."""
         started = now()
         try:
-            self.cold_state_check()
+            self.protect_install()
+            self.seal("before anything starts", 0)
             self.start_x()
             self.start_wm()
             self.take_snapshots("before")
-            self.launch()
+            self.launch()                      # seals the prefix again, immediately before the game
             self.known_screen()
             self.before = self.shot("before.png", 3)
             self.input()
             self.after = self.shot("after.png", 6)
-            if not self.after_screen_ok or not self.screen.options_up():
-                self.fail("the click did not bring up the Options screen")
-        except RuntimeError:
-            pass
-        except Exception as exc:     # a crash must still clean up and leave a record
-            self.status = f"aborted: {type(exc).__name__}: {exc}"
-            self.say(self.status)
-        finally:
-            try:
-                if "game" in self.procs:
-                    self.terminate()
-            finally:
-                self.stop_x()
-            if hasattr(self, "snap_before"):
-                self.take_snapshots("after")
-                self.report_changes()
-                self.reset()
-            log_path = self.workdir / "wine.log"
-            if log_path.exists():
-                self.outputs.append(("wine.log", log_path, "log"))
-            run_log = self.workdir / "run.log"
-            run_log.write_text("\n".join(self.log) + "\n", encoding="utf-8")
-            self.outputs.append(("run.log", run_log, "log"))
+            self.complete()
+        except Abort:
+            pass                               # fail() has recorded why
+        except BaseException as exc:           # a crash or an interruption: cleaned up, recorded, never completed
+            self.abort_later(f"{type(exc).__name__}: {exc}")
+        self.cleanup("terminate", self.terminate if "game" in self.procs else None)
+        self.cleanup("stopping the display", self.stop_x)
+        if hasattr(self, "snap_before"):
+            self.cleanup("snapshot and reset", self.snapshot_and_reset)
+        self.cleanup("keeping the logs", self.keep_logs)
+        if self.status == "running":           # the last guard: nothing that did not complete() is completed
+            self.status = "aborted: the cycle stopped before its end"
         self.started, self.ended = started, now()
 
-    def cold_state_check(self):
-        check = run([sys.executable, str(ROOT / "tools" / "register_artifact.py"), "check", str(self.game), SET_ID],
-                    cwd=ROOT)
-        text = (check.stdout + check.stderr).decode()
-        self.observe(0, "file", "game copy checked against the registered set", "exit " + str(check.returncode))
-        unlisted = [l for l in text.splitlines() if l.startswith("unlisted:")]
-        self.observe(0, "file", "game copy files outside the set", len(unlisted))
-        if check.returncode != 0 or unlisted:
-            self.fail("the game copy differs from the registered set: " + " ".join(text.split())[:200])
-        self.say("game copy matches the registered set")
+    def cleanup(self, stage, action):
+        """Run one clean-up stage; a failure of it aborts the run and does not stop the next stage."""
+        if action is None:
+            return
+        try:
+            action()
+        except BaseException as exc:
+            self.abort_later(f"{stage} failed: {type(exc).__name__}: {exc}")
+
+    def snapshot_and_reset(self):
+        self.take_snapshots("after")
+        self.report_changes()
+        self.reset()
+
+    def keep_logs(self):
+        log_path = self.workdir / "wine.log"
+        if log_path.exists():
+            self.outputs.append(("wine.log", log_path, "log"))
+        safeio.write_file(self.workdir, "run.log", data=("\n".join(self.log) + "\n").encode(), exist="new")
+        self.outputs.append(("run.log", self.workdir / "run.log", "log"))
 
 
 # --- records ---------------------------------------------------------------------------------
@@ -728,9 +806,17 @@ def build_manifest(cycle):
             "files": files}
 
 
+def arm_name(value):
+    """--arm: a plain identifier, because it becomes part of file names (exploration output)."""
+    try:
+        return safeio.identifier(value, "arm")
+    except safeio.Refused as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from None
+
+
 def parser():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--arm", default="control")
+    ap.add_argument("--arm", type=arm_name, default="control")
     ap.add_argument("--rep", type=int, default=None, help="default: one more than the records of this arm")
     ap.add_argument("--size", default="800x600x24")
     ap.add_argument("--wm", choices=["xfwm4", "none"], default="xfwm4")
@@ -743,42 +829,87 @@ def parser():
     return ap
 
 
+def store_outputs(cycle, directory, name_of, exist):
+    """Copy each output into a confined directory through the one writer (setup/iwp/safeio.py).
+
+    An output that cannot be stored (its name, a link or a second name at its destination, a
+    directory swapped for a link) is dropped and aborts the run: the record never names an output
+    the store does not hold. Returns the outputs stored."""
+    stored = []
+    for name, path, klass in cycle.outputs:
+        digest = sha256_file(path)
+        try:
+            safeio.write_file(directory, name_of(name, digest), source=path, exist=exist,
+                              expect_sha256=digest, create_below=directory.parent)
+        except (safeio.Refused, OSError) as exc:
+            cycle.abort_later(f"{name} was not stored: {exc}")
+            continue
+        stored.append((name, path, klass))
+    return stored
+
+
 def inner(args):
     """Runs as PID 1 of the private namespaces: does the cycle and writes the record."""
     locs = confined_locations(args)
-    prefix, bundles = locs["IWP_PREFIX"], locs["E001_BUNDLES"]
+    prefix, bundles, install = locs["IWP_PREFIX"], locs["E001_BUNDLES"], locs["IWP_DIR"]
     run_id = os.environ["IWP_CYCLE_ID"]
+    machine = os.environ.get("E001_MACHINE", "local")
+    if not re.fullmatch(rf"{EXPERIMENT}-x[0-9]+" if args.explore else rf"{EXPERIMENT}-r[0-9]{{4,}}", run_id):
+        sys.exit(f"{run_id!r} is not a run id of {EXPERIMENT}; nothing was started")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", machine):
+        sys.exit("E001_MACHINE is not a machine id (lowercase letters, digits, dashes); nothing was started")
+    try:
+        safeio.identifier(args.arm, "arm")            # also when inner() is called without the parser
+    except safeio.Refused as exc:
+        sys.exit(f"{exc}; nothing was started")
     run(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"], check=True)
-    cycle = Cycle(args, run_id, prefix, bundles)
+    cycle = Cycle(args, run_id, prefix, bundles, install)
     cycle.argv = sys.argv[1:]
     cycle.fingerprint = versions()
-    cycle.restore_text = ("fresh private user, mount and PID namespaces; game copy verified against the set "
-                          "before launch; prefix as left by setup/iwp/iwp-runtime.sh and by the previous run's "
-                          "reset; start_state.sha256 lists every entry of the prefix with the size and sha256 of "
-                          "each file and the target of each link, the registry files included")
+    cycle.restore_text = ("fresh private user, mount and PID namespaces, the install bound read-only; the prefix "
+                          "sealed (drive mapping, links, second names, mounts, the registered game copy) before "
+                          "anything starts and again immediately before the launch; prefix as left by "
+                          "setup/iwp/iwp-runtime.sh and by the previous run's reset; start_state.sha256 lists every "
+                          "entry of the prefix with the size and sha256 of each file and the target of each link, "
+                          "the registry files included")
     cycle.execute()
     commit = os.environ["IWP_CYCLE_COMMIT"]
-    machine = os.environ.get("E001_MACHINE", "local")
     state_sha = start_state_sha(cycle.snap_before[1]) if hasattr(cycle, "snap_before") else "0" * 64
-    summary = {"run_id": run_id, "status": cycle.status}
     if args.explore:
         out = locs.get("E001_EXPLORE", bundles)
-        out.mkdir(parents=True, exist_ok=True)
-        for name, path, _ in cycle.outputs:
-            shutil.copy(path, out / f"{args.arm}.{name}")
-        (out / f"{args.arm}.observations.json").write_text(json.dumps(cycle.obs, indent=1))
-        print(json.dumps(summary))
+        cycle.outputs = store_outputs(cycle, out, lambda name, _: f"{args.arm}.{name}", "replace")
+        try:
+            safeio.write_file(out, f"{args.arm}.observations.json", data=json.dumps(cycle.obs, indent=1).encode(),
+                              exist="replace", create_below=out.parent)
+        except (safeio.Refused, OSError) as exc:
+            cycle.abort_later(f"the observations were not stored: {exc}")
+        print(json.dumps({"run_id": run_id, "status": cycle.status}))
         return 0 if cycle.status == "completed" else 1
-    bundles.mkdir(parents=True, exist_ok=True)
+    repo = locations.real(ROOT)
+    names = {"runs": f"{run_id}.json", "evidence": f"{run_id}.manifest.json"}
+    taken = [f"{folder}/{EXPERIMENT}/{name}" for folder, name in names.items()
+             if os.path.lexists(repo / folder / EXPERIMENT / name)]
+    if taken:
+        print(f"no record written: {', '.join(taken)} already exist(s); records are never overwritten", file=sys.stderr)
+        return 1
+    try:                                              # both record folders are reachable, or nothing is written
+        for folder in names:
+            os.close(safeio.open_directory(repo / folder / EXPERIMENT, create_below=repo))
+    except (safeio.Refused, OSError) as exc:
+        print(f"no record written: {exc}", file=sys.stderr)
+        return 1
+    cycle.outputs = store_outputs(cycle, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
     manifest = build_manifest(cycle)
-    for entry, (name, path, _) in zip(manifest["files"], cycle.outputs):
-        shutil.copy(path, bundles / entry["asset"])
     record = build_record(cycle, commit, machine, state_sha)
-    (ROOT / "evidence" / EXPERIMENT).mkdir(parents=True, exist_ok=True)
-    (ROOT / "runs" / EXPERIMENT).mkdir(parents=True, exist_ok=True)
-    (ROOT / "evidence" / EXPERIMENT / f"{run_id}.manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    (ROOT / "runs" / EXPERIMENT / f"{run_id}.json").write_text(json.dumps(record, indent=2) + "\n")
-    print(json.dumps(summary))
+    try:
+        safeio.write_file(repo / "evidence" / EXPERIMENT, names["evidence"],
+                          data=(json.dumps(manifest, indent=2) + "\n").encode(), exist="new", create_below=repo)
+        safeio.write_file(repo / "runs" / EXPERIMENT, names["runs"],
+                          data=(json.dumps(record, indent=2) + "\n").encode(), exist="new", create_below=repo)
+    except (safeio.Refused, OSError) as exc:
+        print(f"no record written: {exc}", file=sys.stderr)
+        return 1
+    print(json.dumps({"run_id": run_id, "status": cycle.status}))
     return 0 if cycle.status == "completed" else 1
 
 
@@ -789,6 +920,9 @@ def outer(args):
     if strays:
         sys.exit(f"stale processes of an earlier run or of setup are alive: {sorted(set(strays))}; "
                  "stop them first (nothing was started)")
+    problems = prefixlib.prefix_problems(prefix, locs["IWP_DIR"])
+    if problems:
+        sys.exit("the prefix is not safe to launch from; nothing was started: " + "; ".join(problems)[:400])
     commit_out = run(["git", "rev-parse", "--short=12", "HEAD"], cwd=ROOT)
     dirty = run(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"], cwd=ROOT).stdout
     if dirty and not args.explore:

@@ -1,12 +1,10 @@
-"""Safety of the iwp-runtime profile and the E001 cycle, on synthetic fixtures only.
+"""Safety of the iwp-runtime profile and the E001 cycle, on synthetic fixtures only (iwp_fixtures.py).
 
 Every test builds its own install, prefix and checkout in a temporary directory outside any
-checkout. None reads or writes the real install (IWP_DIR) or the real prefix: the environment
-variables are replaced for the duration of each test and the registered manifest is replaced by a
-synthetic one. A rejection test also proves the "source" it protects is byte-for-byte unchanged.
+checkout. None reads or writes the real install (IWP_DIR) or the real prefix. A rejection test also
+proves the "source" it protects is byte-for-byte unchanged. The writer, the seal and the cycle's
+gates are in test_iwp_seal.py.
 """
-import hashlib
-import importlib.util
 import io
 import json
 import os
@@ -20,107 +18,9 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "setup" / "iwp"))
-
-
-def load(name, path):
-    spec = importlib.util.spec_from_file_location(name, ROOT / path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-import locations  # noqa: E402
-
-prefix = load("iwp_prefix_safety", "setup/iwp/prefix.py")
-token_check = load("iwp_token_check", "setup/iwp/token_check.py")
-tokens = load("iwp_tokens", "setup/iwp/tokens.py")
-cycle = load("iwp_cycle_safety", "runtime/iwp/spike/cycle.py")
-
-FILES = {"a.txt": b"alpha", "xtras/b.dat": b"beta"}
-UNLISTED = {"unlisted.bin": b"keep me", "unins000.exe": b"uninstaller"}
-
-
-def sha(data):
-    return hashlib.sha256(data).hexdigest()
-
-
-MANIFEST = {
-    "schema": "artifact-set/1", "id": "synthetic-1.0-00000000", "title": "synthetic", "version": "1.0",
-    "files": [{"path": p, "bytes": len(d), "sha256": sha(d)} for p, d in sorted(FILES.items())],
-    "runtime_writes": [],
-}
-
-
-def tree(base):
-    """{relative path: (kind, size or target, sha256)} of everything under base, links not followed."""
-    out = {}
-    for dirpath, dirnames, filenames in os.walk(base, followlinks=False):
-        for name in dirnames + filenames:
-            path = Path(dirpath) / name
-            rel = path.relative_to(base).as_posix()
-            if path.is_symlink():
-                out[rel] = ("l", os.readlink(path), "")
-            elif path.is_dir():
-                out[rel] = ("d", "", "")
-            else:
-                out[rel] = ("f", path.stat().st_size, sha(path.read_bytes()))
-    return out
-
-
-class World(unittest.TestCase):
-    """A synthetic install, a synthetic prefix, and a synthetic checkout, all in one temp dir."""
-
-    def setUp(self):
-        self._tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(self._tmp.cleanup)
-        self.tmp = Path(os.path.realpath(self._tmp.name))
-        self.assertIsNone(locations.checkout_of(self.tmp), "the temp dir must be outside any checkout")
-        self.install = self.tmp / "install"
-        for rel, data in {**FILES, **UNLISTED}.items():
-            self.write(self.install / rel, data)
-        self.prefix = self.tmp / "prefix"
-        (self.prefix / "drive_c" / "users" / "u").mkdir(parents=True)
-        (self.prefix / "dosdevices").mkdir()
-        (self.prefix / "system.reg").write_text("reg")
-        os.symlink("../drive_c", self.prefix / "dosdevices" / "c:")
-        self.checkout = self.tmp / "checkout"
-        (self.checkout / ".git").mkdir(parents=True)
-        self.bundles = self.tmp / "bundles"
-        patcher = mock.patch.dict(os.environ, {"IWP_PREFIX": str(self.prefix), "IWP_DIR": str(self.install),
-                                               "E001_BUNDLES": str(self.bundles)})
-        patcher.start()
-        self.addCleanup(patcher.stop)
-        for name in ("E001_EXPLORE",):
-            os.environ.pop(name, None)
-        manifest = mock.patch.object(prefix, "manifest", return_value=MANIFEST)
-        manifest.start()
-        self.addCleanup(manifest.stop)
-
-    @staticmethod
-    def write(path, data):
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(data)
-
-    def game_copy(self, files=None):
-        game = self.prefix / "drive_c" / "iwp"
-        for rel, data in (FILES if files is None else files).items():
-            self.write(game / rel, data)
-        return game
-
-    def call(self, function):
-        out = io.StringIO()
-        with redirect_stdout(out), redirect_stderr(io.StringIO()):
-            return function(), out.getvalue()
-
-    def refused(self, function):
-        out = io.StringIO()
-        with redirect_stdout(out), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
-            function()
-        return str(caught.exception.code), out.getvalue()
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from iwp_fixtures import (MANIFEST, ROOT, World, cycle, locations, prefix, sha, token_check,  # noqa: E402,F401
+                          tokens, tree)
 
 
 class LocationsTest(World):
@@ -150,6 +50,13 @@ class LocationsTest(World):
         worktree = self.tmp / "worktree"
         worktree.mkdir()
         (worktree / ".git").write_text("gitdir: elsewhere")
+        with self.assertRaises(SystemExit):
+            locations.locations(self.env(IWP_PREFIX=str(worktree / "p")), need_prefix=True, need_bundles=True)
+
+    def test_a_git_marker_that_is_a_dangling_link_counts_as_a_checkout(self):
+        worktree = self.tmp / "worktree"
+        worktree.mkdir()
+        os.symlink(self.tmp / "gone", worktree / ".git")
         with self.assertRaises(SystemExit):
             locations.locations(self.env(IWP_PREFIX=str(worktree / "p")), need_prefix=True, need_bundles=True)
 
@@ -726,8 +633,9 @@ class NetworkContractTest(World):
             raise Stop
 
         run_cycle = self.make_cycle()
-        (self.prefix / "drive_c" / "iwp").mkdir(parents=True)
-        with mock.patch.object(cycle.subprocess, "Popen", fake_popen), self.assertRaises(Stop):
+        self.game_copy()                       # a valid copy: launch seals the prefix before it starts the game
+        with mock.patch.object(cycle.subprocess, "Popen", fake_popen), self.assertRaises(Stop), \
+                redirect_stdout(io.StringIO()):
             run_cycle.launch()
         self.assertEqual(seen[0][:2], ["unshare", "-n"])
 
@@ -736,7 +644,7 @@ class NetworkContractTest(World):
             pass
 
         run_cycle = self.make_cycle()
-        (self.prefix / "drive_c" / "iwp").mkdir(parents=True)
+        self.game_copy()
         with mock.patch.object(cycle.subprocess, "Popen", return_value=mock.MagicMock()), \
                 mock.patch.object(cycle, "poll", lambda *a, **k: None), \
                 mock.patch.object(run_cycle, "verify_isolation", side_effect=Stop), redirect_stdout(io.StringIO()):
@@ -762,7 +670,7 @@ class NetworkContractTest(World):
     def test_isolation_is_recorded_only_when_it_was_seen(self):
         ok = self.verify(123, "net:[1]", "net:[2]", ["lo"])
         self.assertTrue(self.yes_observed(ok))
-        self.assertEqual(ok.status, "completed")
+        self.assertEqual(ok.status, "running")    # not aborted; only complete() makes a run "completed"
 
     def test_no_game_process_found_aborts_and_records_no_isolation(self):
         bad = self.verify(None, "net:[1]", "net:[2]", ["lo"])
@@ -829,12 +737,14 @@ class StartStateTest(World):
             self_.status, self_.started, self_.ended = "completed", "2026-10-03T00:00:00Z", "2026-10-03T00:00:01Z"
             self_.snap_before = ({}, before_tree, {"user.reg: Software\\Wine\\A": "same-key-name-hash"})
 
-        env = {"IWP_CYCLE_ID": "E001-r9998", "IWP_CYCLE_REP": "1", "IWP_CYCLE_COMMIT": "abcdef123456"}
+        self.runs = getattr(self, "runs", 0) + 1         # records are never overwritten: one id per call
+        run_id = f"E001-r{9900 + self.runs}"
+        env = {"IWP_CYCLE_ID": run_id, "IWP_CYCLE_REP": "1", "IWP_CYCLE_COMMIT": "abcdef123456"}
         with mock.patch.dict(os.environ, env), mock.patch.object(cycle, "run"), \
                 mock.patch.object(cycle, "ROOT", record_root), mock.patch.object(cycle, "versions", return_value={}), \
                 mock.patch.object(cycle.Cycle, "execute", fake_execute), redirect_stdout(io.StringIO()):
-            cycle.inner(cycle.parser().parse_args([]))
-        return json.loads((record_root / "runs" / "E001" / "E001-r9998.json").read_text())["start_state"]["sha256"]
+            self.assertEqual(cycle.inner(cycle.parser().parse_args([])), 0)
+        return json.loads((record_root / "runs" / "E001" / f"{run_id}.json").read_text())["start_state"]["sha256"]
 
     def test_inner_writes_a_hash_that_depends_on_the_registry_values(self):
         first = self.inner_hash(self.base())

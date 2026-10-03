@@ -30,7 +30,7 @@ def checkout_of(path):
     """The nearest ancestor of a canonical path that holds a `.git` entry, or None."""
     path = Path(path)
     for candidate in (path, *path.parents):
-        if (candidate / ".git").exists():
+        if os.path.lexists(candidate / ".git"):     # a dangling .git link marks a checkout too
             return candidate
     return None
 
