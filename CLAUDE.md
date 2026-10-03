@@ -61,6 +61,9 @@ indexed in `docs/tasks/README.md`.
    This was the owner's decision on 2026-10-02. It overrides the family rule in the harness copies
    (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
    pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
+
+   The working strategy, how runs are made, the adjustments and what each model has shown are in
+   `docs/models.md`; the main session keeps it current.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing
