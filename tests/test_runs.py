@@ -126,6 +126,10 @@ class RunRecordsTest(unittest.TestCase):
             wrong.parent.mkdir()
             shutil.copy(valid, wrong)
             self.assertTrue(run_record_errors(wrong, known))
+            renamed = Path(tmp) / "E002" / "E002-r0002.json"
+            shutil.copy(valid, renamed)
+            self.assertTrue(any("file name" in e for e in run_record_errors(renamed, known)),
+                            "a record whose run_id is not its file name must fail")
             self.assertTrue(run_record_errors(good, set()), "an unregistered set must fail")
 
     def test_an_invalid_manifest_example_copied_into_evidence_fails(self):
