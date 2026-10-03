@@ -1,0 +1,200 @@
+{
+  "schema": "run/1",
+  "run_id": "E001-r0013",
+  "experiment": "E001",
+  "arm": "size-640x480x16",
+  "rep": 1,
+  "code_commit": "1c184cb8df45",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/spike/cycle.py@1c184cb8df45",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "unknown",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "none"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "ecd10df725ca728ec8b9b741f6d49039d68377398fc2df3faf06c6776ff47a9d",
+    "restore": "fresh private user, mount and PID namespaces; game copy verified against the set before launch; prefix as left by setup/iwp/iwp-runtime.sh"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/spike/cycle.py",
+    "sha256": "d373d2c0588a4ad33c476b959a7bd379d35b794ba1dbf6a9d4ec74487064a46f",
+    "args": [
+      "--arm",
+      "size-640x480x16",
+      "--size",
+      "640x480x16"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "file",
+      "field": "game copy checked against the registered set",
+      "value": "exit 0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "game copy files outside the set",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.11"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "640x480x16"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.12"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "0,0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.85"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 640x480"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "known-screen-timeout.png raw RGB8 pixels sha256",
+      "value": "b8960ffe39ff4193c40d1162d7b1d68cc6307fd284e67e1157a01f44c6ec1e7c"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "Quit label changed under the pointer (s)",
+      "value": "no change within 5 s"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game exit after ui-quit (s)",
+      "value": "still running"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "terminate-stuck.png raw RGB8 pixels sha256",
+      "value": "b8960ffe39ff4193c40d1162d7b1d68cc6307fd284e67e1157a01f44c6ec1e7c"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "1"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wine processes gone after terminate (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "31/0/2"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/8"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "known-screen-timeout.png",
+      "sha256": "86836026f00bac9506773757369ee9cbe00dfe1c6fa6d5ea49baed6971a1d404",
+      "store": "release:E001"
+    },
+    {
+      "name": "terminate-stuck.png",
+      "sha256": "86836026f00bac9506773757369ee9cbe00dfe1c6fa6d5ea49baed6971a1d404",
+      "store": "release:E001"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "54c033c580999c6f2957833b5b5b76238b5a4f9af9477adec4977af0bd4a1946",
+      "store": "release:E001"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "store": "release:E001"
+    },
+    {
+      "name": "run.log",
+      "sha256": "2341ed9ba24415463792441920b4985b488fdd11edc1584c7139af803db0edd6",
+      "store": "release:E001"
+    }
+  ],
+  "started": "2026-10-03T18:53:17Z",
+  "ended": "2026-10-03T18:55:25Z",
+  "status": "aborted: the title screen's subtitle never appeared within 45 s"
+}

@@ -4,18 +4,18 @@
   "experiment": "E001",
   "arm": "control",
   "rep": 1,
-  "code_commit": "2f5eaae5d947",
+  "code_commit": "1c184cb8df45",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@2f5eaae5d947",
+    "driver": "runtime/iwp/spike/cycle.py@1c184cb8df45",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
-      "xvfb": "unknown",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
       "xfwm4": "unknown",
       "xdotool": "3.20160805.1",
       "imagemagick": "6.9.12-98",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "f015f97dd792c7b613df85e356b3fe4864601b8b0b8a30a692e82c445db5a706",
+    "sha256": "d373d2c0588a4ad33c476b959a7bd379d35b794ba1dbf6a9d4ec74487064a46f",
     "args": []
   },
   "observations": [
@@ -81,7 +81,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.85"
+      "value": "0.95"
     },
     {
       "step": 1,
@@ -111,7 +111,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.62"
+      "value": "6.78"
     },
     {
       "step": 3,
@@ -165,7 +165,7 @@
       "step": 9,
       "source": "process",
       "field": "game exit after ui-quit (s)",
-      "value": "14.83"
+      "value": "14.79"
     },
     {
       "step": 9,
@@ -238,11 +238,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "a915705dcf8f51d98449ef912b0bcaae3b5dcff69daead4d760d1d96334da095",
+      "sha256": "ac3ebbc84b074685ff20a6ce6961c6c123147d71589e4f59db4971cd4e2b9021",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T18:43:42Z",
-  "ended": "2026-10-03T18:44:14Z",
+  "started": "2026-10-03T18:46:20Z",
+  "ended": "2026-10-03T18:46:52Z",
   "status": "completed"
 }

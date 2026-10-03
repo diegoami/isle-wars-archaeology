@@ -3,19 +3,19 @@
   "run_id": "E001-r0003",
   "experiment": "E001",
   "arm": "control",
-  "rep": 1,
-  "code_commit": "2f5eaae5d947",
+  "rep": 3,
+  "code_commit": "1c184cb8df45",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@2f5eaae5d947",
+    "driver": "runtime/iwp/spike/cycle.py@1c184cb8df45",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
-      "xvfb": "unknown",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
       "xfwm4": "unknown",
       "xdotool": "3.20160805.1",
       "imagemagick": "6.9.12-98",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "f015f97dd792c7b613df85e356b3fe4864601b8b0b8a30a692e82c445db5a706",
+    "sha256": "d373d2c0588a4ad33c476b959a7bd379d35b794ba1dbf6a9d4ec74487064a46f",
     "args": []
   },
   "observations": [
@@ -81,7 +81,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.96"
+      "value": "0.85"
     },
     {
       "step": 1,
@@ -111,7 +111,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.75"
+      "value": "6.76"
     },
     {
       "step": 3,
@@ -123,7 +123,7 @@
       "step": 4,
       "source": "screen",
       "field": "Options label changed under the pointer (s)",
-      "value": "0.07"
+      "value": "0.08"
     },
     {
       "step": 5,
@@ -165,7 +165,7 @@
       "step": 9,
       "source": "process",
       "field": "game exit after ui-quit (s)",
-      "value": "14.85"
+      "value": "14.8"
     },
     {
       "step": 9,
@@ -177,7 +177,7 @@
       "step": 9,
       "source": "process",
       "field": "wine processes gone after terminate (s)",
-      "value": "2.04"
+      "value": "2.14"
     },
     {
       "step": 10,
@@ -238,11 +238,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "30ecbdeb20ac660ef8669fb09cf4033d66d489f187d04a767e5f80e86fa70ee6",
+      "sha256": "23f4f0b48bd8c7fce6642b46d839fca2b91f4fadb5396b773803f6d110418495",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T18:44:45Z",
-  "ended": "2026-10-03T18:45:17Z",
+  "started": "2026-10-03T18:47:25Z",
+  "ended": "2026-10-03T18:47:57Z",
   "status": "completed"
 }

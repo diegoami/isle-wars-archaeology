@@ -10,6 +10,8 @@ import sys
 import tempfile
 import unittest
 import zlib
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -134,7 +136,8 @@ class PrefixTest(unittest.TestCase):
             os.environ["IWP_PREFIX"] = str(pfx)
             try:
                 self.assertEqual(len(prefix.absolute_links(pfx)), 3)
-                prefix.strip_links()
+                with redirect_stdout(StringIO()):
+                    prefix.strip_links()
                 self.assertEqual(sorted(p.name for p in (pfx / "dosdevices").iterdir()), ["c:"])
                 desktop = pfx / "drive_c" / "users" / "u" / "Desktop"
                 self.assertTrue(desktop.is_dir() and not desktop.is_symlink())
@@ -147,8 +150,6 @@ class PrefixTest(unittest.TestCase):
             pfx = self.make_prefix(tmp)
             os.environ["IWP_PREFIX"] = str(pfx)
             try:
-                from io import StringIO
-                from contextlib import redirect_stdout
                 out = StringIO()
                 with redirect_stdout(out):
                     code = prefix.check()
