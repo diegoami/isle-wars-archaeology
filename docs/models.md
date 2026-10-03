@@ -179,6 +179,19 @@ These are observations, each with its source. The trials issues hold the full re
   - In the last round it re-ran every Done-when line inside the image.
   - Patching evasion by evasion did not converge against it. Changing the strategy to golden
     screenshots did.
+- **GPT-6.1 Sol** (hard reviewer; first real run on T08, 2026-10-03, about 8 min):
+  - It reviewed the W3a runtime spike as an adversary. It asked for rework, with six blocking
+    findings, each proven with a synthetic reproduction that never touched the install:
+    - prefix and bundle locations were not confined to outside a checkout;
+    - a symlinked game folder made the sync step delete files from the install;
+    - relative links escaped the prefix, and the check still passed;
+    - N0 was optional, and an isolation observation could be false;
+    - the start-state hash left out registry values;
+    - two safety checks could be deleted with all 53 tests still green.
+  - These are the classes the hard tier exists for. The Sonnet implementer's own mutation checks
+    had missed every one of them.
+  - It stated the tier it reached honestly: V0, with no access to the install. It verified the
+    vendored bytes against the pinned commit itself.
 - **GLM-5.3, as a calibration reviewer** (T02's round-0 tree, a dry run):
   - It approved, missing Luna's blocking R1.
   - But it found two real gaps that Luna did not report.
