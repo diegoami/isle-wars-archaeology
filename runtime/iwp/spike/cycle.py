@@ -612,8 +612,8 @@ def versions():
         return match.group(1) if match else "unknown"
     return {
         "wine": first([WINE, "--version"], r"(wine-[^\n]+)"),
-        "xvfb": first(["Xvfb", "-version"], r"X Protocol Version \S+, Revision \S+|(\d+\.\d+\.\d+)"),
-        "xfwm4": first(["xfwm4", "--version"], r"(\d+\.\d+\.\d+)"),
+        "xvfb": first(["dpkg-query", "-W", "-f=${Version}", "xvfb"], r"(.+)"),
+        "xfwm4": first(["xfwm4", "--version"], r"xfwm4 version (\d+\.\d+\.\d+)"),
         "xdotool": first(["xdotool", "--version"], r"(\d+\.\d+\.\d+)"),
         "imagemagick": first(["import", "-version"], r"ImageMagick (\S+)"),
         "python": ".".join(map(str, sys.version_info[:3])),
@@ -641,7 +641,7 @@ def build_record(cycle, commit, machine, state_sha):
         "run_id": cycle.run_id,
         "experiment": EXPERIMENT,
         "arm": args.arm,
-        "rep": args.rep,
+        "rep": int(os.environ["IWP_CYCLE_REP"]),
         "code_commit": commit,
         "machine": machine,
         "artifact": {"set": record_set(args), "variant": None},
@@ -685,7 +685,7 @@ def build_manifest(cycle):
 def parser():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--arm", default="control")
-    ap.add_argument("--rep", type=int, default=1)
+    ap.add_argument("--rep", type=int, default=None, help="default: one more than the records of this arm")
     ap.add_argument("--size", default="800x600x24")
     ap.add_argument("--wm", choices=["xfwm4", "none"], default="xfwm4")
     ap.add_argument("--audio", choices=["off", "default"], default="off")
@@ -750,7 +750,9 @@ def outer(args):
     if dirty and not args.explore:
         sys.exit("runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run")
     run_id = next_run_id() if not args.explore else f"{EXPERIMENT}-x{os.getpid()}"
-    env = dict(os.environ, IWP_CYCLE_ID=run_id, IWP_CYCLE_COMMIT=commit_out.stdout.decode().strip(),
+    rep = args.rep or 1 + sum(
+        1 for p in (ROOT / "runs" / EXPERIMENT).glob("*.json") if json.loads(p.read_text()).get("arm") == args.arm)
+    env = dict(os.environ, IWP_CYCLE_ID=run_id, IWP_CYCLE_REP=str(rep), IWP_CYCLE_COMMIT=commit_out.stdout.decode().strip(),
                IWP_CYCLE_INNER="1")
     cmd = ["unshare", "-r", "-m", "-p", "-f", "--kill-child", "--mount-proc",
            sys.executable, str(SCRIPT)] + sys.argv[1:]
