@@ -28,3 +28,5 @@ dosbox-mount/
 # Python bytecode
 __pycache__/
 *.pyc
+# game-archaeologist's research protocol (T06, A6): the researcher block stops unless scratch/ is ignored.
+scratch/
