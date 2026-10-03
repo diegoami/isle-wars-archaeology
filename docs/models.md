@@ -86,6 +86,25 @@ other role's OpenCode model, keep the families apart.
 | Research, or anything that reads the user's install | **Sonnet** (`task-agent`, worktree isolation) | by difficulty, on the repository side | OpenCode cannot reach outside its worktree (L26). The main session runs the `[C3]` lines and posts their output on the PR. If no OpenCode reviewer is available, the Claude fallback would be the implementer's family: escalate | T03, T04; T08 (hard: GPT-6.1 Sol) |
 | Cloud sessions | Sonnet | Opus | only Claude runs there, so the same family is forced, and the task file says so | T05 (planned for the cloud; it ran locally) |
 
+**Escalation after a heavy review** (the owner, 2026-10-03). When a review shows that the
+implementer is out of its depth, the next round goes to a stronger implementer. The task does not
+spend its last round on the same model.
+
+- **When.** Either of these:
+  - a review asks for rework with three or more blocking findings;
+  - a rework round brings new blocking findings of the same class as the last round's.
+- **The steps.** GLM-5.3 Flash → DeepSeek V4.1 Flash → Opus, and Sonnet → Opus. An escalated
+  implementer is always Claude Opus at the top, so the reviewer stays OpenAI. If that reviewer is
+  unavailable, the Claude fallback would be the implementer's family: escalate to the owner.
+- **The rounds.** The count does not reset: two rework rounds, then the owner (rule 7).
+- **The hand-over.** The new implementer gets the task file, every review so far, and the previous
+  implementer's unpushed work as a patch to weigh, never to apply blindly. It starts from the pushed
+  branch.
+- **First use: T08, round 2.**
+  - GPT-6.1 Sol found 6 blocking findings at round 0 and 5 new ones at round 1.
+  - Both rounds were the same class: an alias or a side path at the moment of a write or a launch.
+  - Sonnet was stopped mid-round, and Opus took the branch.
+
 **Watch:** L27 records GLM-5.3 Flash stalling, and ending long implementer runs early, in IC2.
 It ran malpaco T02's round 2 cleanly. Its first runs as the easy default are watched, and a stall
 is diagnosed before any fallback (rule 21).

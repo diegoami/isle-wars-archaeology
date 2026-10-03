@@ -53,6 +53,14 @@ indexed in `docs/tasks/README.md`.
      escalate.
    - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
      Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
+   - **Escalation after a heavy review** (the owner, 2026-10-03). The implementer moves up one step
+     for the next round when either holds:
+     - a review asks for rework with three or more blocking findings;
+     - a rework round brings new blocking findings of the class the last round raised.
+
+     The steps are GLM-5.3 Flash → DeepSeek V4.1 Flash → Opus, and Sonnet → Opus. The round count
+     does not reset (rule 7). The new implementer gets the task file, every review so far, and the
+     previous implementer's unpushed work as a patch to weigh, never to apply blindly.
    - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
      family is forced. On 2026-10-03, `isolation: "remote"` silently ran T05's agents locally. A
      cloud brief therefore starts by checking the hostname and that `/mnt/c` is absent, and stops
