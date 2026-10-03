@@ -4,19 +4,19 @@
   "experiment": "E001",
   "arm": "size-800x600x16",
   "rep": 1,
-  "code_commit": "7487f3e8a3ca",
+  "code_commit": "37b6e8fadfb7",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@7487f3e8a3ca",
+    "driver": "runtime/iwp/spike/cycle.py@37b6e8fadfb7",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
       "xvfb": "2:21.1.12-1ubuntu1.8",
-      "xfwm4": "unknown",
+      "xfwm4": "4.18.0-1build3",
       "xdotool": "3.20160805.1",
       "imagemagick": "6.9.12-98",
       "python": "3.12.3",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "46c0734cdc0594b93fa98893dcbe58a741b6c8a5ebbaabb39173fe6b9d890a53",
+    "sha256": "cd7a6bd93b6c081095fb9765db0b9139fe729f48a4af57c35c2694f185df80a3",
     "args": [
       "--arm",
       "size-800x600x16",
@@ -62,7 +62,7 @@
       "step": 0,
       "source": "process",
       "field": "xvfb ready (s)",
-      "value": "0.11"
+      "value": "0.1"
     },
     {
       "step": 0,
@@ -86,7 +86,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.85"
+      "value": "0.84"
     },
     {
       "step": 1,
@@ -116,7 +116,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.61"
+      "value": "6.64"
     },
     {
       "step": 3,
@@ -128,7 +128,7 @@
       "step": 4,
       "source": "screen",
       "field": "Options label changed under the pointer (s)",
-      "value": "0.07"
+      "value": "0.01"
     },
     {
       "step": 5,
@@ -170,7 +170,7 @@
       "step": 9,
       "source": "process",
       "field": "game exit after ui-quit (s)",
-      "value": "14.84"
+      "value": "14.8"
     },
     {
       "step": 9,
@@ -182,7 +182,7 @@
       "step": 9,
       "source": "process",
       "field": "wine processes gone after terminate (s)",
-      "value": "2.03"
+      "value": "2.09"
     },
     {
       "step": 10,
@@ -243,11 +243,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "aad7303503dcf69c8c60d9d23cae5c68d99df5396128ce1137572eef2697d6ce",
+      "sha256": "78a098d1e6f38b0b9c9d65fe1c14cdb541f47aa1939bba0008b4f0cd41295fbb",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T19:03:51Z",
-  "ended": "2026-10-03T19:04:23Z",
+  "started": "2026-10-03T19:14:35Z",
+  "ended": "2026-10-03T19:15:07Z",
   "status": "completed"
 }

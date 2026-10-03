@@ -4,19 +4,19 @@
   "experiment": "E001",
   "arm": "size-1280x1024x24",
   "rep": 1,
-  "code_commit": "7487f3e8a3ca",
+  "code_commit": "37b6e8fadfb7",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@7487f3e8a3ca",
+    "driver": "runtime/iwp/spike/cycle.py@37b6e8fadfb7",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
       "xvfb": "2:21.1.12-1ubuntu1.8",
-      "xfwm4": "unknown",
+      "xfwm4": "4.18.0-1build3",
       "xdotool": "3.20160805.1",
       "imagemagick": "6.9.12-98",
       "python": "3.12.3",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "46c0734cdc0594b93fa98893dcbe58a741b6c8a5ebbaabb39173fe6b9d890a53",
+    "sha256": "cd7a6bd93b6c081095fb9765db0b9139fe729f48a4af57c35c2694f185df80a3",
     "args": [
       "--arm",
       "size-1280x1024x24",
@@ -62,7 +62,7 @@
       "step": 0,
       "source": "process",
       "field": "xvfb ready (s)",
-      "value": "0.11"
+      "value": "0.1"
     },
     {
       "step": 0,
@@ -86,7 +86,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.85"
+      "value": "1.17"
     },
     {
       "step": 1,
@@ -116,7 +116,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.87"
+      "value": "7.15"
     },
     {
       "step": 3,
@@ -128,13 +128,13 @@
       "step": 4,
       "source": "screen",
       "field": "Options label changed under the pointer (s)",
-      "value": "0.1"
+      "value": "0.09"
     },
     {
       "step": 5,
       "source": "screen",
       "field": "Options screen after click (s)",
-      "value": "0.03"
+      "value": "0.02"
     },
     {
       "step": 6,
@@ -146,13 +146,13 @@
       "step": 7,
       "source": "screen",
       "field": "Return button changed under the pointer (s)",
-      "value": "0.1"
+      "value": "0.09"
     },
     {
       "step": 7,
       "source": "screen",
       "field": "Quit label changed under the pointer (s)",
-      "value": "0.1"
+      "value": "0.09"
     },
     {
       "step": 8,
@@ -182,7 +182,7 @@
       "step": 9,
       "source": "process",
       "field": "wine processes gone after terminate (s)",
-      "value": "2.04"
+      "value": "2.1"
     },
     {
       "step": 10,
@@ -243,11 +243,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "c697581ebcd69c2a2a5660bf11f79e5735e0269ec04e100e499bb2ebdcdb3f86",
+      "sha256": "f59d83b15cdd198a4069d5c101506fd08afec662855cca92fef7670c43caa54c",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T19:04:56Z",
-  "ended": "2026-10-03T19:05:28Z",
+  "started": "2026-10-03T19:15:40Z",
+  "ended": "2026-10-03T19:16:12Z",
   "status": "completed"
 }

@@ -4,19 +4,19 @@
   "experiment": "E001",
   "arm": "size-640x480x16",
   "rep": 1,
-  "code_commit": "7487f3e8a3ca",
+  "code_commit": "37b6e8fadfb7",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@7487f3e8a3ca",
+    "driver": "runtime/iwp/spike/cycle.py@37b6e8fadfb7",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
       "xvfb": "2:21.1.12-1ubuntu1.8",
-      "xfwm4": "unknown",
+      "xfwm4": "4.18.0-1build3",
       "xdotool": "3.20160805.1",
       "imagemagick": "6.9.12-98",
       "python": "3.12.3",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "46c0734cdc0594b93fa98893dcbe58a741b6c8a5ebbaabb39173fe6b9d890a53",
+    "sha256": "cd7a6bd93b6c081095fb9765db0b9139fe729f48a4af57c35c2694f185df80a3",
     "args": [
       "--arm",
       "size-640x480x16",
@@ -74,7 +74,7 @@
       "step": 0,
       "source": "process",
       "field": "xfwm4 registered (s)",
-      "value": "0.12"
+      "value": "0.11"
     },
     {
       "step": 1,
@@ -86,7 +86,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.95"
+      "value": "0.86"
     },
     {
       "step": 1,
@@ -190,11 +190,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "3e545c6061a62883e6185e402352c033f3267d03737e4956b922ce6519a5d76f",
+      "sha256": "3f17836a48a07257e9c842121be3778b583cdff61539332d5d3c88a75ef10b2c",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T19:05:29Z",
-  "ended": "2026-10-03T19:07:36Z",
+  "started": "2026-10-03T19:16:13Z",
+  "ended": "2026-10-03T19:18:21Z",
   "status": "aborted: the title screen's subtitle never appeared within 45 s"
 }
