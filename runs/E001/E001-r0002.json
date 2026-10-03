@@ -4,14 +4,14 @@
   "experiment": "E001",
   "arm": "control",
   "rep": 2,
-  "code_commit": "1c184cb8df45",
+  "code_commit": "7487f3e8a3ca",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@1c184cb8df45",
+    "driver": "runtime/iwp/spike/cycle.py@7487f3e8a3ca",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "d373d2c0588a4ad33c476b959a7bd379d35b794ba1dbf6a9d4ec74487064a46f",
+    "sha256": "46c0734cdc0594b93fa98893dcbe58a741b6c8a5ebbaabb39173fe6b9d890a53",
     "args": []
   },
   "observations": [
@@ -69,7 +69,7 @@
       "step": 0,
       "source": "process",
       "field": "xfwm4 registered (s)",
-      "value": "0.12"
+      "value": "0.11"
     },
     {
       "step": 1,
@@ -81,7 +81,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.95"
+      "value": "0.85"
     },
     {
       "step": 1,
@@ -111,7 +111,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.78"
+      "value": "6.66"
     },
     {
       "step": 3,
@@ -165,7 +165,7 @@
       "step": 9,
       "source": "process",
       "field": "game exit after ui-quit (s)",
-      "value": "14.84"
+      "value": "14.78"
     },
     {
       "step": 9,
@@ -177,7 +177,7 @@
       "step": 9,
       "source": "process",
       "field": "wine processes gone after terminate (s)",
-      "value": "2.09"
+      "value": "2.18"
     },
     {
       "step": 10,
@@ -238,11 +238,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "8dd48908a25f253b8b8388855264dddc07cdc74fc4c950c649711288efa83668",
+      "sha256": "8153a2ffe84b01b8ef468f3c9721818d037dbed214c2362a42f46d119e1b5069",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T18:46:53Z",
-  "ended": "2026-10-03T18:47:25Z",
+  "started": "2026-10-03T18:59:03Z",
+  "ended": "2026-10-03T18:59:35Z",
   "status": "completed"
 }

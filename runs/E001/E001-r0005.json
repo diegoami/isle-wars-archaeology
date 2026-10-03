@@ -4,14 +4,14 @@
   "experiment": "E001",
   "arm": "audio-default",
   "rep": 1,
-  "code_commit": "1c184cb8df45",
+  "code_commit": "7487f3e8a3ca",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@1c184cb8df45",
+    "driver": "runtime/iwp/spike/cycle.py@7487f3e8a3ca",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "d373d2c0588a4ad33c476b959a7bd379d35b794ba1dbf6a9d4ec74487064a46f",
+    "sha256": "46c0734cdc0594b93fa98893dcbe58a741b6c8a5ebbaabb39173fe6b9d890a53",
     "args": [
       "--arm",
       "audio-default",
@@ -62,7 +62,7 @@
       "step": 0,
       "source": "process",
       "field": "xvfb ready (s)",
-      "value": "0.11"
+      "value": "0.1"
     },
     {
       "step": 0,
@@ -86,7 +86,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.96"
+      "value": "1.28"
     },
     {
       "step": 1,
@@ -116,7 +116,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.73"
+      "value": "7.26"
     },
     {
       "step": 3,
@@ -146,7 +146,7 @@
       "step": 7,
       "source": "screen",
       "field": "Return button changed under the pointer (s)",
-      "value": "0.07"
+      "value": "0.08"
     },
     {
       "step": 7,
@@ -170,7 +170,7 @@
       "step": 9,
       "source": "process",
       "field": "game exit after ui-quit (s)",
-      "value": "14.79"
+      "value": "14.98"
     },
     {
       "step": 9,
@@ -182,7 +182,7 @@
       "step": 9,
       "source": "process",
       "field": "wine processes gone after terminate (s)",
-      "value": "2.11"
+      "value": "2.1"
     },
     {
       "step": 10,
@@ -233,7 +233,7 @@
     },
     {
       "name": "changes.log",
-      "sha256": "d1a744c334b4ba71e63a6f4d70d4396ec9328809180c3732c007eca1633f9766",
+      "sha256": "c745b23a77b42c7baeb6964e32d1393a61e9ab04a92a18f0f447c5bd8f999533",
       "store": "release:E001"
     },
     {
@@ -243,11 +243,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "8d831efc644267e8fc74efdf3e6f925d76fbb66052c381cb7d6cd41c0bfe58aa",
+      "sha256": "30145d4596bbf42ba86ae3cd320355ab734a2408e1af81bf13d4553b5c29fde6",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T18:48:31Z",
-  "ended": "2026-10-03T18:49:03Z",
+  "started": "2026-10-03T19:00:41Z",
+  "ended": "2026-10-03T19:01:14Z",
   "status": "completed"
 }

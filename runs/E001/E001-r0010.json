@@ -4,14 +4,14 @@
   "experiment": "E001",
   "arm": "size-800x600x16",
   "rep": 1,
-  "code_commit": "1c184cb8df45",
+  "code_commit": "7487f3e8a3ca",
   "machine": "local",
   "artifact": {
     "set": "iwp-2.0-996e86c5",
     "variant": null
   },
   "runtime": {
-    "driver": "runtime/iwp/spike/cycle.py@1c184cb8df45",
+    "driver": "runtime/iwp/spike/cycle.py@7487f3e8a3ca",
     "platform": "linux-wsl2/wine-xvfb-xfwm4",
     "fingerprint": {
       "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
@@ -37,7 +37,7 @@
   "seed": null,
   "actions": {
     "script": "runtime/iwp/spike/cycle.py",
-    "sha256": "d373d2c0588a4ad33c476b959a7bd379d35b794ba1dbf6a9d4ec74487064a46f",
+    "sha256": "46c0734cdc0594b93fa98893dcbe58a741b6c8a5ebbaabb39173fe6b9d890a53",
     "args": [
       "--arm",
       "size-800x600x16",
@@ -86,7 +86,7 @@
       "step": 1,
       "source": "process",
       "field": "Islepro window after launch (s)",
-      "value": "0.84"
+      "value": "0.85"
     },
     {
       "step": 1,
@@ -116,7 +116,7 @@
       "step": 2,
       "source": "screen",
       "field": "title screen reached and stable, seconds after launch",
-      "value": "6.67"
+      "value": "6.61"
     },
     {
       "step": 3,
@@ -170,7 +170,7 @@
       "step": 9,
       "source": "process",
       "field": "game exit after ui-quit (s)",
-      "value": "14.83"
+      "value": "14.84"
     },
     {
       "step": 9,
@@ -182,7 +182,7 @@
       "step": 9,
       "source": "process",
       "field": "wine processes gone after terminate (s)",
-      "value": "2.07"
+      "value": "2.03"
     },
     {
       "step": 10,
@@ -243,11 +243,11 @@
     },
     {
       "name": "run.log",
-      "sha256": "49cb029ade3d7c2bce324bedc1940c13b4179d6cb87d04238fecbbb02a97d4f3",
+      "sha256": "aad7303503dcf69c8c60d9d23cae5c68d99df5396128ce1137572eef2697d6ce",
       "store": "release:E001"
     }
   ],
-  "started": "2026-10-03T18:51:40Z",
-  "ended": "2026-10-03T18:52:12Z",
+  "started": "2026-10-03T19:03:51Z",
+  "ended": "2026-10-03T19:04:23Z",
   "status": "completed"
 }

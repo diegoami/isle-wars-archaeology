@@ -610,7 +610,7 @@ def versions():
     return {
         "wine": first([WINE, "--version"], r"(wine-[^\n]+)"),
         "xvfb": first(["dpkg-query", "-W", "-f=${Version}", "xvfb"], r"(.+)"),
-        "xfwm4": first(["xfwm4", "--version"], r"xfwm4 version (\d+\.\d+\.\d+)"),
+        "xfwm4": first(["dpkg-query", "-W", "-f=${Version}", "xfwm4"], r"(.+)"),
         "xdotool": first(["xdotool", "--version"], r"(\d+\.\d+\.\d+)"),
         "imagemagick": first(["import", "-version"], r"ImageMagick (\S+)"),
         "python": ".".join(map(str, sys.version_info[:3])),
