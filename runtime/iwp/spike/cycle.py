@@ -2,9 +2,11 @@
 """E001 cycle: launch Isle Wars Pro under Wine, reach a known screen, give one input, observe,
 terminate, reset, and write one run/1 record (W3a spike; the reusable driver is W5a).
 
-One run is: cold state check, Xvfb, xfwm4, snapshot, launch, window, known screen, before
-screenshot, one input, after screenshot, terminate, snapshot, diff, record. Everything but the
-record and the bundles happens inside a private user, mount and PID namespace (``unshare -rmpf``):
+One run is: the install bound read-only, the prefix sealed, Xvfb, xfwm4, snapshot, the prefix sealed
+again, launch, window, known screen, before screenshot, one input, after screenshot, terminate,
+snapshot, diff, reset, record. Only complete() marks a run completed; any other way out is recorded
+as aborted. Every file is written through setup/iwp/safeio.py. Everything but the record and the
+bundles happens inside a private user, mount and PID namespace (``unshare -rmpf``):
 
 * a private /tmp, because the WSLg /tmp/.X11-unix is read-only and Xvfb could then only listen on
   the abstract socket, which a game inside its own network namespace cannot reach;

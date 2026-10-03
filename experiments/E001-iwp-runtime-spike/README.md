@@ -48,3 +48,13 @@ Three statements above are superseded. Read them as follows.
 - **Which runs count.** E001-r0001 to r0014 were produced by the driver as it was before the rework. They stay in `runs/E001/`, immutable. E001-r0015 to r0027 repeat the `control` arm 3 times and every other arm once (except `net-host`) with the reworked driver, from a prefix rebuilt by `setup/iwp/iwp-runtime.sh`; F002 cites them.
 
 Also changed by the rework, not by this experiment's design: the machine-local locations (prefix, its baseline, bundles, exploration output) are refused when inside a checkout or overlapping the install or one another, and the profile's link checks resolve where a link ends instead of reading how it is written.
+
+## Amendment 2 (second rework of PR #26; appended, nothing above is rewritten)
+
+- **Which runs count.** E001-r0015 to r0027 stay in `runs/E001/`, immutable, and are superseded like r0001 to r0014. Their driver could record a run "completed" after a failed screenshot, did not check the prefix again immediately before the launch, and did not refuse a hard or symbolic link at a file it wrote. E001-r0028 to r0040 repeat the `control` arm 3 times and every other arm once (except `net-host`), with the round-2 driver, from a prefix removed and rebuilt by `setup/iwp/iwp-runtime.sh`. F002 cites them.
+- **The run, as now done.**
+  - Each run binds the install read-only in its own mount namespace and records that it did ("install bound read-only in the run's mount namespace").
+  - It checks the prefix before anything starts and again immediately before the launch (`prefix.py` `prefix_problems`: drive mapping, links, second names, mounts, the registered game copy). The outer process checks it once more before it creates the namespace.
+  - A run is `completed` only when every stage ran and both screenshots exist. Any other way out records `aborted: <why>`.
+  - The start state's definition is unchanged. Its hash differs from r0015 to r0027's because the prefix was rebuilt.
+- **Writes.** Every file the profile and the cycle write goes through `setup/iwp/safeio.py`. This holds for the game copy, the baseline, the reset, the bundles, the exploration output and the records. Records are created, never overwritten.
