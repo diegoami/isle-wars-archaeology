@@ -100,7 +100,7 @@ spend its last round on the same model.
 - **The hand-over.** The new implementer gets the task file, every review so far, and the previous
   implementer's unpushed work as a patch to weigh, never to apply blindly. It starts from the pushed
   branch.
-- **First use: T08, round 2.**
+- **First use: T08, round 2** (Opus's result is under "What each model has shown").
   - GPT-6.1 Sol found 6 blocking findings at round 0 and 5 new ones at round 1.
   - Both rounds were the same class: an alias or a side path at the moment of a write or a launch.
   - Sonnet was stopped mid-round, and Opus took the branch.
@@ -217,6 +217,19 @@ These are observations, each with its source. The trials issues hold the full re
 - **Sonnet** (research implementer: T03, T04, T05):
   - Reliable on research documents.
   - Its typical miss is overreach, a cell paraphrased beyond its quote, which the reviewers catch.
+- **Opus** (implementer, T08 round 2, escalated from Sonnet; about 47 min, 344k tokens):
+  - It took over after GPT-6.1 Sol's two heavy reviews, and fixed the class, not the instances:
+    - one confined writer (`O_NOFOLLOW`, `O_EXCL`, open-then-`fstat`, no shared inodes);
+    - the prefix seal re-checked immediately before launch;
+    - a run is `completed` only on a clean finish.
+  - It added a guarantee nobody asked for, and it fits: the install is bound read-only inside each
+    run's mount namespace, and the run aborts unless the bind really is read-only.
+  - It swept its own code for the same class with synthetic fixtures, listed the sweep, and stated
+    the gaps that remain. Its deletion mutants: 32, with no survivors.
+  - It weighed Sonnet's unpushed partial patch, rather than applying it.
+  - The main session reproduced its controls on the round-2 head (r0041–r0043: the same
+    `before` and start-state hashes). GPT-6.1 Sol's final review decides whether the escalation
+    converged.
 - **Opus** (reviewer, T05): precise. It found a wrong date and dated the evidence, by checking
   Wayback captures itself.
 
