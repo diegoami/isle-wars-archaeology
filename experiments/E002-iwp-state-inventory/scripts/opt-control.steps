@@ -1,0 +1,16 @@
+# Options: Save as default with nothing changed
+# Steps are described in runtime/iwp/spike/steps.py. Coordinates are the 800x600 stage's.
+# Run with: cycle.py --experiment E002 --arm opt-control --script experiments/E002-iwp-state-inventory/scripts/opt-control.steps --may-write-saved-files --terminate kill
+title
+proc
+click 320 585        # Options, from the title screen
+settle
+shot options
+
+click! 228 532       # Save as default
+settle
+shot saved
+file xtras/Isledft.dat
+file xtras/Islepro.skr
+file xtras/Islepro.dat
+changes

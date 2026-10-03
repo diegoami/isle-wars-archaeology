@@ -62,6 +62,7 @@ SCRIPT = Path(__file__).resolve()
 EXPERIMENT = "E001"                  # the default of --experiment; E002 is W4a's
 SET_ID = "iwp-2.0-996e86c5"
 SUCCESSOR_ID = "iwp-2.0-3694a782"   # the same files with xtras/Isledft.dat declared a runtime write
+SUCCESSOR2_ID = "iwp-2.0-de5a82a2"  # ... and xtras/Islepro.skr too (E002: the scoreboard file)
 WINE = "/usr/lib/wine/wine"          # not on PATH on this machine (T08 task file)
 WINESERVER = "/usr/lib/wine/wineserver"
 DISPLAY = ":77"
@@ -234,6 +235,17 @@ class Screen:
 
     def options_up(self):
         return self.count(RETURN_BUTTON, lambda r, g, b: g > 150 and r < 80 and b < 100) > 1000
+
+    def stable_for(self, crop, seconds):
+        """Unchanged for `seconds` seconds: captures taken every 0.4 s, all equal (one pair when 0)."""
+        first = self.raw(crop)
+        end = time.monotonic() + seconds
+        while True:
+            time.sleep(0.4)
+            if self.raw(crop) != first:
+                return False
+            if time.monotonic() >= end:
+                return True
 
     def stable(self, crop=None):
         """Two captures 0.4 s apart identical (a poll condition, not a wait for a fixed time)."""
@@ -613,9 +625,18 @@ class Cycle:
             self.watch_rect = args or None
             self.note("screen", "watched area", "whole screen" if not args else "x,y,w,h " + ",".join(map(str, args)))
         elif op == "settle":
-            waited = poll(lambda: self.screen.stable(self.watch_rect), 30, 0.1)
-            self.note("screen", "settle: screen unchanged between two captures (s)",
-                      "not within 30 s" if waited is None else waited)
+            seconds = args[0] if args else 0
+            waited = poll(lambda: self.screen.stable_for(self.watch_rect, seconds), 30 + 2 * seconds, 0.05)
+            what = f"settle: watched area unchanged for {seconds} s (s)" if seconds else \
+                "settle: screen unchanged between two captures (s)"
+            self.note("screen", what, "not within the time allowed" if waited is None else waited)
+        elif op == "clicks":
+            count, x, y = args
+            self.click_at(x, y, quiet=True, press=False)
+            run(["xdotool", "click", "--repeat", str(count), "--delay", "80", "1"], env=self.env)
+            self.note("screen", f"{count} clicks at {x},{y}", "sent")
+        elif op in ("click-any", "click-until", "click-any?", "click-until?"):
+            self.click_candidates(op, args)
         elif op == "move":
             run(["xdotool", "mousemove", str(args[0] + self.screen.ox), str(args[1] + self.screen.oy)], env=self.env)
         elif op in ("click", "click!"):
@@ -638,7 +659,7 @@ class Cycle:
         else:                                    # steps.parse never yields another op
             raise stepslib.StepError(f"unknown step {op!r}")
 
-    def click_at(self, x, y):
+    def click_at(self, x, y, quiet=False, press=True):
         """Move to (x, y), let the label under the pointer react, click, and say whether the screen
         changed. Returns the seconds the change took, or None. The forbidden areas are refused again
         here, whatever parsed the step."""
@@ -652,18 +673,55 @@ class Cycle:
         rect = (max(0, x - 50), max(0, y - 14), 100, 28)
         before = self.screen.raw(rect)
         run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
-        hovered = poll(lambda: self.screen.raw(rect) != before, 1.5, 0.05)
+        # a candidate search (quiet) tries many places that may not react at all: it waits less
+        hovered = poll(lambda: self.screen.raw(rect) != before, 0.3 if quiet else 1.5, 0.05)
         if hovered is None:                      # no highlight: a one-pixel move gives the game a motion event
             run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
-            hovered = poll(lambda: self.screen.raw(rect) != before, 0.5, 0.05)
+            hovered = poll(lambda: self.screen.raw(rect) != before, 0.2 if quiet else 0.5, 0.05)
+            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back on the point
+        if not press:                            # the caller sends the clicks
+            return None
         pointer_state = self.screen.raw(self.watch_rect)
         run(["xdotool", "click", "1"], env=self.env)
-        changed = poll(lambda: self.screen.raw(self.watch_rect) != pointer_state, 3, 0.1)
-        self.note("screen", f"click at {x},{y}: label changed under the pointer (s)",
-                  "no change within 2 s" if hovered is None else hovered)
-        self.note("screen", f"click at {x},{y}: screen changed after the click (s)",
-                  "no change within 3 s" if changed is None else changed)
+        changed = None if quiet else poll(lambda: self.screen.raw(self.watch_rect) != pointer_state, 3, 0.1)
+        if not quiet:
+            self.note("screen", f"click at {x},{y}: label changed under the pointer (s)",
+                      "no change within 2 s" if hovered is None else hovered)
+            self.note("screen", f"click at {x},{y}: screen changed after the click (s)",
+                      "no change within 3 s" if changed is None else changed)
         return changed
+
+    def click_candidates(self, op, args):
+        """click-any / click-until: click the candidate points in order and stop at the first that
+        worked; abort the run when none did. `worked` is a change of the watched area (click-any) or at
+        least N pixels of one colour in it (click-until)."""
+        strict = not op.endswith("?")
+        op = op.rstrip("?")
+        if op == "click-until":
+            r, g, b, tol, n = args[:5]
+            points = args[5:]
+            if self.watch_rect is None:
+                self.fail("click-until needs a watched area (watch X Y W H)")
+
+            def worked(before):
+                crop = self.screen.raw(self.watch_rect)
+                return sum(1 for i in range(0, len(crop) - 2, 3)
+                           if abs(crop[i] - r) <= tol and abs(crop[i + 1] - g) <= tol and abs(crop[i + 2] - b) <= tol) >= n
+        else:
+            points = args
+
+            def worked(before):
+                return self.screen.raw(self.watch_rect) != before
+        for index in range(0, len(points), 2):
+            x, y = points[index], points[index + 1]
+            before = self.screen.raw(self.watch_rect)
+            self.click_at(x, y, quiet=True)
+            if poll(lambda: worked(before), 1.5, 0.1) is not None:
+                self.note("screen", f"{op}: candidate that worked", f"{x},{y} (number {index // 2 + 1} of {len(points) // 2})")
+                return
+        if strict:
+            self.fail(f"{op}: none of the {len(points) // 2} candidates worked")
+        self.note("screen", f"{op}?: candidate that worked", f"none of the {len(points) // 2}")
 
     def shot_step(self, name):
         """A screenshot named by the script. In a recorded run it is a bundle file; in a session it is
@@ -752,6 +810,8 @@ class Cycle:
             try:
                 with safeio.open_source(out / name) as fh:
                     text = fh.read(1 << 16).decode("utf-8", errors="replace")
+                if not text.strip():              # created, not yet written: wait for the content
+                    raise OSError("empty")
             except (safeio.Refused, OSError):
                 if time.monotonic() > idle_until:
                     self.say("session: idle for 30 minutes, ending")
@@ -1021,9 +1081,12 @@ def next_run_id(experiment=EXPERIMENT):
 
 
 def record_set(args):
-    """The set a run is recorded under: the successor only when the run's input may write its file
-    (E001: --input save-default; E002: --may-write-settings, for a script that clicks Save as default)."""
-    return SUCCESSOR_ID if args.input == "save-default" or args.may_write_settings else SET_ID
+    """The set a run is recorded under: a successor only when the run's input may write a file of the
+    set (E001: --input save-default, which may write xtras/Isledft.dat; E002: --may-write-saved-files,
+    for a script that may click Save as default or lose a game, so write either of the two files)."""
+    if args.may_write_saved_files:
+        return SUCCESSOR2_ID
+    return SUCCESSOR_ID if args.input == "save-default" else SET_ID
 
 
 def build_record(cycle, commit, machine, state_sha):
@@ -1102,8 +1165,9 @@ def parser():
     ap.add_argument("--script", default=None,
                     help="a step script (steps.py) in this repository, run after the title screen instead of the "
                          "E001 input; the run is completed when its steps all ran and it took a screenshot")
-    ap.add_argument("--may-write-settings", action="store_true",
-                    help="the script may click Save as default: the run is recorded under the successor set")
+    ap.add_argument("--may-write-saved-files", action="store_true",
+                    help="the script may click Save as default or lose a game, so the game may write "
+                         "xtras/Isledft.dat or xtras/Islepro.skr: the run is recorded under the set that declares both")
     ap.add_argument("--session", action="store_true",
                     help="with --explore: read step files from the exploration folder (see Cycle.session)")
     ap.add_argument("--terminate", choices=["ui-quit", "wm-close", "kill"], default="ui-quit")

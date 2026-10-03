@@ -1,0 +1,129 @@
+# The tour: every screen, one human turn, an AI turn passing, a credited loss
+# Steps are described in runtime/iwp/spike/steps.py. Coordinates are the 800x600 stage's.
+# Run with: cycle.py --experiment E002 --arm tour --script experiments/E002-iwp-state-inventory/scripts/tour.steps --may-write-saved-files --terminate ui-quit
+title
+proc
+# --- the title screen, then Options with every control at its default
+shot title
+click 320 585        # Options
+settle
+shot options-defaults
+# controls that the unregistered build locks, one message each
+click 390 137        # starting armies 5
+shot locked-armies
+click 343 233        # Yellow: computer to human
+shot locked-human
+click 454 389        # frequency LESS
+shot locked-frequency
+click! 565 532       # Return
+settle
+# --- Help, a page at a time
+click 215 585        # Help
+settle
+shot help-01
+clicks 20 744 481
+settle
+shot help-02
+clicks 20 744 481
+settle
+shot help-03
+clicks 20 744 481
+settle
+shot help-04
+clicks 20 744 481
+settle
+shot help-05
+clicks 20 744 481
+settle
+shot help-06
+clicks 20 744 481
+settle
+shot help-07
+clicks 20 744 481
+settle
+shot help-08
+clicks 20 744 481
+settle
+shot help-09
+clicks 20 744 481
+settle
+shot help-10
+clicks 20 744 481
+settle
+shot help-11
+clicks 20 744 481
+settle
+shot help-12
+clicks 20 744 481
+settle
+shot help-13
+clicks 20 744 481
+settle
+shot help-14
+click! 388 536       # Return
+settle
+# --- the scoreboard, before any game
+click 620 585        # Scores
+settle
+shot scores-before
+click! 388 516       # Return
+settle
+# --- New Game: the setup screen
+click 100 585        # New Game
+settle
+shot newgame-setup
+click! 565 532       # Play Game
+shot board-loading
+watch 0 0 800 495
+settle 4             # the computer players take their turns first; the board is quiet when it is Blue's
+shot board-human-turn
+# --- one human turn: place all the armies on a Blue country, then attack
+watch 265 530 270 26
+click-until 168 168 168 24 1000 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+shot place-selected
+click! 307 543       # ALL
+shot place-all
+click! 497 543       # PLACE
+settle
+shot place-done
+click! 303 530       # Attack
+watch 10 502 250 70
+click-any 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+shot attack-target
+watch 262 502 276 70
+click-until 208 176 64 20 1000 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+shot attack-ready
+watch 545 502 250 70
+click! 337 531       # ATTACK: one round
+shot attack-result-1
+settle
+shot attack-result-2
+watch 262 502 276 70
+click-until 0 192 64 16 600 456 531 495 540   # QUIT ATTACK, or DONE when the country was taken
+shot turn-menu
+click! 417 530       # PASS
+shot pass-1
+click-any? 402 531   # CONTINUE, when a card was awarded
+shot after-pass
+# --- the computer players' turns pass
+watch 0 0 800 495
+shot ai-turn
+settle 4
+shot human-turn-2
+# --- quit the game in the middle: a loss is credited
+watch all
+click 100 585        # New Game
+settle
+shot loss-notice
+click! 400 526       # Continue
+settle
+file xtras/Islepro.skr
+click 620 585        # Scores
+settle
+shot scores-after
+click! 388 516       # Return
+settle
+file xtras/Islepro.skr
+file xtras/Islepro.dat
+file xtras/Isledft.dat
+changes

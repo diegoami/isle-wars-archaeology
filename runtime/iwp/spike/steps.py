@@ -4,13 +4,23 @@ between the known screen and the end of a run.
 A script is a text file, one step per line; blank lines and `#` comments are ignored. This module only
 parses and checks; `cycle.py` runs the steps. Nothing here touches the game.
 
-    settle                  wait until the watched area is unchanged between two captures (a poll, never a time)
+    settle [SECONDS]        wait until the watched area is unchanged between two captures, or, with SECONDS,
+                            has stayed unchanged for that long (a poll on the screen, never a fixed time)
     watch X Y W H           from now on `settle` and the change check of `click` look at this rectangle only
                             (a blinking arrow on the board keeps the full screen changing); `watch all` undoes it
     move X Y                put the pointer there
     click X Y               move there, wait for the label under the pointer to react, click; the
                             observation says whether the screen changed
     click! X Y              the same, and the run aborts when the screen did not change
+    clicks N X Y            move there, wait for the label to react, then click N times, 80 ms apart (N from 2 to 60;
+                            one line of text scrolls per click on a scrollbar arrow)
+    click-any X Y [X Y ...]     click the points in order and stop at the first after which the watched area
+                            changed; the run aborts when none did (a click the game ignores changes nothing).
+                            `click-any?` is the same, and a failure is only noted
+    click-until R G B TOL N X Y [X Y ...]
+                            click the points in order and stop at the first after which at least N pixels of
+                            the watched area are within TOL (per channel) of the colour R G B; the run aborts
+                            when none is. `click-until?` is the same, and a failure is only noted
     key NAME                press one key (a short allow-list: Return, Escape, space, Tab, arrows, F1 to
                             F12, one letter or digit); never `$`, which opens the registration screen
     shot NAME               one screenshot, kept as NAME.png in the run's bundle
@@ -75,10 +85,30 @@ def parse_line(text, number=0):
         return None
     words = text.split()
     op, args = words[0], words[1:]
-    if op in ("settle", "title", "proc", "changes"):
+    if op in ("title", "proc", "changes"):
         if args:
             raise StepError(f"{op} takes no argument")
         return Step(op, (), number)
+    if op == "settle":
+        if len(args) > 1 or (args and not args[0].isdigit()) or (args and not 1 <= int(args[0]) <= 60):
+            raise StepError("settle takes no argument, or a number of seconds from 1 to 60")
+        return Step(op, tuple(int(a) for a in args), number)
+    if op == "clicks":
+        if len(args) != 3 or not args[0].isdigit() or not 2 <= int(args[0]) <= 60:
+            raise StepError("clicks takes N X Y, with N from 2 to 60")
+        return Step(op, (int(args[0]),) + _point(args[1:], op), number)
+    if op in ("click-any", "click-any?"):
+        if not args or len(args) % 2:
+            raise StepError(f"{op} takes pairs X Y")
+        return Step(op, tuple(v for i in range(0, len(args), 2) for v in _point(args[i:i + 2], op)), number)
+    if op in ("click-until", "click-until?"):
+        if len(args) < 7 or (len(args) - 5) % 2 or not all(a.isdigit() for a in args[:5]):
+            raise StepError("click-until takes R G B TOL N, then pairs X Y")
+        r, g, b, tol, n = (int(a) for a in args[:5])
+        if max(r, g, b) > 255 or tol > 255 or n < 1:
+            raise StepError("click-until: colour channels 0-255, TOL 0-255, N at least 1")
+        points = tuple(v for i in range(5, len(args), 2) for v in _point(args[i:i + 2], op))
+        return Step(op, (r, g, b, tol, n) + points, number)
     if op == "watch":
         if args == ["all"]:
             return Step(op, (), number)
