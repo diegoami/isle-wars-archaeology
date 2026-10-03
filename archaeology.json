@@ -26,6 +26,78 @@
         "sha256": "3b21af86028e9809fb6aa5c177167d532cd4d582608fd0ae3c41890e9ea1dd0e"
       },
       {
+        "path": "formats/run-1.schema.json",
+        "sha256": "172413a8b3103c89b21ea249a1c6c71b072f4eb185a9a0f3781d54f3867434ec"
+      },
+      {
+        "path": "formats/evidence-manifest-1.schema.json",
+        "sha256": "55c1c1844c96c76353547b2a27973c7d18e8a5dd42b76020b65319cb8e42ad4d"
+      },
+      {
+        "path": "formats/examples/invalid/evidence-manifest-1--bad-asset-name.json",
+        "sha256": "c1a9770c6ae4bf8c0193c7c483b404694760e82511288dfd2883f49ade06a80a"
+      },
+      {
+        "path": "formats/examples/invalid/evidence-manifest-1--no-artifact.json",
+        "sha256": "56a883457e336072135b650321f6bce6663a24120189103cf3fc59fd959bea8d"
+      },
+      {
+        "path": "formats/examples/invalid/evidence-manifest-1--repo-store.json",
+        "sha256": "b4a5aca2f67f2a1bc018f5c2138d84c9933cf49e714eecc0b27abe5a9947ad57"
+      },
+      {
+        "path": "formats/examples/invalid/evidence-manifest-1--untraced-class.json",
+        "sha256": "8fa8cf2ad20c7948ec00abcd688ecafb89f5e48f34869e62253f4d495a25ffc0"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--decoded-without-via.json",
+        "sha256": "057e7ddc5d0dd273a3027186495427db8cf94c57a0bdfce425f47f13d9870b3a"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--interpretation-field.json",
+        "sha256": "0bc83cbe954e774c49600eac3cfdc7473c0c8e9601636988ef52e92b081d2e1c"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--missing-interventions.json",
+        "sha256": "bfb6e3c1591cce69e1ba4cec096814086ce1f973963d5e70f1c2cef969da644f"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--observation-without-value-or-ref.json",
+        "sha256": "ad6ed0e2f6204f7494ed76f3c917bcc3a927e659c34247915806fbbac53e587f"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--output-in-repo.json",
+        "sha256": "30ae1b4c1b6434e248b25fe88c0c415ecb5208ba475eeb8c505937f68532345b"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--path-in-fingerprint.json",
+        "sha256": "32d126c46eec21512bd8182a8fc8d7e66fb1847780fba5482a531fd51f3f2115"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--truncated-hash.json",
+        "sha256": "d38cb7cc17bc8d1b914992391a9491cb23d61d45d7489159a5376be74f5b84f4"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--unknown-intervention-level.json",
+        "sha256": "aeebba5a4207f73f7aa2a37f9845f3f9b0a9d7292904c5f801bf9f28bd422a00"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--value-without-location.json",
+        "sha256": "565519992a9135da02a993b1385109968afb523582778e099a01f91f1da09257"
+      },
+      {
+        "path": "formats/examples/valid/evidence-manifest-1--toy-run.json",
+        "sha256": "5fb0d907af9e0c5cba5e4a073e82e59f6604515aa790488b95bc1607b0d67a45"
+      },
+      {
+        "path": "formats/examples/valid/run-1--pure-observation-aborted.json",
+        "sha256": "bdc7aa3aa054605b39d5edf084b6592fcc57d56c971e7593bd5dd91b8491f173"
+      },
+      {
+        "path": "formats/examples/valid/run-1--seeded-crafted-state.json",
+        "sha256": "2d903d10eb13ae212d8e64311bdf2314e02fc25d07c2d011791cdf89be0ee6b5"
+      },
+      {
         "path": "tests/formats/check_examples.py",
         "sha256": "46de8db08852787932e2d57dbdd11d37d8b6eb16b7baa4648ebae87e814dc987"
       }

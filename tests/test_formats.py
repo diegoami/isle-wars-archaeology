@@ -16,6 +16,24 @@ VENDORED_PATHS = [
     "formats/examples/valid/artifact-set-1--toy.json",
     "formats/examples/invalid/artifact-set-1--bad-id-hash.json",
     "formats/examples/invalid/artifact-set-1--unknown-acquisition.json",
+    "formats/run-1.schema.json",
+    "formats/evidence-manifest-1.schema.json",
+    "formats/examples/valid/run-1--pure-observation-aborted.json",
+    "formats/examples/valid/run-1--seeded-crafted-state.json",
+    "formats/examples/invalid/run-1--decoded-without-via.json",
+    "formats/examples/invalid/run-1--interpretation-field.json",
+    "formats/examples/invalid/run-1--missing-interventions.json",
+    "formats/examples/invalid/run-1--observation-without-value-or-ref.json",
+    "formats/examples/invalid/run-1--output-in-repo.json",
+    "formats/examples/invalid/run-1--path-in-fingerprint.json",
+    "formats/examples/invalid/run-1--truncated-hash.json",
+    "formats/examples/invalid/run-1--unknown-intervention-level.json",
+    "formats/examples/invalid/run-1--value-without-location.json",
+    "formats/examples/valid/evidence-manifest-1--toy-run.json",
+    "formats/examples/invalid/evidence-manifest-1--bad-asset-name.json",
+    "formats/examples/invalid/evidence-manifest-1--no-artifact.json",
+    "formats/examples/invalid/evidence-manifest-1--repo-store.json",
+    "formats/examples/invalid/evidence-manifest-1--untraced-class.json",
     "tests/formats/check_examples.py",
 ]
 
@@ -29,6 +47,10 @@ def load_vendored():
 
 def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def example_errors(check, schema, doc):
+    return check.validate(doc, schema) + check.semantic_errors(schema["$id"], doc)
 
 
 class VendoredFormatsTest(unittest.TestCase):
@@ -66,6 +88,38 @@ class VendoredFormatsTest(unittest.TestCase):
         for path in VENDORED_PATHS:
             digest = hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
             self.assertEqual(vendored[path], digest, f"{path} hash differs from archaeology.json")
+
+
+class VendoredExamplesTest(unittest.TestCase):
+    """Every vendored example of run/1 and evidence-manifest/1: valid ones pass, invalid ones fail.
+
+    The counts are those at the pinned game-archaeologist commit; a missing example fails the count.
+    """
+
+    COUNTS = {"run-1": (2, 9), "evidence-manifest-1": (1, 4)}
+
+    @classmethod
+    def setUpClass(cls):
+        cls.check = load_vendored()
+
+    def examples(self, schema_name, kind):
+        folder = ROOT / "formats" / "examples" / kind
+        return sorted(folder.glob(f"{schema_name}--*.json"))
+
+    def test_each_schema_has_the_pinned_example_counts(self):
+        for name, (valid, invalid) in self.COUNTS.items():
+            self.assertEqual(len(self.examples(name, "valid")), valid, name)
+            self.assertEqual(len(self.examples(name, "invalid")), invalid, name)
+
+    def test_valid_examples_pass_and_invalid_examples_fail(self):
+        for name in self.COUNTS:
+            schema = read_json(ROOT / "formats" / f"{name}.schema.json")
+            for path in self.examples(name, "valid"):
+                errors = example_errors(self.check, schema, read_json(path))
+                self.assertEqual(errors, [], f"{path.name} should be valid")
+            for path in self.examples(name, "invalid"):
+                errors = example_errors(self.check, schema, read_json(path))
+                self.assertTrue(errors, f"{path.name} validates but should fail")
 
 
 if __name__ == "__main__":

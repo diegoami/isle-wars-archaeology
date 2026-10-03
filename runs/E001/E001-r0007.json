@@ -1,0 +1,229 @@
+{
+  "schema": "run/1",
+  "run_id": "E001-r0007",
+  "experiment": "E001",
+  "arm": "click-immediate",
+  "rep": 1,
+  "code_commit": "37b6e8fadfb7",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/spike/cycle.py@37b6e8fadfb7",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "none"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "ecd10df725ca728ec8b9b741f6d49039d68377398fc2df3faf06c6776ff47a9d",
+    "restore": "fresh private user, mount and PID namespaces; game copy verified against the set before launch; prefix as left by setup/iwp/iwp-runtime.sh"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/spike/cycle.py",
+    "sha256": "cd7a6bd93b6c081095fb9765db0b9139fe729f48a4af57c35c2694f185df80a3",
+    "args": [
+      "--arm",
+      "click-immediate",
+      "--click",
+      "immediate"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "file",
+      "field": "game copy checked against the registered set",
+      "value": "exit 0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "game copy files outside the set",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "800x600x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.12"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "0,0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.84"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 800x600"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "Islepro window properties",
+      "value": "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; "
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "root window at the title screen",
+      "value": "800x600x24"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached and stable, seconds after launch",
+      "value": "6.86"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "Options screen after click (s)",
+      "value": "absent"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "after.png raw RGB8 pixels sha256",
+      "value": "5ffa69f9c6e87ab380c9278dbc39536a5dc6b97d0f1ae2c9995a7354d7ffa8cd"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game exit after ui-quit (s)",
+      "value": "still running"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "terminate-stuck.png raw RGB8 pixels sha256",
+      "value": "8f97eb56c8114549e0fcc37a66391da0b54bbedef680fcb2066b4668f9382a30"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wine processes gone after terminate (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "31/0/2"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/6"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "store": "release:E001"
+    },
+    {
+      "name": "after.png",
+      "sha256": "cb722841ca3c8036f660fe89724f6db77a5d8586d6915e53541f65729749efab",
+      "store": "release:E001"
+    },
+    {
+      "name": "terminate-stuck.png",
+      "sha256": "8a6a3d868372d7d6d86eee9d250ac016e5765167ba6348df4b90ad246f838d7f",
+      "store": "release:E001"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "2906806525f775b2eb2420dbd58d69f7c972ab29d354b8b8bf1cdf03b92eb5c7",
+      "store": "release:E001"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "store": "release:E001"
+    },
+    {
+      "name": "run.log",
+      "sha256": "fb68786d0f450ae014ea13343dc7a7f4123e802d4498ec456c1ea5ef155fcdcf",
+      "store": "release:E001"
+    }
+  ],
+  "started": "2026-10-03T19:12:27Z",
+  "ended": "2026-10-03T19:14:13Z",
+  "status": "aborted: the click did not bring up the Options screen"
+}

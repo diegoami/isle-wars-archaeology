@@ -10,7 +10,7 @@ is and how to re-hash a copy. Hashes and sizes only; the bytes stay on the user'
   Director Player 7.0.2r85; that describes Director, not the game ([F001](../../findings/F001-iwp-artifact-identity.md)).
 - **Left out of the set**: `unins000.exe` and `unins000.dat`, the Inno Setup uninstaller pair.
   `unins000.dat` records the install itself, so it would make the id depend on the machine.
-- **Runtime writes**: none listed, because none has been observed. W3a measures it.
+- **Runtime writes**: none listed; this set is the files as shipped. W3a observed one runtime write, `xtras/Isledft.dat` (the Save as default button of the Options screen; [F002](../../findings/F002-iwp-runtime-wine-xvfb.md)), and declared it in the successor set [`iwp-2.0-3694a782`](iwp-2.0-3694a782.md).
 
 ## The files
 
@@ -28,7 +28,7 @@ in them (F001); a role marked "unconfirmed" is a guess from the name only.
 | `xtras/FileIo.x32` | 25088 | Xtra: Macromedia FileIO; string at `0x4bfc`. |
 | `xtras/PMatic.x32` | 351744 | Xtra: PrintOMatic (printing); string at `0x38f4f`. |
 | `xtras/PMATIC.reg` | 19 | Data beside the PrintOMatic Xtra; unconfirmed: its registration record. |
-| `xtras/Isledft.dat` | 15 | Game data, printable ASCII over its whole length; unconfirmed: default settings. Candidate runtime write. |
+| `xtras/Isledft.dat` | 15 | Game data, printable ASCII over its whole length; unconfirmed: default settings. Changed by the Save as default button (F002); see the successor set `iwp-2.0-3694a782`. |
 | `xtras/Islepro.dat` | 190 | Game data, printable ASCII over its whole length; unconfirmed: scoreboard or settings. Candidate runtime write. |
 | `xtras/Islepro.skr` | 13 | Game data, not text; role unknown. |
 

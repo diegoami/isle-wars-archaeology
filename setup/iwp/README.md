@@ -1,3 +1,9 @@
 # setup/iwp/
 
-The `iwp-runtime` bootstrap profile (W3a): an idempotent setup script that ends by running `preflight --tokens <profile tokens>` (game-archaeologist ADR-004). Its exit code is never trusted on its own.
+The `iwp-runtime` bootstrap profile (W3a draft), for the Wine + Xvfb + xfwm4 path ([F002](../../findings/F002-iwp-runtime-wine-xvfb.md)).
+
+- `iwp-runtime.sh`: idempotent; installs nothing and uses no sudo. Needs `IWP_PREFIX` (the Wine prefix, outside every checkout) and `IWP_DIR` (the install, read and hashed only). It checks the system packages and names the missing one, builds the prefix, removes `Z:` and the home-folder links, makes the game copy in the prefix equal to the registered set, and then runs every token check of [`capabilities.json`](../../capabilities.json). It prints `ready` and exits 0 only if all of them pass. Its exit code is never trusted on its own (game-archaeologist ADR-004).
+- `prefix.py`: the prefix steps (`build`, `sync-game`, `strip-links`, `baseline`, `check`). `check` (also the cycle's seal before anything starts and immediately before each launch) requires that `c:` maps to `drive_c` and nothing else is mapped, that no link leaves the prefix, that no file has a second name (a hard link), that nothing is mounted inside it, and that the game copy is the registered set as plain files of its own.
+- `safeio.py`: the one writer. Every file the profile and the cycle write, every name they remove and every mode they change goes through it. It refuses names that are not one plain component, links on the way to a directory, and an existing link or second name at the destination. New files are given their name by `link` or `rename`, never written through an existing name.
+- `locations.py`: confines the machine-local locations (outside every checkout, not overlapping the install or one another) before anything is changed.
+- `token_check.py`: the checks behind the `iwp` tokens. When the generic preflight (H3) lands, the script's last step becomes `preflight --tokens <the tokens of capabilities.json>`, the generic tokens move to it, and only `facility:iwp-prefix` stays here.

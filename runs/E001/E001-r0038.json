@@ -1,0 +1,265 @@
+{
+  "schema": "run/1",
+  "run_id": "E001-r0038",
+  "experiment": "E001",
+  "arm": "size-1280x1024x24",
+  "rep": 3,
+  "code_commit": "6860d50c807f",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/spike/cycle.py@6860d50c807f",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "none"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "34ac62c31ddaa5f4e9a1b975a956c94ebe935109189d0fffe8939dc2bddfa427",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only; the prefix sealed (drive mapping, links, second names, mounts, the registered game copy) before anything starts and again immediately before the launch; prefix as left by setup/iwp/iwp-runtime.sh and by the previous run's reset; start_state.sha256 lists every entry of the prefix with the size and sha256 of each file and the target of each link, the registry files included"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/spike/cycle.py",
+    "sha256": "508d4384c8f2fe5b7c2b2dd1f09dc6e5e89be7fc13fe78a940ad3701eb944455",
+    "args": [
+      "--arm",
+      "size-1280x1024x24",
+      "--size",
+      "1280x1024x24"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install bound read-only in the run's mount namespace",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "1280x1024x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.12"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "prefix seal immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces the game sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "240,212"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.54"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 1280x1024"
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "Islepro window properties",
+      "value": "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; "
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "root window at the title screen",
+      "value": "1280x1024x24"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached and stable, seconds after launch",
+      "value": "6.77"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "fef1816f7216c86e64e19d5ad5fa11be5f29b0e18dda3fca1a5e46b5326546e2"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "Options label changed under the pointer (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "Options screen after click (s)",
+      "value": "0.03"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "after.png raw RGB8 pixels sha256",
+      "value": "bdc193ee137743699d7ffa377bc8d95c136afd31f2e9ea38c57d61b162c41b44"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "Return button changed under the pointer (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "Quit label changed under the pointer (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "notice.png raw RGB8 pixels sha256",
+      "value": "9c12f972c3cb65adb374fee882191671803f9969057cf2cd76c64d5475060317"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "Exit Game label changed under the pointer (s)",
+      "value": "no change within 5 s"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game exit after ui-quit (s)",
+      "value": "14.72"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wine processes gone after terminate (s)",
+      "value": "2.06"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "9/0/2"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/8"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "a76f7b3f4158bf6d39c35e3a83fe1811116f5110f2c70f623f421e801436d425",
+      "store": "release:E001"
+    },
+    {
+      "name": "after.png",
+      "sha256": "299f67c401de93202ff73c3595a9a2b47f6b5949da88e865dc7195ee21287cde",
+      "store": "release:E001"
+    },
+    {
+      "name": "notice.png",
+      "sha256": "7a3943c536292601edefeeb09d56a60350eac8cae53d225767468794f56bd59f",
+      "store": "release:E001"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "656ed7228c880cbfcb1f41373dc3edc2c29b30d6e3ece8d634b2f8b9f5e430b3",
+      "store": "release:E001"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "store": "release:E001"
+    },
+    {
+      "name": "run.log",
+      "sha256": "cb5e087804c9bd9a90f16219726408e53374f6f927093294e80972a3a6b5b0c3",
+      "store": "release:E001"
+    }
+  ],
+  "started": "2026-10-03T21:01:09Z",
+  "ended": "2026-10-03T21:01:41Z",
+  "status": "completed"
+}

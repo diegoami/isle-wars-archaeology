@@ -75,7 +75,81 @@
         "runtime_writes": [],
         "id": "iwp-2.0-996e86c5"
       },
-      "notes": "Set = every file of the install except the Inno Setup uninstaller pair, unins000.exe and unins000.dat, excluded because unins000.dat records the install itself and would make the id depend on the machine. The version 2.0 is the one Islepro.txt states (Islepro.txt:2); the projector's PE version resource (Macromedia Director Player 7.0.2r85) describes Director, not the game, and is not used as the game's version. Source: a third-party mirror (myabandonware.com), so the copy may differ from Soleau Software's own distribution. The sha256 of the downloaded installer file was not supplied and is not recorded here. runtime_writes is empty because nothing has been observed yet; W3a measures it and, if the runtime changes a listed file, registers a successor set. xtras/Isledft.dat and xtras/Islepro.dat are unconfirmed candidates for runtime writes (guessed from their names and sizes, not observed). Unregistered-build limit seen in the documents: the player plays Blue against three computer opponents (Islepro.txt:21-23 and :66-67); what registration unlocks beyond Islepro.txt:221-228 is unknown."
+      "notes": "Set = every file of the install except the Inno Setup uninstaller pair, unins000.exe and unins000.dat, excluded because unins000.dat records the install itself and would make the id depend on the machine. The version 2.0 is the one Islepro.txt states (Islepro.txt:2); the projector's PE version resource (Macromedia Director Player 7.0.2r85) describes Director, not the game, and is not used as the game's version. Source: a third-party mirror (myabandonware.com), so the copy may differ from Soleau Software's own distribution. The sha256 of the downloaded installer file was not supplied and is not recorded here. runtime_writes is empty because this set lists every file as shipped. W3a (E001, F002) observed one runtime write, xtras/Isledft.dat, changed by the Save as default button of the Options screen; the successor set iwp-2.0-3694a782 declares it. xtras/Islepro.dat is still an unconfirmed candidate (not written in any E001 arm). Unregistered-build limit seen in the documents: the player plays Blue against three computer opponents (Islepro.txt:21-23 and :66-67); what registration unlocks beyond Islepro.txt:221-228 is unknown."
+    },
+    {
+      "manifest": {
+        "schema": "artifact-set/1",
+        "title": "Isle Wars Pro",
+        "version": "2.0",
+        "acquired": {
+          "how": "user-supplied install",
+          "when": "2026-10-02",
+          "note": "installed from an installer the user downloaded from myabandonware.com (game page isle-wars-pro-ovz)"
+        },
+        "files": [
+          {
+            "path": "Isleord.url",
+            "bytes": 58,
+            "sha256": "d9b636d092c0c03c2a4c975f9f8d7d940f40364d22939fac2e184b9ae0b815f0"
+          },
+          {
+            "path": "Islepro.exe",
+            "bytes": 7150739,
+            "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e"
+          },
+          {
+            "path": "Islepro.txt",
+            "bytes": 10572,
+            "sha256": "f1e71098a0fb83c17891ed7a5d95acd0a129e1a0712cba3e8148f70c5ca7b4b7"
+          },
+          {
+            "path": "Islepro.url",
+            "bytes": 47,
+            "sha256": "e7cebc175ccba67f468d1c10301cc887a85e59165276ba4cf97de9dc8fdc19dc"
+          },
+          {
+            "path": "Order.txt",
+            "bytes": 3081,
+            "sha256": "27a730392d603a247608f0f343b809644f2211811882268f28abf7c51d2bede8"
+          },
+          {
+            "path": "xtras/DTTurnTable.x32",
+            "bytes": 61440,
+            "sha256": "7634fe4328290980898ced48bbb6547d0147a2c0f4555aa5ce09b772e6518c12"
+          },
+          {
+            "path": "xtras/FileIo.x32",
+            "bytes": 25088,
+            "sha256": "61c9f235459a10dd44e5fe76f48c39e55124bb758fe100b298971d97cf1e4f57"
+          },
+          {
+            "path": "xtras/Islepro.dat",
+            "bytes": 190,
+            "sha256": "a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03"
+          },
+          {
+            "path": "xtras/Islepro.skr",
+            "bytes": 13,
+            "sha256": "50d86c5cdd758f4c65f21e2a2be78da433b39c96e4fefd1549820a68abb25b95"
+          },
+          {
+            "path": "xtras/PMATIC.reg",
+            "bytes": 19,
+            "sha256": "5080564687ecc1dea5c3c1c1ff673999e447e2c203801576e71c1c5b3faafbea"
+          },
+          {
+            "path": "xtras/PMatic.x32",
+            "bytes": 351744,
+            "sha256": "ba707c9c395c41baec327f0bb1d8b7aa9dffcaf50165befe76c0eaed773a628e"
+          }
+        ],
+        "runtime_writes": [
+          "xtras/Isledft.dat"
+        ],
+        "id": "iwp-2.0-3694a782"
+      },
+      "notes": "Successor of iwp-2.0-996e86c5 (T08, E001, F002): the same shipped files, with xtras/Isledft.dat declared in runtime_writes and so left out of files. E001 observed the game change that file (15 to 16 bytes) when the Save as default button of the Options screen was clicked (the save-default arm); no other E001 arm changed any file of the set. The shipped Isledft.dat is the one listed in iwp-2.0-996e86c5 (sha256 1750f915ae4ea473d6b21493b7fe3d289fe45f2ea0d779f3cce3c40c309550df). Every other note of iwp-2.0-996e86c5 applies."
     }
   ]
 }

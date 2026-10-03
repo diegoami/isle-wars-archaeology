@@ -25,3 +25,6 @@ dosbox-mount/
 *.[wW][aA][vV]
 # Agent worktrees under .claude/worktrees/ are nested checkouts; one `git add -A` would stage them.
 .claude/worktrees/
+# Python bytecode
+__pycache__/
+*.pyc
