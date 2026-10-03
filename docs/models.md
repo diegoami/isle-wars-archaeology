@@ -285,6 +285,17 @@ These are observations, each with its source. The trials issues hold the full re
     had missed every one of them.
   - It stated the tier it reached honestly: V0, with no access to the install. It verified the
     vendored bytes against the pinned commit itself.
+- **GLM-5.3** (substitute hard reviewer, T08 round 2, about 19 min):
+  - It stood in for GPT-6.1 Sol when the OpenAI quota ran out, with Sol's brief and Sol's earlier
+    reviews.
+  - It re-took all of Sol's attacks with its own script (13), and ran 12 mutants of its own, all
+    killed. One mutant killed trivially at first, so it rewrote it as an `if False:` mutant.
+  - It cross-checked every new record against F002 and its manifest, and found one new
+    non-blocking hang (#27).
+  - It approved. With the earlier T02 calibration, GLM-5.3 is a credible heavy reviewer when Sol is
+    not available.
+- **The T08 escalation converged.** Sonnet's two rounds drew 6, then 5, blocking findings. Opus's
+  round drew none.
 - **GLM-5.3, as a calibration reviewer** (T02's round-0 tree, a dry run):
   - It approved, missing Luna's blocking R1.
   - But it found two real gaps that Luna did not report.
