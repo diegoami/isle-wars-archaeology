@@ -1,6 +1,6 @@
 # isle-wars-archaeology (private)
 
-An evidence-backed behavioural specification of *Isle Wars* (DOS, 1994) and *Isle Wars Pro* (Win9x)
+An evidence-backed behavioural specification of *Isle Wars* (DOS) and *Isle Wars Pro* (Windows)
 by Soleau Software, built by controlled experiments on the original games. It is not a remake, and
 not a reconstruction: the games are explored, never replicated (U2). The method, record formats and
 vocabularies are [game-archaeologist](https://github.com/diegoami/game-archaeologist)'s, at the

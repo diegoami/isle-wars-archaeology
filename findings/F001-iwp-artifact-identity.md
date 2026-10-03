@@ -90,7 +90,7 @@ File dates in the install are filesystem metadata, not a field in any file: `Isl
 - From `Islepro.txt` line 2: the vendor's own document calls this build version 2.0. The version belongs to the document, so a different build with the same document text would carry the same label; the id's hash is what tells them apart.
 - From the version resource (`FileDescription` at `0x25cec`, `InternalName` at `0x25d60`, `OriginalFilename` at `0x25ee4`): the executable is a Director 7.0.2 projector, and the bytes after the last section (observed above) would be the game's content. This is the usual Director layout, not shown here; the appended region is not decoded. The link timestamp (1999-05-23) is older than the file date (2012-07-04), which fits a projector shell built in 1999 around content added later.
 - From the link timestamp of `FileIo.x32` (`0xc8`, 1999-05-23, 70 seconds after the projector's at `0xd0`) and its string "May 23 1999" (`0x4bfc`): the projector shell and FileIO come from the same Director 7.0.2r85 release.
-- From the machine type `0x014c` (`0xcc`) and the PE32 magic `0x10b` (`0xe0`): the game executable is a 32-bit x86 program, as a Win9x game would be.
+- From the machine type `0x014c` (`0xcc`) and the PE32 magic `0x10b` (`0xe0`): the game executable is a 32-bit x86 program, as a 32-bit Windows game would be.
 
 ## Alternatives considered
 

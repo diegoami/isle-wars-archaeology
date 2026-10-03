@@ -1,6 +1,6 @@
 # Knowledge map
 
-What is known about each area of *Isle Wars* (DOS, 1994) and *Isle Wars Pro* (Win9x), and how it
+What is known about each area of *Isle Wars* (DOS) and *Isle Wars Pro* (Windows), and how it
 is known. **Everything starts `unknown`.** A cell moves only by evidence:
 - to `documented`, when W2 finds a primary source;
 - beyond that, only through a reviewed finding and its promotion into `spec/`.
