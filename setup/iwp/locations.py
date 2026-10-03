@@ -11,6 +11,7 @@ A location is accepted when its canonical path (symlinks resolved)
 - does not overlap the install, nor any other location handed in (neither contains the other).
 """
 import os
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -60,7 +61,7 @@ def confine(name, value, others=()):
     return path
 
 
-def locations(env=None, need_prefix=False, need_bundles=False, explore=False):
+def locations(env=None, need_prefix=False, need_bundles=False, explore=False, experiment="E001"):
     """Confine every machine-local location named in the environment; returns {name: Path}.
 
     IWP_DIR (the install) is confined for overlap only: it is not a checkout location, but no
@@ -68,6 +69,8 @@ def locations(env=None, need_prefix=False, need_bundles=False, explore=False):
     output must not overlap one another either.
     """
     env = os.environ if env is None else env
+    if not re.fullmatch(r"E[0-9]{3}", experiment):
+        raise SystemExit(f"{experiment!r} is not an experiment id (E and three digits)")
     found = {}
     install = None
     if env.get("IWP_DIR"):
@@ -88,7 +91,7 @@ def locations(env=None, need_prefix=False, need_bundles=False, explore=False):
     add("IWP_PREFIX", env.get("IWP_PREFIX"), need_prefix)
     if "IWP_PREFIX" in found:
         add("IWP_PREFIX.baseline", str(found["IWP_PREFIX"]) + ".baseline", False)
-    add("E001_BUNDLES", env.get("E001_BUNDLES"), need_bundles)
+    add(f"{experiment}_BUNDLES", env.get(f"{experiment}_BUNDLES"), need_bundles)
     if explore:
-        add("E001_EXPLORE", env.get("E001_EXPLORE"), False)
+        add(f"{experiment}_EXPLORE", env.get(f"{experiment}_EXPLORE"), False)
     return found
