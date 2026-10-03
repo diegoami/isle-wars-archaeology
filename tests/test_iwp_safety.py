@@ -340,7 +340,10 @@ class SyncTest(World):
         self.write(self.tmp / "escape.txt", b"x")          # a real, matching file one level above the install
         bad = dict(MANIFEST, files=[{"path": "../escape.txt", "bytes": 1, "sha256": sha(b"x")}])
         with mock.patch.object(prefix, "manifest", return_value=bad):
-            self.assert_refused_and_install_intact("install changed")
+            before = tree(self.install)
+            reason, _ = self.refused(prefix.sync_game)
+            self.assertEqual(tree(self.install), before)
+        self.assertIn("not a path inside the set", reason)     # refused for its form, before any later check
         self.assertFalse((self.prefix / "drive_c" / "escape.txt").exists())
 
     def test_the_game_copy_overlapping_the_install_is_refused_by_location_not_by_luck(self):
