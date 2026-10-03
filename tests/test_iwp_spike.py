@@ -1,6 +1,6 @@
-"""The parts of the W3a spike that run without the game: PNG bytes, registry and tree diffs, process
-markers, and the prefix helper's link removal and check. The game itself is exercised by the cycle
-(experiments/E001-iwp-runtime-spike), not here.
+"""The parts of the W3a spike that run without the game: PNG bytes, registry and tree diffs and process
+markers. The prefix, location, token and network-contract checks are in test_iwp_safety.py. The game
+itself is exercised by the cycle (experiments/E001-iwp-runtime-spike), not here.
 """
 import importlib.util
 import os
@@ -10,8 +10,6 @@ import sys
 import tempfile
 import unittest
 import zlib
-from contextlib import redirect_stdout
-from io import StringIO
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +24,6 @@ def load(name, path):
 
 
 cycle = load("iwp_cycle", "runtime/iwp/spike/cycle.py")
-prefix = load("iwp_prefix", "setup/iwp/prefix.py")
 
 
 class PngTest(unittest.TestCase):
@@ -116,48 +113,6 @@ class MarkerTest(unittest.TestCase):
             plain.kill()
             child.wait()
             plain.wait()
-
-
-class PrefixTest(unittest.TestCase):
-    def make_prefix(self, tmp):
-        pfx = Path(tmp) / "p"
-        (pfx / "dosdevices").mkdir(parents=True)
-        (pfx / "drive_c" / "users" / "u").mkdir(parents=True)
-        (pfx / "system.reg").write_text("x")
-        os.symlink("../drive_c", pfx / "dosdevices" / "c:")
-        os.symlink("/", pfx / "dosdevices" / "z:")
-        os.symlink("/dev/ttyS0", pfx / "dosdevices" / "com1")
-        os.symlink("/home", pfx / "drive_c" / "users" / "u" / "Desktop")
-        return pfx
-
-    def test_strip_links_removes_z_com_and_absolute_profile_links_but_keeps_c(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            pfx = self.make_prefix(tmp)
-            os.environ["IWP_PREFIX"] = str(pfx)
-            try:
-                self.assertEqual(len(prefix.absolute_links(pfx)), 3)
-                with redirect_stdout(StringIO()):
-                    prefix.strip_links()
-                self.assertEqual(sorted(p.name for p in (pfx / "dosdevices").iterdir()), ["c:"])
-                desktop = pfx / "drive_c" / "users" / "u" / "Desktop"
-                self.assertTrue(desktop.is_dir() and not desktop.is_symlink())
-                self.assertEqual(prefix.absolute_links(pfx), [])
-            finally:
-                del os.environ["IWP_PREFIX"]
-
-    def test_check_fails_while_z_exists_and_names_it(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            pfx = self.make_prefix(tmp)
-            os.environ["IWP_PREFIX"] = str(pfx)
-            try:
-                out = StringIO()
-                with redirect_stdout(out):
-                    code = prefix.check()
-                self.assertEqual(code, 1)
-                self.assertIn("dosdevices/z: exists", out.getvalue())
-                self.assertIn("absolute link: dosdevices/com1", out.getvalue())
-            finally:
-                del os.environ["IWP_PREFIX"]
 
 
 if __name__ == "__main__":
