@@ -203,5 +203,7 @@ class InnerHarness(World):
                 code = cycle.inner(args)
             except SystemExit as exc:
                 code = exc
+            except BaseException as exc:        # an interruption that escaped inner() is a failure, not a stop
+                self.fail(f"{type(exc).__name__} escaped inner(): the run would leave no record")
         path = self.repo / "runs" / "E001" / f"{run_id}.json"
         return code, (json.loads(path.read_text()) if path.exists() and not path.is_symlink() else None)

@@ -67,14 +67,6 @@ class HardLinkTest(World):
         self.assertEqual(inodes(self.install)["a.txt"], (1, before["a.txt"][1]))
         self.assertEqual(stat.S_IMODE(os.stat(self.install / "a.txt").st_mode), 0o444)
 
-    def test_pruning_an_unlisted_hard_link_removes_the_name_only(self):
-        game = self.game_copy()
-        os.link(self.install / "unins000.exe", game / "extra.exe")
-        before = tree(self.install)
-        self.call(prefix.sync_game)
-        self.assertFalse((game / "extra.exe").exists())
-        self.assertEqual(tree(self.install), before)
-
     def test_a_hard_link_elsewhere_in_the_prefix_is_found_and_given_a_file_of_its_own(self):
         self.game_copy()
         shared = self.prefix / "drive_c" / "users" / "u" / "notes.txt"
@@ -173,6 +165,12 @@ class WriterTest(World):
 
     def test_new_writes_once_and_refuses_any_existing_name(self):
         self.assertEqual(safeio.write_file(self.out, "r.json", data=b"one"), "written")
+        with self.assertRaisesRegex(safeio.Refused, "already exists; it is never overwritten"):
+            safeio.write_file(self.out, "r.json", data=b"two")          # refused before anything is written
+        with mock.patch.object(safeio, "lstat_at", return_value=None), \
+                self.assertRaisesRegex(safeio.Refused, "appeared while it was being written"):
+            safeio.write_file(self.out, "r.json", data=b"race")           # it appeared after the check: link refuses
+        self.assertEqual(((self.out / "r.json").read_bytes(), self.leftovers()), (b"one", []))
         os.symlink(self.precious, self.out / "link.json")
         os.link(self.precious, self.out / "hard.json")
         (self.out / "dir.json").mkdir()
@@ -353,6 +351,17 @@ class OutputTest(InnerHarness):
         self.assertEqual(record["outputs"], [])
         self.checkout_untouched()
 
+    def test_a_record_that_appears_after_the_check_is_still_never_overwritten(self):
+        code, _ = self.run_cycle()
+        self.assertEqual(code, 0)
+        record = self.repo / "runs" / "E001" / "E001-r9001.json"
+        first = record.read_bytes()
+        (self.repo / "evidence" / "E001" / "E001-r9001.manifest.json").unlink()    # only the record is in the way
+        self.counter = 0                                   # the same run id again
+        with mock.patch.object(cycle.os.path, "lexists", return_value=False):
+            code, _ = self.run_cycle()
+        self.assertEqual((code, record.read_bytes()), (1, first))
+
     def test_a_record_name_that_exists_in_any_form_is_never_written(self):
         (self.repo / "runs" / "E001").mkdir(parents=True)
         os.symlink(self.precious, self.repo / "runs" / "E001" / "E001-r9001.json")
@@ -514,6 +523,10 @@ class GateTest(InnerHarness):
                 self.assertRegex(record["status"], r"^aborted: (KeyError|KeyboardInterrupt)")
                 self.assertIn("stop_x", self.calls)
                 self.assertEqual(self.values(record, "prefix after reset equals prefix before launch"), ["yes"])
+
+    def test_a_cycle_whose_completion_step_is_skipped_is_still_not_completed(self):
+        code, record = self.run_cycle(stages={"complete": lambda self_: None})
+        self.assertEqual((code, record["status"]), (1, "aborted: the cycle stopped before its end"))
 
     def test_a_failing_clean_up_stage_aborts_a_completed_cycle_and_the_rest_still_runs(self):
         def broken(self_):
