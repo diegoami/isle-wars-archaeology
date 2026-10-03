@@ -169,6 +169,7 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 | `isolation: "remote"` may run locally without saying so: a cloud brief checks where it runs before doing anything | T05's "remote" agents ran on this machine | 2026-10-03 |
 | Node 24 on PATH for non-interactive shells | the harness needs Node 20 or later; the nvm default did not reach non-interactive shells | 2026-10-03 |
 | The `[C3]` lines (the install, the Wine prefix, the display) are run by the main session and posted on the PR | an OpenCode reviewer cannot reach outside its worktree, and a rejected tool call fails the run | L26; T03 |
+| When the implementer is Claude, keep a probed heavy reviewer from a third family ready (DeepSeek V4 Pro, GLM-5.3) | both OpenAI reviewers share one account quota: on T08's final round `The usage limit has been reached` stopped GPT-6.1 Sol mid-review and failed the probe of Luna too, and a Claude fallback was not allowed | T08, 2026-10-03 |
 | One OpenCode model per role, then Claude: no long chains of cheap models | chains multiplied wasted attempts; one failure stopped the chain before the next model ran | L27 |
 
 ## What each model has shown so far
