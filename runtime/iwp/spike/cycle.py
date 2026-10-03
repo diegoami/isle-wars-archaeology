@@ -265,7 +265,8 @@ class Cycle:
                         WINEDEBUG="fixme-all", **{MARK: run_id})
         self.env["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d"
         if args.audio == "off":
-            # no audio driver can load, so the game sees no sound device and cannot play anything
+            # audio drivers disabled: no sound reaches the host. F002 compares E001-r0005 (drivers
+            # left alone: Wine registered the host's audio endpoints) with the control (it did not).
             self.env["WINEDLLOVERRIDES"] += ";winepulse.drv=d;winealsa.drv=d;wineoss.drv=d"
             self.env.pop("PULSE_SERVER", None)
         self.screen = Screen(width, height, self.env)
@@ -333,7 +334,8 @@ class Cycle:
         wx, wy = (int(v) for v in pos.split(","))
         ww, wh = (int(v) for v in size.split("x"))
         # On a screen larger than 800x600 the window fills the screen and the 800x600 stage sits
-        # centered in black (seen at 1024x768: stage at 112,84). Content coordinates are shifted so.
+        # centered in black (E001-r0011, 1024x768: stage at 112,84, which is what lets its title
+        # screen predicate and clicks succeed). Content coordinates are shifted so.
         self.screen.ox, self.screen.oy = wx + max(0, (ww - STAGE[0]) // 2), wy + max(0, (wh - STAGE[1]) // 2)
         self.observe(1, "process", "stage origin assumed from a centered 800x600 stage", f"{self.screen.ox},{self.screen.oy}")
         self.observe(1, "process", "Islepro window after launch (s)", waited)
@@ -427,11 +429,6 @@ class Cycle:
                 poll(self.screen.stable, 20, 0.1)
                 self.shot("notice.png", 8)
                 self.hover_click(*EXIT_CLICK, "Exit Game label", EXIT_GAME, 8)
-                if os.environ.get("IWP_DEBUG_SHOTS"):
-                    for n in range(6):
-                        time.sleep(3)
-                        self.say(f"debug {n}: alive={self.game_alive()}")
-                        self.shot(f"dbg{n}.png", 8)
         elif how == "wm-close":
             run(["xdotool", "key", "alt+F4"], env=self.env)
         waited = None
