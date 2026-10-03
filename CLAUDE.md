@@ -1,6 +1,6 @@
 # isle-wars-archaeology
 
-An evidence-backed behavioural specification of *Isle Wars* (DOS, 1994) and *Isle Wars Pro* (Win9x),
+An evidence-backed behavioural specification of *Isle Wars* (DOS) and *Isle Wars Pro* (Windows),
 both by Soleau Software, built by controlled experiments on the original games, using the method of
 [game-archaeologist](https://github.com/diegoami/game-archaeologist).
 
@@ -89,7 +89,7 @@ indexed in `docs/tasks/README.md`.
     malpaco, and no evidence ever does. Executables, data and help files, and patched builds stay
     on the user's own machines. They are never in this repository, a release, an issue or a cloud
     session. Tasks that need them are C3/C4 only. `tools/check_no_originals.py` runs in CI.
-19. **Two artifacts, every claim scoped** (U3, U11). DOS *Isle Wars* and Win9x *Isle Wars Pro*, the
+19. **Two artifacts, every claim scoped** (U3, U11). DOS *Isle Wars* and Windows *Isle Wars Pro*, the
     shareware/unregistered releases. A claim holds for both only when it is shown for each. What
     registration unlocks is `unknown`.
 20. **Research follows game-archaeologist ADR-007/008.** Run records are raw and immutable
