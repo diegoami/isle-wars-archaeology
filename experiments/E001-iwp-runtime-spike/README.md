@@ -3,6 +3,8 @@
 Copied from the research task's contract when the experiment was created. After the first run this
 file is append-only. A changed design is a new experiment, or `v2/`.
 
+> Amendment 1 (rework of PR #26): the start-state definition, the `net-host` arm and the choice of runs are superseded; see the end of this file.
+
 - **Task**: T08 (#24)
 - **Question**: Can Isle Wars Pro (set `iwp-2.0-996e86c5`) be launched, brought to a known screen, driven by one input, observed, terminated and reset unattended, under Wine 9.0 (32-bit prefix), Xvfb and the xfwm4 window manager, with no network (N0)?
 - **Hypotheses**:
@@ -36,3 +38,13 @@ file is append-only. A changed design is a new experiment, or `v2/`.
 - `runtime/iwp/spike/cycle.py [--arm NAME] [--size WxHxD] [--wm xfwm4|none] [--audio off|default] [--net n0|host] [--click hover|immediate] [--input options|save-default] [--terminate ui-quit|wm-close|kill]`. With no arguments it is the `control` arm. Needs `IWP_PREFIX` and `E001_BUNDLES` (and `IWP_DIR` for the reset to re-copy changed game files). It writes the next `runs/E001/E001-r<nnnn>.json` and `evidence/E001/E001-r<nnnn>.manifest.json`, and refuses to start if runtime, setup, tools or formats have uncommitted changes.
 - `setup/iwp/iwp-runtime.sh`: the profile that makes the prefix. Run it before the cycle.
 - The arms in this README are the arguments each record's `actions.args` lists.
+
+## Amendment 1 (rework of PR #26 after review; appended, nothing above is rewritten)
+
+Three statements above are superseded. Read them as follows.
+
+- **Start state.** The text above says each record's `start_state.sha256` identified the starting prefix. For E001-r0001 to r0014 it did not: that hash covered the game copy's listing and the registry key names only, so two prefixes with the same key names and different registry values got the same hash. From E001-r0015 the hash is the sha256 of the listing of every entry of the prefix before the launch (path, type, size and sha256 of each file, target of each link), the game copy and the registry files included. The id is still `S-cold-prefix-title`. Claims about identical starting states cite E001-r0015 onward only.
+- **Network.** N0 is part of the contract: the game runs only under `unshare -n`. The arm `net-host` (E001-r0006, run with the host's network) was outside that contract. The option was removed from `cycle.py`; the record stays as recorded and is not evidence for anything in F002. The driver now looks at the game's network namespace (it is not this process's, and it sees only `lo`) and aborts the run when it cannot establish that.
+- **Which runs count.** E001-r0001 to r0014 were produced by the driver as it was before the rework. They stay in `runs/E001/`, immutable. E001-r0015 to r0027 repeat the `control` arm 3 times and every other arm once (except `net-host`) with the reworked driver, from a prefix rebuilt by `setup/iwp/iwp-runtime.sh`; F002 cites them.
+
+Also changed by the rework, not by this experiment's design: the machine-local locations (prefix, its baseline, bundles, exploration output) are refused when inside a checkout or overlapping the install or one another, and the profile's link checks resolve where a link ends instead of reading how it is written.
