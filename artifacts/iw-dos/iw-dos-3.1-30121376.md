@@ -12,7 +12,7 @@ Facts about the files are in [F004](../../findings/F004-iw-dos-artifact-identity
   `9789a8569104607e46df3e9b1992d24d4fc285957cd6fbad8b9d7cb32eb82812`. dosgames.com is a third-party archive, so
   the copy may differ from Soleau Software's own distribution. The page calls the game "Shareware ($15)".
 - **Release**: the shareware (unregistered) release. What registration unlocks is `unknown`, apart from the
-  one limit the documents state (see F004).
+  one difference the documents state, faster loading and exiting (see F004).
 - **Runtime writes**: `[]`. Nothing has been observed; W3b measures it. `ISLEWAR.DAT` is an untested candidate.
 - **Check a copy**: `python3 tools/register_artifact.py check <dir> iw-dos-3.1-30121376 --strict`. The `--strict`
   flag makes any file outside the manifest a failure; there is no uninstaller to excuse, because the set is
@@ -38,20 +38,18 @@ overlay row says what the bytes look like, not what the program does with them (
 | `ISLEWAR.DOC` | 17370 | document: the game directions | 1994-04-01 12:00 |
 | `ISLE_REG.DOC` | 2290 | document: the registration form | 1994-04-01 12:00 |
 | `SOLSOFT.DOC` | 6683 | document: the publisher's notice and game list | 1994-04-01 12:00 |
-| `FILE_ID.DIZ` | 401 | document: the BBS description file | 1994-04-01 12:00 |
-| `AVEXTRA.TXT` | 336 | distributor addition (probable): contact notice | 1997-07-23 10:30 |
-| `OMBUDSMN.TXT` | 2156 | distributor addition (probable): ASP ombudsman notice | 1997-07-28 13:31 |
-| `CATALOG.TXT` | 24718 | distributor addition (probable): list of Soleau games, "As of August 1997" (`CATALOG.TXT:1`) | 1997-07-24 21:24 |
+| `FILE_ID.DIZ` | 401 | document: a short description of the game (`FILE_ID.DIZ:1-10`) | 1994-04-01 12:00 |
+| `AVEXTRA.TXT` | 336 | 1997-dated addition (provenance unconfirmed): contact notice | 1997-07-23 10:30 |
+| `OMBUDSMN.TXT` | 2156 | 1997-dated addition (provenance unconfirmed): ASP ombudsman notice | 1997-07-28 13:31 |
+| `CATALOG.TXT` | 24718 | 1997-dated addition (provenance unconfirmed): list of Soleau games, "As of August 1997" (`CATALOG.TXT:1`) | 1997-07-24 21:24 |
 
-The three 1997-dated files may not be the publisher's: they are not among the "Files Needed" in
-`ISLEWAR.DOC:17-20`, and their dates are 3 years after the others. That the publisher did not add them is
-unconfirmed. They are in the set anyway, so the id is reproducible from the same zip.
+The three 1997-dated files are not among the "Files Needed" in `ISLEWAR.DOC:17-20`, and their archive
+timestamps are three years after the others. Whether the publisher added them is unconfirmed. They are in the set anyway, so the id is reproducible from the same zip.
 
 ## What the archive dates show
 
-- Fourteen files carry the same time, 1994-04-01 12:00, to the minute. Identical times on files of
-  different kinds suggest a packaging tool set them, rather than an editor saving each file. That is an
-  inference, not a fact about the tool.
+- Fourteen files carry the same time, 1994-04-01 12:00, to the minute. The times are identical on files of
+  different kinds; why is unknown.
 - Three files carry 1997-07-23, 1997-07-24 and 1997-07-28 times.
 - The times are local and unzoned (zip format), and they are dates of the files. They are not a release
   date. `ISLEWAR.DOC:11` says "Apr 1994" for the version, which agrees with the month of the fourteen
@@ -66,7 +64,7 @@ On Windows, with `$dir` set to the copy (a path through `\\wsl.localhost\<distro
 the same zip):
 
 ```powershell
-$r=(Resolve-Path $dir).Path; gci -LiteralPath $r -Recurse -File | % { '{0}  {1}  {2}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Length, $_.FullName.Substring($r.Length+1).Replace('\','/') }
+$r=(Resolve-Path $dir).ProviderPath; gci -LiteralPath $r -Recurse -File | % { '{0}  {1}  {2}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Length, $_.FullName.Substring($r.Length+1).Replace('\','/') }
 ```
 
 Save the output to a file and run `python3 tools/register_artifact.py check --list <file> iw-dos-3.1-30121376`.
