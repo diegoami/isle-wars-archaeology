@@ -105,6 +105,43 @@ spend its last round on the same model.
   - Both rounds were the same class: an alias or a side path at the moment of a write or a launch.
   - Sonnet was stopped mid-round, and Opus took the branch.
 
+**When GPT-6.1 Sol cannot review.** The review goes to a substitute instead of waiting, unless
+the owner says to wait.
+
+- **Diagnose first.** Read the run's `/tmp/harness-opencode/<session>.err.txt`, and probe
+  `openai/gpt-6.1-sol` with `switch-model.mjs --probe --dry-run`.
+  - `The usage limit has been reached` means the whole OpenAI account is out of quota. Luna is
+    blocked too, so confirm with a probe of `openai/gpt-6-luna`.
+  - If only Sol fails (the model is unavailable, or its cost is to be avoided), Luna is still an
+    option.
+- **Substitutes, in order,** skipping the implementer's family:
+
+  | Situation | Hard review | Easy review |
+  | --- | --- | --- |
+  | Only Sol is unavailable | GLM-5.3 (`zai-glm-5.3`), then DeepSeek V4 Pro (`deepseek-pro`), then Luna, with the reason stated | Luna, as usual |
+  | The OpenAI account is out of quota | GLM-5.3, then DeepSeek V4 Pro | GLM-5.3, then DeepSeek V4 Pro |
+  | The implementer is GLM | DeepSeek V4 Pro | DeepSeek V4 Pro |
+  | The implementer is DeepSeek | GLM-5.3 | GLM-5.3 |
+
+  Luna stands in for Sol on a hard task only when no heavy third-family reviewer can run, and the
+  review's header says so. Never fall back to a Claude reviewer when Claude implemented the task:
+  escalate instead.
+- **How:**
+  1. Probe the substitute: `switch-model.mjs --role reviewer --model zai-coding-plan/glm-5.3 --name zai-glm-5.3 --probe --dry-run`.
+     Add `--force` only when the refusal concerns the default implementer's family, not this
+     task's.
+  2. Reuse Sol's brief unchanged, except:
+     - the header names the substitute;
+     - one sentence says it reviews in Sol's place, and why;
+     - Sol's earlier reviews are linked, so it re-takes their attacks.
+  3. Run `review.mjs --pr <n> --reviewer zai-glm-5.3 --issue <n> --apply-label --brief <file>`.
+     On exit 3, run it again with `--reviewer deepseek-pro`.
+  4. Record the change on the task file's Reviewer line, with the date and reason.
+  5. Log it on the trials issue.
+- **First use: T08, round 2.** On the owner's decision of 2026-10-03, after the OpenAI quota
+  stopped Sol mid-review: GLM-5.3 reviews, and DeepSeek V4 Pro is its fallback. Both answered their
+  probe (PONG in 4 s and 5 s).
+
 **Watch:** L27 records GLM-5.3 Flash stalling, and ending long implementer runs early, in IC2.
 It ran malpaco T02's round 2 cleanly. Its first runs as the easy default are watched, and a stall
 is diagnosed before any fallback (rule 21).
