@@ -23,3 +23,5 @@ dosbox-mount/
 *.[pP][nN][gG]
 *.[mM][pP]4
 *.[wW][aA][vV]
+# Agent worktrees under .claude/worktrees/ are nested checkouts; one `git add -A` would stage them.
+.claude/worktrees/
