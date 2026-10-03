@@ -82,6 +82,11 @@ EXIT_GAME = (640, 574, 100, 26)      # "Exit Game" on that notice
 EXIT_CLICK = (688, 586)
 SAVE_DEFAULT = (135, 515, 187, 35)   # "Save as default" on the Options screen
 SAVE_CLICK = (228, 532)
+ATTACK_BUTTON = (303, 530)           # the red Attack button of the turn menu, Blue's turn
+CANCEL_BUTTON = (405, 530)           # the yellow Cancel button while a target or an attacker is asked for
+TARGET_PANEL = (10, 502, 250, 70)    # bottom left: "Select Country To Attack", then "Attacking Country N"
+CENTRE_PANEL = (262, 502, 276, 70)   # the buttons of the phase
+QUIT_ATTACK = ((208, 176, 64), 20, 1000)   # colour, tolerance and pixel count of the gold QUIT ATTACK button
 REG_FILES = ("system.reg", "user.reg", "userdef.reg", ".update-timestamp")
 
 
@@ -374,6 +379,7 @@ class Cycle:
         self.steps = None            # the parsed step script of an E002 run (load_script)
         self.step_no = 4             # run/1 observation step of the next scripted step (0 to 3 are the setup)
         self.watch_rect = None       # the area `settle` and `click` compare, None for the whole screen
+        self.picked = None           # the point that the last candidate search stopped at
         self.session_dir = None      # where a --session run exchanges step files and screenshots
         # "completed" is given only by complete(), at the end of a cycle that did every stage. Any
         # other way out (fail(), an exception, an interruption) leaves an aborted status.
@@ -630,6 +636,8 @@ class Cycle:
             what = f"settle: watched area unchanged for {seconds} s (s)" if seconds else \
                 "settle: screen unchanged between two captures (s)"
             self.note("screen", what, "not within the time allowed" if waited is None else waited)
+        elif op == "attack-picked":
+            self.attack_picked(args)
         elif op == "clicks":
             count, x, y = args
             self.click_at(x, y, quiet=True, press=False)
@@ -704,9 +712,7 @@ class Cycle:
                 self.fail("click-until needs a watched area (watch X Y W H)")
 
             def worked(before):
-                crop = self.screen.raw(self.watch_rect)
-                return sum(1 for i in range(0, len(crop) - 2, 3)
-                           if abs(crop[i] - r) <= tol and abs(crop[i + 1] - g) <= tol and abs(crop[i + 2] - b) <= tol) >= n
+                return self.colour_count(self.watch_rect, (r, g, b), tol) >= n
         else:
             points = args
 
@@ -717,11 +723,43 @@ class Cycle:
             before = self.screen.raw(self.watch_rect)
             self.click_at(x, y, quiet=True)
             if poll(lambda: worked(before), 1.5, 0.1) is not None:
+                self.picked = (x, y)
                 self.note("screen", f"{op}: candidate that worked", f"{x},{y} (number {index // 2 + 1} of {len(points) // 2})")
                 return
         if strict:
             self.fail(f"{op}: none of the {len(points) // 2} candidates worked")
         self.note("screen", f"{op}?: candidate that worked", f"none of the {len(points) // 2}")
+
+    def colour_count(self, rect, colour, tol):
+        """How many pixels of the rectangle are within tol (per channel) of the colour."""
+        crop = self.screen.raw(rect)
+        r, g, b = colour
+        return sum(1 for i in range(0, len(crop) - 2, 3)
+                   if abs(crop[i] - r) <= tol and abs(crop[i + 1] - g) <= tol and abs(crop[i + 2] - b) <= tol)
+
+    def attack_picked(self, targets):
+        """attack-picked: from the picked point, attack the first target the game accepts. For each
+        target: Attack, the target (the game takes it only if it borders a Blue country; a refused
+        target changes nothing), the picked point (the game takes it only if it is a Blue country with
+        more than one army that borders the target), and the QUIT ATTACK button must show. Otherwise
+        Cancel, and the next target."""
+        if self.picked is None:
+            self.fail("attack-picked needs a point picked by click-any or click-until")
+        colour, tol, count = QUIT_ATTACK
+        for index in range(0, len(targets), 2):
+            x, y = targets[index], targets[index + 1]
+            self.click_at(*ATTACK_BUTTON, quiet=True)
+            before = self.screen.raw(TARGET_PANEL)
+            self.click_at(x, y, quiet=True)
+            accepted = poll(lambda: self.screen.raw(TARGET_PANEL) != before, 1.0, 0.1) is not None
+            if accepted:
+                self.click_at(*self.picked, quiet=True)
+                if poll(lambda: self.colour_count(CENTRE_PANEL, colour, tol) >= count, 1.5, 0.1) is not None:
+                    self.note("screen", "attack-picked: target and attacker", f"{x},{y} from {self.picked[0]},{self.picked[1]} "
+                              f"(number {index // 2 + 1} of {len(targets) // 2})")
+                    return
+            self.click_at(*CANCEL_BUTTON, quiet=True)
+        self.fail(f"attack-picked: none of the {len(targets) // 2} targets was accepted from {self.picked}")
 
     def shot_step(self, name):
         """A screenshot named by the script. In a recorded run it is a bundle file; in a session it is

@@ -141,6 +141,14 @@ class CandidateSearchTest(FakeWorld):
         self.assertEqual(self.clicks, [(10, 10), (20, 20)])      # (30, 30) would have worked, and was never clicked
         self.assertIn("20,20 (number 2 of 3)", made.obs[-1]["value"])
 
+    def test_a_search_records_the_point_it_stopped_at(self):
+        made = self.make()
+        self.works = {(20, 20)}
+        self.run_in(made, "watch 0 0 4 4")
+        self.assertIsNone(made.picked)
+        self.run_in(made, "click-any 10 10 20 20")
+        self.assertEqual(made.picked, (20, 20))
+
     def test_click_any_aborts_the_run_when_no_candidate_works(self):
         made = self.make()
         self.run_in(made, "watch 0 0 4 4")
@@ -187,6 +195,81 @@ class CandidateSearchTest(FakeWorld):
         with self.assertRaises(cycle.Abort):
             self.run_in(made, "click-until 1 2 3 4 5 10 10")
         self.assertEqual(self.clicks, [])
+
+
+class AttackPickedTest(FakeWorld):
+    """attack-picked against a small model of the turn: the menu, "Select Country To Attack", "Attack From
+    Where?" and the QUIT ATTACK panel. The model takes a target only if it is in `targets`, and an attacker
+    only if the pair is in `pairs`; anything else changes nothing, as the game does."""
+
+    def setUp(self):
+        super().setUp()
+        self.state, self.target, self.targets, self.pairs, self.log = "menu", None, set(), set(), []
+        self.picked = (42, 330)
+
+    def raw(self, crop=None):
+        if crop is None:
+            return b"\x00" * 30
+        size = crop[2] * crop[3]
+        if tuple(crop) == cycle.TARGET_PANEL:
+            return {"menu": b"\x00", "select": b"\x01", "fromwhere": b"\x02", "ready": b"\x02"}[self.state] * (size * 3)
+        if tuple(crop) == cycle.CENTRE_PANEL and self.state == "ready":
+            return bytes(cycle.QUIT_ATTACK[0]) * size
+        return b"\x00" * (size * 3)
+
+    def fake_run(self, cmd, **kw):
+        if cmd[:2] == ["xdotool", "mousemove"]:
+            self.pos = (int(cmd[2]), int(cmd[3]))
+        elif cmd[:2] == ["xdotool", "click"]:
+            self.log.append((self.state, self.pos))
+            if self.pos == cycle.CANCEL_BUTTON and self.state in ("select", "fromwhere"):
+                self.state = "menu"
+            elif self.pos == cycle.ATTACK_BUTTON and self.state == "menu":
+                self.state = "select"
+            elif self.state == "select" and self.pos in self.targets:
+                self.state, self.target = "fromwhere", self.pos
+            elif self.state == "fromwhere" and (self.target, self.pos) in self.pairs:
+                self.state = "ready"
+        return mock.MagicMock(returncode=0, stdout=b"", stderr=b"")
+
+    def attack(self, made, line):
+        made.picked = self.picked
+        self.run_in(made, line)
+
+    def test_the_first_target_that_the_game_takes_with_the_picked_attacker_is_attacked(self):
+        made = self.make()
+        self.targets = {(10, 10), (20, 20), (30, 30)}
+        self.pairs = {((20, 20), self.picked)}
+        self.attack(made, "attack-picked 5 5 10 10 20 20 30 30")
+        self.assertEqual(self.state, "ready")
+        # 5,5 is not taken as a target; 10,10 is, but the picked point cannot attack it: Cancel; 20,20 works
+        states = [(st, pos) for st, pos in self.log]
+        self.assertIn(("fromwhere", self.picked), states)
+        self.assertIn(("fromwhere", cycle.CANCEL_BUTTON), states)
+        self.assertNotIn((30, 30), [pos for _, pos in states])        # never reached: (20, 20) worked
+        self.assertIn("20,20 from 42,330 (number 3 of 4)", made.obs[-1]["value"])
+
+    def test_a_target_that_the_game_refuses_is_followed_by_cancel_and_the_next_one(self):
+        made = self.make()
+        self.targets, self.pairs = {(20, 20)}, {((20, 20), self.picked)}
+        self.attack(made, "attack-picked 5 5 20 20")
+        self.assertEqual(self.state, "ready")
+        self.assertEqual(self.log[:2], [("menu", cycle.ATTACK_BUTTON), ("select", (5, 5))])
+        self.assertEqual(self.log[2], ("select", cycle.CANCEL_BUTTON))
+
+    def test_the_run_aborts_when_no_target_fits(self):
+        made = self.make()
+        self.targets, self.pairs = {(10, 10)}, set()
+        with self.assertRaises(cycle.Abort):
+            self.attack(made, "attack-picked 5 5 10 10")
+        self.assertEqual(self.state, "menu")                          # left where it started
+        self.assertIn("none of the 2 targets was accepted", made.status)
+
+    def test_it_needs_a_picked_point(self):
+        made = self.make()
+        with self.assertRaises(cycle.Abort):
+            self.run_in(made, "attack-picked 5 5")
+        self.assertEqual(self.log, [])
 
 
 class ClickGuardTest(FakeWorld):

@@ -12,6 +12,11 @@ parses and checks; `cycle.py` runs the steps. Nothing here touches the game.
     click X Y               move there, wait for the label under the pointer to react, click; the
                             observation says whether the screen changed
     click! X Y              the same, and the run aborts when the screen did not change
+    attack-picked X Y [X Y ...]
+                            from the point that the last click-any/click-until picked, attack the first of
+                            these countries that the game accepts as a target and accepts that point as the
+                            attacker of (the ATTACK / QUIT ATTACK panel is up); the run aborts when none is.
+                            Starts from the turn menu and leaves the panel up
     clicks N X Y            move there, wait for the label to react, then click N times, 80 ms apart (N from 2 to 60;
                             one line of text scrolls per click on a scrollbar arrow)
     click-any X Y [X Y ...]     click the points in order and stop at the first after which the watched area
@@ -93,6 +98,10 @@ def parse_line(text, number=0):
         if len(args) > 1 or (args and not args[0].isdigit()) or (args and not 1 <= int(args[0]) <= 60):
             raise StepError("settle takes no argument, or a number of seconds from 1 to 60")
         return Step(op, tuple(int(a) for a in args), number)
+    if op == "attack-picked":
+        if not args or len(args) % 2:
+            raise StepError("attack-picked takes pairs X Y")
+        return Step(op, tuple(v for i in range(0, len(args), 2) for v in _point(args[i:i + 2], op)), number)
     if op == "clicks":
         if len(args) != 3 or not args[0].isdigit() or not 2 <= int(args[0]) <= 60:
             raise StepError("clicks takes N X Y, with N from 2 to 60")
