@@ -113,6 +113,31 @@ spend its last round on the same model.
   - Both rounds were the same class: an alias or a side path at the moment of a write or a launch.
   - Sonnet was stopped mid-round, and Opus took the branch.
 
+**Sonnet's tripwire** (the owner, 2026-10-04). Models judge their own depth poorly, so this
+works alongside the review-driven escalation, not instead of it. Every Sonnet brief ends with
+this paragraph:
+
+```text
+Out of your depth: stop and hand back, with an ESCALATE block, when any of these happens:
+two hypotheses for the same question have failed; you would rely on bytes, code or behaviour
+you cannot explain; you are about to write a claim you cannot back with evidence; or you have
+made three attempts at one step without progress. Push your branch first. The ESCALATE block
+gives what you tried, the evidence so far, and the exact question you could not answer. Never
+guess a format or a cause.
+```
+
+On an `ESCALATE`, the main session starts Opus on the pushed branch, with the brief and the block:
+- **consult**, for a narrow question: Opus answers it, and Sonnet resumes with the answer;
+- **takeover**, when the difficulty is the task itself: Opus finishes it.
+
+The main session also escalates when Sonnet doesn't:
+- a report hedges on a claim ("likely", "probably");
+- a reviewer finds reasoning errors, not just missing tests;
+- a rework fails on the same finding twice.
+
+Every escalation is logged on the trials issue, with whether Sonnet's call was right, so the
+tripwires can be tuned.
+
 **When GPT-6.1 Sol cannot review.** The review goes to a substitute instead of waiting, unless
 the owner says to wait.
 

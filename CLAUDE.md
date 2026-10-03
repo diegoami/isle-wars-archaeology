@@ -55,6 +55,15 @@ indexed in `docs/tasks/README.md`.
      Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
    - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
      `medium` only when the task file says why; never `high`. Every other model stays at `high`.
+   - **Sonnet's tripwire** (the owner, 2026-10-04). Every Sonnet brief carries the paragraph in
+     `docs/models.md`. Sonnet stops and hands back an `ESCALATE` block when:
+     - two hypotheses for the same question have failed;
+     - it would rely on bytes, code or behaviour it cannot explain;
+     - it is about to write a claim it cannot back;
+     - it has made three attempts at one step without progress.
+
+     The main session then brings in Opus, to answer the question (consult) or to take the task
+     (takeover), on the pushed branch.
    - **Escalation after a heavy review** (the owner, 2026-10-03). The implementer moves up one step
      for the next round when either holds:
      - a review asks for rework with three or more blocking findings;
