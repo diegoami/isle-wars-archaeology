@@ -150,6 +150,108 @@
         "id": "iwp-2.0-3694a782"
       },
       "notes": "Successor of iwp-2.0-996e86c5 (T08, E001, F002): the same shipped files, with xtras/Isledft.dat declared in runtime_writes and so left out of files. E001 observed the game change that file (15 to 16 bytes) when the Save as default button of the Options screen was clicked (the save-default arm); no other E001 arm changed any file of the set. The shipped Isledft.dat is the one listed in iwp-2.0-996e86c5 (sha256 1750f915ae4ea473d6b21493b7fe3d289fe45f2ea0d779f3cce3c40c309550df). Every other note of iwp-2.0-996e86c5 applies."
+    },
+    {
+      "manifest": {
+        "schema": "artifact-set/1",
+        "title": "Isle Wars",
+        "version": "3.1",
+        "acquired": {
+          "how": "archive item islewr31.zip from dosgames.com",
+          "when": "2026-10-03",
+          "note": "https://dosgames.com/files/islewr31.zip, linked from https://dosgames.com/game/isle-wars/ as DOWNLOAD 212k; downloaded 2026-10-03 22:35 UTC; 216924 bytes, sha256 9789a8569104607e46df3e9b1992d24d4fc285957cd6fbad8b9d7cb32eb82812; extracted with unzip"
+        },
+        "files": [
+          {
+            "path": "AVEXTRA.TXT",
+            "bytes": 336,
+            "sha256": "4c4efc52bdf34923654aca28ce7773b18be0c1b01ac735da0e018b78ab13c43a"
+          },
+          {
+            "path": "CATALOG.TXT",
+            "bytes": 24718,
+            "sha256": "6069a363def85aedf650fbf95545003db6c9f06a36460a59ea0fd0dab6ab3592"
+          },
+          {
+            "path": "FILE_ID.DIZ",
+            "bytes": 401,
+            "sha256": "4252396d70558ae34be49fa8db2631777bdb05ed919858acfa23da1637e6f33c"
+          },
+          {
+            "path": "ISLEWAR.DAT",
+            "bytes": 2048,
+            "sha256": "547b234e858a747ea45cdcc9c849c9f45f7575df89ee6154d2a922ecb2354e45"
+          },
+          {
+            "path": "ISLEWAR.DOC",
+            "bytes": 17370,
+            "sha256": "92680ff699eac82de01a3a19647c655e18e0f29e1a299bbef428fb28a9cc3c8f"
+          },
+          {
+            "path": "ISLEWAR.EXE",
+            "bytes": 83580,
+            "sha256": "88e934bb4fa0b074a926d53765bbca251cb38395da50337276aac7d08a5cde45"
+          },
+          {
+            "path": "ISLEWAR.JFT",
+            "bytes": 8738,
+            "sha256": "ac11369da2590c938a5b9ea0166f27e1f65b47cb8198d1dfd71dc5321fcabbb5"
+          },
+          {
+            "path": "ISLEWAR.OV0",
+            "bytes": 38948,
+            "sha256": "931dcad162c7c8c74a29c004086bef0973d6df3e938b64ae26c96c12598ef11e"
+          },
+          {
+            "path": "ISLEWAR.OV1",
+            "bytes": 32588,
+            "sha256": "66e2805c5cf1fd3e9a1aa506e28a9c8eae7418d33182541001e15b2bbde46fee"
+          },
+          {
+            "path": "ISLEWAR.OV2",
+            "bytes": 53522,
+            "sha256": "e171f3f58d1c16bb2d81b513b5f866ca21ca6a40eb9a78e6e91716529286245e"
+          },
+          {
+            "path": "ISLEWAR.OV3",
+            "bytes": 33798,
+            "sha256": "6dfd83867b32adb2998b9e9a31c54a517a7f34d7598eaf10af111d3854c836cd"
+          },
+          {
+            "path": "ISLEWAR.OV4",
+            "bytes": 2292,
+            "sha256": "a9799920bb6b75471b37b045ef975e91e644869e36356f0238aba9987468cdee"
+          },
+          {
+            "path": "ISLEWAR.OV5",
+            "bytes": 11455,
+            "sha256": "68f26b2e48c9730dc613f5e663e5fe7b7974d62e3fb3f5f157c12700d4aee32b"
+          },
+          {
+            "path": "ISLEWAR.OV6",
+            "bytes": 58688,
+            "sha256": "680a39e95fd37a18b0e9519bda2c758395729671f067084bdbdbef58eb211fcf"
+          },
+          {
+            "path": "ISLE_REG.DOC",
+            "bytes": 2290,
+            "sha256": "86a794c0acd5f45dcaf39613f300fc03e66ba6e17a804d82718d9432ff989589"
+          },
+          {
+            "path": "OMBUDSMN.TXT",
+            "bytes": 2156,
+            "sha256": "7c4e07f89ca27a601eeefc98237d73d31ea4657862f9597190f8b437a2b17071"
+          },
+          {
+            "path": "SOLSOFT.DOC",
+            "bytes": 6683,
+            "sha256": "2632a3fa558a2a3f9b9ab3b86a965cf2c4b5bb50aa2e2f09e12262818fd84a6c"
+          }
+        ],
+        "runtime_writes": [],
+        "id": "iw-dos-3.1-30121376"
+      },
+      "notes": "Set = every file of the archive islewr31.zip as acquired, 17 files, the three 1997-dated files included so that the id is reproducible from the same zip. The version 3.1 is the one the game's own documents state (ISLEWAR.DOC:6 \"v3.1\" and :11 \"Version 3.1  Apr 1994\"; FILE_ID.DIZ:1 and ISLE_REG.DOC:1 \"v3.1\"); the publisher's archived DOS page also heads its entry \"ISLE WARS v3.1\" (sources/web-soleau-dos-games.md, T05). Acquired from https://dosgames.com/files/islewr31.zip (216924 bytes, sha256 9789a8569104607e46df3e9b1992d24d4fc285957cd6fbad8b9d7cb32eb82812), linked from the game page https://dosgames.com/game/isle-wars/ as \"DOWNLOAD 212k\", which calls the game \"Shareware ($15)\"; downloaded and extracted with unzip on 2026-10-03 at 22:35 UTC. This is the shareware (unregistered) release: ISLEWAR.DOC:365 says the game is distributed as Shareware and ISLE_REG.DOC:7 names the $15.00 registration fee. dosgames.com is a third-party archive, so the copy may differ from Soleau Software's own distribution. AVEXTRA.TXT, OMBUDSMN.TXT and CATALOG.TXT are dated 1997 in the archive (the other fourteen files are dated 1994-04-01 12:00) and are probably additions by a later packager or distributor, not the game's own files: CATALOG.TXT:1 reads \"As of August 1997\", OMBUDSMN.TXT is an Association of Shareware Professionals ombudsman notice, AVEXTRA.TXT is a contact notice of Soleau Software. That the publisher did not add them is unconfirmed. Archive dates are the dates of the files, not a release date. runtime_writes is empty because nothing has been observed; W3b measures it, and ISLEWAR.DAT (2048 bytes of comma-separated decimal text) is an untested candidate. Unregistered-version limit seen in the documents: the registered version greatly speeds up the loading and exiting of the program (ISLEWAR.DOC:370-371, ISLE_REG.DOC:8-9); the player plays Blue against three computer opponents (ISLEWAR.DOC:26-27); what else registration unlocks is unknown."
     }
   ]
 }
