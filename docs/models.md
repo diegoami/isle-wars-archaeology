@@ -1,10 +1,18 @@
 # Models: who implements, who reviews, and how
 
-This page is the main session's working strategy for routing work to models in this repository and
-in [malpaco](https://github.com/diegoami/malpaco), which shares the roster. It holds no status. The run-by-run record is
-the model-trials issues: [#9](https://github.com/diegoami/isle-wars-archaeology/issues/9) here, and
-[malpaco#3](https://github.com/diegoami/malpaco/issues/3) there. The binding rules are CLAUDE.md
-rules 1, 6 and 21. Where this page and those rules differ, the rules win, and this page gets fixed.
+This page is the main session's working strategy for routing work to models. It covers
+[isle-wars-archaeology](https://github.com/diegoami/isle-wars-archaeology) and
+[malpaco](https://github.com/diegoami/malpaco), which share the roster and the harness.
+
+- **One page, two copies.** The page is kept identical in both repositories as `docs/models.md`.
+  A change goes to both in the same session.
+- **Task and issue numbers** without a repository name are isle-wars-archaeology's. malpaco's are
+  written `malpaco T02` or `malpaco#3`.
+- **No status.** The run-by-run record is the model-trials issues,
+  [isle-wars-archaeology#9](https://github.com/diegoami/isle-wars-archaeology/issues/9) and
+  [malpaco#3](https://github.com/diegoami/malpaco/issues/3).
+- **The binding rules** are CLAUDE.md rules 1, 6 and 21, numbered the same in both repositories.
+  Where this page and those rules differ, the rules win, and this page gets fixed.
 
 **Who decides.** The owner chooses the models and switches them often, as credits and prices
 change. The main session never routes by budget. Its job is to keep a switch cheap:

@@ -63,7 +63,7 @@ indexed in `docs/tasks/README.md`.
    pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
 
    The working strategy, how runs are made, the adjustments and what each model has shown are in
-   `docs/models.md`; the main session keeps it current.
+   `docs/models.md`, kept identical to malpaco's copy; the main session keeps it current.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing
