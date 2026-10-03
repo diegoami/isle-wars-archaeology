@@ -21,7 +21,11 @@ The two URLs are the ones the Pro install's shortcuts point to ([iwp-shortcuts.m
 
 Other live probes, same minute: `games/islepro.html`, `wingame.html`, `dosgame.html`, `order1.html`
 and `order2.html` each answered HTTP 404; `faq.html` answered 200
-([FAQ](web-soleau-faq.md)); `https://www.soleau.com/` did not connect within 20 seconds.
+([FAQ](web-soleau-faq.md)); `https://www.soleau.com/` was probed twice. On 2026-10-02 (about 21:25 UTC) it gave no response
+within 20 seconds. On 2026-10-03 (06:19 UTC) `curl` exited 60: it connected, and certificate
+verification failed ("no alternative certificate subject name matches target host name
+'www.soleau.com'"). A second reviewer probe on 2026-10-03 also gave exit 60. The two observations
+differ, and neither bears on a map cell.
 
 ## The home page, live and archived
 
@@ -33,16 +37,17 @@ Live 2026-10-02, and archived 2021-01-06
 The page holds only that line, a logo image and a table. It does not say the company has closed,
 nor that sales have stopped, nor who wrote it.
 
-Archived 2020-08-12 (<https://web.archive.org/web/20200812182849/http://www.soleau.com/>), the last
-capture before the one above:
+Archived 2020-11-12 03:47:55 UTC (<https://web.archive.org/web/20201112034755/http://www.soleau.com/>),
+the last capture before the one above (the Wayback Machine also holds captures of 2020-08-12,
+2020-08-25 and 2020-09-21 with the same content digest):
 
 > Welcome to Soleau Games
 
 > Our New Secure Online Store Is Now Open
 
-So the publisher's own home page changed from a store front to the one line between 2020-08-12 and
-2021-01-06, and the live page's `Last-Modified` date, 2020-11-12, falls in that gap. The cause is
-not stated.
+So the publisher's own home page changed from a store front to the one line between 2020-11-12
+03:47 UTC and 2021-01-06 12:28 UTC. The live page's `Last-Modified` header, 2020-11-12 19:19:49 GMT,
+falls in that gap, about 15 hours after the last store-front capture. The cause is not stated.
 
 ## A different site on the same address, in later captures
 

@@ -12,7 +12,8 @@
 
 ## archive.org item `msdos_Isle_Wars_1994`
 
-<https://archive.org/details/msdos_Isle_Wars_1994>
+<https://archive.org/details/msdos_Isle_Wars_1994> (an archive.org item page is itself the
+archive; no further copy was sought)
 
 > Publication date 1994
 
@@ -31,7 +32,9 @@ the game's own text and may be copied from the Pro text or the reverse.)
 
 ## dosgames.com
 
-<https://www.dosgames.com/game/isle-wars> (the page says "Added to website: 2018-02-28")
+<https://www.dosgames.com/game/isle-wars> (the page says "Added to website: 2018-02-28").
+Archived, first capture 2019-03-03: <https://web.archive.org/web/20190303212104/https://www.dosgames.com/game/isle-wars>
+(the page shows "Isle Wars 1994"; the other quotes below were read on the live page on 2026-10-02)
 
 > Isle Wars was developed and published by Soleau Software in the year 1994.
 
@@ -47,7 +50,9 @@ the game's own text and may be copied from the Pro text or the reverse.)
 
 ## classicdosgames.com
 
-<https://www.classicdosgames.com/game/Isle_Wars.html>
+<https://www.classicdosgames.com/game/Isle_Wars.html>.
+Archived, first capture 2010-01-03: <https://web.archive.org/web/20100103234421/http://www.classicdosgames.com/game/Isle_Wars.html>
+(read 2026-10-03; it carries the availability sentence quoted below)
 
 > Isle Wars 1991
 
@@ -65,15 +70,19 @@ matches. The publisher's own DOS page speaks of "islands"
 
 > Soleau Software still sells the registered version of this game for $12 by download.
 
-The page's footer reads "Copyright 2005-2026", but the sentence carries no date. The publisher's own
-DOS page in 2012 gave "$8 apiece" and its 1997 order page gave "$12" for one DOS game
-([ordering](web-soleau-ordering.md#1997-online-ordering-page-captured-1997-10-22)), so the figure
-may date from before 2012. That is a guess from two numbers. It is the likely origin of the
-malpaco row.
+The live page's footer reads "Copyright 2005-2026" and the sentence itself carries no date. The
+archived capture of 2010-01-03 (link above) already holds the same sentence, with the footer
+"Copyright 2005-2010", so the sentence dates to 2010-01-03 or earlier: it is at least sixteen years
+old and cannot be read as a statement about 2026. The publisher's own DOS page in 2012 gave "$8
+apiece" and its 1997 order page gave "$12" for one DOS game
+([ordering](web-soleau-ordering.md#1997-online-ordering-page-captured-1997-10-22)). The sentence is
+the likely origin of the malpaco row.
 
 ## playdosgames.com
 
-<https://www.playdosgames.com/online/isle-wars/>
+<https://www.playdosgames.com/online/isle-wars/>.
+Archived, first capture 2020-08-04: <https://web.archive.org/web/20200804200903/https://www.playdosgames.com/online/isle-wars/>
+(read 2026-10-03; it carries "The object of Isle Wars is to conquer all nine islands")
 
 > Release year: 1994
 

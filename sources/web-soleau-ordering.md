@@ -52,6 +52,8 @@ Captured 2012-09-27.
 
 > These are 8 bit DOS games which will not run on some versions of XP.
 
+> you will be sent the unlocking codes only. You do not download anything from the store.
+
 > DO NOT order these games unless you have them already running on your computer.
 
 ## 2020 ordering page (the shortcut's target)

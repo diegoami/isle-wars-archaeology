@@ -9,8 +9,13 @@
 - **URLs**:
   - Pro: <https://www.myabandonware.com/game/isle-wars-pro-ovz>
   - DOS: <https://www.myabandonware.com/game/isle-wars-c0j>
-  - No archived copy of either page was made; the Pro page links an archive of the publisher's own
-    page, which this repository cites directly
+  - Archived, first captures (read 2026-10-03): Pro, 2024-01-17
+    <https://web.archive.org/web/20240117055519/https://www.myabandonware.com/game/isle-wars-pro-ovz>
+    (carries "Released in 2002 on Windows" and "Enhanced remake of Ilse Wars for DOS"); DOS, 2019-12-06
+    <https://web.archive.org/web/20191206235426/https://www.myabandonware.com/game/isle-wars-c0j>
+    (carries "1991, the year Isle Wars was released on DOS"). The other quotes were read on the live
+    pages on 2026-10-02.
+  - The Pro page links an archive of the publisher's own page, which this repository cites directly
     ([Pro pages](web-soleau-islepro-pages.md)): <https://web.archive.org/web/20161129181924/http://www.soleau.com/games/islepro.html>
 - **Scope**: the Pro page is about *Isle Wars Pro* (Windows, and a Mac build); the DOS page is about
   DOS *Isle Wars*. Neither page's claim is carried across.
