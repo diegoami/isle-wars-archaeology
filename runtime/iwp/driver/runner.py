@@ -11,9 +11,14 @@ completed or aborted. The next repeat starts from the baseline whatever happened
 
 With --fault, repeat N (default 2) has the game killed at the checkpoint named by --fault-at, by something
 the driver does not know about: `wineserver -k` (kill-game) or SIGKILL of the game process (sigkill-game).
-That repeat must be recorded `aborted: game-died`, and the next one must complete; any other outcome stops
-the command with exit 1. Without --fault, every repeat must complete, and the first that does not stops
-the command, so that a wrong state is never carried into the next repeat.
+That repeat must be recorded `aborted: game-died`, its clean-up (terminate, the display, the reset) must
+have succeeded, and the next one must complete; any other outcome stops the command with exit 1. Without
+--fault, every repeat must complete, and the first that does not stops the command, so that a wrong state is
+never carried into the next repeat.
+
+The outer process gives the command a token of its own, IWP_CYCLE_INVOCATION, which every process of the
+command inherits; after the command it signals only processes that carry that token, never another E004
+command's. The command itself runs for at most `--repeats` x REPEAT_BOUND s.
 
 Machine-local values come from the environment, as for the spike, and are never written to a record:
     IWP_PREFIX, IWP_DIR, E004_BUNDLES (outside every checkout, confined by setup/iwp/locations.py), and
@@ -23,10 +28,12 @@ install is bound read-only once for the command, /tmp is private, nothing outliv
 game itself is always in a network namespace of its own (N0).
 """
 import argparse
+import contextlib
 import hashlib
 import json
 import os
 import re
+import secrets
 import signal
 import subprocess
 import sys
@@ -42,6 +49,9 @@ LAUNCHER = Path(__file__).resolve().with_name("run_cycle.py")
 OPTIONS_STEP = "click! {} {}".format(*spike.OPTIONS_CLICK)
 FAULTS = ("kill-game", "sigkill-game")
 FAULT_POINTS = ("after-title", "after-input")
+REPEAT_BOUND = 300     # s, one repeat at most: the sum of the session's bounds is below it (session.py), and a
+                       # repeat took 14 to 17 s in E004; the bound only ends a hang
+REAP_BOUND = 10        # s, for the killed command to be reaped
 RESTORE = ("fresh private user, mount and PID namespaces, the install bound read-only once for the command and "
            "checked at the start of every repeat; the prefix sealed (drive mapping, links, second names, mounts, "
            "the registered game copy) and its registry files equal to their baseline before anything starts, and "
@@ -67,7 +77,7 @@ def options_cycle(session):
 def kill_game(session):
     """What an outsider does: `wineserver -k` of this run's prefix, from a process of its own."""
     session.observe(session.step_no + 1, "process", "fault injected", "wineserver -k")
-    spike.run([spike.WINESERVER, "-k"], env=session.env)
+    spike.run([spike.WINESERVER, "-k"], env=session.env, timeout=sessionlib.WINESERVER_TIMEOUT)
     spike.poll(lambda: not session.game_alive(), 10, 0.05)
 
 
@@ -187,6 +197,15 @@ def check_args(args):
         sys.exit("--fault-repeat is between 1 and --repeats; nothing was started")
 
 
+def as_expected(session, faulted):
+    """A repeat ended as the command requires: completed, or, for the faulted repeat, aborted because the game
+    died; and in both cases its clean-up succeeded (session.recovered), so the next repeat starts from the
+    baseline. A faulted repeat whose terminate or reset failed is not as expected, whatever its status says."""
+    if faulted:
+        return session.status.startswith("aborted: game-died: ") and session.recovered
+    return session.status == "completed" and session.recovered
+
+
 def run_repeat(index, args, locs, display, commit, machine, argv, fingerprint):
     """One repeat: a session, its record. (status, seconds, as expected?)"""
     run_id = next_run_id()
@@ -204,9 +223,9 @@ def run_repeat(index, args, locs, display, commit, machine, argv, fingerprint):
     except RecordError as exc:
         print(str(exc), file=sys.stderr)
         return session.status, session.elapsed, False
-    good = session.status.startswith("aborted: game-died: ") if faulted else session.status == "completed"
+    good = as_expected(session, faulted)
     print(json.dumps({"repeat": index, "run_id": run_id, "status": session.status, "seconds": session.elapsed,
-                      "as_expected": good}), flush=True)
+                      "recovered": session.recovered, "as_expected": good}), flush=True)
     return session.status, session.elapsed, good
 
 
@@ -246,19 +265,41 @@ def outer(args, argv):
     dirty = spike.run(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"], cwd=ROOT).stdout
     if dirty:
         sys.exit("runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run")
-    env = dict(os.environ, IWP_CYCLE_COMMIT=commit, IWP_CYCLE_INNER="1", IWP_CYCLE_DISPLAY=sessionlib.free_display())
+    token = secrets.token_hex(16)
+    env = dict(os.environ, IWP_CYCLE_COMMIT=commit, IWP_CYCLE_INNER="1", IWP_CYCLE_DISPLAY=sessionlib.free_display(),
+               **{sessionlib.INVOCATION: token})
     cmd = ["unshare", "-r", "-m", "-p", "-f", "--kill-child", "--mount-proc", sys.executable, str(LAUNCHER)] + argv
-    code = subprocess.run(cmd, env=env).returncode
-    left = sessionlib.marked_run_ids(f"{EXPERIMENT}-")
+    code = launch_inner(cmd, env, args.repeats * REPEAT_BOUND)
+    left = reap_invocation(token)
     if left:
-        for pid in left:
-            try:
-                os.kill(pid, signal.SIGKILL)
-            except OSError:
-                pass
-        print(f"processes of the run survived its namespace: {sorted(left)}", file=sys.stderr)
+        print(f"processes of this command survived its namespace and were killed: {sorted(left)}", file=sys.stderr)
         return 1
     return code
+
+
+def launch_inner(cmd, env, bound):
+    """Run the namespaced command for at most `bound` s. At the bound it is killed (its namespace with it,
+    --kill-child) and the exit is 1; every wait here is bounded."""
+    proc = subprocess.Popen(cmd, env=env)
+    try:
+        return proc.wait(bound)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        with contextlib.suppress(subprocess.TimeoutExpired):
+            proc.wait(REAP_BOUND)
+        print(f"the command ran past its bound of {bound} s and was killed; the repeat it was in has no record, "
+              "and the prefix may be off its baseline (setup/iwp/iwp-runtime.sh)", file=sys.stderr)
+        return 1
+
+
+def reap_invocation(token):
+    """SIGKILL what is left of this command: the processes whose environment holds this command's token,
+    exactly. Another E004 command's processes carry another token and are never signalled. The pids found."""
+    found = sessionlib.invocation_processes(token)
+    want = [f"{sessionlib.INVOCATION}={token}".encode()]
+    for pid in found:
+        sessionlib.kill_marked(pid, want)
+    return found
 
 
 def main(argv=None):

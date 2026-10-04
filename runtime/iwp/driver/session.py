@@ -13,22 +13,28 @@ code does the seal, the screens, the step language and the reset; this module ad
 
 or `session.execute(body)`, which is start, `body(session)`, complete and finish with one status. The
 status is "completed" only from complete(), after the body, and only when the known screens the body
-expects were reached, both screenshots exist and the game was alive at the end; every other way out is
-"aborted: <kind>: <reason>", and the clean-up stages and the reset run in both cases.
+expects were reached, at least one input step of perform() succeeded, `before.png` was taken before the
+first input and `after.png` after the last, and the game was alive at the end; then finish() must also
+terminate, stop the display and reset the prefix without a fault. Every other way out is
+"aborted: <kind>: <reason>" (the first reason; every later fault is an observation too), and the clean-up
+stages and the reset run in both cases. `recovered` is True only when every clean-up stage succeeded and
+the reset was shown to restore the prefix: a caller may start the next session only then.
 
 What the driver keeps from T08 on every launch: the install bound read-only (checked at the start of
 every session), the prefix sealed before anything starts and again immediately before the game starts,
 the game in a network namespace of its own, and every file written through setup/iwp/safeio.py.
 
 What it changes against the spike (measured in F006):
-* a process is told apart by the marker `IWP_CYCLE_RUN=<run id>` and by a side, `IWP_CYCLE_SIDE=game` for
+* a process is told apart by the marker `IWP_CYCLE_RUN=<run id>`, by `IWP_CYCLE_INVOCATION=<token>` of the
+  command that started it (runner.py; the outer process signals only its own token's processes), and by a side, `IWP_CYCLE_SIDE=game` for
   the game and `display` for Xvfb, the window manager and the daemons the window manager starts. Terminate
-  waits, with a bound, for the game side only: the spike waited 30 s for the display side's D-Bus daemons
-  (dbus-daemon, at-spi, xfconfd), which only end when the display does (#40);
-* the children get no DBUS_SESSION_BUS_ADDRESS (a stale one kept xfwm4 from registering, #40) and no TMPDIR, so
-  that Wine uses the private /tmp of the namespace. Observed, not explained (F006): with TMPDIR naming a folder that
-  is not in the private /tmp Wine stops at once ("unable to create wineserver tmpdir"), and with TMPDIR=/tmp
-  itself it aborted ("free(): invalid pointer"); with TMPDIR unset every launch worked.
+  waits, with a bound, for the game side only: the spike's 30 s poll counted the display side's daemons
+  (dbus-daemon, at-spi, xfconfd seen in one diagnosis), which the driver saw end only after the display
+  stopped (#40; F006 says what this does and does not establish);
+* the children get no DBUS_SESSION_BUS_ADDRESS (#40: with a stale one, E002's xfwm4 did not register; the cause
+  is a hypothesis, F006) and no TMPDIR, so that Wine uses the private /tmp of the namespace (F006 keeps the
+  TMPDIR failures seen while building the driver as unreplicated observations);
+* every helper command and every wait has a bound (spike.run, RUN_TIMEOUT; the reaps in stop_x).
 """
 import argparse
 import contextlib
@@ -56,11 +62,16 @@ EXPERIMENT = "E004"
 MARK = spike.MARK                      # IWP_CYCLE_RUN
 SIDE = "IWP_CYCLE_SIDE"
 SIDES = ("game", "display")
+INVOCATION = "IWP_CYCLE_INVOCATION"    # one token per command (runner.outer); never shared by two commands
+INPUT_OPS = frozenset({"click", "click!", "clicks", "click-any", "click-until", "click-any?", "click-until?",
+                       "key", "attack-picked"})    # the steps that send the game a click or a key ("move" does not)
 SCREENS = {"title": "title_up", "options": "options_up", "notice": "notice_up"}
 TITLE_TIMEOUT = 45                     # s, the title screen after launch (F002: 6.6 to 6.7 s)
 WAIT_GONE_TIMEOUT = 10                 # s, the game side after `wineserver -k` (F002: 2.1 s; the bound is slack)
 DISPLAY_GONE_TIMEOUT = 5               # s, the display side after Xvfb and xfwm4 were stopped
 AFTER_KILL_TIMEOUT = 5                 # s, after a second `wineserver -k` and SIGKILL, before TerminateError
+STOP_TIMEOUT = 10                      # s, for Xvfb or xfwm4 to end after SIGTERM, before SIGKILL
+WINESERVER_TIMEOUT = 15                # s, `wineserver -k` itself (it returns at once, F002)
 FIRST_DISPLAY, LAST_DISPLAY = 77, 120
 
 
@@ -95,22 +106,41 @@ def run_processes(run_id, side=None):
     return found
 
 
-def marked_run_ids(value_prefix):
-    """{pid: run id} of the processes whose IWP_CYCLE_RUN starts with value_prefix (this experiment's runs),
-    read from /proc. Used by the outer process to find what survived a whole command."""
-    found = {}
-    needle = f"{MARK}=".encode()
-    for entry in Path("/proc").iterdir():
-        if not entry.name.isdigit() or int(entry.name) == os.getpid():
-            continue
-        try:
-            env = (entry / "environ").read_bytes().split(b"\0")
-        except OSError:
-            continue
-        for item in env:
-            if item.startswith(needle) and item[len(needle):].decode(errors="replace").startswith(value_prefix):
-                found[int(entry.name)] = item[len(needle):].decode(errors="replace")
-    return found
+def environ_has(pid, items):
+    """True when every one of `items` (b"NAME=value") is a whole entry of the environment of pid."""
+    try:
+        env = Path(f"/proc/{pid}/environ").read_bytes().split(b"\0")
+    except OSError:
+        return False
+    return all(item in env for item in items)
+
+
+def invocation_processes(token):
+    """pids of the processes whose environment holds exactly IWP_CYCLE_INVOCATION=<token>, read from /proc:
+    the processes of one command and of nothing else (another E004 command has another token)."""
+    if not token:
+        raise ValueError("invocation_processes needs a token; it never looks at every marked process")
+    want = [f"{INVOCATION}={token}".encode()]
+    return [int(e.name) for e in Path("/proc").iterdir()
+            if e.name.isdigit() and int(e.name) != os.getpid() and environ_has(e.name, want)]
+
+
+def kill_marked(pid, items):
+    """SIGKILL pid only if it still carries every one of `items`: the check is made again through a pidfd,
+    so a pid reused by another process between the listing and the signal is never signalled. True when sent."""
+    try:
+        fd = os.pidfd_open(pid)
+    except OSError:
+        return False
+    try:
+        if not environ_has(pid, items):
+            return False
+        signal.pidfd_send_signal(fd, signal.SIGKILL)
+        return True
+    except OSError:
+        return False
+    finally:
+        os.close(fd)
 
 
 def free_display(first=FIRST_DISPLAY, last=LAST_DISPLAY):
@@ -165,6 +195,12 @@ class Session(spike.Cycle):
         self.hooks = {}
         self.t0 = None
         self.elapsed = None
+        self.events = 0                              # a counter that orders the inputs and the screenshots
+        self.actions = []                            # (event, op, line) of every input step that succeeded
+        self.shot_at = {}                            # screenshot name -> event
+        self.later_faults = []                       # every fault after the first, and every clean-up fault
+        self.cleaned = {}                            # clean-up stage -> succeeded without a fault
+        self.recovered = False                       # set by finish(): every clean-up stage succeeded
 
     # ---- named failures
 
@@ -180,8 +216,9 @@ class Session(spike.Cycle):
         raise error(reason)
 
     def abort_later(self, reason):
-        """A fault found after the stages (terminate, reset, storing). The first reason is the one recorded;
-        every one is logged."""
+        """A fault found after the stages (terminate, reset, storing). The first reason is the one in the
+        status; every one is logged and kept in later_faults, which `recovered` and the record read."""
+        self.later_faults.append(f"{self._error.kind}: {reason}")
         self._set_aborted(reason, self._error)
         self.say(f"ABORT {self._error.kind}: {reason}")
 
@@ -324,7 +361,11 @@ class Session(spike.Cycle):
                     self.run_step(step)
                 except stepslib.StepError as exc:
                     self.fail(f"step on line {step.line}: {exc}")
+                if step.op in INPUT_OPS:
+                    self.events += 1
+                    self.actions.append((self.events, step.op, step.line))
             self.require_game("the steps ended")
+            self.observe(self.step_no, "process", "input steps that succeeded so far", len(self.actions))
 
     def checkpoint(self, name):
         """A named point in the body where an injected fault (or a test) may act; see on()."""
@@ -339,7 +380,10 @@ class Session(spike.Cycle):
 
     def shot(self, name, step):
         self.require_game(f"the screenshot {name}")
-        return super().shot(name, step)
+        taken = super().shot(name, step)
+        self.events += 1
+        self.shot_at[name] = self.events
+        return taken
 
     def observe_screenshot(self, name, step=None):
         """A screenshot of the whole display, kept as a bundle file; (sha256 of the raw pixels, sha256 of the PNG)."""
@@ -363,7 +407,8 @@ class Session(spike.Cycle):
 
     def complete(self):
         """The only place a session becomes completed: the body ran, the known screens it expects were
-        reached, both screenshots exist, and the game was still alive."""
+        reached, it acted (an input step of perform() succeeded), `before.png` was taken before its first
+        input and `after.png` after its last, and the game was still alive."""
         have = {name for name, _, _ in self.outputs}
         missing = [name for name in ("before.png", "after.png") if name not in have]
         if missing:
@@ -371,6 +416,13 @@ class Session(spike.Cycle):
         absent = sorted(self.expected - self.reached)
         if absent:
             self.fail("the cycle never reached its known screen: " + ", ".join(absent), ScreenNotReached)
+        if not self.actions:
+            self.fail("the cycle performed no input step (perform() never sent a click or a key that succeeded)",
+                      StepFailed)
+        if not self.shot_at.get("before.png", 0) < self.actions[0][0]:
+            self.fail("before.png was not taken before the first input", StepFailed)
+        if not self.shot_at.get("after.png", 0) > self.actions[-1][0]:
+            self.fail("after.png was not taken after the last input", StepFailed)
         self.require_game("the cycle ended")
         if self.status == "running":
             self.status = "completed"
@@ -386,16 +438,16 @@ class Session(spike.Cycle):
         return spike.poll(lambda: not self.alive(side), timeout, 0.05)
 
     def kill_side(self, side):
+        items = [f"{MARK}={self.run_id}".encode(), f"{SIDE}={side}".encode()]
         for pid in self.alive(side):
-            with contextlib.suppress(OSError):
-                os.kill(pid, signal.SIGKILL)
+            kill_marked(pid, items)
 
     def terminate(self):
         """`wineserver -k` (immediate, F002), then a bounded wait for the game side: no fixed wait, and no
         wait for the display side's daemons. A game side that is still there after the bound is killed, and
         a second bound ends in TerminateError."""
         self.say("wineserver -k")
-        spike.run([spike.WINESERVER, "-k"], env=self.env)
+        spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
         spike.poll(lambda: not self.game_alive(), 20, 0.05)
         code = self.procs["game"].poll()
         self.observe(9, "process", "game process exit status", code)
@@ -406,21 +458,29 @@ class Session(spike.Cycle):
         self.say(f"game side gone after terminate: {waited}")
         if waited is None:
             self.say("wineserver -k again, then SIGKILL of the game side")
-            spike.run([spike.WINESERVER, "-k"], env=self.env)
+            spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
             self.kill_side("game")
             if self.wait_gone("game", AFTER_KILL_TIMEOUT) is None:
                 self.fail(f"{len(self.alive('game'))} process(es) of the game side survived a kill", TerminateError)
 
     def stop_x(self):
+        """Stop xfwm4 and Xvfb (SIGTERM, then SIGKILL after STOP_TIMEOUT), every wait bounded; then the
+        display side's processes, then the check that nothing of this run is left. TerminateError otherwise."""
+        unreaped = []
         for name in ("wm", "xvfb"):
             proc = self.procs.get(name)
             if proc and proc.poll() is None:
                 proc.terminate()
                 try:
-                    proc.wait(10)
+                    proc.wait(STOP_TIMEOUT)
                 except subprocess.TimeoutExpired:
                     proc.kill()
-                    proc.wait()
+                    try:
+                        proc.wait(AFTER_KILL_TIMEOUT)
+                    except subprocess.TimeoutExpired:
+                        unreaped.append(name)
+        if unreaped:
+            self.fail(f"{' and '.join(unreaped)} not reaped within {AFTER_KILL_TIMEOUT} s of SIGKILL", TerminateError)
         waited = self.wait_gone("display", DISPLAY_GONE_TIMEOUT)
         if waited is None:
             self.say("the display side did not end by itself; SIGKILL")
@@ -442,13 +502,22 @@ class Session(spike.Cycle):
             return
         previous, self._error = self._error, error
         begun = time.monotonic()
+        faults = len(self.later_faults)
         try:
             action()
         except BaseException as exc:
             self.abort_later(f"{stage} failed: {type(exc).__name__}: {exc}")
         finally:
             self._error = previous
+            self.cleaned[stage] = len(self.later_faults) == faults
             self.observe(11, "process", f"clean-up stage '{stage}' took (s)", round(time.monotonic() - begun, 2))
+
+    def snapshot_and_reset(self):
+        """The spike's snapshot, diff and reset, and ResetError unless the reset restored the prefix."""
+        self.take_snapshots("after")
+        self.report_changes()
+        if self.reset() is not True:
+            raise ResetError("the prefix after the reset is not the prefix before the launch")
 
     def finish(self):
         """Terminate, stop the display, snapshot and reset, keep the logs; every stage runs, whatever failed
@@ -458,6 +527,13 @@ class Session(spike.Cycle):
         if hasattr(self, "snap_before"):
             self.cleanup("snapshot and reset", self.snapshot_and_reset, ResetError)
         self.cleanup("keeping the logs", self.keep_logs, RecordError)
+        self.recovered = (all(self.cleaned.values())
+                          and (not hasattr(self, "snap_before") or self.cleaned.get("snapshot and reset") is True))
+        failed = [stage for stage, ok in self.cleaned.items() if not ok]
+        self.observe(12, "process", "clean-up: every stage succeeded and the prefix was reset (the next session may start)",
+                     "yes" if self.recovered else "no: " + ", ".join(failed or ["the reset did not run"]))
+        for fault in self.later_faults:
+            self.observe(12, "process", "a fault logged by abort_later (the status keeps only the first reason)", fault[:300])
         if self.status == "running":
             self._error = DriverError
             self.status = f"aborted: {DriverError.kind}: the cycle stopped before its end"

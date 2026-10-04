@@ -15,6 +15,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 T = "tests.test_iwp_driver."
 S = "runtime/iwp/driver/session.py"
+R = "runtime/iwp/driver/runner.py"
+C = "runtime/iwp/spike/cycle.py"
 # (what, [(file, old, new), ...], [test ids that must fail])
 MUTANTS = [
     ("the wait for a screen does not raise at its timeout", [(
@@ -61,6 +63,67 @@ MUTANTS = [
     ("a prefix that is off its baseline is launched from", [(
         S, "            if here != there:", "            if False:")],
      [T + "SealTest.test_a_prefix_that_is_off_its_baseline_starts_nothing"]),
+    # the round-0 review of PR #54
+    ("R1: the outer clean-up signals every marked process, not this command's (round 0's selection)", [
+        (R, "    found = sessionlib.invocation_processes(token)", "    found = spike.marked_processes()"),
+        (R, "        sessionlib.kill_marked(pid, want)", "        os.kill(pid, signal.SIGKILL)")],
+     [T + "InvocationTest.test_the_clean_up_kills_this_commands_processes_and_never_another_e004_commands",
+      T + "InvocationTest.test_outer_never_signals_another_e004_command"]),
+    ("R1: a pid is signalled without checking again that it still carries the marker", [(
+        S, "        if not environ_has(pid, items):\n            return False\n        signal.pidfd_send_signal",
+        "        signal.pidfd_send_signal")],
+     [T + "InvocationTest.test_a_pid_that_no_longer_carries_the_marker_is_not_signalled"]),
+    ("R2: a faulted repeat is as expected whatever its clean-up did", [(
+        R, '        return session.status.startswith("aborted: game-died: ") and session.recovered',
+        '        return session.status.startswith("aborted: game-died: ")')],
+     [T + "RecoveryTest.test_a_failed_reset_after_an_injected_kill_is_not_as_expected_and_keeps_the_first_reason",
+      T + "RecoveryTest.test_a_reset_that_raises_after_an_injected_kill_is_not_recovered",
+      T + "RecoveryTest.test_a_terminate_that_fails_after_an_injected_kill_is_not_recovered"]),
+    ("R2: a reset that did not restore the prefix is accepted", [(
+        S, "        if self.reset() is not True:", "        if self.reset() is not True and False:")],
+     [T + "RecoveryTest.test_a_failed_reset_after_an_injected_kill_is_not_as_expected_and_keeps_the_first_reason",
+      T + "RecoveryTest.test_a_completed_cycle_whose_reset_failed_is_aborted_and_not_as_expected"]),
+    ("R2: a clean-up stage that faulted counts as succeeded", [(
+        S, "            self.cleaned[stage] = len(self.later_faults) == faults", "            self.cleaned[stage] = True")],
+     [T + "RecoveryTest.test_a_reset_that_raises_after_an_injected_kill_is_not_recovered",
+      T + "RecoveryTest.test_a_terminate_that_fails_after_an_injected_kill_is_not_recovered"]),
+    ("R3: a helper command is waited for without a bound", [(
+        C, "        out, err = proc.communicate(timeout=timeout)", "        out, err = proc.communicate()")],
+     [T + "BoundTest.test_a_helper_command_that_does_not_end_is_killed_at_its_bound",
+      T + "BoundTest.test_a_helper_whose_pipes_are_held_open_by_its_own_child_ends_at_its_bound"]),
+    ("R3: a killed helper is reaped without a bound", [(
+        C, "            proc.wait(REAP_TIMEOUT)", "            proc.wait()")],
+     [T + "BoundTest.test_a_killed_helper_that_is_not_reaped_is_a_named_error_not_a_hang"]),
+    ("R3: Xvfb or xfwm4 is reaped without a bound after SIGKILL", [(
+        S, "                        proc.wait(AFTER_KILL_TIMEOUT)", "                        proc.wait()")],
+     [T + "BoundTest.test_stop_x_never_waits_without_a_bound_for_a_process_that_will_not_be_reaped"]),
+    ("R3: `wineserver -k` in terminate has no bound", [(
+        S, '        spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)\n        spike.poll(',
+        '        spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=None)\n        spike.poll(')],
+     [T + "BoundTest.test_a_wineserver_that_never_returns_ends_terminate_with_a_named_error"]),
+    ("R3: the namespaced command is waited for without a bound", [(
+        R, "        return proc.wait(bound)", "        return proc.wait()")],
+     [T + "BoundTest.test_the_command_is_killed_at_its_bound"]),
+    ("R4: complete() does not require an input (and its order with the screenshots)", [(
+        S, """        if not self.actions:
+            self.fail("the cycle performed no input step (perform() never sent a click or a key that succeeded)",
+                      StepFailed)
+        if not self.shot_at.get("before.png", 0) < self.actions[0][0]:
+            self.fail("before.png was not taken before the first input", StepFailed)
+        if not self.shot_at.get("after.png", 0) > self.actions[-1][0]:
+            self.fail("after.png was not taken after the last input", StepFailed)
+""", "")],
+     [T + "ActionTest.test_a_body_that_waits_for_the_title_and_takes_two_screenshots_but_never_acts_is_not_completed",
+      T + "ActionTest.test_complete_refuses_a_session_with_its_screens_and_screenshots_and_a_live_game_but_no_input"]),
+    ("R4: after.png may be taken before the input", [(
+        S, '        if not self.shot_at.get("after.png", 0) > self.actions[-1][0]:', "        if False:")],
+     [T + "ActionTest.test_an_after_screenshot_taken_before_the_input_is_not_an_after_observation"]),
+    ("R4: before.png may be taken after the input", [(
+        S, '        if not self.shot_at.get("before.png", 0) < self.actions[0][0]:', "        if False:")],
+     [T + "ActionTest.test_a_before_screenshot_taken_after_the_input_is_not_a_before_observation"]),
+    ("R4: a step that sends no input counts as the action", [(
+        S, "                if step.op in INPUT_OPS:", "                if True:")],
+     [T + "ActionTest.test_a_step_that_sends_no_input_does_not_count_as_the_action"]),
 ]
 
 
@@ -77,7 +140,26 @@ def tests_pass(ids):
     return done.returncode == 0
 
 
+def marked_elsewhere():
+    """pids of processes that carry an Isle Wars Pro run marker. The R1 mutant signals every one of them, so
+    the script refuses to run while any exists (another session's run, or a recorded cycle)."""
+    found = []
+    for entry in Path("/proc").iterdir():
+        if entry.name.isdigit():
+            try:
+                env = (entry / "environ").read_bytes().split(b"\0")
+            except OSError:
+                continue
+            if any(item.startswith(b"IWP_CYCLE_RUN=") for item in env):
+                found.append(int(entry.name))
+    return found
+
+
 def main():
+    if marked_elsewhere():
+        print(f"STOPPED: processes with an IWP_CYCLE_RUN marker are alive {marked_elsewhere()}; the R1 mutant "
+              "would signal them. Run the mutants when no Isle Wars Pro run is alive.")
+        return 2
     ids = sorted({i for *_, group in MUTANTS for i in group})
     if not tests_pass(ids):
         print("the unmutated tests fail; nothing to show")

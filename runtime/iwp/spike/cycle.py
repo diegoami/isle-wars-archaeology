@@ -112,9 +112,40 @@ def sha256_file(path):
     return digest.hexdigest()
 
 
-def run(cmd, **kw):
-    kw.setdefault("capture_output", True)
-    return subprocess.run(cmd, **kw)
+RUN_TIMEOUT = 60      # s, any one helper command (xdotool, xprop, xdpyinfo, import, mount, git, wineserver -k):
+                      # each takes well under a second here (F002's stage times); the bound only ends a hang
+REAP_TIMEOUT = 5      # s, for a helper killed at its bound to be reaped
+
+
+class Unreaped(RuntimeError):
+    """A helper command killed at its bound was not reaped within REAP_TIMEOUT."""
+
+
+def run(cmd, timeout=RUN_TIMEOUT, check=False, capture_output=True, **kw):
+    """subprocess.run with every wait bounded (T13, R3 of the round-0 review). A command that has not
+    ended after `timeout` s (or whose output pipes stay open that long, held by a child of its own) is
+    killed and TimeoutExpired is raised; when even the killed command is not reaped within REAP_TIMEOUT,
+    Unreaped is raised. subprocess.run itself waits without a bound for a killed child."""
+    if capture_output:
+        kw.setdefault("stdout", subprocess.PIPE)
+        kw.setdefault("stderr", subprocess.PIPE)
+    proc = subprocess.Popen(cmd, **kw)
+    try:
+        out, err = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        for pipe in (proc.stdout, proc.stderr):
+            if pipe is not None:
+                pipe.close()
+        try:
+            proc.wait(REAP_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            raise Unreaped(f"{cmd[0]} was killed after {timeout} s and not reaped within {REAP_TIMEOUT} s") from None
+        raise subprocess.TimeoutExpired(cmd, timeout) from None
+    done = subprocess.CompletedProcess(cmd, proc.returncode, out, err)
+    if check:
+        done.check_returncode()
+    return done
 
 
 def poll(condition, timeout, interval=0.1):
@@ -1008,7 +1039,8 @@ class Cycle:
         return lines
 
     def reset(self):
-        """Put the game copy and the prefix back to the state they had before the launch."""
+        """Put the game copy and the prefix back to the state they had before the launch. True when the
+        prefix then equals its snapshot before the launch (the driver requires it, T13)."""
         _, pb, _ = self.snap_before
         _, pa, _ = self.snap_after
         added, _, _ = diff_tree(pb, pa)
@@ -1040,6 +1072,7 @@ class Cycle:
         if not ok:
             self.abort_later("reset did not restore the prefix")
             self.say("  differing: " + ", ".join((added2 + removed2 + changed2)[:10]))
+        return ok
 
     # ---- main
 
