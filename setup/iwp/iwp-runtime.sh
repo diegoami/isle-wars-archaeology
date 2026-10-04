@@ -9,9 +9,10 @@
 # Steps: check the system packages and say which is missing; build the prefix when it is absent;
 # remove Z: and every link that leaves the prefix; make the game's copy in the prefix's C: drive
 # equal to the registered set (artifacts/known.json); keep the registry files as the cycle's reset
-# baseline; then run every token check of capabilities.json (tokens.py). It prints "ready" and
-# exits 0 only when all of them pass, and names each one that fails otherwise. Every prefix step
-# confines the locations first (locations.py) and refuses a prefix inside a checkout.
+# baseline; then run this lane's token checks (tokens.py --tokens, the ones T09's "Runs on" names,
+# and only those). It prints "ready" and exits 0 only when all of them pass, and names each one
+# that fails otherwise. Every prefix step confines the locations first (locations.py) and refuses
+# a prefix inside a checkout.
 #
 # TODO(H3): when game-archaeologist's generic preflight exists (07 §2), the last step becomes
 #   `preflight --tokens <the tokens of capabilities.json>` (see tokens.py); the exit code is still
@@ -51,4 +52,4 @@ step strip-links
 step sync-game
 step baseline
 
-python3 setup/iwp/tokens.py
+python3 setup/iwp/tokens.py --tokens 'tool:python@>=3.11,tool:wine@9.0,tool:xvfb,tool:xfwm4,tool:xdotool,facility:display,artifact:iwp-2.0-996e86c5,facility:iwp-prefix'
