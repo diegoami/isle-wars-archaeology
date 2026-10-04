@@ -60,16 +60,22 @@ def select(capabilities, names):
 
 def parse_argv(argv):
     """(path, names): `--tokens` takes a comma-separated list, any other argument is the
-    capabilities path. names is None when `--tokens` is absent, so every token runs."""
+    capabilities path. names is None when `--tokens` is absent, so every token runs. A second
+    `--tokens` or a second positional path is refused: either would overwrite its first value
+    silently, so an empty token list could be replaced by a nonempty one and still print ready."""
     path, names = None, None
     i = 0
     while i < len(argv):
         if argv[i] == "--tokens":
+            if names is not None:
+                raise ValueError("--tokens given more than once")
             if i + 1 >= len(argv):
                 raise ValueError("--tokens needs a comma-separated list of token names")
             names = [name for name in argv[i + 1].split(",") if name]
             i += 2
         else:
+            if path is not None:
+                raise ValueError("capabilities path given more than once")
             path = Path(argv[i])
             i += 1
     return path, names

@@ -534,6 +534,21 @@ class ReadyGatingTest(World):
         self.assertEqual(code, 1)
         self.assertNotIn("ready", lines)
 
+    def test_a_repeated_tokens_option_is_refused(self):
+        # R1: a second --tokens used to overwrite the first list, so `--tokens "" --tokens pro`
+        # turned a not-ready empty list into a passing run.
+        code, lines = self.run_main(json.dumps({"pro": {"check": "true"}}),
+                                    extra=["--tokens", "", "--tokens", "pro"])
+        self.assertEqual((code, lines), (1, ["not ready: --tokens given more than once"]))
+
+    def test_a_second_positional_path_is_refused(self):
+        # R1 for the path: the second positional used to overwrite the first silently, so the
+        # verdict could come from a file that was not the one asked for first.
+        other = self.tmp / "other-capabilities.json"
+        other.write_text(json.dumps({"pro": {"check": "true"}}))
+        code, lines = self.run_main(json.dumps({"pro": {"check": "false"}}), extra=[str(other)])
+        self.assertEqual((code, lines), (1, ["not ready: capabilities path given more than once"]))
+
     def test_without_tokens_every_token_still_runs(self):
         code, lines = self.run_main(json.dumps({"a": {"check": "true"}, "b": {"check": "true"}}))
         self.assertEqual((code, lines[-1]), (0, "ready"))
