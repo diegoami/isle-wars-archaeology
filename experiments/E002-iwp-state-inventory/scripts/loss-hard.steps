@@ -1,0 +1,26 @@
+# A game quit in the middle at HARD
+# Steps are described in runtime/iwp/spike/steps.py. Coordinates are the 800x600 stage's.
+# Run with: cycle.py --experiment E002 --arm loss-hard --script experiments/E002-iwp-state-inventory/scripts/loss-hard.steps --may-write-saved-files --terminate kill
+click 100 585        # New Game
+settle
+click! 251 311       # HARD
+shot setup
+click! 565 532       # Play Game
+shot board-loading
+watch 0 0 800 495
+settle 4             # the computer players take their turns; the board is quiet when it is Blue's
+shot human-turn
+click 100 585        # New Game, in the middle of the game
+settle
+shot loss-notice
+click! 400 526       # Continue
+settle
+watch all
+click 620 585        # Scores
+settle
+shot scores
+click! 388 516       # Return
+file xtras/Islepro.skr
+file xtras/Islepro.dat
+file xtras/Isledft.dat
+changes

@@ -1,0 +1,257 @@
+00:24:50 install read-only inside the run
+00:24:50 prefix seal before anything starts: ok
+00:24:50 Xvfb ready after 0.11 s, root 800x600x24
+00:24:51 xfwm4 registered after 0.22 s
+00:24:51 prefix seal immediately before launch: ok
+00:24:51 launched: unshare -n /usr/lib/wine/wine <game>
+00:24:52 game in a separate network namespace, interfaces seen: ['lo']
+00:24:52 window after 0.53 s at 0,0, size 800x600
+00:24:58 root window at the title screen: 800x600x24; window _NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; 
+00:24:58 title screen reached 6.92 s after launch
+00:24:58 before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+00:24:58 session: waiting for s2.cmd-0001.txt in the exploration folder
+00:25:09 step 1: click 320 585
+00:25:10   click at 320,585: label changed under the pointer (s): 0.08
+00:25:10   click at 320,585: screen changed after the click (s): 0.02
+00:25:10 step 2: settle 
+00:25:10   settle: screen unchanged between two captures (s): 0.44
+00:25:10 step 3: click 390 137
+00:25:12   click at 390,137: label changed under the pointer (s): no change within 2 s
+00:25:12   click at 390,137: screen changed after the click (s): 0.02
+00:25:12 step 4: shot opt-armies5
+00:25:12   opt-armies5.png raw RGB8 pixels sha256: 4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c
+00:25:12 step 5: click 343 233
+00:25:14   click at 343,233: label changed under the pointer (s): no change within 2 s
+00:25:14   click at 343,233: screen changed after the click (s): 0.85
+00:25:14 step 6: shot opt-yellow
+00:25:14   opt-yellow.png raw RGB8 pixels sha256: 443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d
+00:25:14 step 7: click 251 311
+00:25:16   click at 251,311: label changed under the pointer (s): no change within 2 s
+00:25:16   click at 251,311: screen changed after the click (s): 0.02
+00:25:16 step 8: shot opt-hard
+00:25:16   opt-hard.png raw RGB8 pixels sha256: 606678f6a6379826629b1b72d282050dedc162db2083c9b1f1ee89e5d1553081
+00:25:16 step 9: click 454 389
+00:25:19   click at 454,389: label changed under the pointer (s): no change within 2 s
+00:25:19   click at 454,389: screen changed after the click (s): 0.02
+00:25:19 step 10: click 530 465
+00:25:22   click at 530,465: label changed under the pointer (s): no change within 2 s
+00:25:22   click at 530,465: screen changed after the click (s): 0.98
+00:25:22 step 11: shot opt-all
+00:25:22   opt-all.png raw RGB8 pixels sha256: 149db86d2babe6e38b66b0cd5875b6878fa30b3d093b67030f5a906c293ab323
+00:25:31 step 1: click 228 532
+00:25:31   click at 228,532: label changed under the pointer (s): 0.08
+00:25:31   click at 228,532: screen changed after the click (s): 0.02
+00:25:31 step 2: shot opt-saved
+00:25:31   opt-saved.png raw RGB8 pixels sha256: 9472425b2b9cdd09219f959424f91bb841706b61108f50a1cf6ce1c4a8d4e29d
+00:25:31 step 3: file xtras/Isledft.dat
+00:25:31   xtras/Isledft.dat: size in bytes and sha256: 16 6134cb940e3e4494b7da9388d895365b3c1c5ee8e0070c789dfa1895b033ae1a
+00:25:31   xtras/Isledft.dat: equals the install's file: no: the install's has 15 bytes
+00:25:31   xtras/Isledft.dat: changed byte offsets, install>game copy: 0x8 32>33; 0xe 32>31
+00:25:31   raw:bytes[0x0:0x10] of xtras/Isledft.dat as written by the game: 312c302c302c302c332c322c332c312c
+00:25:49 step 1: click 533 311
+00:25:51   click at 533,311: label changed under the pointer (s): no change within 2 s
+00:25:51   click at 533,311: screen changed after the click (s): 0.02
+00:25:51 step 2: click 388 465
+00:25:53   click at 388,465: label changed under the pointer (s): no change within 2 s
+00:25:53   click at 388,465: screen changed after the click (s): 0.02
+00:25:53 step 3: click 228 532
+00:25:53   click at 228,532: label changed under the pointer (s): 0.08
+00:25:53   click at 228,532: screen changed after the click (s): 0.02
+00:25:53 step 4: file xtras/Isledft.dat
+00:25:53   xtras/Isledft.dat: size in bytes and sha256: 16 61b74846ba65cbf62181d57b2f356c9fab4ccf658bd391f28265fabf855ea321
+00:25:53   xtras/Isledft.dat: equals the install's file: no: the install's has 15 bytes
+00:25:53   xtras/Isledft.dat: changed byte offsets, install>game copy: 0xe 32>33
+00:25:53   raw:bytes[0x0:0x10] of xtras/Isledft.dat as written by the game: 312c302c302c302c322c322c332c332c
+00:25:53 step 5: click 253 465
+00:25:56   click at 253,465: label changed under the pointer (s): no change within 2 s
+00:25:56   click at 253,465: screen changed after the click (s): 0.02
+00:25:56 step 6: click 228 532
+00:25:56   click at 228,532: label changed under the pointer (s): 0.08
+00:25:56   click at 228,532: screen changed after the click (s): 0.02
+00:25:56 step 7: file xtras/Isledft.dat
+00:25:56   xtras/Isledft.dat: size in bytes and sha256: 16 0cbfe73c7589018ded46f185348c4c0e000d19f55532560ed2468a42bc11476a
+00:25:56   xtras/Isledft.dat: equals the install's file: no: the install's has 15 bytes
+00:25:56   xtras/Isledft.dat: changed byte offsets, install>game copy: 0x8 32>31; 0xe 32>33
+00:25:56   raw:bytes[0x0:0x10] of xtras/Isledft.dat as written by the game: 312c302c302c302c312c322c332c332c
+00:25:56 step 8: click 396 533
+00:25:58   click at 396,533: label changed under the pointer (s): no change within 2 s
+00:25:58   click at 396,533: screen changed after the click (s): 0.01
+00:25:58 step 9: shot ear1
+00:25:58   ear1.png raw RGB8 pixels sha256: 9c2898fa97492597f9e7621acb480a0433105c076eab5a61c055f9df7f1bdba6
+00:25:58 step 10: click 228 532
+00:25:58   click at 228,532: label changed under the pointer (s): 0.08
+00:25:58   click at 228,532: screen changed after the click (s): 0.02
+00:25:58 step 11: file xtras/Isledft.dat
+00:25:58   xtras/Isledft.dat: size in bytes and sha256: 16 0cbfe73c7589018ded46f185348c4c0e000d19f55532560ed2468a42bc11476a
+00:25:58   xtras/Isledft.dat: equals the install's file: no: the install's has 15 bytes
+00:25:58   xtras/Isledft.dat: changed byte offsets, install>game copy: 0x8 32>31; 0xe 32>33
+00:25:58   raw:bytes[0x0:0x10] of xtras/Isledft.dat as written by the game: 312c302c302c302c312c322c332c332c
+00:25:58 step 12: click 396 533
+00:26:01   click at 396,533: label changed under the pointer (s): no change within 2 s
+00:26:01   click at 396,533: screen changed after the click (s): 0.02
+00:26:01 step 13: click 391 311
+00:26:03   click at 391,311: label changed under the pointer (s): no change within 2 s
+00:26:03   click at 391,311: screen changed after the click (s): 0.01
+00:26:03 step 14: click 388 465
+00:26:05   click at 388,465: label changed under the pointer (s): no change within 2 s
+00:26:05   click at 388,465: screen changed after the click (s): 0.02
+00:26:05 step 15: click 228 532
+00:26:05   click at 228,532: label changed under the pointer (s): 0.08
+00:26:05   click at 228,532: screen changed after the click (s): 0.02
+00:26:05 step 16: file xtras/Isledft.dat
+00:26:05   xtras/Isledft.dat: size in bytes and sha256: 16 478938f72db1c76f6f660352105812299f087050999fb3216f90880f890adb27
+00:26:05   xtras/Isledft.dat: equals the install's file: no: the install's has 15 bytes
+00:26:05   xtras/Isledft.dat: changed byte offsets, install>game copy: none in the common length
+00:26:05   raw:bytes[0x0:0x10] of xtras/Isledft.dat as written by the game: 312c302c302c302c322c322c332c322c
+00:26:05 step 17: shot final
+00:26:05   final.png raw RGB8 pixels sha256: 6a8f597c22a32a6713db057c404efdfab558485aa0a8d35d071c9afbbd121798
+00:26:24 step 1: changes 
+00:26:25   game copy so far: added/removed/changed: 0/0/1: ~xtras/Isledft.dat (15,)->(16,)
+00:26:25   prefix so far: added/removed/changed: 31/0/3: +dosdevices/com1; +dosdevices/com2; +dosdevices/com3; +dosdevices/com4; +dosdevices/com5; +dosdevices/com6; +dosdevices/com7; +dosdevices/com8; +drive_c/users/<user>/Temp/TempFolder.aaa; +drive_c/users/<user>/Temp/TempFolder.aaa/dirapi.dll 967168; +drive_c/users/<user>/Temp/TempFolder.aaa/iml32.dll 394752; +drive_c/users/<user>/Temp/TempFolder.aaa/msvcrt.dll 280576; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Animated GIF Asset.x32 26112; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DTTurnTable.x32 69632; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DirectSound.x32 16384; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Flash Asset.x32 286720; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Asset.x32 49152; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Xtra.x32 230400; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/INetURL.x32 28672; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/MacroMix.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Mix Services.x32 64000; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetFile.x32 41472; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetLingo.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/QT3Asset.x32 105984; ~drive_c/iwp/xtras/Isledft.dat (15,)->(16,); ~system.reg (1723327,)->(1711333,); ~user.reg (27435,)->(21504,)
+00:26:25   registry keys so far: added/removed/value-changed: 0/1/6
+00:26:37 step 1: click 565 532
+00:26:38   click at 565,532: label changed under the pointer (s): 0.08
+00:26:38   click at 565,532: screen changed after the click (s): 0.02
+00:26:38 step 2: click 100 585
+00:26:38   click at 100,585: label changed under the pointer (s): 0.08
+00:26:38   click at 100,585: screen changed after the click (s): 0.02
+00:26:38 step 3: settle 
+00:26:38   settle: screen unchanged between two captures (s): 0.44
+00:26:38 step 4: click 565 532
+00:26:39   click at 565,532: label changed under the pointer (s): 0.08
+00:26:39   click at 565,532: screen changed after the click (s): 0.02
+00:26:39 step 5: watch 0 495 800 100
+00:26:39   watched area: x,y,w,h 0,495,800,100
+00:26:39 step 6: settle 
+00:26:39   settle: screen unchanged between two captures (s): 0.44
+00:26:39 step 7: shot g1
+00:26:39   g1.png raw RGB8 pixels sha256: 1a1e25a0094ef12d92794b289f543dcacae854cb5705958f4b796c895e23a376
+00:28:19 step 1: shot h01
+00:28:20   h01.png raw RGB8 pixels sha256: d4731240d7463e679d89ad4906c90238b675b1542f9319c9edd0e21dd8d2b13d
+00:28:20 step 2: shot h02
+00:28:20   h02.png raw RGB8 pixels sha256: d17fe01f4b5a51c02f85287f06b9d5e2a5877b4dac26cac878902036bc000bc8
+00:28:20 step 3: shot h03
+00:28:20   h03.png raw RGB8 pixels sha256: 8fce44ce6cb3c4c4261b47c697cef40b292812e5b70c18727dcce62a9d7ea416
+00:28:20 step 4: shot h04
+00:28:20   h04.png raw RGB8 pixels sha256: 0f1fb08f9a2f981c15aededebc94d5dfb4c8c0fa9fd3eac420ab2825fecffe20
+00:28:20 step 5: shot h05
+00:28:20   h05.png raw RGB8 pixels sha256: 0f1fb08f9a2f981c15aededebc94d5dfb4c8c0fa9fd3eac420ab2825fecffe20
+00:28:20 step 6: shot h06
+00:28:21   h06.png raw RGB8 pixels sha256: ac9ac1b189d0e46280274ed7c181470dd7c02a9ee41c82fb8b26cc88ef96d9a0
+00:28:21 step 7: shot h07
+00:28:21   h07.png raw RGB8 pixels sha256: b4f8d9452abee1f566af9483369bffec475fe1036d9f7b3d3cfcae71bb19f8b1
+00:28:21 step 8: shot h08
+00:28:21   h08.png raw RGB8 pixels sha256: 959898993866b7a9c5bbb2f4f315467a4ea29540a6789f9debe600f4fb18113d
+00:28:30 step 1: click 100 585
+00:28:31   click at 100,585: label changed under the pointer (s): 0.01
+00:28:31   click at 100,585: screen changed after the click (s): 0.01
+00:28:31 step 2: shot ng-mid
+00:28:31   ng-mid.png raw RGB8 pixels sha256: 108b6db3403806c32910c68d9c32352da6e07dcc3114c95ee0d06083833ee80f
+00:28:31 step 3: file xtras/Islepro.dat
+00:28:31   xtras/Islepro.dat: size in bytes and sha256: 190 a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03
+00:28:31   xtras/Islepro.dat: equals the install's file: yes
+00:28:40 step 1: click 400 526
+00:28:40   click at 400,526: label changed under the pointer (s): 0.08
+00:28:40   click at 400,526: screen changed after the click (s): 0.01
+00:28:40 step 2: shot ng-cont
+00:28:40   ng-cont.png raw RGB8 pixels sha256: fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753
+00:28:40 step 3: file xtras/Islepro.dat
+00:28:40   xtras/Islepro.dat: size in bytes and sha256: 190 a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03
+00:28:40   xtras/Islepro.dat: equals the install's file: yes
+00:28:40 step 4: changes 
+00:28:41   game copy so far: added/removed/changed: 0/0/2: ~xtras/Isledft.dat (15,)->(16,); ~xtras/Islepro.skr (13,)->(14,)
+00:28:41   prefix so far: added/removed/changed: 31/0/4: +dosdevices/com1; +dosdevices/com2; +dosdevices/com3; +dosdevices/com4; +dosdevices/com5; +dosdevices/com6; +dosdevices/com7; +dosdevices/com8; +drive_c/users/<user>/Temp/TempFolder.aaa; +drive_c/users/<user>/Temp/TempFolder.aaa/dirapi.dll 967168; +drive_c/users/<user>/Temp/TempFolder.aaa/iml32.dll 394752; +drive_c/users/<user>/Temp/TempFolder.aaa/msvcrt.dll 280576; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Animated GIF Asset.x32 26112; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DTTurnTable.x32 69632; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DirectSound.x32 16384; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Flash Asset.x32 286720; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Asset.x32 49152; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Xtra.x32 230400; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/INetURL.x32 28672; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/MacroMix.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Mix Services.x32 64000; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetFile.x32 41472; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetLingo.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/QT3Asset.x32 105984; ~drive_c/iwp/xtras/Isledft.dat (15,)->(16,); ~drive_c/iwp/xtras/Islepro.skr (13,)->(14,); ~system.reg (1723327,)->(1711333,); ~user.reg (27435,)->(21504,)
+00:28:41   registry keys so far: added/removed/value-changed: 0/1/6
+00:28:46 step 1: file xtras/Islepro.skr
+00:28:46   xtras/Islepro.skr: size in bytes and sha256: 14 25464a6d8411b9e9e5920cd130d060ae341295fdce6ae70eaa92f22b64880db0
+00:28:46   xtras/Islepro.skr: equals the install's file: no: the install's has 13 bytes
+00:28:46   xtras/Islepro.skr: changed byte offsets, install>game copy: 0x6 8e>8f
+00:28:46   raw:bytes[0x0:0xe] of xtras/Islepro.skr as written by the game: 8e8a8e8a8e8a8f8a8e8a8e8a8e8a
+00:28:46 step 2: click 620 585
+00:28:46   click at 620,585: label changed under the pointer (s): 0.08
+00:28:46   click at 620,585: screen changed after the click (s): 0.01
+00:28:46 step 3: shot scores2
+00:28:46   scores2.png raw RGB8 pixels sha256: c7eb3b89a73cdfea8ab6849b9f31b1d598e831312c13fc55a6a14eb108078ad8
+00:30:46 step 1: click 388 516
+00:30:46   click at 388,516: label changed under the pointer (s): 0.08
+00:30:46   click at 388,516: screen changed after the click (s): 0.02
+00:30:46 step 2: click 100 585
+00:30:47   click at 100,585: label changed under the pointer (s): 0.08
+00:30:47   click at 100,585: screen changed after the click (s): 0.02
+00:30:47 step 3: settle 
+00:30:47   settle: screen unchanged between two captures (s): 0.43
+00:30:47 step 4: click 565 532
+00:30:47   click at 565,532: label changed under the pointer (s): 0.08
+00:30:47   click at 565,532: screen changed after the click (s): 0.01
+00:30:47 step 5: shot p0
+00:30:48   p0.png raw RGB8 pixels sha256: 1a1e25a0094ef12d92794b289f543dcacae854cb5705958f4b796c895e23a376
+00:31:11 step 1: shot p1
+00:31:12   p1.png raw RGB8 pixels sha256: 6f67765766578495cbfbf6d294653c01ee3013d088214cbf11dd17e315c65148
+00:31:22 step 1: watch 262 502 276 70
+00:31:22   watched area: x,y,w,h 262,502,276,70
+00:31:22 step 2: click 50 196
+00:31:24   click at 50,196: label changed under the pointer (s): no change within 2 s
+00:31:24   click at 50,196: screen changed after the click (s): 0.01
+00:31:24 step 3: shot inv1
+00:31:24   inv1.png raw RGB8 pixels sha256: a2bfd32bb1479c9994ec849a058abeb8494032722572e4ada9876f3a4869ab5d
+00:31:24 step 4: click 160 432
+00:31:25   click at 160,432: label changed under the pointer (s): no change within 2 s
+00:31:25   click at 160,432: screen changed after the click (s): 0.01
+00:31:25 step 5: shot sel6
+00:31:25   sel6.png raw RGB8 pixels sha256: f00a0ad1187313a9d628aa9c58113ab5f35ad22f041cb248226d78ef4bc9aaa4
+00:31:40 step 1: click 307 543
+00:31:40   click at 307,543: label changed under the pointer (s): 0.08
+00:31:40   click at 307,543: screen changed after the click (s): 0.01
+00:31:40 step 2: shot all1
+00:31:40   all1.png raw RGB8 pixels sha256: 8afaa5300cfb083198242ccc62d9d27646b759c4f59f0456f21b9d3b6f3a3e66
+00:31:40 step 3: click 497 543
+00:31:40   click at 497,543: label changed under the pointer (s): 0.08
+00:31:40   click at 497,543: screen changed after the click (s): 0.01
+00:31:40 step 4: shot placed
+00:31:40   placed.png raw RGB8 pixels sha256: 2d0337ee312b9d53e1f35ba13cf9ea0288e4be0f36a28df2b82fbf33ad3ce7e3
+00:31:40 step 5: click 303 530
+00:31:41   click at 303,530: label changed under the pointer (s): 0.08
+00:31:41   click at 303,530: screen changed after the click (s): 0.01
+00:31:41 step 6: click 50 196
+00:31:46   click at 50,196: label changed under the pointer (s): no change within 2 s
+00:31:46   click at 50,196: screen changed after the click (s): no change within 3 s
+00:31:46 step 7: shot atk-e1
+00:31:46   atk-e1.png raw RGB8 pixels sha256: f4eb1b84d8bcce5e6ee8eb8dbf4dcb2ce14fc0626970642e59f90434d7930bca
+00:31:46 step 8: click 160 432
+00:31:51   click at 160,432: label changed under the pointer (s): no change within 2 s
+00:31:51   click at 160,432: screen changed after the click (s): no change within 3 s
+00:31:51 step 9: shot atk-bad
+00:31:52   atk-bad.png raw RGB8 pixels sha256: f4eb1b84d8bcce5e6ee8eb8dbf4dcb2ce14fc0626970642e59f90434d7930bca
+00:32:14 step 1: watch 10 502 250 70
+00:32:14   watched area: x,y,w,h 10,502,250,70
+00:32:14 step 2: click 133 385
+00:32:17   click at 133,385: label changed under the pointer (s): no change within 2 s
+00:32:17   click at 133,385: screen changed after the click (s): 0.01
+00:32:17 step 3: shot e5
+00:32:17   e5.png raw RGB8 pixels sha256: ed0c4c6bb22c959ea1288ec571d5ee5f146b6adef18a6168f4e192eb0b6bf8bc
+00:32:17 step 4: watch 262 502 276 70
+00:32:17   watched area: x,y,w,h 262,502,276,70
+00:32:17 step 5: click 747 395
+00:32:22   click at 747,395: label changed under the pointer (s): no change within 2 s
+00:32:22   click at 747,395: screen changed after the click (s): no change within 3 s
+00:32:22 step 6: shot badt
+00:32:22   badt.png raw RGB8 pixels sha256: ed0c4c6bb22c959ea1288ec571d5ee5f146b6adef18a6168f4e192eb0b6bf8bc
+00:32:22 step 7: click 160 432
+00:32:25   click at 160,432: label changed under the pointer (s): no change within 2 s
+00:32:25   click at 160,432: screen changed after the click (s): 0.01
+00:32:25 step 8: shot goodt
+00:32:25   goodt.png raw RGB8 pixels sha256: 4acb6d9c014643ad5f2432898bc36d8ca50a244089e74c203f7d2fc8ebaf7496
+00:32:30 step 1: click 337 531
+00:32:33   click at 337,531: label changed under the pointer (s): 0.08
+00:32:33   click at 337,531: screen changed after the click (s): no change within 3 s
+00:32:33 step 2: shot r1
+00:32:33   r1.png raw RGB8 pixels sha256: 5e1b001617e68e0dbdf569520e41dca64b9015ca0628842e954e31802b4031a1
+00:32:33 step 3: shot r2
+00:32:34   r2.png raw RGB8 pixels sha256: 5e1b001617e68e0dbdf569520e41dca64b9015ca0628842e954e31802b4031a1
+00:32:34 step 4: shot r3
+00:32:34   r3.png raw RGB8 pixels sha256: 5e1b001617e68e0dbdf569520e41dca64b9015ca0628842e954e31802b4031a1
+00:35:16 session: quit
+00:35:16 wineserver -k
+00:35:17 game exit status 0
+00:35:17 processes still alive after terminate: 0
+00:35:18 reset: prefix equals its state before launch: True

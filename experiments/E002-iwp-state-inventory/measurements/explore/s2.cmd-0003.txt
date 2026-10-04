@@ -1,0 +1,17 @@
+click 533 311
+click 388 465
+click 228 532
+file xtras/Isledft.dat
+click 253 465
+click 228 532
+file xtras/Isledft.dat
+click 396 533
+shot ear1
+click 228 532
+file xtras/Isledft.dat
+click 396 533
+click 391 311
+click 388 465
+click 228 532
+file xtras/Isledft.dat
+shot final

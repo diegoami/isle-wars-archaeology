@@ -1,0 +1,15 @@
+click at 307,543: label changed under the pointer (s): 0.08
+click at 307,543: screen changed after the click (s): 0.01
+all1.png raw RGB8 pixels sha256: 8afaa5300cfb083198242ccc62d9d27646b759c4f59f0456f21b9d3b6f3a3e66
+click at 497,543: label changed under the pointer (s): 0.08
+click at 497,543: screen changed after the click (s): 0.01
+placed.png raw RGB8 pixels sha256: 2d0337ee312b9d53e1f35ba13cf9ea0288e4be0f36a28df2b82fbf33ad3ce7e3
+click at 303,530: label changed under the pointer (s): 0.08
+click at 303,530: screen changed after the click (s): 0.01
+click at 50,196: label changed under the pointer (s): no change within 2 s
+click at 50,196: screen changed after the click (s): no change within 3 s
+atk-e1.png raw RGB8 pixels sha256: f4eb1b84d8bcce5e6ee8eb8dbf4dcb2ce14fc0626970642e59f90434d7930bca
+click at 160,432: label changed under the pointer (s): no change within 2 s
+click at 160,432: screen changed after the click (s): no change within 3 s
+atk-bad.png raw RGB8 pixels sha256: f4eb1b84d8bcce5e6ee8eb8dbf4dcb2ce14fc0626970642e59f90434d7930bca
+ok

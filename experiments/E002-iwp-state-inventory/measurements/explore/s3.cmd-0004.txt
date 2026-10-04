@@ -1,0 +1,10 @@
+click 744 80
+settle
+shot top
+click 744 481
+click 744 481
+click 744 481
+click 744 481
+click 744 481
+settle
+shot dn5

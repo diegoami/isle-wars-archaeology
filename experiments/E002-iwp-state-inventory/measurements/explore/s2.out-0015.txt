@@ -1,0 +1,12 @@
+watched area: x,y,w,h 10,502,250,70
+click at 133,385: label changed under the pointer (s): no change within 2 s
+click at 133,385: screen changed after the click (s): 0.01
+e5.png raw RGB8 pixels sha256: ed0c4c6bb22c959ea1288ec571d5ee5f146b6adef18a6168f4e192eb0b6bf8bc
+watched area: x,y,w,h 262,502,276,70
+click at 747,395: label changed under the pointer (s): no change within 2 s
+click at 747,395: screen changed after the click (s): no change within 3 s
+badt.png raw RGB8 pixels sha256: ed0c4c6bb22c959ea1288ec571d5ee5f146b6adef18a6168f4e192eb0b6bf8bc
+click at 160,432: label changed under the pointer (s): no change within 2 s
+click at 160,432: screen changed after the click (s): 0.01
+goodt.png raw RGB8 pixels sha256: 4acb6d9c014643ad5f2432898bc36d8ca50a244089e74c203f7d2fc8ebaf7496
+ok

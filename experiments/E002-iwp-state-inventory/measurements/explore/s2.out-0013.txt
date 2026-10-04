@@ -1,0 +1,8 @@
+watched area: x,y,w,h 262,502,276,70
+click at 50,196: label changed under the pointer (s): no change within 2 s
+click at 50,196: screen changed after the click (s): 0.01
+inv1.png raw RGB8 pixels sha256: a2bfd32bb1479c9994ec849a058abeb8494032722572e4ada9876f3a4869ab5d
+click at 160,432: label changed under the pointer (s): no change within 2 s
+click at 160,432: screen changed after the click (s): 0.01
+sel6.png raw RGB8 pixels sha256: f00a0ad1187313a9d628aa9c58113ab5f35ad22f041cb248226d78ef4bc9aaa4
+ok

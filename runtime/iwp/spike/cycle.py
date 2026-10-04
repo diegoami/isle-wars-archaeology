@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""E001 cycle: launch Isle Wars Pro under Wine, reach a known screen, give one input, observe,
-terminate, reset, and write one run/1 record (W3a spike; the reusable driver is W5a).
+"""E001/E002 cycle: launch Isle Wars Pro under Wine, reach a known screen, give one input (E001) or run
+a step script (E002, steps.py), observe, terminate, reset, and write one run/1 record (W3a spike,
+extended by W4a; the reusable driver is W5a).
 
 One run is: the install bound read-only, the prefix sealed, Xvfb, xfwm4, snapshot, the prefix sealed
 again, launch, window, known screen, before screenshot, one input, after screenshot, terminate,
@@ -17,17 +18,20 @@ bundles happens inside a private user, mount and PID namespace (``unshare -rmpf`
 
 Machine-local values come from the environment and are never written to a record:
     IWP_PREFIX    the Wine prefix (outside every checkout); the game copy is <prefix>/drive_c/iwp
-    E001_BUNDLES  the local directory for evidence bundles
-    E001_EXPLORE  where --explore writes its output (default: E001_BUNDLES)
+    <EXP>_BUNDLES the local directory for evidence bundles: E001_BUNDLES or E002_BUNDLES, the one of
+                  the experiment named by --experiment (default E001)
+    <EXP>_EXPLORE where --explore writes its output (default: <EXP>_BUNDLES)
     All three are confined before anything is mutated or launched (setup/iwp/locations.py): outside
     every checkout, not overlapping the install or each other.
     IWP_DIR       the install (required); read and hashed only, to restore the game copy when it has
                   changed. Inside the run's mount namespace it is bound read-only before anything starts.
     E001_MACHINE  the machine id written to records (default: local)
 
-Usage: cycle.py [--arm NAME] [--size WxHxD] [--wm xfwm4|none] [--audio off|default]
+Usage: cycle.py [--experiment E001|E002] [--arm NAME] [--size WxHxD] [--wm xfwm4|none] [--audio off|default]
                 [--click hover|immediate] [--terminate ui-quit|wm-close|kill]
-                [--explore]   (--explore prints the result and writes no record)
+                [--script FILE]   (E002: the steps of FILE run after the title screen, instead of the E001 input)
+                [--session]       (with --explore: step files are taken from the exploration folder, see session())
+                [--explore]       (--explore prints the result and writes no record)
 """
 import argparse
 import contextlib
@@ -49,13 +53,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "setup" / "iwp"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import locations  # noqa: E402
 import prefix as prefixlib  # noqa: E402
 import safeio  # noqa: E402
+import steps as stepslib  # noqa: E402
 SCRIPT = Path(__file__).resolve()
-EXPERIMENT = "E001"
+EXPERIMENT = "E001"                  # the default of --experiment; E002 is W4a's
 SET_ID = "iwp-2.0-996e86c5"
 SUCCESSOR_ID = "iwp-2.0-3694a782"   # the same files with xtras/Isledft.dat declared a runtime write
+SUCCESSOR2_ID = "iwp-2.0-de5a82a2"  # ... and xtras/Islepro.skr too (E002: the scoreboard file)
 WINE = "/usr/lib/wine/wine"          # not on PATH on this machine (T08 task file)
 WINESERVER = "/usr/lib/wine/wineserver"
 DISPLAY = ":77"
@@ -75,6 +82,11 @@ EXIT_GAME = (640, 574, 100, 26)      # "Exit Game" on that notice
 EXIT_CLICK = (688, 586)
 SAVE_DEFAULT = (135, 515, 187, 35)   # "Save as default" on the Options screen
 SAVE_CLICK = (228, 532)
+ATTACK_BUTTON = (303, 530)           # the red Attack button of the turn menu, Blue's turn
+CANCEL_BUTTON = (405, 530)           # the yellow Cancel button while a target or an attacker is asked for
+TARGET_PANEL = (10, 502, 250, 70)    # bottom left: "Select Country To Attack", then "Attacking Country N"
+CENTRE_PANEL = (262, 502, 276, 70)   # the buttons of the phase
+QUIT_ATTACK = ((208, 176, 64), 20, 1000)   # colour, tolerance and pixel count of the gold QUIT ATTACK button
 REG_FILES = ("system.reg", "user.reg", "userdef.reg", ".update-timestamp")
 
 
@@ -121,7 +133,8 @@ def confined_locations(args):
 
     IWP_DIR is required: the run binds it read-only, and the seal checks that no file of the prefix
     shares an inode with it."""
-    found = locations.locations(need_prefix=True, need_bundles=True, explore=args.explore)
+    found = locations.locations(need_prefix=True, need_bundles=True, explore=args.explore,
+                                experiment=args.experiment)
     if "IWP_DIR" not in found:
         raise SystemExit("IWP_DIR is not set; the run seals the install read-only and must know where it is")
     return found
@@ -228,13 +241,24 @@ class Screen:
     def options_up(self):
         return self.count(RETURN_BUTTON, lambda r, g, b: g > 150 and r < 80 and b < 100) > 1000
 
-    def stable(self):
-        """Two captures 0.4 s apart identical (a poll condition, not a wait for a fixed time)."""
-        first = self.raw()
-        time.sleep(0.4)
-        return first == self.raw()
+    def stable_for(self, crop, seconds):
+        """Unchanged for `seconds` seconds: captures taken every 0.4 s, all equal (one pair when 0)."""
+        first = self.raw(crop)
+        end = time.monotonic() + seconds
+        while True:
+            time.sleep(0.4)
+            if self.raw(crop) != first:
+                return False
+            if time.monotonic() >= end:
+                return True
 
-    def capture(self, directory, name):
+    def stable(self, crop=None):
+        """Two captures 0.4 s apart identical (a poll condition, not a wait for a fixed time)."""
+        first = self.raw(crop)
+        time.sleep(0.4)
+        return first == self.raw(crop)
+
+    def capture(self, directory, name, exist="new", create_below=None):
         """One capture into directory/name: (sha256 of the raw 8-bit RGB pixels, sha256 of the PNG file).
 
         The PNG is written here, not by ImageMagick, because ImageMagick 6.9.12 wrote different
@@ -245,27 +269,53 @@ class Screen:
         if len(data) != self.width * self.height * 3:
             raise RuntimeError(f"capture is {len(data)} bytes, not {self.width}x{self.height} RGB")
         png = png_bytes(self.width, self.height, data)
-        safeio.write_file(directory, name, data=png, exist="new")
+        safeio.write_file(directory, name, data=png, exist=exist, create_below=create_below)
         return sha256_bytes(data), sha256_bytes(png)
 
 
 # --- snapshots and diffs ---------------------------------------------------------------------
 
+class UnsupportedEntry(RuntimeError):
+    """An entry of a snapshotted tree that is not a regular file, a directory or a link (a fifo, a
+    socket, a device). It is never read: reading a fifo with no writer blocks for ever (#27)."""
+
+
 def snapshot_tree(base):
-    """{relative path: ('f', bytes, sha256) | ('l', target) | ('d',)} for everything under base."""
+    """{relative path: ('f', bytes, sha256) | ('l', target) | ('d',)} for everything under base.
+
+    Anything else (a fifo, a socket, a device) raises UnsupportedEntry instead of being read, and a
+    file is opened without blocking and checked to be a regular file after the open, so an entry
+    swapped for a fifo between the listing and the read is refused too."""
     base = Path(base)
     out = {}
     for dirpath, dirnames, filenames in os.walk(base, followlinks=False):
         for name in dirnames + filenames:
             path = Path(dirpath) / name
             rel = path.relative_to(base).as_posix()
-            if path.is_symlink():
+            mode = os.lstat(path).st_mode
+            if stat.S_ISLNK(mode):
                 out[rel] = ("l", os.readlink(path))
-            elif path.is_dir():
+            elif stat.S_ISDIR(mode):
                 out[rel] = ("d",)
+            elif stat.S_ISREG(mode):
+                out[rel] = ("f",) + file_size_and_sha256(path, rel)
             else:
-                out[rel] = ("f", path.stat().st_size, sha256_file(path))
+                raise UnsupportedEntry(f"{rel} is {safeio.describe(os.lstat(path))}; it is not read")
     return out
+
+
+def file_size_and_sha256(path, label):
+    """(size, sha256) of a regular file, opened without blocking and without following a link."""
+    try:
+        fh = safeio.open_source(path)
+    except safeio.Refused as exc:
+        raise UnsupportedEntry(f"{label}: {exc}") from None
+    with fh:
+        size, digest = 0, hashlib.sha256()
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            size += len(chunk)
+            digest.update(chunk)
+    return size, digest.hexdigest()
 
 
 def diff_tree(before, after):
@@ -326,6 +376,11 @@ class Cycle:
             self.env.pop("PULSE_SERVER", None)
         self.screen = Screen(width, height, self.env)
         self.after_screen_ok = False
+        self.steps = None            # the parsed step script of an E002 run (load_script)
+        self.step_no = 4             # run/1 observation step of the next scripted step (0 to 3 are the setup)
+        self.watch_rect = None       # the area `settle` and `click` compare, None for the whole screen
+        self.picked = None           # the point that the last candidate search stopped at
+        self.session_dir = None      # where a --session run exchanges step files and screenshots
         # "completed" is given only by complete(), at the end of a cycle that did every stage. Any
         # other way out (fail(), an exception, an interruption) leaves an aborted status.
         self.status = "running"
@@ -532,6 +587,309 @@ class Cycle:
         self.say(f"{name}: pixels {pixels[:16]}, file {png[:16]}")
         return pixels, png
 
+    # ---- step scripts (E002, steps.py)
+
+    def load_script(self):
+        """Parse the step script before anything starts: a bad script, or one outside this repository,
+        fails the run with nothing launched."""
+        path = Path(self.args.script)
+        repo = locations.real(ROOT)
+        path = locations.real(path if path.is_absolute() else repo / path)
+        if not locations.inside(path, repo):
+            self.fail("the step script is outside this repository")
+        try:
+            with safeio.open_source(path) as fh:
+                raw = fh.read(1 << 20)
+            self.steps = stepslib.parse(raw.decode("utf-8"))
+        except (safeio.Refused, OSError, UnicodeDecodeError, stepslib.StepError) as exc:
+            self.fail(f"the step script is not usable: {exc}")
+        if not self.steps:
+            self.fail("the step script has no steps")
+        self.observe(0, "static", "step script sha256", sha256_bytes(raw))
+        self.say(f"step script: {len(self.steps)} steps")
+
+    def note(self, source, field, value):
+        """One observation of the current scripted step; in a session it is also echoed."""
+        self.observe(self.step_no, source, field, value)
+        self.say(f"  {field}: {value}")
+
+    def run_script(self):
+        for step in self.steps:
+            self.step_no += 1
+            self.say(f"step {step.line}: {step.op} {' '.join(map(str, step.args))}")
+            try:
+                self.run_step(step)
+            except stepslib.StepError as exc:
+                self.fail(f"step on line {step.line}: {exc}")
+        self.say("script finished")
+
+    def run_step(self, step):
+        """One step of a script. A refused step raises StepError; a `click!` that changed nothing
+        aborts the run through fail()."""
+        op, args = step.op, step.args
+        if op == "watch":
+            self.watch_rect = args or None
+            self.note("screen", "watched area", "whole screen" if not args else "x,y,w,h " + ",".join(map(str, args)))
+        elif op == "settle":
+            seconds = args[0] if args else 0
+            waited = poll(lambda: self.screen.stable_for(self.watch_rect, seconds), 30 + 2 * seconds, 0.05)
+            what = f"settle: watched area unchanged for {seconds} s (s)" if seconds else \
+                "settle: screen unchanged between two captures (s)"
+            self.note("screen", what, "not within the time allowed" if waited is None else waited)
+        elif op == "attack-picked":
+            self.attack_picked(args)
+        elif op == "clicks":
+            count, x, y = args
+            self.click_at(x, y, quiet=True, press=False)
+            run(["xdotool", "click", "--repeat", str(count), "--delay", "80", "1"], env=self.env)
+            self.note("screen", f"{count} clicks at {x},{y}", "sent")
+        elif op in ("click-any", "click-until", "click-any?", "click-until?"):
+            self.click_candidates(op, args)
+        elif op == "move":
+            run(["xdotool", "mousemove", str(args[0] + self.screen.ox), str(args[1] + self.screen.oy)], env=self.env)
+        elif op in ("click", "click!"):
+            changed = self.click_at(*args)
+            if op == "click!" and changed is None:
+                self.fail(f"step on line {step.line}: the screen did not change after the click at {args[0]},{args[1]}")
+        elif op == "key":
+            run(["xdotool", "key", args[0]], env=self.env)
+            self.note("screen", f"key {args[0]} sent", "yes")
+        elif op == "shot":
+            self.shot_step(args[0])
+        elif op == "title":
+            self.note("process", "client window titles", self.window_titles())
+        elif op == "proc":
+            self.note("process", "game process threads and resident memory (kB)", self.proc_status())
+        elif op == "file":
+            self.read_game_file(args[0])
+        elif op == "changes":
+            self.changes_so_far()
+        else:                                    # steps.parse never yields another op
+            raise stepslib.StepError(f"unknown step {op!r}")
+
+    def click_at(self, x, y, quiet=False, press=True):
+        """Move to (x, y), let the label under the pointer react, click, and say whether the screen
+        changed. Returns the seconds the change took, or None. The forbidden areas are refused again
+        here, whatever parsed the step."""
+        hit = stepslib.forbidden(x, y)
+        if hit:
+            raise stepslib.StepError(f"click {x} {y} is inside a forbidden area: {hit}")
+        if self.screen.notice_up() and not (EXIT_GAME[0] <= x < EXIT_GAME[0] + EXIT_GAME[2]
+                                            and EXIT_GAME[1] <= y < EXIT_GAME[1] + EXIT_GAME[3]):
+            # the unregistered-version notice carries the order and website buttons: Exit Game only
+            raise stepslib.StepError(f"click {x} {y}: the notice screen is up, and only Exit Game may be clicked there")
+        rect = (max(0, x - 50), max(0, y - 14), 100, 28)
+        before = self.screen.raw(rect)
+        run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+        # a candidate search (quiet) tries many places that may not react at all: it waits less
+        hovered = poll(lambda: self.screen.raw(rect) != before, 0.3 if quiet else 1.5, 0.05)
+        if hovered is None:                      # no highlight: a one-pixel move gives the game a motion event
+            run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+            hovered = poll(lambda: self.screen.raw(rect) != before, 0.2 if quiet else 0.5, 0.05)
+            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back on the point
+        if not press:                            # the caller sends the clicks
+            return None
+        pointer_state = self.screen.raw(self.watch_rect)
+        run(["xdotool", "click", "1"], env=self.env)
+        changed = None if quiet else poll(lambda: self.screen.raw(self.watch_rect) != pointer_state, 3, 0.1)
+        if not quiet:
+            self.note("screen", f"click at {x},{y}: label changed under the pointer (s)",
+                      "no change within 2 s" if hovered is None else hovered)
+            self.note("screen", f"click at {x},{y}: screen changed after the click (s)",
+                      "no change within 3 s" if changed is None else changed)
+        return changed
+
+    def click_candidates(self, op, args):
+        """click-any / click-until: click the candidate points in order and stop at the first that
+        worked; abort the run when none did. `worked` is a change of the watched area (click-any) or at
+        least N pixels of one colour in it (click-until)."""
+        strict = not op.endswith("?")
+        op = op.rstrip("?")
+        if op == "click-until":
+            r, g, b, tol, n = args[:5]
+            points = args[5:]
+            if self.watch_rect is None:
+                self.fail("click-until needs a watched area (watch X Y W H)")
+
+            def worked(before):
+                return self.colour_count(self.watch_rect, (r, g, b), tol) >= n
+        else:
+            points = args
+
+            def worked(before):
+                return self.screen.raw(self.watch_rect) != before
+        for index in range(0, len(points), 2):
+            x, y = points[index], points[index + 1]
+            before = self.screen.raw(self.watch_rect)
+            self.click_at(x, y, quiet=True)
+            if poll(lambda: worked(before), 1.5, 0.1) is not None:
+                self.picked = (x, y)
+                self.note("screen", f"{op}: candidate that worked", f"{x},{y} (number {index // 2 + 1} of {len(points) // 2})")
+                return
+        if strict:
+            self.fail(f"{op}: none of the {len(points) // 2} candidates worked")
+        self.note("screen", f"{op}?: candidate that worked", f"none of the {len(points) // 2}")
+
+    def colour_count(self, rect, colour, tol):
+        """How many pixels of the rectangle are within tol (per channel) of the colour."""
+        crop = self.screen.raw(rect)
+        r, g, b = colour
+        return sum(1 for i in range(0, len(crop) - 2, 3)
+                   if abs(crop[i] - r) <= tol and abs(crop[i + 1] - g) <= tol and abs(crop[i + 2] - b) <= tol)
+
+    def attack_picked(self, targets):
+        """attack-picked: from the picked point, attack the first target the game accepts. For each
+        target: Attack, the target (the game takes it only if it borders a Blue country; a refused
+        target changes nothing), the picked point (the game takes it only if it is a Blue country with
+        more than one army that borders the target), and the QUIT ATTACK button must show. Otherwise
+        Cancel, and the next target."""
+        if self.picked is None:
+            self.fail("attack-picked needs a point picked by click-any or click-until")
+        colour, tol, count = QUIT_ATTACK
+        for index in range(0, len(targets), 2):
+            x, y = targets[index], targets[index + 1]
+            self.click_at(*ATTACK_BUTTON, quiet=True)
+            before = self.screen.raw(TARGET_PANEL)
+            self.click_at(x, y, quiet=True)
+            accepted = poll(lambda: self.screen.raw(TARGET_PANEL) != before, 1.0, 0.1) is not None
+            if accepted:
+                self.click_at(*self.picked, quiet=True)
+                if poll(lambda: self.colour_count(CENTRE_PANEL, colour, tol) >= count, 1.5, 0.1) is not None:
+                    self.note("screen", "attack-picked: target and attacker", f"{x},{y} from {self.picked[0]},{self.picked[1]} "
+                              f"(number {index // 2 + 1} of {len(targets) // 2})")
+                    return
+            self.click_at(*CANCEL_BUTTON, quiet=True)
+        self.fail(f"attack-picked: none of the {len(targets) // 2} targets was accepted from {self.picked}")
+
+    def shot_step(self, name):
+        """A screenshot named by the script. In a recorded run it is a bundle file; in a session it is
+        written straight into the exploration folder, where it can be looked at while the game waits."""
+        if self.session_dir is None:
+            self.shot(f"{name}.png", self.step_no)
+            return
+        pixels, png = self.screen.capture(self.session_dir, f"{self.args.arm}.{name}.png", exist="replace",
+                                          create_below=self.session_dir.parent)
+        self.note("screen", f"{name}.png raw RGB8 pixels sha256", pixels)
+
+    def window_titles(self):
+        ids = re.findall(r"0x[0-9a-fA-F]+", run(["xprop", "-root", "_NET_CLIENT_LIST"], env=self.env).stdout.decode())
+        names = []
+        for wid in ids:
+            names.append(run(["xdotool", "getwindowname", str(int(wid, 16))], env=self.env).stdout.decode().strip())
+        return "; ".join(f"{name!r}" for name in names) or "none"
+
+    def proc_status(self):
+        pid = self.find_game_pid()
+        if pid is None:
+            return "no game process"
+        fields = dict(line.split(":", 1) for line in Path(f"/proc/{pid}/status").read_text().splitlines() if ":" in line)
+        return f"threads {fields['Threads'].strip()}, VmRSS {fields['VmRSS'].strip().split()[0]}"
+
+    def read_game_file(self, rel):
+        """One file of the game copy: its size and sha256, and whether it equals the install's file
+        (read in place, never copied). Only a file the game changed is described further: the byte
+        offsets that differ, and its bytes when it has at most 64. A shipped file the game left alone
+        is never dumped (CLAUDE.md rule 18)."""
+        try:
+            with safeio.open_source(self.game / rel) as fh:
+                data = fh.read(1 << 20)
+        except (safeio.Refused, OSError) as exc:
+            self.note("file", f"{rel}", f"absent or not a plain file ({type(exc).__name__})")
+            return
+        self.note("file", f"{rel}: size in bytes and sha256", f"{len(data)} {sha256_bytes(data)}")
+        try:
+            with safeio.open_source(self.install / rel) as fh:
+                shipped = fh.read(1 << 20)
+        except (safeio.Refused, OSError):
+            shipped = None
+        if shipped is None:
+            self.note("file", f"{rel}: equals the install's file", "no: the install has no such file")
+        elif shipped == data:
+            self.note("file", f"{rel}: equals the install's file", "yes")
+            return
+        else:
+            self.note("file", f"{rel}: equals the install's file", f"no: the install's has {len(shipped)} bytes")
+            if len(shipped) <= 4096 and len(data) <= 4096:
+                common = min(len(shipped), len(data))
+                pairs = [f"0x{i:x} {shipped[i]:02x}>{data[i]:02x}" for i in range(common) if shipped[i] != data[i]][:64]
+                if len(data) > len(shipped):
+                    pairs.append(f"appended at 0x{len(shipped):x}: {data[len(shipped):][:16].hex()}")
+                elif len(data) < len(shipped):
+                    pairs.append(f"ends at 0x{len(data):x}, where the install's file goes on")
+                self.note("file", f"{rel}: changed byte offsets, install>game copy", "; ".join(pairs) or "none")
+        if len(data) <= 64:
+            self.note("file", f"raw:bytes[0x0:0x{len(data):x}] of {rel} as written by the game", data.hex())
+
+    def changes_so_far(self):
+        """The files of the game copy and the prefix that differ now from the start of the run."""
+        game, pfx, reg = snapshot_tree(self.game), snapshot_tree(self.prefix), registry_keys(self.prefix)
+        gb, pb, rb = self.snap_before
+        for name, before, after in (("game copy", gb, game), ("prefix", pb, pfx)):
+            added, removed, changed = diff_tree(before, after)
+            listing = "; ".join([f"+{p} {after[p][1] if after[p][0] == 'f' else ''}".rstrip() for p in added[:25]]
+                                + [f"-{p}" for p in removed[:25]]
+                                + [f"~{p} {before[p][1:2]}->{after[p][1:2]}" for p in changed[:25]])
+            listing = re.sub(r"drive_c/users/[^/;]+", "drive_c/users/<user>", listing)   # the Unix user name is not evidence
+            self.note("file", f"{name} so far: added/removed/changed",
+                      f"{len(added)}/{len(removed)}/{len(changed)}" + (f": {listing}" if listing else ""))
+        keys = (len(set(reg) - set(rb)), len(set(rb) - set(reg)),
+                len([k for k in set(reg) & set(rb) if reg[k] != rb[k]]))
+        self.note("file", "registry keys so far: added/removed/value-changed", "/".join(map(str, keys)))
+
+    def session(self):
+        """--explore --session: an interactive exploration, with no record. The game is started and
+        brought to the title screen as in every run; then, in the exploration folder,
+        <arm>.cmd-0001.txt, <arm>.cmd-0002.txt, ... are read in order. Each holds step lines (steps.py) or
+        the single word `quit`; the result is written to <arm>.out-NNNN.txt and `shot NAME` writes
+        <arm>.NAME.png beside them. A refused or failed step is reported there and the session goes on.
+        With no new file for 30 minutes the session ends as if `quit` had been sent. Everything after
+        it (terminate, snapshot, reset) is the same as in a recorded run."""
+        out = self.session_dir
+        number, idle_until = 1, time.monotonic() + 1800
+        self.say(f"session: waiting for {self.args.arm}.cmd-0001.txt in the exploration folder")
+        while True:
+            name = f"{self.args.arm}.cmd-{number:04d}.txt"
+            try:
+                with safeio.open_source(out / name) as fh:
+                    text = fh.read(1 << 16).decode("utf-8", errors="replace")
+                if not text.strip():              # created, not yet written: wait for the content
+                    raise OSError("empty")
+            except (safeio.Refused, OSError):
+                if time.monotonic() > idle_until:
+                    self.say("session: idle for 30 minutes, ending")
+                    return
+                time.sleep(0.2)
+                continue
+            idle_until = time.monotonic() + 1800
+            if text.strip() == "quit":
+                self.say("session: quit")
+                return
+            first = len(self.obs)
+            try:
+                steps = stepslib.parse(text)
+                for step in steps:
+                    self.step_no += 1
+                    self.say(f"step {step.line}: {step.op} {' '.join(map(str, step.args))}")
+                    self.run_step(step)
+                result = "ok"
+            except (stepslib.StepError, Abort) as exc:
+                result = f"error: {exc}"
+                if self.status.startswith("aborted: "):   # click! calls fail(); a session goes on
+                    self.status = "running"
+            lines = [f"{o['field']}: {o['value']}" for o in self.obs[first:]] + [result]
+            safeio.write_file(out, f"{self.args.arm}.out-{number:04d}.txt", data=("\n".join(lines) + "\n").encode(),
+                              exist="replace", create_below=out.parent)
+            number += 1
+
+    def complete_script(self):
+        """The only place a scripted run becomes completed: every step ran (run_script returned) and the
+        script took at least one screenshot besides the title screen."""
+        have = {name for name, _, _ in self.outputs}
+        if "before.png" not in have or len(have) < 2 or not any(n.endswith(".png") and n != "before.png" for n in have):
+            self.fail("the script took no screenshot besides before.png")
+        if self.status == "running":
+            self.status = "completed"
+
     def game_alive(self):
         return self.procs["game"].poll() is None
 
@@ -682,6 +1040,8 @@ class Cycle:
         "completed" from complete() only, "aborted: <why>" otherwise, and every clean-up stage runs."""
         started = now()
         try:
+            if self.args.script:
+                self.load_script()             # a bad script fails here, with nothing started
             self.protect_install()
             self.seal("before anything starts", 0)
             self.start_x()
@@ -690,9 +1050,17 @@ class Cycle:
             self.launch()                      # seals the prefix again, immediately before the game
             self.known_screen()
             self.before = self.shot("before.png", 3)
-            self.input()
-            self.after = self.shot("after.png", 6)
-            self.complete()
+            if self.steps is not None:
+                self.run_script()
+                self.complete_script()
+            elif self.args.session:
+                self.session()
+                if self.status == "running":
+                    self.status = "completed"
+            else:
+                self.input()
+                self.after = self.shot("after.png", 6)
+                self.complete()
         except Abort:
             pass                               # fail() has recorded why
         except BaseException as exc:           # a crash or an interruption: cleaned up, recorded, never completed
@@ -747,25 +1115,33 @@ def versions():
     }
 
 
-def next_run_id():
-    folder = ROOT / "runs" / EXPERIMENT
-    numbers = [int(m.group(1)) for p in folder.glob(f"{EXPERIMENT}-r*.json")
-               if (m := re.match(rf"{EXPERIMENT}-r(\d+)\.json$", p.name))]
-    return f"{EXPERIMENT}-r{(max(numbers) if numbers else 0) + 1:04d}"
+def next_run_id(experiment=EXPERIMENT):
+    folder = ROOT / "runs" / experiment
+    numbers = [int(m.group(1)) for p in folder.glob(f"{experiment}-r*.json")
+               if (m := re.match(rf"{experiment}-r(\d+)\.json$", p.name))]
+    return f"{experiment}-r{(max(numbers) if numbers else 0) + 1:04d}"
 
 
 def record_set(args):
-    """The set a run is recorded under: the successor only when the run's input may write its file."""
+    """The set a run is recorded under: a successor only when the run's input may write a file of the
+    set (E001: --input save-default, which may write xtras/Isledft.dat; E002: --may-write-saved-files,
+    for a script that may click Save as default or lose a game, so write either of the two files)."""
+    if args.may_write_saved_files:
+        return SUCCESSOR2_ID
     return SUCCESSOR_ID if args.input == "save-default" else SET_ID
 
 
 def build_record(cycle, commit, machine, state_sha):
     args = cycle.args
     levels = [{"level": "I0", "what": "none"}]
+    if args.experiment == "E002":
+        # vocabulary/interventions.md puts screenshots at I1 (E001 recorded them as I0; F003 says so)
+        levels = [{"level": "I1", "what": "screenshots of the display and read-only reads of /proc and of "
+                                          "the game copy; no memory read, no modified file"}]
     return {
         "schema": "run/1",
         "run_id": cycle.run_id,
-        "experiment": EXPERIMENT,
+        "experiment": args.experiment,
         "arm": args.arm,
         "rep": int(os.environ["IWP_CYCLE_REP"]),
         "code_commit": commit,
@@ -789,7 +1165,7 @@ def build_record(cycle, commit, machine, state_sha):
             "args": cycle.argv,
         },
         "observations": cycle.obs,
-        "outputs": [{"name": n, "sha256": sha256_file(p), "store": f"release:{EXPERIMENT}"}
+        "outputs": [{"name": n, "sha256": sha256_file(p), "store": f"release:{args.experiment}"}
                     for n, p, _ in cycle.outputs],
         "started": cycle.started,
         "ended": cycle.ended,
@@ -803,8 +1179,8 @@ def build_manifest(cycle):
         digest = sha256_file(path)
         files.append({"name": name, "bytes": path.stat().st_size, "sha256": digest,
                       "asset": f"{digest[:16]}-{name}", "class": klass})
-    return {"schema": "evidence-manifest/1", "run_id": cycle.run_id, "experiment": EXPERIMENT,
-            "store": f"release:{EXPERIMENT}", "artifact": {"set": record_set(cycle.args), "variant": None},
+    return {"schema": "evidence-manifest/1", "run_id": cycle.run_id, "experiment": cycle.args.experiment,
+            "store": f"release:{cycle.args.experiment}", "artifact": {"set": record_set(cycle.args), "variant": None},
             "files": files}
 
 
@@ -818,6 +1194,8 @@ def arm_name(value):
 
 def parser():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("--experiment", choices=["E001", "E002"], default=EXPERIMENT,
+                    help="whose runs, evidence and bundle folder this is (E001_BUNDLES or E002_BUNDLES)")
     ap.add_argument("--arm", type=arm_name, default="control")
     ap.add_argument("--rep", type=int, default=None, help="default: one more than the records of this arm")
     ap.add_argument("--size", default="800x600x24")
@@ -826,6 +1204,14 @@ def parser():
     ap.add_argument("--click", choices=["hover", "immediate"], default="hover")
     ap.add_argument("--input", choices=["options", "save-default"], default="options",
                     help="options: click Options; save-default: also click Save as default (writes?)")
+    ap.add_argument("--script", default=None,
+                    help="a step script (steps.py) in this repository, run after the title screen instead of the "
+                         "E001 input; the run is completed when its steps all ran and it took a screenshot")
+    ap.add_argument("--may-write-saved-files", action="store_true",
+                    help="the script may click Save as default or lose a game, so the game may write "
+                         "xtras/Isledft.dat or xtras/Islepro.skr: the run is recorded under the set that declares both")
+    ap.add_argument("--session", action="store_true",
+                    help="with --explore: read step files from the exploration folder (see Cycle.session)")
     ap.add_argument("--terminate", choices=["ui-quit", "wm-close", "kill"], default="ui-quit")
     ap.add_argument("--explore", action="store_true", help="print the result; write no record or bundle")
     return ap
@@ -853,11 +1239,16 @@ def store_outputs(cycle, directory, name_of, exist):
 def inner(args):
     """Runs as PID 1 of the private namespaces: does the cycle and writes the record."""
     locs = confined_locations(args)
-    prefix, bundles, install = locs["IWP_PREFIX"], locs["E001_BUNDLES"], locs["IWP_DIR"]
+    experiment = args.experiment
+    prefix, bundles, install = locs["IWP_PREFIX"], locs[f"{experiment}_BUNDLES"], locs["IWP_DIR"]
     run_id = os.environ["IWP_CYCLE_ID"]
     machine = os.environ.get("E001_MACHINE", "local")
-    if not re.fullmatch(rf"{EXPERIMENT}-x[0-9]+" if args.explore else rf"{EXPERIMENT}-r[0-9]{{4,}}", run_id):
-        sys.exit(f"{run_id!r} is not a run id of {EXPERIMENT}; nothing was started")
+    if not re.fullmatch(rf"{experiment}-x[0-9]+" if args.explore else rf"{experiment}-r[0-9]{{4,}}", run_id):
+        sys.exit(f"{run_id!r} is not a run id of {experiment}; nothing was started")
+    if args.session and (not args.explore or args.script):
+        sys.exit("--session needs --explore and no --script; nothing was started")
+    if args.script and args.experiment == "E001":
+        sys.exit("step scripts belong to E002; nothing was started")
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", machine):
         sys.exit("E001_MACHINE is not a machine id (lowercase letters, digits, dashes); nothing was started")
     try:
@@ -866,6 +1257,8 @@ def inner(args):
         sys.exit(f"{exc}; nothing was started")
     run(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"], check=True)
     cycle = Cycle(args, run_id, prefix, bundles, install)
+    if args.session:
+        cycle.session_dir = locs.get(f"{experiment}_EXPLORE", bundles)
     cycle.argv = sys.argv[1:]
     cycle.fingerprint = versions()
     cycle.restore_text = ("fresh private user, mount and PID namespaces, the install bound read-only; the prefix "
@@ -878,7 +1271,7 @@ def inner(args):
     commit = os.environ["IWP_CYCLE_COMMIT"]
     state_sha = start_state_sha(cycle.snap_before[1]) if hasattr(cycle, "snap_before") else "0" * 64
     if args.explore:
-        out = locs.get("E001_EXPLORE", bundles)
+        out = locs.get(f"{experiment}_EXPLORE", bundles)
         cycle.outputs = store_outputs(cycle, out, lambda name, _: f"{args.arm}.{name}", "replace")
         try:
             safeio.write_file(out, f"{args.arm}.observations.json", data=json.dumps(cycle.obs, indent=1).encode(),
@@ -889,14 +1282,14 @@ def inner(args):
         return 0 if cycle.status == "completed" else 1
     repo = locations.real(ROOT)
     names = {"runs": f"{run_id}.json", "evidence": f"{run_id}.manifest.json"}
-    taken = [f"{folder}/{EXPERIMENT}/{name}" for folder, name in names.items()
-             if os.path.lexists(repo / folder / EXPERIMENT / name)]
+    taken = [f"{folder}/{experiment}/{name}" for folder, name in names.items()
+             if os.path.lexists(repo / folder / experiment / name)]
     if taken:
         print(f"no record written: {', '.join(taken)} already exist(s); records are never overwritten", file=sys.stderr)
         return 1
     try:                                              # both record folders are reachable, or nothing is written
         for folder in names:
-            os.close(safeio.open_directory(repo / folder / EXPERIMENT, create_below=repo))
+            os.close(safeio.open_directory(repo / folder / experiment, create_below=repo))
     except (safeio.Refused, OSError) as exc:
         print(f"no record written: {exc}", file=sys.stderr)
         return 1
@@ -904,9 +1297,9 @@ def inner(args):
     manifest = build_manifest(cycle)
     record = build_record(cycle, commit, machine, state_sha)
     try:
-        safeio.write_file(repo / "evidence" / EXPERIMENT, names["evidence"],
+        safeio.write_file(repo / "evidence" / experiment, names["evidence"],
                           data=(json.dumps(manifest, indent=2) + "\n").encode(), exist="new", create_below=repo)
-        safeio.write_file(repo / "runs" / EXPERIMENT, names["runs"],
+        safeio.write_file(repo / "runs" / experiment, names["runs"],
                           data=(json.dumps(record, indent=2) + "\n").encode(), exist="new", create_below=repo)
     except (safeio.Refused, OSError) as exc:
         print(f"no record written: {exc}", file=sys.stderr)
@@ -929,9 +1322,9 @@ def outer(args):
     dirty = run(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"], cwd=ROOT).stdout
     if dirty and not args.explore:
         sys.exit("runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run")
-    run_id = next_run_id() if not args.explore else f"{EXPERIMENT}-x{os.getpid()}"
+    run_id = next_run_id(args.experiment) if not args.explore else f"{args.experiment}-x{os.getpid()}"
     rep = args.rep or 1 + sum(
-        1 for p in (ROOT / "runs" / EXPERIMENT).glob("*.json") if json.loads(p.read_text()).get("arm") == args.arm)
+        1 for p in (ROOT / "runs" / args.experiment).glob("*.json") if json.loads(p.read_text()).get("arm") == args.arm)
     env = dict(os.environ, IWP_CYCLE_ID=run_id, IWP_CYCLE_REP=str(rep), IWP_CYCLE_COMMIT=commit_out.stdout.decode().strip(),
                IWP_CYCLE_INNER="1")
     cmd = ["unshare", "-r", "-m", "-p", "-f", "--kill-child", "--mount-proc",

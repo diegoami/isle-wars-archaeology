@@ -1,0 +1,18 @@
+# The window title and the game process's threads and memory, on the title screen, the setup screen and the board
+# Steps are described in runtime/iwp/spike/steps.py. Coordinates are the 800x600 stage's.
+# Run with: cycle.py --experiment E002 --arm probe-process --script experiments/E002-iwp-state-inventory/scripts/probe-process.steps --terminate kill
+title
+proc
+click 100 585        # New Game
+settle
+title
+proc
+shot setup
+click! 565 532       # Play Game
+shot board-loading
+watch 0 0 800 495
+settle 4             # the computer players take their turns first; the board is quiet when it is Blue's
+title
+proc
+shot board
+changes

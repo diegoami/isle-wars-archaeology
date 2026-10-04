@@ -1,0 +1,6 @@
+click 744 400
+settle
+shot help-c
+click 744 481
+settle
+shot help-d

@@ -90,7 +90,8 @@ other role's OpenCode model, keep the families apart.
 
 | Work | Implementer | Reviewer | Why | Examples |
 | --- | --- | --- | --- | --- |
-| Research, or anything that reads the user's install | **Sonnet** (`task-agent`, worktree isolation) | by difficulty, on the repository side | OpenCode cannot reach outside its worktree (L26). The main session runs the `[C3]` lines and posts their output on the PR. If no OpenCode reviewer is available, the Claude fallback would be the implementer's family: escalate | T03, T04; T08 (hard: GPT-6.1 Sol) |
+| Research, or anything that reads the user's install | **Sonnet** (`task-agent`, worktree isolation) | by difficulty, on the repository side | OpenCode cannot reach outside its worktree (L26). The main session runs the `[C3]` lines and posts their output on the PR. If no OpenCode reviewer is available, the Claude fallback would be the implementer's family: escalate | T03, T04, T10 (easy: Luna); T08, T09 (hard: GPT-6.1 Sol) |
+| A safety seal around the originals, or reverse-engineering probes (savestates, debuggers, unpacked or undocumented formats) | **Opus** from the start, with the task file saying why (rule 6) | by difficulty, usually hard | T08's seal converged only under Opus. The owner saw Sonnet struggle with reverse engineering in IC2 | T11, the DOSBox-X spike (first use, 2026-10-04) |
 | Cloud sessions | Sonnet | Opus | only Claude runs there, so the same family is forced, and the task file says so | T05 (planned for the cloud; it ran locally) |
 
 **Escalation after a heavy review** (the owner, 2026-10-03). When a review shows that the
@@ -111,6 +112,31 @@ spend its last round on the same model.
   - GPT-6.1 Sol found 6 blocking findings at round 0 and 5 new ones at round 1.
   - Both rounds were the same class: an alias or a side path at the moment of a write or a launch.
   - Sonnet was stopped mid-round, and Opus took the branch.
+
+**Sonnet's tripwire** (the owner, 2026-10-04). Models judge their own depth poorly, so this
+works alongside the review-driven escalation, not instead of it. Every Sonnet brief ends with
+this paragraph:
+
+```text
+Out of your depth: stop and hand back, with an ESCALATE block, when any of these happens:
+two hypotheses for the same question have failed; you would rely on bytes, code or behaviour
+you cannot explain; you are about to write a claim you cannot back with evidence; or you have
+made three attempts at one step without progress. Push your branch first. The ESCALATE block
+gives what you tried, the evidence so far, and the exact question you could not answer. Never
+guess a format or a cause.
+```
+
+On an `ESCALATE`, the main session starts Opus on the pushed branch, with the brief and the block:
+- **consult**, for a narrow question: Opus answers it, and Sonnet resumes with the answer;
+- **takeover**, when the difficulty is the task itself: Opus finishes it.
+
+The main session also escalates when Sonnet doesn't:
+- a report hedges on a claim ("likely", "probably");
+- a reviewer finds reasoning errors, not just missing tests;
+- a rework fails on the same finding twice.
+
+Every escalation is logged on the trials issue, with whether Sonnet's call was right, so the
+tripwires can be tuned.
 
 **When GPT-6.1 Sol cannot review.** The review goes to a substitute instead of waiting, unless
 the owner says to wait.
@@ -148,6 +174,11 @@ the owner says to wait.
 - **First use: T08, round 2.** On the owner's decision of 2026-10-03, after the OpenAI quota
   stopped Sol mid-review: GLM-5.3 reviews, and DeepSeek V4 Pro is its fallback. Both answered their
   probe (PONG in 4 s and 5 s).
+
+**The `[C4]` re-hash can run through WSL interop** (T10, at the owner's request).
+`powershell.exe` from WSL runs Windows PowerShell's `Get-FileHash` over `\\wsl.localhost\…`.
+That gives another OS and another tool on the same copy. The one-liner must use
+`(Resolve-Path $dir).ProviderPath`: `.Path` breaks on a UNC path (#33).
 
 **Watch:** L27 records GLM-5.3 Flash stalling, and ending long implementer runs early, in IC2.
 It ran malpaco T02's round 2 cleanly. Its first runs as the easy default are watched, and a stall
@@ -191,6 +222,22 @@ implementer and reviewer time a driver costs. Measured in T08's control runs, r0
 - W5a, the minimal driver, adopts these, and measures the time per cycle over its 10 repeats.
 
 ## How a run is made
+
+- **Every brief for a task that measures** (research, a runtime spike, a driver that times things,
+  static reading) ends with this standing paragraph. It is CLAUDE.md rule 20, from
+  game-archaeologist L207:
+
+  ```text
+  Measurements: write every output a finding or the PR may cite (run records, probe logs and
+  tables, timings, evidence captures by hash, static extracts) under a tracked path this task
+  owns, never only under scratch/, a cache or a machine-local folder. Originals stay out: record
+  their hashes. Commit and push after each batch of runs or probes, and at least every 30
+  minutes. Never delete or overwrite a measured output; a re-run writes new files beside the old,
+  and the finding says which it cites.
+  ```
+
+  The task file's Owns must name that tracked path, for example `runs/E<nnn>/**` or
+  `experiments/E<nnn>-*/measurements/**`.
 
 - **OpenCode implementer:**
   `node tools/harness/implement.mjs --task T<nn> --slug <slug> --issue <n> --brief <file> [--model <name>] [--env K=V]`,
@@ -259,13 +306,18 @@ These are observations, each with its source. The trials issues hold the full re
   - It added scope nobody asked for, the fence handling, and both blocking bypasses lived there.
   - It applies a directed fix exactly.
   - Earlier, in IC2, GLM models ended long runs early (L27). That has not recurred here.
-- **GLM-5.3 Flash** (implementer, malpaco T02):
-  - It followed an amended contract, golden screenshots in a container, and showed mutation
-    evidence for every evasion.
-  - It missed stale counts in its own doc.
+- **GLM-5.3 Flash** (implementer; the easy default since 2026-10-03):
+  - malpaco T02: it followed an amended contract (golden screenshots in a container), and showed
+    mutation evidence for every evasion. It missed stale counts in its own doc.
+  - As the easy default, on fixes #25 and #33, it took about 2.5 min each. Each diff was exactly the
+    contract's line, and Luna approved both with no findings.
+  - L27's early stop has not recurred in its first runs.
 - **GPT-6 Luna** (reviewer):
   - It proves findings by mutation, and is fast: 1–2 minutes on small PRs.
   - It caught T02's missing CLI test, T03's missing offsets and T04's paraphrase beyond the quotes.
+  - On T10, it caught two inferences beyond their citations: archive timestamps read as creation
+    dates, and a gameplay line filed as a registration limit. It recomputed the set id itself.
+    Then it approved the round-1 fix in about 2 min.
 - **GPT-6 Sol** (reviewer, heavy):
   - The adversary. It found two fence-parsing bypasses in T06, and new pixel evasions in each of
     malpaco T02's rounds.
@@ -299,9 +351,14 @@ These are observations, each with its source. The trials issues hold the full re
 - **GLM-5.3, as a calibration reviewer** (T02's round-0 tree, a dry run):
   - It approved, missing Luna's blocking R1.
   - But it found two real gaps that Luna did not report.
-- **Sonnet** (research implementer: T03, T04, T05):
-  - Reliable on research documents.
-  - Its typical miss is overreach, a cell paraphrased beyond its quote, which the reviewers catch.
+- **Sonnet** (research implementer: T03, T04, T05, T08 rounds 0–1, T09, T10):
+  - Reliable on research documents and fast on identity work: T10 took about 5 min, then 2 min for
+    its rework.
+  - Its typical miss is overreach: a statement that says more than its citation (T04's paraphrase,
+    T10's dates and limits). The reviewers catch it, and a sweep for the same class in the rework
+    fixes it.
+  - On a safety seal (T08) it was out of its depth: two rounds drew 6, then 5, blocking findings of
+    the same class. Opus converged it.
 - **Opus** (implementer, T08 round 2, escalated from Sonnet; about 47 min, 344k tokens):
   - It took over after GPT-6.1 Sol's two heavy reviews, and fixed the class, not the instances:
     - one confined writer (`O_NOFOLLOW`, `O_EXCL`, open-then-`fstat`, no shared inodes);

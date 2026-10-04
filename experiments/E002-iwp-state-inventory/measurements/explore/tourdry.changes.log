@@ -1,0 +1,23 @@
+== game copy: 13 entries after, added 0, removed 0, changed 1
+changed xtras/Islepro.skr (13,) -> (14,)
+== prefix: 1048 entries after, added 9, removed 0, changed 3
+added   dosdevices/com1
+added   dosdevices/com2
+added   dosdevices/com3
+added   dosdevices/com4
+added   dosdevices/com5
+added   dosdevices/com6
+added   dosdevices/com7
+added   dosdevices/com8
+added   wineserver 11
+changed drive_c/iwp/xtras/Islepro.skr (13,) -> (14,)
+changed system.reg (1723327,) -> (1711333,)
+changed user.reg (27435,) -> (21504,)
+== registry keys: 9115 after, added 0, removed 1, changed 6
+removed system.reg: Software\\Microsoft\\Windows NT\\CurrentVersion\\NetworkCards
+changed system.reg: Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts
+changed system.reg: Software\\Microsoft\\Windows\\CurrentVersion\\Fonts
+changed system.reg: System\\CurrentControlSet\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}
+changed system.reg: System\\CurrentControlSet\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000
+changed system.reg: System\\CurrentControlSet\\Control\\Class\\{4D36E96E-E325-11CE-BFC1-08002BE10318}
+changed user.reg: Software\\Wine\\Fonts\\External Fonts

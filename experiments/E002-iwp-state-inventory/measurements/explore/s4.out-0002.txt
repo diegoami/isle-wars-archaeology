@@ -1,0 +1,13 @@
+click at 307,543: label changed under the pointer (s): 0.09
+click at 307,543: screen changed after the click (s): no change within 3 s
+s4-all.png raw RGB8 pixels sha256: ba3f99ea2cde2036d002315b5787a0f94120360a09a83b70eed904ef7307baad
+click at 497,543: label changed under the pointer (s): 0.08
+click at 497,543: screen changed after the click (s): 0.01
+settle: screen unchanged between two captures (s): 0.93
+s4-placed.png raw RGB8 pixels sha256: da9b3900e17d51171ba2a38eb0b415dd5f8eda999d61c2982abb137f7be5de90
+click at 303,530: label changed under the pointer (s): 0.08
+click at 303,530: screen changed after the click (s): 0.01
+watched area: x,y,w,h 10,502,250,70
+click-any: candidate that worked: 49,261 (number 2 of 44)
+s4-e.png raw RGB8 pixels sha256: 8010d0feb829f119e998226fd8004d52170ea68cafb58c96cfc60727d13d52aa
+ok

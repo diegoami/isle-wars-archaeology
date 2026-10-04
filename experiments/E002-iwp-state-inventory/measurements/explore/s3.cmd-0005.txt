@@ -1,0 +1,12 @@
+click 388 536
+settle
+click 320 585
+settle
+click 390 137
+shot lock-armies
+click 454 389
+shot lock-freq
+click 518 233
+shot lock-green
+click 259 233
+shot lock-blue

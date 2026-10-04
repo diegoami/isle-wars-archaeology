@@ -1,0 +1,365 @@
+{
+  "schema": "run/1",
+  "run_id": "E002-r0024",
+  "experiment": "E002",
+  "arm": "opt-freq-never",
+  "rep": 1,
+  "code_commit": "4b4e057f741d",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/spike/cycle.py@4b4e057f741d",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "34ac62c31ddaa5f4e9a1b975a956c94ebe935109189d0fffe8939dc2bddfa427",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only; the prefix sealed (drive mapping, links, second names, mounts, the registered game copy) before anything starts and again immediately before the launch; prefix as left by setup/iwp/iwp-runtime.sh and by the previous run's reset; start_state.sha256 lists every entry of the prefix with the size and sha256 of each file and the target of each link, the registry files included"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/spike/cycle.py",
+    "sha256": "e38bade35de6d3a906dc2a1014691c3dde90a86f65958933902280e7cee93727",
+    "args": [
+      "--experiment",
+      "E002",
+      "--arm",
+      "opt-freq-never",
+      "--script",
+      "experiments/E002-iwp-state-inventory/scripts/opt-freq-never.steps",
+      "--may-write-saved-files",
+      "--terminate",
+      "kill"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "step script sha256",
+      "value": "9fa68f95efbbdba0c1106c53d33d59a56a4e013c12243fc5b677985697d886b3"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install bound read-only in the run's mount namespace",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "800x600x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.11"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "prefix seal immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces the game sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "0,0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 800x600"
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "Islepro window properties",
+      "value": "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; "
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "root window at the title screen",
+      "value": "800x600x24"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached and stable, seconds after launch",
+      "value": "6.26"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753"
+    },
+    {
+      "step": 5,
+      "source": "process",
+      "field": "client window titles",
+      "value": "'Islepro'"
+    },
+    {
+      "step": 6,
+      "source": "process",
+      "field": "game process threads and resident memory (kB)",
+      "value": "threads 1, VmRSS 43216"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "click at 320,585: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "click at 320,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "options.png raw RGB8 pixels sha256",
+      "value": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "click at 571,389: label changed under the pointer (s)",
+      "value": "no change within 2 s"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "click at 571,389: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "after-choice.png raw RGB8 pixels sha256",
+      "value": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "click at 228,532: label changed under the pointer (s)",
+      "value": "no change within 2 s"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "click at 228,532: screen changed after the click (s)",
+      "value": "0.71"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "saved.png raw RGB8 pixels sha256",
+      "value": "01e22718014faf903ccbfde3d0b38b5830288553ccbacbbec6a853c4b5684ccb"
+    },
+    {
+      "step": 15,
+      "source": "file",
+      "field": "xtras/Isledft.dat: size in bytes and sha256",
+      "value": "15 1750f915ae4ea473d6b21493b7fe3d289fe45f2ea0d779f3cce3c40c309550df"
+    },
+    {
+      "step": 15,
+      "source": "file",
+      "field": "xtras/Isledft.dat: equals the install's file",
+      "value": "yes"
+    },
+    {
+      "step": 16,
+      "source": "file",
+      "field": "xtras/Islepro.skr: size in bytes and sha256",
+      "value": "13 50d86c5cdd758f4c65f21e2a2be78da433b39c96e4fefd1549820a68abb25b95"
+    },
+    {
+      "step": 16,
+      "source": "file",
+      "field": "xtras/Islepro.skr: equals the install's file",
+      "value": "yes"
+    },
+    {
+      "step": 17,
+      "source": "file",
+      "field": "xtras/Islepro.dat: size in bytes and sha256",
+      "value": "190 a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03"
+    },
+    {
+      "step": 17,
+      "source": "file",
+      "field": "xtras/Islepro.dat: equals the install's file",
+      "value": "yes"
+    },
+    {
+      "step": 18,
+      "source": "file",
+      "field": "game copy so far: added/removed/changed",
+      "value": "0/0/0"
+    },
+    {
+      "step": 18,
+      "source": "file",
+      "field": "prefix so far: added/removed/changed",
+      "value": "31/0/0: +dosdevices/com1; +dosdevices/com2; +dosdevices/com3; +dosdevices/com4; +dosdevices/com5; +dosdevices/com6; +dosdevices/com7; +dosdevices/com8; +drive_c/users/<user>/Temp/TempFolder.aaa; +drive_c/users/<user>/Temp/TempFolder.aaa/dirapi.dll 967168; +drive_c/users/<user>/Temp/TempFolder.aaa/iml32.dll 394752; +drive_c/users/<user>/Temp/TempFolder.aaa/msvcrt.dll 280576; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Animated GIF Asset.x32 26112; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DTTurnTable.x32 69632; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DirectSound.x32 16384; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Flash Asset.x32 286720; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Asset.x32 49152; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Xtra.x32 230400; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/INetURL.x32 28672; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/MacroMix.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Mix Services.x32 64000; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetFile.x32 41472; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetLingo.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/QT3Asset.x32 105984"
+    },
+    {
+      "step": 18,
+      "source": "file",
+      "field": "registry keys so far: added/removed/value-changed",
+      "value": "0/0/0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wine processes gone after terminate (s)",
+      "value": "still running"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "31/0/2"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/6"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "store": "release:E002"
+    },
+    {
+      "name": "options.png",
+      "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "store": "release:E002"
+    },
+    {
+      "name": "after-choice.png",
+      "sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "store": "release:E002"
+    },
+    {
+      "name": "saved.png",
+      "sha256": "b823fdd7df3d4259bf02367a29803d696ec77b095ac4d7f099b5fc6e08daacf8",
+      "store": "release:E002"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "2906806525f775b2eb2420dbd58d69f7c972ab29d354b8b8bf1cdf03b92eb5c7",
+      "store": "release:E002"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "store": "release:E002"
+    },
+    {
+      "name": "run.log",
+      "sha256": "d5f888e390ce1f96c7f4e27ecdaac91e10e244ade67be3bc6ea194965d76e7d3",
+      "store": "release:E002"
+    }
+  ],
+  "started": "2026-10-04T06:34:58Z",
+  "ended": "2026-10-04T06:35:44Z",
+  "status": "completed"
+}

@@ -1,0 +1,7 @@
+click 565 532
+click 100 585
+settle
+click 565 532
+watch 0 495 800 100
+settle
+shot g1

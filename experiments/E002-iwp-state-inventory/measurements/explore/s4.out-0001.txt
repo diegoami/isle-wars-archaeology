@@ -1,0 +1,17 @@
+click at 320,585: label changed under the pointer (s): 0.08
+click at 320,585: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.45
+click at 565,532: label changed under the pointer (s): 0.08
+click at 565,532: screen changed after the click (s): 0.02
+click at 100,585: label changed under the pointer (s): 0.08
+click at 100,585: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.45
+click at 565,532: label changed under the pointer (s): 0.08
+click at 565,532: screen changed after the click (s): 0.02
+watched area: x,y,w,h 0,0,800,495
+settle: watched area unchanged for 4 s (s): 17.47
+s4-board.png raw RGB8 pixels sha256: 72ed48c06496d65b125c9e2253b454e2c11e35481e59e93cc60daf9fd27bd458
+watched area: x,y,w,h 265,530,270,26
+click-until: candidate that worked: 42,330 (number 3 of 44)
+s4-sel.png raw RGB8 pixels sha256: 1eaa5c4690186fe98783ca8752309f3a130c048f415aae72faffe757de6fd54b
+ok

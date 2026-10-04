@@ -1,0 +1,9 @@
+h01.png raw RGB8 pixels sha256: d4731240d7463e679d89ad4906c90238b675b1542f9319c9edd0e21dd8d2b13d
+h02.png raw RGB8 pixels sha256: d17fe01f4b5a51c02f85287f06b9d5e2a5877b4dac26cac878902036bc000bc8
+h03.png raw RGB8 pixels sha256: 8fce44ce6cb3c4c4261b47c697cef40b292812e5b70c18727dcce62a9d7ea416
+h04.png raw RGB8 pixels sha256: 0f1fb08f9a2f981c15aededebc94d5dfb4c8c0fa9fd3eac420ab2825fecffe20
+h05.png raw RGB8 pixels sha256: 0f1fb08f9a2f981c15aededebc94d5dfb4c8c0fa9fd3eac420ab2825fecffe20
+h06.png raw RGB8 pixels sha256: ac9ac1b189d0e46280274ed7c181470dd7c02a9ee41c82fb8b26cc88ef96d9a0
+h07.png raw RGB8 pixels sha256: b4f8d9452abee1f566af9483369bffec475fe1036d9f7b3d3cfcae71bb19f8b1
+h08.png raw RGB8 pixels sha256: 959898993866b7a9c5bbb2f4f315467a4ea29540a6789f9debe600f4fb18113d
+ok

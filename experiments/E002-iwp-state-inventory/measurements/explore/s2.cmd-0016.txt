@@ -1,0 +1,4 @@
+click 337 531
+shot r1
+shot r2
+shot r3

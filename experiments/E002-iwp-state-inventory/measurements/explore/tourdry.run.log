@@ -1,0 +1,280 @@
+01:05:43 step script: 116 steps
+01:05:43 install read-only inside the run
+01:05:43 prefix seal before anything starts: ok
+01:05:43 Xvfb ready after 0.1 s, root 800x600x24
+01:05:43 xfwm4 registered after 0.12 s
+01:05:44 prefix seal immediately before launch: ok
+01:05:44 launched: unshare -n /usr/lib/wine/wine <game>
+01:05:45 game in a separate network namespace, interfaces seen: ['lo']
+01:05:45 window after 0.64 s at 0,0, size 800x600
+01:05:51 root window at the title screen: 800x600x24; window _NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; 
+01:05:51 title screen reached 7.04 s after launch
+01:05:51 before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+01:05:51 step 4: title 
+01:05:51   client window titles: 'Islepro'
+01:05:51 step 5: proc 
+01:05:51   game process threads and resident memory (kB): threads 1, VmRSS 43552
+01:05:51 step 7: shot title
+01:05:51 title.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+01:05:51 step 8: click 320 585
+01:05:52   click at 320,585: label changed under the pointer (s): 0.08
+01:05:52   click at 320,585: screen changed after the click (s): 0.02
+01:05:52 step 9: settle 
+01:05:52   settle: screen unchanged between two captures (s): 0.43
+01:05:52 step 10: shot options-defaults
+01:05:52 options-defaults.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+01:05:52 step 12: click 390 137
+01:05:54   click at 390,137: label changed under the pointer (s): no change within 2 s
+01:05:54   click at 390,137: screen changed after the click (s): 0.02
+01:05:54 step 13: shot locked-armies
+01:05:55 locked-armies.png: pixels 4d5bd0f711739086, file 9160a38dd7b6cd83
+01:05:55 step 14: click 343 233
+01:05:58   click at 343,233: label changed under the pointer (s): no change within 2 s
+01:05:58   click at 343,233: screen changed after the click (s): 0.73
+01:05:58 step 15: shot locked-human
+01:05:58 locked-human.png: pixels 443c9dc8357ff206, file 55067d5ed102d7d9
+01:05:58 step 16: click 454 389
+01:06:00   click at 454,389: label changed under the pointer (s): no change within 2 s
+01:06:00   click at 454,389: screen changed after the click (s): 0.02
+01:06:00 step 17: shot locked-frequency
+01:06:00 locked-frequency.png: pixels 4d5bd0f711739086, file 9160a38dd7b6cd83
+01:06:00 step 19: watch 180 335 440 25
+01:06:00   watched area: x,y,w,h 180,335,440,25
+01:06:00 step 20: click-until 0 192 240 16 1500 565 532 565 532 565 532
+01:06:05   click-until: candidate that worked: 565,532 (number 3 of 3)
+01:06:05 step 21: watch 
+01:06:05   watched area: whole screen
+01:06:05 step 22: settle 
+01:06:06   settle: screen unchanged between two captures (s): 0.43
+01:06:06 step 24: click 215 585
+01:06:06   click at 215,585: label changed under the pointer (s): 0.09
+01:06:06   click at 215,585: screen changed after the click (s): 0.01
+01:06:06 step 25: settle 
+01:06:06   settle: screen unchanged between two captures (s): 0.43
+01:06:06 step 26: shot help-01
+01:06:06 help-01.png: pixels 7ed3947a4b3d7f13, file 390756985586a01d
+01:06:06 step 27: clicks 20 744 481
+01:06:08   20 clicks at 744,481: sent
+01:06:08 step 28: settle 
+01:06:09   settle: screen unchanged between two captures (s): 0.44
+01:06:09 step 29: shot help-02
+01:06:09 help-02.png: pixels 6f987809dc68ea38, file 10842580b609d049
+01:06:09 step 30: clicks 20 744 481
+01:06:10   20 clicks at 744,481: sent
+01:06:10 step 31: settle 
+01:06:10   settle: screen unchanged between two captures (s): 0.43
+01:06:10 step 32: shot help-03
+01:06:10 help-03.png: pixels c36fcfd19ae1e1d0, file 3d404526ba3d60a6
+01:06:10 step 33: clicks 20 744 481
+01:06:12   20 clicks at 744,481: sent
+01:06:12 step 34: settle 
+01:06:13   settle: screen unchanged between two captures (s): 0.43
+01:06:13 step 35: shot help-04
+01:06:13 help-04.png: pixels a4f4b662442abf6a, file ca366d06aa602247
+01:06:13 step 36: clicks 20 744 481
+01:06:15   20 clicks at 744,481: sent
+01:06:15 step 37: settle 
+01:06:16   settle: screen unchanged between two captures (s): 0.44
+01:06:16 step 38: shot help-05
+01:06:16 help-05.png: pixels ce1d2fd6d1526732, file 33d3f3474c8b1e84
+01:06:16 step 39: clicks 20 744 481
+01:06:18   20 clicks at 744,481: sent
+01:06:18 step 40: settle 
+01:06:18   settle: screen unchanged between two captures (s): 0.43
+01:06:18 step 41: shot help-06
+01:06:18 help-06.png: pixels 86d63eb9e3ae6521, file c84434ef3cb45451
+01:06:18 step 42: clicks 20 744 481
+01:06:21   20 clicks at 744,481: sent
+01:06:21 step 43: settle 
+01:06:21   settle: screen unchanged between two captures (s): 0.43
+01:06:21 step 44: shot help-07
+01:06:21 help-07.png: pixels 2591ee9761b13fa4, file 5ea959aad5c8b98a
+01:06:21 step 45: clicks 20 744 481
+01:06:23   20 clicks at 744,481: sent
+01:06:23 step 46: settle 
+01:06:24   settle: screen unchanged between two captures (s): 0.44
+01:06:24 step 47: shot help-08
+01:06:24 help-08.png: pixels a8dc2c2ab4f18b21, file 5b7bc5f1b990e051
+01:06:24 step 48: clicks 20 744 481
+01:06:26   20 clicks at 744,481: sent
+01:06:26 step 49: settle 
+01:06:27   settle: screen unchanged between two captures (s): 0.43
+01:06:27 step 50: shot help-09
+01:06:27 help-09.png: pixels 64c42943bc991781, file 7d87a3bf93b30dd0
+01:06:27 step 51: clicks 20 744 481
+01:06:29   20 clicks at 744,481: sent
+01:06:29 step 52: settle 
+01:06:29   settle: screen unchanged between two captures (s): 0.43
+01:06:29 step 53: shot help-10
+01:06:29 help-10.png: pixels 050cb6e2c3c168b3, file 119f1982f264fcfe
+01:06:29 step 54: clicks 20 744 481
+01:06:32   20 clicks at 744,481: sent
+01:06:32 step 55: settle 
+01:06:32   settle: screen unchanged between two captures (s): 0.43
+01:06:32 step 56: shot help-11
+01:06:32 help-11.png: pixels e649f3e4e7b93a96, file fdc269c5d5fc243f
+01:06:32 step 57: clicks 20 744 481
+01:06:34   20 clicks at 744,481: sent
+01:06:34 step 58: settle 
+01:06:35   settle: screen unchanged between two captures (s): 0.43
+01:06:35 step 59: shot help-12
+01:06:35 help-12.png: pixels a36bcff0283758bd, file 2088424b236a2607
+01:06:35 step 60: clicks 20 744 481
+01:06:37   20 clicks at 744,481: sent
+01:06:37 step 61: settle 
+01:06:37   settle: screen unchanged between two captures (s): 0.43
+01:06:37 step 62: shot help-13
+01:06:38 help-13.png: pixels a36bcff0283758bd, file 2088424b236a2607
+01:06:38 step 63: clicks 20 744 481
+01:06:40   20 clicks at 744,481: sent
+01:06:40 step 64: settle 
+01:06:39   settle: screen unchanged between two captures (s): 0.43
+01:06:39 step 65: shot help-14
+01:06:39 help-14.png: pixels a36bcff0283758bd, file 2088424b236a2607
+01:06:39 step 66: click! 388 536
+01:06:39   click at 388,536: label changed under the pointer (s): 0.07
+01:06:39   click at 388,536: screen changed after the click (s): 0.01
+01:06:39 step 67: settle 
+01:06:40   settle: screen unchanged between two captures (s): 0.45
+01:06:40 step 69: click 620 585
+01:06:40   click at 620,585: label changed under the pointer (s): 0.08
+01:06:40   click at 620,585: screen changed after the click (s): 0.02
+01:06:40 step 70: settle 
+01:06:40   settle: screen unchanged between two captures (s): 0.45
+01:06:40 step 71: shot scores-before
+01:06:40 scores-before.png: pixels d5da077410f2c473, file d816d6fb3ee277b0
+01:06:40 step 72: click! 388 516
+01:06:41   click at 388,516: label changed under the pointer (s): 0.07
+01:06:41   click at 388,516: screen changed after the click (s): 0.01
+01:06:41 step 73: settle 
+01:06:41   settle: screen unchanged between two captures (s): 0.44
+01:06:41 step 75: click 100 585
+01:06:41   click at 100,585: label changed under the pointer (s): 0.07
+01:06:41   click at 100,585: screen changed after the click (s): 0.01
+01:06:41 step 76: settle 
+01:06:42   settle: screen unchanged between two captures (s): 0.44
+01:06:42 step 77: shot newgame-setup
+01:06:42 newgame-setup.png: pixels 908ec68b213724bc, file 154143a1bd739503
+01:06:42 step 78: click! 565 532
+01:06:42   click at 565,532: label changed under the pointer (s): 0.01
+01:06:42   click at 565,532: screen changed after the click (s): 0.01
+01:06:42 step 79: shot board-loading
+01:06:42 board-loading.png: pixels 1a1e25a0094ef12d, file 007689c252d918a2
+01:06:42 step 80: watch 0 0 800 495
+01:06:42   watched area: x,y,w,h 0,0,800,495
+01:06:42 step 81: settle 4
+01:06:59   settle: watched area unchanged for 4 s (s): 16.91
+01:06:59 step 82: shot board-human-turn
+01:06:59 board-human-turn.png: pixels 6e5f0b1be50ce109, file cc38ffa58567d486
+01:06:59 step 84: watch 265 530 270 26
+01:06:59   watched area: x,y,w,h 265,530,270,26
+01:06:59 step 85: click-until 168 168 168 24 1000 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+01:07:10   click-until: candidate that worked: 153,433 (number 6 of 44)
+01:07:10 step 86: shot place-selected
+01:07:11 place-selected.png: pixels fcc62055820507bd, file b7c768bce63956e8
+01:07:11 step 87: watch 262 502 276 70
+01:07:11   watched area: x,y,w,h 262,502,276,70
+01:07:11 step 88: click! 307 543
+01:07:11   click at 307,543: label changed under the pointer (s): 0.07
+01:07:11   click at 307,543: screen changed after the click (s): 0.01
+01:07:11 step 89: shot place-all
+01:07:11 place-all.png: pixels e57f00b63742d45c, file ede656e5a4c03790
+01:07:11 step 90: click! 497 543
+01:07:11   click at 497,543: label changed under the pointer (s): 0.07
+01:07:11   click at 497,543: screen changed after the click (s): 0.01
+01:07:11 step 91: settle 
+01:07:12   settle: screen unchanged between two captures (s): 0.91
+01:07:12 step 92: shot place-done
+01:07:12 place-done.png: pixels d9734e6ece93be61, file 9b157264473b7cfa
+01:07:12 step 95: attack-picked 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+01:07:21   attack-picked: target and attacker: 105,441 from 153,433 (number 4 of 44)
+01:07:21 step 96: shot attack-ready
+01:07:21 attack-ready.png: pixels ec8a0bf86960377a, file 042f0e3709a850ad
+01:07:21 step 97: watch 545 502 250 70
+01:07:21   watched area: x,y,w,h 545,502,250,70
+01:07:21 step 98: click! 337 531
+01:07:21   click at 337,531: label changed under the pointer (s): 0.08
+01:07:21   click at 337,531: screen changed after the click (s): 0.01
+01:07:21 step 99: shot attack-result-1
+01:07:21 attack-result-1.png: pixels 330a26fb6460fdaa, file d4d673c8bab2f5be
+01:07:21 step 100: settle 
+01:07:22   settle: screen unchanged between two captures (s): 0.44
+01:07:22 step 101: shot attack-result-2
+01:07:22 attack-result-2.png: pixels 330a26fb6460fdaa, file d4d673c8bab2f5be
+01:07:22 step 102: watch 262 502 276 70
+01:07:22   watched area: x,y,w,h 262,502,276,70
+01:07:22 step 103: click-until 0 192 64 16 600 456 531 495 540
+01:07:24   click-until: candidate that worked: 495,540 (number 2 of 2)
+01:07:24 step 104: shot turn-menu
+01:07:24 turn-menu.png: pixels fea8a118cd1e9f1c, file d2dd00be0079ad6b
+01:07:24 step 105: click! 417 530
+01:07:24   click at 417,530: label changed under the pointer (s): 0.09
+01:07:24   click at 417,530: screen changed after the click (s): 0.01
+01:07:24 step 106: shot pass-1
+01:07:24 pass-1.png: pixels 86c95ac0d96b031a, file d36083776ce20872
+01:07:24 step 107: click-any? 402 531
+01:07:27   click-any?: candidate that worked: none of the 1
+01:07:27 step 108: shot after-pass
+01:07:27 after-pass.png: pixels 8f72aeaeebc33fef, file b106eeced98e3061
+01:07:27 step 110: watch 0 0 800 495
+01:07:27   watched area: x,y,w,h 0,0,800,495
+01:07:27 step 111: shot ai-turn
+01:07:27 ai-turn.png: pixels 8f72aeaeebc33fef, file b106eeced98e3061
+01:07:27 step 112: settle 4
+01:07:49   settle: watched area unchanged for 4 s (s): 22.91
+01:07:49 step 113: shot human-turn-2
+01:07:49 human-turn-2.png: pixels b4950a346b3a15ac, file a396865dca3742b8
+01:07:49 step 115: watch 
+01:07:49   watched area: whole screen
+01:07:49 step 116: click 100 585
+01:07:49   click at 100,585: label changed under the pointer (s): 0.07
+01:07:49   click at 100,585: screen changed after the click (s): 0.02
+01:07:49 step 117: settle 
+01:07:49   settle: screen unchanged between two captures (s): 0.43
+01:07:49 step 118: shot loss-notice
+01:07:50 loss-notice.png: pixels 108b6db3403806c3, file 5ad6d9012cdce6b9
+01:07:50 step 119: click! 400 526
+01:07:50   click at 400,526: label changed under the pointer (s): 0.45
+01:07:50   click at 400,526: screen changed after the click (s): 0.02
+01:07:50 step 120: settle 
+01:07:51   settle: screen unchanged between two captures (s): 0.44
+01:07:51 step 121: file xtras/Islepro.skr
+01:07:51   xtras/Islepro.skr: size in bytes and sha256: 14 25464a6d8411b9e9e5920cd130d060ae341295fdce6ae70eaa92f22b64880db0
+01:07:51   xtras/Islepro.skr: equals the install's file: no: the install's has 13 bytes
+01:07:51   xtras/Islepro.skr: changed byte offsets, install>game copy: 0x6 8e>8f; appended at 0xd: 8a
+01:07:51   raw:bytes[0x0:0xe] of xtras/Islepro.skr as written by the game: 8e8a8e8a8e8a8f8a8e8a8e8a8e8a
+01:07:51 step 122: click 620 585
+01:07:51   click at 620,585: label changed under the pointer (s): 0.08
+01:07:51   click at 620,585: screen changed after the click (s): 0.01
+01:07:51 step 123: settle 
+01:07:51   settle: screen unchanged between two captures (s): 0.43
+01:07:51 step 124: shot scores-after
+01:07:52 scores-after.png: pixels c7eb3b89a73cdfea, file f30ee66289086dc6
+01:07:52 step 125: click! 388 516
+01:07:52   click at 388,516: label changed under the pointer (s): 0.07
+01:07:52   click at 388,516: screen changed after the click (s): 0.01
+01:07:52 step 126: settle 
+01:07:52   settle: screen unchanged between two captures (s): 0.44
+01:07:52 step 127: file xtras/Islepro.skr
+01:07:52   xtras/Islepro.skr: size in bytes and sha256: 14 25464a6d8411b9e9e5920cd130d060ae341295fdce6ae70eaa92f22b64880db0
+01:07:52   xtras/Islepro.skr: equals the install's file: no: the install's has 13 bytes
+01:07:52   xtras/Islepro.skr: changed byte offsets, install>game copy: 0x6 8e>8f; appended at 0xd: 8a
+01:07:52   raw:bytes[0x0:0xe] of xtras/Islepro.skr as written by the game: 8e8a8e8a8e8a8f8a8e8a8e8a8e8a
+01:07:52 step 128: file xtras/Islepro.dat
+01:07:52   xtras/Islepro.dat: size in bytes and sha256: 190 a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03
+01:07:52   xtras/Islepro.dat: equals the install's file: yes
+01:07:52 step 129: file xtras/Isledft.dat
+01:07:52   xtras/Isledft.dat: size in bytes and sha256: 15 1750f915ae4ea473d6b21493b7fe3d289fe45f2ea0d779f3cce3c40c309550df
+01:07:52   xtras/Isledft.dat: equals the install's file: yes
+01:07:52 step 130: changes 
+01:07:53   game copy so far: added/removed/changed: 0/0/1: ~xtras/Islepro.skr (13,)->(14,)
+01:07:53   prefix so far: added/removed/changed: 31/0/3: +dosdevices/com1; +dosdevices/com2; +dosdevices/com3; +dosdevices/com4; +dosdevices/com5; +dosdevices/com6; +dosdevices/com7; +dosdevices/com8; +drive_c/users/<user>/Temp/TempFolder.aaa; +drive_c/users/<user>/Temp/TempFolder.aaa/dirapi.dll 967168; +drive_c/users/<user>/Temp/TempFolder.aaa/iml32.dll 394752; +drive_c/users/<user>/Temp/TempFolder.aaa/msvcrt.dll 280576; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Animated GIF Asset.x32 26112; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DTTurnTable.x32 69632; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DirectSound.x32 16384; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Flash Asset.x32 286720; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Asset.x32 49152; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Xtra.x32 230400; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/INetURL.x32 28672; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/MacroMix.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Mix Services.x32 64000; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetFile.x32 41472; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetLingo.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/QT3Asset.x32 105984; ~drive_c/iwp/xtras/Islepro.skr (13,)->(14,); ~system.reg (1723327,)->(1711333,); ~user.reg (27435,)->(21504,)
+01:07:53   registry keys so far: added/removed/value-changed: 0/1/6
+01:07:53 script finished
+01:07:53 Quit label: hover change 0.08
+01:07:55 notice.png: pixels f14f30a26ce8214f, file 47afc4d33b5450f9
+01:08:00 Exit Game label: hover change None
+01:08:14 game exit after ui-quit: 14.74
+01:08:14 game exit status 0
+01:08:16 processes still alive after terminate: 0
+01:08:17 reset: prefix equals its state before launch: True
