@@ -469,7 +469,8 @@ def painted(owners, half_height=19, half_width=14):
     data = bytearray(bytes((0, 0, 170)) * (board.WIDTH * board.HEIGHT))
     for n, name in owners.items():
         cx, cy = board.BOXES[n]
-        for y in range(cy - half_height, cy + half_height + 1):
+        up = half_height[n] if isinstance(half_height, dict) else half_height
+        for y in range(cy - up, cy + up + 1):
             for x in range(cx - half_width, cx + half_width + 1):
                 data[(y * board.WIDTH + x) * 3:(y * board.WIDTH + x) * 3 + 3] = bytes(board.COLOURS[name])
         for y in range(cy - 4, cy + 4):                     # the black number box itself
@@ -536,7 +537,12 @@ class ChooseAttackTest(StepsWorld):
 
     def test_a_country_of_the_same_army_is_never_the_target(self):
         made = self.make_steps("choose-attack\n")
-        self.navigate(made, {1: "red", 2: "blue", 3: "blue"})    # 2 is nearer to the blue 3 than to the red 1
+        # 2 and 3 touch across one row of sea (not one region), and 2 is nearer to 3 than to the red 1
+        made.screen.current = painted({1: "red", 2: "blue", 3: "blue"}, {1: 24, 2: 16, 3: 16})
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()):
+            made.load_script()
+            made.navigate()
         self.assertEqual((made.mine, made.target), (2, 1))
 
     def test_with_no_blue_country_touching_an_enemy_the_run_aborts(self):
