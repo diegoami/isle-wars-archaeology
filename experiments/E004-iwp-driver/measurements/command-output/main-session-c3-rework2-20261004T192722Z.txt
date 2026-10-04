@@ -1,0 +1,34 @@
++ main session at 79fef81dcc3e, 2026-10-04T19:27:22Z, from the task's worktree
+== DW1
+{"repeat": 1, "run_id": "E004-r0078", "status": "completed", "seconds": 10.72, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0079", "status": "completed", "seconds": 10.62, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0080", "status": "completed", "seconds": 13.85, "recovered": true, "as_expected": true}
+{"repeat": 4, "run_id": "E004-r0081", "status": "completed", "seconds": 12.03, "recovered": true, "as_expected": true}
+{"repeat": 5, "run_id": "E004-r0082", "status": "completed", "seconds": 10.82, "recovered": true, "as_expected": true}
+{"repeat": 6, "run_id": "E004-r0083", "status": "completed", "seconds": 11.2, "recovered": true, "as_expected": true}
+{"repeat": 7, "run_id": "E004-r0084", "status": "completed", "seconds": 10.43, "recovered": true, "as_expected": true}
+{"repeat": 8, "run_id": "E004-r0085", "status": "completed", "seconds": 10.07, "recovered": true, "as_expected": true}
+{"repeat": 9, "run_id": "E004-r0086", "status": "completed", "seconds": 9.92, "recovered": true, "as_expected": true}
+{"repeat": 10, "run_id": "E004-r0087", "status": "completed", "seconds": 9.91, "recovered": true, "as_expected": true}
+exit 0 (110 s)
+== DW2 kill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0088", "status": "completed", "seconds": 9.79, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0089", "status": "aborted: game-died: the game process exited before the screenshot before.png (status 0)", "seconds": 8.9, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0090", "status": "completed", "seconds": 10.02, "recovered": true, "as_expected": true}
+exit 0
+== DW2 sigkill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0091", "status": "completed", "seconds": 9.95, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0092", "status": "aborted: game-died: the game process exited before the options screen appeared (status -9)", "seconds": 9.44, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0093", "status": "completed", "seconds": 10.06, "recovered": true, "as_expected": true}
+exit 0
+== DW5
+ready
+exit 0
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+== DW3 (full suite + mutants, TMPDIR short)
+Ran 344 tests in 39.323s
+OK
+44 of 44 mutants killed
