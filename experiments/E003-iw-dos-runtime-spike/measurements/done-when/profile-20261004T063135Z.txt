@@ -1,0 +1,23 @@
++ dw.sh profile (at c95ab816e71d, 2026-10-04T06:31:35Z)
+run copy: copied 0, removed 0
+run copy ok
+tool:python@>=3.11: verified
+tool:xvfb: verified
+tool:xdotool: verified
+facility:display: verified
+tool:dosbox-x@2024.03.01: verified
+artifact:iw-dos-3.1-30121376: verified
+facility:iw-dos-run: verified
+ready
+exit 0
+run copy: copied 0, removed 0
+run copy ok
+tool:python@>=3.11: verified
+tool:xvfb: verified
+tool:xdotool: verified
+facility:display: verified
+tool:dosbox-x@2024.03.01: verified
+artifact:iw-dos-3.1-30121376: verified
+facility:iw-dos-run: verified
+ready
+exit 0
