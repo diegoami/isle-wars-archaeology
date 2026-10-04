@@ -12,6 +12,7 @@ Commands (machine-local values come from the environment, never from this file):
                   <IW_DOS_RUN>/game, which DOSBox-X mounts as C: and nothing else
     E003_BUNDLES  the local directory for evidence bundles
     E003_EXPLORE  where an --explore run writes its output (optional)
+                  (E005_BUNDLES and E005_EXPLORE for the E005 runs: `experiment` of run_locations)
 
 Every location is confined first (setup/iwp/locations.py `confine`, imported as it is on main):
 absolute, outside every checkout, not containing this repository, and not overlapping IW_DOS_DIR or
@@ -57,7 +58,7 @@ def manifest(root=None):
     raise SystemExit(f"{SET_ID} is not in artifacts/known.json")
 
 
-def run_locations(env=None, need_run=True, need_bundles=False, explore=False):
+def run_locations(env=None, need_run=True, need_bundles=False, explore=False, experiment="E003"):
     """{name: canonical Path} of IW_DOS_DIR and the confined machine-local locations; SystemExit
     before anything is touched when one is missing or refused."""
     env = os.environ if env is None else env
@@ -78,9 +79,9 @@ def run_locations(env=None, need_run=True, need_bundles=False, explore=False):
         seen.append((name, found[name]))
 
     add("IW_DOS_RUN", need_run)
-    add("E003_BUNDLES", need_bundles)
+    add(f"{experiment}_BUNDLES", need_bundles)
     if explore:
-        add("E003_EXPLORE", False)
+        add(f"{experiment}_EXPLORE", False)
     return found
 
 
