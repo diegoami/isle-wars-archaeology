@@ -38,5 +38,20 @@
     "check": "python3 setup/iwp/token_check.py prefix",
     "describes": "the Wine prefix exists, has no Z: and no absolute links, and holds the registered game copy",
     "cost": "cheap"
+  },
+  "tool:dosbox-x@2024.03.01": {
+    "check": "python3 setup/iw-dos/token_check.py dosbox-x",
+    "describes": "DOSBox-X 2024.03.01 on PATH, the emulator of the iw-dos lane",
+    "cost": "cheap"
+  },
+  "artifact:iw-dos-3.1-30121376": {
+    "check": "python3 setup/iw-dos/token_check.py artifact",
+    "describes": "the registered set matches in IW_DOS_DIR (the copy), with no file outside it",
+    "cost": "cheap"
+  },
+  "facility:iw-dos-run": {
+    "check": "python3 setup/iw-dos/token_check.py run",
+    "describes": "the run copy in IW_DOS_RUN is the registered set as plain files of its own, outside every checkout",
+    "cost": "cheap"
   }
 }
