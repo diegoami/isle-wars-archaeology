@@ -1,6 +1,6 @@
 # Exploration screenshots (machine-local), by hash
 
-The PNGs stay in `~/.local/share/isle-wars-archaeology/E002-explore/` on the machine that made them (never deleted). They are not evidence; they are listed here by sha256 so a later citation can say which capture it means. A PNG goes into a release bundle only if F003 cites it.
+The PNGs stay in `<machine-local>/E002-explore/` on the machine that made them (never deleted). They are not evidence; they are listed here by sha256 so a later citation can say which capture it means. A PNG goes into a release bundle only if F003 cites it.
 
 | file | bytes | sha256 |
 | --- | ---: | --- |
