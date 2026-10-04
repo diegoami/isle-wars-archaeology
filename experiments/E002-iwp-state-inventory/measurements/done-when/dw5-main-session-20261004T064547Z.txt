@@ -1,0 +1,19 @@
++ DW5 at 1d00381f5e79, 2026-10-04T06:45:47Z
+prefix exists: iwp.wineprefix
+links removed: 0
+game copy: copied 0, removed 0
+baseline exists
+tool:python@>=3.11: verified
+tool:wine@9.0: verified
+tool:xvfb: verified
+tool:xfwm4: verified
+tool:xdotool: verified
+facility:display: verified
+artifact:iwp-2.0-996e86c5: verified
+facility:iwp-prefix: verified
+ready
+exit 0
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
