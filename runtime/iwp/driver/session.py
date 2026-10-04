@@ -195,7 +195,7 @@ class Session(spike.Cycle):
         except DriverError:
             raise
         except Exception as exc:
-            reason = f"{name}: {type(exc).__name__}: {exc}"
+            reason = f"{type(exc).__name__}: {exc} (in the {name} stage)"
             self._set_aborted(reason, error)
             self.say(f"ABORT {error.kind}: {reason}")
             raise error(reason) from exc
