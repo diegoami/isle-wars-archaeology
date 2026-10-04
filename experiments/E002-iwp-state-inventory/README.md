@@ -65,3 +65,22 @@ file is append-only. A changed design is a new experiment, or `v2/`.
   record names its script in `actions.args` and holds the script's sha256 as its first observation.
 - `--explore --session` (no record): the interactive exploration that found the screens and click
   positions; its screenshots and notes are machine-local and are not evidence.
+
+## After the first series (append-only)
+
+- **Arms added** after the table above was written, both for a reason found in the runs: `probe-process`
+  (the window title and the process's threads and memory on the title, setup and board screens: the
+  first `tour` took them on the title screen only) and `opt-freq-more`, `opt-freq-never` (the one control
+  not yet varied; the unregistered build locks it, so they show the lock message and write nothing).
+- **Aborted records kept** (their ids and causes are in
+  [`measurements/run-table.md`](measurements/run-table.md)): r0002 and r0003 (xfwm4 never registered
+  because the shell carried a `DBUS_SESSION_BUS_ADDRESS` for a bus that no longer existed; unset, the
+  window manager starts at once, and the later runs were started with it unset), and r0018 and r0019
+  (`loss-easy`: at the Easy level the New Game click in the middle of a game showed no loss notice, so the
+  script's Continue click had nothing to click).
+- **Not repeated:** a game played to its end; a won game; an Easy loss; the ear icon; keyboard shortcuts.
+  Nothing here gave a way to produce them cheaply.
+- **Measurements** (rule 20): [`measurements/`](measurements/README.md) holds the exploration sessions'
+  logs, a table of their screenshots by hash, the run table and the bytes of the files the game wrote
+  (both generated from the records by `measurements/make_tables.py`), and a static summary of
+  `xtras/Islepro.dat`.

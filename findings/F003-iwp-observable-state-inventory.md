@@ -1,0 +1,200 @@
+# F003 Isle Wars Pro shows its game state only on the screen; the two files it writes hold the saved options and a scoreboard as short comma-separated text, and no save or load was found
+
+- **Status**: proposed
+- **Question**: Where can the state of Isle Wars Pro (the unregistered 2.0 install) be seen, at what intervention level and at what cost: on the screen, in files the game writes, in the registry, in the Temp folder, in the window title, in the process? Which files does it write, in what format, and does it save a game? (E002, task T09, W4a; feeds Q-SET-05 and the W5a driver.)
+- **Tests claims**: none (a source inventory; it proposes representation rows 1 to 7 below and makes no claim about a game rule)
+- **Experiment and runs**: E002; runs E002-r0001 to E002-r0024, all in `runs/E002/`. Four of them aborted (r0002, r0003, r0018, r0019) and stay; the table in "Method" says why and which each claim cites.
+- **Artifact**: set `iwp-2.0-996e86c5`, variant none, for the two runs that cannot write a file of the set (r0021, r0022); set `iwp-2.0-de5a82a2`, variant none, for the other 22 ([`artifacts/iwp/iwp-2.0-de5a82a2.md`](../artifacts/iwp/iwp-2.0-de5a82a2.md)): the same files, with `xtras/Isledft.dat` and `xtras/Islepro.skr` declared runtime writes
+- **Max intervention**: I1 (screenshots of the display and read-only reads of `/proc` and of the game copy; no memory read, no modified file, no input but the mouse)
+- **Tier reached**: V2 (the original, headless, under Wine; no native Windows run, so no V3)
+- **Confidence**: for each parsed field, an action that moves the byte, two runs that agree with each other, and a control of two runs that leave it alone (the speed and level fields of `Isledft.dat`; the Normal-lost and Hard-lost fields of `Islepro.skr`, 2 runs each plus 2 tour runs for Normal-lost). Every other field of both files is unvaried and not decoded. One machine (WSL2), one Wine build, one install. The "no save or load" answer is a negative over the screens and runs listed, not a proof.
+
+## Answer
+
+- **The game state shows only on the screen.** In the 24 records, no file of the game copy changed except `xtras/Isledft.dat` (r0004 to r0013) and `xtras/Islepro.skr` (r0001, r0014 to r0017, r0020); the registry changes were the same seven keys in every run, and the Temp folder held the same files whether or not a game was played (see the source table). The territory owners, the army numbers, whose turn it is, the phase, the cards and the result of an attack are all read from the screenshot: r0001 and r0020 (one human turn, an attack, the computer players' turns).
+- **Two files are written, both comma-separated decimal text, and each has a field that moves with a known action.**
+  - `xtras/Isledft.dat` holds the saved options. After Save as default the byte at offset 8 is the speed (`1` FAST, `2` NORMAL, `3` SLOW: r0012, r0013, r0004, r0005, r0010, r0011) and the byte at offset 14 is the starting level (`1` HARD, `2` NORMAL, `3` EASY: r0006, r0007, r0004, r0005, r0008, r0009). Clicking Save as default with nothing changed rewrites the 15-byte shipped file as 16 bytes by appending a comma (r0004, r0005).
+  - `xtras/Islepro.skr` holds the scoreboard, each byte shifted by 0x5e. A game quit in the middle with fewer than 10 countries held credits a loss at the level played: the byte at offset 6 goes from `0x8e` to `0x8f` at NORMAL (r0014, r0015, and the tours r0001, r0020, each with the scoreboard showing Normal lost 1) and the byte at offset 10 at HARD (r0016, r0017; the scoreboard shows Hard lost 1). At EASY, with the same action, no loss notice appeared and no file changed (r0018, r0019, aborted by their own script, which expected the notice).
+- **`xtras/Islepro.dat` (190 bytes, shipped) was never written** in the 24 runs of E002, nor in E001. Its role is unknown; a static count of its bytes is in `measurements/static-islepro-dat.md`.
+- **No save or load was found.** No title-screen or board label offers one (the bottom bar of both reads New Game, Help, Options, Soleau Games, Scores, Quit), a game quit in the middle leaves only the scoreboard credit, and the directions (`Islepro.txt`) never mention saving. Keyboard shortcuts were not tried, and the registered build was not available. Q-SET-05 for the unregistered build: no save or load was found; it is not shown that none exists.
+- **Every screen asked for was reached except the end of a game** (see the screens table). The game's dice are not drawn: an attack shows only the army counts before and after.
+- **The Help text is the text of `Islepro.txt` with three differences**, hand-checked against the screenshots (r0001 help-06 and help-11): the Bomb card line, a paragraph asking players to pass the shareware version along, and a paragraph about upgrading by credit card over the internet. They are added to the knowledge map.
+- **Cost.** A run that reads the option file takes 40 to 46 s, of which 30 s is the driver waiting for Wine processes that do not end after `wineserver -k` (see Speed).
+
+## Source table
+
+Cheapest first. Level is the intervention level of the reading. Cost is what a reading needs, from the runs' own timings. "Runs" are the records that show it.
+
+| # | Source | State it shows | Class | Level | Cost | Runs |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Window title (read from the window manager) | nothing about play: the title is `Islepro` on the title screen, the setup screen and the board | directly-observable | I1 | milliseconds, in any run | r0021, r0022 |
+| 2 | Process threads and resident memory (`/proc`) | nothing usable: 1 thread; resident memory 43.2 to 43.3 MB on the title screen, 43.5 MB on the setup screen, 44.1 to 44.3 MB on the board | directly-observable | I1 | milliseconds, in any run | r0021, r0022 |
+| 3 | Screen regions (one screenshot each) | everything of a game: territory colours and army numbers; the four-colour panel top left (country count, cards, an arrow on the colour whose turn it is); the message areas at the bottom (phase prompts, `Counting...`, army counts of an attack, the result); the placing, attacking, moving and turn-menu panels; the scoreboard and the notices | directly-observable | I1 | under 1 s per capture; the screen must be quiet first: 15 to 33 s of computer players' turns before the first human turn, 23 to 24 s for three computer turns after a pass (r0001, r0020) | r0001, r0020 (tour), r0014 to r0017 (setup, board, notice, scoreboard) |
+| 4 | `xtras/Isledft.dat` (game copy, read after the run) | the saved options: speed and level decoded; the other six fields unvaried | parsed | I0 | one run of about 43 s: Options, one control, Save as default; nothing else writes it | r0004 to r0013 |
+| 5 | `xtras/Islepro.skr` (game copy, read after the run) | the scoreboard: Normal lost and Hard lost decoded; the other five fields unvaried | parsed | I0 | one run of 62 to 72 s: New Game, Play Game, wait for the human turn, New Game again; the file changes only when a loss is credited | r0001, r0014 to r0017, r0020 |
+| 6 | `xtras/Islepro.dat` | unknown | parsed (candidate): never written | I0 if the game writes it | not measured | r0001 to r0024: the file equals the install's in every run |
+| 7 | Registry (key names and a hash of each key's values, before and after) | nothing of the game: the same seven keys change in every run (`NetworkCards` removed; the font keys, two device-class keys of `system.reg` and `External Fonts` of `user.reg` changed), the Wine prefix's own bookkeeping | parsed | I0 | free: part of every run's snapshot | r0001 to r0024 (every record with a `changes.log`) |
+| 8 | Temp folder of the prefix's user | nothing: Director unpacks 3 DLLs and 17 Xtras into `TempFolder.aaa`; the same entries and sizes whether the run played a game (r0014, r0016) or only opened Options (r0004); removed when the game exits through its own buttons (r0001, r0020), left by `wineserver -k` | parsed | I0 | free | r0001, r0004, r0014, r0016, r0020 |
+| 9 | Process memory | would hold the state the screen draws, in the Director player's memory | invasive | I1 (read-only memory) | not measured: classified only, not performed | none |
+| 10 | The Director movie and its Lingo scripts | the rules and the layout | invasive | I1 (static analysis) | not measured: classified only, not performed | none |
+| 11 | A crafted save | not applicable: no save was found | invasive | I3 | not performed | none |
+
+## Screens
+
+Cheapest path first; every run that reached a screen and the screenshot asset (release `E002`, see the manifests) are named. `r0001` and `r0020` are the two runs of the `tour` arm.
+
+| Screen | Reached | Runs and a screenshot |
+| --- | --- | --- |
+| Title | reached | every run that started; `ae6e98d28d379bb4-title.png` (r0001, r0020) |
+| Options | reached | r0001, r0020, r0004 to r0013, r0023, r0024; `426d77e724d793dd-options-defaults.png` (r0001) |
+| Options: the locked controls | reached | the message "available only in the Registered Version" for starting armies 5 (`9160a38dd7b6cd83-locked-armies.png`, r0001), for Yellow set to human (`55067d5ed102d7d9-locked-human.png`, r0001), and for frequency LESS, MORE and NEVER (r0001, r0020, r0023, r0024); the speed and level controls are not locked |
+| New Game setup | reached | r0001, r0020, r0014 to r0019; `154143a1bd739503-newgame-setup.png` (r0001). Every control and its default: see below |
+| Board at the start of a game | reached | r0001, r0020, r0014 to r0019, r0021, r0022; `448ea9478fd85814-board-human-turn.png` (r0001). The start is random: no two of the 10 first-human-turn boards (r0001, r0014 to r0022) were alike |
+| One human turn: placing | reached | r0001, r0020: select a Blue country, ALL, PLACE; `fd1480253c2908f3-place-selected.png`, `59c1753667d72c5e-place-all.png`, `99f47a518cb3b7b4-place-done.png` (r0001) |
+| One human turn: an attack and its result | reached | r0001: Blue country 2 attacks country 1, "4 Against 1" becomes "3 Against 1" (`7ca1db9ca3019e7a-attack-ready.png`, `84b4b1f44ff09610-attack-result-1.png`); r0020: country 3 takes country 2, the message reads that Red has been defeated and a "Move in how many?" panel appears (`865937d28607e468-attack-ready.png`, `11098950c70c269d-attack-result-1.png`). The dice themselves are not shown |
+| The turn menu | reached | Attack, MOVE, PASS, CARD, Cancel; `1cceb5b18427a7d4-turn-menu.png` (r0001). MOVE, CARD and the Cancel path were not used |
+| A computer turn passing | reached | PASS, then `Counting...` with a colour's row highlighted and `<colour> has no islands. Placing 3 Armies` (r0001 `26a839a2b8888a56-pass-1.png`, `8ff170974272705e-after-pass.png`; r0020 `6d3a0f7b702bae2e-ai-turn.png`); then the next human turn (`abf0427833780aca-human-turn-2.png`, r0001) |
+| Help | reached | 12 pages (`390756985586a01d-help-01.png` to `2088424b236a2607-help-12.png`, r0001); two more page-down sequences end on the last page (identical bytes) |
+| Scores | reached | before and after a credited loss: `d816d6fb3ee277b0-scores-before.png`, `f30ee66289086dc6-scores-after.png` (r0001); a Reset Scores button appears on the scoreboard (never clicked) |
+| The loss notice | reached | New Game in the middle of a game at NORMAL or HARD (`5ad6d9012cdce6b9-loss-notice.png`, r0014, r0016). At EASY the click went straight to the setup screen: no notice (r0018, r0019) |
+| The unregistered notice | reached | on quitting through Return, Quit (r0001 `47afc4d33b5450f9-notice.png`); its Exit Game label was clicked; Order Online Information and Go To were not |
+| Soleau Games, the order and website buttons | not reached | forbidden by the task (hazard) and never clicked; the title screen's label is a refused rectangle in `steps.py` |
+| The end of a game (a win, or a loss by play) | not reached | no run played to the end |
+| Registered-only screens (more than one human, set starting armies, set frequency, clear scoreboards) | not reached | the unregistered build refuses them |
+
+**The Options and New Game setup screens share one layout.** Every control and its default, read from `426d77e724d793dd-options-defaults.png` (r0001) and `154143a1bd739503-newgame-setup.png` (r0001):
+
+| Control (on-screen label) | Choices | Default |
+| --- | --- | --- |
+| Number of Starting Armies Possible | 1, 3, 5, 7, 10 | 3 |
+| Colors of Human or Computer Opponents | BLUE, YELLOW, RED, GREEN, each H or C | BLUE H, the others C |
+| Starting Level Position Strength | HARD, NORMAL, EASY | NORMAL |
+| Frequency of Production and Disaster Messages | MORE, NORMAL, LESS, NEVER | NORMAL |
+| Game Playing Speed | FAST, NORMAL, SLOW | NORMAL |
+| Buttons | SAVE AS DEFAULT, an ear icon (not clicked), RETURN (Options) or PLAY GAME (setup) | |
+
+## Proposed representation rows
+
+These are proposals for `spec/representation.md`; IDs are assigned at promotion. Scope `Pro`, set `iwp-2.0-de5a82a2`. Basis: observation of the game's own files at I0, with the screen as the check.
+
+| Row | Representation | Basis | Runs |
+| --- | --- | --- | --- |
+| P1 | `xtras/Isledft.dat` is text: eight decimal fields, each followed by a comma, as `1,0,0,0,2,2,3,2,` when saved with the default options. The shipped file is the same without its last comma (15 bytes). Every Save as default rewrites it (16 bytes), even with nothing changed. | the control arm: the driver's diff of the game copy against the install's file says "appended at 0xf: 2c" and nothing else | r0004, r0005 |
+| P2 | In `xtras/Isledft.dat`, the byte at offset 8 is the game speed: `0x31` FAST, `0x32` NORMAL, `0x33` SLOW | Options, click the speed label, Save as default: FAST gives `1,0,0,0,1,2,3,2,` (r0012, r0013), SLOW gives `1,0,0,0,3,2,3,2,` (r0010, r0011), the controls give `...2,2,3,2,` (r0004, r0005); nothing else differs | r0004, r0005, r0010 to r0013 |
+| P3 | In `xtras/Isledft.dat`, the byte at offset 14 is the starting level: `0x31` HARD, `0x32` NORMAL, `0x33` EASY | the same action with the level label: HARD gives `...,3,1,` (r0006, r0007), EASY gives `...,3,3,` (r0008, r0009) | r0004 to r0009 |
+| P4 | `xtras/Isledft.dat`: the bytes at offsets 0, 2, 4, 6, 10 and 12 (fields `1,0,0,0`, `2`, `3` in the default file) are not decoded. They did not change in any run, because the unregistered build locks the other controls (starting armies, a human Yellow, frequency). The default file's `1,0,0,0` and `3` match the defaults H C C C and 3 starting armies on the Options screen, and nothing tests the match. | no run varied them: r0001, r0020, r0023, r0024 show the lock message | r0001, r0020, r0023, r0024 |
+| P5 | `xtras/Islepro.skr` is the scoreboard: seven decimal fields, each followed by a comma, each byte stored as its ASCII value plus `0x5e` (`0x8e` is `0`, `0x8f` is `1`, `0x8a` is the comma). The shipped file is 13 bytes (all counters `0`, no last comma); the first write makes it 14 bytes by appending the comma. | the bytes `8e 8a 8e 8a 8e 8a 8f 8a 8e 8a 8e 8a 8e 8a` after one credited loss at NORMAL, with a scoreboard that shows exactly one non-zero cell (Normal lost 1); the digit values step by one, as digits do | r0001, r0014, r0015, r0020 |
+| P6 | In `xtras/Islepro.skr`, the byte at offset 6 is the Normal-lost count and the byte at offset 10 is the Hard-lost count (a credited loss moves the byte from `0x8e` to `0x8f`) | New Game in the middle of a game with fewer than 10 countries held: at NORMAL offset 6 changes and the scoreboard's Normal Lost cell reads 1 (r0001, r0014, r0015, r0020); at HARD offset 10 changes and Hard Lost reads 1 (r0016, r0017); nothing else differs | r0001, r0014 to r0017, r0020 |
+| P7 | `xtras/Islepro.skr`: the bytes at offsets 0, 2, 4, 8 and 12 are not decoded. A won game and an Easy loss were not produced. If the pairs are Won and Lost per level, offset 2 would be Easy lost; no run shows it. | no run changed them | none |
+
+## Speed
+
+- The kill path (`wineserver -k`) leaves processes that the driver waits 30 s for, then ends with a second `wineserver -k` and SIGKILL: "wine processes gone after terminate" is `still running` in every kill-terminated record (r0004 to r0019, r0021 to r0024) and 2.06 s after the game's own Quit in r0001 (`ui-quit`). A kill run therefore takes 40 to 46 s for six visible steps, and about 13 s without that wait. The driver was not changed (not in this task's scope); a later task can end the wait early.
+- Launch to the title screen: 6.25 to 6.92 s (22 of 22 runs that started).
+- Quitting through the game's buttons: 14.03 to 14.73 s (r0001, r0020), as in F002.
+- A loss run (New Game, Play Game, a quiet board, New Game): 62 to 72 s, almost all of it the computer players' turns before the first human turn (15.5 to 27.7 s) plus the 30 s tail. The whole `tour` takes 137 s (r0001) and 170 s (r0020).
+- The table of every run is `experiments/E002-iwp-state-inventory/measurements/run-table.md`.
+
+## Method
+
+**Artifact.** Set `iwp-2.0-996e86c5` for r0021 and r0022; set `iwp-2.0-de5a82a2` for the rest. `setup/iwp/iwp-runtime.sh` printed `ready` before the runs; the install was read and hashed, never written. The driver binds the install read-only for each run, seals the prefix before anything starts and again immediately before the launch, writes through `safeio.py`, and records `completed` only on a clean finish.
+
+**Runtime.** `runtime/iwp/spike/cycle.py` at the commit named in each record (`code_commit`; r0001 at 8b80795, whose runtime code is unchanged to the later commits), `--experiment E002` and a step script (`steps.py`: click, settle, shot, file, changes). Platform as in F002: Wine 9.0, Xvfb 800x600x24, xfwm4, xdotool, the game in a network namespace of its own (the one interface it sees is `lo`). Start state `S-cold-prefix-title`, `start_state.sha256` `34ac62c31ddaa5f4e9a1b975a956c94ebe935109189d0fffe8939dc2bddfa427` in all 22 runs that started. Each script's sha256 is the first observation of its record.
+
+**Arms** (the scripts are in `experiments/E002-iwp-state-inventory/scripts/`):
+
+| Arm | Runs | n | Terminated by |
+| --- | --- | ---: | --- |
+| `opt-control` (Options, Save as default, nothing changed) | r0004, r0005 | 2 | kill |
+| `opt-level-hard`, `opt-level-easy` | r0006, r0007; r0008, r0009 | 2 each | kill |
+| `opt-speed-slow`, `opt-speed-fast` | r0010, r0011; r0012, r0013 | 2 each | kill |
+| `opt-freq-more`, `opt-freq-never` (added after the first series, to vary the one control not yet varied) | r0023; r0024 | 1 each | kill |
+| `loss-normal`, `loss-hard` | r0014, r0015; r0016, r0017 | 2 each | kill |
+| `loss-easy` | r0018, r0019 (aborted) | 2 | kill |
+| `tour` | r0001, r0020 | 2 | the game's own Quit |
+| `probe-process` (added: window title, threads and memory on three screens) | r0021, r0022 | 2 | kill |
+
+**Aborted records.** r0002 and r0003 (`opt-control`): xfwm4 did not register within 20 s. The shell the driver ran from carried a `DBUS_SESSION_BUS_ADDRESS` that pointed at a bus that no longer existed (`/run/user/1000` was gone), and `xfwm4` printed "Xfconf could not be initialized" on a manual start; with the variable unset it registered at once, so the later runs were started with it unset. r0018 and r0019 (`loss-easy`): the script clicked Continue on a notice that did not appear at EASY (the New Game click had gone straight to the setup screen); the game copy was unchanged (0/0/0) in both.
+
+**Not a rule claim.** This finding says where the state can be seen. It says nothing about how the game decides an outcome, and the Easy result above is an observation about a notice, not a rule about the 10-country threshold.
+
+**Static reading.** The shipped `xtras/Islepro.dat` was read in place for byte counts only (`measurements/static-islepro-dat.md`). The Director movie and the Lingo scripts were not extracted or read.
+
+## Observations
+
+Raw only. Hashes are the first 16 hex digits of the screenshot's sha256, as in the assets' names.
+
+**`Isledft.dat` as written by the game** (`measurements/file-bytes.md`, generated from the records; `raw:bytes[0x0:0x10]` observation of each run):
+
+| Run | Arm | Bytes (hex) | As text |
+| --- | --- | --- | --- |
+| r0004, r0005 | opt-control | `31 2c 30 2c 30 2c 30 2c 32 2c 32 2c 33 2c 32 2c` | `1,0,0,0,2,2,3,2,` |
+| r0006, r0007 | opt-level-hard | `31 2c 30 2c 30 2c 30 2c 32 2c 32 2c 33 2c 31 2c` | `1,0,0,0,2,2,3,1,` |
+| r0008, r0009 | opt-level-easy | `31 2c 30 2c 30 2c 30 2c 32 2c 32 2c 33 2c 33 2c` | `1,0,0,0,2,2,3,3,` |
+| r0010, r0011 | opt-speed-slow | `31 2c 30 2c 30 2c 30 2c 33 2c 32 2c 33 2c 32 2c` | `1,0,0,0,3,2,3,2,` |
+| r0012, r0013 | opt-speed-fast | `31 2c 30 2c 30 2c 30 2c 31 2c 32 2c 33 2c 32 2c` | `1,0,0,0,1,2,3,2,` |
+| r0023, r0024 | opt-freq-more, opt-freq-never | not written: the game copy equals the install's (15 bytes, sha256 `1750f915ae4ea473d6b21493b7fe3d289fe45f2ea0d779f3cce3c40c309550df`). The first click after a lock message only dismissed it, and Save as default was not applied (the Save button is lit, no file changed) | |
+
+The driver's own diff against the install's file, in every run that wrote it: "appended at 0xf: 2c" (control, level and speed arms) and no other offset except the one the table shows.
+
+**`Islepro.skr` as written by the game** (the first 14 bytes, the whole file):
+
+| Run | Arm | Bytes (hex) | Driver's diff against the install's 13-byte file |
+| --- | --- | --- | --- |
+| r0001, r0020 | tour | `8e 8a 8e 8a 8e 8a 8f 8a 8e 8a 8e 8a 8e 8a` | `0x6 8e>8f; appended at 0xd: 8a` |
+| r0014, r0015 | loss-normal | the same | the same |
+| r0016, r0017 | loss-hard | `8e 8a 8e 8a 8e 8a 8e 8a 8e 8a 8f 8a 8e 8a` | `0xa 8e>8f; appended at 0xd: 8a` |
+
+Scoreboard screenshots after the loss: Normal lost 1, the rest 0 (r0001 `f30ee66289086dc6-scores-after.png`; r0014 the same file hash); Hard lost 1, the rest 0 (r0016 `694651bede62cb5d-scores.png`). Before any game the scoreboard is all zeros (r0001 `d816d6fb3ee277b0-scores-before.png`).
+
+**The game copy and the prefix, whole runs.** r0021 and r0022: nothing of the game copy changed (0/0/0). The 22 runs on `iwp-2.0-de5a82a2` changed only the two files above (0/0/1) or nothing (r0018, r0019, r0023, r0024). The prefix gained the same 31 entries in every run (`dosdevices/com1` to `com8`, `wineserver`, and `TempFolder.aaa` with its 3 DLLs and 17 Xtras) and `system.reg` and `user.reg` were rewritten on exit. The registry diff of every record with a `changes.log` lists the same seven keys (checked on r0001, r0004 to r0020, r0023, r0024: all identical).
+
+**Window title and process** (r0021, r0022): `client window titles: 'Islepro'` at the title screen, the setup screen and the board; threads 1 each time; resident memory in kB: title 43284 (r0021), setup 43540 (r0021), board 44316 (r0021) (r0022's three readings are in its record).
+
+**Screens and text.** The screenshots named in the Screens table. In the Help pages (r0001), page 6 (`c84434ef3cb45451-help-06.png`) reads "Allows you to bomb any country diminishing their troops." where `Islepro.txt` says the effects of the bomb are shown in the new troop value; page 11 (`fdc269c5d5fc243f-help-11.png`) holds the paragraph asking players to pass the shareware version on, and the credit-card upgrade paragraph; page 12 (`2088424b236a2607-help-12.png`) ends with the publisher's address block. `Islepro.txt` has a paragraph on ordering by phone and on cards accepted, which the Help pages do not have (a difference in the other direction, not added to the map).
+
+## Inferences
+
+- **The files hold settings and a score, not the state of a game.** No file changed during a game except by a credited loss; a file that never changed while a human turn, an attack and three computer turns passed (r0001, r0020) cannot hold the position. This rests on the 22 runs' game-copy diffs. It does not exclude a state kept in memory only, which is what rows 9 and 10 of the source table would read.
+- **Speed and level are bytes 8 and 14 of `Isledft.dat`.** The only action that differs between r0004/r0005 and r0010 to r0013 is the speed label clicked, and the only byte that differs is offset 8, taking the value of the label's position in its row (FAST 1, NORMAL 2, SLOW 3). The same holds for the level and offset 14. The runs agree with each other (2 and 2) and with the control.
+- **`Islepro.skr` stores `0x5e` plus the ASCII of a comma-separated list.** The distinct values `0x8a`, `0x8e` and `0x8f` stand in the pattern of a list of one-digit numbers separated by a separator, a credited loss increments a counter, and the displayed scoreboard has one cell of 1 and the rest 0. A different encoding with the same three values would fit the data; the shift is proposed, and it is checked on three values only.
+- **The game writes the trailing comma that the shipped files lack.** Both shipped files are one byte shorter than the game's own output (15 and 13 bytes, against 16 and 14): the first write, whatever the setting, appends it (r0004, r0005; r0001).
+- **Frequency is unvaried.** MORE, NEVER and LESS all show the lock message (r0001, r0023, r0024), so no run could move its byte, which is why the frequency field of `Isledft.dat` has no offset.
+- **The panel's figure beside a colour does not track the board turn by turn.** In r0020 the figure beside Blue is 9 when the attack is ready and 1 after the conquest, in the same turn, and in r0018 it reads 1 at the start of a human turn while the board shows several Blue countries (r0018 `21ec1cc6a5b27ea0-human-turn.png`). This is a caution for anyone reading the panel as a count; what the figure counts is not established here.
+
+## Alternatives considered
+
+- **The two files hold game state that a longer game would show.** Not excluded for a game played to its end: no run played to the end. Excluded for the part reached (placing, an attack, a conquest, a pass, three computer turns): no file changed.
+- **The byte at offset 8 is not the speed but another option that the speed click side-effects.** Excluded by the other arms: the only action that moves offset 8 is the speed, and the level and control arms leave it at `2`; but a hidden coupling inside the speed row is not excluded.
+- **The Easy loss notice is absent because the click missed.** Excluded by the screenshot: the screen after the click equals the setup screen (`fc16ec81edd4a681`, r0018), which is where New Game leads. A different cause for no notice (a threshold on the number of countries held, as the notice text says) is consistent with the boards, but this finding does not test it.
+- **The kill path's 30 s wait is the game's.** Not excluded: the processes that remain were not named. It is the driver's wait, not a measurement of the game.
+- **Offsets 10 and 12 of `Isledft.dat` are the frequency and the starting armies.** Not tested and not claimed: only the order of the Options screen suggests it, and the lock means no run could vary either.
+
+## What this does not establish
+
+- Any rule: how combat, reinforcement, cards or hazards work (out of scope; sources only).
+- What any byte of `Isledft.dat` other than offsets 8 and 14 means, what any byte of `Islepro.skr` other than offsets 6 and 10 means, or what `Islepro.dat` holds.
+- That a won game credits a win in `Islepro.skr`, or that an Easy loss does. Neither was produced.
+- That there is no save or load in the registered build, or behind a keyboard shortcut, or after a game ends.
+- Anything about the DOS game (rule 19; its inventory is a separate task) or about the registered Windows build.
+- Anything about native Windows (V3): timings are Wine's.
+- What the memory or the Director movie would show (classified, not read).
+- That the board's start is random in the statistical sense: only that no two of the 10 board screenshots at the first human turn (r0001, r0014 to r0022) were alike.
+
+## Where the evidence is
+
+The run records are `runs/E002/E002-r0001.json` to `E002-r0024.json`; the manifests are `evidence/E002/E002-r0001.manifest.json` to `E002-r0024.manifest.json`, naming the bundles of release `E002` (screenshots, `changes.log`, `run.log`, `wine.log`); no bundle is committed. Machine-local exploration outputs (sessions that found the click positions) are committed under `experiments/E002-iwp-state-inventory/measurements/explore/`, with a table of the captures by hash; they are not evidence for this finding. The run table and the file bytes are `experiments/E002-iwp-state-inventory/measurements/run-table.md` and `file-bytes.md`.
+
+## Reproduction
+
+From a clean clone on a machine whose preflight passes for the task's `Runs on`, with `IWP_PREFIX`, `IWP_DIR` and `E002_BUNDLES` exported and the shell's `DBUS_SESSION_BUS_ADDRESS` unset or valid:
+
+```text
+bash setup/iwp/iwp-runtime.sh
+python3 runtime/iwp/spike/cycle.py --experiment E002 --arm <arm> \
+  --script experiments/E002-iwp-state-inventory/scripts/<arm>.steps [--may-write-saved-files] --terminate kill
+python3 experiments/E002-iwp-state-inventory/measurements/make_tables.py
+python3 tools/register_artifact.py check "$IWP_DIR" iwp-2.0-996e86c5
+```
+
+`--may-write-saved-files` is for the `opt-*`, `loss-*` and `tour` arms, and `--terminate ui-quit` for `tour`; each script's first lines name its own arguments.
