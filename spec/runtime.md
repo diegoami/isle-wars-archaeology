@@ -1,0 +1,33 @@
+# Runtime
+
+How each artifact is run, observed and reset for the experiments: facts about the original under a
+given runtime, not game rules. Not a knowledge-map area; it is kept here so that experiments and
+drivers cite reviewed rows. Written by the main session at promotion, never by a research task. The
+summary describes only `supported` and `corroborated` claims.
+
+## Summary
+
+DOS *Isle Wars*, shareware 3.1, runs unattended under DOSBox-X 2024.03.01 on Xvfb with no network:
+launch, the option box, one click, observation, termination and reset all work (C-RUN-01). The
+captured screens are byte-identical across 12 runs from one start-state hash; that is screen
+equality only, and the savestate memory images differ (C-RUN-02, C-RUN-08). Settings that matter:
+`quit warning=false` for a 0.05 s stop (C-RUN-03), `mouse_emulation=never` and `autolock=false` for
+a click (C-RUN-04). A savestate restores the captured screen (C-RUN-07); no debugger was found at the
+entry points tried (C-RUN-09). Time to the option box falls from about 17 s to 12.9 s with more
+cycles, one run each (C-RUN-10).
+
+## Claims
+
+| ID | Claim | Status | Scope | Basis | Findings |
+| --- | --- | --- | --- | --- | --- |
+| C-RUN-01 | The cycle launch → option box (C-SET-04) → one click on Set level → before and after screenshots → stop → reset completes with no human, in a private network namespace that sees only `lo`, with only a read-only-bound run copy mounted as `C:`. This is feasibility in that environment, not internal determinism or equivalence of restored machine state. | supported | DOS, set `iw-dos-3.1-30121376`, shareware 3.1; DOSBox-X 2024.03.01 on Xvfb, WSL2, one machine and one day (V2); control arm, `cycles=fixed 3000`, fixed clock, sound off | observed, quantified: 3 of 3 (control), 12 of 12 (all arms) | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-02 | The `before` screenshot (option box) and the `after` screenshot (Select level dialog) are byte-identical in every run from the same run-copy start-state hash (`ea77bd86…`), whatever the arm: the host's clock, more cycles, a savestate, the debugger flag, DOSBox-X's own screenshot, another way to stop. Captured-screen equality only: what varies is the timings, the driver's log and the savestate memory images, for causes unknown. The start state hashes the run copy, not DOSBox-X's state. | supported | as C-RUN-01, all 12 runs | observed, quantified: 12 of 12 | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-03 | With `[dosbox] quit warning=false`, SIGTERM ends DOSBox-X with status 0, SIGKILL with status -9, and closing its X client with status 1, each by the first 0.05 s poll after the signal (equal underlying latency not shown); no process of the run survives. | supported | as C-RUN-01; r0001 to r0012 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-04 | One click takes effect: with `[sdl] mouse_emulation=never` and `autolock=false`, the driver moves the X pointer onto Set level, waits for the game's own pointer to be drawn there (0.07 to 0.08 s), clicks, and the Select level dialog is up 0.01 s later. | supported | as C-RUN-01; r0001 to r0003 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-05 | Observation: a capture of the 640x350 window from the X root, and DOSBox-X's own screenshot (F12+P), give the same pixels. | supported | as C-RUN-01; r0010 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-06 | Reset works: after every run the run copy equals its state before the launch. The only change a run makes to it is the added `ISLEWAR.SCR` (R008); no file of the set changes. | supported | as C-RUN-01; r0001 to r0012 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-07 | A savestate (F12+S at the option box, F12+L after the click, I2) brings back the captured option-box screen 0.02 s after the load. That the game or machine state is the saved one is not shown. | supported | as C-RUN-01; r0007, one run | observed, intervened | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-08 | A memory read (I1): the savestate's Memory member is a zlib stream that inflates to 17055864 bytes, and taking it leaves the captured screen unchanged. Images from identical starts differ (by 2312 to 3106 bytes in exploration); which bytes mean what, and why they differ, is unknown. | supported | as C-RUN-01; r0007 to r0009 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-09 | No debugger was exposed at the entry points tried: `-break-start` changed nothing, `DEBUGBOX` is "Bad command or filename", and `dosbox-x -help` lists no debugger option. Absence in the whole build is not shown. | supported | as C-RUN-01; r0008, r0009, exploration round 2 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-10 | Time to the option box: 16.92 to 17.07 s at `cycles=fixed 3000` (whole cycle 17 to 18 s), 13.62 s at `fixed 30000`, 12.88 s at `max`, the last two one run each; the screens are the same. No cause or distribution is established. | supported | as C-RUN-01 | observed | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
+| C-RUN-11 | Audio is configured off (mixer, PC speaker, Sound Blaster, Gravis, MIDI; SDL audio `dummy`), and the game ran without a sound device. Silence was not measured. | supported | as C-RUN-01 | observed (configuration) | [F005](../findings/F005-iw-dos-runtime-dosbox-x.md) |
