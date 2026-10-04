@@ -16,7 +16,7 @@ run unittest python3 -m unittest discover -s tests
 run mutants python3 tests/mutants_iw_dos.py
 run validate-records sh -c 'python3 tools/validate_records.py runs/E005/*.json evidence/E005/*.json | grep -vc "^ok"; python3 tools/validate_records.py runs/E005/*.json evidence/E005/*.json | grep -c "^ok"'
 run runtime-profile setup/iw-dos/iw-dos-runtime.sh
-run register-check python3 tools/register_artifact.py check "$IW_DOS_DIR" iw-dos-3.1-30121376 --strict
+run register-check sh -c 'python3 tools/register_artifact.py check "$IW_DOS_DIR" iw-dos-3.1-30121376 --strict'
 # Done-when 6's grep, with its pattern assembled from pieces: this very script and its output are inside the
 # grep's own scope, so neither may contain the pattern's text. The pattern is the task file's, unchanged.
 PAT='program fi''les|/m''nt/|[a-z]:\\\\|/ho''me/|\.local/sh''are'
