@@ -445,7 +445,9 @@ class GateTest(InnerHarness):
             return mock.MagicMock(returncode=0, stdout=b"abc123\n", stderr=b"")
 
         args = cycle.parser().parse_args(["--explore"])
-        with mock.patch.object(cycle.subprocess, "run", fake_run):
+        with mock.patch.object(cycle, "marked_processes", return_value=[]), \
+                mock.patch.object(cycle, "prefix_processes", return_value=[]), \
+                mock.patch.object(cycle.subprocess, "run", fake_run):
             self.assertEqual(cycle.outer(args), 0)
         self.assertEqual(dispatched.count("unshare"), 1)
         for label in list(self.unsafe()):
@@ -453,10 +455,34 @@ class GateTest(InnerHarness):
                 self.setUp()
                 self.unsafe()[label]()
                 dispatched.clear()
-                with mock.patch.object(cycle.subprocess, "run", fake_run), self.assertRaises(SystemExit) as caught:
+                with mock.patch.object(cycle, "marked_processes", return_value=[]), \
+                        mock.patch.object(cycle, "prefix_processes", return_value=[]), \
+                        mock.patch.object(cycle.subprocess, "run", fake_run), \
+                        self.assertRaises(SystemExit) as caught:
                     cycle.outer(args)
                 self.assertIn("not safe to launch from; nothing was started", str(caught.exception))
                 self.assertNotIn("unshare", dispatched)
+
+    def test_outer_starts_nothing_while_a_stray_of_an_earlier_run_or_of_setup_is_alive(self):
+        """The stray gate itself: with one lookup reporting a pid, outer() refuses before anything starts."""
+        dispatched = []
+
+        def fake_run(cmd, **kw):
+            dispatched.append(cmd[0])
+            return mock.MagicMock(returncode=0, stdout=b"abc123\n", stderr=b"")
+
+        args = cycle.parser().parse_args(["--explore"])
+        for lookup in ("marked_processes", "prefix_processes"):
+            with self.subTest(lookup=lookup), \
+                    mock.patch.object(cycle, "marked_processes",
+                                      return_value=[4242] if lookup == "marked_processes" else []), \
+                    mock.patch.object(cycle, "prefix_processes",
+                                      return_value=[4242] if lookup == "prefix_processes" else []), \
+                    mock.patch.object(cycle.subprocess, "run", fake_run), \
+                    self.assertRaises(SystemExit) as caught:
+                cycle.outer(args)
+            self.assertIn("stale processes of an earlier run or of setup are alive", str(caught.exception))
+            self.assertNotIn("unshare", dispatched)
 
     def test_a_prefix_made_unsafe_after_the_first_seal_is_refused_immediately_before_launch(self):
         def spoil(self_):

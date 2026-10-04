@@ -128,12 +128,20 @@ class LocationsTest(World):
             os.environ["E001_EXPLORE"] = str(self.tmp / "explore")
             os.environ[name] = str(self.checkout / "x")
             args = cycle.parser().parse_args(["--explore"])
+            # outer() reads the process lookups right after confined_locations(), so they are
+            # stubbed: the refusals below must come from the location gate, never from a stray of
+            # another session on this machine (fix #32). inner() reads neither lookup - its
+            # refusal precedes them - but the stubs are inert there and kept for symmetry.
             with self.subTest(name=name), mock.patch.object(cycle, "run", side_effect=AssertionError("must not run")), \
-                    mock.patch.dict(os.environ, {"IWP_CYCLE_ID": "E001-x1", "IWP_CYCLE_INNER": "1"}):
-                with self.assertRaises(SystemExit):
+                    mock.patch.dict(os.environ, {"IWP_CYCLE_ID": "E001-x1", "IWP_CYCLE_INNER": "1"}), \
+                    mock.patch.object(cycle, "marked_processes", return_value=[]), \
+                    mock.patch.object(cycle, "prefix_processes", return_value=[]):
+                with self.assertRaises(SystemExit) as inner_exit:
                     cycle.inner(args)
-                with self.assertRaises(SystemExit):
+                self.assertIn("inside a checkout or worktree", str(inner_exit.exception))
+                with self.assertRaises(SystemExit) as outer_exit:
                     cycle.outer(args)
+                self.assertIn("inside a checkout or worktree", str(outer_exit.exception))
         self.assertEqual(sorted(p.name for p in self.checkout.iterdir()), [".git"])
 
     def test_inner_writes_bundles_only_to_a_confined_directory(self):
