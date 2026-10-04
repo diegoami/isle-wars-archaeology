@@ -27,7 +27,7 @@
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s03-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "changes.log",
@@ -41,7 +41,7 @@
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-end-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "dosbox.log",

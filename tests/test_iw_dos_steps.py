@@ -274,7 +274,22 @@ class WrittenFilesTest(StepsWorld):
         self.assertEqual(obs["run copy at step 1: added ISLEWAR.SCR: bytes, sha256"],
                          "10 " + cycle.sha256_bytes(b"0,0\r\n0,0\r\n"))
         self.assertEqual([n for n, _, _ in made.outputs], ["s01-ISLEWAR.SCR"])
+        self.assertEqual(made.outputs[0][2], "measurement")       # a class the manifest schema accepts
+        (made.game / "ISLEWAR.SAV").write_bytes(b"3\r\n")
+        with redirect_stdout(io.StringIO()):
+            made.record_written("step 2", 102, "s02")
+        self.assertEqual({n: k for n, _, k in made.outputs}["s02-ISLEWAR.SAV"], "save")
         self.assertEqual((made.workdir / "s01-ISLEWAR.SCR").read_bytes(), b"0,0\r\n0,0\r\n")
+
+    def test_the_manifest_of_a_run_that_kept_game_files_is_valid(self):
+        import validate_records
+        made = self.make_steps("files\n")
+        (made.game / "ISLEWAR.SCR").write_bytes(b"0,0\r\n")
+        (made.game / "ISLEWAR.SAV").write_bytes(b"3\r\n")
+        self.written(made)
+        manifest = cycle.build_manifest(made)
+        self.assertEqual(sorted(f["class"] for f in manifest["files"]), ["measurement", "save"])
+        self.assertEqual(validate_records.validate_document(manifest), [])
 
     def test_a_changed_file_is_labelled_changed_and_a_large_one_has_no_hex(self):
         made = self.make_steps("files\n")

@@ -27,14 +27,14 @@
       "bytes": 9,
       "sha256": "4e3e822b0a898f806985d865a5e9b5edec095e4cd2caee2a78ade7ab8486ddb5",
       "asset": "4e3e822b0a898f80-s03-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s03-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s03-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "human-turn.png",
@@ -48,14 +48,14 @@
       "bytes": 9,
       "sha256": "4e3e822b0a898f806985d865a5e9b5edec095e4cd2caee2a78ade7ab8486ddb5",
       "asset": "4e3e822b0a898f80-s08-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s08-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s08-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "changes.log",
@@ -69,14 +69,14 @@
       "bytes": 9,
       "sha256": "4e3e822b0a898f806985d865a5e9b5edec095e4cd2caee2a78ade7ab8486ddb5",
       "asset": "4e3e822b0a898f80-end-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "end-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-end-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "dosbox.log",

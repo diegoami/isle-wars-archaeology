@@ -637,7 +637,7 @@ class Cycle:
                 self.observe(step, "file", f"run copy at {label}: {how} {p}: hex", data.hex())
             kept = f"{prefix}-{p}"
             safeio.write_file(self.workdir, kept, data=data, exist="new")
-            self.outputs.append((kept, self.workdir / kept, "file"))
+            self.outputs.append((kept, self.workdir / kept, "save" if p.upper().endswith(".SAV") else "measurement"))
 
     # ---- probes
 

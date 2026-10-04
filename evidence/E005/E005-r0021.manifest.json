@@ -41,14 +41,14 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s09-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s09-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s09-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "human-turn.png",
@@ -62,14 +62,14 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s14-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s14-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s14-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "shareware-notice.png",
@@ -90,14 +90,14 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s29-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s29-ISLEWAR.SCR",
       "bytes": 21,
       "sha256": "e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893",
       "asset": "e8d21bc902a1e235-s29-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "changes.log",
@@ -111,14 +111,14 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-end-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "end-ISLEWAR.SCR",
       "bytes": 21,
       "sha256": "e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893",
       "asset": "e8d21bc902a1e235-end-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "dosbox.log",

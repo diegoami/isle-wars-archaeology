@@ -41,14 +41,14 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s09-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s09-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s09-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "human-turn.png",
@@ -62,14 +62,14 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s14-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s14-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s14-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "save-turn1.png",
@@ -83,21 +83,21 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s17-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s17-ISLEWAR.SAV",
       "bytes": 526,
       "sha256": "8ec7f82d812d3b865ac941e22f7314e4442765181da50336a5e754de5500d2df",
       "asset": "8ec7f82d812d3b86-s17-ISLEWAR.SAV",
-      "class": "file"
+      "class": "save"
     },
     {
       "name": "s17-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s17-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "concede-dialog.png",
@@ -118,21 +118,21 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s22-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s22-ISLEWAR.SAV",
       "bytes": 526,
       "sha256": "8ec7f82d812d3b865ac941e22f7314e4442765181da50336a5e754de5500d2df",
       "asset": "8ec7f82d812d3b86-s22-ISLEWAR.SAV",
-      "class": "file"
+      "class": "save"
     },
     {
       "name": "s22-ISLEWAR.SCR",
       "bytes": 20,
       "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
       "asset": "1cc857c57bc83a00-s22-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "game-over.png",
@@ -146,21 +146,21 @@
       "bytes": 13,
       "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
       "asset": "1f6cb1255e100e54-s25-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s25-ISLEWAR.SAV",
       "bytes": 526,
       "sha256": "8ec7f82d812d3b865ac941e22f7314e4442765181da50336a5e754de5500d2df",
       "asset": "8ec7f82d812d3b86-s25-ISLEWAR.SAV",
-      "class": "file"
+      "class": "save"
     },
     {
       "name": "s25-ISLEWAR.SCR",
       "bytes": 21,
       "sha256": "e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893",
       "asset": "e8d21bc902a1e235-s25-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "option-box-again.png",
@@ -188,21 +188,21 @@
       "bytes": 15,
       "sha256": "664c571ee5c1039c3be060623db8140905cab0e2a1ef3496de36db8191dbd904",
       "asset": "664c571ee5c1039c-s35-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "s35-ISLEWAR.SAV",
       "bytes": 526,
       "sha256": "8ec7f82d812d3b865ac941e22f7314e4442765181da50336a5e754de5500d2df",
       "asset": "8ec7f82d812d3b86-s35-ISLEWAR.SAV",
-      "class": "file"
+      "class": "save"
     },
     {
       "name": "s35-ISLEWAR.SCR",
       "bytes": 21,
       "sha256": "e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893",
       "asset": "e8d21bc902a1e235-s35-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "changes.log",
@@ -216,21 +216,21 @@
       "bytes": 15,
       "sha256": "664c571ee5c1039c3be060623db8140905cab0e2a1ef3496de36db8191dbd904",
       "asset": "664c571ee5c1039c-end-ISLEWAR.DFT",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "end-ISLEWAR.SAV",
       "bytes": 526,
       "sha256": "8ec7f82d812d3b865ac941e22f7314e4442765181da50336a5e754de5500d2df",
       "asset": "8ec7f82d812d3b86-end-ISLEWAR.SAV",
-      "class": "file"
+      "class": "save"
     },
     {
       "name": "end-ISLEWAR.SCR",
       "bytes": 21,
       "sha256": "e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893",
       "asset": "e8d21bc902a1e235-end-ISLEWAR.SCR",
-      "class": "file"
+      "class": "measurement"
     },
     {
       "name": "dosbox.log",
