@@ -1,0 +1,23 @@
++ main session at cde548dd20ae (main merged in), 2026-10-04T09:07:43Z; TMPDIR outside every checkout
++ Done-when 3
+Ran 250 tests in 6.974s
+
+FAILED (errors=1)
+11 of 11 mutants killed
++ Pro profile, IW_DOS_DIR unset (#36)
+facility:iwp-prefix: verified
+ready
+exit 0
++ Done-when 4 (twice)
+ready
+exit 0
+ready
+exit 0
++ Done-when 5
+ok: iw-dos-3.1-30121376
+exit 0
++ Done-when 3 again, TMPDIR=/tmp/t11.<x> (the first run's TMPDIR was long enough to break T09's AF_UNIX socket test: OSError: AF_UNIX path too long)
+Ran 250 tests in 7.906s
+
+OK
+11 of 11 mutants killed
