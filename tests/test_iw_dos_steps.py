@@ -536,8 +536,8 @@ class ChooseAttackTest(StepsWorld):
 
     def test_a_country_of_the_same_army_is_never_the_target(self):
         made = self.make_steps("choose-attack\n")
-        self.navigate(made, {1: "blue", 2: "blue", 3: "green"})
-        self.assertEqual((made.mine, made.target), (2, 3))
+        self.navigate(made, {1: "red", 2: "blue", 3: "blue"})    # 2 is nearer to the blue 3 than to the red 1
+        self.assertEqual((made.mine, made.target), (2, 1))
 
     def test_with_no_blue_country_touching_an_enemy_the_run_aborts(self):
         made = self.make_steps("choose-attack\nshot next\n")
