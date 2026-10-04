@@ -1,0 +1,19 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E002-r0002",
+  "experiment": "E002",
+  "store": "release:E002",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "run.log",
+      "bytes": 292,
+      "sha256": "cfddef2b064e47739e3e69e386d07f0b0d29ce5afb74f2313b4e06c20c4ad13b",
+      "asset": "cfddef2b064e4773-run.log",
+      "class": "log"
+    }
+  ]
+}
