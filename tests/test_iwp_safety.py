@@ -8,6 +8,7 @@ gates are in test_iwp_seal.py.
 import io
 import json
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -472,6 +473,10 @@ class TokenChecksTest(World):
 class ReadyGatingTest(World):
     """R6: `ready` is printed, and 0 returned, only when every token passes."""
 
+    # the Pro lane's tokens, the ones T09's "Runs on" names (facility:iwp-prefix included)
+    PRO_TOKENS = ["tool:python@>=3.11", "tool:wine@9.0", "tool:xvfb", "tool:xfwm4", "tool:xdotool",
+                  "facility:display", "artifact:iwp-2.0-996e86c5", "facility:iwp-prefix"]
+
     def test_all_tokens_passing_is_ready(self):
         lines, failed = tokens.run_tokens({"a": {"check": "echo verified"}, "b": {"check": "true"}})
         self.assertEqual(failed, [])
@@ -487,12 +492,12 @@ class ReadyGatingTest(World):
         self.assertTrue(tokens.run_tokens({"a": {"check": "  "}})[1])
         self.assertTrue(tokens.run_tokens({"a": "true"})[1])
 
-    def run_main(self, capabilities):
+    def run_main(self, capabilities, extra=()):
         path = self.tmp / "capabilities.json"
         path.write_text(capabilities)
         out = io.StringIO()
         with redirect_stdout(out):
-            code = tokens.main(["tokens.py", str(path)])
+            code = tokens.main(["tokens.py", str(path), *extra])
         return code, out.getvalue().splitlines()
 
     def test_main_prints_ready_only_when_every_token_passes(self):
@@ -505,6 +510,40 @@ class ReadyGatingTest(World):
         code, lines = self.run_main("not json")
         self.assertEqual(code, 1)
         self.assertNotIn("ready", lines)
+
+    def test_a_token_that_is_not_named_is_not_run_and_does_not_fail_the_verdict(self):
+        code, lines = self.run_main(json.dumps({"pro": {"check": "true"},
+                                                "iw-dos": {"check": "echo dos-ran >&2; exit 1"}}),
+                                    extra=["--tokens", "pro"])
+        self.assertEqual((code, lines[-1]), (0, "ready"))
+        self.assertEqual(lines, ["pro: ", "ready"])
+
+    def test_the_named_tokens_run_in_the_order_given(self):
+        _, lines = self.run_main(json.dumps({"b": {"check": "true"}, "a": {"check": "true"}}),
+                                 extra=["--tokens", "a,b"])
+        self.assertEqual(lines, ["a: ", "b: ", "ready"])
+
+    def test_a_named_token_that_capabilities_lacks_fails_and_is_never_skipped(self):
+        code, lines = self.run_main(json.dumps({"pro": {"check": "true"}}), extra=["--tokens", "no:such"])
+        self.assertEqual(code, 1)
+        self.assertIn("no:such: not in capabilities.json", lines)
+        self.assertEqual(lines[-1], "not ready: no:such")
+
+    def test_an_empty_token_list_is_never_ready(self):
+        code, lines = self.run_main(json.dumps({"pro": {"check": "true"}}), extra=["--tokens", ""])
+        self.assertEqual(code, 1)
+        self.assertNotIn("ready", lines)
+
+    def test_without_tokens_every_token_still_runs(self):
+        code, lines = self.run_main(json.dumps({"a": {"check": "true"}, "b": {"check": "true"}}))
+        self.assertEqual((code, lines[-1]), (0, "ready"))
+        self.assertEqual(lines[:-1], ["a: ", "b: "])
+
+    def test_the_profile_passes_exactly_the_pro_lanes_tokens(self):
+        script = (ROOT / "setup" / "iwp" / "iwp-runtime.sh").read_text(encoding="utf-8")
+        passed = re.search(r"--tokens\s+'([^']*)'", script)
+        self.assertIsNotNone(passed, "iwp-runtime.sh must pass --tokens to tokens.py")
+        self.assertEqual(passed.group(1).split(","), self.PRO_TOKENS)
 
     def test_the_profile_script_is_not_ready_without_its_locations_or_packages(self):
         script = ROOT / "setup" / "iwp" / "iwp-runtime.sh"
