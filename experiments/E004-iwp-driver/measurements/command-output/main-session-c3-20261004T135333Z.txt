@@ -1,0 +1,23 @@
++ main session at 38e58720e091, 2026-10-04T13:53:33Z
+== DW1
+Traceback (most recent call last):
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1000/-home-diego-projects-isle-wars-archaeology/472c65dc-1c83-4ee9-a5de-3e3ff8340131/scratchpad/wt54/runtime/iwp/spike/cycle.py'
+exit 1 (1 s)
+== DW2
+Traceback (most recent call last):
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1000/-home-diego-projects-isle-wars-archaeology/472c65dc-1c83-4ee9-a5de-3e3ff8340131/scratchpad/wt54/runtime/iwp/spike/cycle.py'
+exit 1
+== DW5
+ready
+exit 0
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+== DW3 (driver tests + mutants, TMPDIR short)
+Ran 33 tests in 15.365s
+OK
+12 of 12 mutants killed
+?? experiments/E004-iwp-driver/measurements/command-output/main-session-c3-20261004T135333Z.txt
+
+[exited with code 0]
