@@ -10,6 +10,8 @@ Writes into OUTDIR (measurements/analysis/):
   save-fields.tsv        per save: the header lines, the card lines and the line count
   turn-diff.tsv          the two saves of each `turn` run, field by field, with the action that explains the change
   load-check.tsv         the saves of the `save-load` runs against the board after Load saved game
+  timings.tsv            per run: seconds to the option box, to the first human turn after the start click, cycle seconds,
+                         and the seconds one board reading (owners, then neighbours) takes on a screenshot of the run
 Never overwrites: an existing file is left as it is and the new one is written as <name>.new.
 Machine-local paths come from the environment (E005_BUNDLES) and are never written to the outputs.
 """
@@ -196,6 +198,26 @@ def main(outdir):
         same = sum(1 for n in range(1, 47) if CODES.get(f["owners"][n - 1]) == loaded[n])
         load.append(f"{r['run_id']}\t{same == 46}\t{same}\t{board.totals(read_png(asset(r['run_id'], 'save-turn1.png'))[2])}\t{board.totals(raw)}")
     write(outdir, "load-check.tsv", "\n".join(load) + "\n")
+    # 5. timings
+    import time
+    times = ["run\tarm\tstatus\toption_box_s\tfirst_human_turn_s\tcycle_s\tread_owners_s\tread_owners_and_neighbours_s"]
+    for r in recs:
+        obs = {o["field"]: o["value"] for o in r["observations"]}
+        box = obs.get("option box reached and stable, seconds after launch", "")
+        turn = next((o["value"] for o in r["observations"] if o["field"].startswith("more than 800 pixels of (170, 170, 170)")), "")
+        cycle = obs.get("cycle seconds, start to end of clean-up", "")
+        reading = ["", ""]
+        shot = asset(r["run_id"], "human-turn.png") if r["status"] == "completed" else None
+        if shot and shot.exists():
+            raw = read_png(shot)[2]
+            t0 = time.perf_counter()
+            board.owners(raw)
+            t1 = time.perf_counter()
+            board.neighbours(raw)
+            t2 = time.perf_counter()
+            reading = [f"{t1 - t0:.3f}", f"{t2 - t1:.3f}"]
+        times.append("\t".join([r["run_id"], r["arm"], r["status"].split(":")[0], box, turn, cycle] + reading))
+    write(outdir, "timings.tsv", "\n".join(times) + "\n")
 
 
 if __name__ == "__main__":

@@ -1,10 +1,10 @@
 run	field	save_turn1	save_turn2	note
 E005-r0011	chosen mine, target	32	33	choose-attack, read from the screen at turn 1; armies placed = Blue countries // 3 (min 2) = 5 (the game's own rule, ISLEWAR.DOC)
-E005-r0011	armie[3]	1	3	
-E005-r0011	armie[7]	1	3	
-E005-r0011	armie[25]	1	4	
+E005-r0011	armies[3]	1	3	
+E005-r0011	armies[7]	1	3	
+E005-r0011	armies[25]	1	4	
 E005-r0011	owner[33]	4	9	the country attacked and conquered at turn 1
-E005-r0011	armie[33]	1	4	the armies moved in: 5 placed, all but one moved in; the computer turns follow
+E005-r0011	armies[33]	1	4	the armies moved in: ALL moves all but one of the attacker's armies; the attack-result message reads '5 AGAINST 0' in both runs (read by eye), so 4 moved in
 E005-r0011	centres	['8', '21', '1']	['8', '21', '1']	unchanged
 E005-r0011	level	1	1	unchanged
 E005-r0011	armies_set	1	1	unchanged
@@ -13,18 +13,18 @@ E005-r0011	n	3	3	unchanged
 E005-r0011	card counts line	0 , 0 , 0 , 0	1 , 0 , 0 , 0	the C> column of the scoreboard (read by eye, see F007)
 E005-r0011	card types line	,,,	3,,,	
 E005-r0012	chosen mine, target	20	19	choose-attack, read from the screen at turn 1; armies placed = Blue countries // 3 (min 2) = 5 (the game's own rule, ISLEWAR.DOC)
-E005-r0012	armie[2]	4	1	
+E005-r0012	armies[2]	4	1	
 E005-r0012	owner[3]	2	4	
-E005-r0012	armie[3]	1	4	
+E005-r0012	armies[3]	1	4	
 E005-r0012	owner[4]	9	4	
-E005-r0012	armie[4]	1	2	
-E005-r0012	armie[13]	4	3	
+E005-r0012	armies[4]	1	2	
+E005-r0012	armies[13]	4	3	
 E005-r0012	owner[19]	4	9	the country attacked and conquered at turn 1
-E005-r0012	armie[19]	1	4	the armies moved in: 5 placed, all but one moved in; the computer turns follow
+E005-r0012	armies[19]	1	4	the armies moved in: ALL moves all but one of the attacker's armies; the attack-result message reads '5 AGAINST 0' in both runs (read by eye), so 4 moved in
 E005-r0012	owner[24]	2	8	
-E005-r0012	armie[24]	1	2	
-E005-r0012	armie[26]	1	2	
-E005-r0012	armie[27]	1	2	
+E005-r0012	armies[24]	1	2	
+E005-r0012	armies[26]	1	2	
+E005-r0012	armies[27]	1	2	
 E005-r0012	centres	['29', '4', '11']	['29', '4', '11']	unchanged
 E005-r0012	level	1	1	unchanged
 E005-r0012	armies_set	1	1	unchanged
