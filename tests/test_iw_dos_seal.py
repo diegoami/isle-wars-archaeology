@@ -13,6 +13,13 @@ The four guarantees of T11's Done-when 3, each with the tests that fail when it 
   LaunchGateTest;
 - a run copy that fails `check --strict` aborts the run before launch: RunCopyTest, LaunchGateTest;
 - a capture failure records `aborted`: InnerTest.
+
+Also (review of PR #37, R1): a run directory or run copy that is IW_DOS_DIR through a bind mount is
+refused before sync() changes anything: MountAliasTest, with real mounts under `unshare -rm`.
+
+They need a temporary directory outside every checkout. Inside one, every test of a World skips
+with SKIP_REASON, and the module warns on stderr when it is imported: a run that skipped them has
+not verified the seal, whatever its OK says.
 """
 import contextlib
 import hashlib
@@ -64,13 +71,20 @@ MANIFEST = {"schema": "artifact-set/1", "id": rundir.SET_ID, "title": "synthetic
             "runtime_writes": []}
 
 
+SKIP_REASON = ("SAFETY TEST NOT RUN: the temporary directory is inside a checkout (TMPDIR="
+               f"{os.environ.get('TMPDIR', '')!r}), and the code under test refuses every location inside one; "
+               "set TMPDIR to a directory outside every checkout, or this run verifies nothing of the seal")
+if locations.checkout_of(Path(os.path.realpath(tempfile.gettempdir()))) is not None:
+    sys.stderr.write(f"\nWARNING: tests/test_iw_dos_seal.py: {SKIP_REASON}\n")
+
+
 class World(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
         self.tmp = Path(os.path.realpath(self._tmp.name))
         if locations.checkout_of(self.tmp) is not None:
-            self.skipTest("the temporary directory is inside a checkout; these tests need one outside every checkout")
+            self.skipTest(SKIP_REASON)
         self.known = self.tmp / "known"
         (self.known / "artifacts").mkdir(parents=True)
         (self.known / "artifacts" / "known.json").write_text(json.dumps({"sets": [{"manifest": MANIFEST}]}))
@@ -402,6 +416,92 @@ class InnerTest(CycleWorld):
         with redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
             made.complete()
         self.assertIn("without before.png and after.png", made.status)
+
+
+CHILD = r"""
+import io, json, os, subprocess, sys
+from contextlib import redirect_stdout
+from pathlib import Path
+sys.path.insert(0, sys.argv[1] + "/setup/iwp")
+sys.path.insert(0, sys.argv[1] + "/setup/iw-dos")
+import rundir
+rundir.KNOWN_ROOT = Path(sys.argv[2])
+source, target, env = sys.argv[3], sys.argv[4], json.loads(sys.argv[5])
+os.makedirs(target, exist_ok=True)
+subprocess.run(["mount", "--bind", source, target], check=True)
+result = {}
+try:
+    with redirect_stdout(io.StringIO()) as out:
+        rundir.sync(env)
+    result["sync"] = "returned: " + out.getvalue().strip()
+except SystemExit as exc:
+    result["sync"] = "refused: " + str(exc.code)
+except BaseException as exc:
+    result["sync"] = "crashed: %s: %s" % (type(exc).__name__, exc)
+result["problems"] = rundir.run_problems(Path(env["IW_DOS_RUN"]), Path(env["IW_DOS_DIR"]))
+print(json.dumps(result))
+"""
+
+
+class MountAliasTest(World):
+    """R1 of PR #37's review: a run directory or run copy that is IW_DOS_DIR through a bind mount.
+
+    Real bind mounts, in a private user and mount namespace (`unshare -rm`), of synthetic files only.
+    In the namespace the user is root, so file modes do not protect IW_DOS_DIR: only the refusal does.
+    """
+
+    def setUp(self):
+        super().setUp()
+        probe = subprocess.run(["unshare", "-rm", "mount", "--bind", str(self.tmp), str(self.tmp)],
+                               capture_output=True, text=True)
+        if probe.returncode != 0:
+            self.skipTest("unshare -rm with a bind mount is not available here (" +
+                          (probe.stderr.strip() or f"exit {probe.returncode}")[:120] +
+                          "); the mount-alias tests need a private mount namespace")
+        for name in FILES:
+            os.chmod(self.install / name, 0o444)
+        self.before = self.install_state()
+
+    def install_state(self):
+        return {name: ((self.install / name).read_bytes(), oct(os.lstat(self.install / name).st_mode))
+                for name in sorted(os.listdir(self.install))}
+
+    def alias(self, source, target, run_dir):
+        env = dict(self.env, IW_DOS_RUN=str(run_dir))
+        done = subprocess.run(["unshare", "-rm", sys.executable, "-c", CHILD, str(ROOT), str(self.known),
+                               str(source), str(target), json.dumps(env)],
+                              capture_output=True, text=True, timeout=120)
+        self.assertEqual(done.returncode, 0, done.stderr[-2000:])
+        return json.loads(done.stdout.strip().splitlines()[-1])
+
+    def assert_install_untouched(self):
+        self.assertEqual(self.install_state(), self.before)
+
+    def test_a_run_copy_that_is_a_bind_mount_of_the_copy_is_refused_and_the_copy_keeps_its_files(self):
+        result = self.alias(self.install, self.run_dir / "game", self.run_dir)
+        self.assertTrue(result["sync"].startswith("refused: the run directory may be IW_DOS_DIR"), result)
+        self.assertTrue(result["problems"], result)
+        self.assert_install_untouched()
+
+    def test_a_run_directory_that_is_a_bind_mount_of_the_copy_is_refused_and_nothing_is_created(self):
+        result = self.alias(self.install, self.run_dir, self.run_dir)
+        self.assertTrue(result["sync"].startswith("refused: the run directory may be IW_DOS_DIR"), result)
+        self.assert_install_untouched()
+
+    def test_a_run_directory_below_an_alias_of_the_copy_is_refused(self):
+        alias = self.tmp / "alias"
+        result = self.alias(self.install, alias, alias / "run")
+        self.assertTrue(result["sync"].startswith("refused: the run directory may be IW_DOS_DIR"), result)
+        self.assertIn("IW_DOS_DIR under another name", result["sync"])
+        self.assert_install_untouched()
+
+    def test_an_unrelated_bind_mount_elsewhere_still_syncs(self):
+        other = self.tmp / "other"
+        other.mkdir()
+        result = self.alias(other, self.tmp / "elsewhere", self.run_dir)
+        self.assertTrue(result["sync"].startswith("returned: run copy: copied 2"), result)
+        self.assertEqual(result["problems"], [])
+        self.assert_install_untouched()
 
 
 class TokenTest(World):

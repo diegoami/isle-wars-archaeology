@@ -111,6 +111,52 @@ def mount_points():
     return points
 
 
+def identity(path):
+    """(st_dev, st_ino) of a path, links not followed; None when it does not exist."""
+    try:
+        info = os.lstat(path)
+    except FileNotFoundError:
+        return None
+    return info.st_dev, info.st_ino
+
+
+def alias_problems(run_dir, install):
+    """Ways the run directory or the run copy could be IW_DOS_DIR, or hold it, under another name;
+    [] when there are none. Nothing is changed. A canonical path does not show a bind mount, so
+    this looks at mounts and at identities (device and inode), not at names:
+    - a mount point at or under the run directory (a bind of IW_DOS_DIR, or of a place holding it);
+    - the run copy, the run directory or any directory above them that is IW_DOS_DIR itself;
+    - IW_DOS_DIR, or any directory above it, that is the run copy or the run directory;
+    - an entry of the run copy that is a directory of IW_DOS_DIR's, or the only name of one of its
+      files (a second name of a file is harmless to remove: the other name keeps it).
+    Checked by sync() before it writes, removes or re-permissions anything, and by run_problems()."""
+    run_dir, install = Path(run_dir), Path(install)
+    game = run_dir / GAME_DIR
+    problems = []
+    canonical_run = locations.real(run_dir)
+    for point in mount_points():
+        if locations.inside(point, canonical_run):
+            where = point.relative_to(canonical_run).as_posix() if point != canonical_run else "."
+            problems.append(f"{where} in the run directory is a mount point")
+    install_id = identity(install)
+    ours = {identity(p) for p in (game, run_dir)} - {None}
+    for path in (game, run_dir, *run_dir.parents):
+        if install_id is not None and identity(path) == install_id:
+            problems.append(f"{path.name or '/'} (the run copy or above it) is IW_DOS_DIR under another name")
+    for path in (install, *install.parents):
+        if identity(path) in ours:
+            problems.append("IW_DOS_DIR, or a directory above it, is the run copy or the run directory "
+                            "under another name")
+    if problems or identity(game) is None or not game.is_dir() or game.is_symlink():
+        return problems
+    theirs = install_inodes(install)
+    for name in sorted(os.listdir(game)):
+        info = os.lstat(game / name)
+        if (info.st_dev, info.st_ino) in theirs and (stat.S_ISDIR(info.st_mode) or info.st_nlink == 1):
+            problems.append(f"{name} in the run copy is IW_DOS_DIR's own entry under another name")
+    return problems
+
+
 def strict_check(game, root=None):
     """(ok, output) of `register_artifact.py check <game> <set> --strict`, run as the tool itself.
     The tool reads artifacts/known.json of the checkout it runs in (KNOWN_ROOT, or `root`)."""
@@ -135,6 +181,7 @@ def run_problems(run_dir, install, root=None):
         return ["the run copy overlaps IW_DOS_DIR"]
     problems = [f"{(p.relative_to(game).as_posix() if p != game else '.')} is a mount point"
                 for p in mount_points() if locations.inside(p, canonical)]
+    problems += [p for p in alias_problems(run_dir, install) if p not in problems]
     if os.lstat(game).st_dev != os.lstat(run_dir).st_dev:
         problems.append(". is on another filesystem than the run directory")
     if problems:
@@ -166,6 +213,13 @@ def run_problems(run_dir, install, root=None):
     return problems
 
 
+def refuse_aliases(run_dir, install):
+    problems = alias_problems(run_dir, install)
+    if problems:
+        raise SystemExit("the run directory may be IW_DOS_DIR under another name; nothing changed: "
+                         + "; ".join(problems)[:300])
+
+
 def sync(env=None, root=None):
     """Make <IW_DOS_RUN>/game the registered set: plain files of its own, copied from IW_DOS_DIR,
     with the copy's modification times, writable (so the game's runtime writes can be measured).
@@ -187,9 +241,11 @@ def sync(env=None, root=None):
     for part in (run_dir, game):
         if part.is_symlink():
             raise SystemExit(f"{part.name} is a link; the run copy must be a real directory")
+    refuse_aliases(run_dir, install)                   # before anything is created, removed or changed
     copied, removed = [], []
     try:
         os.close(safeio.open_directory(game, create_below=run_dir.parent))
+        refuse_aliases(run_dir, install)               # again, now that the run copy exists
         theirs = install_inodes(install)
         for name in sorted(os.listdir(game)):
             info = os.lstat(game / name)

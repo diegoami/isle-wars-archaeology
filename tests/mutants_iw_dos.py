@@ -4,7 +4,8 @@ Done-when 3, CLAUDE.md rule 9). Usage: python3 tests/mutants_iw_dos.py
 
 Each mutant replaces one exact piece of source (it must occur exactly once), runs the named tests,
 and restores the file whatever happens. A mutant is killed when the tests fail. The script exits 0
-only when every mutant is killed and the unmutated tests pass. It edits tracked files while it runs:
+only when every mutant is killed and the unmutated tests pass; it exits 2, naming them, when any target test skips (a skip shows
+nothing). It edits tracked files while it runs:
 run it in a clean worktree, never alongside a recorded cycle run.
 """
 import subprocess
@@ -45,6 +46,13 @@ MUTANTS = [
     ("DOSBox-X in the outer network namespace is not refused", "runtime/iw-dos/spike/cycle.py",
      "if not self.outer_netns or theirs == self.outer_netns:", "if False:",
      [T + "LaunchGateTest.test_dosbox_x_in_the_outer_network_namespace_aborts"]),
+    ("sync does not refuse a run directory that is IW_DOS_DIR through a bind mount (PR #37 R1)",
+     "setup/iw-dos/rundir.py",
+     "def refuse_aliases(run_dir, install):\n    problems = alias_problems(run_dir, install)",
+     "def refuse_aliases(run_dir, install):\n    problems = []",
+     [T + "MountAliasTest.test_a_run_copy_that_is_a_bind_mount_of_the_copy_is_refused_and_the_copy_keeps_its_files",
+      T + "MountAliasTest.test_a_run_directory_that_is_a_bind_mount_of_the_copy_is_refused_and_nothing_is_created",
+      T + "MountAliasTest.test_a_run_directory_below_an_alias_of_the_copy_is_refused"]),
     ("a cycle without its screenshots is completed", "runtime/iw-dos/spike/cycle.py",
      "        if missing:\n            self.fail(\"the cycle ended without", "        if False:\n            self.fail(\"the cycle ended without",
      [T + "InnerTest.test_a_cycle_without_its_screenshots_is_never_completed"]),
@@ -52,7 +60,15 @@ MUTANTS = [
 
 
 def tests_pass(ids):
-    done = subprocess.run([sys.executable, "-m", "unittest", "-q"] + ids, cwd=ROOT, capture_output=True, text=True)
+    """True when the tests pass. A skipped target test proves nothing either way, so any skip
+    stops the script loudly instead of reading as a pass or a kill."""
+    done = subprocess.run([sys.executable, "-m", "unittest", "-v"] + ids, cwd=ROOT, capture_output=True, text=True)
+    skipped = [line for line in done.stderr.splitlines() if " ... skipped" in line]
+    if skipped:
+        print("STOPPED: target tests skipped, so no mutant can be shown killed:")
+        print("\n".join("  " + line[:300] for line in skipped[:5]))
+        print("Run with TMPDIR set to a directory outside every checkout (and unshare available).")
+        sys.exit(2)
     return done.returncode == 0
 
 
