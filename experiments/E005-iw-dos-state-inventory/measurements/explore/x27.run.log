@@ -1,0 +1,38 @@
+16:20:51 IW_DOS_DIR read-only inside the run
+16:20:51 run copy before anything starts: ok
+16:20:51 Xvfb ready after 0.1 s
+16:20:51 run copy and configuration immediately before launch: ok
+16:20:51 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+16:20:51 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+16:20:53 window 2097157 at (80, 100) after 1.62 s
+16:21:08 option box reached 16.77 s after launch
+16:21:08 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+16:21:08 step 1: click 60 32
+16:21:08 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+16:21:08 step 3: wait-stable
+16:21:09 step 4: click 315 168
+16:21:09 step 5: wait-change 15
+16:21:09 step 6: click 315 169
+16:21:09 step 7: wait-change 15
+16:21:11 step 8: wait-stable
+16:21:11 step 9: shot board-before-start.png
+16:21:12 board-before-start.png: pixels 637fa503b7c72641, file a65456d77ea4d98b
+16:21:12 step 10: files
+16:21:12 step 11: click 510 22
+16:21:17 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+16:21:47 step 13: wait-stable
+16:21:49 step 14: shot human-turn.png
+16:21:49 human-turn.png: pixels 14828624f89b7f3a, file 84714e34d82b39c4
+16:21:49 step 15: click-change 507 20 6
+16:21:50 step 16: shot speed-panel.png
+16:21:50 speed-panel.png: pixels 90e1d01af634c1a6, file bf975cec4aba2b0e
+16:21:50 step 17: click-change 459 20 6
+16:21:51 step 18: shot speed-faster.png
+16:21:51 speed-faster.png: pixels 86f38275e27750e2, file abfa456c6181e5de
+16:21:51 step 19: click-change 527 20 6
+16:22:10 no-change-119.png: pixels d4ed4ebf3d7ffe67, file 35b590c4514f0656
+16:22:10 ABORT step 19: the screen never changed after three clicks at 527,20
+16:22:10 DOSBox-X exit status 0, 0.05 s after term
+16:22:10 processes still alive after terminate: 0
+16:22:10 reset: run copy: copied 0, removed 2
+16:22:10 reset: run copy equals its state before launch: True

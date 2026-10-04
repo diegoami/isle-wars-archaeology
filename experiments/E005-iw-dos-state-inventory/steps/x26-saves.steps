@@ -1,0 +1,51 @@
+# exploration 26: three saves in one turn (Normal, 3 armies)
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 185
+wait-change 15
+click 315 186
+wait-change 15
+wait-stable
+shot board-before-start
+files
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 554 20
+shot save-turn1
+files
+choose-attack
+click-mine
+wait-change 10
+rclick-mine
+wait-change 10
+wait-stable
+click 284 331
+wait-change 10
+wait-stable
+shot placed
+click-change 554 20
+shot save-after-place
+files
+click-change 272 323
+click-target
+wait-change 10
+rclick-target
+wait-change 10
+wait-stable
+click-mine
+wait-change 10
+rclick-mine
+wait-change 10
+wait-stable
+shot attack-ready
+click-change 283 323
+shot attack-result
+click-change 284 331
+click-change 388 331
+shot after-move-in
+click-change 554 20
+shot save-after-attack
+files
