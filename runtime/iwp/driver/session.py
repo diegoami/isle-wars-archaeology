@@ -25,8 +25,10 @@ What it changes against the spike (measured in F006):
   the game and `display` for Xvfb, the window manager and the daemons the window manager starts. Terminate
   waits, with a bound, for the game side only: the spike waited 30 s for the display side's D-Bus daemons
   (dbus-daemon, at-spi, xfconfd), which only end when the display does (#40);
-* the children get no DBUS_SESSION_BUS_ADDRESS (a stale one kept xfwm4 from registering, #40) and TMPDIR=/tmp,
-  the private /tmp of the namespace (an outer TMPDIR that does not exist there stops Wine at once).
+* the children get no DBUS_SESSION_BUS_ADDRESS (a stale one kept xfwm4 from registering, #40) and no TMPDIR, so
+  that Wine uses the private /tmp of the namespace. Observed, not explained (F006): with TMPDIR naming a folder that
+  is not in the private /tmp Wine stops at once ("unable to create wineserver tmpdir"), and with TMPDIR=/tmp
+  itself it aborted ("free(): invalid pointer"); with TMPDIR unset every launch worked.
 """
 import argparse
 import contextlib
@@ -151,7 +153,7 @@ class Session(spike.Cycle):
                                   may_write_saved_files=False, explore=False)
         super().__init__(args, run_id, prefix, bundles, install)
         self.env["DISPLAY"] = display
-        self.env["TMPDIR"] = "/tmp"                  # the namespace's private /tmp, whatever the caller's TMPDIR
+        self.env.pop("TMPDIR", None)                 # the default, the namespace's private /tmp (see the module text)
         self.dbus_before = os.environ.get("DBUS_SESSION_BUS_ADDRESS")
         self.env.pop("DBUS_SESSION_BUS_ADDRESS", None)
         self.env[SIDE] = "game"
