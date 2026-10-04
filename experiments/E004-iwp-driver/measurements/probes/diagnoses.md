@@ -22,10 +22,11 @@ pid comm              cmdline start                                   state
 ```
 
 The same six, with the same pids, in all three listings; none is a Wine process. They carry the run's marker
-because xfwm4, which has no session bus to reach, makes `dbus-launch --autolaunch` start them, and they
-inherit xfwm4's environment. They end when the display does, which the spike's terminate stage reached only
-after its 30 s poll had timed out. So the 30 s was the poll's timeout, not Wine: the game and every Wine
-process were already gone.
+because they inherit the environment of what started them (it is inferred, not read, that xfwm4's missing
+bus made it run `dbus-launch --autolaunch`; the launcher's parent was not looked at). The spike stops the display only after
+its 30 s poll for them has timed out, so they cannot have ended before it; the driver, which stops the display
+first, saw them gone 3.00 to 3.04 s after Xvfb and xfwm4 stopped in all 16 E004 records. So the 30 s was the
+poll's timeout, not Wine: the game and every Wine process were already gone.
 
 ## 2. The stale bus (E002 r0002 and r0003)
 
