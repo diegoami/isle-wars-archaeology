@@ -62,3 +62,10 @@ the clean-up, a recovery gate, bounds on every wait and helper, an input require
 screenshots), and its arms were run again as a new batch, E004-r0030 to r0045 at `a464f266d8ae`, beside the
 earlier ones (r0001 to r0016, r0017 to r0029), which stay. Each batch's tables are made once, by
 `measurements/make_tables.py FIRST LAST`.
+
+## Rework round 2 (PR #54)
+
+Appended after round 1's review. The design above is unchanged. The driver changed again (every signal
+through a marker re-check, every relied-on helper's exit status checked, both sides alive at every stage
+boundary, the full seal repeated before launch, the display proven to be this run's own Xvfb's), and its arms
+were run again as batch E004-r0062 to r0077 at `74bfcb5`, beside the earlier ones (r0001 to r0061), which stay.
