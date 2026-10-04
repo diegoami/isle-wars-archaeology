@@ -1,0 +1,18 @@
+click at 320,585: label changed under the pointer (s): 0.08
+click at 320,585: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.44
+click at 390,137: label changed under the pointer (s): no change within 2 s
+click at 390,137: screen changed after the click (s): 0.02
+opt-armies5.png raw RGB8 pixels sha256: 4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c
+click at 343,233: label changed under the pointer (s): no change within 2 s
+click at 343,233: screen changed after the click (s): 0.85
+opt-yellow.png raw RGB8 pixels sha256: 443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d
+click at 251,311: label changed under the pointer (s): no change within 2 s
+click at 251,311: screen changed after the click (s): 0.02
+opt-hard.png raw RGB8 pixels sha256: 606678f6a6379826629b1b72d282050dedc162db2083c9b1f1ee89e5d1553081
+click at 454,389: label changed under the pointer (s): no change within 2 s
+click at 454,389: screen changed after the click (s): 0.02
+click at 530,465: label changed under the pointer (s): no change within 2 s
+click at 530,465: screen changed after the click (s): 0.98
+opt-all.png raw RGB8 pixels sha256: 149db86d2babe6e38b66b0cd5875b6878fa30b3d093b67030f5a906c293ab323
+ok

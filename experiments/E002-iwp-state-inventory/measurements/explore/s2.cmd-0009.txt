@@ -1,0 +1,4 @@
+click 400 526
+shot ng-cont
+file xtras/Islepro.dat
+changes

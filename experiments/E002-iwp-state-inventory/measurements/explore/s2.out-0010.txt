@@ -1,0 +1,8 @@
+xtras/Islepro.skr: size in bytes and sha256: 14 25464a6d8411b9e9e5920cd130d060ae341295fdce6ae70eaa92f22b64880db0
+xtras/Islepro.skr: equals the install's file: no: the install's has 13 bytes
+xtras/Islepro.skr: changed byte offsets, install>game copy: 0x6 8e>8f
+raw:bytes[0x0:0xe] of xtras/Islepro.skr as written by the game: 8e8a8e8a8e8a8f8a8e8a8e8a8e8a
+click at 620,585: label changed under the pointer (s): 0.08
+click at 620,585: screen changed after the click (s): 0.01
+scores2.png raw RGB8 pixels sha256: c7eb3b89a73cdfea8ab6849b9f31b1d598e831312c13fc55a6a14eb108078ad8
+ok

@@ -1,0 +1,19 @@
+click at 388,536: label changed under the pointer (s): 0.08
+click at 388,536: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.44
+click at 320,585: label changed under the pointer (s): 0.01
+click at 320,585: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.43
+click at 390,137: label changed under the pointer (s): no change within 2 s
+click at 390,137: screen changed after the click (s): 0.02
+lock-armies.png raw RGB8 pixels sha256: 4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c
+click at 454,389: label changed under the pointer (s): no change within 2 s
+click at 454,389: screen changed after the click (s): no change within 3 s
+lock-freq.png raw RGB8 pixels sha256: 4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c
+click at 518,233: label changed under the pointer (s): no change within 2 s
+click at 518,233: screen changed after the click (s): 0.02
+lock-green.png raw RGB8 pixels sha256: 443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d
+click at 259,233: label changed under the pointer (s): no change within 2 s
+click at 259,233: screen changed after the click (s): 0.02
+lock-blue.png raw RGB8 pixels sha256: 443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d
+ok

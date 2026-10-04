@@ -1,0 +1,6 @@
+click at 337,531: label changed under the pointer (s): 0.08
+click at 337,531: screen changed after the click (s): no change within 3 s
+r1.png raw RGB8 pixels sha256: 5e1b001617e68e0dbdf569520e41dca64b9015ca0628842e954e31802b4031a1
+r2.png raw RGB8 pixels sha256: 5e1b001617e68e0dbdf569520e41dca64b9015ca0628842e954e31802b4031a1
+r3.png raw RGB8 pixels sha256: 5e1b001617e68e0dbdf569520e41dca64b9015ca0628842e954e31802b4031a1
+ok

@@ -1,0 +1,8 @@
+click at 228,532: label changed under the pointer (s): 0.08
+click at 228,532: screen changed after the click (s): 0.02
+opt-saved.png raw RGB8 pixels sha256: 9472425b2b9cdd09219f959424f91bb841706b61108f50a1cf6ce1c4a8d4e29d
+xtras/Isledft.dat: size in bytes and sha256: 16 6134cb940e3e4494b7da9388d895365b3c1c5ee8e0070c789dfa1895b033ae1a
+xtras/Isledft.dat: equals the install's file: no: the install's has 15 bytes
+xtras/Isledft.dat: changed byte offsets, install>game copy: 0x8 32>33; 0xe 32>31
+raw:bytes[0x0:0x10] of xtras/Isledft.dat as written by the game: 312c302c302c302c332c322c332c312c
+ok

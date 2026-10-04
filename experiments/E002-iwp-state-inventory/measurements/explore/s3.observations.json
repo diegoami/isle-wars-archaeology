@@ -1,0 +1,578 @@
+[
+ {
+  "step": 0,
+  "source": "process",
+  "field": "install bound read-only in the run's mount namespace",
+  "value": "yes"
+ },
+ {
+  "step": 0,
+  "source": "file",
+  "field": "prefix seal before anything starts: problems found",
+  "value": "0"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "xvfb ready (s)",
+  "value": "0.1"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "root window",
+  "value": "800x600x24"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "xfwm4 registered (s)",
+  "value": "0.12"
+ },
+ {
+  "step": 1,
+  "source": "file",
+  "field": "prefix seal immediately before launch: problems found",
+  "value": "0"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "game in its own network namespace",
+  "value": "yes"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "network interfaces the game sees",
+  "value": "lo"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "stage origin assumed from a centered 800x600 stage",
+  "value": "0,0"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "Islepro window after launch (s)",
+  "value": "0.64"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "Islepro window position and size",
+  "value": "0,0 800x600"
+ },
+ {
+  "step": 2,
+  "source": "process",
+  "field": "Islepro window properties",
+  "value": "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; "
+ },
+ {
+  "step": 2,
+  "source": "process",
+  "field": "root window at the title screen",
+  "value": "800x600x24"
+ },
+ {
+  "step": 2,
+  "source": "screen",
+  "field": "title screen reached and stable, seconds after launch",
+  "value": "7.07"
+ },
+ {
+  "step": 3,
+  "source": "screen",
+  "field": "before.png raw RGB8 pixels sha256",
+  "value": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753"
+ },
+ {
+  "step": 5,
+  "source": "screen",
+  "field": "click at 215,585: label changed under the pointer (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 5,
+  "source": "screen",
+  "field": "click at 215,585: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 6,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.45"
+ },
+ {
+  "step": 7,
+  "source": "screen",
+  "field": "help-a.png raw RGB8 pixels sha256",
+  "value": "7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c"
+ },
+ {
+  "step": 8,
+  "source": "screen",
+  "field": "key Next sent",
+  "value": "yes"
+ },
+ {
+  "step": 9,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.45"
+ },
+ {
+  "step": 10,
+  "source": "screen",
+  "field": "help-b.png raw RGB8 pixels sha256",
+  "value": "7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c"
+ },
+ {
+  "step": 11,
+  "source": "screen",
+  "field": "click at 744,400: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 11,
+  "source": "screen",
+  "field": "click at 744,400: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 12,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 13,
+  "source": "screen",
+  "field": "help-c.png raw RGB8 pixels sha256",
+  "value": "ead27aa20888e12183d2aa0694711cb36dc44da9c608b0633b513303e9af9c20"
+ },
+ {
+  "step": 14,
+  "source": "screen",
+  "field": "click at 744,481: label changed under the pointer (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 14,
+  "source": "screen",
+  "field": "click at 744,481: screen changed after the click (s)",
+  "value": "no change within 3 s"
+ },
+ {
+  "step": 15,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 16,
+  "source": "screen",
+  "field": "help-d.png raw RGB8 pixels sha256",
+  "value": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96"
+ },
+ {
+  "step": 17,
+  "source": "screen",
+  "field": "click at 744,80: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 17,
+  "source": "screen",
+  "field": "click at 744,80: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 18,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 19,
+  "source": "screen",
+  "field": "hp1.png raw RGB8 pixels sha256",
+  "value": "a61e201d75c72f087db8dcf81954a1db205f797b4c1c6d60705221004819bf67"
+ },
+ {
+  "step": 20,
+  "source": "screen",
+  "field": "click at 744,460: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 20,
+  "source": "screen",
+  "field": "click at 744,460: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 21,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 22,
+  "source": "screen",
+  "field": "hp2.png raw RGB8 pixels sha256",
+  "value": "4643589b4e66dca2c39c37016a82ba45cda801aa9a6cf306e73d83066dbf83bc"
+ },
+ {
+  "step": 23,
+  "source": "screen",
+  "field": "click at 744,460: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 23,
+  "source": "screen",
+  "field": "click at 744,460: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 24,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 25,
+  "source": "screen",
+  "field": "hp3.png raw RGB8 pixels sha256",
+  "value": "d7319557672ad5438faf8615b3e4ed28ac28447a1393cf33765a9cd441428afd"
+ },
+ {
+  "step": 26,
+  "source": "screen",
+  "field": "click at 744,80: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 26,
+  "source": "screen",
+  "field": "click at 744,80: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 27,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 28,
+  "source": "screen",
+  "field": "top.png raw RGB8 pixels sha256",
+  "value": "a61e201d75c72f087db8dcf81954a1db205f797b4c1c6d60705221004819bf67"
+ },
+ {
+  "step": 29,
+  "source": "screen",
+  "field": "click at 744,481: label changed under the pointer (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 29,
+  "source": "screen",
+  "field": "click at 744,481: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 30,
+  "source": "screen",
+  "field": "click at 744,481: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 30,
+  "source": "screen",
+  "field": "click at 744,481: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 31,
+  "source": "screen",
+  "field": "click at 744,481: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 31,
+  "source": "screen",
+  "field": "click at 744,481: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 32,
+  "source": "screen",
+  "field": "click at 744,481: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 32,
+  "source": "screen",
+  "field": "click at 744,481: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 33,
+  "source": "screen",
+  "field": "click at 744,481: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 33,
+  "source": "screen",
+  "field": "click at 744,481: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 34,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.45"
+ },
+ {
+  "step": 35,
+  "source": "screen",
+  "field": "dn5.png raw RGB8 pixels sha256",
+  "value": "8d1d712bcbb6e3263afa1acfb4bb2d0d8b0222c89b52d6cb860c1df1b3549626"
+ },
+ {
+  "step": 36,
+  "source": "screen",
+  "field": "click at 388,536: label changed under the pointer (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 36,
+  "source": "screen",
+  "field": "click at 388,536: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 37,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 38,
+  "source": "screen",
+  "field": "click at 320,585: label changed under the pointer (s)",
+  "value": "0.01"
+ },
+ {
+  "step": 38,
+  "source": "screen",
+  "field": "click at 320,585: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 39,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 40,
+  "source": "screen",
+  "field": "click at 390,137: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 40,
+  "source": "screen",
+  "field": "click at 390,137: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 41,
+  "source": "screen",
+  "field": "lock-armies.png raw RGB8 pixels sha256",
+  "value": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c"
+ },
+ {
+  "step": 42,
+  "source": "screen",
+  "field": "click at 454,389: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 42,
+  "source": "screen",
+  "field": "click at 454,389: screen changed after the click (s)",
+  "value": "no change within 3 s"
+ },
+ {
+  "step": 43,
+  "source": "screen",
+  "field": "lock-freq.png raw RGB8 pixels sha256",
+  "value": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c"
+ },
+ {
+  "step": 44,
+  "source": "screen",
+  "field": "click at 518,233: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 44,
+  "source": "screen",
+  "field": "click at 518,233: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 45,
+  "source": "screen",
+  "field": "lock-green.png raw RGB8 pixels sha256",
+  "value": "443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d"
+ },
+ {
+  "step": 46,
+  "source": "screen",
+  "field": "click at 259,233: label changed under the pointer (s)",
+  "value": "no change within 2 s"
+ },
+ {
+  "step": 46,
+  "source": "screen",
+  "field": "click at 259,233: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 47,
+  "source": "screen",
+  "field": "lock-blue.png raw RGB8 pixels sha256",
+  "value": "443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d"
+ },
+ {
+  "step": 48,
+  "source": "screen",
+  "field": "click at 565,532: label changed under the pointer (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 48,
+  "source": "screen",
+  "field": "click at 565,532: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 49,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 50,
+  "source": "screen",
+  "field": "click at 100,585: label changed under the pointer (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 50,
+  "source": "screen",
+  "field": "click at 100,585: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 51,
+  "source": "screen",
+  "field": "settle: screen unchanged between two captures (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 52,
+  "source": "screen",
+  "field": "click at 565,532: label changed under the pointer (s)",
+  "value": "0.01"
+ },
+ {
+  "step": 52,
+  "source": "screen",
+  "field": "click at 565,532: screen changed after the click (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 53,
+  "source": "screen",
+  "field": "watched area",
+  "value": "x,y,w,h 0,0,800,495"
+ },
+ {
+  "step": 54,
+  "source": "screen",
+  "field": "settle: watched area unchanged for 4 s (s)",
+  "value": "17.16"
+ },
+ {
+  "step": 55,
+  "source": "screen",
+  "field": "board-s3.png raw RGB8 pixels sha256",
+  "value": "9ebc220b51233d54d091edd5989d05fb792987923f4ebdf81cf56dc35ae698e9"
+ },
+ {
+  "step": 56,
+  "source": "screen",
+  "field": "watched area",
+  "value": "x,y,w,h 265,530,270,26"
+ },
+ {
+  "step": 58,
+  "source": "screen",
+  "field": "after-badges.png raw RGB8 pixels sha256",
+  "value": "2565c731bdf0367c4ad494b0c95e9b652f71b68c6e310554370d2a36924792f3"
+ },
+ {
+  "step": 9,
+  "source": "process",
+  "field": "game process exit status",
+  "value": "0"
+ },
+ {
+  "step": 9,
+  "source": "process",
+  "field": "wine processes gone after terminate (s)",
+  "value": "0.0"
+ },
+ {
+  "step": 10,
+  "source": "process",
+  "field": "processes of this run still alive after terminate",
+  "value": "0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "game copy: added/removed/changed entries",
+  "value": "0/0/0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "prefix: added/removed/changed entries",
+  "value": "31/0/2"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "registry keys: added/removed/value-changed",
+  "value": "0/1/6"
+ },
+ {
+  "step": 11,
+  "source": "file",
+  "field": "prefix after reset equals prefix before launch",
+  "value": "yes"
+ }
+]

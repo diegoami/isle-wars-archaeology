@@ -1,0 +1,3 @@
+file xtras/Islepro.skr
+click 620 585
+shot scores2

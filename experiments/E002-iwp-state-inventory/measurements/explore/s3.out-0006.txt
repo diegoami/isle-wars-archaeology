@@ -1,0 +1,12 @@
+click at 565,532: label changed under the pointer (s): 0.08
+click at 565,532: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.43
+click at 100,585: label changed under the pointer (s): 0.08
+click at 100,585: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.43
+click at 565,532: label changed under the pointer (s): 0.01
+click at 565,532: screen changed after the click (s): 0.02
+watched area: x,y,w,h 0,0,800,495
+settle: watched area unchanged for 4 s (s): 17.16
+board-s3.png raw RGB8 pixels sha256: 9ebc220b51233d54d091edd5989d05fb792987923f4ebdf81cf56dc35ae698e9
+ok

@@ -1,0 +1,8 @@
+click 565 532
+settle
+click 100 585
+settle
+click 565 532
+watch 0 0 800 495
+settle 4
+shot board-s3

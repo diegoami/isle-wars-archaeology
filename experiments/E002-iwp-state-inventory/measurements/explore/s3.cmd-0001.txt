@@ -1,0 +1,6 @@
+click 215 585
+settle
+shot help-a
+key Next
+settle
+shot help-b
