@@ -1,0 +1,99 @@
+15:52:26 IW_DOS_DIR read-only inside the run
+15:52:26 run copy before anything starts: ok
+15:52:26 Xvfb ready after 0.11 s
+15:52:26 run copy and configuration immediately before launch: ok
+15:52:26 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:52:26 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:52:28 window 2097157 at (80, 100) after 1.73 s
+15:52:43 option box reached 16.63 s after launch
+15:52:43 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:52:43 step 1: click 60 32
+15:52:43 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:52:43 step 3: wait-stable
+15:52:44 step 4: click 315 168
+15:52:44 step 5: wait-change 15
+15:52:44 step 6: click 315 169
+15:52:45 step 7: wait-change 15
+15:52:46 step 8: wait-stable
+15:52:47 step 9: shot board-before-start.png
+15:52:47 board-before-start.png: pixels 79809e1f57fa1865, file 573d12a56ded9b95
+15:52:47 step 10: files
+15:52:47 step 11: click 510 22
+15:52:52 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:53:09 step 13: wait-stable
+15:53:11 step 14: shot human-turn.png
+15:53:11 human-turn.png: pixels 201ada5bf681d3bf, file fe94f943a80514de
+15:53:11 step 15: choose-attack
+15:53:12 step 16: click-mine
+15:53:12 step 17: wait-change 10
+15:53:12 step 18: shot place-selected.png
+15:53:12 place-selected.png: pixels b90406b80dd59afe, file 5e369667f25e90f6
+15:53:12 step 19: rclick-mine
+15:53:17 step 20: wait-change 10
+15:53:18 step 21: wait-stable
+15:53:18 step 22: shot place-how-many.png
+15:53:19 place-how-many.png: pixels c35d652dc3293bbd, file fea71549bf5c6ca3
+15:53:19 step 23: click 284 331
+15:53:19 step 24: wait-change 10
+15:53:19 step 25: wait-stable
+15:53:20 step 26: shot place-turn-menu.png
+15:53:20 place-turn-menu.png: pixels ae5c1950db2795e3, file c223ed0ae9b53a9e
+15:53:20 step 27: click 272 323
+15:53:20 step 28: wait-change 10
+15:53:21 step 29: wait-stable
+15:53:21 step 30: shot attack-what-country.png
+15:53:21 attack-what-country.png: pixels a36a8568e9102ac8, file 2b1e6c70e19b906e
+15:53:21 step 31: click-target
+15:53:21 step 32: wait-change 10
+15:53:22 step 33: shot attack-country-selected.png
+15:53:22 attack-country-selected.png: pixels 721e717d0949d5cc, file aa84632a80e180e2
+15:53:22 step 34: rclick-target
+15:53:28 step 35: wait-change 10
+15:53:38 step 36: wait-stable
+15:53:38 step 37: shot attack-from-where.png
+15:53:38 attack-from-where.png: pixels 721e717d0949d5cc, file aa84632a80e180e2
+15:53:38 step 38: click-mine
+15:53:39 step 39: wait-change 10
+15:53:39 step 40: shot attack-from-selected.png
+15:53:39 attack-from-selected.png: pixels 1c1288f2bd187513, file 7893679657101ef0
+15:53:39 step 41: rclick-mine
+15:53:44 step 42: wait-change 10
+15:53:54 step 43: wait-stable
+15:53:55 step 44: shot attack-ready.png
+15:53:55 attack-ready.png: pixels 1c1288f2bd187513, file 7893679657101ef0
+15:53:55 step 45: click 283 323
+15:53:55 step 46: wait-change 10
+15:53:56 step 47: wait-stable
+15:53:56 step 48: shot attack-result.png
+15:53:56 attack-result.png: pixels caf913ff9750f71a, file e1020767410c53bc
+15:53:56 step 49: click 284 331
+15:53:57 step 50: wait-change 10
+15:53:57 step 51: wait-stable
+15:53:57 step 52: shot move-in-all.png
+15:53:58 move-in-all.png: pixels d07c361172f76618, file 8ddad52572693957
+15:53:58 step 53: click 388 331
+15:53:58 step 54: wait-change 10
+15:54:08 step 55: wait-stable
+15:54:09 step 56: shot after-move-in.png
+15:54:09 after-move-in.png: pixels e4fd842a11d6ed52, file c306d9c4e1101a5d
+15:54:09 step 57: click 338 325
+15:54:09 step 58: wait-change 10
+15:54:10 step 59: shot draws-card.png
+15:54:10 draws-card.png: pixels ff0c4005058a26e0, file 2c15739ee099bf0b
+15:54:10 step 60: wait-change 10
+15:54:11 step 61: wait-stable
+15:54:11 step 62: shot click-to-continue.png
+15:54:11 click-to-continue.png: pixels 06b9ddca6e8bbca9, file f616c31d60ed07cd
+15:54:11 step 63: click 335 323
+15:54:12 step 64: wait-change 10
+15:54:15 step 65: shot ai-first.png
+15:54:15 ai-first.png: pixels dcaecb780f1f0e51, file e9b847f382cfa6e1
+15:54:15 step 66: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:54:42 step 67: wait-stable
+15:54:45 step 68: shot human-turn-2.png
+15:54:45 human-turn-2.png: pixels 1bc595abca22bbe8, file b8d45466ece42b54
+15:54:45 step 69: files
+15:54:45 DOSBox-X exit status 0, 0.05 s after term
+15:54:45 processes still alive after terminate: 0
+15:54:45 reset: run copy: copied 0, removed 2
+15:54:45 reset: run copy equals its state before launch: True

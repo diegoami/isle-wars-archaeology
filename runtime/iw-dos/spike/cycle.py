@@ -38,6 +38,7 @@ import argparse
 import hashlib
 import io
 import json
+import math
 import os
 import re
 import signal
@@ -60,6 +61,7 @@ import safeio  # noqa: E402
 import rundir  # noqa: E402
 import dosconf  # noqa: E402
 import navsteps as stepscript  # noqa: E402
+import board  # noqa: E402
 
 SCRIPT = Path(__file__).resolve()
 EXPERIMENT = "E003"                   # --experiment sets it (E005: T14); every record and path follows it
@@ -288,6 +290,8 @@ class Cycle:
         self.ref = None             # the screen as the last step left it (navsteps.py: wait-change)
         self.script = []            # the parsed --steps script, [] for the E003 cycle
         self.used_savestate = False
+        self.mine = self.target = None     # the countries choose-attack remembered
+        self.pointer = None                # where the last click step left the pointer
         # "completed" is given only by complete(); any other way out leaves an aborted status.
         self.status = "running"
 
@@ -488,14 +492,69 @@ class Cycle:
             getattr(self, "step_" + verb.replace("-", "_"))(100 + n, *args)
         self.after_screen_ok = True
 
-    def step_click(self, step, x, y):
-        before = self.screen.raw()
-        run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
-        drawn = poll(lambda: self.screen.raw() != before, 5, 0.05)
-        self.observe(step, "screen", f"pointer drawn at {x},{y} (s)", "no change within 5 s" if drawn is None else drawn)
+    def step_click(self, step, x, y, button="1"):
+        if self.pointer != (x, y):
+            before = self.screen.raw()
+            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+            drawn = poll(lambda: self.screen.raw() != before, 5, 0.05)
+            self.observe(step, "screen", f"pointer drawn at {x},{y} (s)", "no change within 5 s" if drawn is None else drawn)
+            self.pointer = (x, y)
         self.ref = self.screen.raw()
-        run(["xdotool", "click", "1"], env=self.env)
-        self.observe(step, "process", f"click at {x},{y}", "sent")
+        run(["xdotool", "click", button], env=self.env)
+        self.observe(step, "process", f"{'left' if button == '1' else 'right'} click at {x},{y}", "sent")
+
+    def step_rclick(self, step, x, y):
+        self.step_click(step, x, y, "3")
+
+    def step_click_change(self, step, x, y, seconds, button="1"):
+        """Click until the screen changes: up to three clicks, `seconds` apart; abort if it never does."""
+        for attempt in (1, 2, 3):
+            self.step_click(step, x, y, button)
+            changed = poll(lambda: self.screen.raw() != self.ref, seconds, 0.1)
+            self.observe(step, "screen", f"screen changed after click {attempt} at {x},{y} (s)",
+                         f"no change within {seconds} s" if changed is None else changed)
+            if changed is not None:
+                self.step_wait_stable(step)
+                return
+        self.shot(f"no-change-{step}.png", step)
+        self.fail(f"step {step - 100}: the screen never changed after three clicks at {x},{y}")
+
+    def step_rclick_change(self, step, x, y, seconds):
+        self.step_click_change(step, x, y, seconds, "3")
+
+    def step_wait_exit(self, step, seconds):
+        waited = poll(lambda: not self.game_alive(), seconds, 0.25)
+        self.observe(step, "process", "DOSBox-X ended by itself after (s)",
+                     f"still running after {seconds} s" if waited is None else waited)
+
+    def step_choose_attack(self, step):
+        """Read the board and remember `mine` (a Blue country with an enemy neighbour) and `target`
+        (its nearest enemy neighbour). Aborts when Blue has no such country."""
+        raw = self.screen.raw()
+        owners, touch = board.owners(raw), board.neighbours(raw)
+        self.observe(step, "screen", "board owners, countries 1 to 46 (read from the pixels beside each number box)",
+                     ",".join(owners[n] or "?" for n in sorted(owners)))
+        self.observe(step, "screen", "board totals read from the pixels (blue, red, green, brown)",
+                     ",".join(str(board.totals(raw)[c]) for c in ("blue", "red", "green", "brown")))
+        pairs = [(math.dist(board.BOXES[n], board.BOXES[m]), n, m) for n in sorted(owners) if owners[n] == "blue"
+                 for m in touch[n] if owners[m] and owners[m] != "blue"]
+        if not pairs:
+            self.shot(f"no-pair-{step}.png", step)
+            self.fail(f"step {step - 100}: Blue has no country that touches an enemy")
+        _, self.mine, self.target = min(pairs)
+        self.observe(step, "screen", "chosen: mine (Blue) and target (enemy neighbour)", f"{self.mine} {self.target}")
+
+    def step_click_mine(self, step):
+        self.step_click(step, *board.BOXES[self.mine])
+
+    def step_rclick_mine(self, step):
+        self.step_click(step, *board.BOXES[self.mine], "3")
+
+    def step_click_target(self, step):
+        self.step_click(step, *board.BOXES[self.target])
+
+    def step_rclick_target(self, step):
+        self.step_click(step, *board.BOXES[self.target], "3")
 
     def step_wait_stable(self, step):
         waited = poll(self.screen.stable, 30, 0.1)

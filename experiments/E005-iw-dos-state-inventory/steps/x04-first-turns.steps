@@ -1,0 +1,91 @@
+# exploration 4: start the game, then a frame at each quiet moment of the first turns
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+click 510 22
+wait-change 30
+shot f01
+wait-change 30
+shot f02
+wait-change 30
+shot f03
+wait-change 30
+shot f04
+wait-change 30
+shot f05
+wait-change 30
+shot f06
+wait-change 30
+shot f07
+wait-change 30
+shot f08
+wait-change 30
+shot f09
+wait-change 30
+shot f10
+wait-change 30
+shot f11
+wait-change 30
+shot f12
+wait-change 30
+shot f13
+wait-change 30
+shot f14
+wait-change 30
+shot f15
+wait-change 30
+shot f16
+wait-change 30
+shot f17
+wait-change 30
+shot f18
+wait-change 30
+shot f19
+wait-change 30
+shot f20
+wait-change 30
+shot f21
+wait-change 30
+shot f22
+wait-change 30
+shot f23
+wait-change 30
+shot f24
+wait-change 30
+shot f25
+wait-change 30
+shot f26
+wait-change 30
+shot f27
+wait-change 30
+shot f28
+wait-change 30
+shot f29
+wait-change 30
+shot f30
+wait-change 30
+shot f31
+wait-change 30
+shot f32
+wait-change 30
+shot f33
+wait-change 30
+shot f34
+wait-change 30
+shot f35
+wait-change 30
+shot f36
+wait-change 30
+shot f37
+wait-change 30
+shot f38
+wait-change 30
+shot f39
+wait-change 30
+shot f40
+files

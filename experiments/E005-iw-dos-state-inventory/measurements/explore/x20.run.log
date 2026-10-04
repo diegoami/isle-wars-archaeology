@@ -1,0 +1,59 @@
+16:08:13 IW_DOS_DIR read-only inside the run
+16:08:13 run copy before anything starts: ok
+16:08:13 Xvfb ready after 0.11 s
+16:08:13 run copy and configuration immediately before launch: ok
+16:08:13 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+16:08:13 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+16:08:15 window 2097157 at (80, 100) after 1.63 s
+16:08:30 option box reached 16.82 s after launch
+16:08:30 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+16:08:30 step 1: click 60 32
+16:08:31 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+16:08:31 step 3: wait-stable
+16:08:31 step 4: click 315 168
+16:08:31 step 5: wait-change 15
+16:08:32 step 6: click 315 169
+16:08:32 step 7: wait-change 15
+16:08:34 step 8: wait-stable
+16:08:34 step 9: shot board-before-start.png
+16:08:34 board-before-start.png: pixels 9cb05f30a5a605e8, file ea05959e24103f52
+16:08:34 step 10: files
+16:08:34 step 11: click 510 22
+16:08:39 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+16:09:00 step 13: wait-stable
+16:09:02 step 14: shot human-turn.png
+16:09:02 human-turn.png: pixels fff030ca9cee71ab, file ead822d055653be1
+16:09:02 step 15: click-change 554 20 6
+16:09:03 step 16: shot save-1.png
+16:09:03 save-1.png: pixels 60b252deb2b96942, file 042c3b13836a4d79
+16:09:03 step 17: files
+16:09:03 step 18: click-change 602 20 6
+16:09:06 step 19: shot concede-dialog.png
+16:09:06 concede-dialog.png: pixels 6d9dbdbcef0368ab, file 0bfbdfe3ef588d60
+16:09:06 step 20: click-change 287 332 6
+16:09:06 step 21: shot scoreboard.png
+16:09:06 scoreboard.png: pixels 992580408170c82f, file fd2a028c2a2026cb
+16:09:06 step 22: click-change 480 236 6
+16:09:14 step 23: shot game-over.png
+16:09:14 game-over.png: pixels d91235d57447e8ae, file 5f6fd38df7f2d943
+16:09:14 step 24: click-change 287 332 6
+16:09:15 step 25: until (28, 22, 66, 18) (170, 0, 0) 150 90
+16:09:22 step 26: wait-stable
+16:09:23 step 27: shot option-box-again.png
+16:09:23 option-box-again.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+16:09:23 step 28: click-change 60 58 6
+16:09:28 step 29: shot after-load.png
+16:09:28 after-load.png: pixels caf9358def4fff34, file e16320fd7a766476
+16:09:28 step 30: files
+16:09:28 step 31: wait-change 20
+16:09:31 step 32: wait-stable
+16:09:32 step 33: shot after-load-2.png
+16:09:32 after-load-2.png: pixels da761ef0af1fa696, file d6bb7a52619cfbc8
+16:09:32 step 34: until (390, 10, 230, 20) (170, 170, 170) 800 150
+16:09:32 step 35: shot loaded-human-turn.png
+16:09:32 loaded-human-turn.png: pixels da761ef0af1fa696, file d6bb7a52619cfbc8
+16:09:32 step 36: files
+16:09:32 DOSBox-X exit status 0, 0.05 s after term
+16:09:32 processes still alive after terminate: 0
+16:09:32 reset: run copy: copied 0, removed 3
+16:09:32 reset: run copy equals its state before launch: True

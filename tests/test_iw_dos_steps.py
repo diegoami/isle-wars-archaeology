@@ -1,0 +1,390 @@
+"""Tests of T14's additions to the DOS cycle: the step scripts (navsteps.py), `--steps`, the files the
+game writes (record_written), the savestate step and `--experiment`.
+
+The seal itself is tested in test_iw_dos_seal.py (T11); these tests use its synthetic world (a copy,
+a run directory and bundles in a temporary directory outside every checkout) and replace the
+display, xdotool and the game. tests/mutants_iw_dos.py removes each addition in turn and shows the
+named tests failing.
+"""
+import contextlib
+import io
+import json
+import os
+import sys
+import unittest
+from contextlib import redirect_stdout
+from pathlib import Path
+from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests"))
+import test_iw_dos_seal as seal  # noqa: E402  (the synthetic world; sets sys.path for the modules below)
+
+import navsteps  # noqa: E402
+import rundir  # noqa: E402
+import safeio  # noqa: E402
+
+cycle = seal.cycle
+
+
+class ParseTest(unittest.TestCase):
+    def test_every_verb_parses_to_its_arguments(self):
+        text = """
+        # a comment
+        click 60 32            # trailing comment
+        until 272 138 80 18 170 85 0 800
+        until 0 0 10 10 1 2 3 5 7
+        wait-stable
+        wait-change
+        wait-change 5
+        shot level-dialog
+        files
+        key Return
+        savestate
+        """
+        self.assertEqual(navsteps.parse(text), [
+            ("click", (60, 32)),
+            ("until", ((272, 138, 80, 18), (170, 85, 0), 800, 20)),
+            ("until", ((0, 0, 10, 10), (1, 2, 3), 5, 7)),
+            ("wait-stable", ()), ("wait-change", (20,)), ("wait-change", (5,)),
+            ("shot", ("level-dialog.png",)), ("files", ()), ("key", ("Return",)), ("savestate", ())])
+
+    def test_anything_the_grammar_does_not_list_is_refused(self):
+        for bad in ("click 640 10", "click 10 350", "click -1 5", "click 1", "click a b", "click 1 2 3",
+                    "drag 1 2", "key Alt+x", "key F12", "key Return Return", "shot", "shot Before", "shot before",
+                    "shot after", "shot ../x", "shot a b", "shot a.png",
+                    "files now", "savestate x", "wait-stable 3", "wait-change 0", "wait-change x",
+                    "until 1 2 3 4 256 0 0 1", "until 600 300 100 100 1 2 3 4", "until 1 2 0 4 1 2 3 4",
+                    "until 1 2 3 4 1 2 3", "until 1 2 3 4 1 2 3 4 0", "run ls", "shell ls", ""):
+            with self.subTest(bad):
+                if bad == "":
+                    self.assertEqual(navsteps.parse(bad), [])
+                else:
+                    with self.assertRaises(navsteps.Refused):
+                        navsteps.parse(bad)
+
+    def test_two_shots_of_one_name_are_refused(self):
+        with self.assertRaises(navsteps.Refused):
+            navsteps.parse("shot a\nshot a")
+
+
+class FakeScreen:
+    """A screen that changes when xdotool is told to move or click (see Steps.fake_run)."""
+
+    ox, oy = 80, 100
+
+    def __init__(self):
+        self.current = b"menu"
+        self.colour = 0
+
+    def raw(self, crop=None):
+        return self.current
+
+    def count(self, rect, colour):
+        return self.colour
+
+    def stable(self):
+        return True
+
+    def capture(self, directory, name):
+        safeio.write_file(directory, name, data=b"png-" + self.current, exist="new")
+        return "a" * 64, "b" * 64, self.current
+
+
+class StepsWorld(seal.CycleWorld):
+    def make_steps(self, text, extra=()):
+        script = self.tmp / "script.steps"
+        script.write_text(text)
+        made = self.make(["--steps", str(script), "--experiment", "E005", *extra])
+        made.screen = FakeScreen()
+        self.calls = []
+        made.snap_before = cycle.snapshot_tree(made.game)
+        return made
+
+    def fake_run(self, made):
+        def run(cmd, **kw):
+            self.calls.append(cmd)
+            if cmd[:2] == ["xdotool", "mousemove"]:
+                made.screen.current = b"pointer"
+            elif cmd[:2] == ["xdotool", "click"]:
+                made.screen.current = b"dialog"
+            return mock.MagicMock(returncode=0, stdout=b"")
+        return run
+
+    def poll_once(self, condition, timeout, interval=0.1):
+        return 0.0 if condition() else None
+
+
+class LoadScriptTest(StepsWorld):
+    def test_a_script_the_grammar_refuses_aborts_with_nothing_launched(self):
+        made = self.make_steps("click 60 32\nkey Alt+x\n")
+        with redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.load_script()
+        self.assertTrue(made.status.startswith("aborted: the steps script is refused"), made.status)
+
+    def test_execute_stops_at_a_refused_script_before_it_binds_or_launches_anything(self):
+        made = self.make_steps("click 700 700\n")
+        with mock.patch.object(cycle, "run") as run, mock.patch.object(cycle, "popen") as popen, \
+                redirect_stdout(io.StringIO()):
+            made.execute()
+        run.assert_not_called()
+        popen.assert_not_called()
+        self.assertTrue(made.status.startswith("aborted: the steps script is refused"), made.status)
+
+    def test_the_script_is_recorded_by_its_hash(self):
+        made = self.make_steps("click 60 32\nshot a\n")
+        with redirect_stdout(io.StringIO()):
+            made.load_script()
+        wanted = cycle.sha256_bytes(b"click 60 32\nshot a\n")
+        self.assertIn(("steps script sha256", wanted), [(o["field"], o["value"]) for o in made.obs])
+
+
+class NavigateTest(StepsWorld):
+    def navigate(self, made, **patches):
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()):
+            made.load_script()
+            made.navigate()
+
+    def test_a_click_moves_the_pointer_inside_the_window_and_then_presses(self):
+        made = self.make_steps("click 60 32\n")
+        self.navigate(made)
+        self.assertEqual(self.calls, [["xdotool", "mousemove", "140", "132"], ["xdotool", "click", "1"]])
+        self.assertTrue(made.after_screen_ok)
+
+    def test_wait_change_sees_the_screen_move_after_a_click(self):
+        made = self.make_steps("click 60 32\nwait-change 5\n")
+        self.navigate(made)
+        waited = [o["value"] for o in made.obs if o["field"] == "screen changed after (s)"]
+        self.assertEqual(waited, ["0.0"])
+
+    def test_a_shot_is_kept_as_an_output_and_the_steps_run_in_order(self):
+        made = self.make_steps("click 60 32\nshot one\nshot two\n")
+        self.navigate(made)
+        self.assertEqual([n for n, _, _ in made.outputs], ["one.png", "two.png"])
+        self.assertEqual([o["step"] for o in made.obs if o["field"].endswith("raw RGB8 pixels sha256")], [102, 103])
+
+    def test_an_until_that_never_comes_aborts_and_the_run_is_not_completed(self):
+        made = self.make_steps("until 0 0 4 4 170 0 0 10 3\nshot after-it\n")
+        made.screen.colour = 10                       # not more than 10
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.load_script()
+            made.navigate()
+        self.assertTrue(made.status.startswith("aborted: step 1: the expected screen did not appear"), made.status)
+        self.assertFalse(made.after_screen_ok)
+        self.assertNotIn("after-it.png", [n for n, _, _ in made.outputs])
+        self.assertIn("until-failed-101.png", [n for n, _, _ in made.outputs])
+
+    def test_an_until_that_comes_lets_the_steps_go_on(self):
+        made = self.make_steps("until 0 0 4 4 170 0 0 10 3\nshot after-it\n")
+        made.screen.colour = 11
+        self.navigate(made)
+        self.assertIn("after-it.png", [n for n, _, _ in made.outputs])
+
+    def test_a_key_is_sent_as_given(self):
+        made = self.make_steps("key Return\n")
+        self.navigate(made)
+        self.assertEqual(self.calls, [["xdotool", "key", "Return"]])
+
+
+class CompleteTest(StepsWorld):
+    def test_a_script_run_needs_every_shot_the_script_names(self):
+        made = self.make_steps("shot a\nshot b\n")
+        with redirect_stdout(io.StringIO()):
+            made.load_script()
+        made.after_screen_ok = True
+        made.outputs.append(("before.png", Path("x"), "screenshot"))
+        made.outputs.append(("a.png", Path("x"), "screenshot"))
+        with redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.complete()
+        self.assertIn("without b.png", made.status)
+
+    def test_a_script_run_does_not_need_after_png_but_all_its_steps(self):
+        made = self.make_steps("shot a\n")
+        with redirect_stdout(io.StringIO()):
+            made.load_script()
+        made.outputs += [("before.png", Path("x"), "screenshot"), ("a.png", Path("x"), "screenshot")]
+        with redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.complete()
+        self.assertIn("the steps did not all finish", made.status)
+        made.status = "running"
+        made.after_screen_ok = True
+        with redirect_stdout(io.StringIO()):
+            made.complete()
+        self.assertEqual(made.status, "completed")
+
+    def test_without_a_script_the_e003_rule_is_unchanged(self):
+        made = self.make()
+        made.after_screen_ok = True
+        with redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.complete()
+        self.assertIn("without before.png and after.png", made.status)
+
+
+class WrittenFilesTest(StepsWorld):
+    def written(self, made, **kw):
+        with redirect_stdout(io.StringIO()):
+            made.record_written("step 1", 101, "s01")
+        return {o["field"]: o["value"] for o in made.obs}
+
+    def test_a_small_file_the_game_adds_is_observed_with_its_bytes_and_kept(self):
+        made = self.make_steps("files\n")
+        (made.game / "ISLEWAR.SCR").write_bytes(b"0,0\r\n0,0\r\n")
+        obs = self.written(made)
+        self.assertEqual(obs["run copy at step 1: added/removed/changed"], "1/0/0")
+        self.assertEqual(obs["run copy at step 1: added ISLEWAR.SCR: hex"], b"0,0\r\n0,0\r\n".hex())
+        self.assertEqual(obs["run copy at step 1: added ISLEWAR.SCR: bytes, sha256"],
+                         "10 " + cycle.sha256_bytes(b"0,0\r\n0,0\r\n"))
+        self.assertEqual([n for n, _, _ in made.outputs], ["s01-ISLEWAR.SCR"])
+        self.assertEqual((made.workdir / "s01-ISLEWAR.SCR").read_bytes(), b"0,0\r\n0,0\r\n")
+
+    def test_a_changed_file_is_labelled_changed_and_a_large_one_has_no_hex(self):
+        made = self.make_steps("files\n")
+        (made.game / "ISLEWAR.DAT").write_bytes(b"x" * (cycle.HEX_LIMIT + 1))
+        obs = self.written(made)
+        self.assertEqual(obs["run copy at step 1: added/removed/changed"], "0/0/1")
+        self.assertIn("run copy at step 1: changed ISLEWAR.DAT: bytes, sha256", obs)
+        self.assertNotIn("run copy at step 1: changed ISLEWAR.DAT: hex", obs)
+        (made.game / "ISLEWAR.DAT").write_bytes(b"x" * cycle.HEX_LIMIT)
+        made.obs.clear()
+        self.assertIn("run copy at step 1: changed ISLEWAR.DAT: hex", self.written(made))
+
+    def test_a_removed_file_and_a_subdirectory_are_observed_and_not_copied(self):
+        made = self.make_steps("files\n")
+        (made.game / "ISLEWAR.EXE").unlink()
+        (made.game / "SAVES").mkdir()
+        obs = self.written(made)
+        self.assertEqual(obs["run copy at step 1: removed ISLEWAR.EXE"], "removed")
+        self.assertTrue(obs["run copy at step 1: SAVES"].startswith("not a plain file"))
+        self.assertEqual(made.outputs, [])
+
+    def test_a_file_name_that_is_not_a_plain_dos_name_is_not_copied(self):
+        made = self.make_steps("files\n")
+        (made.game / "bad name.txt").write_bytes(b"x")
+        obs = self.written(made)
+        self.assertTrue(obs["run copy at step 1: bad name.txt"].startswith("not a plain file"))
+        self.assertEqual(made.outputs, [])
+
+    def test_the_files_step_and_the_end_of_the_run_both_record_when_a_script_runs(self):
+        made = self.make_steps("files\n")
+        made.snap_after = None
+        (made.game / "ISLEWAR.SCR").write_bytes(b"0,0\r\n")
+        made.take_snapshot("after")
+        with redirect_stdout(io.StringIO()):
+            made.report_changes()
+        self.assertEqual(sorted(n for n, _, _ in made.outputs), ["changes.log", "end-ISLEWAR.SCR"])
+
+    def test_without_a_script_the_end_of_the_run_adds_no_file_output(self):
+        made = self.make()
+        made.snap_before = cycle.snapshot_tree(made.game)
+        (made.game / "ISLEWAR.SCR").write_bytes(b"0,0\r\n")
+        made.take_snapshot("after")
+        with redirect_stdout(io.StringIO()):
+            made.report_changes()
+        self.assertEqual([n for n, _, _ in made.outputs], ["changes.log"])
+
+
+class SavestateStepTest(StepsWorld):
+    def test_an_older_savestate_is_removed_so_it_cannot_satisfy_the_wait(self):
+        made = self.make_steps("savestate\n")
+        safeio.make_directory(made.workdir, "save")
+        safeio.write_file(made.workdir / "save", "state.sav", data=b"older", exist="new")
+        seen = []
+
+        def save_state(step):
+            seen.append((made.workdir / "save" / "state.sav").exists())
+            return None
+        with mock.patch.object(made, "save_state", save_state), \
+                mock.patch.object(cycle, "savestate_members", return_value=({"Memory": (9, "x")}, None)), \
+                redirect_stdout(io.StringIO()):
+            made.step_savestate(101)
+        self.assertEqual(seen, [False])
+        self.assertTrue(made.used_savestate)
+        self.assertIn(("savestate members (name: bytes)", "Memory: 9"), [(o["field"], o["value"]) for o in made.obs])
+
+    def test_a_run_with_a_savestate_step_is_recorded_as_i2_and_one_without_as_i0(self):
+        made = self.make_steps("savestate\n")
+        self.assertEqual(cycle.interventions(made.args, False), [{"level": "I0", "what": "none"}])
+        self.assertEqual(cycle.interventions(made.args, True)[0]["level"], "I2")
+
+
+class ExperimentTest(seal.World):
+    def test_the_bundles_of_e005_come_from_e005_bundles_and_are_confined(self):
+        env = dict(self.env)
+        env.pop("E003_BUNDLES")
+        self.assertIn("E005_BUNDLES is not set", self.refused(
+            lambda: rundir.run_locations(env, need_bundles=True, experiment="E005")))
+        env["E005_BUNDLES"] = str(seal.ROOT / "bundles")
+        self.assertIn("checkout", self.refused(lambda: rundir.run_locations(env, need_bundles=True, experiment="E005")))
+        env["E005_BUNDLES"] = str(self.tmp / "bundles5")
+        found = rundir.run_locations(env, need_bundles=True, experiment="E005")
+        self.assertEqual(found["E005_BUNDLES"], self.tmp / "bundles5")
+        self.assertNotIn("E003_BUNDLES", found)
+
+    def test_the_default_experiment_is_still_e003(self):
+        self.assertEqual(cycle.parser().parse_args([]).experiment, "E003")
+        self.assertIn("E003_BUNDLES", rundir.run_locations(self.env, need_bundles=True))
+
+    def test_an_experiment_other_than_the_two_is_refused(self):
+        with self.assertRaises(SystemExit), redirect_stdout(io.StringIO()), mock.patch("sys.stderr", io.StringIO()):
+            cycle.parser().parse_args(["--experiment", "E004"])
+
+
+class InnerE005Test(seal.CycleWorld):
+    """The real inner() with --experiment E005 and a script: the record and its manifest land under E005."""
+
+    def run_inner_e005(self, capture):
+        repo = self.tmp / "repo"
+        (repo / "runs").mkdir(parents=True, exist_ok=True)
+        os.environ["E005_BUNDLES"] = str(self.tmp / "bundles5")
+        env = {"IW_DOS_CYCLE_ID": "E005-r9001", "IW_DOS_CYCLE_REP": "1", "IW_DOS_CYCLE_COMMIT": "abcdef123456"}
+
+        def launch(self_):
+            self_.check_launch("immediately before launch", 1)
+            self_.procs["game"] = seal.FakeGame()
+            self_.t_launch = 0
+        script = self.tmp / "s.steps"
+        script.write_text("shot a\n")
+        with contextlib.ExitStack() as stack:
+            for name, value in (("start_x", lambda self_: None), ("known_screen", lambda self_: None),
+                                ("launch", launch)):
+                stack.enter_context(mock.patch.object(cycle.Cycle, name, value))
+            stack.enter_context(mock.patch.object(cycle.Screen, "capture", capture))
+            stack.enter_context(mock.patch.object(cycle.Screen, "raw", lambda *a, **k: b"x"))
+            stack.enter_context(mock.patch.object(cycle, "run", return_value=mock.MagicMock(returncode=0)))
+            stack.enter_context(mock.patch.object(cycle, "install_writable", return_value=False))
+            stack.enter_context(mock.patch.object(cycle, "ROOT", repo))
+            stack.enter_context(mock.patch.object(cycle, "WORK", self.work))
+            stack.enter_context(mock.patch.object(cycle, "versions", return_value={}))
+            stack.enter_context(mock.patch.dict(os.environ, env))
+            stack.enter_context(mock.patch.object(cycle, "EXPERIMENT", "E003"))
+            stack.enter_context(redirect_stdout(io.StringIO()))
+            stack.enter_context(seal.redirect_stderr(io.StringIO()))
+            code = cycle.inner(cycle.parser().parse_args(["--experiment", "E005", "--steps", str(script)]))
+        return code, repo
+
+    def test_an_e005_run_with_steps_writes_its_record_under_e005(self):
+        def capture(self_, directory, name):
+            seal.safeio.write_file(directory, name, data=b"png", exist="new")
+            return "a" * 64, "b" * 64, b""
+        code, repo = self.run_inner_e005(capture)
+        self.assertEqual(code, 0)
+        record = json.loads((repo / "runs" / "E005" / "E005-r9001.json").read_text())
+        self.assertEqual((record["experiment"], record["status"]), ("E005", "completed"))
+        self.assertEqual(sorted(o["name"] for o in record["outputs"] if o["name"].endswith(".png")),
+                         ["a.png", "before.png"])
+        self.assertTrue(all(o["store"] == "release:E005" for o in record["outputs"]))
+        manifest = json.loads((repo / "evidence" / "E005" / "E005-r9001.manifest.json").read_text())
+        self.assertEqual(manifest["experiment"], "E005")
+        self.assertFalse((repo / "runs" / "E003").exists())
+        self.assertEqual(len(list((self.tmp / "bundles5").iterdir())), len(manifest["files"]))
+        self.assertIn("steps script sha256", [o["field"] for o in record["observations"]])
+
+    def test_a_run_id_of_another_experiment_is_refused(self):
+        with mock.patch.dict(os.environ, {"IW_DOS_CYCLE_ID": "E003-r9001"}), self.assertRaises(SystemExit):
+            os.environ["E005_BUNDLES"] = str(self.tmp / "bundles5")
+            cycle.inner(cycle.parser().parse_args(["--experiment", "E005"]))
+
+if __name__ == "__main__":
+    unittest.main()

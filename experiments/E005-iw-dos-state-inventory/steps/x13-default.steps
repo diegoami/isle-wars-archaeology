@@ -1,0 +1,9 @@
+# exploration 13: Default on the option box
+click 128 32
+wait-change 15
+wait-stable
+shot after-default
+files
+wait-change 15
+shot later
+files
