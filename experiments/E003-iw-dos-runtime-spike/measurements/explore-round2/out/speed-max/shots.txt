@@ -1,0 +1,5 @@
+window 4194309 t=.117685688
+menu 1 t=12.442612353
+before 39959f3fa0bb5e0f t=12.460489825
+before2 39959f3fa0bb5e0f t=13.481231498
+dosbox status 1

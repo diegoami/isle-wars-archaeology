@@ -1,0 +1,9 @@
+window 4194309 t=.120833548
+menu 1 t=15.402105604
+before 39959f3fa0bb5e0f t=15.418789772
+before2 39959f3fa0bb5e0f t=16.436175001
+hover c1e772a147f3c984 t=16.955383915
+dialog 1 t=17.078854763
+after 3a55782a8b0f7888 t=18.097616715
+term windowkill: exited after .106024779 s
+dosbox status 1

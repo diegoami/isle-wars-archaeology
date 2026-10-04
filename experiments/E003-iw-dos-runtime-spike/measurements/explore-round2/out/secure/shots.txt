@@ -1,0 +1,5 @@
+window none t=10.534792032
+menu timeout t=143.470782413
+before eda525bab6d74d43 t=143.488674304
+before2 eda525bab6d74d43 t=144.511318022
+dosbox status 0

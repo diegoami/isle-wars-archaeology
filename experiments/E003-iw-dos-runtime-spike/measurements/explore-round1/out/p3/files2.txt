@@ -1,0 +1,13 @@
+<TMPHOME>:
+total 0
+drwxr-xr-x 2 root root  40 Oct  4 01:05 .
+drwxrwxrwt 5 root root 120 Oct  4 01:05 ..
+
+/tmp/w:
+total 4
+drwxr-xr-x 3 root root  80 Oct  4 01:05 .
+drwxrwxrwt 5 root root 120 Oct  4 01:05 ..
+drwxr-xr-x 2 root root  80 Oct  4 01:06 cap
+-rw-r--r-- 1 root root 245 Oct  4 01:05 dosbox.conf
+<OTHER-PROJECT>/T02/scratch/probe/match_60000_0/dbx/state.sav
+<OTHER-PROJECT>/T02/scratch/probe/match_max_1/dbx/state.sav

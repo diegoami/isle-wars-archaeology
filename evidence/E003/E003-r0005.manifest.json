@@ -1,0 +1,54 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E003-r0005",
+  "experiment": "E003",
+  "store": "release:E003",
+  "artifact": {
+    "set": "iw-dos-3.1-30121376",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 12376,
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "asset": "ce3d9ebda664b064-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "after.png",
+      "bytes": 12341,
+      "sha256": "79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9",
+      "asset": "79ac1e16f5cc5df2-after.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 162,
+      "sha256": "36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b",
+      "asset": "36aa0ca1ca1b8924-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "dosbox.log",
+      "bytes": 4331,
+      "sha256": "7ff76be56ed475d45ace8de8a392f99edb9d27eec7973ab49b185ba047fa22e8",
+      "asset": "7ff76be56ed475d4-dosbox.log",
+      "class": "log"
+    },
+    {
+      "name": "dosbox.conf.txt",
+      "bytes": 703,
+      "sha256": "d1c3160543a1d455ef1fa00aedfdaa32b1dc35c0a94420e6e653ef75bd58df5b",
+      "asset": "d1c3160543a1d455-dosbox.conf.txt",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 856,
+      "sha256": "5ebb2162aaa3754db45f2360c97aee2005ac80635d47a8022f684fd9b7637489",
+      "asset": "5ebb2162aaa3754d-run.log",
+      "class": "log"
+    }
+  ]
+}

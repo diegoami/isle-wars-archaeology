@@ -1,0 +1,3 @@
+window 4194309 t=.116896463
+text b5d15a9aade867ce t=4.136307792
+dosbox status 1

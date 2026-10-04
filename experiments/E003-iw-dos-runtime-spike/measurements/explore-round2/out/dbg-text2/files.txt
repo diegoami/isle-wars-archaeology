@@ -1,0 +1,36 @@
+/tmp/w/cap:
+total 0
+drwxr-xr-x 2 root root  40 08:18:38 .
+drwxr-xr-x 6 root root 140 08:18:38 ..
+
+/tmp/w/game:
+total 412
+drwxr-xr-x 2 root root   380 08:18:38 .
+drwxr-xr-x 6 root root   140 08:18:38 ..
+-rw-r--r-- 1 root root   336 10:30:24 AVEXTRA.TXT
+-rw-r--r-- 1 root root 24718 21:24:14 CATALOG.TXT
+-rw-r--r-- 1 root root   401 12:00:00 FILE_ID.DIZ
+-rw-r--r-- 1 root root  2048 12:00:00 ISLEWAR.DAT
+-rw-r--r-- 1 root root 17370 12:00:00 ISLEWAR.DOC
+-rw-r--r-- 1 root root 83580 12:00:00 ISLEWAR.EXE
+-rw-r--r-- 1 root root  8738 12:00:00 ISLEWAR.JFT
+-rw-r--r-- 1 root root 38948 12:00:00 ISLEWAR.OV0
+-rw-r--r-- 1 root root 32588 12:00:00 ISLEWAR.OV1
+-rw-r--r-- 1 root root 53522 12:00:00 ISLEWAR.OV2
+-rw-r--r-- 1 root root 33798 12:00:00 ISLEWAR.OV3
+-rw-r--r-- 1 root root  2292 12:00:00 ISLEWAR.OV4
+-rw-r--r-- 1 root root 11455 12:00:00 ISLEWAR.OV5
+-rw-r--r-- 1 root root 58688 12:00:00 ISLEWAR.OV6
+-rw-r--r-- 1 root root  2290 12:00:00 ISLE_REG.DOC
+-rw-r--r-- 1 root root  2156 13:31:06 OMBUDSMN.TXT
+-rw-r--r-- 1 root root  6683 12:00:00 SOLSOFT.DOC
+
+/tmp/w/home:
+total 0
+drwxr-xr-x 2 root root  40 08:18:38 .
+drwxr-xr-x 6 root root 140 08:18:38 ..
+
+/tmp/w/save:
+total 0
+drwxr-xr-x 2 root root  40 08:18:38 .
+drwxr-xr-x 6 root root 140 08:18:38 ..

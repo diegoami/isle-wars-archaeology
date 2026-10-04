@@ -1,0 +1,42 @@
+det-host-1: savestate sha256 7531a949b79d16eab301068b66a5604522b3851df647507f1ecaf6b3ffa5272f; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 e26f5b158003dfdad5c4d6d4291dc4c882015235fc1cbd1f45e69131f490b669
+det-host-2: savestate sha256 3d943287c90ad7eb6d481425542ce2ba48f388dc24e0fc0e51b4357b7a8a6d22; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 3ff1137ed4fe1d4224941c348e7f6d3afbe72c7b8219ddbe8068793f26fa332f
+det-host-3: savestate sha256 d0cfbb456f3037bace35f658e01a10872dd88119f2be65dd7a8f6797b902e023; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 88959c73abc1854a692ce0754fd59311e009b7368e6c557b3e714c454e5b7c8f
+det-fixed-1: savestate sha256 e3131bf3fcf3d195f56c405a60838f1512aad4540c4bee5467be1880951e52be; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 97b62e34a61ffb0abfa274d0e8a04262030cf059cb170c2dd280b7bc142b5024
+det-fixed-2: savestate sha256 c9f1039a72a0ccd9c4c223a1df152f9fb6e2b781e84f2e4adb273a28a90425ac; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 4dd7aa9e13572e20a8951ec1dec54c77949ce11f13d1930dfe2b1b2ad9ccc793
+det-fixed-3: savestate sha256 ab77c26d4257f94318801fe668bef318e85aac629b91caf6f134ffa4025079a9; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 af0e2d56d8aab64be4c8a8d0f31aaa4a32acafb5c21fbeb658332f9c571d3633
+a1: savestate sha256 6fc3a9ecf52b7251ec4bb302419d498007d7fae7b09a7204433e89b9f0e89650; Memory member: zlib stream, 17055864 bytes inflated, 8 bytes after the stream, inflated sha256 b66122706834afcb1d287bd703d328d8fd4d86fda58c0dbe75aac0a8229433fe
+
+member	det-host-1	det-host-2	det-host-3	det-fixed-1	det-fixed-2	det-fixed-3	a1
+CMOS	48:14b19c88be30	48:14b19c88be30	48:14b19c88be30	48:8510969f4472	48:8510969f4472	48:8510969f4472	48:14b19c88be30
+CPU	93317:50b41ebfeed2	93330:c22bf29ef45a	93320:e339b7457c6f	93322:1be1c5f4b791	93324:4c7aee2a9577	93324:584dbee176f2	93318:87fd96ab1e2a
+DMA	same in all: 495 bytes 48d039794c5da2b8
+Dos	1013:3f62bbc54a15	1017:a2b4b3d396df	1016:6351b4ee0b39	1014:828ba52d66d2	1015:48163248c4d4	1017:d4d11a4ffea6	1015:a1e0fd4b3f7d
+Dosbox-x	same in all: 18 bytes 467b1ae79b43148d
+EMS	same in all: 135 bytes c493377093f95d4f
+FPU	same in all: 64 bytes dbe937d02df994c4
+IO handler	same in all: 0 bytes e3b0c44298fc1c14
+Int10	same in all: 87 bytes 4fdeca638b728fe8
+IntTimer10	167:c1071a654e78	167:d4d3286eb463	167:62fcbbf6cd8f	166:897546889f4f	167:b849db25eedf	166:897546889f4f	167:d4d3286eb463
+Joystick	same in all: 20 bytes 6ed65de66f682778
+Keyboard	40:c96bc4345ca0	40:9fc3f4f771b0	40:0cd795145001	40:0cd795145001	40:0cd795145001	40:ecf379cdfd89	40:0cd795145001
+Memory	180525:6cdc645fd664	180523:a5070c33802a	180501:5b1fe1c0c80d	180556:684604544b5c	180532:be41dde835f8	180552:d58b22ef9601	180511:86604b28b229
+Midi	same in all: 175 bytes 49361c1e8124620c
+Mixer	same in all: 27 bytes 7b44d3dd62361cd9
+Mouse	159:f334f1b8e560	159:7b7a5fc91860	158:496f38a9825e	159:3174e774b3bf	158:d719920deecc	159:ceb91fa65206	159:0cb0e08931ef
+Pic	17172:dea2b4146996	17273:41baf12ba359	17351:c6ae385ad835	17285:f3f31a2339d4	17268:d4a6ea9155fb	17171:c71e646dcc4d	17263:9c1e65f788f4
+Render	181:65b2802fdec4	176:9874e554d8d8	180:a0d59563d37b	179:c00ac0794ecc	179:9be856634045	178:1abb8aa2e435	176:5bb300ac887c
+Vga	59769:9f7e4a0a1ebc	59617:2ff3d7c42819	59704:02d588c2cf45	59697:ced02983a914	59651:ed8692e36648	59616:f1a34a09592d	59616:c08825be49bc
+XMS	same in all: 72 bytes 105c96226da84e9c
+DOSBox-X_Version	same in all: 67 bytes a5b13af360313a21
+Program_Name	same in all: 7 bytes 80704ffba81da70e
+Memory_Size	same in all: 4 bytes 8b926d75599a618e
+Machine_Type	same in all: 7 bytes ff9e763b26987d28
+Time_Stamp	16:4efd03ab9fe4	16:e9fb410606a8	16:e9fb410606a8	16:e9fb410606a8	16:4dd6ba476d20	16:4dd6ba476d20	16:f74f131804df
+Save_Remark	same in all: 0 bytes e3b0c44298fc1c14
+
+det-host-2 vs det-host-1: 2651 bytes differ; by page (offset: count) 0x0: 12, 0x2a000: 1, 0x2b000: 2, 0x2c000: 16, 0x91000: 349, 0x93000: 238, 0x1040000: 5, 0x1041000: 357, 0x1042000: 514, 0x1043000: 1102, 0x1044000: 55
+det-host-3 vs det-host-1: 2841 bytes differ; by page (offset: count) 0x0: 13, 0x2a000: 2, 0x2b000: 2, 0x2c000: 14, 0x91000: 349, 0x93000: 229, 0x1040000: 4, 0x1041000: 318, 0x1042000: 467, 0x1043000: 1398, 0x1044000: 45
+det-fixed-1 vs det-host-1: 3073 bytes differ; by page (offset: count) 0x0: 14, 0x7000: 22, 0x2a000: 1, 0x2b000: 2, 0x2c000: 11, 0x2d000: 11, 0x91000: 352, 0x93000: 231, 0x1040000: 5, 0x1041000: 361, 0x1042000: 536, 0x1043000: 1476, 0x1044000: 51
+det-fixed-2 vs det-host-1: 3102 bytes differ; by page (offset: count) 0x0: 14, 0x7000: 22, 0x2a000: 1, 0x2b000: 2, 0x2c000: 18, 0x2d000: 11, 0x91000: 352, 0x93000: 231, 0x1040000: 5, 0x1041000: 363, 0x1042000: 536, 0x1043000: 1491, 0x1044000: 56
+det-fixed-3 vs det-host-1: 3106 bytes differ; by page (offset: count) 0x0: 14, 0x7000: 22, 0x2a000: 1, 0x2b000: 2, 0x2c000: 11, 0x2d000: 11, 0x91000: 352, 0x93000: 231, 0x1040000: 5, 0x1041000: 363, 0x1042000: 538, 0x1043000: 1500, 0x1044000: 56
+a1 vs det-host-1: 2312 bytes differ; by page (offset: count) 0x0: 13, 0x2a000: 1, 0x2b000: 2, 0x2c000: 10, 0x91000: 349, 0x93000: 229, 0x1040000: 3, 0x1041000: 280, 0x1042000: 414, 0x1043000: 967, 0x1044000: 44
