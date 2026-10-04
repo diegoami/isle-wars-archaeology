@@ -445,7 +445,10 @@ class MoreNavigateTest(StepsWorld):
         made = self.make_steps("click-change 60 32\n")
         self.ignored_clicks = 1
         self.navigate(made)
-        self.assertEqual([c[1] for c in self.calls], ["mousemove", "click", "click"])
+        # the second click is preceded by a step off by one pixel and the move back: a real motion
+        self.assertEqual(self.calls, [["xdotool", "mousemove", "140", "132"], ["xdotool", "click", "1"],
+                                      ["xdotool", "mousemove", "141", "132"], ["xdotool", "mousemove", "140", "132"],
+                                      ["xdotool", "click", "1"]])
         self.assertTrue(made.after_screen_ok)
 
     def test_click_change_gives_up_after_three_clicks_and_aborts(self):

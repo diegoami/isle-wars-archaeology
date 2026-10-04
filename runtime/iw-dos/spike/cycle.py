@@ -510,6 +510,11 @@ class Cycle:
     def step_click_change(self, step, x, y, seconds, button="1"):
         """Click until the screen changes: up to three clicks, `seconds` apart; abort if it never does."""
         for attempt in (1, 2, 3):
+            if attempt > 1:
+                # a pointer the game warped away (it recentres it at a turn's start) is not moved by a move to
+                # where X thinks it is: step off by one pixel so that the move back is a real motion
+                run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+                self.pointer = None
             self.step_click(step, x, y, button)
             changed = poll(lambda: self.screen.raw() != self.ref, seconds, 0.1)
             self.observe(step, "screen", f"screen changed after click {attempt} at {x},{y} (s)",
