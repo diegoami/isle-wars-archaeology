@@ -1,0 +1,305 @@
+{
+  "schema": "run/1",
+  "run_id": "E003-r0007",
+  "experiment": "E003",
+  "arm": "savestate",
+  "rep": 1,
+  "code_commit": "238d54c32846",
+  "machine": "local",
+  "artifact": {
+    "set": "iw-dos-3.1-30121376",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iw-dos/spike/cycle.py@238d54c32846",
+    "platform": "linux-wsl2/dosbox-x-xvfb",
+    "fingerprint": {
+      "dosbox-x": "2024.03.01 SDL2,",
+      "dosbox-x-package": "2024.03.01+dfsg-1build2",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I2",
+      "what": "DOSBox-X savestate saved at the option box (F12+S) and restored after the click (F12+L)"
+    }
+  ],
+  "start_state": {
+    "id": "S-run-copy-option-box",
+    "sha256": "ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9",
+    "restore": "fresh private user, mount, PID and network namespaces; IW_DOS_DIR bound read-only; a fresh DOSBox-X process from a generated configuration mounting only the run copy; the run copy as left by setup/iw-dos/iw-dos-runtime.sh and by the previous run's reset, checked with register_artifact.py check --strict before anything starts and again immediately before the launch; start_state.sha256 lists every entry of the run copy with its size, sha256 and modification time"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iw-dos/spike/cycle.py",
+    "sha256": "9eb41753f5d21e4e8246b04aa2e5cb299ec6bbe5f7f63af192912bcf42a4fefa",
+    "args": [
+      "--arm",
+      "savestate",
+      "--probe",
+      "savestate"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "process",
+      "field": "IW_DOS_DIR bound read-only in the run's mount namespace",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "run copy check before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game",
+      "value": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "run copy check immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "configuration check immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X in a network namespace other than the outer process's",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces DOSBox-X sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window at 640x350 after launch (s)",
+      "value": "1.69"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window position",
+      "value": "80,100"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "option box reached and stable, seconds after launch",
+      "value": "17.07"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+    },
+    {
+      "step": 3,
+      "source": "save",
+      "field": "savestate written after F12+S (s)",
+      "value": "0.4"
+    },
+    {
+      "step": 3,
+      "source": "save",
+      "field": "savestate sha256",
+      "value": "22a69214084efd6314b252886eaed29c356385cf23836bb04accbe9aee359c29"
+    },
+    {
+      "step": 3,
+      "source": "save",
+      "field": "savestate members",
+      "value": "26"
+    },
+    {
+      "step": 3,
+      "source": "save",
+      "field": "savestate member Memory: bytes, sha256",
+      "value": "180493 8299e0029f663bf17432322c3c4c0eb26071afe44ff5a02991131b0baaf28e50"
+    },
+    {
+      "step": 3,
+      "source": "save",
+      "field": "savestate member Vga: bytes, sha256",
+      "value": "59639 e8c70c82dd4dc9431bc80bae7b476874818ab65baec9c6187a1f631e774a1753"
+    },
+    {
+      "step": 3,
+      "source": "save",
+      "field": "savestate member CPU: bytes, sha256",
+      "value": "93321 19fc3190a988093af7254c39feb883f363ec0bb20af3985c91986c54025b5907"
+    },
+    {
+      "step": 3,
+      "source": "memory",
+      "field": "savestate Memory member inflated (zlib): bytes",
+      "value": "17055864"
+    },
+    {
+      "step": 3,
+      "source": "memory",
+      "field": "savestate Memory member inflated (zlib): sha256",
+      "value": "90a8bf307cfa73ec5ac006b2bce4215e53fef13e3c0af08d094d8259f1867113"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "postsave.png raw RGB8 pixels sha256",
+      "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "screen after the save equals before.png",
+      "value": "True"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "pointer drawn at Set level (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "Select level dialog after click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "after.png raw RGB8 pixels sha256",
+      "value": "c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "option box back after F12+L (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "restored.png raw RGB8 pixels sha256",
+      "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "restored.png equals before.png",
+      "value": "True"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "DOSBox-X exit after term (s)",
+      "value": "0.05"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "DOSBox-X exit status",
+      "value": "0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added/removed/changed entries",
+      "value": "1/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "run copy after reset equals the run copy before launch",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "cycle seconds, start to end of clean-up",
+      "value": "20"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "store": "release:E003"
+    },
+    {
+      "name": "postsave.png",
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "store": "release:E003"
+    },
+    {
+      "name": "after.png",
+      "sha256": "79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9",
+      "store": "release:E003"
+    },
+    {
+      "name": "restored.png",
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "store": "release:E003"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b",
+      "store": "release:E003"
+    },
+    {
+      "name": "dosbox.log",
+      "sha256": "292e98177a27b394a8ea8ef8edffed22ed7ded66b4d6c9a5cb8a7a97108c5a1b",
+      "store": "release:E003"
+    },
+    {
+      "name": "dosbox.conf.txt",
+      "sha256": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484",
+      "store": "release:E003"
+    },
+    {
+      "name": "run.log",
+      "sha256": "816642d2c9544c8129c4b535d92b17d5ea8df8b34f9eff340b33be664a5718a3",
+      "store": "release:E003"
+    }
+  ],
+  "started": "2026-10-04T06:33:36Z",
+  "ended": "2026-10-04T06:33:56Z",
+  "status": "completed"
+}

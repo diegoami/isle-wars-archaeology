@@ -1,0 +1,426 @@
+== E003-r0001 arm=control rep=1 status=completed
+   commit c95ab816e71d; args []; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:31:41Z ended 2026-10-04T06:31:58Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.11
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.6
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 17.02
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 17
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log db94d26adeb85548506b480d86e70f7330c3bc0b511bc55533c5139d2475ddcc
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 9f921209c66eb2da38d2a5515081b72ba30aabfa5558cc5fb3c5c3ff85adad68
+== E003-r0002 arm=control rep=2 status=completed
+   commit c95ab816e71d; args []; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:31:59Z ended 2026-10-04T06:32:17Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.6
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 16.97
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 18
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log db94d26adeb85548506b480d86e70f7330c3bc0b511bc55533c5139d2475ddcc
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 823cd3ac6e639bc1a937b2c76e5694807c7cee70e054580c20656eb9aa9a820e
+== E003-r0003 arm=control rep=3 status=completed
+   commit c95ab816e71d; args []; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:32:17Z ended 2026-10-04T06:32:35Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.61
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 16.99
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.08
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 18
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log db94d26adeb85548506b480d86e70f7330c3bc0b511bc55533c5139d2475ddcc
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 6fe5951f9d7465f6fd22831ee1850bafff2e3fb65bc56f926b4539e4e451f3d1
+== E003-r0004 arm=clock-host rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'clock-host', '--clock', 'host']; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:32:50Z ended 2026-10-04T06:33:07Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 61340e17fa4ba6dd0b2125863e515b213ec6f22626dd348e84d1dd25e59143bb
+   [0] process: xvfb ready (s): 0.11
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 0.64
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 15.99
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 17
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log 279fc2f9cd27eaf02542cf13cdde493eb85adff550a6c1dbd3c374264b3c4508
+   output dosbox.conf.txt 61340e17fa4ba6dd0b2125863e515b213ec6f22626dd348e84d1dd25e59143bb
+   output run.log 942eb5d341c6a045aca641ff1c8a6c685410d1800f5eb4ae068ea09d94d6f9d6
+== E003-r0005 arm=speed-max rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'speed-max', '--cycles', 'max']; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:33:07Z ended 2026-10-04T06:33:21Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: d1c3160543a1d455ef1fa00aedfdaa32b1dc35c0a94420e6e653ef75bd58df5b
+   [0] process: xvfb ready (s): 0.11
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 0.64
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 12.88
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 14
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log 7ff76be56ed475d45ace8de8a392f99edb9d27eec7973ab49b185ba047fa22e8
+   output dosbox.conf.txt d1c3160543a1d455ef1fa00aedfdaa32b1dc35c0a94420e6e653ef75bd58df5b
+   output run.log 5ebb2162aaa3754db45f2360c97aee2005ac80635d47a8022f684fd9b7637489
+== E003-r0006 arm=speed-30000 rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'speed-30000', '--cycles', 'fixed-30000']; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:33:21Z ended 2026-10-04T06:33:36Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 6826ad9554a01bd86198ae5f78ed15f38cb54cb12ce10b05245a96b77ef084c4
+   [0] process: xvfb ready (s): 0.11
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.18
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 13.62
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 15
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log 5ed1271e79fe944919653d16180ca9395bbc51a016efcd9850fc3b08feafb6b2
+   output dosbox.conf.txt 6826ad9554a01bd86198ae5f78ed15f38cb54cb12ce10b05245a96b77ef084c4
+   output run.log 2024c580b82deee6578dcb3b71dd8abb5d45df5835dc3b80cef19756561c1877
+== E003-r0007 arm=savestate rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'savestate', '--probe', 'savestate']; interventions ['I2: DOSBox-X savestate saved at the option box (F12+S) and restored after the click (F12+L)']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:33:36Z ended 2026-10-04T06:33:56Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.69
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 17.07
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] save: savestate written after F12+S (s): 0.4
+   [3] save: savestate sha256: 22a69214084efd6314b252886eaed29c356385cf23836bb04accbe9aee359c29
+   [3] save: savestate members: 26
+   [3] save: savestate member Memory: bytes, sha256: 180493 8299e0029f663bf17432322c3c4c0eb26071afe44ff5a02991131b0baaf28e50
+   [3] save: savestate member Vga: bytes, sha256: 59639 e8c70c82dd4dc9431bc80bae7b476874818ab65baec9c6187a1f631e774a1753
+   [3] save: savestate member CPU: bytes, sha256: 93321 19fc3190a988093af7254c39feb883f363ec0bb20af3985c91986c54025b5907
+   [3] memory: savestate Memory member inflated (zlib): bytes: 17055864
+   [3] memory: savestate Memory member inflated (zlib): sha256: 90a8bf307cfa73ec5ac006b2bce4215e53fef13e3c0af08d094d8259f1867113
+   [3] screen: postsave.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] screen: screen after the save equals before.png: True
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [7] screen: option box back after F12+L (s): 0.02
+   [7] screen: restored.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [7] screen: restored.png equals before.png: True
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 20
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output postsave.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output restored.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log 292e98177a27b394a8ea8ef8edffed22ed7ded66b4d6c9a5cb8a7a97108c5a1b
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 816642d2c9544c8129c4b535d92b17d5ea8df8b34f9eff340b33be664a5718a3
+== E003-r0008 arm=debugger rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'debugger', '--probe', 'memory']; interventions ['I1: DOSBox-X savestate written at the option box (F12+S) and its Memory member read; never restored']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:33:56Z ended 2026-10-04T06:34:15Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.6
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 16.93
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] save: savestate written after F12+S (s): 0.4
+   [3] save: savestate sha256: 6feeb7d70b5cf02dda6f6680fe5534d84f8697c67dde5fdd55f0e9c88af55bbb
+   [3] save: savestate members: 26
+   [3] save: savestate member Memory: bytes, sha256: 180493 0a61491b53fd9e763ce977591b370de89a6680e2c8a9ca8bfc8a75a5f0647377
+   [3] save: savestate member Vga: bytes, sha256: 59755 a49a09ce7051aed139f93046dc45a57e6d6200a928ae27c30b1bfdf937267288
+   [3] save: savestate member CPU: bytes, sha256: 93324 3bb5824c23becf1e5664d6ece6ed2e31631f1a2811311e7e4d4b84f899286cde
+   [3] memory: savestate Memory member inflated (zlib): bytes: 17055864
+   [3] memory: savestate Memory member inflated (zlib): sha256: bd8f2257b8fadab7324510d1fbef8ff1f59b898a55ecc318069df29c6bfcb122
+   [3] screen: postsave.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] screen: screen after the save equals before.png: True
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 19
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output postsave.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log 24d5805d3c74b6776858fc5d3d872a11f353070b9ddc9c46fe5c2a6c89041ecc
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 9f54239752c680323e6fa51ba8183708c42179fce7bf283464f723ca46a6c125
+== E003-r0009 arm=debugger rep=2 status=completed
+   commit 238d54c32846; args ['--arm', 'debugger', '--probe', 'memory']; interventions ['I1: DOSBox-X savestate written at the option box (F12+S) and its Memory member read; never restored']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:34:16Z ended 2026-10-04T06:34:35Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.68
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 17.04
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] save: savestate written after F12+S (s): 0.4
+   [3] save: savestate sha256: fbdc23f50fbccc5e85b29bb7cf4cdf86b7d8db04d04f89267345f3526513d7ad
+   [3] save: savestate members: 26
+   [3] save: savestate member Memory: bytes, sha256: 180494 55bbb5bc99bf2edcc4f2ca99d986a6717705df88a03c654e056d439e2ff6b1ce
+   [3] save: savestate member Vga: bytes, sha256: 59734 488fafbfad4aa2534a57a83ab1b25ae9adbf057d511d4cc22dfe5f28f1f0887c
+   [3] save: savestate member CPU: bytes, sha256: 93320 513ba385fbee36b116c846c78e796eec65a130e16b3ffd6552af28a117efe414
+   [3] memory: savestate Memory member inflated (zlib): bytes: 17055864
+   [3] memory: savestate Memory member inflated (zlib): sha256: 4c2294a7aeb6676cfe3e242dc7b4277121631050d0e8f881a9dfae7a7bc04bb1
+   [3] screen: postsave.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] screen: screen after the save equals before.png: True
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 19
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output postsave.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log fbbc957bead1a89f672f9d214242e10c5859935121236656e73ae7e73a8fae3c
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 1d15326068b288a011565f88d26e396439adc3eaa63f06da3a34fbd3ec0dfc89
+== E003-r0010 arm=dosbox-capture rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'dosbox-capture', '--probe', 'dosbox-capture']; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:34:35Z ended 2026-10-04T06:34:53Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.6
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 17.01
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] screen: DOSBox-X screenshot after F12+P (s): 0.0
+   [3] screen: dosbox-before.png file sha256: 093f8db4268b7bb73884194dc0671e4f3f168a2db002e9ef7394ef4227e7931a
+   [3] screen: dosbox-before.png decoded RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [3] screen: dosbox-before.png pixels equal before.png's: True
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after term (s): 0.05
+   [9] process: DOSBox-X exit status: 0
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 18
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output dosbox-before.png 093f8db4268b7bb73884194dc0671e4f3f168a2db002e9ef7394ef4227e7931a
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log f982894b5482f14a33f876033e055426670081281ac7a9f6d0e016853bbd7d55
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log ec2cefc0148c3901336c2a7de2bc930b6c47092924ea03e0634d9f90db96083c
+== E003-r0011 arm=term-kill rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'term-kill', '--terminate', 'kill']; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:34:54Z ended 2026-10-04T06:35:11Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.6
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 16.92
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.01
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after kill (s): 0.05
+   [9] process: DOSBox-X exit status: -9
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 17
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log db94d26adeb85548506b480d86e70f7330c3bc0b511bc55533c5139d2475ddcc
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log cee4b6815f60d47aa9ec1c411f64c62a1101881e3f4bec65d7c6718551e2f982
+== E003-r0012 arm=term-close rep=1 status=completed
+   commit 238d54c32846; args ['--arm', 'term-close', '--terminate', 'close']; interventions ['I0: none']
+   start_state S-run-copy-option-box ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9
+   started 2026-10-04T06:35:12Z ended 2026-10-04T06:35:30Z
+   [0] process: IW_DOS_DIR bound read-only in the run's mount namespace: yes
+   [0] file: run copy check before anything starts: problems found: 0
+   [0] file: DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game: 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   [0] process: xvfb ready (s): 0.1
+   [1] file: run copy check immediately before launch: problems found: 0
+   [1] file: configuration check immediately before launch: problems found: 0
+   [1] process: DOSBox-X in a network namespace other than the outer process's: yes
+   [1] process: network interfaces DOSBox-X sees: lo
+   [1] process: DOSBox-X window at 640x350 after launch (s): 1.69
+   [1] process: DOSBox-X window position: 80,100
+   [2] screen: option box reached and stable, seconds after launch: 17.06
+   [3] screen: before.png raw RGB8 pixels sha256: 6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f
+   [4] screen: pointer drawn at Set level (s): 0.07
+   [5] screen: Select level dialog after click (s): 0.02
+   [6] screen: after.png raw RGB8 pixels sha256: c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4
+   [9] process: DOSBox-X exit after close (s): 0.05
+   [9] process: DOSBox-X exit status: 1
+   [10] process: processes of this run still alive after terminate: 0
+   [8] file: run copy: added/removed/changed entries: 1/0/0
+   [8] file: run copy: added ISLEWAR.SCR: bytes, sha256: 20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50
+   [11] file: run copy after reset equals the run copy before launch: yes
+   [12] process: cycle seconds, start to end of clean-up: 18
+   output before.png ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839
+   output after.png 79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9
+   output changes.log 36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b
+   output dosbox.log e92deddf87954843490e104d9b50df34a16c521b73a3d663a4f9f4a6544b41c0
+   output dosbox.conf.txt 45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484
+   output run.log 2cf26aebca519b876f1e485de9ed47a9448498c6256a9bfc932d33bd1ac98fb8
