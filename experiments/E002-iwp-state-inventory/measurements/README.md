@@ -1,7 +1,7 @@
 # E002 measurements
 
 Everything here is a measured output of the exploration sessions (`cycle.py --explore --session`), copied
-from the machine-local `~/.local/share/isle-wars-archaeology/E002-explore/` (rule 20, L207). The
+from the machine-local `<machine-local>/E002-explore/` (rule 20, L207). The
 originals there are untouched and stay.
 
 - `explore/`: sessions `s2`, `s3`, `s4` and `tourdry`, each with its `<s>.run.log` (timed driver log),
