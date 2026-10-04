@@ -1,0 +1,6 @@
+iwp-runtime.sh ... ready
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+register_artifact exit=0
+(run after r0001-r0016, 2026-10-04)
