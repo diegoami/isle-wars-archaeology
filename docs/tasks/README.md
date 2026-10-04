@@ -14,3 +14,5 @@ the issue's `status:*` label is the status (`gh issue list --label task --label 
 | T07 | malpaco's rules as research questions | #16 | — |
 | T08 | Runtime feasibility: Isle Wars Pro under Wine and Xvfb (W3a) | #24 | T03 |
 | T09 | Observable-state inventory: Isle Wars Pro (W4a; folds #27) | #29 | T08 |
+| T10 | Artifact identity: DOS Isle Wars (W1b) | #30 | T03 |
+| T11 | Runtime feasibility: DOS Isle Wars under DOSBox-X (W3b) | #34 | T10 |

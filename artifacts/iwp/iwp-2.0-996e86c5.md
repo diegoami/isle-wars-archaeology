@@ -36,10 +36,12 @@ in them (F001); a role marked "unconfirmed" is a guess from the name only.
 
 In PowerShell, set `$dir` to the install directory, then run the one-liner. It prints
 `<sha256>  <bytes>  <relative/path>` lines, one per file, with no absolute path. It lists the two
-uninstaller files too; `check` reports them as `unlisted:` and still passes.
+uninstaller files too; `check` reports them as `unlisted:` and still passes. `ProviderPath` also
+makes the one-liner work when `$dir` is a UNC path through `\\wsl.localhost\<distro>\…`, where
+`Path` would give a provider-qualified string and break the relative path.
 
 ```powershell
-$r=(Resolve-Path $dir).Path; gci -LiteralPath $r -Recurse -File | % { '{0}  {1}  {2}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Length, $_.FullName.Substring($r.Length+1).Replace('\','/') }
+$r=(Resolve-Path $dir).ProviderPath; gci -LiteralPath $r -Recurse -File | % { '{0}  {1}  {2}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Length, $_.FullName.Substring($r.Length+1).Replace('\','/') }
 ```
 
 Save the output to a file and check it against the set, from the repository:
