@@ -266,7 +266,9 @@ class Session(spike.Cycle):
             self.start_x()
             self.start_wm()
         with self.stage("snapshot", SealError):
+            begun = time.monotonic()
             self.take_snapshots("before")
+            self.observe(3, "process", "snapshot of the prefix before the launch took (s)", round(time.monotonic() - begun, 2))
         self.launch()
 
     def launch(self):
@@ -439,12 +441,14 @@ class Session(spike.Cycle):
         if action is None:
             return
         previous, self._error = self._error, error
+        begun = time.monotonic()
         try:
             action()
         except BaseException as exc:
             self.abort_later(f"{stage} failed: {type(exc).__name__}: {exc}")
         finally:
             self._error = previous
+            self.observe(11, "process", f"clean-up stage '{stage}' took (s)", round(time.monotonic() - begun, 2))
 
     def finish(self):
         """Terminate, stop the display, snapshot and reset, keep the logs; every stage runs, whatever failed
