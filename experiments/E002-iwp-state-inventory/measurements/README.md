@@ -15,3 +15,6 @@ originals there are untouched and stay.
 - Exploration sessions are not run records and are not evidence for a finding on their own; a finding
   cites a recorded run under `runs/E002/`, and may cite a session file only as the place a click position
   or a screen was first found.
+- `run-table.md` and `file-bytes.md`: generated from `runs/E002/*.json` by `make_tables.py`
+  (`python3 experiments/E002-iwp-state-inventory/measurements/make_tables.py`); regenerate after a new run.
+- `static-islepro-dat.md`: byte counts of the shipped `xtras/Islepro.dat`, read in place (no content).
