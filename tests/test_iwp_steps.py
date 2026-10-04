@@ -572,7 +572,10 @@ class SnapshotRefusesNonRegularEntriesTest(unittest.TestCase):
                 return info
             os.lstat = lstat
         try:
-            cycle.snapshot_tree(base)
+            if sys.argv[3] == "hash":
+                cycle.file_size_and_sha256(os.path.join(base, "p"), "p")
+            else:
+                cycle.snapshot_tree(base)
         except cycle.UnsupportedEntry as exc:
             print("refused:", exc)
             sys.exit(0)
@@ -626,8 +629,8 @@ class SnapshotRefusesNonRegularEntriesTest(unittest.TestCase):
         self.assertEqual((size, digest), (5, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"))
         with tempfile.TemporaryDirectory() as tmp:
             os.mkfifo(Path(tmp) / "p")
-            with self.assertRaises(cycle.UnsupportedEntry):
-                cycle.file_size_and_sha256(Path(tmp) / "p", "p")
+            done = self.child(tmp, "hash")            # in a child under a timeout: a hang fails the test, it does not stop the run
+        self.assertEqual((done.returncode, done.stdout.split()[:1]), (0, ["refused:"]), done.stderr)
 
 
 if __name__ == "__main__":
