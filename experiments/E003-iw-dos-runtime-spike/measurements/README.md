@@ -11,6 +11,8 @@ paths are replaced by placeholders (`<EXPLORE>`, `<WORKTREE>`, `<MACHINE-LOCAL>`
 - `explore-cycle/`: the one `cycle.py --explore` run (`E003-x255009`) made before the first record,
   as the cycle stored it in `E003_EXPLORE` (`control.*`), with `captures.sha256.tsv` for its two
   screenshots.
+- `explore-cycle-rework1/`: one `--explore` run after rework 1 of PR #37 (the alias checks in
+  `rundir.py sync`), confirming the reset still restores the run copy.
 - `done-when/`: the output of each Done-when command and arm run, as `scripts/dw.sh` (with
   `scripts/arms.sh`) wrote it, named `<what>-<UTC time>.txt`. The profile's first two runs, before
   `dw.sh` saved its output, printed the same lines (`ready`); they are not kept.
