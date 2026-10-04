@@ -35,8 +35,8 @@ file is append-only. A changed design is a new experiment, or `v2/`.
     - `opt-control`, `opt-level-hard`, `opt-level-easy`, `opt-speed-slow`, `opt-speed-fast`: Options, one
       control changed, Save as default, then `xtras/Isledft.dat` read;
     - `loss-normal`, `loss-hard`, `loss-easy`: New Game, the level chosen, Play Game, wait for the human
-      turn, New Game in the middle of the game (a loss is credited when fewer than 10 countries are
-      held), Scores; then `xtras/Islepro.skr` read;
+      turn, New Game in the middle of the game ~~(a loss is credited when fewer than 10 countries are
+      held)~~ (withdrawn, see the correction below), Scores; then `xtras/Islepro.skr` read;
     - `tour`: title, Options with every control at its default, the controls the unregistered build locks,
       Help paged to the end, Scores, New Game, the board, one human turn (place all the armies on a Blue
       country, attack, finish the turn), the computer players' turns passing, a game quit in the middle,
@@ -84,3 +84,13 @@ file is append-only. A changed design is a new experiment, or `v2/`.
   logs, a table of their screenshots by hash, the run table and the bytes of the files the game wrote
   (both generated from the records by `measurements/make_tables.py`), and a static summary of
   `xtras/Islepro.dat`.
+
+## Correction (#53, append-only)
+
+- In the `loss-*` arms above, the parenthesis "a loss is credited when fewer than 10 countries are
+  held" is withdrawn, struck through rather than deleted. As written it states a game rule, and no run
+  tests one. What the runs show: at NORMAL and HARD, New Game in the middle of a game brought up the
+  game's loss notice, whose text says the player controls fewer than 10 countries, and the scoreboard
+  then showed one loss at that level. At EASY no notice appeared. The condition the notice names, and
+  what decides whether a loss is credited, are not tested here
+  ([F003](../../findings/F003-iwp-observable-state-inventory.md)).
