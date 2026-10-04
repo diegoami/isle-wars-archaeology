@@ -34,10 +34,16 @@ STAGES = [
     ("snapshot, diff and reset", "clean-up stage 'snapshot and reset' took (s)"),
     ("the whole session, first seal to end of reset", "session seconds, from the first seal to the end of the reset"),
 ]
-SEAL = (("install read-only inside the run", "yes"),
+SEAL = (("install read-only inside the run", "yes"),                         # records before round 2
+        ("install read-only inside the run (before anything starts)", "yes"),
         ("prefix seal before anything starts: problems found", "0"),
-        ("registry files equal their baseline before the launch", "yes"),
+        ("registry files equal their baseline before the launch", "yes"),   # records before round 2
+        ("registry files equal their baseline (before anything starts)", "yes"),
+        ("install read-only inside the run (immediately before launch)", "yes"),
         ("prefix seal immediately before launch: problems found", "0"),
+        ("registry files equal their baseline (immediately before launch)", "yes"),
+        ("game and display alive just before terminate", "yes"),
+        ("X display held by this run's Xvfb (attempt)", "1"),
         ("game in its own network namespace", "yes"),
         ("network interfaces the game sees", "lo"),
         ("processes of this run still alive after terminate", "0"),

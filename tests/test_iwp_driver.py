@@ -17,6 +17,12 @@ And those of the round-0 review (PR #54):
 - R2, an aborted repeat whose terminate or reset failed is not recovered, and the command does not go on: RecoveryTest;
 - R3, no helper command, reap or command without a bound: BoundTest;
 - R4, completed needs a successful input between the two screenshots: ActionTest.
+And those of the round-1 review, with the class sweep the owner asked for:
+- R1 and class A, no signal to a pid that is not this run's, re-checked through a pidfd: FaultIdentityTest;
+- R2 and class B, an input whose command failed is a failed step, a failed capture is an error: CommandTest, MustTest;
+- R3 and class C, the game and the display alive at every boundary, just before terminate too: LivenessTest;
+- R4 and class D, the check immediately before launch repeats the first's: SealSymmetryTest;
+- R5 and class E, the display is the run's own Xvfb's, or another one is tried, or DisplayError: DisplayOwnershipTest.
 """
 import contextlib
 import os
@@ -40,6 +46,7 @@ from driver import errors, runner, session as sessionlib  # noqa: E402
 
 spike = sessionlib.spike
 REAL_RUN = spike.run                                # the bounded helper, before any test replaces it
+ORIGINAL_START_X = sessionlib.Session.start_x        # the real one, before DriverWorld replaces it
 SAMPLE = b"\x10" * (800 * 600 * 3)
 
 
@@ -400,7 +407,7 @@ class RecordTest(DriverWorld):
             self.assertEqual(doc["status"], made.status)
             self.assertEqual(doc["experiment"], "E004")
             self.assertEqual(doc["artifact"]["set"], "iwp-2.0-996e86c5")
-            self.assertTrue(any(o["field"] == "install read-only inside the run" for o in doc["observations"]))
+            self.assertTrue(any(o["field"].startswith("install read-only inside the run") for o in doc["observations"]))
             manifest = validate_records.load_file(self.repo / "evidence" / "E004" / f"{made.run_id}.manifest.json")
             self.assertEqual(validate_records.validate_document(manifest), [])
         statuses = sorted(validate_records.load_file(p)["status"][:9] for p in (self.repo / "runs" / "E004").iterdir())
@@ -585,6 +592,8 @@ class BoundTest(DriverWorld):
 
     def test_stop_x_never_waits_without_a_bound_for_a_process_that_will_not_be_reaped(self):
         class Stuck:
+            pid = -1                                    # no such process: kill_marked sends nothing
+
             def __init__(self):
                 self.waits = []
 
@@ -623,7 +632,7 @@ class BoundTest(DriverWorld):
     def test_the_command_is_killed_at_its_bound(self):
         started = time.monotonic()
         with mock.patch.object(runner, "REAP_BOUND", 1), mock.patch("sys.stderr"):
-            code = self.within(5, lambda: runner.launch_inner(["sleep", "8"], dict(os.environ), 0.5))
+            code = self.within(5, lambda: runner.launch_inner(["sleep", "8"], dict(os.environ, **{sessionlib.INVOCATION: "d" * 32}), 0.5))
         self.assertEqual(code, 1)
         self.assertLess(time.monotonic() - started, 5)
 
@@ -682,6 +691,251 @@ class InvocationTest(DriverWorld):
         self.assertIsNone(other.poll())
         with self.assertRaises(ValueError):
             sessionlib.invocation_processes("")
+
+
+class FaultIdentityTest(DriverWorld):
+    """Round 1, R1 and class A: no signal to a pid that is not this run's own, re-checked through a pidfd."""
+
+    def test_the_sigkill_fault_never_signals_a_pid_that_is_not_this_runs_game(self):
+        other = self.straggler("E004-r0998", "game")          # another run's game, at the pid the listing gave
+        made = self.session()
+        made.start()
+        self.addCleanup(made.finish)
+        with mock.patch.object(sessionlib.Session, "find_game_pid", lambda s: other.pid):
+            with self.assertRaises(runner.FaultNotInjected):
+                runner.sigkill_game(made)
+        self.assertIsNone(other.poll(), "another run's process is never signalled")
+        self.assertTrue(made.game_alive())
+
+    def test_the_sigkill_fault_kills_this_runs_game(self):
+        made = self.session()
+        made.start()
+        self.addCleanup(made.finish)
+        runner.sigkill_game(made)
+        self.assertFalse(made.game_alive())
+
+    def test_stop_x_signals_only_a_display_process_that_carries_this_runs_marker(self):
+        bare = subprocess.Popen(["sleep", "60"])                 # no marker: not this run's, whatever procs says
+        self.children.append(bare)
+        made = self.session()
+        made.procs = {"xvfb": bare}
+        with mock.patch.object(sessionlib, "STOP_TIMEOUT", 0.2), mock.patch.object(sessionlib, "AFTER_KILL_TIMEOUT", 0.2):
+            with self.assertRaises(errors.TerminateError):
+                made.stop_x()
+        self.assertIsNone(bare.poll())
+
+    def test_kill_marked_needs_markers(self):
+        with self.assertRaises(ValueError):
+            sessionlib.kill_marked(os.getpid(), [])
+
+
+class CommandTest(DriverWorld):
+    """Round 1, R2 and class B: an input step whose command fails is a failed step, never an action."""
+
+    def failing(self, *words):
+        def fake(cmd, **kw):
+            if cmd and cmd[0] == "xdotool" and cmd[1] in words:
+                return mock.MagicMock(returncode=1, stdout=b"", stderr=b"Can't open display")
+            return self.fake_run(cmd, **kw)
+        return mock.patch.object(spike, "run", side_effect=fake)
+
+    def cycle_with(self, steps):
+        def body(session):
+            session.known_screen()
+            session.observe_screenshot("before.png", 3)
+            session.perform(steps)
+            session.observe_screenshot("after.png", 6)
+        with mock.patch.object(sessionlib.Session, "run_step", spike.Cycle.run_step):
+            return self.execute(body)
+
+    def assert_failed_step(self, made):
+        self.assertTrue(made.status.startswith("aborted: step-failed: step on line 1: xdotool"), made.status)
+        self.assertEqual(made.actions, [])
+
+    def test_a_key_whose_xdotool_fails_is_not_an_action(self):
+        with self.failing("key"):
+            self.assert_failed_step(self.cycle_with("key Escape"))
+
+    def test_a_click_whose_xdotool_click_fails_is_not_an_action(self):
+        with self.failing("click"):
+            self.assert_failed_step(self.cycle_with("click 320 585"))
+
+    def test_a_click_whose_pointer_move_fails_is_not_an_action(self):
+        with self.failing("mousemove"):
+            self.assert_failed_step(self.cycle_with("click 320 585"))
+
+    def test_clicks_whose_xdotool_fails_are_not_an_action(self):
+        with self.failing("click"):
+            made = self.cycle_with("clicks 2 320 585")
+        self.assert_failed_step(made)
+
+    def test_a_move_whose_xdotool_fails_is_a_failed_step(self):
+        with self.failing("mousemove"):
+            made = self.cycle_with("move 320 585\nkey Escape")
+        self.assertTrue(made.status.startswith("aborted: step-failed: step on line 1: xdotool"), made.status)
+
+    def test_window_titles_are_not_read_from_a_failed_command(self):
+        def fake(cmd, **kw):
+            if cmd[0] == "xprop":
+                return mock.MagicMock(returncode=0, stdout=b"_NET_CLIENT_LIST(WINDOW): window id # 0x200001", stderr=b"")
+            if cmd[0] == "xdotool":
+                return mock.MagicMock(returncode=1, stdout=b"", stderr=b"BadWindow")
+            return self.fake_run(cmd, **kw)
+        with mock.patch.object(spike, "run", side_effect=fake):
+            with self.assertRaises(spike.CommandFailed):
+                self.session().window_titles()
+
+
+class MustTest(unittest.TestCase):
+    """Class B: the checked helper, and a capture that failed is never pixels."""
+
+    def test_must_raises_on_a_non_zero_exit_and_returns_otherwise(self):
+        with self.assertRaises(spike.CommandFailed):
+            spike.must(["sh", "-c", "echo nope >&2; exit 3"])
+        self.assertEqual(spike.must(["sh", "-c", "echo yes"]).stdout, b"yes\n")
+
+    def test_a_capture_whose_import_fails_is_an_error_not_empty_pixels(self):
+        failed = mock.MagicMock(returncode=1, stdout=b"", stderr=b"unable to open X server")
+        with mock.patch.object(spike, "run", return_value=failed):
+            with self.assertRaises(spike.CommandFailed):
+                spike.Screen(800, 600, {}).raw()
+
+
+class LivenessTest(DriverWorld):
+    """Round 1, R3 and class C: both sides alive at every stage boundary, just before terminate included."""
+
+    def display(self, session):
+        """In place of Session.start_x: a display process of this run (a `sleep` with its display markers)."""
+        self.calls.append("start_x")
+        session.procs["xvfb"] = subprocess.Popen(["sleep", "60"], env=session.display_env)
+
+    def test_a_game_that_dies_after_complete_and_before_terminate_is_not_completed(self):
+        real_complete = sessionlib.Session.complete
+
+        def complete_then_die(session):
+            real_complete(session)
+            session.procs["game"].kill()
+            session.procs["game"].wait()
+        before = tree(self.prefix)
+        with mock.patch.object(sessionlib.Session, "complete", complete_then_die):
+            made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: game-died: the game process exited before terminate"), made.status)
+        self.assertTrue(made.recovered, "the clean-up and the reset still ran")
+        self.assertEqual(tree(self.prefix), before)
+
+    def test_a_display_that_dies_after_complete_and_before_terminate_is_not_completed(self):
+        real_complete = sessionlib.Session.complete
+
+        def complete_then_display_dies(session):
+            real_complete(session)
+            session.procs["xvfb"].kill()
+            session.procs["xvfb"].wait()
+        with mock.patch.object(sessionlib.Session, "start_x", lambda s: self.display(s)), \
+                mock.patch.object(sessionlib.Session, "complete", complete_then_display_dies):
+            made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: display: xvfb exited before terminate"), made.status)
+
+    def test_a_display_that_dies_mid_cycle_stops_the_cycle_before_its_next_screenshot(self):
+        def display_dies(session):
+            session.procs["xvfb"].kill()
+            session.procs["xvfb"].wait()
+        with mock.patch.object(sessionlib.Session, "start_x", lambda s: self.display(s)):
+            made = self.execute(hooks={"after-title": display_dies})
+        self.assertTrue(made.status.startswith("aborted: display: xvfb exited before the screenshot before.png"), made.status)
+        self.assertNotIn("before.png", {n for n, _, _ in made.outputs})
+
+
+class SealSymmetryTest(DriverWorld):
+    """Round 1, R4 and class D: the check immediately before launch repeats every check of the first that can change."""
+
+    def test_a_registry_file_changed_after_the_first_seal_is_refused_immediately_before_launch(self):
+        def spoil(session):
+            self.calls.append("start_wm")
+            (self.prefix / "system.reg").write_text("changed after the first seal")
+        with mock.patch.object(sessionlib.Session, "start_wm", spoil):
+            made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: seal: system.reg of the prefix is not the baseline's "
+                                               "(immediately before launch)"), made.status)
+        self.assertNotIn("start_game", self.calls)
+
+    def test_an_install_made_writable_after_the_first_seal_is_refused_immediately_before_launch(self):
+        answers = iter([False])
+        with mock.patch.object(spike, "install_writable", side_effect=lambda path: next(answers, True)):
+            made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: seal: the install is writable inside this run "
+                                               "(immediately before launch)"), made.status)
+        self.assertNotIn("start_game", self.calls)
+
+
+LISTENER = ("import socket, sys, time\n"
+            "s = socket.socket(socket.AF_UNIX)\n"
+            "s.bind('\\0/tmp/.X11-unix/X' + sys.argv[1])\n"
+            "s.listen()\n"
+            "time.sleep(60)\n")
+XDPYINFO = b"dimensions:    800x600 pixels\ndepth of root window:    24 planes\n"
+
+
+class DisplayOwnershipTest(DriverWorld):
+    """Round 1, R5 and class E: the display is this run's own Xvfb's, never merely one that answers."""
+
+    def setUp(self):
+        super().setUp()
+        self.made = self.session()
+        self.made.set_display(sessionlib.free_display())
+
+    def listener(self, display, env=None):
+        """A process that holds the display's listening socket, as an X server does."""
+        child = subprocess.Popen([sys.executable, "-c", LISTENER, display[1:]], env=env)
+        self.children.append(child)
+        path = f"@/tmp/.X11-unix/X{display[1:]}"
+        spike.poll(lambda: sessionlib.listening_socket_inodes(path) & sessionlib.socket_inodes_of(child.pid), 5, 0.02)
+        return child
+
+    def fake_run(self, cmd, **kw):
+        if cmd and cmd[0] == "xdpyinfo":                 # the answer of whatever server is on the display
+            return mock.MagicMock(returncode=0, stdout=XDPYINFO, stderr=b"")
+        return super().fake_run(cmd, **kw)
+
+    def test_a_display_held_by_another_server_is_not_ours_even_when_it_answers(self):
+        self.listener(self.made.display)
+        ours = subprocess.Popen(["sleep", "60"])
+        self.children.append(ours)
+        self.assertFalse(self.made.display_is_ours(ours))
+
+    def test_a_display_held_by_this_runs_xvfb_is_ours(self):
+        ours = self.listener(self.made.display)
+        self.assertTrue(self.made.display_is_ours(ours))
+
+    def test_start_x_tries_another_display_when_its_xvfb_cannot_hold_the_picked_one(self):
+        taken = self.made.display
+        self.listener(taken)                                  # someone else's server took it first
+        spawned = []
+
+        def spawn():
+            if not spawned:                                   # a real Xvfb that cannot bind exits 1
+                spawned.append(subprocess.Popen(["sh", "-c", "exit 1"]))
+            else:
+                spawned.append(self.listener(self.made.display))
+            return spawned[-1]
+        with mock.patch.object(self.made, "spawn_xvfb", spawn):
+            ORIGINAL_START_X(self.made)
+        self.assertNotEqual(self.made.display, taken)
+        self.assertEqual((self.made.env["DISPLAY"], self.made.display_env["DISPLAY"]), (self.made.display,) * 2)
+        self.assertIs(self.made.procs["xvfb"], spawned[-1])
+
+    def test_start_x_fails_closed_when_no_display_of_its_own_is_had(self):
+        with mock.patch.object(self.made, "spawn_xvfb", lambda: subprocess.Popen(["sh", "-c", "exit 1"])), \
+                mock.patch.object(sessionlib, "DISPLAY_ATTEMPTS", 2):
+            with self.assertRaises(errors.DisplayError):
+                ORIGINAL_START_X(self.made)
+
+    def test_an_xvfb_that_is_alive_but_does_not_hold_the_display_is_never_ready(self):
+        self.listener(self.made.display)
+        idle = subprocess.Popen(["sleep", "60"])
+        self.children.append(idle)
+        with mock.patch.object(self.made, "spawn_xvfb", lambda: idle), mock.patch.object(sessionlib, "XVFB_READY_TIMEOUT", 0.5):
+            with self.assertRaises(errors.DisplayError):
+                ORIGINAL_START_X(self.made)
 
 
 class RunnerTest(unittest.TestCase):

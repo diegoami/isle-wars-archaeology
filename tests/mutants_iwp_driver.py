@@ -66,7 +66,7 @@ MUTANTS = [
     # the round-0 review of PR #54
     ("R1: the outer clean-up signals every marked process, not this command's (round 0's selection)", [
         (R, "    found = sessionlib.invocation_processes(token)", "    found = spike.marked_processes()"),
-        (R, "        sessionlib.kill_marked(pid, want)", "        os.kill(pid, signal.SIGKILL)")],
+        (R, "        sessionlib.kill_marked(pid, want)", "        os.kill(pid, 9)")],
      [T + "InvocationTest.test_the_clean_up_kills_this_commands_processes_and_never_another_e004_commands",
       T + "InvocationTest.test_outer_never_signals_another_e004_command"]),
     ("R1: a pid is signalled without checking again that it still carries the marker", [(
@@ -98,8 +98,8 @@ MUTANTS = [
         S, "                        proc.wait(AFTER_KILL_TIMEOUT)", "                        proc.wait()")],
      [T + "BoundTest.test_stop_x_never_waits_without_a_bound_for_a_process_that_will_not_be_reaped"]),
     ("R3: `wineserver -k` in terminate has no bound", [(
-        S, '        spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)\n        spike.poll(',
-        '        spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=None)\n        spike.poll(')],
+        S, '        killed = spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)',
+        '        killed = spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=None)')],
      [T + "BoundTest.test_a_wineserver_that_never_returns_ends_terminate_with_a_named_error"]),
     ("R3: the namespaced command is waited for without a bound", [(
         R, "        return proc.wait(bound)", "        return proc.wait()")],
@@ -124,6 +124,73 @@ MUTANTS = [
     ("R4: a step that sends no input counts as the action", [(
         S, "                if step.op in INPUT_OPS:", "                if True:")],
      [T + "ActionTest.test_a_step_that_sends_no_input_does_not_count_as_the_action"]),
+    # the round-1 review of PR #54, and the class sweep (A to E)
+    ("R1/A: the SIGKILL fault signals a bare pid", [(
+        R, "    if not sessionlib.kill_marked(pid, game_items(session)):",
+        "    os.kill(pid, 9)\n    if False:")],
+     [T + "FaultIdentityTest.test_the_sigkill_fault_never_signals_a_pid_that_is_not_this_runs_game"]),
+    ("A: stop_x signals Xvfb or xfwm4 without its marker re-checked", [(
+        S, "        kill_marked(proc.pid, [f\"{MARK}={self.run_id}\".encode(), f\"{SIDE}=display\".encode()], sig)",
+        "        proc.send_signal(sig)")],
+     [T + "FaultIdentityTest.test_stop_x_signals_only_a_display_process_that_carries_this_runs_marker"]),
+    ("R2/B: a key whose xdotool failed counts as sent", [(
+        C, '            must(["xdotool", "key", args[0]], env=self.env)', '            run(["xdotool", "key", args[0]], env=self.env)')],
+     [T + "CommandTest.test_a_key_whose_xdotool_fails_is_not_an_action"]),
+    ("B: a click whose xdotool click failed counts as sent", [(
+        C, '        must(["xdotool", "click", "1"], env=self.env)', '        run(["xdotool", "click", "1"], env=self.env)')],
+     [T + "CommandTest.test_a_click_whose_xdotool_click_fails_is_not_an_action"]),
+    ("B: a click whose pointer moves failed counts as sent", [
+        (C, """        before = self.screen.raw(rect)
+        must(["xdotool", "mousemove",""", """        before = self.screen.raw(rect)
+        run(["xdotool", "mousemove","""),
+        (C, """            must(["xdotool", "mousemove", str(x + 1 + self.screen.ox)""",
+         """            run(["xdotool", "mousemove", str(x + 1 + self.screen.ox)"""),
+        (C, """            must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back""",
+         """            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back""")],
+     [T + "CommandTest.test_a_click_whose_pointer_move_fails_is_not_an_action"]),
+    ("B: clicks whose xdotool failed count as sent", [(
+        C, '            must(["xdotool", "click", "--repeat",', '            run(["xdotool", "click", "--repeat",')],
+     [T + "CommandTest.test_clicks_whose_xdotool_fails_are_not_an_action"]),
+    ("B: a move whose xdotool failed passes", [(
+        C, """        elif op == "move":
+            must(["xdotool", "mousemove",""", """        elif op == "move":
+            run(["xdotool", "mousemove",""")],
+     [T + "CommandTest.test_a_move_whose_xdotool_fails_is_a_failed_step"]),
+    ("B: window titles are read from a failed command", [(
+        C, '            names.append(must(["xdotool", "getwindowname",', '            names.append(run(["xdotool", "getwindowname",')],
+     [T + "CommandTest.test_window_titles_are_not_read_from_a_failed_command"]),
+    ("B: a capture whose import failed is empty pixels", [(
+        C, "        return must(cmd, env=self.env).stdout", "        return run(cmd, env=self.env).stdout")],
+     [T + "MustTest.test_a_capture_whose_import_fails_is_an_error_not_empty_pixels"]),
+    ("B: must() does not check the exit status", [(
+        C, "    done = run(cmd, **kw)\n    if done.returncode != 0:", "    done = run(cmd, **kw)\n    if False:")],
+     [T + "MustTest", T + "CommandTest.test_a_key_whose_xdotool_fails_is_not_an_action"]),
+    ("R3/C: a game that died before terminate is not noticed", [(
+        S, "        game_dead = \"game\" in self.procs and not self.game_alive()", "        game_dead = False")],
+     [T + "LivenessTest.test_a_game_that_dies_after_complete_and_before_terminate_is_not_completed"]),
+    ("C: a display that died before terminate is not noticed", [(
+        S, "        dead = self.display_dead()\n        game_dead", "        dead = []\n        game_dead")],
+     [T + "LivenessTest.test_a_display_that_dies_after_complete_and_before_terminate_is_not_completed"]),
+    ("C: the display side is not checked at the stage boundaries", [(
+        S, "        self.require_display(where)\n        self.require_game(where)", "        self.require_game(where)")],
+     [T + "LivenessTest.test_a_display_that_dies_mid_cycle_stops_the_cycle_before_its_next_screenshot"]),
+    ("R4/D: the baseline is not compared again immediately before launch", [(
+        S, '            self.require_baseline("immediately before launch", 1)', "            pass")],
+     [T + "SealSymmetryTest.test_a_registry_file_changed_after_the_first_seal_is_refused_immediately_before_launch"]),
+    ("D: the install is not checked again immediately before launch", [(
+        S, '            self.require_install_readonly("immediately before launch", 1)', "            pass")],
+     [T + "SealSymmetryTest.test_an_install_made_writable_after_the_first_seal_is_refused_immediately_before_launch"]),
+    ("R5/E: a display that answers is taken for this run's, whoever holds it", [(
+        S, "        if not listening_socket_inodes(path) & socket_inodes_of(proc.pid):", "        if False:")],
+     [T + "DisplayOwnershipTest.test_a_display_held_by_another_server_is_not_ours_even_when_it_answers",
+      T + "DisplayOwnershipTest.test_an_xvfb_that_is_alive_but_does_not_hold_the_display_is_never_ready"]),
+    ("E: a taken display is tried again instead of another one", [(
+        S, "                self.set_display(free_display(exclude=tried))", "                pass")],
+     [T + "DisplayOwnershipTest.test_start_x_tries_another_display_when_its_xvfb_cannot_hold_the_picked_one"]),
+    ("E: no display of its own is not an error (fails open)", [(
+        S, """            self.fail(f"no display of this run's own after {DISPLAY_ATTEMPTS} attempts ({', '.join(tried)})", DisplayError)""",
+        "            pass")],
+     [T + "DisplayOwnershipTest.test_start_x_fails_closed_when_no_display_of_its_own_is_had"]),
 ]
 
 

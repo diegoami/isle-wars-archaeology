@@ -148,6 +148,21 @@ def run(cmd, timeout=RUN_TIMEOUT, check=False, capture_output=True, **kw):
     return done
 
 
+class CommandFailed(RuntimeError):
+    """A helper command whose result the cycle relies on exited non-zero (T13 round 2, class B)."""
+
+
+def must(cmd, **kw):
+    """run(), and CommandFailed unless the command exited 0: for every helper whose result is used (an
+    input sent with xdotool, a capture with import, the display's description from xdpyinfo, the window's
+    id and geometry). A failed command is never taken as done."""
+    done = run(cmd, **kw)
+    if done.returncode != 0:
+        text = (done.stderr or b"").decode(errors="replace").strip().replace("\n", " ")[:200]
+        raise CommandFailed(f"{' '.join(map(str, cmd[:2]))} exited {done.returncode}" + (f": {text}" if text else ""))
+    return done
+
+
 def poll(condition, timeout, interval=0.1):
     """Seconds until condition() is truthy, or None at the timeout. Never a fixed wait."""
     start = time.monotonic()
@@ -257,7 +272,7 @@ class Screen:
             x, y, w, h = crop
             cmd += ["-crop", f"{w}x{h}+{x + self.ox}+{y + self.oy}", "+repage"]
         cmd += ["-depth", "8", "rgb:-"]
-        return run(cmd, env=self.env).stdout
+        return must(cmd, env=self.env).stdout
 
     def count(self, crop, predicate):
         data = self.raw(crop)
@@ -484,7 +499,7 @@ class Cycle:
         waited = poll(lambda: run(["xdpyinfo"], env=self.env).returncode == 0, 20)
         if waited is None:
             self.fail("Xvfb did not accept connections within 20 s")
-        info = run(["xdpyinfo"], env=self.env).stdout.decode()
+        info = must(["xdpyinfo"], env=self.env).stdout.decode()
         dims = re.search(r"dimensions:\s+(\d+x\d+)", info).group(1)
         planes = re.search(r"depth of root window:\s+(\d+)", info).group(1)
         self.observe(0, "process", "xvfb ready (s)", waited)
@@ -519,8 +534,8 @@ class Cycle:
         waited = poll(lambda: run(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.strip(), 90)
         if waited is None:
             self.fail("no Islepro window within 90 s")
-        wid = run(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.split()[0].decode()
-        geometry = run(["xdotool", "getwindowgeometry", wid], env=self.env).stdout.decode().replace("\n", " ")
+        wid = must(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.split()[0].decode()
+        geometry = must(["xdotool", "getwindowgeometry", wid], env=self.env).stdout.decode().replace("\n", " ")
         pos = re.search(r"Position: (\S+)", geometry).group(1)
         size = re.search(r"Geometry: (\S+)", geometry).group(1)
         self.window = wid
@@ -678,18 +693,18 @@ class Cycle:
         elif op == "clicks":
             count, x, y = args
             self.click_at(x, y, quiet=True, press=False)
-            run(["xdotool", "click", "--repeat", str(count), "--delay", "80", "1"], env=self.env)
+            must(["xdotool", "click", "--repeat", str(count), "--delay", "80", "1"], env=self.env)
             self.note("screen", f"{count} clicks at {x},{y}", "sent")
         elif op in ("click-any", "click-until", "click-any?", "click-until?"):
             self.click_candidates(op, args)
         elif op == "move":
-            run(["xdotool", "mousemove", str(args[0] + self.screen.ox), str(args[1] + self.screen.oy)], env=self.env)
+            must(["xdotool", "mousemove", str(args[0] + self.screen.ox), str(args[1] + self.screen.oy)], env=self.env)
         elif op in ("click", "click!"):
             changed = self.click_at(*args)
             if op == "click!" and changed is None:
                 self.fail(f"step on line {step.line}: the screen did not change after the click at {args[0]},{args[1]}")
         elif op == "key":
-            run(["xdotool", "key", args[0]], env=self.env)
+            must(["xdotool", "key", args[0]], env=self.env)
             self.note("screen", f"key {args[0]} sent", "yes")
         elif op == "shot":
             self.shot_step(args[0])
@@ -717,17 +732,17 @@ class Cycle:
             raise stepslib.StepError(f"click {x} {y}: the notice screen is up, and only Exit Game may be clicked there")
         rect = (max(0, x - 50), max(0, y - 14), 100, 28)
         before = self.screen.raw(rect)
-        run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+        must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
         # a candidate search (quiet) tries many places that may not react at all: it waits less
         hovered = poll(lambda: self.screen.raw(rect) != before, 0.3 if quiet else 1.5, 0.05)
         if hovered is None:                      # no highlight: a one-pixel move gives the game a motion event
-            run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+            must(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
             hovered = poll(lambda: self.screen.raw(rect) != before, 0.2 if quiet else 0.5, 0.05)
-            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back on the point
+            must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back on the point
         if not press:                            # the caller sends the clicks
             return None
         pointer_state = self.screen.raw(self.watch_rect)
-        run(["xdotool", "click", "1"], env=self.env)
+        must(["xdotool", "click", "1"], env=self.env)
         changed = None if quiet else poll(lambda: self.screen.raw(self.watch_rect) != pointer_state, 3, 0.1)
         if not quiet:
             self.note("screen", f"click at {x},{y}: label changed under the pointer (s)",
@@ -811,10 +826,10 @@ class Cycle:
         self.note("screen", f"{name}.png raw RGB8 pixels sha256", pixels)
 
     def window_titles(self):
-        ids = re.findall(r"0x[0-9a-fA-F]+", run(["xprop", "-root", "_NET_CLIENT_LIST"], env=self.env).stdout.decode())
+        ids = re.findall(r"0x[0-9a-fA-F]+", must(["xprop", "-root", "_NET_CLIENT_LIST"], env=self.env).stdout.decode())
         names = []
         for wid in ids:
-            names.append(run(["xdotool", "getwindowname", str(int(wid, 16))], env=self.env).stdout.decode().strip())
+            names.append(must(["xdotool", "getwindowname", str(int(wid, 16))], env=self.env).stdout.decode().strip())
         return "; ".join(f"{name!r}" for name in names) or "none"
 
     def proc_status(self):

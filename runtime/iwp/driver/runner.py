@@ -34,7 +34,6 @@ import json
 import os
 import re
 import secrets
-import signal
 import subprocess
 import sys
 from pathlib import Path
@@ -74,19 +73,34 @@ def options_cycle(session):
     session.observe_screenshot("after.png", 6)
 
 
+class FaultNotInjected(RuntimeError):
+    """The injected kill did not kill the game: the repeat is then not the fault it should be (never game-died)."""
+
+
 def kill_game(session):
-    """What an outsider does: `wineserver -k` of this run's prefix, from a process of its own."""
+    """What an outsider does: `wineserver -k` of this run's prefix, from a process of its own. What is relied
+    on is that the game is then gone, checked with a bound; FaultNotInjected otherwise."""
     session.observe(session.step_no + 1, "process", "fault injected", "wineserver -k")
-    spike.run([spike.WINESERVER, "-k"], env=session.env, timeout=sessionlib.WINESERVER_TIMEOUT)
-    spike.poll(lambda: not session.game_alive(), 10, 0.05)
+    done = spike.run([spike.WINESERVER, "-k"], env=session.env, timeout=sessionlib.WINESERVER_TIMEOUT)
+    session.observe(session.step_no + 1, "process", "fault: wineserver -k exit status", done.returncode)
+    if spike.poll(lambda: not session.game_alive(), 10, 0.05) is None:
+        raise FaultNotInjected(f"the game survived the injected wineserver -k (exit {done.returncode})")
+
+
+def game_items(session):
+    return [f"{sessionlib.MARK}={session.run_id}".encode(), f"{sessionlib.SIDE}=game".encode()]
 
 
 def sigkill_game(session):
-    """What an outsider does: SIGKILL of the game process."""
+    """What an outsider does: SIGKILL of the game process, through kill_marked: the pid must still carry this
+    run's marker and the game side when the signal is sent (class A). FaultNotInjected when nothing was sent
+    or the game is not gone after it."""
     pid = session.find_game_pid() or session.procs["game"].pid
     session.observe(session.step_no + 1, "process", "fault injected", "SIGKILL of the game process")
-    os.kill(pid, signal.SIGKILL)
-    spike.poll(lambda: not session.game_alive(), 10, 0.05)
+    if not sessionlib.kill_marked(pid, game_items(session)):
+        raise FaultNotInjected("the game process no longer carried this run's marker; nothing was signalled")
+    if spike.poll(lambda: not session.game_alive(), 10, 0.05) is None:
+        raise FaultNotInjected("the game survived the injected SIGKILL")
 
 
 FAULT_ACTIONS = {"kill-game": kill_game, "sigkill-game": sigkill_game}
@@ -261,8 +275,11 @@ def outer(args, argv):
     problems = spike.prefixlib.prefix_problems(prefix, locs["IWP_DIR"])
     if problems:
         sys.exit("the prefix is not safe to launch from; nothing was started: " + "; ".join(problems)[:400])
-    commit = spike.run(["git", "rev-parse", "--short=12", "HEAD"], cwd=ROOT).stdout.decode().strip()
-    dirty = spike.run(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"], cwd=ROOT).stdout
+    try:
+        commit = spike.must(["git", "rev-parse", "--short=12", "HEAD"], cwd=ROOT).stdout.decode().strip()
+        dirty = spike.must(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"], cwd=ROOT).stdout
+    except spike.CommandFailed as exc:
+        sys.exit(f"git could not say which commit runs: {exc}; nothing was started")
     if dirty:
         sys.exit("runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run")
     token = secrets.token_hex(16)
@@ -279,12 +296,13 @@ def outer(args, argv):
 
 def launch_inner(cmd, env, bound):
     """Run the namespaced command for at most `bound` s. At the bound it is killed (its namespace with it,
-    --kill-child) and the exit is 1; every wait here is bounded."""
+    --kill-child) through kill_marked, with this command's token, and the exit is 1; every wait here is bounded."""
+    items = [f"{sessionlib.INVOCATION}={env[sessionlib.INVOCATION]}".encode()]
     proc = subprocess.Popen(cmd, env=env)
     try:
         return proc.wait(bound)
     except subprocess.TimeoutExpired:
-        proc.kill()
+        sessionlib.kill_marked(proc.pid, items)
         with contextlib.suppress(subprocess.TimeoutExpired):
             proc.wait(REAP_BOUND)
         print(f"the command ran past its bound of {bound} s and was killed; the repeat it was in has no record, "

@@ -34,7 +34,12 @@ What it changes against the spike (measured in F006):
 * the children get no DBUS_SESSION_BUS_ADDRESS (#40: with a stale one, E002's xfwm4 did not register; the cause
   is a hypothesis, F006) and no TMPDIR, so that Wine uses the private /tmp of the namespace (F006 keeps the
   TMPDIR failures seen while building the driver as unreplicated observations);
-* every helper command and every wait has a bound (spike.run, RUN_TIMEOUT; the reaps in stop_x).
+* every helper command and every wait has a bound (spike.run, RUN_TIMEOUT; the reaps in stop_x);
+* round 2 of the review (PR #54): every signal goes through kill_marked (the markers re-checked through a
+  pidfd); every helper whose result is used is checked (spike.must), so a failed input is a failed step; the
+  game side and the display side are checked alive at every stage boundary, just before terminate too; the
+  check immediately before launch repeats every check of the first that can change; and the display is
+  this run's own Xvfb's (start_x, display_is_ours), never another server that happens to answer.
 """
 import argparse
 import contextlib
@@ -73,6 +78,8 @@ AFTER_KILL_TIMEOUT = 5                 # s, after a second `wineserver -k` and S
 STOP_TIMEOUT = 10                      # s, for Xvfb or xfwm4 to end after SIGTERM, before SIGKILL
 WINESERVER_TIMEOUT = 15                # s, `wineserver -k` itself (it returns at once, F002)
 FIRST_DISPLAY, LAST_DISPLAY = 77, 120
+XVFB_READY_TIMEOUT = 20                # s, for this run's Xvfb to hold its display (F006: 0.06 to 0.12 s)
+DISPLAY_ATTEMPTS = 3                   # displays tried when the one picked was taken meanwhile, before DisplayError
 
 
 def now():
@@ -125,9 +132,12 @@ def invocation_processes(token):
             if e.name.isdigit() and int(e.name) != os.getpid() and environ_has(e.name, want)]
 
 
-def kill_marked(pid, items):
-    """SIGKILL pid only if it still carries every one of `items`: the check is made again through a pidfd,
-    so a pid reused by another process between the listing and the signal is never signalled. True when sent."""
+def kill_marked(pid, items, sig=signal.SIGKILL):
+    """Send sig (SIGKILL) to pid only if it still carries every one of `items`: the check is made again
+    through a pidfd, so a pid reused by another process between the listing and the signal is never
+    signalled. True when sent. Every signal the driver sends to a process goes through here."""
+    if not items:
+        raise ValueError("kill_marked needs the markers the process must carry")
     try:
         fd = os.pidfd_open(pid)
     except OSError:
@@ -135,7 +145,7 @@ def kill_marked(pid, items):
     try:
         if not environ_has(pid, items):
             return False
-        signal.pidfd_send_signal(fd, signal.SIGKILL)
+        signal.pidfd_send_signal(fd, sig)
         return True
     except OSError:
         return False
@@ -143,8 +153,10 @@ def kill_marked(pid, items):
         os.close(fd)
 
 
-def free_display(first=FIRST_DISPLAY, last=LAST_DISPLAY):
-    """The first display number in [first, last] that no X server of this machine listens on.
+def free_display(first=FIRST_DISPLAY, last=LAST_DISPLAY, exclude=()):
+    """The first display number in [first, last] that no X server of this machine listens on, and not one of
+    `exclude` (":n" names). Only a hint: another server can take it before this run's Xvfb does, which
+    Session.start_x finds out (display_is_ours) and answers with another display.
 
     Another project's Xvfb on :99, :453 and so on holds an abstract socket in the host's network namespace,
     which this run shares (only the game has a namespace of its own), so a number in use there would clash."""
@@ -156,10 +168,38 @@ def free_display(first=FIRST_DISPLAY, last=LAST_DISPLAY):
     for directory in (Path("/tmp/.X11-unix"),):
         if directory.is_dir():
             taken.update(int(m.group(1)) for p in directory.iterdir() if (m := re.fullmatch(r"X(\d+)", p.name)))
+    taken.update(int(name[1:]) for name in exclude)
     for number in range(first, last + 1):
         if number not in taken and not Path(f"/tmp/.X{number}-lock").exists():
             return f":{number}"
     raise DisplayError(f"no free X display between :{first} and :{last}")
+
+
+def listening_socket_inodes(path):
+    """Inodes of the listening unix sockets bound to `path` ("@..." for an abstract one), from /proc/net/unix."""
+    found = set()
+    for line in Path("/proc/net/unix").read_text(errors="replace").splitlines()[1:]:
+        fields = line.split()
+        if len(fields) >= 8 and fields[7] == path and int(fields[3], 16) & 0x10000:   # __SO_ACCEPTCON: listening
+            found.add(int(fields[6]))
+    return found
+
+
+def socket_inodes_of(pid):
+    """Inodes of the sockets that process pid holds open, from /proc/<pid>/fd."""
+    found = set()
+    try:
+        entries = list(Path(f"/proc/{pid}/fd").iterdir())
+    except OSError:
+        return found
+    for entry in entries:
+        try:
+            match = re.fullmatch(r"socket:\[(\d+)\]", os.readlink(entry))
+        except OSError:
+            continue
+        if match:
+            found.add(int(match.group(1)))
+    return found
 
 
 def bind_install_readonly(install):
@@ -244,15 +284,30 @@ class Session(spike.Cycle):
         if not self.game_alive():
             self.fail(f"the game process exited before {where} (status {self.procs['game'].poll()})", GameDied)
 
+    def display_dead(self):
+        """Names of this run's display processes (Xvfb, xfwm4) that were started and have exited."""
+        return [name for name in ("xvfb", "wm") if name in self.procs and self.procs[name].poll() is not None]
+
+    def require_display(self, where):
+        """DisplayError unless every display process this run started is still running."""
+        dead = self.display_dead()
+        if dead:
+            self.fail(f"{' and '.join(dead)} exited before {where}", DisplayError)
+
+    def require_alive(self, where):
+        """The game side and the display side are both alive (class C: checked at every stage boundary)."""
+        self.require_display(where)
+        self.require_game(where)
+
     # ---- the seal
 
-    def require_install_readonly(self):
+    def require_install_readonly(self, when="before anything starts", step=0):
         """SealError unless the install is read-only for this process: the bind was made once for the namespace."""
         if spike.install_writable(str(self.install)):
-            self.fail("the install is writable inside this run", SealError)
-        self.observe(0, "process", "install read-only inside the run", "yes")
+            self.fail(f"the install is writable inside this run ({when})", SealError)
+        self.observe(step, "process", f"install read-only inside the run ({when})", "yes")
 
-    def require_baseline(self):
+    def require_baseline(self, when="before anything starts", step=0):
         """SealError unless the registry files of the prefix are the baseline's, byte for byte: the reset puts
         the baseline back, so a prefix that is off it can never come back to its state before the launch."""
         baseline = Path(str(self.prefix) + ".baseline")
@@ -268,13 +323,13 @@ class Session(spike.Cycle):
                 with safeio.open_source(kept) as fh:
                     there = fh.read()
             except (safeio.Refused, OSError) as exc:
-                self.fail(f"{name} could not be compared with its baseline: {exc}", SealError)
+                self.fail(f"{name} could not be compared with its baseline ({when}): {exc}", SealError)
             if here != there:
-                self.fail(f"{name} of the prefix is not the baseline's; something outside the driver changed the "
-                          "prefix (the reset would not bring it back to this state)", SealError)
+                self.fail(f"{name} of the prefix is not the baseline's ({when}); something outside the driver changed "
+                          "the prefix (the reset would not bring it back to this state)", SealError)
         if not checked:
-            self.fail("the prefix has no baseline to be reset to", SealError)
-        self.observe(0, "file", "registry files equal their baseline before the launch", "yes")
+            self.fail(f"the prefix has no baseline to be reset to ({when})", SealError)
+        self.observe(step, "file", f"registry files equal their baseline ({when})", "yes")
 
     # ---- the environment
 
@@ -296,12 +351,13 @@ class Session(spike.Cycle):
         self.t0 = time.monotonic()
         with self.stage("seal", SealError):
             self.note_environment()
-            self.require_install_readonly()
+            self.require_install_readonly("before anything starts", 0)
             self.seal("before anything starts", 0)
-            self.require_baseline()
+            self.require_baseline("before anything starts", 0)
         with self.stage("display", DisplayError):
             self.start_x()
             self.start_wm()
+            self.require_display("the snapshot")
         with self.stage("snapshot", SealError):
             begun = time.monotonic()
             self.take_snapshots("before")
@@ -309,11 +365,67 @@ class Session(spike.Cycle):
         self.launch()
 
     def launch(self):
-        """The prefix sealed once more, immediately before the game starts; then the game."""
+        """Every check of the first seal that can change meanwhile, again, immediately before the game starts
+        (the install read-only, the prefix safe to launch from, the registry files equal to the baseline;
+        class D); the display alive; then the game, alive at the end of the launch."""
         with self.stage("seal", SealError):
+            self.require_install_readonly("immediately before launch", 1)
             self.seal("immediately before launch", 1)
+            self.require_baseline("immediately before launch", 1)
         with self.stage("launch", LaunchError):
+            self.require_display("the launch")
             self.start_game()
+            self.require_alive("the end of the launch")
+
+    # ---- the display, this run's own (class E)
+
+    def set_display(self, display):
+        self.display = display
+        self.env["DISPLAY"] = display
+        self.display_env["DISPLAY"] = display
+
+    def spawn_xvfb(self):
+        width, height, depth = self.size
+        return subprocess.Popen(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],
+                                env=self.display_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def display_is_ours(self, proc):
+        """True only when this run's Xvfb is alive, itself holds the display's listening socket, and answers.
+        A server of someone else's that answers on the same display is never taken for it."""
+        if proc.poll() is not None:
+            return False
+        path = f"@/tmp/.X11-unix/X{self.display[1:]}"
+        if not listening_socket_inodes(path) & socket_inodes_of(proc.pid):
+            return False
+        return spike.run(["xdpyinfo"], env=self.env).returncode == 0
+
+    def start_x(self):
+        """Xvfb on a free display, ready only when display_is_ours: the display number picked is only a hint,
+        and when another server takes it first this run's Xvfb exits (it cannot bind), so another display is
+        tried, DISPLAY_ATTEMPTS in all; DisplayError otherwise. Never attached to a server it did not start."""
+        Path("/tmp/.X11-unix").mkdir(mode=0o1777, exist_ok=True)
+        tried = []
+        for attempt in range(1, DISPLAY_ATTEMPTS + 1):
+            if attempt > 1:
+                self.set_display(free_display(exclude=tried))
+            tried.append(self.display)
+            proc = self.procs["xvfb"] = self.spawn_xvfb()
+            waited = spike.poll(lambda: proc.poll() is not None or self.display_is_ours(proc), XVFB_READY_TIMEOUT, 0.05)
+            if waited is not None and self.display_is_ours(proc):
+                break
+            if proc.poll() is None:
+                self.fail(f"Xvfb on {self.display} did not hold its display within {XVFB_READY_TIMEOUT} s", DisplayError)
+            self.say(f"Xvfb on {self.display} exited (status {proc.returncode}): the display was taken; another one")
+            self.observe(0, "process", "display taken before this run's Xvfb held it; Xvfb exit status", proc.returncode)
+        else:
+            self.fail(f"no display of this run's own after {DISPLAY_ATTEMPTS} attempts ({', '.join(tried)})", DisplayError)
+        info = spike.must(["xdpyinfo"], env=self.env).stdout.decode()
+        dims = re.search(r"dimensions:\s+(\d+x\d+)", info).group(1)
+        planes = re.search(r"depth of root window:\s+(\d+)", info).group(1)
+        self.observe(0, "process", "xvfb ready (s)", waited)
+        self.observe(0, "process", "root window", f"{dims}x{planes}")
+        self.observe(0, "process", "X display held by this run's Xvfb (attempt)", attempt)
+        self.say(f"Xvfb ready after {waited} s on attempt {attempt}, root {dims}x{planes}")
 
     def wait_for_screen(self, name, timeout=None, stable=True):
         """Wait, by pixels, until the named screen ("title", "options", "notice") is up and, with `stable`,
@@ -325,7 +437,7 @@ class Session(spike.Cycle):
         seen = getattr(self.screen, SCREENS[name])
         with self.stage(f"wait for the {name} screen", ScreenNotReached):
             def up():
-                self.require_game(f"the {name} screen appeared")
+                self.require_alive(f"the {name} screen appeared")
                 return seen()
             waited = spike.poll(up, timeout, 0.25)
             if waited is None:
@@ -354,17 +466,17 @@ class Session(spike.Cycle):
             except stepslib.StepError as exc:
                 self.fail(f"the steps are not usable: {exc}")
             for step in steps:
-                self.require_game(f"step on line {step.line}")
+                self.require_alive(f"step on line {step.line}")
                 self.step_no += 1
                 self.say(f"step {step.line}: {step.op} {' '.join(map(str, step.args))}")
                 try:
                     self.run_step(step)
-                except stepslib.StepError as exc:
+                except (stepslib.StepError, spike.CommandFailed) as exc:
                     self.fail(f"step on line {step.line}: {exc}")
-                if step.op in INPUT_OPS:
+                if step.op in INPUT_OPS:             # run_step returned: every command of the step exited 0
                     self.events += 1
                     self.actions.append((self.events, step.op, step.line))
-            self.require_game("the steps ended")
+            self.require_alive("the steps ended")
             self.observe(self.step_no, "process", "input steps that succeeded so far", len(self.actions))
 
     def checkpoint(self, name):
@@ -379,7 +491,7 @@ class Session(spike.Cycle):
     # ---- observations
 
     def shot(self, name, step):
-        self.require_game(f"the screenshot {name}")
+        self.require_alive(f"the screenshot {name}")
         taken = super().shot(name, step)
         self.events += 1
         self.shot_at[name] = self.events
@@ -394,7 +506,7 @@ class Session(spike.Cycle):
 
     def observe_region(self, rect, label):
         """sha256 of the raw pixels of x, y, w, h (the 800x600 stage's coordinates), as an observation."""
-        self.require_game(f"reading the region {label}")
+        self.require_alive(f"reading the region {label}")
         digest = spike.sha256_bytes(self.screen.raw(rect))
         self.step_no += 1
         self.observe(self.step_no, "screen", f"region {label} {','.join(map(str, rect))} raw RGB8 sha256", digest)
@@ -423,7 +535,7 @@ class Session(spike.Cycle):
             self.fail("before.png was not taken before the first input", StepFailed)
         if not self.shot_at.get("after.png", 0) > self.actions[-1][0]:
             self.fail("after.png was not taken after the last input", StepFailed)
-        self.require_game("the cycle ended")
+        self.require_alive("the cycle ended")
         if self.status == "running":
             self.status = "completed"
 
@@ -445,9 +557,11 @@ class Session(spike.Cycle):
     def terminate(self):
         """`wineserver -k` (immediate, F002), then a bounded wait for the game side: no fixed wait, and no
         wait for the display side's daemons. A game side that is still there after the bound is killed, and
-        a second bound ends in TerminateError."""
+        a second bound ends in TerminateError. The exit status of `wineserver -k` is recorded, not relied on
+        (it is 1 when no server is left, after a game that died); what is relied on is the game side gone."""
         self.say("wineserver -k")
-        spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
+        killed = spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
+        self.observe(9, "process", "wineserver -k exit status", killed.returncode)
         spike.poll(lambda: not self.game_alive(), 20, 0.05)
         code = self.procs["game"].poll()
         self.observe(9, "process", "game process exit status", code)
@@ -463,6 +577,22 @@ class Session(spike.Cycle):
             if self.wait_gone("game", AFTER_KILL_TIMEOUT) is None:
                 self.fail(f"{len(self.alive('game'))} process(es) of the game side survived a kill", TerminateError)
 
+    def check_before_terminate(self):
+        """Class C, just before terminate: a game that died, or a display process that exited, since the last
+        check makes the session aborted (the first reason is kept); the clean-up and the reset still run."""
+        dead = self.display_dead()
+        game_dead = "game" in self.procs and not self.game_alive()
+        if game_dead:
+            self._set_aborted(f"the game process exited before terminate (status {self.procs['game'].poll()})", GameDied)
+        if dead:
+            self._set_aborted(f"{' and '.join(dead)} exited before terminate", DisplayError)
+        self.observe(9, "process", "game and display alive just before terminate",
+                     "no: " + ", ".join((["game"] if game_dead else []) + dead) if game_dead or dead else "yes")
+
+    def stop_own(self, proc, sig):
+        """A signal to one of this run's display processes, through kill_marked (its markers re-checked)."""
+        kill_marked(proc.pid, [f"{MARK}={self.run_id}".encode(), f"{SIDE}=display".encode()], sig)
+
     def stop_x(self):
         """Stop xfwm4 and Xvfb (SIGTERM, then SIGKILL after STOP_TIMEOUT), every wait bounded; then the
         display side's processes, then the check that nothing of this run is left. TerminateError otherwise."""
@@ -470,11 +600,11 @@ class Session(spike.Cycle):
         for name in ("wm", "xvfb"):
             proc = self.procs.get(name)
             if proc and proc.poll() is None:
-                proc.terminate()
+                self.stop_own(proc, signal.SIGTERM)
                 try:
                     proc.wait(STOP_TIMEOUT)
                 except subprocess.TimeoutExpired:
-                    proc.kill()
+                    self.stop_own(proc, signal.SIGKILL)
                     try:
                         proc.wait(AFTER_KILL_TIMEOUT)
                     except subprocess.TimeoutExpired:
@@ -522,6 +652,7 @@ class Session(spike.Cycle):
     def finish(self):
         """Terminate, stop the display, snapshot and reset, keep the logs; every stage runs, whatever failed
         before. The status is left aborted unless complete() ran and nothing here failed."""
+        self.check_before_terminate()
         self.cleanup("terminate", self.terminate if "game" in self.procs else None, TerminateError)
         self.cleanup("stopping the display", self.stop_x, TerminateError)
         if hasattr(self, "snap_before"):
