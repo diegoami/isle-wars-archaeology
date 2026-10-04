@@ -1,0 +1,3 @@
+Window 2097157
+  Position: 192,184 (screen: 0)
+  Geometry: 640x350

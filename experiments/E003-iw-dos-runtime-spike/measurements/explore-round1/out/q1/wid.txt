@@ -1,0 +1,4 @@
+DOSBox-X 2024.03.01: ISLEWAR - 3000 cycles/ms
+Window 2097157
+  Position: 0,-25 (screen: 0)
+  Geometry: 640x350

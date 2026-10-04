@@ -1,0 +1,8 @@
+Escape: alive
+q: alive
+x: alive
+ctrl+c: alive
+ctrl+Break: alive
+alt+x: alive
+F10: alive
+SIGTERM status 1 after 79.511813821

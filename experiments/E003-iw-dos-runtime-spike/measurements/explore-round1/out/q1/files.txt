@@ -1,0 +1,22 @@
+<TMPHOME>:
+total 0
+drwxr-xr-x 2 root root  40 Oct  4 01:08 .
+drwxrwxrwt 5 root root 120 Oct  4 01:08 ..
+
+/tmp/w:
+total 4
+drwxr-xr-x 4 root root 100 Oct  4 01:08 .
+drwxrwxrwt 5 root root 120 Oct  4 01:08 ..
+drwxr-xr-x 2 root root  40 Oct  4 01:08 cap
+-rw-r--r-- 1 root root 707 Oct  4 01:08 dosbox.conf
+drwxr-xr-x 2 root root  40 Oct  4 01:08 save
+
+/tmp/w/cap:
+total 0
+drwxr-xr-x 2 root root  40 Oct  4 01:08 .
+drwxr-xr-x 4 root root 100 Oct  4 01:08 ..
+
+/tmp/w/save:
+total 0
+drwxr-xr-x 2 root root  40 Oct  4 01:08 .
+drwxr-xr-x 4 root root 100 Oct  4 01:08 ..
