@@ -374,6 +374,8 @@ class Cycle:
             # left alone: Wine registered the host's audio endpoints) with the control (it did not).
             self.env["WINEDLLOVERRIDES"] += ";winepulse.drv=d;winealsa.drv=d;wineoss.drv=d"
             self.env.pop("PULSE_SERVER", None)
+        self.display = DISPLAY       # the X display of this run; the driver (runtime/iwp/driver) picks a free one
+        self.display_env = self.env  # the environment of Xvfb and the window manager; the driver marks it apart
         self.screen = Screen(width, height, self.env)
         self.after_screen_ok = False
         self.steps = None            # the parsed step script of an E002 run (load_script)
@@ -446,8 +448,8 @@ class Cycle:
         width, height, depth = self.size
         Path("/tmp/.X11-unix").mkdir(mode=0o1777, exist_ok=True)
         self.procs["xvfb"] = subprocess.Popen(
-            ["Xvfb", DISPLAY, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],
-            env=self.env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            ["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],
+            env=self.display_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         waited = poll(lambda: run(["xdpyinfo"], env=self.env).returncode == 0, 20)
         if waited is None:
             self.fail("Xvfb did not accept connections within 20 s")
@@ -462,7 +464,7 @@ class Cycle:
         if self.args.wm == "none":
             self.observe(0, "process", "window manager", "none")
             return
-        self.procs["wm"] = subprocess.Popen(["xfwm4", "--compositor=off"], env=self.env,
+        self.procs["wm"] = subprocess.Popen(["xfwm4", "--compositor=off"], env=self.display_env,
                                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         waited = poll(lambda: run(["xprop", "-root", "_NET_SUPPORTING_WM_CHECK"], env=self.env
                                   ).stdout.decode().find("window id") >= 0, 20)
@@ -473,6 +475,10 @@ class Cycle:
 
     def launch(self):
         self.seal("immediately before launch", 1)
+        self.start_game()
+
+    def start_game(self):
+        """Start the game and wait for its window; launch() has sealed the prefix just before."""
         cmd = game_command()
         self.t_launch = time.monotonic()
         with safeio.create_stream(self.workdir, "wine.log") as log:
@@ -738,11 +744,13 @@ class Cycle:
                    if abs(crop[i] - r) <= tol and abs(crop[i + 1] - g) <= tol and abs(crop[i + 2] - b) <= tol)
 
     def attack_picked(self, targets):
-        """attack-picked: from the picked point, attack the first target the game accepts. For each
-        target: Attack, the target (the game takes it only if it borders a Blue country; a refused
-        target changes nothing), the picked point (the game takes it only if it is a Blue country with
-        more than one army that borders the target), and the QUIT ATTACK button must show. Otherwise
-        Cancel, and the next target."""
+        """attack-picked: from the picked point, try each target in turn and stop at the first one after
+        which the QUIT ATTACK button shows. For each target the code clicks Attack, then the target, and
+        looks for a change of the target panel; if the panel changed it clicks the picked point and looks
+        for the QUIT ATTACK button (gold pixels in the centre panel). If the button shows, the search
+        ends; otherwise it clicks Cancel and goes on to the next target. It detects screen changes after
+        clicks and nothing else: it asserts nothing about which targets or attackers the game accepts or
+        why (T09 did not test those rules)."""
         if self.picked is None:
             self.fail("attack-picked needs a point picked by click-any or click-until")
         colour, tol, count = QUIT_ATTACK
