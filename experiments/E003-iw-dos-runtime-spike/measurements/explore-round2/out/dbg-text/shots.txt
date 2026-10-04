@@ -1,0 +1,3 @@
+window none t=10.412089907
+text eda525bab6d74d43 t=14.430129788
+dosbox status 0
