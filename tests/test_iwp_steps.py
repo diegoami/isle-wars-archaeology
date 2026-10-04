@@ -610,9 +610,18 @@ class SnapshotRefusesNonRegularEntriesTest(unittest.TestCase):
             snap = cycle.snapshot_tree(base)                 # plain files, directories and links are read as before
             self.assertEqual(sorted(snap), ["d", "d/f", "l"])
             self.assertEqual(snap["d/f"][:2], ("f", 1))
+            # Bound by its short relative name from inside d: an absolute socket path under a long
+            # TMPDIR passes AF_UNIX's 108-byte limit and errors before the edge is reached (#44).
+            # The node still lands at d/s; the cwd is restored before anything else runs.
+            before = os.getcwd()
             sock = socket.socket(socket.AF_UNIX)
             self.addCleanup(sock.close)
-            sock.bind(str(base / "d" / "s"))
+            os.chdir(base / "d")
+            try:
+                sock.bind("s")
+            finally:
+                os.chdir(before)
+            self.assertEqual(os.getcwd(), before)            # the chdir never leaks past this test
             with self.assertRaises(cycle.UnsupportedEntry) as caught:
                 cycle.snapshot_tree(base)
             self.assertIn("d/s", str(caught.exception))
