@@ -1,0 +1,9 @@
+unmutated: 8 test id(s) pass
+killed   prefix.py's game-copy check accepts a changed byte (setup/iwp/prefix.py; 1 test id(s))
+killed   prefix.py's game-copy check accepts an unlisted file (setup/iwp/prefix.py; 1 test id(s))
+killed   prefix.py's game-copy check drops what the tool's tree walk reports (a name it refuses) (setup/iwp/prefix.py; 1 test id(s))
+killed   rundir.py's check drops --strict (setup/iw-dos/rundir.py; 3 test id(s))
+killed   a record with a duplicate key validates (the repository's reader is json.loads again) (tests/test_runs.py; 1 test id(s))
+killed   a record with a duplicate key validates (the pinned validator keeps the last value) (tools/validate_records.py; 2 test id(s))
+killed   one vendored byte of the validator changes (tools/validate_records.py; 1 test id(s))
+7 of 7 mutants killed

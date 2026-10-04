@@ -30,7 +30,7 @@
   },
   "seed": null,
   "actions": {
-    "script": "experiments/E001-reinforcement/run.py",
+    "script": "experiments/E002-cold-start/run.py",
     "sha256": "d6af0459a37d985953d7040c14f53feb3b9cc9e58b543aa3c2b80256d276c5e0",
     "args": [
       "--arm",
@@ -49,26 +49,16 @@
       "source": "ui-text",
       "field": "reinforcement prompt",
       "value": "You receive 3 armies."
-    },
-    {
-      "step": 1,
-      "source": "screen",
-      "ref": "sha256:e15d4bbc82b54b0d83aab78a7b2ef128bae8d990972924ef8f47c0cb00a4286d"
     }
   ],
   "outputs": [
     {
       "name": "after.sav",
       "sha256": "c5bce929e99e510b9879bda5232f412c6c6fadddcfcf10678b835182000c4b5a",
-      "store": "release:E001"
-    },
-    {
-      "name": "after.png",
-      "sha256": "e15d4bbc82b54b0d83aab78a7b2ef128bae8d990972924ef8f47c0cb00a4286d",
-      "store": "release:E001"
+      "store": "release:E002"
     }
   ],
   "started": "2026-10-02T09:00:00Z",
-  "ended": "2026-10-02T09:00:04Z",
-  "status": "aborted: game window did not appear within 40 s"
+  "ended": "2026-10-02T09:00:40Z",
+  "status": "aborted: no progress after 40 s"
 }

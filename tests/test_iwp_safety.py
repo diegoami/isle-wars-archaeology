@@ -20,7 +20,7 @@ from pathlib import Path
 from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from iwp_fixtures import (MANIFEST, ROOT, World, cycle, locations, prefix, sha, token_check,  # noqa: E402,F401
+from iwp_fixtures import (MANIFEST, ROOT, registered, World, cycle, locations, prefix, sha, token_check,  # noqa: E402,F401
                           tokens, tree)
 
 
@@ -394,7 +394,7 @@ class CheckIsolationTest(World):
         self.assertTrue(any("not a real directory" in p for p in problems))
 
     def test_a_runtime_write_of_the_set_is_allowed(self):
-        manifest = dict(MANIFEST, files=MANIFEST["files"][:1], runtime_writes=["xtras/b.dat"])
+        manifest = registered(dict(MANIFEST, files=MANIFEST["files"][:1], runtime_writes=["xtras/b.dat"]))
         (self.game / "xtras" / "b.dat").write_bytes(b"grown by the game")
         with mock.patch.object(prefix, "manifest", return_value=manifest):
             self.assertEqual(prefix.verify_game_copy(self.game), [])

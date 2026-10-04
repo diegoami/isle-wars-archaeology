@@ -3,7 +3,7 @@
 Every test builds its own copy (IW_DOS_DIR), run directory, bundles and known.json in a temporary
 directory outside any checkout. None reads or writes the real copy or the real run directory: the
 environment is replaced for each test, and rundir.KNOWN_ROOT points at a throwaway git checkout
-whose artifacts/known.json registers a synthetic set under the real set's id, so the real
+whose artifacts/known.json registers a synthetic set (rundir.SET_ID is pointed at its id), so the real
 `tools/register_artifact.py check --strict` runs against it.
 
 The four guarantees of T11's Done-when 3, each with the tests that fail when it is removed
@@ -36,6 +36,7 @@ from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "setup" / "iwp"))
 sys.path.insert(0, str(ROOT / "setup" / "iw-dos"))
 sys.path.insert(0, str(ROOT / "runtime" / "iw-dos" / "spike"))
@@ -53,6 +54,7 @@ import locations  # noqa: E402
 import safeio  # noqa: E402
 import rundir  # noqa: E402
 import dosconf  # noqa: E402
+import validate_records  # noqa: E402  (the pinned validator, for the canonical id)
 
 cycle = load("iw_dos_cycle", "runtime/iw-dos/spike/cycle.py")
 token_check = load("iw_dos_token_check", "setup/iw-dos/token_check.py")
@@ -66,9 +68,18 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-MANIFEST = {"schema": "artifact-set/1", "id": rundir.SET_ID, "title": "synthetic", "version": "3.1",
-            "files": [{"path": p, "bytes": len(d), "sha256": sha(d)} for p, d in sorted(FILES.items())],
-            "runtime_writes": []}
+def registered(manifest, label="iw-dos-synthetic-3.1"):
+    """The manifest with `acquired` and its canonical id: the pinned tools/register_artifact.py
+    accepts a set only when its id is the canonical one, so the synthetic set has its own id and
+    the tests point rundir.SET_ID at it."""
+    body = dict(manifest, acquired={"how": "generated", "when": "2026-10-04"})
+    body["id"] = f"{label}-{validate_records.canonical_set_hash(body)[:8]}"
+    return body
+
+
+MANIFEST = registered({"schema": "artifact-set/1", "title": "synthetic", "version": "3.1",
+                       "files": [{"path": p, "bytes": len(d), "sha256": sha(d)} for p, d in sorted(FILES.items())],
+                       "runtime_writes": []})
 
 
 SKIP_REASON = ("SAFETY TEST NOT RUN: the temporary directory is inside a checkout (TMPDIR="
@@ -89,9 +100,10 @@ class World(unittest.TestCase):
         (self.known / "artifacts").mkdir(parents=True)
         (self.known / "artifacts" / "known.json").write_text(json.dumps({"sets": [{"manifest": MANIFEST}]}))
         subprocess.run(["git", "init", "-q", str(self.known)], check=True)
-        patcher = mock.patch.object(rundir, "KNOWN_ROOT", self.known)
-        patcher.start()
-        self.addCleanup(patcher.stop)
+        for name, value in (("KNOWN_ROOT", self.known), ("SET_ID", MANIFEST["id"])):
+            patcher = mock.patch.object(rundir, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
         self.install = self.tmp / "install"
         self.install.mkdir()
         for name, data in FILES.items():
@@ -426,6 +438,7 @@ sys.path.insert(0, sys.argv[1] + "/setup/iwp")
 sys.path.insert(0, sys.argv[1] + "/setup/iw-dos")
 import rundir
 rundir.KNOWN_ROOT = Path(sys.argv[2])
+rundir.SET_ID = json.loads((rundir.KNOWN_ROOT / "artifacts" / "known.json").read_text())["sets"][0]["manifest"]["id"]
 source, target, env = sys.argv[3], sys.argv[4], json.loads(sys.argv[5])
 os.makedirs(target, exist_ok=True)
 subprocess.run(["mount", "--bind", source, target], check=True)

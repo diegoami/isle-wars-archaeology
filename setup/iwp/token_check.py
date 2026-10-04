@@ -77,7 +77,8 @@ def artifact():
     if not places:
         return "neither IWP_DIR nor IWP_PREFIX is set"
     for place in places:
-        code, _ = out([sys.executable, str(ROOT / "tools" / "register_artifact.py"), "check", place, SET_ID])
+        code, _ = out([sys.executable, str(ROOT / "tools" / "register_artifact.py"), "check", place, SET_ID,
+                         "--known", str(ROOT / "artifacts" / "known.json")])
         if code != 0:
             return f"{SET_ID} does not match in one of the places given by the environment"
     return None
