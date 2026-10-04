@@ -1,21 +1,28 @@
 {
   "game-archaeologist": {
     "repo": "diegoami/game-archaeologist",
-    "commit": "79bede9cee40af323220ab3602b6593bd6dc7322",
+    "commit": "69566be655fc35c36d19277db9b94f8300055c7b",
     "uses": [
       "formats/*.schema.json",
+      "formats/examples/",
       "formats/templates/",
-      "vocabulary/"
+      "vocabulary/",
+      "tools/validate_records.py",
+      "tools/register_artifact.py"
     ],
-    "note": "formats v1 are provisional until A6 tags formats-v1; then pin the tag",
+    "note": "formats v1 are provisional until A6 tags formats-v1; then pin the tag. The commit is the latest to change formats/, tools/validate_records.py or tools/register_artifact.py.",
     "vendored": [
       {
         "path": "formats/artifact-set-1.schema.json",
         "sha256": "0b5936d4aafc193d80889f695adf72e61426d6db6e48fbeeaad1309d0eb24258"
       },
       {
-        "path": "formats/examples/valid/artifact-set-1--toy.json",
-        "sha256": "d75a34b404f33b6bd0cbd6ae43c3b64ea532561396b370c507445e485c95699e"
+        "path": "formats/evidence-manifest-1.schema.json",
+        "sha256": "55c1c1844c96c76353547b2a27973c7d18e8a5dd42b76020b65319cb8e42ad4d"
+      },
+      {
+        "path": "formats/examples/expected-errors.json",
+        "sha256": "9f45741a9b1f21805ecc258f0e809461affab2996e4860a94b7d47dd55a38700"
       },
       {
         "path": "formats/examples/invalid/artifact-set-1--bad-id-hash.json",
@@ -24,14 +31,6 @@
       {
         "path": "formats/examples/invalid/artifact-set-1--unknown-acquisition.json",
         "sha256": "3b21af86028e9809fb6aa5c177167d532cd4d582608fd0ae3c41890e9ea1dd0e"
-      },
-      {
-        "path": "formats/run-1.schema.json",
-        "sha256": "172413a8b3103c89b21ea249a1c6c71b072f4eb185a9a0f3781d54f3867434ec"
-      },
-      {
-        "path": "formats/evidence-manifest-1.schema.json",
-        "sha256": "55c1c1844c96c76353547b2a27973c7d18e8a5dd42b76020b65319cb8e42ad4d"
       },
       {
         "path": "formats/examples/invalid/evidence-manifest-1--bad-asset-name.json",
@@ -50,8 +49,16 @@
         "sha256": "8fa8cf2ad20c7948ec00abcd688ecafb89f5e48f34869e62253f4d495a25ffc0"
       },
       {
+        "path": "formats/examples/invalid/run-1--completed-no-observations.json",
+        "sha256": "c5671294b2bd0f07c37f0c12b456d5fd09582633e541b88fc269ff656900bd09"
+      },
+      {
         "path": "formats/examples/invalid/run-1--decoded-without-via.json",
         "sha256": "057e7ddc5d0dd273a3027186495427db8cf94c57a0bdfce425f47f13d9870b3a"
+      },
+      {
+        "path": "formats/examples/invalid/run-1--empty-interventions.json",
+        "sha256": "a53e7b8d7310a17cccdb7bf56d53e60fe70dabacc703c3a3203980c92d36bc01"
       },
       {
         "path": "formats/examples/invalid/run-1--interpretation-field.json",
@@ -74,6 +81,10 @@
         "sha256": "32d126c46eec21512bd8182a8fc8d7e66fb1847780fba5482a531fd51f3f2115"
       },
       {
+        "path": "formats/examples/invalid/run-1--sha256-trailing-newline.json",
+        "sha256": "340e141a4e79bb1f7ea84d29d61acf6a15e53af18009fcbd4b8750db3b4a3176"
+      },
+      {
         "path": "formats/examples/invalid/run-1--truncated-hash.json",
         "sha256": "d38cb7cc17bc8d1b914992391a9491cb23d61d45d7489159a5376be74f5b84f4"
       },
@@ -86,20 +97,52 @@
         "sha256": "565519992a9135da02a993b1385109968afb523582778e099a01f91f1da09257"
       },
       {
+        "path": "formats/examples/invalid/variant-1--observation-level.json",
+        "sha256": "c641ce68d8ba41a02836668ecfd232c17501ad7c4a4991d2791c762e9f37ca4e"
+      },
+      {
+        "path": "formats/examples/valid/artifact-set-1--toy.json",
+        "sha256": "d75a34b404f33b6bd0cbd6ae43c3b64ea532561396b370c507445e485c95699e"
+      },
+      {
+        "path": "formats/examples/valid/artifact-set-1--two-files.json",
+        "sha256": "4fefab0af3f0292ea9597d310b3014d7c0ac3fbe807d6614681cc479fbccce23"
+      },
+      {
         "path": "formats/examples/valid/evidence-manifest-1--toy-run.json",
         "sha256": "5fb0d907af9e0c5cba5e4a073e82e59f6604515aa790488b95bc1607b0d67a45"
       },
       {
+        "path": "formats/examples/valid/run-1--aborted-no-observations.json",
+        "sha256": "babf540315a5e06782898b569b69d03cb3f3f65b49915e80559b81e6f188fc4a"
+      },
+      {
         "path": "formats/examples/valid/run-1--pure-observation-aborted.json",
-        "sha256": "bdc7aa3aa054605b39d5edf084b6592fcc57d56c971e7593bd5dd91b8491f173"
+        "sha256": "9b660bf935631a400fdac50bf54b4429fd144450fa8165b9359ddc7bc8289073"
       },
       {
         "path": "formats/examples/valid/run-1--seeded-crafted-state.json",
         "sha256": "2d903d10eb13ae212d8e64311bdf2314e02fc25d07c2d011791cdf89be0ee6b5"
       },
       {
-        "path": "tests/formats/check_examples.py",
-        "sha256": "46de8db08852787932e2d57dbdd11d37d8b6eb16b7baa4648ebae87e814dc987"
+        "path": "formats/examples/valid/variant-1--seed-patch.json",
+        "sha256": "60edd0118fa44a3e25a832f74b5efe9c683547b407e043e76ffa2226639461c2"
+      },
+      {
+        "path": "formats/run-1.schema.json",
+        "sha256": "c50db187640975397dd59080d92eee1e156f0d9ba51a79db987769f3e8149a2e"
+      },
+      {
+        "path": "formats/variant-1.schema.json",
+        "sha256": "727c7d644aa507833fe0e313c89ee8070c32fe649ac9b4fd2ddfdd2845112f2b"
+      },
+      {
+        "path": "tools/register_artifact.py",
+        "sha256": "af7d47355fd29ae6c04ba4207e6965c67fdb8d1aa6afb0700f1a903c043c1ccb"
+      },
+      {
+        "path": "tools/validate_records.py",
+        "sha256": "62a9ff2c7a12f38bc7bf08915290d3930cf2c63fadbb62e1f9f239ded266f109"
       }
     ]
   }

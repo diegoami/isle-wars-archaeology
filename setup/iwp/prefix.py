@@ -162,7 +162,8 @@ def verify_game_copy(game, install=None):
     """Problems (a list of strings, empty when it is right) with a game copy against the registered set.
 
     The same comparison as `register_artifact.py check --strict` (every listed file present with
-    its size and sha256, and no file outside the set; a runtime write of the set is allowed), and
+    its size and sha256, and no file outside the set; a runtime write of the set is allowed; a
+    special file or a link that leaves the copy is a failure, as the tool reports it), and
     every entry must be the copy's own: no link, no file with a second name, nothing mounted or
     belonging to the install (IWP_DIR when `install` is not given).
     """
@@ -177,8 +178,9 @@ def verify_game_copy(game, install=None):
     problems += extra_names(game, install)
     tool = _register_artifact()
     wanted = manifest()
-    differences, unlisted = tool.compare(tool.hash_tree(game, wanted), wanted, strict=True)
-    return problems + differences
+    observed, unobservable = tool.hash_tree(game, wanted)
+    differences, unlisted = tool.compare(observed, wanted, strict=True)
+    return problems + unobservable + [d for d in differences if d not in unobservable]
 
 
 def wine_env(prefix, display=None):

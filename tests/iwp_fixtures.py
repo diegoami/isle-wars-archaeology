@@ -21,6 +21,7 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "setup" / "iwp"))
+sys.path.insert(0, str(ROOT / "tools"))
 
 
 def load(name, path):
@@ -34,6 +35,7 @@ def load(name, path):
 import locations  # noqa: E402
 import prefix  # noqa: E402  (the module the cycle imports as prefixlib)
 import safeio  # noqa: E402
+import validate_records  # noqa: E402  (the pinned validator, for the canonical id)
 
 token_check = load("iwp_token_check", "setup/iwp/token_check.py")
 tokens = load("iwp_tokens", "setup/iwp/tokens.py")
@@ -48,11 +50,22 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-MANIFEST = {
-    "schema": "artifact-set/1", "id": "synthetic-1.0-00000000", "title": "synthetic", "version": "1.0",
+
+
+def registered(manifest, label="synthetic-1.0"):
+    """The manifest with `acquired` and its canonical id, which is what the pinned
+    tools/register_artifact.py accepts: it refuses a manifest whose id is not the canonical one."""
+    body = dict(manifest, acquired={"how": "generated", "when": "2026-10-04"})
+    body.pop("id", None)
+    body["id"] = f"{label}-{validate_records.canonical_set_hash(body)[:8]}"
+    return body
+
+
+MANIFEST = registered({
+    "schema": "artifact-set/1", "title": "synthetic", "version": "1.0",
     "files": [{"path": p, "bytes": len(d), "sha256": sha(d)} for p, d in sorted(FILES.items())],
     "runtime_writes": [],
-}
+})
 
 
 def tree(base):
