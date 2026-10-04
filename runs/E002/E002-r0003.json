@@ -1,0 +1,101 @@
+{
+  "schema": "run/1",
+  "run_id": "E002-r0003",
+  "experiment": "E002",
+  "arm": "opt-control",
+  "rep": 2,
+  "code_commit": "41d891a5ca36",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/spike/cycle.py@41d891a5ca36",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only; the prefix sealed (drive mapping, links, second names, mounts, the registered game copy) before anything starts and again immediately before the launch; prefix as left by setup/iwp/iwp-runtime.sh and by the previous run's reset; start_state.sha256 lists every entry of the prefix with the size and sha256 of each file and the target of each link, the registry files included"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/spike/cycle.py",
+    "sha256": "e38bade35de6d3a906dc2a1014691c3dde90a86f65958933902280e7cee93727",
+    "args": [
+      "--experiment",
+      "E002",
+      "--arm",
+      "opt-control",
+      "--script",
+      "experiments/E002-iwp-state-inventory/scripts/opt-control.steps",
+      "--may-write-saved-files",
+      "--terminate",
+      "kill"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "step script sha256",
+      "value": "951d9763ab2ba9de5d5c029337b0ff40ff895089804e61f2c046f6dcd9051bd7"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install bound read-only in the run's mount namespace",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "800x600x24"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "run.log",
+      "sha256": "fa05f16baa2aee0f58ee38ef0ee30e9e95fcd7e3bf1beba0aef871d83e969fcf",
+      "store": "release:E002"
+    }
+  ],
+  "started": "2026-10-04T06:03:23Z",
+  "ended": "2026-10-04T06:03:43Z",
+  "status": "aborted: xfwm4 did not register as the window manager within 20 s"
+}

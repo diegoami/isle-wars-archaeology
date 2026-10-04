@@ -1,0 +1,9 @@
+click 307 543
+shot all1
+click 497 543
+shot placed
+click 303 530
+click 50 196
+shot atk-e1
+click 160 432
+shot atk-bad

@@ -1,0 +1,9 @@
+watched area: x,y,w,h 262,502,276,70
+click-until: candidate that worked: 42,330 (number 3 of 44)
+s4-t.png raw RGB8 pixels sha256: c4023052a44df1e890dc195b9054f1d06a49dfb052d9b4814ebab0664eb301e1
+watched area: x,y,w,h 545,502,250,70
+click at 337,531: label changed under the pointer (s): 0.08
+click at 337,531: screen changed after the click (s): 0.01
+s4-r1.png raw RGB8 pixels sha256: 60582b9217f8eb1f2d6f1bb40146427a91e41309f4ee1d4d0b1fb74c28591af1
+s4-r2.png raw RGB8 pixels sha256: 60582b9217f8eb1f2d6f1bb40146427a91e41309f4ee1d4d0b1fb74c28591af1
+ok

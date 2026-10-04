@@ -1,0 +1,8 @@
+watch 10 502 250 70
+click 133 385
+shot e5
+watch 262 502 276 70
+click 747 395
+shot badt
+click 160 432
+shot goodt

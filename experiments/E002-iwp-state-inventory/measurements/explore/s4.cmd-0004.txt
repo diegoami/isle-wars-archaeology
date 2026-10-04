@@ -1,0 +1,7 @@
+watch 262 502 276 70
+click-until 0 192 64 16 600 456 531 495 540
+shot s4-menu
+click 417 530
+shot s4-pass1
+settle
+shot s4-pass2

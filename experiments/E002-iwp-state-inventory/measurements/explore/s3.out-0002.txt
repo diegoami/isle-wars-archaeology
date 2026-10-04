@@ -1,0 +1,9 @@
+click at 744,400: label changed under the pointer (s): no change within 2 s
+click at 744,400: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.44
+help-c.png raw RGB8 pixels sha256: ead27aa20888e12183d2aa0694711cb36dc44da9c608b0633b513303e9af9c20
+click at 744,481: label changed under the pointer (s): 0.08
+click at 744,481: screen changed after the click (s): no change within 3 s
+settle: screen unchanged between two captures (s): 0.43
+help-d.png raw RGB8 pixels sha256: a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96
+ok

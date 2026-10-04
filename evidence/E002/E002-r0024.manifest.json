@@ -1,0 +1,61 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E002-r0024",
+  "experiment": "E002",
+  "store": "release:E002",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "options.png",
+      "bytes": 175314,
+      "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "asset": "426d77e724d793dd-options.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "after-choice.png",
+      "bytes": 176189,
+      "sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "asset": "9160a38dd7b6cd83-after-choice.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "saved.png",
+      "bytes": 175039,
+      "sha256": "b823fdd7df3d4259bf02367a29803d696ec77b095ac4d7f099b5fc6e08daacf8",
+      "asset": "b823fdd7df3d4259-saved.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2657,
+      "sha256": "2906806525f775b2eb2420dbd58d69f7c972ab29d354b8b8bf1cdf03b92eb5c7",
+      "asset": "2906806525f775b2-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 4369,
+      "sha256": "d5f888e390ce1f96c7f4e27ecdaac91e10e244ade67be3bc6ea194965d76e7d3",
+      "asset": "d5f888e390ce1f96-run.log",
+      "class": "log"
+    }
+  ]
+}

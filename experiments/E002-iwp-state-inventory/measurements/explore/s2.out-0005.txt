@@ -1,0 +1,11 @@
+click at 565,532: label changed under the pointer (s): 0.08
+click at 565,532: screen changed after the click (s): 0.02
+click at 100,585: label changed under the pointer (s): 0.08
+click at 100,585: screen changed after the click (s): 0.02
+settle: screen unchanged between two captures (s): 0.44
+click at 565,532: label changed under the pointer (s): 0.08
+click at 565,532: screen changed after the click (s): 0.02
+watched area: x,y,w,h 0,495,800,100
+settle: screen unchanged between two captures (s): 0.44
+g1.png raw RGB8 pixels sha256: 1a1e25a0094ef12d92794b289f543dcacae854cb5705958f4b796c895e23a376
+ok

@@ -1,0 +1,1291 @@
+{
+  "schema": "run/1",
+  "run_id": "E002-r0001",
+  "experiment": "E002",
+  "arm": "tour",
+  "rep": 1,
+  "code_commit": "8b8079590db2",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/spike/cycle.py@8b8079590db2",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "34ac62c31ddaa5f4e9a1b975a956c94ebe935109189d0fffe8939dc2bddfa427",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only; the prefix sealed (drive mapping, links, second names, mounts, the registered game copy) before anything starts and again immediately before the launch; prefix as left by setup/iwp/iwp-runtime.sh and by the previous run's reset; start_state.sha256 lists every entry of the prefix with the size and sha256 of each file and the target of each link, the registry files included"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/spike/cycle.py",
+    "sha256": "e38bade35de6d3a906dc2a1014691c3dde90a86f65958933902280e7cee93727",
+    "args": [
+      "--experiment",
+      "E002",
+      "--arm",
+      "tour",
+      "--script",
+      "experiments/E002-iwp-state-inventory/scripts/tour.steps",
+      "--may-write-saved-files",
+      "--terminate",
+      "ui-quit"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "step script sha256",
+      "value": "a7ae0e47e8113391f9c8c779c3fc3095b056114ed79312a8337fe1c8e4c211bd"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install bound read-only in the run's mount namespace",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "800x600x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.12"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "prefix seal immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces the game sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "0,0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.54"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 800x600"
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "Islepro window properties",
+      "value": "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; "
+    },
+    {
+      "step": 2,
+      "source": "process",
+      "field": "root window at the title screen",
+      "value": "800x600x24"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached and stable, seconds after launch",
+      "value": "6.89"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753"
+    },
+    {
+      "step": 5,
+      "source": "process",
+      "field": "client window titles",
+      "value": "'Islepro'"
+    },
+    {
+      "step": 6,
+      "source": "process",
+      "field": "game process threads and resident memory (kB)",
+      "value": "threads 1, VmRSS 43608"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "title.png raw RGB8 pixels sha256",
+      "value": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "click at 320,585: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "click at 320,585: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "options-defaults.png raw RGB8 pixels sha256",
+      "value": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "click at 390,137: label changed under the pointer (s)",
+      "value": "no change within 2 s"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "click at 390,137: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "locked-armies.png raw RGB8 pixels sha256",
+      "value": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "click at 343,233: label changed under the pointer (s)",
+      "value": "no change within 2 s"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "click at 343,233: screen changed after the click (s)",
+      "value": "0.83"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "locked-human.png raw RGB8 pixels sha256",
+      "value": "443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "click at 454,389: label changed under the pointer (s)",
+      "value": "no change within 2 s"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "click at 454,389: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 16,
+      "source": "screen",
+      "field": "locked-frequency.png raw RGB8 pixels sha256",
+      "value": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c"
+    },
+    {
+      "step": 17,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 180,335,440,25"
+    },
+    {
+      "step": 18,
+      "source": "screen",
+      "field": "click-until: candidate that worked",
+      "value": "565,532 (number 3 of 3)"
+    },
+    {
+      "step": 19,
+      "source": "screen",
+      "field": "watched area",
+      "value": "whole screen"
+    },
+    {
+      "step": 20,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 21,
+      "source": "screen",
+      "field": "click at 215,585: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 21,
+      "source": "screen",
+      "field": "click at 215,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 22,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 23,
+      "source": "screen",
+      "field": "help-01.png raw RGB8 pixels sha256",
+      "value": "7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c"
+    },
+    {
+      "step": 24,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 25,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 26,
+      "source": "screen",
+      "field": "help-02.png raw RGB8 pixels sha256",
+      "value": "6f987809dc68ea38c114e7050629d354e22d8a6f6598475ffc176b0b9d079fe2"
+    },
+    {
+      "step": 27,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 28,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 29,
+      "source": "screen",
+      "field": "help-03.png raw RGB8 pixels sha256",
+      "value": "c36fcfd19ae1e1d049843771a9f629ba44da7f5c263d35fd82dd23bc18d0a080"
+    },
+    {
+      "step": 30,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 31,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 32,
+      "source": "screen",
+      "field": "help-04.png raw RGB8 pixels sha256",
+      "value": "a4f4b662442abf6a5e081ba45481e394a1074a7f66c732df39c58d8872b00ad7"
+    },
+    {
+      "step": 33,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 34,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 35,
+      "source": "screen",
+      "field": "help-05.png raw RGB8 pixels sha256",
+      "value": "ce1d2fd6d1526732868eb96fd3fa4265efd4d21296da4c48a978b513ac489ac9"
+    },
+    {
+      "step": 36,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 37,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 38,
+      "source": "screen",
+      "field": "help-06.png raw RGB8 pixels sha256",
+      "value": "86d63eb9e3ae652102de32787e8b07ae737b115445c0d69c72ea576fc605f999"
+    },
+    {
+      "step": 39,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 40,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 41,
+      "source": "screen",
+      "field": "help-07.png raw RGB8 pixels sha256",
+      "value": "2591ee9761b13fa40303579450d0472a6b6c7521c276cb39d892a30b0c55e0b3"
+    },
+    {
+      "step": 42,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 43,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 44,
+      "source": "screen",
+      "field": "help-08.png raw RGB8 pixels sha256",
+      "value": "a8dc2c2ab4f18b2140c7c147883e00db23765c66318dbab00790dab02b243a12"
+    },
+    {
+      "step": 45,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 46,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 47,
+      "source": "screen",
+      "field": "help-09.png raw RGB8 pixels sha256",
+      "value": "64c42943bc99178134c7c011b84e85e6cab7cd4f05d4067276146eb44186bbce"
+    },
+    {
+      "step": 48,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 49,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 50,
+      "source": "screen",
+      "field": "help-10.png raw RGB8 pixels sha256",
+      "value": "050cb6e2c3c168b357df5efe891c7127ff9bb31867477592ea61824942b5452c"
+    },
+    {
+      "step": 51,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 52,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 53,
+      "source": "screen",
+      "field": "help-11.png raw RGB8 pixels sha256",
+      "value": "e649f3e4e7b93a96f66c4c4825a82241d38aca42f8fdf243321f658700e9e57f"
+    },
+    {
+      "step": 54,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 56,
+      "source": "screen",
+      "field": "help-12.png raw RGB8 pixels sha256",
+      "value": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96"
+    },
+    {
+      "step": 57,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 58,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 59,
+      "source": "screen",
+      "field": "help-13.png raw RGB8 pixels sha256",
+      "value": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96"
+    },
+    {
+      "step": 60,
+      "source": "screen",
+      "field": "20 clicks at 744,481",
+      "value": "sent"
+    },
+    {
+      "step": 61,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 62,
+      "source": "screen",
+      "field": "help-14.png raw RGB8 pixels sha256",
+      "value": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96"
+    },
+    {
+      "step": 63,
+      "source": "screen",
+      "field": "click at 388,536: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 63,
+      "source": "screen",
+      "field": "click at 388,536: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 64,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 65,
+      "source": "screen",
+      "field": "click at 620,585: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 65,
+      "source": "screen",
+      "field": "click at 620,585: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 66,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 67,
+      "source": "screen",
+      "field": "scores-before.png raw RGB8 pixels sha256",
+      "value": "d5da077410f2c4730cea5b8bf2ddcf87f0a286fc5c743c65c5ff72b8792fe258"
+    },
+    {
+      "step": 68,
+      "source": "screen",
+      "field": "click at 388,516: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 68,
+      "source": "screen",
+      "field": "click at 388,516: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 69,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 70,
+      "source": "screen",
+      "field": "click at 100,585: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 70,
+      "source": "screen",
+      "field": "click at 100,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 71,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 72,
+      "source": "screen",
+      "field": "newgame-setup.png raw RGB8 pixels sha256",
+      "value": "908ec68b213724bca95216ee55fddb138ae826df7b663a0a4e9cafe57dd09387"
+    },
+    {
+      "step": 73,
+      "source": "screen",
+      "field": "click at 565,532: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 73,
+      "source": "screen",
+      "field": "click at 565,532: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 74,
+      "source": "screen",
+      "field": "board-loading.png raw RGB8 pixels sha256",
+      "value": "1a1e25a0094ef12d92794b289f543dcacae854cb5705958f4b796c895e23a376"
+    },
+    {
+      "step": 75,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 0,0,800,495"
+    },
+    {
+      "step": 76,
+      "source": "screen",
+      "field": "settle: watched area unchanged for 4 s (s)",
+      "value": "16.25"
+    },
+    {
+      "step": 77,
+      "source": "screen",
+      "field": "board-human-turn.png raw RGB8 pixels sha256",
+      "value": "2b0556d41da3ac528b70eff9f24fcbfc55bcba3a9591c2d40f29424b90141981"
+    },
+    {
+      "step": 78,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 265,530,270,26"
+    },
+    {
+      "step": 79,
+      "source": "screen",
+      "field": "click-until: candidate that worked",
+      "value": "49,261 (number 2 of 44)"
+    },
+    {
+      "step": 80,
+      "source": "screen",
+      "field": "place-selected.png raw RGB8 pixels sha256",
+      "value": "c428abe82c0da8db9a2af7879594d2f452c087526c330bdf781c573152af38bf"
+    },
+    {
+      "step": 81,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 262,502,276,70"
+    },
+    {
+      "step": 82,
+      "source": "screen",
+      "field": "click at 307,543: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 82,
+      "source": "screen",
+      "field": "click at 307,543: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 83,
+      "source": "screen",
+      "field": "place-all.png raw RGB8 pixels sha256",
+      "value": "9065d10e87187f8e965ec04cb52fcac02b2a85b0230018962d8c659fd9683991"
+    },
+    {
+      "step": 84,
+      "source": "screen",
+      "field": "click at 497,543: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 84,
+      "source": "screen",
+      "field": "click at 497,543: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 85,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.91"
+    },
+    {
+      "step": 86,
+      "source": "screen",
+      "field": "place-done.png raw RGB8 pixels sha256",
+      "value": "e8cbe23aa1b83fd8a9dd3c57adfe6860b9c59870ea543823328c4968bd663bf1"
+    },
+    {
+      "step": 87,
+      "source": "screen",
+      "field": "attack-picked: target and attacker",
+      "value": "55,193 from 49,261 (number 1 of 44)"
+    },
+    {
+      "step": 88,
+      "source": "screen",
+      "field": "attack-ready.png raw RGB8 pixels sha256",
+      "value": "c0bf78ead7d1de360292fe6eca797599a7a464370a91b99fdc42af6723b34f7a"
+    },
+    {
+      "step": 89,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 545,502,250,70"
+    },
+    {
+      "step": 90,
+      "source": "screen",
+      "field": "click at 337,531: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 90,
+      "source": "screen",
+      "field": "click at 337,531: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 91,
+      "source": "screen",
+      "field": "attack-result-1.png raw RGB8 pixels sha256",
+      "value": "cd83728723774e2cd88839edeca15bb7b3561935433d9cc78c0e42d23239cb45"
+    },
+    {
+      "step": 92,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 93,
+      "source": "screen",
+      "field": "attack-result-2.png raw RGB8 pixels sha256",
+      "value": "cd83728723774e2cd88839edeca15bb7b3561935433d9cc78c0e42d23239cb45"
+    },
+    {
+      "step": 94,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 262,502,276,70"
+    },
+    {
+      "step": 95,
+      "source": "screen",
+      "field": "click-until: candidate that worked",
+      "value": "495,540 (number 2 of 2)"
+    },
+    {
+      "step": 96,
+      "source": "screen",
+      "field": "turn-menu.png raw RGB8 pixels sha256",
+      "value": "4198407c82735d33c9e14e59167257a21d393c1ac568e79b32fb03319ff295e6"
+    },
+    {
+      "step": 97,
+      "source": "screen",
+      "field": "click at 417,530: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 97,
+      "source": "screen",
+      "field": "click at 417,530: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 98,
+      "source": "screen",
+      "field": "pass-1.png raw RGB8 pixels sha256",
+      "value": "e742c3183caad5568c2f1a6c18c8352382a457a4ee1e169445397d328691a849"
+    },
+    {
+      "step": 99,
+      "source": "screen",
+      "field": "click-any?: candidate that worked",
+      "value": "none of the 1"
+    },
+    {
+      "step": 100,
+      "source": "screen",
+      "field": "after-pass.png raw RGB8 pixels sha256",
+      "value": "22ab21492318124308b356d881b35a49d6d44c86a0b446362322b0ad39cf302e"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 0,0,800,495"
+    },
+    {
+      "step": 102,
+      "source": "screen",
+      "field": "ai-turn.png raw RGB8 pixels sha256",
+      "value": "22ab21492318124308b356d881b35a49d6d44c86a0b446362322b0ad39cf302e"
+    },
+    {
+      "step": 103,
+      "source": "screen",
+      "field": "settle: watched area unchanged for 4 s (s)",
+      "value": "22.94"
+    },
+    {
+      "step": 104,
+      "source": "screen",
+      "field": "human-turn-2.png raw RGB8 pixels sha256",
+      "value": "3df8caa4091204b1c3ab9c8d88674479adf5b1318ab4db9f182228315aedb2c0"
+    },
+    {
+      "step": 105,
+      "source": "screen",
+      "field": "watched area",
+      "value": "whole screen"
+    },
+    {
+      "step": 106,
+      "source": "screen",
+      "field": "click at 100,585: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 106,
+      "source": "screen",
+      "field": "click at 100,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 107,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 108,
+      "source": "screen",
+      "field": "loss-notice.png raw RGB8 pixels sha256",
+      "value": "108b6db3403806c32910c68d9c32352da6e07dcc3114c95ee0d06083833ee80f"
+    },
+    {
+      "step": 109,
+      "source": "screen",
+      "field": "click at 400,526: label changed under the pointer (s)",
+      "value": "0.39"
+    },
+    {
+      "step": 109,
+      "source": "screen",
+      "field": "click at 400,526: screen changed after the click (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 110,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 111,
+      "source": "file",
+      "field": "xtras/Islepro.skr: size in bytes and sha256",
+      "value": "14 25464a6d8411b9e9e5920cd130d060ae341295fdce6ae70eaa92f22b64880db0"
+    },
+    {
+      "step": 111,
+      "source": "file",
+      "field": "xtras/Islepro.skr: equals the install's file",
+      "value": "no: the install's has 13 bytes"
+    },
+    {
+      "step": 111,
+      "source": "file",
+      "field": "xtras/Islepro.skr: changed byte offsets, install>game copy",
+      "value": "0x6 8e>8f; appended at 0xd: 8a"
+    },
+    {
+      "step": 111,
+      "source": "file",
+      "field": "raw:bytes[0x0:0xe] of xtras/Islepro.skr as written by the game",
+      "value": "8e8a8e8a8e8a8f8a8e8a8e8a8e8a"
+    },
+    {
+      "step": 112,
+      "source": "screen",
+      "field": "click at 620,585: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 112,
+      "source": "screen",
+      "field": "click at 620,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 113,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 114,
+      "source": "screen",
+      "field": "scores-after.png raw RGB8 pixels sha256",
+      "value": "c7eb3b89a73cdfea8ab6849b9f31b1d598e831312c13fc55a6a14eb108078ad8"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "click at 388,516: label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "click at 388,516: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 116,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "xtras/Islepro.skr: size in bytes and sha256",
+      "value": "14 25464a6d8411b9e9e5920cd130d060ae341295fdce6ae70eaa92f22b64880db0"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "xtras/Islepro.skr: equals the install's file",
+      "value": "no: the install's has 13 bytes"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "xtras/Islepro.skr: changed byte offsets, install>game copy",
+      "value": "0x6 8e>8f; appended at 0xd: 8a"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "raw:bytes[0x0:0xe] of xtras/Islepro.skr as written by the game",
+      "value": "8e8a8e8a8e8a8f8a8e8a8e8a8e8a"
+    },
+    {
+      "step": 118,
+      "source": "file",
+      "field": "xtras/Islepro.dat: size in bytes and sha256",
+      "value": "190 a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03"
+    },
+    {
+      "step": 118,
+      "source": "file",
+      "field": "xtras/Islepro.dat: equals the install's file",
+      "value": "yes"
+    },
+    {
+      "step": 119,
+      "source": "file",
+      "field": "xtras/Isledft.dat: size in bytes and sha256",
+      "value": "15 1750f915ae4ea473d6b21493b7fe3d289fe45f2ea0d779f3cce3c40c309550df"
+    },
+    {
+      "step": 119,
+      "source": "file",
+      "field": "xtras/Isledft.dat: equals the install's file",
+      "value": "yes"
+    },
+    {
+      "step": 120,
+      "source": "file",
+      "field": "game copy so far: added/removed/changed",
+      "value": "0/0/1: ~xtras/Islepro.skr (13,)->(14,)"
+    },
+    {
+      "step": 120,
+      "source": "file",
+      "field": "prefix so far: added/removed/changed",
+      "value": "31/0/3: +dosdevices/com1; +dosdevices/com2; +dosdevices/com3; +dosdevices/com4; +dosdevices/com5; +dosdevices/com6; +dosdevices/com7; +dosdevices/com8; +drive_c/users/<user>/Temp/TempFolder.aaa; +drive_c/users/<user>/Temp/TempFolder.aaa/dirapi.dll 967168; +drive_c/users/<user>/Temp/TempFolder.aaa/iml32.dll 394752; +drive_c/users/<user>/Temp/TempFolder.aaa/msvcrt.dll 280576; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Animated GIF Asset.x32 26112; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DTTurnTable.x32 69632; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/DirectSound.x32 16384; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Flash Asset.x32 286720; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Asset.x32 49152; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Font Xtra.x32 230400; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/INetURL.x32 28672; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/MacroMix.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/Mix Services.x32 64000; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetFile.x32 41472; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/NetLingo.x32 35328; +drive_c/users/<user>/Temp/TempFolder.aaa/xtras/QT3Asset.x32 105984; ~drive_c/iwp/xtras/Islepro.skr (13,)->(14,); ~system.reg (1723327,)->(1711333,); ~user.reg (27435,)->(21504,)"
+    },
+    {
+      "step": 120,
+      "source": "file",
+      "field": "registry keys so far: added/removed/value-changed",
+      "value": "0/1/6"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "Quit label changed under the pointer (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "notice.png raw RGB8 pixels sha256",
+      "value": "f14f30a26ce8214f0dfe23275a83997f44c74c5a65e20854e148b427ea72b5a9"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "Exit Game label changed under the pointer (s)",
+      "value": "no change within 5 s"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game exit after ui-quit (s)",
+      "value": "14.73"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wine processes gone after terminate (s)",
+      "value": "2.06"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/1"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "9/0/3"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/6"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "store": "release:E002"
+    },
+    {
+      "name": "title.png",
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "store": "release:E002"
+    },
+    {
+      "name": "options-defaults.png",
+      "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "store": "release:E002"
+    },
+    {
+      "name": "locked-armies.png",
+      "sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "store": "release:E002"
+    },
+    {
+      "name": "locked-human.png",
+      "sha256": "55067d5ed102d7d92bfdce7e2d3d5507904a68f0410a1e25b3b621a9abd32e92",
+      "store": "release:E002"
+    },
+    {
+      "name": "locked-frequency.png",
+      "sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-01.png",
+      "sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-02.png",
+      "sha256": "10842580b609d049b7290bc3b9e016bb938d5d7728e2d2a044d2a74031a121bd",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-03.png",
+      "sha256": "3d404526ba3d60a66af0f7ab9c71e76f9a8a13fae436b09790a678a83340c9c3",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-04.png",
+      "sha256": "ca366d06aa6022474f98e95cb30d58281e1609f9308e50f9643a2500617553f5",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-05.png",
+      "sha256": "33d3f3474c8b1e84e1c2e691ac7e6700455ee0213aadd690318fe4d28fb54ded",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-06.png",
+      "sha256": "c84434ef3cb454516fe8128b6c453b2c7a472857f5503093ee6f2b64a77902ef",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-07.png",
+      "sha256": "5ea959aad5c8b98a0a87ccfbf4cf28b6caa91d03019bebba37a6f33b18b087d5",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-08.png",
+      "sha256": "5b7bc5f1b990e0517da14b5847976696181f9598a057e869d46deb33a742de8a",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-09.png",
+      "sha256": "7d87a3bf93b30dd0df4f67c65fd3b9bd5765209caaee7703b18430608750ec38",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-10.png",
+      "sha256": "119f1982f264fcfe20e19e36191ca807f6feb2ef1fd32c0ceac65a632501e22f",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-11.png",
+      "sha256": "fdc269c5d5fc243f15d3cb29d496d34fdc7e27f6ce7cf87cf70cb12f87736992",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-12.png",
+      "sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-13.png",
+      "sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "store": "release:E002"
+    },
+    {
+      "name": "help-14.png",
+      "sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "store": "release:E002"
+    },
+    {
+      "name": "scores-before.png",
+      "sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+      "store": "release:E002"
+    },
+    {
+      "name": "newgame-setup.png",
+      "sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "store": "release:E002"
+    },
+    {
+      "name": "board-loading.png",
+      "sha256": "007689c252d918a2b217a7b30033ea8020b413425618caef1665833908678136",
+      "store": "release:E002"
+    },
+    {
+      "name": "board-human-turn.png",
+      "sha256": "448ea9478fd8581406940cf059759336c12f5afc2f72e1fb321e0d696fd69a0d",
+      "store": "release:E002"
+    },
+    {
+      "name": "place-selected.png",
+      "sha256": "fd1480253c2908f3f729c6a774771f771a1ebab8f852011cb1ca69c6e73fc71a",
+      "store": "release:E002"
+    },
+    {
+      "name": "place-all.png",
+      "sha256": "59c1753667d72c5eaca51d69c0c92d24e9d0149d957aa3b15bef1e8afda7552f",
+      "store": "release:E002"
+    },
+    {
+      "name": "place-done.png",
+      "sha256": "99f47a518cb3b7b4402dd3354fe9762f9a1942a76923ccfa0da47fa20c505533",
+      "store": "release:E002"
+    },
+    {
+      "name": "attack-ready.png",
+      "sha256": "7ca1db9ca3019e7a21d6a90900ec2d9476e7c030ba4e570493164b62633cccc1",
+      "store": "release:E002"
+    },
+    {
+      "name": "attack-result-1.png",
+      "sha256": "84b4b1f44ff096106455f7f9ffc321af51a858e4d0139d4cb26192e60b4c21a8",
+      "store": "release:E002"
+    },
+    {
+      "name": "attack-result-2.png",
+      "sha256": "84b4b1f44ff096106455f7f9ffc321af51a858e4d0139d4cb26192e60b4c21a8",
+      "store": "release:E002"
+    },
+    {
+      "name": "turn-menu.png",
+      "sha256": "1cceb5b18427a7d4bca07d0084b461e1959b55b3d5b02fa1d36450b4b91ef72a",
+      "store": "release:E002"
+    },
+    {
+      "name": "pass-1.png",
+      "sha256": "26a839a2b8888a56bca9cd2167d728770defe558d98c27291dbb96f981d45c1c",
+      "store": "release:E002"
+    },
+    {
+      "name": "after-pass.png",
+      "sha256": "8ff170974272705e86a5d33ed8145bde4a15934d6a72a8691c00cc9456f58add",
+      "store": "release:E002"
+    },
+    {
+      "name": "ai-turn.png",
+      "sha256": "8ff170974272705e86a5d33ed8145bde4a15934d6a72a8691c00cc9456f58add",
+      "store": "release:E002"
+    },
+    {
+      "name": "human-turn-2.png",
+      "sha256": "abf0427833780aca269d7c0df59fad3ac6f55522e2c9160625704b35f27a543c",
+      "store": "release:E002"
+    },
+    {
+      "name": "loss-notice.png",
+      "sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "store": "release:E002"
+    },
+    {
+      "name": "scores-after.png",
+      "sha256": "f30ee66289086dc69896155c6adc99d70eb8b121b1a46caf2059189c6d8cf55c",
+      "store": "release:E002"
+    },
+    {
+      "name": "notice.png",
+      "sha256": "47afc4d33b5450f9d48ae734f571a3eee326255b6f36034c772e2cdfdd2494cc",
+      "store": "release:E002"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "c07a2263df060c4acc258395a4a9e7726dea2b9734ca25af4cc87c63543e9c0a",
+      "store": "release:E002"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "store": "release:E002"
+    },
+    {
+      "name": "run.log",
+      "sha256": "1e12805d2b3d6e1278aa3a71934cb920ba38bd5895f2f5d5555af3d578a7fa57",
+      "store": "release:E002"
+    }
+  ],
+  "started": "2026-10-03T23:10:44Z",
+  "ended": "2026-10-03T23:13:01Z",
+  "status": "completed"
+}

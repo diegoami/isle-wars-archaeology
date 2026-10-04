@@ -1,0 +1,43 @@
+== game copy: 13 entries after, added 0, removed 0, changed 0
+== prefix: 1070 entries after, added 31, removed 0, changed 2
+added   dosdevices/com1
+added   dosdevices/com2
+added   dosdevices/com3
+added   dosdevices/com4
+added   dosdevices/com5
+added   dosdevices/com6
+added   dosdevices/com7
+added   dosdevices/com8
+added   drive_c/users/diego/Temp/TempFolder.aaa
+added   drive_c/users/diego/Temp/TempFolder.aaa/dirapi.dll 967168
+added   drive_c/users/diego/Temp/TempFolder.aaa/iml32.dll 394752
+added   drive_c/users/diego/Temp/TempFolder.aaa/msvcrt.dll 280576
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Animated GIF Asset.x32 26112
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/DTTurnTable.x32 69632
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/DirectSound.x32 16384
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Flash Asset.x32 286720
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Font Asset.x32 49152
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Font Xtra.x32 230400
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/INetURL.x32 28672
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/MacroMix.x32 35328
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Mix Services.x32 64000
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/NetFile.x32 41472
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/NetLingo.x32 35328
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/QT3Asset.x32 105984
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/SWADCmpr.x32 52736
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/SWAStrm.x32 64512
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Sound Import Export.x32 54784
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/Text Asset.x32 50688
+added   drive_c/users/diego/Temp/TempFolder.aaa/xtras/TextXtra.x32 333824
+added   wineserver 11
+changed system.reg (1723327,) -> (1711333,)
+changed user.reg (27435,) -> (21504,)
+== registry keys: 9115 after, added 0, removed 1, changed 6
+removed system.reg: Software\\Microsoft\\Windows NT\\CurrentVersion\\NetworkCards
+changed system.reg: Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts
+changed system.reg: Software\\Microsoft\\Windows\\CurrentVersion\\Fonts
+changed system.reg: System\\CurrentControlSet\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}
+changed system.reg: System\\CurrentControlSet\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000
+changed system.reg: System\\CurrentControlSet\\Control\\Class\\{4D36E96E-E325-11CE-BFC1-08002BE10318}
+changed user.reg: Software\\Wine\\Fonts\\External Fonts

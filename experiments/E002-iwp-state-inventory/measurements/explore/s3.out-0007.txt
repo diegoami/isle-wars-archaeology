@@ -1,0 +1,2 @@
+watched area: x,y,w,h 265,530,270,26
+error: click-until: none of the 44 candidates worked

@@ -1,0 +1,5 @@
+click 388 516
+click 100 585
+settle
+click 565 532
+shot p0

@@ -1,0 +1,6 @@
+click at 100,585: label changed under the pointer (s): 0.01
+click at 100,585: screen changed after the click (s): 0.01
+ng-mid.png raw RGB8 pixels sha256: 108b6db3403806c32910c68d9c32352da6e07dcc3114c95ee0d06083833ee80f
+xtras/Islepro.dat: size in bytes and sha256: 190 a51eae9b825db3603c6e7b5da23e24b7a11fb20e3809bb99c29ed5b77e04ff03
+xtras/Islepro.dat: equals the install's file: yes
+ok

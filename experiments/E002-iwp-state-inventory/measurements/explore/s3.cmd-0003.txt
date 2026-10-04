@@ -1,0 +1,9 @@
+click 744 80
+settle
+shot hp1
+click 744 460
+settle
+shot hp2
+click 744 460
+settle
+shot hp3

@@ -1,0 +1,146 @@
+00:35:50 install read-only inside the run
+00:35:50 prefix seal before anything starts: ok
+00:35:50 Xvfb ready after 0.1 s, root 800x600x24
+00:35:51 xfwm4 registered after 0.12 s
+00:35:51 prefix seal immediately before launch: ok
+00:35:51 launched: unshare -n /usr/lib/wine/wine <game>
+00:35:52 game in a separate network namespace, interfaces seen: ['lo']
+00:35:52 window after 0.64 s at 0,0, size 800x600
+00:35:58 root window at the title screen: 800x600x24; window _NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_FOCUSED; _MOTIF_WM_HINTS(_MOTIF_WM_HINTS) = 0x3, 0x26, 0x0, 0x0, 0x0; WM_TRANSIENT_FOR:  not found.; 
+00:35:58 title screen reached 7.07 s after launch
+00:35:59 before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+00:35:59 session: waiting for s3.cmd-0001.txt in the exploration folder
+00:36:06 step 1: click 215 585
+00:36:06   click at 215,585: label changed under the pointer (s): 0.08
+00:36:06   click at 215,585: screen changed after the click (s): 0.02
+00:36:06 step 2: settle 
+00:36:07   settle: screen unchanged between two captures (s): 0.45
+00:36:07 step 3: shot help-a
+00:36:07   help-a.png raw RGB8 pixels sha256: 7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c
+00:36:07 step 4: key Next
+00:36:07   key Next sent: yes
+00:36:07 step 5: settle 
+00:36:07   settle: screen unchanged between two captures (s): 0.45
+00:36:07 step 6: shot help-b
+00:36:07   help-b.png raw RGB8 pixels sha256: 7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c
+00:36:14 step 1: click 744 400
+00:36:16   click at 744,400: label changed under the pointer (s): no change within 2 s
+00:36:16   click at 744,400: screen changed after the click (s): 0.02
+00:36:16 step 2: settle 
+00:36:16   settle: screen unchanged between two captures (s): 0.44
+00:36:16 step 3: shot help-c
+00:36:16   help-c.png raw RGB8 pixels sha256: ead27aa20888e12183d2aa0694711cb36dc44da9c608b0633b513303e9af9c20
+00:36:16 step 4: click 744 481
+00:36:20   click at 744,481: label changed under the pointer (s): 0.08
+00:36:20   click at 744,481: screen changed after the click (s): no change within 3 s
+00:36:20 step 5: settle 
+00:36:20   settle: screen unchanged between two captures (s): 0.43
+00:36:20 step 6: shot help-d
+00:36:20   help-d.png raw RGB8 pixels sha256: a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96
+00:36:30 step 1: click 744 80
+00:36:32   click at 744,80: label changed under the pointer (s): no change within 2 s
+00:36:32   click at 744,80: screen changed after the click (s): 0.02
+00:36:32 step 2: settle 
+00:36:33   settle: screen unchanged between two captures (s): 0.44
+00:36:33 step 3: shot hp1
+00:36:33   hp1.png raw RGB8 pixels sha256: a61e201d75c72f087db8dcf81954a1db205f797b4c1c6d60705221004819bf67
+00:36:33 step 4: click 744 460
+00:36:34   click at 744,460: label changed under the pointer (s): no change within 2 s
+00:36:34   click at 744,460: screen changed after the click (s): 0.02
+00:36:34 step 5: settle 
+00:36:34   settle: screen unchanged between two captures (s): 0.43
+00:36:34 step 6: shot hp2
+00:36:34   hp2.png raw RGB8 pixels sha256: 4643589b4e66dca2c39c37016a82ba45cda801aa9a6cf306e73d83066dbf83bc
+00:36:34 step 7: click 744 460
+00:36:36   click at 744,460: label changed under the pointer (s): no change within 2 s
+00:36:36   click at 744,460: screen changed after the click (s): 0.02
+00:36:36 step 8: settle 
+00:36:37   settle: screen unchanged between two captures (s): 0.44
+00:36:37 step 9: shot hp3
+00:36:37   hp3.png raw RGB8 pixels sha256: d7319557672ad5438faf8615b3e4ed28ac28447a1393cf33765a9cd441428afd
+00:36:45 step 1: click 744 80
+00:36:48   click at 744,80: label changed under the pointer (s): no change within 2 s
+00:36:48   click at 744,80: screen changed after the click (s): 0.02
+00:36:48 step 2: settle 
+00:36:48   settle: screen unchanged between two captures (s): 0.44
+00:36:48 step 3: shot top
+00:36:48   top.png raw RGB8 pixels sha256: a61e201d75c72f087db8dcf81954a1db205f797b4c1c6d60705221004819bf67
+00:36:48 step 4: click 744 481
+00:36:49   click at 744,481: label changed under the pointer (s): 0.08
+00:36:49   click at 744,481: screen changed after the click (s): 0.02
+00:36:49 step 5: click 744 481
+00:36:51   click at 744,481: label changed under the pointer (s): no change within 2 s
+00:36:51   click at 744,481: screen changed after the click (s): 0.02
+00:36:51 step 6: click 744 481
+00:36:53   click at 744,481: label changed under the pointer (s): no change within 2 s
+00:36:53   click at 744,481: screen changed after the click (s): 0.02
+00:36:53 step 7: click 744 481
+00:36:55   click at 744,481: label changed under the pointer (s): no change within 2 s
+00:36:55   click at 744,481: screen changed after the click (s): 0.02
+00:36:55 step 8: click 744 481
+00:36:58   click at 744,481: label changed under the pointer (s): no change within 2 s
+00:36:58   click at 744,481: screen changed after the click (s): 0.02
+00:36:58 step 9: settle 
+00:36:58   settle: screen unchanged between two captures (s): 0.45
+00:36:58 step 10: shot dn5
+00:36:58   dn5.png raw RGB8 pixels sha256: 8d1d712bcbb6e3263afa1acfb4bb2d0d8b0222c89b52d6cb860c1df1b3549626
+00:37:09 step 1: click 388 536
+00:37:10   click at 388,536: label changed under the pointer (s): 0.08
+00:37:10   click at 388,536: screen changed after the click (s): 0.02
+00:37:10 step 2: settle 
+00:37:10   settle: screen unchanged between two captures (s): 0.44
+00:37:10 step 3: click 320 585
+00:37:10   click at 320,585: label changed under the pointer (s): 0.01
+00:37:10   click at 320,585: screen changed after the click (s): 0.02
+00:37:10 step 4: settle 
+00:37:11   settle: screen unchanged between two captures (s): 0.43
+00:37:11 step 5: click 390 137
+00:37:13   click at 390,137: label changed under the pointer (s): no change within 2 s
+00:37:13   click at 390,137: screen changed after the click (s): 0.02
+00:37:13 step 6: shot lock-armies
+00:37:13   lock-armies.png raw RGB8 pixels sha256: 4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c
+00:37:13 step 7: click 454 389
+00:37:18   click at 454,389: label changed under the pointer (s): no change within 2 s
+00:37:18   click at 454,389: screen changed after the click (s): no change within 3 s
+00:37:18 step 8: shot lock-freq
+00:37:18   lock-freq.png raw RGB8 pixels sha256: 4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c
+00:37:18 step 9: click 518 233
+00:37:21   click at 518,233: label changed under the pointer (s): no change within 2 s
+00:37:21   click at 518,233: screen changed after the click (s): 0.02
+00:37:21 step 10: shot lock-green
+00:37:21   lock-green.png raw RGB8 pixels sha256: 443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d
+00:37:21 step 11: click 259 233
+00:37:23   click at 259,233: label changed under the pointer (s): no change within 2 s
+00:37:23   click at 259,233: screen changed after the click (s): 0.02
+00:37:23 step 12: shot lock-blue
+00:37:23   lock-blue.png raw RGB8 pixels sha256: 443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d
+00:38:14 step 1: click 565 532
+00:38:14   click at 565,532: label changed under the pointer (s): 0.08
+00:38:14   click at 565,532: screen changed after the click (s): 0.02
+00:38:14 step 2: settle 
+00:38:15   settle: screen unchanged between two captures (s): 0.43
+00:38:15 step 3: click 100 585
+00:38:15   click at 100,585: label changed under the pointer (s): 0.08
+00:38:15   click at 100,585: screen changed after the click (s): 0.02
+00:38:15 step 4: settle 
+00:38:15   settle: screen unchanged between two captures (s): 0.43
+00:38:15 step 5: click 565 532
+00:38:16   click at 565,532: label changed under the pointer (s): 0.01
+00:38:16   click at 565,532: screen changed after the click (s): 0.02
+00:38:16 step 6: watch 0 0 800 495
+00:38:16   watched area: x,y,w,h 0,0,800,495
+00:38:16 step 7: settle 4
+00:38:33   settle: watched area unchanged for 4 s (s): 17.16
+00:38:33 step 8: shot board-s3
+00:38:33   board-s3.png raw RGB8 pixels sha256: 9ebc220b51233d54d091edd5989d05fb792987923f4ebdf81cf56dc35ae698e9
+00:38:46 step 1: watch 265 530 270 26
+00:38:46   watched area: x,y,w,h 265,530,270,26
+00:38:46 step 2: click-until 168 168 168 24 1000 55 171 49 239 42 308 105 419 142 363 153 411 188 377 235 419 239 260 178 261 132 216 139 144 277 155 358 38 344 88 307 138 390 141 393 76 473 117 440 168 509 201 566 121 525 67 593 64 682 77 760 107 685 131 746 174 668 189 748 242 655 260 750 389 698 414 639 424 515 382 521 321 454 341 448 422 372 431 377 388 308 403 333 283 412 272 321 240
+00:43:23 ABORT click-until: none of the 44 candidates worked
+00:43:41 step 1: shot after-badges
+00:43:41   after-badges.png raw RGB8 pixels sha256: 2565c731bdf0367c4ad494b0c95e9b652f71b68c6e310554370d2a36924792f3
+00:44:16 session: quit
+00:44:16 wineserver -k
+00:44:17 game exit status 0
+00:44:17 processes still alive after terminate: 0
+00:44:18 reset: prefix equals its state before launch: True

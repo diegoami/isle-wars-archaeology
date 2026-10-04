@@ -1,0 +1,11 @@
+click 320 585
+settle
+click 390 137
+shot opt-armies5
+click 343 233
+shot opt-yellow
+click 251 311
+shot opt-hard
+click 454 389
+click 530 465
+shot opt-all

@@ -1,0 +1,75 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E002-r0017",
+  "experiment": "E002",
+  "store": "release:E002",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "setup.png",
+      "bytes": 175976,
+      "sha256": "e295da28e23091717b94987e0d9ba8ffc96814d2f618f2bed738ebd2699c1469",
+      "asset": "e295da28e2309171-setup.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-loading.png",
+      "bytes": 289361,
+      "sha256": "007689c252d918a2b217a7b30033ea8020b413425618caef1665833908678136",
+      "asset": "007689c252d918a2-board-loading.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-turn.png",
+      "bytes": 283561,
+      "sha256": "6706102e9d25b86295b940cd9fb26ea3e9f9fc946c9e78e4464de1b229d53cc6",
+      "asset": "6706102e9d25b862-human-turn.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "loss-notice.png",
+      "bytes": 316741,
+      "sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "asset": "5ad6d9012cdce6b9-loss-notice.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scores.png",
+      "bytes": 312099,
+      "sha256": "694651bede62cb5dd7e9ccca8b1c42840162290b4c1579832c98c7f263998f8c",
+      "asset": "694651bede62cb5d-scores.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2751,
+      "sha256": "e7370b424748488052ebe5094e22d77657c7e9710358fbf2431fcfb5f75856fc",
+      "asset": "e7370b4247484880-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 5818,
+      "sha256": "d7876d663e2c09e9371af97d3452570ce0091c3099eb728fbf285de49fd40260",
+      "asset": "d7876d663e2c09e9-run.log",
+      "class": "log"
+    }
+  ]
+}

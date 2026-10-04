@@ -1,0 +1,299 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E002-r0001",
+  "experiment": "E002",
+  "store": "release:E002",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "title.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-title.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "options-defaults.png",
+      "bytes": 175314,
+      "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "asset": "426d77e724d793dd-options-defaults.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "locked-armies.png",
+      "bytes": 176189,
+      "sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "asset": "9160a38dd7b6cd83-locked-armies.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "locked-human.png",
+      "bytes": 176246,
+      "sha256": "55067d5ed102d7d92bfdce7e2d3d5507904a68f0410a1e25b3b621a9abd32e92",
+      "asset": "55067d5ed102d7d9-locked-human.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "locked-frequency.png",
+      "bytes": 176189,
+      "sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "asset": "9160a38dd7b6cd83-locked-frequency.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-01.png",
+      "bytes": 504046,
+      "sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+      "asset": "390756985586a01d-help-01.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-02.png",
+      "bytes": 505274,
+      "sha256": "10842580b609d049b7290bc3b9e016bb938d5d7728e2d2a044d2a74031a121bd",
+      "asset": "10842580b609d049-help-02.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-03.png",
+      "bytes": 503547,
+      "sha256": "3d404526ba3d60a66af0f7ab9c71e76f9a8a13fae436b09790a678a83340c9c3",
+      "asset": "3d404526ba3d60a6-help-03.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-04.png",
+      "bytes": 506720,
+      "sha256": "ca366d06aa6022474f98e95cb30d58281e1609f9308e50f9643a2500617553f5",
+      "asset": "ca366d06aa602247-help-04.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-05.png",
+      "bytes": 508019,
+      "sha256": "33d3f3474c8b1e84e1c2e691ac7e6700455ee0213aadd690318fe4d28fb54ded",
+      "asset": "33d3f3474c8b1e84-help-05.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-06.png",
+      "bytes": 507966,
+      "sha256": "c84434ef3cb454516fe8128b6c453b2c7a472857f5503093ee6f2b64a77902ef",
+      "asset": "c84434ef3cb45451-help-06.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-07.png",
+      "bytes": 506632,
+      "sha256": "5ea959aad5c8b98a0a87ccfbf4cf28b6caa91d03019bebba37a6f33b18b087d5",
+      "asset": "5ea959aad5c8b98a-help-07.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-08.png",
+      "bytes": 505201,
+      "sha256": "5b7bc5f1b990e0517da14b5847976696181f9598a057e869d46deb33a742de8a",
+      "asset": "5b7bc5f1b990e051-help-08.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-09.png",
+      "bytes": 505501,
+      "sha256": "7d87a3bf93b30dd0df4f67c65fd3b9bd5765209caaee7703b18430608750ec38",
+      "asset": "7d87a3bf93b30dd0-help-09.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-10.png",
+      "bytes": 504263,
+      "sha256": "119f1982f264fcfe20e19e36191ca807f6feb2ef1fd32c0ceac65a632501e22f",
+      "asset": "119f1982f264fcfe-help-10.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-11.png",
+      "bytes": 502351,
+      "sha256": "fdc269c5d5fc243f15d3cb29d496d34fdc7e27f6ce7cf87cf70cb12f87736992",
+      "asset": "fdc269c5d5fc243f-help-11.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-12.png",
+      "bytes": 506371,
+      "sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "asset": "2088424b236a2607-help-12.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-13.png",
+      "bytes": 506371,
+      "sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "asset": "2088424b236a2607-help-13.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-14.png",
+      "bytes": 506371,
+      "sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "asset": "2088424b236a2607-help-14.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scores-before.png",
+      "bytes": 312098,
+      "sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+      "asset": "d816d6fb3ee277b0-scores-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "newgame-setup.png",
+      "bytes": 176005,
+      "sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "asset": "154143a1bd739503-newgame-setup.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-loading.png",
+      "bytes": 289361,
+      "sha256": "007689c252d918a2b217a7b30033ea8020b413425618caef1665833908678136",
+      "asset": "007689c252d918a2-board-loading.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-human-turn.png",
+      "bytes": 283274,
+      "sha256": "448ea9478fd8581406940cf059759336c12f5afc2f72e1fb321e0d696fd69a0d",
+      "asset": "448ea9478fd85814-board-human-turn.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "place-selected.png",
+      "bytes": 284333,
+      "sha256": "fd1480253c2908f3f729c6a774771f771a1ebab8f852011cb1ca69c6e73fc71a",
+      "asset": "fd1480253c2908f3-place-selected.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "place-all.png",
+      "bytes": 284785,
+      "sha256": "59c1753667d72c5eaca51d69c0c92d24e9d0149d957aa3b15bef1e8afda7552f",
+      "asset": "59c1753667d72c5e-place-all.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "place-done.png",
+      "bytes": 285329,
+      "sha256": "99f47a518cb3b7b4402dd3354fe9762f9a1942a76923ccfa0da47fa20c505533",
+      "asset": "99f47a518cb3b7b4-place-done.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack-ready.png",
+      "bytes": 284959,
+      "sha256": "7ca1db9ca3019e7a21d6a90900ec2d9476e7c030ba4e570493164b62633cccc1",
+      "asset": "7ca1db9ca3019e7a-attack-ready.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack-result-1.png",
+      "bytes": 284925,
+      "sha256": "84b4b1f44ff096106455f7f9ffc321af51a858e4d0139d4cb26192e60b4c21a8",
+      "asset": "84b4b1f44ff09610-attack-result-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack-result-2.png",
+      "bytes": 284925,
+      "sha256": "84b4b1f44ff096106455f7f9ffc321af51a858e4d0139d4cb26192e60b4c21a8",
+      "asset": "84b4b1f44ff09610-attack-result-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn-menu.png",
+      "bytes": 285321,
+      "sha256": "1cceb5b18427a7d4bca07d0084b461e1959b55b3d5b02fa1d36450b4b91ef72a",
+      "asset": "1cceb5b18427a7d4-turn-menu.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "pass-1.png",
+      "bytes": 278578,
+      "sha256": "26a839a2b8888a56bca9cd2167d728770defe558d98c27291dbb96f981d45c1c",
+      "asset": "26a839a2b8888a56-pass-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "after-pass.png",
+      "bytes": 276070,
+      "sha256": "8ff170974272705e86a5d33ed8145bde4a15934d6a72a8691c00cc9456f58add",
+      "asset": "8ff170974272705e-after-pass.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "ai-turn.png",
+      "bytes": 276070,
+      "sha256": "8ff170974272705e86a5d33ed8145bde4a15934d6a72a8691c00cc9456f58add",
+      "asset": "8ff170974272705e-ai-turn.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-turn-2.png",
+      "bytes": 283716,
+      "sha256": "abf0427833780aca269d7c0df59fad3ac6f55522e2c9160625704b35f27a543c",
+      "asset": "abf0427833780aca-human-turn-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "loss-notice.png",
+      "bytes": 316741,
+      "sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "asset": "5ad6d9012cdce6b9-loss-notice.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scores-after.png",
+      "bytes": 312126,
+      "sha256": "f30ee66289086dc69896155c6adc99d70eb8b121b1a46caf2059189c6d8cf55c",
+      "asset": "f30ee66289086dc6-scores-after.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "notice.png",
+      "bytes": 201777,
+      "sha256": "47afc4d33b5450f9d48ae734f571a3eee326255b6f36034c772e2cdfdd2494cc",
+      "asset": "47afc4d33b5450f9-notice.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 1170,
+      "sha256": "c07a2263df060c4acc258395a4a9e7726dea2b9734ca25af4cc87c63543e9c0a",
+      "asset": "c07a2263df060c4a-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 16874,
+      "sha256": "1e12805d2b3d6e1278aa3a71934cb920ba38bd5895f2f5d5555af3d578a7fa57",
+      "asset": "1e12805d2b3d6e12-run.log",
+      "class": "log"
+    }
+  ]
+}
