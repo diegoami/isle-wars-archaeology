@@ -54,3 +54,11 @@ file is append-only. A changed design is a new experiment, or `v2/`.
   `evidence/E004/E004-r<nnnn>.manifest.json` for each repeat, and refuses to start when runtime, setup,
   tools or formats have uncommitted changes.
 - `runtime/iwp/driver/session.py`: the API a later experiment imports.
+
+## Rework round 1 (PR #54)
+
+Appended after round 0's review. The design above is unchanged. The driver changed (a token per command for
+the clean-up, a recovery gate, bounds on every wait and helper, an input required between the two
+screenshots), and its arms were run again as a new batch, E004-r0030 to r0045 at `a464f266d8ae`, beside the
+earlier ones (r0001 to r0016, r0017 to r0029), which stay. Each batch's tables are made once, by
+`measurements/make_tables.py FIRST LAST`.
