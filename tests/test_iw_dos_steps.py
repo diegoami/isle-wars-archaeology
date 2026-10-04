@@ -49,6 +49,8 @@ class ParseTest(unittest.TestCase):
         rclick-change 7 8
         wait-exit
         wait-exit 5
+        click-until 283 323 258 305 155 40 255 255 85 300
+        click-until 283 323 258 305 155 40 255 255 85 300 5
         choose-attack
         click-mine
         rclick-mine
@@ -62,7 +64,9 @@ class ParseTest(unittest.TestCase):
             ("wait-stable", ()), ("wait-change", (20,)), ("wait-change", (5,)),
             ("shot", ("level-dialog.png",)), ("files", ()), ("key", ("Return",)), ("key", ("c",)), ("key", ("e",)),
             ("savestate", ()), ("rclick", (1, 2)), ("click-change", (5, 6, 6)), ("click-change", (5, 6, 9)),
-            ("rclick-change", (7, 8, 6)), ("wait-exit", (90,)), ("wait-exit", (5,)), ("choose-attack", ()),
+            ("rclick-change", (7, 8, 6)), ("wait-exit", (90,)), ("wait-exit", (5,)),
+            ("click-until", (283, 323, (258, 305, 155, 40), (255, 255, 85), 300, 12)),
+            ("click-until", (283, 323, (258, 305, 155, 40), (255, 255, 85), 300, 5)), ("choose-attack", ()),
             ("click-mine", ()), ("rclick-mine", ()), ("click-target", ()), ("rclick-target", ())])
 
     def test_anything_the_grammar_does_not_list_is_refused(self):
@@ -74,7 +78,9 @@ class ParseTest(unittest.TestCase):
                     "until 1 2 3 4 1 2 3", "until 1 2 3 4 1 2 3 4 0", "run ls", "shell ls", "",
                     "key u", "key r", "key Upgrade", "click-change 1", "click-change 1 2 0", "click-change 700 2",
                     "rclick 640 0", "wait-exit 0", "click-mine", "rclick-target\nchoose-attack",
-                    "choose-attack 1", "click-mine 1"):
+                    "choose-attack 1", "click-mine 1", "click-until 1 2 3 4 5 6 7 8 9",
+                    "click-until 700 2 3 4 5 6 7 8 9 10", "click-until 1 2 3 4 5 6 7 8 300 1",
+                    "click-until 1 2 3 4 5 6 7 8 9 1 0"):
             with self.subTest(bad):
                 if bad == "":
                     self.assertEqual(navsteps.parse(bad), [])
@@ -121,6 +127,8 @@ class StepsWorld(seal.CycleWorld):
         made.screen = FakeScreen()
         self.calls = []
         self.ignored_clicks = 0
+        self.click_count = 0
+        self.conquer_at = 10 ** 6
         made.snap_before = cycle.snapshot_tree(made.game)
         return made
 
@@ -130,6 +138,9 @@ class StepsWorld(seal.CycleWorld):
             if cmd[:2] == ["xdotool", "mousemove"]:
                 made.screen.current = b"pointer"
             elif cmd[:2] == ["xdotool", "click"]:
+                self.click_count += 1
+                if self.click_count >= self.conquer_at:
+                    made.screen.colour = 999
                 if self.ignored_clicks > 0:
                     self.ignored_clicks -= 1
                 else:
@@ -449,6 +460,24 @@ class MoreNavigateTest(StepsWorld):
         self.assertFalse(made.after_screen_ok)
         self.assertNotIn("never.png", [n for n, _, _ in made.outputs])
         self.assertIn("no-change-101.png", [n for n, _, _ in made.outputs])
+
+    def test_click_until_clicks_one_roll_at_a_time_until_the_screen_shows_the_move_panel(self):
+        made = self.make_steps("click-until 283 323 258 305 155 40 255 255 85 300\nshot done\n")
+        self.conquer_at = 3
+        self.navigate(made)
+        self.assertEqual([c[1] for c in self.calls], ["mousemove", "click", "click", "click"])
+        self.assertIn("done.png", [n for n, _, _ in made.outputs])
+
+    def test_click_until_gives_up_after_its_clicks_and_aborts(self):
+        made = self.make_steps("click-until 283 323 258 305 155 40 255 255 85 300 4\nshot done\n")
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.load_script()
+            made.navigate()
+        self.assertEqual([c[1] for c in self.calls].count("click"), 4)
+        self.assertIn("did not appear after 4 clicks", made.status)
+        self.assertNotIn("done.png", [n for n, _, _ in made.outputs])
+        self.assertIn("until-failed-101.png", [n for n, _, _ in made.outputs])
 
     def test_wait_exit_records_whether_the_game_ended_by_itself(self):
         made = self.make_steps("wait-exit 5\n")

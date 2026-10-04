@@ -1,0 +1,50 @@
+20:04:32 IW_DOS_DIR read-only inside the run
+20:04:32 run copy before anything starts: ok
+20:04:32 Xvfb ready after 0.1 s
+20:04:32 run copy and configuration immediately before launch: ok
+20:04:32 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+20:04:32 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+20:04:33 window 2097157 at (80, 100) after 1.72 s
+20:04:49 option box reached 17.13 s after launch
+20:04:49 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+20:04:49 step 1: click-change 60 32 6
+20:04:50 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+20:04:50 step 3: wait-stable
+20:04:50 step 4: shot select-level.png
+20:04:50 select-level.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+20:04:50 step 5: click-change 315 168 6
+20:04:51 step 6: shot starting-armies.png
+20:04:51 starting-armies.png: pixels 2a773602d344c338, file 4d03e6ad09594904
+20:04:51 step 7: click-change 315 169 6
+20:04:53 step 8: shot board-before-start.png
+20:04:53 board-before-start.png: pixels 1206c85a085c630a, file 8ccc523f657ad769
+20:04:53 step 9: files
+20:04:53 step 10: click-change 510 22 6
+20:05:00 step 11: until (390, 10, 230, 20) (170, 170, 170) 800 150
+20:05:27 step 12: wait-stable
+20:05:29 step 13: shot human-turn.png
+20:05:29 human-turn.png: pixels 1a2964822a3a4ed6, file 39af0b2951bee7c1
+20:05:29 step 14: files
+20:05:29 step 15: click-change 412 20 6
+20:05:30 step 16: shot scoreboard.png
+20:05:30 scoreboard.png: pixels 4756100fff9f6e28, file 653b2e9a566c09f6
+20:05:30 step 17: click-change 480 236 6
+20:05:35 step 18: shot back-on-board.png
+20:05:36 back-on-board.png: pixels ed5a66cc8fbfac4d, file ba36b01c5ba23ad2
+20:05:36 step 19: click-change 459 20 6
+20:05:36 step 20: shot sound-clicked.png
+20:05:36 sound-clicked.png: pixels f6a750b84903c2ee, file 633cb99fc009cbd7
+20:05:36 step 21: click-change 459 20 6
+20:05:38 step 22: shot sound-clicked-again.png
+20:05:38 sound-clicked-again.png: pixels 703d4d30c7b9439a, file f08bf9036bd1d28e
+20:05:38 step 23: click-change 507 20 6
+20:05:40 step 24: shot speed-panel.png
+20:05:40 speed-panel.png: pixels acca38b1233d45ad, file b089be0b9fba23c3
+20:05:40 step 25: click-change 459 20 6
+20:05:41 step 26: shot speed-faster.png
+20:05:41 speed-faster.png: pixels d4f2411f49950d45, file 1f4f8e42db42e448
+20:05:41 step 27: files
+20:05:41 DOSBox-X exit status 0, 0.05 s after term
+20:05:41 processes still alive after terminate: 0
+20:05:41 reset: run copy: copied 0, removed 2
+20:05:41 reset: run copy equals its state before launch: True

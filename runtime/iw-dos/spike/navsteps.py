@@ -13,6 +13,11 @@ Coordinates are inside the game's 640x350 window.
                          click that must change the screen (a dialog, "click to continue"): the game
                          sometimes ignores a click made while it is drawing
     rclick-change X Y [S]  the same with the right button
+    click-until X Y RX RY RW RH R G B MIN [N]
+                         click X,Y, wait up to 3 s for more than MIN pixels of (R,G,B) in the
+                         rectangle RX,RY,RW,RH, and click again if they are not there; at most N clicks
+                         (default 12), then the run aborts. For ATTACK: each click is one roll of the
+                         dice and the battle may need several
     wait-stable          poll until two captures 0.4 s apart are equal (30 s)
     wait-change [S]      poll until the screen differs from the last wait or shot (default 20 s)
     until X Y W H R G B MIN [S]
@@ -24,7 +29,7 @@ Coordinates are inside the game's 640x350 window.
                          random in every run, so a script cannot name a country; the run aborts when
                          Blue has none. The choice is recorded.
     click-mine, rclick-mine, click-target, rclick-target
-                         click the number box of the remembered country (left or right button)
+                         click the number box of the remembered country (left or right button), as click-change does
     shot NAME            capture the game window to NAME.png (PNG, deterministic bytes)
     files                record the run copy's added, removed and changed files since the launch
     key NAME             press and release one key of KEYS (the game is mouse-driven; this is for
@@ -75,6 +80,16 @@ def parse(text):
             x, y = _ints(words, 2, line)
             _point(x, y, line)
             steps.append((verb, (x, y)))
+        elif verb == "click-until":
+            if len(words) not in (10, 11):
+                raise Refused(f"click-until takes X Y RX RY RW RH R G B MIN [N]: {line!r}")
+            x, y, rx, ry, rw, rh, r, g, b, count, tries = _ints(words + ([] if len(words) == 11 else ["12"]), 11, line)
+            _point(x, y, line)
+            _point(rx, ry, line)
+            _point(rx + rw - 1, ry + rh - 1, line)
+            if min(rw, rh) < 1 or max(r, g, b) > 255 or tries < 1:
+                raise Refused(f"click-until has a bad rectangle, colour or count: {line!r}")
+            steps.append((verb, (x, y, (rx, ry, rw, rh), (r, g, b), count, tries)))
         elif verb in ("click-change", "rclick-change"):
             x, y, seconds = _ints(words + ([] if len(words) == 3 else ["6"]), 3, line, lowest=0)
             _point(x, y, line)

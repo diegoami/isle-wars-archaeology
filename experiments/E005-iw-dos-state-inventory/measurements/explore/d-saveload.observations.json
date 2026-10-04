@@ -1,0 +1,728 @@
+[
+ {
+  "step": 0,
+  "source": "file",
+  "field": "steps script sha256",
+  "value": "780313a8ac5ff9302bb268127f3bed9f6a66ac584c7ca04a0a0f592d4aa51d23"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "IW_DOS_DIR bound read-only in the run's mount namespace",
+  "value": "yes"
+ },
+ {
+  "step": 0,
+  "source": "file",
+  "field": "run copy check before anything starts: problems found",
+  "value": "0"
+ },
+ {
+  "step": 0,
+  "source": "file",
+  "field": "DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game",
+  "value": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "xvfb ready (s)",
+  "value": "0.11"
+ },
+ {
+  "step": 1,
+  "source": "file",
+  "field": "run copy check immediately before launch: problems found",
+  "value": "0"
+ },
+ {
+  "step": 1,
+  "source": "file",
+  "field": "configuration check immediately before launch: problems found",
+  "value": "0"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "DOSBox-X in a network namespace other than the outer process's",
+  "value": "yes"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "network interfaces DOSBox-X sees",
+  "value": "lo"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "DOSBox-X window at 640x350 after launch (s)",
+  "value": "1.72"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "DOSBox-X window position",
+  "value": "80,100"
+ },
+ {
+  "step": 2,
+  "source": "screen",
+  "field": "option box reached and stable, seconds after launch",
+  "value": "17.14"
+ },
+ {
+  "step": 3,
+  "source": "screen",
+  "field": "before.png raw RGB8 pixels sha256",
+  "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+ },
+ {
+  "step": 101,
+  "source": "screen",
+  "field": "pointer drawn at 60,32 (s)",
+  "value": "0.1"
+ },
+ {
+  "step": 101,
+  "source": "process",
+  "field": "left click at 60,32",
+  "value": "sent"
+ },
+ {
+  "step": 101,
+  "source": "screen",
+  "field": "screen changed after click 1 at 60,32 (s)",
+  "value": "0.03"
+ },
+ {
+  "step": 101,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.45"
+ },
+ {
+  "step": 102,
+  "source": "screen",
+  "field": "more than 800 pixels of (170, 85, 0) in (272, 138, 80, 18) after (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 103,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.46"
+ },
+ {
+  "step": 104,
+  "source": "screen",
+  "field": "select-level.png raw RGB8 pixels sha256",
+  "value": "c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4"
+ },
+ {
+  "step": 105,
+  "source": "screen",
+  "field": "pointer drawn at 315,168 (s)",
+  "value": "0.09"
+ },
+ {
+  "step": 105,
+  "source": "process",
+  "field": "left click at 315,168",
+  "value": "sent"
+ },
+ {
+  "step": 105,
+  "source": "screen",
+  "field": "screen changed after click 1 at 315,168 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 105,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 106,
+  "source": "screen",
+  "field": "starting-armies.png raw RGB8 pixels sha256",
+  "value": "2a773602d344c338aa2e06c9de072f5e90d95884b71c23ba001f144edb61224d"
+ },
+ {
+  "step": 107,
+  "source": "screen",
+  "field": "pointer drawn at 315,169 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 107,
+  "source": "process",
+  "field": "left click at 315,169",
+  "value": "sent"
+ },
+ {
+  "step": 107,
+  "source": "screen",
+  "field": "screen changed after click 1 at 315,169 (s)",
+  "value": "0.05"
+ },
+ {
+  "step": 107,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "1.62"
+ },
+ {
+  "step": 108,
+  "source": "screen",
+  "field": "board-before-start.png raw RGB8 pixels sha256",
+  "value": "2696ce6a4192b514eda7c59e112e6661eb6969a927072d0d3f7ac0e4e3960ad7"
+ },
+ {
+  "step": 109,
+  "source": "file",
+  "field": "run copy at step 9: added/removed/changed",
+  "value": "2/0/0"
+ },
+ {
+  "step": 109,
+  "source": "file",
+  "field": "run copy at step 9: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 109,
+  "source": "file",
+  "field": "run copy at step 9: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 109,
+  "source": "file",
+  "field": "run copy at step 9: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 109,
+  "source": "file",
+  "field": "run copy at step 9: added ISLEWAR.SCR: hex",
+  "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 110,
+  "source": "screen",
+  "field": "pointer drawn at 510,22 (s)",
+  "value": "no change within 5 s"
+ },
+ {
+  "step": 110,
+  "source": "process",
+  "field": "left click at 510,22",
+  "value": "sent"
+ },
+ {
+  "step": 110,
+  "source": "screen",
+  "field": "screen changed after click 1 at 510,22 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 110,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 111,
+  "source": "screen",
+  "field": "more than 800 pixels of (170, 170, 170) in (390, 10, 230, 20) after (s)",
+  "value": "6.54"
+ },
+ {
+  "step": 112,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "2.07"
+ },
+ {
+  "step": 113,
+  "source": "screen",
+  "field": "human-turn.png raw RGB8 pixels sha256",
+  "value": "ac1dc81412c7656ac3a5569b6b5eff7e4552bc04ebb7a6e04d48ba32be05e689"
+ },
+ {
+  "step": 114,
+  "source": "file",
+  "field": "run copy at step 14: added/removed/changed",
+  "value": "2/0/0"
+ },
+ {
+  "step": 114,
+  "source": "file",
+  "field": "run copy at step 14: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 114,
+  "source": "file",
+  "field": "run copy at step 14: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 114,
+  "source": "file",
+  "field": "run copy at step 14: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 114,
+  "source": "file",
+  "field": "run copy at step 14: added ISLEWAR.SCR: hex",
+  "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 115,
+  "source": "screen",
+  "field": "pointer drawn at 554,20 (s)",
+  "value": "0.09"
+ },
+ {
+  "step": 115,
+  "source": "process",
+  "field": "left click at 554,20",
+  "value": "sent"
+ },
+ {
+  "step": 115,
+  "source": "screen",
+  "field": "screen changed after click 1 at 554,20 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 115,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 116,
+  "source": "screen",
+  "field": "save-turn1.png raw RGB8 pixels sha256",
+  "value": "33ccf3b0c2433dea72d7ad4ecc97425ed69277273735913ba97e0fab404114cf"
+ },
+ {
+  "step": 117,
+  "source": "file",
+  "field": "run copy at step 17: added/removed/changed",
+  "value": "3/0/0"
+ },
+ {
+  "step": 117,
+  "source": "file",
+  "field": "run copy at step 17: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 117,
+  "source": "file",
+  "field": "run copy at step 17: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 117,
+  "source": "file",
+  "field": "run copy at step 17: added ISLEWAR.SAV: bytes, sha256",
+  "value": "536 971fbbc9c2b8aa2b0556a71d56bc691d393955bd63d92356915171072c796156"
+ },
+ {
+  "step": 117,
+  "source": "file",
+  "field": "run copy at step 17: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 117,
+  "source": "file",
+  "field": "run copy at step 17: added ISLEWAR.SCR: hex",
+  "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 118,
+  "source": "screen",
+  "field": "pointer drawn at 602,20 (s)",
+  "value": "1.39"
+ },
+ {
+  "step": 118,
+  "source": "process",
+  "field": "left click at 602,20",
+  "value": "sent"
+ },
+ {
+  "step": 118,
+  "source": "screen",
+  "field": "screen changed after click 1 at 602,20 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 118,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.98"
+ },
+ {
+  "step": 119,
+  "source": "screen",
+  "field": "concede-dialog.png raw RGB8 pixels sha256",
+  "value": "eafdb23747dc8777ce3aabcc80f4d49808b9de016b5affd7499f83420c0239ad"
+ },
+ {
+  "step": 120,
+  "source": "screen",
+  "field": "pointer drawn at 287,332 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 120,
+  "source": "process",
+  "field": "left click at 287,332",
+  "value": "sent"
+ },
+ {
+  "step": 120,
+  "source": "screen",
+  "field": "screen changed after click 1 at 287,332 (s)",
+  "value": "0.01"
+ },
+ {
+  "step": 120,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 121,
+  "source": "screen",
+  "field": "scoreboard-after-concede.png raw RGB8 pixels sha256",
+  "value": "000c628555caea937cf2f61bb8e371042466e287245a00c8841a8f1bb906e850"
+ },
+ {
+  "step": 122,
+  "source": "file",
+  "field": "run copy at step 22: added/removed/changed",
+  "value": "3/0/0"
+ },
+ {
+  "step": 122,
+  "source": "file",
+  "field": "run copy at step 22: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 122,
+  "source": "file",
+  "field": "run copy at step 22: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 122,
+  "source": "file",
+  "field": "run copy at step 22: added ISLEWAR.SAV: bytes, sha256",
+  "value": "536 971fbbc9c2b8aa2b0556a71d56bc691d393955bd63d92356915171072c796156"
+ },
+ {
+  "step": 122,
+  "source": "file",
+  "field": "run copy at step 22: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 122,
+  "source": "file",
+  "field": "run copy at step 22: added ISLEWAR.SCR: hex",
+  "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 123,
+  "source": "screen",
+  "field": "pointer drawn at 480,236 (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 123,
+  "source": "process",
+  "field": "left click at 480,236",
+  "value": "sent"
+ },
+ {
+  "step": 123,
+  "source": "screen",
+  "field": "screen changed after click 1 at 480,236 (s)",
+  "value": "0.26"
+ },
+ {
+  "step": 123,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 124,
+  "source": "screen",
+  "field": "game-over.png raw RGB8 pixels sha256",
+  "value": "c3b28500c9a1fa7d366d2131ec73c5ba1a365165e8e66a27938ea21ccb944507"
+ },
+ {
+  "step": 125,
+  "source": "file",
+  "field": "run copy at step 25: added/removed/changed",
+  "value": "3/0/0"
+ },
+ {
+  "step": 125,
+  "source": "file",
+  "field": "run copy at step 25: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 125,
+  "source": "file",
+  "field": "run copy at step 25: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 125,
+  "source": "file",
+  "field": "run copy at step 25: added ISLEWAR.SAV: bytes, sha256",
+  "value": "536 971fbbc9c2b8aa2b0556a71d56bc691d393955bd63d92356915171072c796156"
+ },
+ {
+  "step": 125,
+  "source": "file",
+  "field": "run copy at step 25: added ISLEWAR.SCR: bytes, sha256",
+  "value": "21 e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893"
+ },
+ {
+  "step": 125,
+  "source": "file",
+  "field": "run copy at step 25: added ISLEWAR.SCR: hex",
+  "value": "302c20310d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 126,
+  "source": "screen",
+  "field": "pointer drawn at 287,332 (s)",
+  "value": "0.03"
+ },
+ {
+  "step": 126,
+  "source": "process",
+  "field": "left click at 287,332",
+  "value": "sent"
+ },
+ {
+  "step": 126,
+  "source": "screen",
+  "field": "screen changed after click 1 at 287,332 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 126,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 127,
+  "source": "screen",
+  "field": "more than 150 pixels of (170, 0, 0) in (28, 22, 66, 18) after (s)",
+  "value": "7.52"
+ },
+ {
+  "step": 128,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 129,
+  "source": "screen",
+  "field": "option-box-again.png raw RGB8 pixels sha256",
+  "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+ },
+ {
+  "step": 130,
+  "source": "screen",
+  "field": "pointer drawn at 60,58 (s)",
+  "value": "0.09"
+ },
+ {
+  "step": 130,
+  "source": "process",
+  "field": "left click at 60,58",
+  "value": "sent"
+ },
+ {
+  "step": 130,
+  "source": "screen",
+  "field": "screen changed after click 1 at 60,58 (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 130,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "4.19"
+ },
+ {
+  "step": 131,
+  "source": "screen",
+  "field": "after-load.png raw RGB8 pixels sha256",
+  "value": "7dfa0140807e4d2fb943e84ad938241936f23d80347e70a0a49581077a2a94d8"
+ },
+ {
+  "step": 132,
+  "source": "screen",
+  "field": "more than 800 pixels of (170, 170, 170) in (390, 10, 230, 20) after (s)",
+  "value": "2.45"
+ },
+ {
+  "step": 133,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.97"
+ },
+ {
+  "step": 134,
+  "source": "screen",
+  "field": "loaded-human-turn.png raw RGB8 pixels sha256",
+  "value": "a5c0eba1bb92ff00ab48fa0074b82d98e7f85666a5d874a15c5554eb8c95eace"
+ },
+ {
+  "step": 135,
+  "source": "file",
+  "field": "run copy at step 35: added/removed/changed",
+  "value": "3/0/0"
+ },
+ {
+  "step": 135,
+  "source": "file",
+  "field": "run copy at step 35: added ISLEWAR.DFT: bytes, sha256",
+  "value": "15 664c571ee5c1039c3be060623db8140905cab0e2a1ef3496de36db8191dbd904"
+ },
+ {
+  "step": 135,
+  "source": "file",
+  "field": "run copy at step 35: added ISLEWAR.DFT: hex",
+  "value": "2031200d0a2031200d0a2032200d0a"
+ },
+ {
+  "step": 135,
+  "source": "file",
+  "field": "run copy at step 35: added ISLEWAR.SAV: bytes, sha256",
+  "value": "536 971fbbc9c2b8aa2b0556a71d56bc691d393955bd63d92356915171072c796156"
+ },
+ {
+  "step": 135,
+  "source": "file",
+  "field": "run copy at step 35: added ISLEWAR.SCR: bytes, sha256",
+  "value": "21 e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893"
+ },
+ {
+  "step": 135,
+  "source": "file",
+  "field": "run copy at step 35: added ISLEWAR.SCR: hex",
+  "value": "302c20310d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 9,
+  "source": "process",
+  "field": "DOSBox-X exit after term (s)",
+  "value": "0.05"
+ },
+ {
+  "step": 9,
+  "source": "process",
+  "field": "DOSBox-X exit status",
+  "value": "0"
+ },
+ {
+  "step": 10,
+  "source": "process",
+  "field": "processes of this run still alive after terminate",
+  "value": "0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added/removed/changed entries",
+  "value": "3/0/0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added ISLEWAR.DFT: bytes, sha256",
+  "value": "15 664c571ee5c1039c3be060623db8140905cab0e2a1ef3496de36db8191dbd904"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added ISLEWAR.SAV: bytes, sha256",
+  "value": "536 971fbbc9c2b8aa2b0556a71d56bc691d393955bd63d92356915171072c796156"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added ISLEWAR.SCR: bytes, sha256",
+  "value": "21 e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added/removed/changed",
+  "value": "3/0/0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.DFT: bytes, sha256",
+  "value": "15 664c571ee5c1039c3be060623db8140905cab0e2a1ef3496de36db8191dbd904"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.DFT: hex",
+  "value": "2031200d0a2031200d0a2032200d0a"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.SAV: bytes, sha256",
+  "value": "536 971fbbc9c2b8aa2b0556a71d56bc691d393955bd63d92356915171072c796156"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.SCR: bytes, sha256",
+  "value": "21 e8d21bc902a1e235e0f909ec4a826121f6e7cd1d80a88ab87cc8e201b6e32893"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.SCR: hex",
+  "value": "302c20310d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 11,
+  "source": "file",
+  "field": "run copy after reset equals the run copy before launch",
+  "value": "yes"
+ },
+ {
+  "step": 12,
+  "source": "process",
+  "field": "cycle seconds, start to end of clean-up",
+  "value": "63"
+ }
+]

@@ -499,6 +499,7 @@ class Cycle:
             drawn = poll(lambda: self.screen.raw() != before, 5, 0.05)
             self.observe(step, "screen", f"pointer drawn at {x},{y} (s)", "no change within 5 s" if drawn is None else drawn)
             self.pointer = (x, y)
+            poll(self.screen.stable, 5, 0.05)      # the pointer may be drawn in two frames: click on a still screen
         self.ref = self.screen.raw()
         run(["xdotool", "click", button], env=self.env)
         self.observe(step, "process", f"{'left' if button == '1' else 'right'} click at {x},{y}", "sent")
@@ -518,6 +519,19 @@ class Cycle:
                 return
         self.shot(f"no-change-{step}.png", step)
         self.fail(f"step {step - 100}: the screen never changed after three clicks at {x},{y}")
+
+    def step_click_until(self, step, x, y, rect, colour, count, tries):
+        """Click until more than `count` pixels of `colour` are in `rect`: one click per try, 3 s each."""
+        for attempt in range(1, tries + 1):
+            self.step_click(step, x, y)
+            seen = poll(lambda: self.screen.count(rect, colour) > count, 3, 0.1)
+            if seen is not None:
+                self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after click {attempt} at {x},{y} (s)", seen)
+                self.step_wait_stable(step)
+                return
+        self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after {tries} clicks at {x},{y}", "not seen")
+        self.shot(f"until-failed-{step}.png", step)
+        self.fail(f"step {step - 100}: the expected screen did not appear after {tries} clicks at {x},{y}")
 
     def step_rclick_change(self, step, x, y, seconds):
         self.step_click_change(step, x, y, seconds, "3")
@@ -545,16 +559,16 @@ class Cycle:
         self.observe(step, "screen", "chosen: mine (Blue) and target (enemy neighbour)", f"{self.mine} {self.target}")
 
     def step_click_mine(self, step):
-        self.step_click(step, *board.BOXES[self.mine])
+        self.step_click_change(step, *board.BOXES[self.mine], 6)
 
     def step_rclick_mine(self, step):
-        self.step_click(step, *board.BOXES[self.mine], "3")
+        self.step_click_change(step, *board.BOXES[self.mine], 6, "3")
 
     def step_click_target(self, step):
-        self.step_click(step, *board.BOXES[self.target])
+        self.step_click_change(step, *board.BOXES[self.target], 6)
 
     def step_rclick_target(self, step):
-        self.step_click(step, *board.BOXES[self.target], "3")
+        self.step_click_change(step, *board.BOXES[self.target], 6, "3")
 
     def step_wait_stable(self, step):
         waited = poll(self.screen.stable, 30, 0.1)
