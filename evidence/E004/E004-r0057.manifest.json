@@ -1,0 +1,33 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E004-r0057",
+  "experiment": "E004",
+  "store": "release:E004",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "changes.log",
+      "bytes": 2635,
+      "sha256": "296de00d18bbd386dbbbad8981619233cccf97c6b451216d266053bf4c3e5b4e",
+      "asset": "296de00d18bbd386-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 881,
+      "sha256": "4911d29421a8dce133261a77164a55de28b25e7821a03e516b09a570b2848baf",
+      "asset": "4911d29421a8dce1-run.log",
+      "class": "log"
+    }
+  ]
+}
