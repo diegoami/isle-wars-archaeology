@@ -1,0 +1,15 @@
++ main session at PR head e113904
+== 5
+ready
+exit 0
+ready
+exit 0
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+ok: iw-dos-3.1-30121376
+exit 0
+== 6
+iwp-2.0-996e86c5
+iw-dos-3.1-30121376
