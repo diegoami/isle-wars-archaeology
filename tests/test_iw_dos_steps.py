@@ -40,14 +40,30 @@ class ParseTest(unittest.TestCase):
         shot level-dialog
         files
         key Return
+        key c
+        key e
         savestate
+        rclick 1 2
+        click-change 5 6
+        click-change 5 6 9
+        rclick-change 7 8
+        wait-exit
+        wait-exit 5
+        choose-attack
+        click-mine
+        rclick-mine
+        click-target
+        rclick-target
         """
         self.assertEqual(navsteps.parse(text), [
             ("click", (60, 32)),
             ("until", ((272, 138, 80, 18), (170, 85, 0), 800, 20)),
             ("until", ((0, 0, 10, 10), (1, 2, 3), 5, 7)),
             ("wait-stable", ()), ("wait-change", (20,)), ("wait-change", (5,)),
-            ("shot", ("level-dialog.png",)), ("files", ()), ("key", ("Return",)), ("savestate", ())])
+            ("shot", ("level-dialog.png",)), ("files", ()), ("key", ("Return",)), ("key", ("c",)), ("key", ("e",)),
+            ("savestate", ()), ("rclick", (1, 2)), ("click-change", (5, 6, 6)), ("click-change", (5, 6, 9)),
+            ("rclick-change", (7, 8, 6)), ("wait-exit", (90,)), ("wait-exit", (5,)), ("choose-attack", ()),
+            ("click-mine", ()), ("rclick-mine", ()), ("click-target", ()), ("rclick-target", ())])
 
     def test_anything_the_grammar_does_not_list_is_refused(self):
         for bad in ("click 640 10", "click 10 350", "click -1 5", "click 1", "click a b", "click 1 2 3",
@@ -55,13 +71,19 @@ class ParseTest(unittest.TestCase):
                     "shot after", "shot ../x", "shot a b", "shot a.png",
                     "files now", "savestate x", "wait-stable 3", "wait-change 0", "wait-change x",
                     "until 1 2 3 4 256 0 0 1", "until 600 300 100 100 1 2 3 4", "until 1 2 0 4 1 2 3 4",
-                    "until 1 2 3 4 1 2 3", "until 1 2 3 4 1 2 3 4 0", "run ls", "shell ls", ""):
+                    "until 1 2 3 4 1 2 3", "until 1 2 3 4 1 2 3 4 0", "run ls", "shell ls", "",
+                    "key u", "key r", "key Upgrade", "click-change 1", "click-change 1 2 0", "click-change 700 2",
+                    "rclick 640 0", "wait-exit 0", "click-mine", "rclick-target\nchoose-attack",
+                    "choose-attack 1", "click-mine 1"):
             with self.subTest(bad):
                 if bad == "":
                     self.assertEqual(navsteps.parse(bad), [])
                 else:
                     with self.assertRaises(navsteps.Refused):
                         navsteps.parse(bad)
+
+    def test_the_keys_that_would_order_or_register_are_not_in_the_grammar(self):
+        self.assertEqual(set(navsteps.KEYS), {"Return", "space", "Escape", "c", "e"})
 
     def test_two_shots_of_one_name_are_refused(self):
         with self.assertRaises(navsteps.Refused):
@@ -98,6 +120,7 @@ class StepsWorld(seal.CycleWorld):
         made = self.make(["--steps", str(script), "--experiment", "E005", *extra])
         made.screen = FakeScreen()
         self.calls = []
+        self.ignored_clicks = 0
         made.snap_before = cycle.snapshot_tree(made.game)
         return made
 
@@ -107,7 +130,10 @@ class StepsWorld(seal.CycleWorld):
             if cmd[:2] == ["xdotool", "mousemove"]:
                 made.screen.current = b"pointer"
             elif cmd[:2] == ["xdotool", "click"]:
-                made.screen.current = b"dialog"
+                if self.ignored_clicks > 0:
+                    self.ignored_clicks -= 1
+                else:
+                    made.screen.current = b"dialog"
             return mock.MagicMock(returncode=0, stdout=b"")
         return run
 
@@ -223,9 +249,9 @@ class CompleteTest(StepsWorld):
 
 
 class WrittenFilesTest(StepsWorld):
-    def written(self, made, **kw):
+    def written(self, made, prefix="s01"):
         with redirect_stdout(io.StringIO()):
-            made.record_written("step 1", 101, "s01")
+            made.record_written("step 1", 101, prefix)
         return {o["field"]: o["value"] for o in made.obs}
 
     def test_a_small_file_the_game_adds_is_observed_with_its_bytes_and_kept(self):
@@ -248,7 +274,7 @@ class WrittenFilesTest(StepsWorld):
         self.assertNotIn("run copy at step 1: changed ISLEWAR.DAT: hex", obs)
         (made.game / "ISLEWAR.DAT").write_bytes(b"x" * cycle.HEX_LIMIT)
         made.obs.clear()
-        self.assertIn("run copy at step 1: changed ISLEWAR.DAT: hex", self.written(made))
+        self.assertIn("run copy at step 1: changed ISLEWAR.DAT: hex", self.written(made, "s02"))
 
     def test_a_removed_file_and_a_subdirectory_are_observed_and_not_copied(self):
         made = self.make_steps("files\n")
@@ -268,7 +294,8 @@ class WrittenFilesTest(StepsWorld):
 
     def test_the_files_step_and_the_end_of_the_run_both_record_when_a_script_runs(self):
         made = self.make_steps("files\n")
-        made.snap_after = None
+        with redirect_stdout(io.StringIO()):
+            made.load_script()
         (made.game / "ISLEWAR.SCR").write_bytes(b"0,0\r\n")
         made.take_snapshot("after")
         with redirect_stdout(io.StringIO()):
@@ -385,6 +412,140 @@ class InnerE005Test(seal.CycleWorld):
         with mock.patch.dict(os.environ, {"IW_DOS_CYCLE_ID": "E003-r9001"}), self.assertRaises(SystemExit):
             os.environ["E005_BUNDLES"] = str(self.tmp / "bundles5")
             cycle.inner(cycle.parser().parse_args(["--experiment", "E005"]))
+
+class MoreNavigateTest(StepsWorld):
+    def navigate(self, made):
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()):
+            made.load_script()
+            made.navigate()
+
+    def test_a_right_click_presses_button_3(self):
+        made = self.make_steps("rclick 60 32\n")
+        self.navigate(made)
+        self.assertEqual(self.calls[-1], ["xdotool", "click", "3"])
+
+    def test_a_second_click_at_the_same_place_does_not_move_the_pointer_again(self):
+        made = self.make_steps("click 5 5\nclick 5 5\nclick 6 5\n")
+        self.navigate(made)
+        self.assertEqual([c[1] for c in self.calls], ["mousemove", "click", "click", "mousemove", "click"])
+
+    def test_click_change_clicks_again_when_the_game_ignored_the_click(self):
+        made = self.make_steps("click-change 60 32\n")
+        self.ignored_clicks = 1
+        self.navigate(made)
+        self.assertEqual([c[1] for c in self.calls], ["mousemove", "click", "click"])
+        self.assertTrue(made.after_screen_ok)
+
+    def test_click_change_gives_up_after_three_clicks_and_aborts(self):
+        made = self.make_steps("click-change 60 32\nshot never\n")
+        self.ignored_clicks = 99
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()), self.assertRaises(cycle.Abort):
+            made.load_script()
+            made.navigate()
+        self.assertEqual([c[1] for c in self.calls].count("click"), 3)
+        self.assertIn("never changed after three clicks", made.status)
+        self.assertFalse(made.after_screen_ok)
+        self.assertNotIn("never.png", [n for n, _, _ in made.outputs])
+        self.assertIn("no-change-101.png", [n for n, _, _ in made.outputs])
+
+    def test_wait_exit_records_whether_the_game_ended_by_itself(self):
+        made = self.make_steps("wait-exit 5\n")
+        made.procs["game"] = seal.FakeGame()
+        self.navigate(made)
+        self.assertEqual([o["value"] for o in made.obs if o["field"] == "DOSBox-X ended by itself after (s)"],
+                         ["still running after 5 s"])
+        made.procs["game"].returncode = 0
+        made.obs.clear()
+        self.navigate(made)
+        self.assertEqual([o["value"] for o in made.obs if o["field"] == "DOSBox-X ended by itself after (s)"], ["0.0"])
+
+
+def painted(owners, half_height=19, half_width=14):
+    """A 640x350 sea (0,0,170) with a block of army colour around the number box of each country in
+    `owners` ({n: colour name}), each block half_height rows above and below the box's centre."""
+    import board
+    data = bytearray(bytes((0, 0, 170)) * (board.WIDTH * board.HEIGHT))
+    for n, name in owners.items():
+        cx, cy = board.BOXES[n]
+        for y in range(cy - half_height, cy + half_height + 1):
+            for x in range(cx - half_width, cx + half_width + 1):
+                data[(y * board.WIDTH + x) * 3:(y * board.WIDTH + x) * 3 + 3] = bytes(board.COLOURS[name])
+        for y in range(cy - 4, cy + 4):                     # the black number box itself
+            for x in range(cx - 6, cx + 6):
+                data[(y * board.WIDTH + x) * 3:(y * board.WIDTH + x) * 3 + 3] = bytes((0, 0, 0))
+    return bytes(data)
+
+
+class BoardTest(unittest.TestCase):
+    def test_owner_is_the_army_colour_beside_the_number_box(self):
+        import board
+        raw = painted({1: "blue", 2: "red", 3: "green", 4: "brown"})
+        self.assertEqual([board.owner(raw, n) for n in (1, 2, 3, 4, 5)], ["blue", "red", "green", "brown", None])
+        self.assertEqual(board.totals(raw), {"blue": 1, "red": 1, "green": 1, "brown": 1})
+
+    def test_countries_whose_fills_nearly_meet_touch_and_distant_ones_do_not(self):
+        import board
+        raw = painted({1: "blue", 2: "red", 3: "blue"})      # 1 and 2 are 40 px apart in y, 2 and 3 are 34
+        touch = board.neighbours(raw)
+        self.assertEqual(touch[1], [2])
+        self.assertEqual(touch[2], [1, 3])
+        self.assertEqual(touch[3], [2])
+        self.assertEqual(board.neighbours(painted({1: "blue", 12: "red"}))[1], [])
+
+    def test_a_gap_wider_than_the_border_is_not_touching(self):
+        import board
+        raw = painted({1: "blue", 2: "red"}, half_height=15)  # fills 10 px apart
+        self.assertEqual(board.neighbours(raw)[1], [])
+
+    def test_the_number_boxes_are_found_as_black_rectangles_8_or_9_high(self):
+        import board
+        raw = painted({1: "blue", 2: "red"})
+        found = board.derive_boxes(raw)
+        self.assertEqual(len(found), 2)
+        self.assertEqual(sorted((x + w // 2, y + h // 2) for x, y, w, h in found),
+                         sorted([board.BOXES[1], board.BOXES[2]]))
+
+    def test_there_are_46_distinct_boxes_inside_the_window(self):
+        import board
+        self.assertEqual(sorted(board.BOXES), list(range(1, 47)))
+        self.assertEqual(len(set(board.BOXES.values())), 46)
+        self.assertTrue(all(8 <= x < 632 and 20 <= y < 280 for x, y in board.BOXES.values()))
+
+
+class ChooseAttackTest(StepsWorld):
+    def navigate(self, made, owners):
+        made.screen.current = painted(owners)
+        with mock.patch.object(cycle, "run", self.fake_run(made)), mock.patch.object(cycle, "poll", self.poll_once), \
+                redirect_stdout(io.StringIO()):
+            made.load_script()
+            made.navigate()
+
+    def test_it_picks_a_blue_country_and_its_nearest_enemy_neighbour(self):
+        import board
+        made = self.make_steps("choose-attack\nclick-mine\nrclick-target\n")
+        self.navigate(made, {1: "blue", 2: "red", 3: "brown"})
+        self.assertEqual((made.mine, made.target), (1, 2))
+        x, y = board.BOXES[1]
+        self.assertEqual(self.calls[0], ["xdotool", "mousemove", str(x + 80), str(y + 100)])
+        x, y = board.BOXES[2]
+        self.assertEqual(self.calls[-2:], [["xdotool", "mousemove", str(x + 80), str(y + 100)], ["xdotool", "click", "3"]])
+        chosen = [o["value"] for o in made.obs if o["field"].startswith("chosen")]
+        self.assertEqual(chosen, ["1 2"])
+
+    def test_a_country_of_the_same_army_is_never_the_target(self):
+        made = self.make_steps("choose-attack\n")
+        self.navigate(made, {1: "blue", 2: "blue", 3: "green"})
+        self.assertEqual((made.mine, made.target), (2, 3))
+
+    def test_with_no_blue_country_touching_an_enemy_the_run_aborts(self):
+        made = self.make_steps("choose-attack\nshot next\n")
+        with self.assertRaises(cycle.Abort):
+            self.navigate(made, {1: "blue", 12: "red"})
+        self.assertIn("Blue has no country that touches an enemy", made.status)
+        self.assertNotIn("next.png", [n for n, _, _ in made.outputs])
+
 
 if __name__ == "__main__":
     unittest.main()
