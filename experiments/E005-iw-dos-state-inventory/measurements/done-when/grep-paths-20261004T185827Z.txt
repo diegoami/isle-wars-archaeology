@@ -1,0 +1,2 @@
+$ git grep -n -i -E '<the pattern of Done-when 6>' -- runtime/iw-dos setup/iw-dos findings experiments/E005-iw-dos-state-inventory runs/E005 evidence/E005 knowledge-map.md
+exit=1 (1 means no line matched)
