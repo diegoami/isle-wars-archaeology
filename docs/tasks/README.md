@@ -17,3 +17,5 @@ the issue's `status:*` label is the status (`gh issue list --label task --label 
 | T10 | Artifact identity: DOS Isle Wars (W1b) | #30 | T03 |
 | T11 | Runtime feasibility: DOS Isle Wars under DOSBox-X (W3b) | #34 | T10 |
 | T12 | Use game-archaeologist's pinned validator and register_artifact.py (folds #42, #48) | #49 | — |
+| T13 | Minimal driver: Isle Wars Pro (W5a; folds #40's cycle-time items) | #51 | T09 |
+| T14 | Observable-state inventory: DOS Isle Wars (W4b) | #52 | T11 |
