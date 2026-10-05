@@ -18,7 +18,7 @@ file is append-only. A changed design is a new experiment, or `v2/`.
     - `level-easy-1`, `level-normal-1`, `level-easy-3`, `level-hard-6`, `level-hardest-10`: Set level, starting armies, start, first human turn (the pairs vary the level and the armies one at a time)
     - `turn`: Easy and 1 army; Save at the turn start; place all in a Blue country that touches an enemy; attack it until it falls; move in; Pass; the computer turns; the next human turn; Save; the cards button
     - `buttons`: Scores, Sound, Speed at the first human turn
-    - `concede-easy`, `concede-normal`: Quit, Yes: the scoreboard and the game over dialog
+    - `concede-easy`, `concede-normal`: Quit, Yes: the `GAME OVER` picture and the game over dialog. The scripts name the capture after Yes `scoreboard-after-concede`; it shows `GAME OVER` over the board, not the scoreboard (correction, 2026-10-05, F007 round 2; the scripts and assets keep the name)
     - `save-load`: Save, concede, another game, Load saved game
     - `load-none`: Load saved game with no save
     - `exit`: concede, another game No, the shareware notices (`c`, `e`), the game ends by itself
