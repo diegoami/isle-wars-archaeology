@@ -1002,6 +1002,54 @@ class InventoryTest(World):
             {"path": "file.bin", "sha256": sha(b"made by hand"), "bytes": 12},
             {"path": "to-original", "link": True}])
 
+    # ---- round 2, R1: a folder that cannot be listed stops the inventory
+    def denied_run(self):
+        run = self.static / "denied-run"
+        (run / "db" / "deep").mkdir(parents=True)
+        (run / "top.txt").write_text("listed")
+        (run / "db" / "deep" / "chunk.json").write_text("hidden")
+        return run
+
+    def test_a_subtree_that_cannot_be_listed_stops_the_inventory(self):
+        run = self.denied_run()
+        real_scandir = os.scandir
+
+        def scandir(path="."):
+            if Path(path).name == "db":
+                raise PermissionError(13, "Permission denied", str(path))
+            return real_scandir(path)
+
+        with mock.patch.object(os, "scandir", scandir):
+            with self.assertRaises(SystemExit) as caught:
+                static_common.inventory(run)
+        self.assertIn("cannot be listed for the inventory: Permission denied", str(caught.exception.code))
+        self.assertIn("denied-run/db", str(caught.exception.code))
+
+    def test_a_run_directory_that_cannot_be_listed_stops_the_inventory(self):
+        run = self.denied_run()
+        real_scandir = os.scandir
+
+        def scandir(path="."):
+            if Path(path) == run:
+                raise PermissionError(13, "Permission denied", str(path))
+            return real_scandir(path)
+
+        with mock.patch.object(os, "scandir", scandir):
+            with self.assertRaises(SystemExit) as caught:
+                static_common.inventory(run)
+        self.assertIn("cannot be listed for the inventory", str(caught.exception.code))
+
+    @unittest.skipIf(hasattr(os, "geteuid") and os.geteuid() == 0, "root lists a folder whatever its mode")
+    def test_a_subtree_whose_mode_denies_listing_stops_the_inventory(self):
+        run = self.denied_run()
+        (run / "db").chmod(0)
+        try:
+            with self.assertRaises(SystemExit) as caught:
+                static_common.inventory(run)
+        finally:
+            (run / "db").chmod(stat.S_IRWXU)
+        self.assertIn("cannot be listed for the inventory", str(caught.exception.code))
+
     def test_the_inventory_script_records_each_folder_once_and_never_rewrites(self):
         self.runs()
         code, text = self.inventory()
@@ -1056,6 +1104,31 @@ class InventoryTest(World):
         count = len(self.record("g.json")["derived_files"])
         self.assertIn(f"({count} inventoried derived files among them)", out.getvalue())
 
+    def test_an_empty_tracked_file_is_exempt_even_when_a_run_left_an_empty_file(self):
+        """Done-when 4, amended at 22b7d0d: an empty file's sha256 carries no provenance."""
+        self.runs()
+        (self.static / "ghidra-t1" / "empty.log").write_bytes(b"")
+        record = self.record("g.json")
+        record["derived_files"].append({"path": "empty.log", "sha256": sha(b""), "bytes": 0})
+        root = self.tmp / "repo-empty"
+        (root / static_common.MEASUREMENTS).mkdir(parents=True)
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        (root / static_common.MEASUREMENTS / "g.json").write_text(json.dumps(record))
+        (root / "__init__.py").write_bytes(b"")
+        subprocess.run(["git", "add", "-f", "."], cwd=root, check=True)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_derived_hashes.main(["--root", str(root)])
+        self.assertEqual(code, 0, out.getvalue())
+        self.assertIn("1 empty tracked file(s) exempt from the hash comparison", out.getvalue())
+        (root / "__init__.py").write_bytes(b"x")          # one byte: the comparison is made again
+        (root / static_common.MEASUREMENTS / "g.json").write_text(json.dumps(
+            dict(record, derived_files=record["derived_files"] + [{"path": "x", "sha256": sha(b"x"), "bytes": 1}])))
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(check_derived_hashes.main(["--root", str(root)]), 1, out.getvalue())
+        self.assertIn("__init__.py: its sha256 is listed in", out.getvalue())
+
 
 class MarkersTest(World):
     """T26 round 1, R5: ProjectorRays' error markers are counted, in the scripts the record lists."""
@@ -1085,8 +1158,8 @@ class MarkersTest(World):
                  "CastScript 2.ls": "on b\nend\n", "CastScript 2.lasm": "  ret\n"}
         for name, text in texts.items():
             (folder / name).write_text(text)
-        scripts = [{"ls_sha256": sha(texts["MovieScript 1.ls"].encode()), "lasm_sha256": sha(texts["MovieScript 1.lasm"].encode())},
-                   {"ls_sha256": sha(texts["CastScript 2.ls"].encode()), "lasm_sha256": sha(texts["CastScript 2.lasm"].encode())}]
+        scripts = [{"kind": "MovieScript", "number": 1, "name": "", "ls_sha256": sha(texts["MovieScript 1.ls"].encode()), "lasm_sha256": sha(texts["MovieScript 1.lasm"].encode())},
+                   {"kind": "CastScript", "number": 2, "name": "", "ls_sha256": sha(texts["CastScript 2.ls"].encode()), "lasm_sha256": sha(texts["CastScript 2.lasm"].encode())}]
         counts = iwp_markers.count_markers(folder, scripts)
         self.assertEqual((counts["error_words_in_ls"], counts["ls_files_with_an_error_word"]), (2, 1))
         self.assertEqual((counts["unknown_opcodes_in_lasm"], counts["lasm_files_with_an_unknown_opcode"]), (1, 1))
@@ -1098,8 +1171,8 @@ class MarkersTest(World):
         (folder / "MovieScript 1.lasm").write_text("  ret\n")
         (folder / "MovieScript 2.ls").write_text("on b\nend\n")
         (folder / "MovieScript 2.lasm").write_text("")
-        scripts = [{"ls_sha256": sha(b""), "lasm_sha256": sha(b"  ret\n")},
-                   {"ls_sha256": sha(b"on b\nend\n"), "lasm_sha256": sha(b"")}]
+        scripts = [{"kind": "MovieScript", "number": 1, "name": "", "ls_sha256": sha(b""), "lasm_sha256": sha(b"  ret\n")},
+                   {"kind": "MovieScript", "number": 2, "name": "", "ls_sha256": sha(b"on b\nend\n"), "lasm_sha256": sha(b"")}]
         counts = iwp_markers.count_markers(folder, scripts)
         self.assertEqual((counts["ls_files"], counts["lasm_files"]), (2, 2))
 
@@ -1107,7 +1180,7 @@ class MarkersTest(World):
         folder = self.extracted()
         (folder / "BehaviorScript 9.ls").write_text("on mouseDown\n  ERROR\nend\n")
         code, _ = self.count()
-        self.assertIn("not in movie-01-out with their recorded sha256", str(code))
+        self.assertIn("not in movie-01-out under their own name with their recorded sha256 (the first: BehaviorScript 9)", str(code))
 
     def test_a_script_the_record_does_not_list_is_not_counted(self):
         folder = self.extracted()
@@ -1116,6 +1189,70 @@ class MarkersTest(World):
         self.assertEqual(code, 0, text)
         movie = json.loads((self.known / static_common.MEASUREMENTS / "m.json").read_text())["movies"][0]
         self.assertEqual((movie["ls_files"], movie["error_words_in_ls"]), (3, 0))
+
+    # ---- round 2, R2: each recorded script is checked by its own identity, not as a set of hashes
+    def duplicate_group(self, name="dup"):
+        """Three scripts, two of them (MovieScript 1 and 2) with the same text and the same listing,
+        as in the Pro record, where groups of up to 16 scripts share a hash."""
+        folder = self.tmp / name
+        folder.mkdir()
+        same, other = "on exitFrame\n  go the frame\nend\n", "on b\nend\n"
+        for stem, text in (("MovieScript 1", same), ("MovieScript 2", same), ("CastScript 3 - Btn", other)):
+            (folder / f"{stem}.ls").write_text(text)
+            (folder / f"{stem}.lasm").write_text("  ret\n")
+        scripts = [{"kind": "MovieScript", "number": 1, "name": "", "ls_sha256": sha(same.encode()),
+                    "lasm_sha256": sha(b"  ret\n")},
+                   {"kind": "MovieScript", "number": 2, "name": "", "ls_sha256": sha(same.encode()),
+                    "lasm_sha256": sha(b"  ret\n")},
+                   {"kind": "CastScript", "number": 3, "name": "Btn", "ls_sha256": sha(other.encode()),
+                    "lasm_sha256": sha(b"  ret\n")}]
+        return folder, scripts
+
+    def refused(self, folder, scripts):
+        with self.assertRaises(SystemExit) as caught:
+            iwp_markers.count_markers(folder, scripts)
+        return str(caught.exception.code)
+
+    def test_a_duplicate_hash_group_counts_each_member(self):
+        folder, scripts = self.duplicate_group()
+        counts = iwp_markers.count_markers(folder, scripts)
+        self.assertEqual((counts["ls_files"], counts["lasm_files"], counts["error_words_in_ls"]), (3, 3, 0))
+
+    def test_a_changed_member_of_a_duplicate_hash_group_stops_the_count(self):
+        folder, scripts = self.duplicate_group()
+        (folder / "MovieScript 2.ls").write_text("on exitFrame\n  ERROR\nend\n")
+        self.assertIn("(the first: MovieScript 2)", self.refused(folder, scripts))
+
+    def test_a_changed_listing_of_a_duplicate_hash_group_stops_the_count(self):
+        folder, scripts = self.duplicate_group()
+        (folder / "MovieScript 2.lasm").write_text("  unk5F\n")
+        self.assertIn("(the first: MovieScript 2)", self.refused(folder, scripts))
+
+    def test_a_missing_member_of_a_duplicate_hash_group_stops_the_count(self):
+        for suffix in (".ls", ".lasm"):
+            with self.subTest(missing=suffix):
+                folder, scripts = self.duplicate_group("dup" + suffix)
+                (folder / f"MovieScript 2{suffix}").unlink()
+                self.assertIn("(the first: MovieScript 2)", self.refused(folder, scripts))
+
+    def test_a_script_under_another_identity_does_not_stand_for_a_listed_one(self):
+        folder, scripts = self.duplicate_group()
+        (folder / "MovieScript 2.ls").rename(folder / "MovieScript 7.ls")
+        (folder / "MovieScript 2.lasm").rename(folder / "MovieScript 7.lasm")
+        self.assertIn("(the first: MovieScript 2)", self.refused(folder, scripts))
+
+    def test_a_record_listing_one_identity_twice_is_refused(self):
+        folder, scripts = self.duplicate_group()
+        self.assertIn("lists MovieScript 1 twice", self.refused(folder, scripts + [scripts[0]]))
+
+    def test_a_record_whose_scripts_are_short_of_its_script_count_is_refused(self):
+        self.extracted()
+        path = self.known / static_common.MEASUREMENTS / "p.json"
+        record = json.loads(path.read_text())
+        record["movies"][0]["scripts"] = record["movies"][0]["scripts"][:-1]
+        path.write_text(json.dumps(record))
+        code, _ = self.count()
+        self.assertIn("2 scripts were counted, the record's script_count is 3", str(code))
 
     def test_an_unset_or_in_checkout_static_folder_is_refused(self):
         self.extracted()

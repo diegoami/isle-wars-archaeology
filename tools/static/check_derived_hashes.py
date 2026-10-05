@@ -13,6 +13,11 @@ every tracked file of the checkout and fails when one has a listed hash: it woul
 itself, whatever its name. It also fails on a tracked file whose name is one of the derived kinds
 (a Director movie, a Ghidra project file), whatever its bytes.
 
+Empty files are exempt from the hash comparison (T26 Done-when 4, amended at 22b7d0d): an empty
+file's sha256 is the same whatever made it, so it carries no provenance, and a run that left an
+empty file would otherwise forbid every empty file of the checkout. The output says how many
+tracked empty files were exempt. The name check still applies to them.
+
 `tools/check_no_originals.py` does the same for the registered originals; this one covers the
 outputs whose hashes `artifacts/known.json` cannot hold. Exit 0 clean, 1 not, 2 for a usage error.
 """
@@ -83,7 +88,7 @@ def problems(root):
     root = Path(root)
     tracked = tracked_files(root)
     listed, count = listed_hashes(root, tracked)
-    found = []
+    found, empty = [], 0
     for name in tracked:
         path = root / name
         if not path.is_file():
@@ -91,10 +96,12 @@ def problems(root):
         if DERIVED_NAME.search(Path(name).name):
             found.append(f"{name}: a name of something derived from an original (a movie, a decompiled script, "
                          "a Ghidra file); these stay in the static folder")
-        elif path.stat().st_size and sha256_file(path) in listed:
+        elif path.stat().st_size == 0:
+            empty += 1              # exempt: an empty file's sha256 carries no provenance (Done-when 4)
+        elif sha256_file(path) in listed:
             found.append(f"{name}: its sha256 is listed in {listed[sha256_file(path)]} as an output derived "
                          "from an original; it must stay in the static folder")
-    return tracked, listed, count, found
+    return tracked, listed, count, found, empty
 
 
 def main(argv=None):
@@ -105,12 +112,14 @@ def main(argv=None):
     if not (root / ".git").exists():
         print(f"{root}: not a git checkout")
         return 2
-    tracked, listed, count, found = problems(root)
+    tracked, listed, count, found, empty = problems(root)
     if found:
         print("\n".join(found))
         return 1
     print(f"checked {len(tracked)} tracked files against {len(listed)} hashes listed in {MEASUREMENTS} "
-          f"({count} inventoried derived files among them): none is derived from an original")
+          f"({count} inventoried derived files among them): none is derived from an original; "
+          f"{empty} empty tracked file(s) exempt from the hash comparison (an empty file's sha256 carries "
+          "no provenance)")
     return 0
 
 

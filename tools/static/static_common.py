@@ -179,10 +179,17 @@ def derived(root, name, sha256):
 
 def inventory(directory):
     """[{path, sha256, bytes}] for every file under `directory`, sorted by its path relative to it.
-    A link is listed as {path, link: true} and never followed (its target is not the run's)."""
+    A link is listed as {path, link: true} and never followed (its target is not the run's).
+    A folder that cannot be listed stops it (round 2, R1): os.walk would skip it silently, and the
+    inventory would look complete without that folder's files."""
     base = Path(directory)
     found = []
-    for folder, dirs, files in os.walk(base, followlinks=False):
+
+    def unlistable(exc):
+        where = exc.filename if getattr(exc, "filename", None) else base
+        die(f"{anonymise(where)} cannot be listed for the inventory: {exc.strerror or exc}")
+
+    for folder, dirs, files in os.walk(base, followlinks=False, onerror=unlistable):
         here = Path(folder)
         for name in files + [d for d in dirs if (here / d).is_symlink()]:
             path = here / name
