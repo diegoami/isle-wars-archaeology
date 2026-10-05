@@ -329,6 +329,11 @@ class LaunchGateTest(CycleWorld):
 
     def test_the_outer_process_starts_no_namespace_for_a_copy_that_fails(self):
         (self.game / "EXTRA.TXT").write_bytes(b"stray")
+        # another session's spike run on this machine (T16 beside T15) must not decide this test: the stray check
+        # reads the host's /proc
+        strays = mock.patch.object(cycle, "marked_processes", return_value=[])
+        strays.start()
+        self.addCleanup(strays.stop)
         with mock.patch.object(cycle, "run_namespace") as started:
             self.assertIn("nothing was started", self.refused(lambda: cycle.outer(cycle.parser().parse_args([]))))
         started.assert_not_called()

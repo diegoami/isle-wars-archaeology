@@ -255,11 +255,15 @@ class Screen:
         self.env = env
         self.ox = self.oy = 0       # where the game window's corner is on the root window
 
+    def sh(self, cmd):
+        """The capture command; the driver (runtime/iw-dos/driver/) replaces it with one that checks its exit."""
+        return run(cmd, env=self.env)
+
     def raw(self, crop=None):
         x, y, w, h = crop or (0, 0) + GAME_SIZE
         cmd = ["import", "-window", "root", "-crop", f"{w}x{h}+{x + self.ox}+{y + self.oy}", "+repage",
                "-depth", "8", "rgb:-"]
-        return run(cmd, env=self.env).stdout
+        return self.sh(cmd).stdout
 
     def count(self, rect, colour):
         data = self.raw(rect)
@@ -315,6 +319,15 @@ class Cycle:
         self.pointer = None                # where the last click step left the pointer
         # "completed" is given only by complete(); any other way out leaves an aborted status.
         self.status = "running"
+
+    # ---- the two hooks the driver replaces (runtime/iw-dos/driver/session.py): the step verbs below send their
+    # commands through sh() and wait through wait_until(); here they are the spike's unchecked run() and poll()
+
+    def sh(self, cmd):
+        return run(cmd, env=self.env)
+
+    def wait_until(self, condition, timeout, interval=0.1):
+        return poll(condition, timeout, interval)
 
     # ---- bookkeeping
 
@@ -531,20 +544,20 @@ class Cycle:
             self.fail(f"step {step - 100}: the shareware notices are on the screen; no click is sent there")
         if self.pointer != (x, y):
             before = self.screen.raw()
-            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+            self.sh(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)])
             # an observation, not a condition: the pointer may already be drawn there
-            drawn = poll(lambda: self.screen.raw() != before, 5, 0.05)
+            drawn = self.wait_until(lambda: self.screen.raw() != before, 5, 0.05)
             self.observe(step, "screen", f"pointer drawn at {x},{y} (s)", "no change within 5 s" if drawn is None else drawn)
             self.pointer = (x, y)
             # the pointer may be drawn in two frames: click on a still screen, or not at all
-            still = poll(self.screen.stable, STILL_S, 0.05)
+            still = self.wait_until(self.screen.stable, STILL_S, 0.05)
             self.observe(step, "screen", f"screen still before the click at {x},{y} (s)",
                          f"not still within {STILL_S} s" if still is None else still)
             if still is None:
                 self.shot(f"not-still-{step}.png", step)
                 self.fail(f"step {step - 100}: the screen was not still within {STILL_S} s before the click at {x},{y}")
         self.ref = self.screen.raw()
-        run(["xdotool", "click", button], env=self.env)
+        self.sh(["xdotool", "click", button])
         side = "left" if button == "1" else "right"
         self.observe(step, "process", f"{side} click at {x},{y}", "sent")
         self.observe(step, "process", f"{side} click at {x},{y}: seconds after launch", self.since_launch())
@@ -559,10 +572,10 @@ class Cycle:
                 # after clicks that changed nothing, the game's pointer was seen in the middle of the screen, not where
                 # X had put it (r0016, r0017; the cause was not isolated). A move to where X thinks the pointer is may
                 # send no motion, so step off by one pixel first and the move back is a real motion
-                run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+                self.sh(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)])
                 self.pointer = None
             self.step_click(step, x, y, button)
-            changed = poll(lambda: self.screen.raw() != self.ref, seconds, 0.1)
+            changed = self.wait_until(lambda: self.screen.raw() != self.ref, seconds, 0.1)
             self.observe(step, "screen", f"screen changed after click {attempt} at {x},{y} (s)",
                          f"no change within {seconds} s" if changed is None else changed)
             if changed is not None:
@@ -575,7 +588,7 @@ class Cycle:
         """Click until more than `count` pixels of `colour` are in `rect`: one click per try, 3 s each."""
         for attempt in range(1, tries + 1):
             self.step_click(step, x, y)
-            seen = poll(lambda: self.screen.count(rect, colour) > count, 3, 0.1)
+            seen = self.wait_until(lambda: self.screen.count(rect, colour) > count, 3, 0.1)
             if seen is not None:
                 self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after click {attempt} at {x},{y} (s)", seen)
                 self.step_wait_stable(step)
@@ -624,7 +637,7 @@ class Cycle:
         self.step_click_change(step, *board.BOXES[self.target], 6, "3")
 
     def step_wait_stable(self, step):
-        waited = poll(self.screen.stable, STABLE_S, 0.1)
+        waited = self.wait_until(self.screen.stable, STABLE_S, 0.1)
         self.observe(step, "screen", "screen stable after (s)", f"not stable within {STABLE_S} s" if waited is None else waited)
         if waited is None:
             self.shot(f"not-stable-{step}.png", step)
@@ -632,7 +645,7 @@ class Cycle:
         self.ref = self.screen.raw()
 
     def step_wait_change(self, step, seconds):
-        waited = poll(lambda: self.screen.raw() != self.ref, seconds, 0.1)
+        waited = self.wait_until(lambda: self.screen.raw() != self.ref, seconds, 0.1)
         self.observe(step, "screen", "screen changed after (s)", f"no change within {seconds} s" if waited is None else waited)
         if waited is None:
             self.shot(f"no-change-{step}.png", step)
@@ -640,7 +653,7 @@ class Cycle:
         self.step_wait_stable(step)
 
     def step_until(self, step, rect, colour, count, seconds):
-        seen = poll(lambda: self.screen.count(rect, colour) > count, seconds, 0.1)
+        seen = self.wait_until(lambda: self.screen.count(rect, colour) > count, seconds, 0.1)
         self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after (s)",
                      "not seen" if seen is None else seen)
         if seen is None:
@@ -658,7 +671,7 @@ class Cycle:
         if key not in NOTICE_KEYS and self.screen.notice_up():
             self.shot(f"notice-refused-{step}.png", step)
             self.fail(f"step {step - 100}: the shareware notices are on the screen; only {', '.join(NOTICE_KEYS)} is pressed there")
-        run(["xdotool", "key", key], env=self.env)
+        self.sh(["xdotool", "key", key])
         self.observe(step, "process", f"key {key}", "sent")
 
     def step_savestate(self, step):
