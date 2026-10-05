@@ -230,13 +230,13 @@ and the JDK from their official archives.
 | Ghidra | 12.1.4 PUBLIC, build 2026-09-21, revision `8b6bbb857accdfa20dc5b2f5dea471178c2e9fbc` | `ghidra_12.1.4_PUBLIC` | `Ghidra/application.properties` `e84c26b08545eee63d24a1a8a4dd7905e4209538e2e7192093877c435c64eb67`; `support/analyzeHeadless` `302880328a0024ee24cfe0326d4d9a61c2237116d95f2e0e0df090f747f95e30`; the rest in `tools.json`. The release archive `ghidra_12.1.4_PUBLIC_20260921.zip` is published with sha256 `ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db`; the owner's archive was not available to compare | github.com/NationalSecurityAgency/ghidra, release `Ghidra_12.1.4_build` |
 | Java (JDK) | Eclipse Temurin 21.0.12.1+1-LTS, x86-64 Linux | `jdk-21.0.12.1+1` | `lib/modules` `70c5465dabf8e1bec2860631ea3ffd342f0ec23a5e2efd3a389d2abe32448f98`; `release` `ebbd70bf00bab6d39addf51969c5ff244030b86b29de400b9fb10612ebd3ceec`; `bin/java` `2a207f5e7d075afa01d97f8048389a64432a44c4a5af0f5e77d6e286ec5f401d` | adoptium.net, Temurin 21; the tarball's published checksum was not compared |
 | ProjectorRays (Director decompiler) | 0.2.0, commit `8a3d3b4211575170276fc6be350b6b52e96d4750`, MPL-2.0 | `projectorrays-0.2.0/bin/projectorrays` | `d1c2235bd5f32f4a268a2cd09d2260e143b8caf51124e0da8d9f54fd113c0ea3`; built by `setup/static/build-projectorrays.sh` with the headers of `libboost1.83-dev` 1.83.0-2.1ubuntu3.2 (deb sha256 `519ecf2c64308527e15b6582955681d192a832250baa4bc424967aaf7d02d68f`) and `libmpg123-dev` 1.32.5-1ubuntu1.1 (`5fe2e9a221025ddd526baf2c2e3a0df5aacc8626f927d14fcb9585414a2d6d40`), and the system `libmpg123.so.0` | github.com/ProjectorRays/ProjectorRays, tag `v0.2.0`; its only release asset is a Windows executable, so it is built from source |
-| PKLITE unpacker | not installed yet: see "A tool still missing" | | | |
+| Deark (the PKLITE and EXEPACK unpacker) | 1.7.3 (`deark -version` prints `Deark version: 1.7.3`), commit `e3c0ef3c6b6b8b697146a4016eb796ac02744785`, an MIT-style licence | `src/deark-1.7.3/deark` | `deark` `70c93ae2755a4682bf249b91c76e088d47225e1bda867916f3a3dae5d4bb8e23` | github.com/jsummers/deark, tag `v1.7.3`, built with `make` in the source tree without changes (the owner's choice and the main session's build, 2026-10-05) |
 
 **Environment variables.** `IWA_STATIC` (the folder for everything derived; every script refuses it
 unset, relative, inside a checkout, containing this repository, or overlapping an original's folder),
 `IW_DOS_DIR` and `IWP_DIR` (the folders of the originals, read in place, hashed against
 `artifacts/known.json` before any read), and, to move a tool, `IWA_GHIDRA`, `IWA_JAVA_HOME`,
-`IWA_PROJECTORRAYS`.
+`IWA_PROJECTORRAYS`, `IWA_DEARK`.
 
 **Running them headless** (no game is run):
 
@@ -244,7 +244,11 @@ unset, relative, inside a checkout, containing this repository, or overlapping a
 IWA_STATIC=<folder outside every checkout> IWP_DIR=<the Pro install> \
   python3 tools/static/iwp_extract.py --probe Isledft.dat --record iwp-extract-<run>.json
 IWA_STATIC=<folder> IW_DOS_DIR=<the DOS copy> \
-  python3 tools/static/ghidra_import.py --original iw-dos --record ghidra-<run>.json
+  python3 tools/static/dos_unpack.py [--original iw-dos-ov6] --run <run> --record dos-unpack-<run>.json
+IWA_STATIC=<folder> python3 tools/static/dos_probe.py --file deark-<run>/stage2-exepack.000.exe \
+  --sha256 <its sha256> --needle ISLEWAR.SAV --record dos-probe-<run>.json
+IWA_STATIC=<folder> python3 tools/static/ghidra_import.py --file deark-<run>/stage2-exepack.000.exe \
+  --sha256 <its sha256> [--range 1000:9b33-1000:9d5f] --run <run> --record ghidra-<run>.json
 python3 tools/static/check_derived_hashes.py      # no tracked file is an output derived from an original
 ```
 
@@ -252,14 +256,23 @@ python3 tools/static/check_derived_hashes.py      # no tracked file is an output
   embedded Director movie, gives ProjectorRays a work copy of it at its original offset (the
   movie's internal offsets are the executable's), decompiles it with `--dump-scripts`, and counts
   chunks, scripts and handlers. `--probe NAME` lists the handlers that mention a file name.
+- `tools/static/dos_unpack.py` unpacks `ISLEWAR.EXE` (or `ISLEWAR.OV6`) in two Deark runs:
+  `-m pklite` on the original, read in place, then `-m exepack` on that output (the PKLITE layer
+  holds an image packed by Microsoft LINK's EXEPACK). Both outputs go to `deark-<run>/` in
+  `$IWA_STATIC`; the script checks that the last one is a plain DOS executable (relocations and entry
+  point inside the load module, no packer left).
+- `tools/static/dos_probe.py` reads an unpacked image in `$IWA_STATIC` (by sha256): which run-time
+  library's marker texts it holds, and where the code pushes the string descriptor of a file name.
 - `tools/static/ghidra_import.py` runs `analyzeHeadless` with `-processor "x86:LE:16:Real Mode"
   -cspec default` and the post-script `tools/static/ghidra/T26Report.java`, which writes counts and
   addresses (no instruction) to the run's folder. Ghidra refuses a project path with a folder whose
   name starts with a dot (`.local`, say), so the script gives it a link to the project folder in a
-  temporary folder.
+  temporary folder. `--range START-END` has the post-script disassemble from START and write the
+  instructions up to END to `listing-<START>.txt` in the run's folder, for a person to read there;
+  the record gets only the range and its counts.
 - Every run is a new folder `<tool>-<run id>` in `$IWA_STATIC`; nothing is overwritten, and
   `--record NAME` writes a new file under `experiments/E008-static-triage/measurements/`, refused when
   its text holds a machine path.
 
-**A tool still missing.** The PKLITE unpacker for `ISLEWAR.EXE` is not installed: see F010 and the
-hand-back of T26. A missing tool is a step to finish, never a reason to fall back to runs (U32).
+A missing tool is a step to finish, never a reason to fall back to runs (U32): every script stops
+with that message when its tool is not there.

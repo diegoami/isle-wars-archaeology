@@ -50,10 +50,32 @@
         "bin/projectorrays": "d1c2235bd5f32f4a268a2cd09d2260e143b8caf51124e0da8d9f54fd113c0ea3"
       },
       "build_dependencies": [
-        {"name": "libboost1.83-dev", "version": "1.83.0-2.1ubuntu3.2", "deb_sha256": "519ecf2c64308527e15b6582955681d192a832250baa4bc424967aaf7d02d68f", "use": "headers only, unpacked below the tools folder"},
-        {"name": "libmpg123-dev", "version": "1.32.5-1ubuntu1.1", "deb_sha256": "5fe2e9a221025ddd526baf2c2e3a0df5aacc8626f927d14fcb9585414a2d6d40", "use": "the header, unpacked below the tools folder; the library is the system libmpg123.so.0"}
+        {
+          "name": "libboost1.83-dev",
+          "version": "1.83.0-2.1ubuntu3.2",
+          "deb_sha256": "519ecf2c64308527e15b6582955681d192a832250baa4bc424967aaf7d02d68f",
+          "use": "headers only, unpacked below the tools folder"
+        },
+        {
+          "name": "libmpg123-dev",
+          "version": "1.32.5-1ubuntu1.1",
+          "deb_sha256": "5fe2e9a221025ddd526baf2c2e3a0df5aacc8626f927d14fcb9585414a2d6d40",
+          "use": "the header, unpacked below the tools folder; the library is the system libmpg123.so.0"
+        }
       ],
       "runs": "bin/projectorrays decompile <movie> -o <existing folder> --dump-scripts | --dump-json [-v]; reads a movie by its own offsets, so tools/static/iwp_extract.py gives it a work copy of the projector's movie at its original offset"
+    },
+    {
+      "name": "deark",
+      "version": "1.7.3",
+      "dir": "src/deark-1.7.3",
+      "source": "https://github.com/jsummers/deark (tag v1.7.3, commit e3c0ef3c6b6b8b697146a4016eb796ac02744785, an MIT-style licence)",
+      "archive": null,
+      "built_by": "make in the source tree, without changes (the main session, 2026-10-05, the owner's choice)",
+      "files": {
+        "deark": "70c93ae2755a4682bf249b91c76e088d47225e1bda867916f3a3dae5d4bb8e23"
+      },
+      "runs": "deark -m pklite -d -od <run folder> -o stage1-pklite <ISLEWAR.EXE>, then deark -m exepack -d -od <run folder> -o stage2-exepack <the first output>; tools/static/dos_unpack.py runs both"
     }
   ]
 }

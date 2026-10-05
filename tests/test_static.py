@@ -52,6 +52,8 @@ import ghidra_import  # noqa: E402
 import check_derived_hashes  # noqa: E402
 import check_tools  # noqa: E402
 import dos_identify  # noqa: E402
+import dos_unpack  # noqa: E402
+import dos_probe  # noqa: E402
 
 
 def sha(data):
@@ -160,9 +162,61 @@ needle FILE.SAV hits=1
   at 2000:0123 offset=0x123
     reference from 1000:0456 in FUN_1000_0400 at 1000:0400
     immediate in 1000:0460 in FUN_1000_0400 at 1000:0400
+range 1000:0400 1000:0460 instructions=30 far_calls=4
 EOF
 echo "analysis done"
 '''
+
+
+FAKE_DEARK = '''#!{python}
+"""A stand-in for Deark: one module per call, writes the canned image of that stage into -od."""
+import pathlib, sys
+args = sys.argv[1:]
+module, od, base, source = args[args.index("-m") + 1], args[args.index("-od") + 1], args[args.index("-o") + 1], args[-1]
+here = pathlib.Path(__file__).resolve().parent
+data = pathlib.Path(source).read_bytes()
+assert data[:2] == b"MZ", source
+canned = {{"pklite": "stage1.bin", "exepack": "final.bin"}}[module]
+pathlib.Path(od, base + ".000.exe").write_bytes((here / canned).read_bytes())
+if module == "pklite":
+    print("DEBUG: reported PKLITE version: 1.15/l/e")
+    print("DEBUG:  extra cmpr: 1")
+    print("DEBUG:  large cmpr: 1")
+    print("DEBUG:  decompressed 10 bytes to 20")
+else:
+    print("DEBUG: variant: common290 (LINK 5.60/etc.)")
+    print("DEBUG:  reloc count: 1")
+print("Warning: (Standard warning about executable decompression)", file=sys.stderr)
+'''
+
+
+def make_mz(module, relocations=(), cs=0, ip=0):
+    """A DOS executable around a load module: a header, its relocation table, the module."""
+    paragraphs = max(2, (0x1C + 4 * len(relocations) + 15) // 16)
+    header = bytearray(paragraphs * 16)
+    total = len(header) + len(module)
+    struct.pack_into("<14H", header, 0, 0x5A4D, total % 512, (total + 511) // 512, len(relocations), paragraphs,
+                     0x10, 0xFFFF, 0, 0x100, 0, ip, cs, 0x1C, 0)
+    for i, (offset, segment) in enumerate(relocations):
+        struct.pack_into("<HH", header, 0x1C + 4 * i, offset, segment)
+    return bytes(header) + module
+
+
+def probe_module(text=b"FILE.SAV"):
+    """A load module laid out as the unpacked ISLEWAR.EXE is read to be: code that loads a string
+    descriptor's offset into AX and pushes it (at 0x10 and 0x40), and a data segment at 0x100 whose
+    string constant is its descriptor (length, offset of the text) followed by the text (offset 0x20)."""
+    module = bytearray(0x200)
+    module[0x10:0x14] = b"\xb8" + struct.pack("<H", 0x1C) + b"\x50"
+    module[0x40:0x44] = b"\xb8" + struct.pack("<H", 0x1C) + b"\x50"
+    module[0x11C:0x120] = struct.pack("<HH", len(text), 0x20)
+    module[0x120:0x120 + len(text)] = text
+    module[0x180:0x194] = b"RESUME without error"
+    return bytes(module)
+
+
+FINAL_IMAGE = make_mz(probe_module(), relocations=[(0x0002, 0)], cs=0, ip=0x10)
+STAGE1_IMAGE = make_mz(b"\x90" * 0x40 + b"Packed file is corrupt" + b"\0" * 0x20, cs=0, ip=0x10)
 
 
 SKIP_REASON = ("SAFETY TEST NOT RUN: the temporary directory is inside a checkout (TMPDIR="
@@ -240,7 +294,13 @@ class World(unittest.TestCase):
         (self.java / "bin" / "java").write_text("#!/bin/sh\n")
         (self.java / "release").write_text('JAVA_RUNTIME_VERSION="21.0.12.1+1-LTS"\nIMPLEMENTOR_VERSION="Temurin-21.0.12.1+1"\n')
         (self.java / "lib" / "modules").write_bytes(b"modules")
-        patch = mock.patch.dict(os.environ, {"IWA_GHIDRA": str(self.ghidra), "IWA_JAVA_HOME": str(self.java)})
+        self.fake_deark = self.tools / "deark"
+        self.fake_deark.write_text(FAKE_DEARK.format(python=sys.executable))
+        self.fake_deark.chmod(0o755)
+        (self.tools / "stage1.bin").write_bytes(STAGE1_IMAGE)
+        (self.tools / "final.bin").write_bytes(FINAL_IMAGE)
+        patch = mock.patch.dict(os.environ, {"IWA_GHIDRA": str(self.ghidra), "IWA_JAVA_HOME": str(self.java),
+                                             "IWA_DEARK": str(self.fake_deark)})
         patch.start()
         self.addCleanup(patch.stop)
 
@@ -263,11 +323,15 @@ class World(unittest.TestCase):
     def ghidra_run(self, *extra, env=None):
         return self.call(ghidra_import, ["--original", "iw-dos", "--run", "t1", *extra], env)
 
+    def unpack(self, *extra, env=None):
+        return self.call(dos_unpack, ["--run", "t1", *extra], env)
+
 
 # the scripts that read an original and write derived output, and how each is called
 SCRIPTS = {
     "iwp_extract": lambda world, env: world.extract(env=env),
     "ghidra_import": lambda world, env: world.ghidra_run(env=env),
+    "dos_unpack": lambda world, env: world.unpack(env=env),
 }
 
 
@@ -338,6 +402,9 @@ class CheckoutRefusalTest(World):
         self.assertEqual(self.ghidra_run()[0], 0)
         code, text = self.ghidra_run()
         self.assertIn("a run never reuses a directory", str(code))
+        self.assertEqual(self.unpack()[0], 0)
+        code, text = self.unpack()
+        self.assertIn("a run never reuses a directory", str(code))
 
     def test_a_dot_folder_in_the_static_path_is_handled_for_ghidra(self):
         dotted = self.tmp / ".hidden" / "static"
@@ -354,7 +421,8 @@ class OriginalRefusalTest(World):
         (directory / name).write_bytes(data)
 
     def test_a_changed_original_is_refused_by_every_script_and_nothing_is_made(self):
-        for script, directory, name in (("iwp_extract", self.iwp, "Islepro.exe"), ("ghidra_import", self.dos, "ISLEWAR.EXE")):
+        for script, directory, name in (("iwp_extract", self.iwp, "Islepro.exe"), ("ghidra_import", self.dos, "ISLEWAR.EXE"),
+                                        ("dos_unpack", self.dos, "ISLEWAR.EXE")):
             with self.subTest(script=script):
                 good = (directory / name).read_bytes()
                 self.corrupt(directory, name, good[:-1] + bytes([good[-1] ^ 1]))
@@ -717,6 +785,148 @@ class ToolsCheckTest(World):
             self.assertTrue(tool["files"], tool["name"])
             for value in tool["files"].values():
                 self.assertRegex(value, r"^[0-9a-f]{64}$")
+
+
+class DosUnpackTest(World):
+    """dos_unpack: two Deark stages into the static folder, and the check that the result is a plain image."""
+
+    def test_two_stages_write_into_the_static_folder_and_a_record_holds_numbers_only(self):
+        with mock.patch.object(static_common, "ROOT", self.known):
+            code, text = self.unpack("--record", "test-unpack.json")
+        self.assertEqual(code, 0, text)
+        run = self.static / "deark-t1"
+        self.assertEqual(sorted(p.name for p in run.iterdir() if p.suffix == ".exe"),
+                         ["stage1-pklite.000.exe", "stage2-exepack.000.exe"])
+        record = json.loads((self.known / static_common.MEASUREMENTS / "test-unpack.json").read_text())
+        self.assertEqual([s["output"]["sha256"] for s in record["stages"]], [sha(STAGE1_IMAGE), sha(FINAL_IMAGE)])
+        self.assertEqual(record["unpacked"]["sha256"], sha(FINAL_IMAGE))
+        self.assertTrue(record["unpacked"]["plausible"])
+        self.assertEqual(record["stages"][0]["deark_says"]["pklite_version"], "1.15/l/e")
+        self.assertEqual(record["stages"][1]["deark_says"]["exepack_variant"], "common290 (LINK 5.60/etc.)")
+        self.assertEqual(record["original"]["sha256"], sha(DOS_BYTES))
+        self.assertEqual(static_common.leaks(json.dumps(record)), [])
+        self.assertNotIn(b"RESUME", json.dumps(record).encode())
+        self.assertEqual(sorted(p.name for p in self.dos.iterdir()), ["ISLEWAR.EXE"])
+
+    def test_a_missing_deark_is_a_stop_not_a_fallback(self):
+        code, _ = self.unpack("--deark", str(self.tools / "nothing"))
+        self.assertIn("never a reason to fall back to runs", str(code))
+        self.assertEqual(self.static_entries(), [])
+
+    def test_a_stage_that_fails_or_writes_more_than_one_file_stops_the_run(self):
+        self.fake_deark.write_text("#!/bin/sh\nexit 3\n")
+        code, _ = self.unpack()
+        self.assertIn("exited 3", str(code))
+        self.fake_deark.write_text(FAKE_DEARK.format(python=sys.executable)
+                                   + "pathlib.Path(od, 'second.bin').write_bytes(b'x')\n")
+        code, _ = self.unpack("--run", "t2")
+        self.assertIn("wrote 2 files, not one", str(code))
+
+    def test_an_original_that_changes_while_deark_reads_it_is_caught(self):
+        self.fake_deark.write_text(FAKE_DEARK.format(python=sys.executable)
+                                   + "if module == 'pklite':\n    open(source, 'ab').write(b'!')\n")
+        code, _ = self.unpack()
+        self.assertIn("is not the registered file after the tool ran", str(code))
+
+    def test_an_image_still_packed_is_not_plausible(self):
+        (self.tools / "final.bin").write_bytes(STAGE1_IMAGE)
+        code, text = self.unpack()
+        self.assertEqual(code, 1, text)
+        self.assertIn("EXEPACK", text)
+
+    def test_the_plausibility_checks_each_fail_on_their_own_defect(self):
+        self.assertTrue(dos_unpack.mz_facts(FINAL_IMAGE)["plausible"])
+        cases = {
+            "outside the load module": make_mz(probe_module(), relocations=[(0x1000, 0)], ip=0x10),
+            "entry point": make_mz(probe_module(), cs=0x40, ip=0x10),
+            "PKLITE": make_mz(b"\0" * 4 + b"PKLITE Copr." + b"\0" * 0x100)[:30] + b"PKLITE Copr." + b"\0" * 0x100,
+            "EXEPACK": STAGE1_IMAGE,
+            "longer than the file": FINAL_IMAGE[:-10],
+            "no MZ": b"ZM" + FINAL_IMAGE[2:],
+        }
+        for needle, data in cases.items():
+            with self.subTest(defect=needle):
+                facts = dos_unpack.mz_facts(data)
+                self.assertFalse(facts["plausible"])
+                self.assertTrue(any(needle in p for p in facts["problems"]), facts["problems"])
+
+
+class DosProbeTest(World):
+    """dos_probe: reads only a static-folder file with the given sha256; finds descriptors and their pushes."""
+
+    def setUp(self):
+        super().setUp()
+        (self.static / "img").mkdir()
+        (self.static / "img" / "final.exe").write_bytes(FINAL_IMAGE)
+
+    def probe(self, *extra, env=None, digest=None):
+        return self.call(dos_probe, ["--file", "img/final.exe", "--sha256", digest or sha(FINAL_IMAGE),
+                                     "--needle", "FILE.SAV", *extra], env)
+
+    def test_the_descriptor_and_the_places_that_push_it_are_found(self):
+        with mock.patch.object(static_common, "ROOT", self.known):
+            code, text = self.probe("--record", "test-probe.json")
+        self.assertEqual(code, 0, text)
+        record = json.loads((self.known / static_common.MEASUREMENTS / "test-probe.json").read_text())
+        hit = record["needles"][0]["hits"][0]
+        self.assertTrue(hit["descriptor_layout_holds"])
+        self.assertEqual(hit["descriptor_offset_in_data_segment"], "0x001c")
+        self.assertEqual(hit["data_segment_base"], "0x100")
+        self.assertEqual(hit["pushed_at"], ["1000:0010", "1000:0040"])
+        self.assertEqual(record["marker_counts"]["microsoft-basic"], 1)
+        self.assertEqual(record["marker_counts"]["borland-turbo-pascal"], 0)
+        self.assertEqual(static_common.leaks(json.dumps(record)), [])
+
+    def test_a_text_without_a_descriptor_before_it_is_not_read_as_one(self):
+        module = bytearray(probe_module())
+        module[0x11C:0x11E] = b"\x07\x00"
+        hit = dos_probe.needle(bytes(module), "FILE.SAV")["hits"][0]
+        self.assertFalse(hit["descriptor_layout_holds"])
+        self.assertNotIn("pushed_at", hit)
+
+    def test_a_file_with_another_sha256_or_outside_the_static_folder_is_refused(self):
+        code, _ = self.probe(digest=sha(b"other"))
+        self.assertIn("is not the file with the given sha256", str(code))
+        code, _ = self.call(dos_probe, ["--file", "../dos/ISLEWAR.EXE", "--sha256", sha(DOS_BYTES)])
+        self.assertIn("relative and without ..", str(code))
+
+    def test_the_bytes_read_are_the_ones_whose_hash_was_checked(self):
+        (self.static / "img" / "other.exe").write_bytes(FINAL_IMAGE + b"!")
+        with mock.patch.object(static_common, "derived",
+                               return_value=(self.static / "img" / "other.exe", len(FINAL_IMAGE) + 1)):
+            code, _ = self.probe()
+        self.assertIn("changed after it was checked", str(code))
+
+    def test_an_unset_or_in_checkout_static_folder_is_refused(self):
+        code, _ = self.probe(env={k: v for k, v in self.env.items() if k != "IWA_STATIC"})
+        self.assertIn("IWA_STATIC is not set", str(code))
+        checkout = self.tmp / "checkout"
+        (checkout / ".git").mkdir(parents=True)
+        (checkout / "static" / "img").mkdir(parents=True)
+        (checkout / "static" / "img" / "final.exe").write_bytes(FINAL_IMAGE)
+        code, _ = self.probe(env=dict(self.env, IWA_STATIC=str(checkout / "static")))
+        self.assertIn("inside a checkout", str(code))
+
+
+class GhidraRangeTest(World):
+    def test_a_range_is_passed_to_the_post_script_and_its_counts_are_recorded(self):
+        args = self.tmp / "args.txt"
+        (self.ghidra / "support" / "analyzeHeadless").write_text(
+            '#!/bin/sh\necho "$@" > ' + str(args) + '\n' + FAKE_ANALYZE.split("\n", 1)[1])
+        with mock.patch.object(static_common, "ROOT", self.known):
+            code, text = self.ghidra_run("--range", "1000:0400-1000:0460", "--record", "test-range.json")
+        self.assertEqual(code, 0, text)
+        self.assertIn("range=1000:0400-1000:0460", args.read_text())
+        record = json.loads((self.known / static_common.MEASUREMENTS / "test-range.json").read_text())
+        self.assertEqual(record["report"]["ranges"],
+                         [{"start": "1000:0400", "end": "1000:0460", "instructions": 30, "far_calls": 4}])
+
+    def test_a_malformed_range_is_refused_before_anything_runs(self):
+        for bad in ("1000:0400", "1000:0400-x", "../x-1000:0000"):
+            with self.subTest(bad=bad):
+                code, _ = self.ghidra_run("--range", bad)
+                self.assertIn("is not START-END", str(code))
+        self.assertEqual(self.static_entries(), [])
 
 
 if __name__ == "__main__":
