@@ -1,0 +1,66 @@
+15:05:17 IW_DOS_DIR read-only inside the run
+15:05:18 run copy before anything starts: ok
+15:05:18 Xvfb ready after 0.1 s
+15:05:18 run copy and configuration immediately before launch: ok
+15:05:18 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:05:18 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:05:19 window 2097157 at (80, 100) after 1.73 s
+15:05:35 option box reached 16.98 s after launch
+15:05:35 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:05:35 step 1: click-change 60 32 6
+15:05:36 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:05:36 step 3: wait-stable
+15:05:36 step 4: click-change 315 168 6
+15:05:38 step 5: click-change 315 169 6
+15:05:40 step 6: shot board-before-start.png
+15:05:40 board-before-start.png: pixels 50dcb8d6a4ee9750, file 5297c031c2b91c4c
+15:05:40 step 7: files
+15:05:40 step 8: click-change 510 22 6
+15:05:46 step 9: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:05:58 step 10: wait-stable
+15:05:59 step 11: shot human-turn.png
+15:05:59 human-turn.png: pixels 4ade4a9fd3bf6d65, file 17387c0203b72850
+15:05:59 step 12: click-change 554 20 6
+15:06:08 step 13: shot save-turn1.png
+15:06:08 save-turn1.png: pixels e283c5faf59ebe02, file d39c43f763068482
+15:06:08 step 14: files
+15:06:08 step 15: choose-attack
+15:06:08 step 16: click-mine
+15:06:10 step 17: rclick-mine
+15:06:11 step 18: click-change 284 331 6
+15:06:12 step 19: click-change 369 325 6
+15:06:13 step 20: shot cards-turn-1.png
+15:06:13 cards-turn-1.png: pixels c281e025ea684dc9, file c393a9bdb980d6a7
+15:06:13 step 21: click 338 325
+15:06:15 step 22: wait-change 10
+15:06:18 step 23: wait-stable
+15:06:18 step 24: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:06:45 step 25: wait-stable
+15:06:46 step 26: shot human-turn-2.png
+15:06:46 human-turn-2.png: pixels 96b0b24907ec1346, file 4fe0a95cd62629f2
+15:06:46 step 27: click-change 554 20 6
+15:06:55 step 28: shot save-turn2.png
+15:06:55 save-turn2.png: pixels 68d2b94c83d2287d, file 80e110a11a5beec6
+15:06:55 step 29: files
+15:06:55 step 30: choose-attack
+15:06:55 step 31: click-mine
+15:06:57 step 32: rclick-mine
+15:06:58 step 33: click-change 284 331 6
+15:06:59 step 34: click-change 369 325 6
+15:07:00 step 35: shot cards-turn-2.png
+15:07:00 cards-turn-2.png: pixels ddf419f31f7bd36c, file 86bdec72a11122f8
+15:07:00 step 36: click 338 325
+15:07:02 step 37: wait-change 10
+15:07:05 step 38: wait-stable
+15:07:05 step 39: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:07:33 step 40: wait-stable
+15:07:34 step 41: shot human-turn-3.png
+15:07:34 human-turn-3.png: pixels a3ac8a80d54859f1, file 7471ad39b6b0c72d
+15:07:34 step 42: click-change 554 20 6
+15:07:42 step 43: shot save-turn3.png
+15:07:42 save-turn3.png: pixels 81d95a05d58ad8e1, file e44904d2eae019c9
+15:07:43 step 44: files
+15:07:43 DOSBox-X exit status 0, 0.05 s after term
+15:07:43 processes still alive after terminate: 0
+15:07:43 reset: run copy: copied 0, removed 3
+15:07:43 reset: run copy equals its state before launch: True

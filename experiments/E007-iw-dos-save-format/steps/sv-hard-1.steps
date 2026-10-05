@@ -1,0 +1,18 @@
+# arm sv-hard-1: hard, 1 starting armies, Save at the first human turn (T16)
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot select-level
+click-change 315 202
+shot starting-armies
+click-change 315 169
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+files
+click-change 554 20
+shot save-turn1
+files

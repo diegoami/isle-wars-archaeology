@@ -25,11 +25,12 @@ Machine-local values come from the environment and are never written to a record
     All are confined before anything is mutated or launched (setup/iw-dos/rundir.py).
     E003_MACHINE  the machine id written to records (default: local)
 
-    E005 runs (T14) use --experiment E005 and E005_BUNDLES / E005_EXPLORE in their place.
+    E005 runs (T14) use --experiment E005 and E005_BUNDLES / E005_EXPLORE in their place; E007 runs (T16) the
+    same with E007_BUNDLES / E007_EXPLORE.
 
 Usage: cycle.py [--arm NAME] [--cycles fixed-3000|fixed-30000|max] [--clock fixed|host]
                 [--probe none|savestate|memory|dosbox-capture] [--terminate term|kill|close]
-                [--experiment E003|E005] [--steps FILE]
+                [--experiment E003|E005|E007] [--steps FILE] [--crafted POSITION.json]
                 [--explore]   (--explore prints the result and writes no record)
 With --steps the one click on Set level is replaced by the script's steps (navsteps.py): the seal
 around them, the launch checks, the reset and the "completed only when" rule are the same.
@@ -65,7 +66,7 @@ import board  # noqa: E402
 
 SCRIPT = Path(__file__).resolve()
 EXPERIMENT = "E003"                   # --experiment sets it (E005: T14); every record and path follows it
-EXPERIMENTS = ("E003", "E005")
+EXPERIMENTS = ("E003", "E005", "E007")
 SET_ID = rundir.SET_ID
 DOSBOX = "dosbox-x"
 DISPLAY = ":61"                       # inside the run's own network namespace and /tmp: no clash
@@ -984,8 +985,8 @@ def refused_args(args):
     probe runs around its steps; E005 runs only step scripts."""
     if args.steps and args.probe != "none":
         return f"--probe {args.probe} is refused with --steps (a step script takes its own savestate step)"
-    if args.experiment == "E005" and not args.steps:
-        return "--experiment E005 needs --steps"
+    if args.experiment in ("E005", "E007") and not args.steps:
+        return f"--experiment {args.experiment} needs --steps"
     return None
 
 
