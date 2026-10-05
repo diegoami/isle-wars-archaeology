@@ -165,7 +165,8 @@ variable other than `IWA_STATIC`, `find -delete`, `sh -c` or a relative path is 
 grant guards against mistakes, not against a reviewer set on writing there. The same holds for
 every outside path: OpenCode checks its file tools, and only `cd`, `rm`, `cp`, `mv`, `mkdir`,
 `touch`, `chmod`, `chown` and `cat` among shell commands, against these rules; `head`, `grep` or
-`sha256sum` on a path elsewhere is not rejected (OpenCode 1.18.34's shell tool).
+`sha256sum` on a path elsewhere, or a `>` redirection's target, is not rejected (OpenCode 1.18.34's
+shell tool, as read from its source).
 `tests/test_reviewer_permissions.py` checks the rules.
 
 ## Keys
