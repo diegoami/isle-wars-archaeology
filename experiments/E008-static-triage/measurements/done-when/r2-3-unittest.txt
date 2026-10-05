@@ -1,0 +1,6 @@
+$ TMPDIR=<a short folder outside every checkout> python3 -m unittest discover -s tests
+----------------------------------------------------------------------
+Ran 411 tests in 9.383s
+
+OK
+exit=0
