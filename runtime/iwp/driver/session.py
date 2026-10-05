@@ -43,6 +43,7 @@ What it changes against the spike (measured in F006):
 """
 import argparse
 import contextlib
+import functools
 import os
 import re
 import signal
@@ -84,6 +85,25 @@ DISPLAY_ATTEMPTS = 3                   # displays tried when the one picked was 
 
 def now():
     return spike.now()
+
+
+def guarded(where):
+    """The one liveness guard of the driver (class C, T13 round 3). Marks a public method of Session:
+    the game side and the display side must be alive before and after it. The before-check runs at
+    entry, the after-check only when the method returned without raising, so a first failure keeps its
+    reason; a death raises the driver's own GameDied or DisplayError (never an unlabelled one), and the
+    waits inside the method carry their own bounds (spike.poll), so an expiry is a bound, never a fixed
+    wait. Methods that themselves end a process (terminate, stop_x) are not decorated: each checks its
+    process inside itself instead."""
+    def decorate(fn):
+        @functools.wraps(fn)
+        def wrapped(self, *args, **kwargs):
+            self.require_alive(where)
+            result = fn(self, *args, **kwargs)
+            self.require_alive(f"{where} (after)")
+            return result
+        return wrapped
+    return decorate
 
 
 # --- processes of a run ----------------------------------------------------------------------
@@ -206,9 +226,12 @@ def bind_install_readonly(install):
     """Bind the install read-only in this mount namespace, once per command; SealError unless it then is
     read-only here. Every session checks it again (Session.require_install_readonly)."""
     install = str(install)
-    bind = spike.run(["mount", "--bind", install, install])
-    remount = spike.run(["mount", "-o", "remount,bind,ro", install])
-    if bind.returncode != 0 or remount.returncode != 0 or spike.install_writable(install):
+    try:
+        spike.must(["mount", "--bind", install, install])
+        spike.must(["mount", "-o", "remount,bind,ro", install])
+    except spike.CommandFailed as exc:
+        raise SealError(f"the install could not be made read-only inside the run: {exc}") from None
+    if spike.install_writable(install):
         raise SealError("the install could not be made read-only inside the run")
 
 
@@ -308,13 +331,21 @@ class Session(spike.Cycle):
         self.observe(step, "process", f"install read-only inside the run ({when})", "yes")
 
     def require_baseline(self, when="before anything starts", step=0):
-        """SealError unless the registry files of the prefix are the baseline's, byte for byte: the reset puts
-        the baseline back, so a prefix that is off it can never come back to its state before the launch."""
+        """SealError unless every registry file the prefix has matches its baseline, byte for byte: the reset
+        puts the baseline back, so a prefix that is off it can never come back to its state before the launch.
+
+        The baseline is never partly matched (T13 round 3, R1): a registry file the prefix has with no
+        plain baseline file, or with a baseline that is a link, refuses the launch, rather than being
+        skipped as if it were equal."""
         baseline = Path(str(self.prefix) + ".baseline")
         checked = 0
+        incomplete = []
         for name in spike.REG_FILES:
             kept = baseline / name
+            if not (self.prefix / name).is_file():     # not present in the prefix: nothing to compare or reset
+                continue
             if not kept.is_file() or kept.is_symlink():
+                incomplete.append(name)
                 continue
             checked += 1
             try:
@@ -327,6 +358,9 @@ class Session(spike.Cycle):
             if here != there:
                 self.fail(f"{name} of the prefix is not the baseline's ({when}); something outside the driver changed "
                           "the prefix (the reset would not bring it back to this state)", SealError)
+        if incomplete:
+            self.fail(f"the prefix has no baseline for its registry file(s) ({when}): "
+                      + ", ".join(incomplete), SealError)
         if not checked:
             self.fail(f"the prefix has no baseline to be reset to ({when})", SealError)
         self.observe(step, "file", f"registry files equal their baseline ({when})", "yes")
@@ -386,8 +420,8 @@ class Session(spike.Cycle):
 
     def spawn_xvfb(self):
         width, height, depth = self.size
-        return subprocess.Popen(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],
-                                env=self.display_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return spike.spawn(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],
+                           env=self.display_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def display_is_ours(self, proc):
         """True only when this run's Xvfb is alive, itself holds the display's listening socket, and answers.
@@ -397,7 +431,7 @@ class Session(spike.Cycle):
         path = f"@/tmp/.X11-unix/X{self.display[1:]}"
         if not listening_socket_inodes(path) & socket_inodes_of(proc.pid):
             return False
-        return spike.run(["xdpyinfo"], env=self.env).returncode == 0
+        return spike.probe(["xdpyinfo"], env=self.env)[0]
 
     def start_x(self):
         """Xvfb on a free display, ready only when display_is_ours: the display number picked is only a hint,
@@ -427,6 +461,7 @@ class Session(spike.Cycle):
         self.observe(0, "process", "X display held by this run's Xvfb (attempt)", attempt)
         self.say(f"Xvfb ready after {waited} s on attempt {attempt}, root {dims}x{planes}")
 
+    @guarded("wait for a screen")
     def wait_for_screen(self, name, timeout=None, stable=True):
         """Wait, by pixels, until the named screen ("title", "options", "notice") is up and, with `stable`,
         unchanged between two captures. Seconds waited. ScreenNotReached at the timeout, with a screenshot of
@@ -444,12 +479,17 @@ class Session(spike.Cycle):
                 with contextlib.suppress(Exception):
                     self.shot(f"{name}-screen-timeout.png", 2)
                 self.fail(f"the {name} screen was not seen within {timeout} s")
-            if stable and spike.poll(self.screen.stable, 30, 0.1) is None:
-                self.fail(f"the {name} screen never became stable")
+            if stable:
+                def stable_and_alive():          # R3: the stability poll also checks the game is alive
+                    self.require_alive(f"the {name} screen was not stable")
+                    return self.screen.stable()
+                if spike.poll(stable_and_alive, 30, 0.1) is None:
+                    self.fail(f"the {name} screen never became stable")
             self.reached.add(name)
             self.observe(2, "screen", f"{name} screen reached, seconds waited", waited)
             return waited
 
+    @guarded("the known screen")
     def known_screen(self):
         """The title screen: waited for by its pixels; the seconds since launch are an observation."""
         self.wait_for_screen("title")
@@ -457,6 +497,7 @@ class Session(spike.Cycle):
         self.observe(2, "screen", "title screen reached and stable, seconds after launch", since)
         self.say(f"title screen reached {since} s after launch")
 
+    @guarded("a step")
     def perform(self, text):
         """Run steps in the E002 step language (runtime/iwp/spike/steps.py). A step the language refuses, or
         that fails, is StepFailed; the game must be alive before each step and after the last."""
@@ -490,6 +531,7 @@ class Session(spike.Cycle):
 
     # ---- observations
 
+    @guarded("a screenshot")
     def shot(self, name, step):
         self.require_alive(f"the screenshot {name}")
         taken = super().shot(name, step)
@@ -497,6 +539,7 @@ class Session(spike.Cycle):
         self.shot_at[name] = self.events
         return taken
 
+    @guarded("a screenshot observation")
     def observe_screenshot(self, name, step=None):
         """A screenshot of the whole display, kept as a bundle file; (sha256 of the raw pixels, sha256 of the PNG)."""
         if step is None:
@@ -504,6 +547,7 @@ class Session(spike.Cycle):
             step = self.step_no
         return self.shot(name, step)
 
+    @guarded("a region observation")
     def observe_region(self, rect, label):
         """sha256 of the raw pixels of x, y, w, h (the 800x600 stage's coordinates), as an observation."""
         self.require_alive(f"reading the region {label}")
@@ -512,11 +556,13 @@ class Session(spike.Cycle):
         self.observe(self.step_no, "screen", f"region {label} {','.join(map(str, rect))} raw RGB8 sha256", digest)
         return digest
 
+    @guarded("a file observation")
     def observe_file(self, rel):
         """One file of the game copy, read in place: size, sha256 and whether it equals the install's."""
         self.step_no += 1
         self.read_game_file(rel)
 
+    @guarded("the cycle's end")
     def complete(self):
         """The only place a session becomes completed: the body ran, the known screens it expects were
         reached, it acted (an input step of perform() succeeded), `before.png` was taken before its first
@@ -558,10 +604,23 @@ class Session(spike.Cycle):
         """`wineserver -k` (immediate, F002), then a bounded wait for the game side: no fixed wait, and no
         wait for the display side's daemons. A game side that is still there after the bound is killed, and
         a second bound ends in TerminateError. The exit status of `wineserver -k` is recorded, not relied on
-        (it is 1 when no server is left, after a game that died); what is relied on is the game side gone."""
+        (it is 1 when no server is left, after a game that died); what is relied on is the game side gone.
+
+        R2 (T13 round 3): the liveness check at the point of termination is inside this method, not in a
+        separate check before it. A game that died on its own since the last check aborts the session here,
+        and the clean-up and the reset still run: there is nothing left to kill, so this stage succeeds."""
+        if not self.game_alive():
+            self._set_aborted(f"the game process exited before terminate (status {self.procs['game'].poll()})", GameDied)
+            self.observe(9, "process", "game process exit status", self.procs["game"].poll())
+            self.observe(9, "process", "game side gone after terminate (s)", 0.0)
+            self.say("the game had already exited before terminate; nothing to kill")
+            return
         self.say("wineserver -k")
-        killed = spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
-        self.observe(9, "process", "wineserver -k exit status", killed.returncode)
+        # The exit status of `wineserver -k` is a state, not an error: it is 1 when no server is left.
+        # What terminate relies on is the game side gone (the bounded wait below), never this exit code.
+        ok, _, _ = spike.probe([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
+        self.observe(9, "process", "wineserver -k exit status",
+                     "0" if ok else "non-zero (no server left; the game side is what is relied on)")
         spike.poll(lambda: not self.game_alive(), 20, 0.05)
         code = self.procs["game"].poll()
         self.observe(9, "process", "game process exit status", code)
@@ -572,22 +631,10 @@ class Session(spike.Cycle):
         self.say(f"game side gone after terminate: {waited}")
         if waited is None:
             self.say("wineserver -k again, then SIGKILL of the game side")
-            spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
+            spike.probe([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)
             self.kill_side("game")
             if self.wait_gone("game", AFTER_KILL_TIMEOUT) is None:
                 self.fail(f"{len(self.alive('game'))} process(es) of the game side survived a kill", TerminateError)
-
-    def check_before_terminate(self):
-        """Class C, just before terminate: a game that died, or a display process that exited, since the last
-        check makes the session aborted (the first reason is kept); the clean-up and the reset still run."""
-        dead = self.display_dead()
-        game_dead = "game" in self.procs and not self.game_alive()
-        if game_dead:
-            self._set_aborted(f"the game process exited before terminate (status {self.procs['game'].poll()})", GameDied)
-        if dead:
-            self._set_aborted(f"{' and '.join(dead)} exited before terminate", DisplayError)
-        self.observe(9, "process", "game and display alive just before terminate",
-                     "no: " + ", ".join((["game"] if game_dead else []) + dead) if game_dead or dead else "yes")
 
     def stop_own(self, proc, sig):
         """A signal to one of this run's display processes, through kill_marked (its markers re-checked)."""
@@ -595,7 +642,13 @@ class Session(spike.Cycle):
 
     def stop_x(self):
         """Stop xfwm4 and Xvfb (SIGTERM, then SIGKILL after STOP_TIMEOUT), every wait bounded; then the
-        display side's processes, then the check that nothing of this run is left. TerminateError otherwise."""
+        display side's processes, then the check that nothing of this run is left. TerminateError otherwise.
+
+        The display-side liveness check is inside this method, at the point of stopping, symmetric with
+        terminate(): a display process that already exited aborts the session, and the stop still runs."""
+        dead = self.display_dead()
+        if dead:
+            self._set_aborted(f"{' and '.join(dead)} exited before terminate", DisplayError)
         unreaped = []
         for name in ("wm", "xvfb"):
             proc = self.procs.get(name)
@@ -651,8 +704,8 @@ class Session(spike.Cycle):
 
     def finish(self):
         """Terminate, stop the display, snapshot and reset, keep the logs; every stage runs, whatever failed
-        before. The status is left aborted unless complete() ran and nothing here failed."""
-        self.check_before_terminate()
+        before. The status is left aborted unless complete() ran and nothing here failed. The liveness at the
+        terminate and stop boundaries is checked inside terminate() and stop_x() themselves."""
         self.cleanup("terminate", self.terminate if "game" in self.procs else None, TerminateError)
         self.cleanup("stopping the display", self.stop_x, TerminateError)
         if hasattr(self, "snap_before"):

@@ -252,7 +252,7 @@ def inner(args, argv):
         sys.exit("IWP_MACHINE is not a machine id (lowercase letters, digits, dashes); nothing was started")
     display = os.environ.get("IWP_CYCLE_DISPLAY") or sessionlib.free_display()
     commit = os.environ["IWP_CYCLE_COMMIT"]
-    spike.run(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"], check=True)
+    spike.must(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"])
     sessionlib.bind_install_readonly(locs["IWP_DIR"])
     fingerprint = spike.versions()
     for index in range(1, args.repeats + 1):
@@ -298,7 +298,7 @@ def launch_inner(cmd, env, bound):
     """Run the namespaced command for at most `bound` s. At the bound it is killed (its namespace with it,
     --kill-child) through kill_marked, with this command's token, and the exit is 1; every wait here is bounded."""
     items = [f"{sessionlib.INVOCATION}={env[sessionlib.INVOCATION]}".encode()]
-    proc = subprocess.Popen(cmd, env=env)
+    proc = spike.spawn(cmd, env=env)
     try:
         return proc.wait(bound)
     except subprocess.TimeoutExpired:
