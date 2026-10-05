@@ -3,7 +3,7 @@
 
     IWA_STATIC=<folder outside every checkout> IW_DOS_DIR=<the copy> python3 tools/static/ghidra_import.py
         (--original iw-dos | --file <name in the static folder> --sha256 <hex>)
-        [--needle TEXT]... [--language ID] [--run ID] [--record NAME]
+        [--needle TEXT]... [--range SEG:OFF-SEG:OFF]... [--language ID] [--run ID] [--record NAME]
 
 The input is one of:
 - `--original KEY`: the original in place (`iw-dos` or `iwp`), which must match its registered sha256
@@ -15,6 +15,12 @@ Ghidra's project, its log and the report (`tools/static/ghidra/T26Report.java`) 
 new directory `<IWA_STATIC>/ghidra-<run>/`. The report holds counts, addresses and function names.
 `--record NAME` writes those, with the tool versions and the exit code, to
 `experiments/E008-static-triage/measurements/NAME` as a new file. No disassembly is printed.
+
+`--range START-END` (addresses as Ghidra writes them, `1000:9b33`) has the post-script disassemble
+from START, following the flow, and write the instructions from START to END into the file
+`listing-<START>.txt` of the run directory, in the static folder, for a person to read there; the
+report, and so the record, gets only the range, its instruction count and its count of far calls
+(the feasibility probe of T26: the code that writes `ISLEWAR.SAV`, found by `dos_probe.py`).
 """
 import argparse
 import json
@@ -30,7 +36,7 @@ import static_common as common  # noqa: E402
 
 LANGUAGE = "x86:LE:16:Real Mode"
 SCRIPT_DIR = Path(__file__).resolve().parent / "ghidra"
-SHA256 = re.compile(r"[0-9a-f]{64}")
+RANGE = re.compile(r"[0-9a-f]{4}:[0-9a-f]{4}-[0-9a-f]{4}:[0-9a-f]{4}")
 
 
 def tool_identity(ghidra, java):
@@ -64,7 +70,7 @@ def project_location(project):
 
 
 def parse_report(text):
-    result = {"blocks": [], "needles": []}
+    result = {"blocks": [], "needles": [], "ranges": []}
     needle = None
     for line in text.splitlines():
         if line.startswith("needle "):
@@ -75,6 +81,11 @@ def parse_report(text):
             needle["occurrences"].append({"at": line.split()[1], "offset": line.split("offset=")[1], "references": []})
         elif line.startswith("    ") and needle is not None and needle["occurrences"]:
             needle["occurrences"][-1]["references"].append(line.strip())
+        elif line.startswith("range "):
+            _, start, end, *counts = line.split()
+            item = {"start": start, "end": end}
+            item.update({k: int(v) for k, v in (c.split("=") for c in counts)})
+            result["ranges"].append(item)
         elif line.startswith("block "):
             _, name, start, size = line.split(" ", 3)
             result["blocks"].append({"name": name, "start": start, "size": int(size)})
@@ -91,6 +102,7 @@ def build_parser():
     source.add_argument("--file", help="a file inside the static folder (a relative name)")
     parser.add_argument("--sha256", help="the sha256 the --file must have")
     parser.add_argument("--needle", action="append", default=[], help="text to search for (addresses are reported)")
+    parser.add_argument("--range", action="append", default=[], help="START-END: disassemble and list into the run folder")
     parser.add_argument("--language", default=LANGUAGE)
     parser.add_argument("--run")
     parser.add_argument("--record")
@@ -102,23 +114,16 @@ def main(argv=None, env=None):
     args = build_parser().parse_args(argv)
     originals = (args.original,) if args.original else ()
     root = common.static_root(env, originals=originals)
+    for item in args.range:
+        if not RANGE.fullmatch(item):
+            common.die(f"--range {item!r} is not START-END with addresses like 1000:9b33")
     if args.original:
         original = common.original(args.original, env)
         target, identity = original.path, {"original": original.set_id, "file": original.rel,
                                            "sha256": original.sha256, "bytes": original.size}
     else:
-        if not args.sha256 or not SHA256.fullmatch(args.sha256):
-            common.die("--file needs --sha256 with 64 lowercase hex digits")
-        rel = Path(args.file)
-        if rel.is_absolute() or ".." in rel.parts:
-            common.die("--file is a name inside the static folder, relative and without ..")
-        target, original = root / rel, None
-        try:
-            sha, size = common.sha256_path(target)
-        except (common.safeio.Refused, OSError) as exc:
-            common.die(f"{args.file} cannot be read: {exc}")
-        if sha != args.sha256:
-            common.die(f"{args.file} is not the file with the given sha256 (it is {sha}); nothing was analysed")
+        target, size = common.derived(root, args.file, args.sha256)
+        original, sha = None, args.sha256
         identity = {"derived_file_sha256": sha, "bytes": size}
     ghidra = common.tool_home("IWA_GHIDRA", ["ghidra_12.1.4_PUBLIC"])
     java = common.tool_home("IWA_JAVA_HOME", ["jdk-21.0.12.1+1"])
@@ -132,7 +137,7 @@ def main(argv=None, env=None):
     report = run_dir / "report.txt"
     command = [headless, project, "t26", "-import", target, "-processor", args.language,
                "-cspec", "default", "-scriptPath", SCRIPT_DIR, "-postScript", "T26Report.java", report,
-               *args.needle, "-log", run_dir / "ghidra.log"]
+               *args.needle, *[f"range={r}" for r in args.range], "-log", run_dir / "ghidra.log"]
     child_env = dict(os.environ if env is None else env)
     child_env["JAVA_HOME"] = str(java)
     child_env["PATH"] = str(java / "bin") + os.pathsep + child_env.get("PATH", "")
@@ -145,7 +150,7 @@ def main(argv=None, env=None):
     if original is not None:
         original.recheck()
     result = {"tools": tool_identity(ghidra, java), "input": identity, "language": args.language,
-              "analyzeHeadless_exit": code, "seconds": seconds, "needles": args.needle}
+              "analyzeHeadless_exit": code, "seconds": seconds, "needles": args.needle, "ranges": args.range}
     if code == 0 and report.is_file():
         result["report"] = parse_report(report.read_text(encoding="utf-8"))
     if args.record:

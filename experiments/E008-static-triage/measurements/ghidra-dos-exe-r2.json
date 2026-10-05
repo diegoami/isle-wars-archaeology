@@ -1,0 +1,194 @@
+{
+  "analyzeHeadless_exit": 0,
+  "input": {
+    "bytes": 159120,
+    "derived_file_sha256": "4dac918a532fa439ad98cd519a1daf43a51067639e1b80855d2b69acab4374d3"
+  },
+  "language": "x86:LE:16:Real Mode",
+  "needles": [
+    "ISLEWAR.SAV"
+  ],
+  "ranges": [
+    "1000:964d-1000:9738",
+    "1000:9739-1000:9b32",
+    "1000:9b33-1000:9d5f"
+  ],
+  "report": {
+    "blocks": [
+      {
+        "name": "CODE_0",
+        "size": 65504,
+        "start": "1000:0000"
+      },
+      {
+        "name": "CODE_1",
+        "size": 784,
+        "start": "1ffe:0000"
+      },
+      {
+        "name": "CODE_2",
+        "size": 7232,
+        "start": "202f:0000"
+      },
+      {
+        "name": "CODE_3",
+        "size": 912,
+        "start": "21f3:0000"
+      },
+      {
+        "name": "CODE_4",
+        "size": 976,
+        "start": "222c:0000"
+      },
+      {
+        "name": "CODE_5",
+        "size": 1872,
+        "start": "2269:0000"
+      },
+      {
+        "name": "CODE_6",
+        "size": 752,
+        "start": "22de:0000"
+      },
+      {
+        "name": "CODE_7",
+        "size": 1920,
+        "start": "230d:0000"
+      },
+      {
+        "name": "CODE_8",
+        "size": 288,
+        "start": "2385:0000"
+      },
+      {
+        "name": "CODE_9",
+        "size": 704,
+        "start": "2397:0000"
+      },
+      {
+        "name": "CODE_10",
+        "size": 112,
+        "start": "23c3:0000"
+      },
+      {
+        "name": "CODE_11",
+        "size": 1632,
+        "start": "23ca:0000"
+      },
+      {
+        "name": "CODE_12",
+        "size": 784,
+        "start": "2430:0000"
+      },
+      {
+        "name": "CODE_13",
+        "size": 688,
+        "start": "2461:0000"
+      },
+      {
+        "name": "CODE_14",
+        "size": 36144,
+        "start": "248c:0000"
+      },
+      {
+        "name": "CODE_15",
+        "size": 400,
+        "start": "2d5f:0000"
+      },
+      {
+        "name": "CODE_16",
+        "size": 3984,
+        "start": "2d78:0000"
+      },
+      {
+        "name": "CODE_17",
+        "size": 9264,
+        "start": "2e71:0000"
+      },
+      {
+        "name": "CODE_18",
+        "size": 160,
+        "start": "30b4:0000"
+      },
+      {
+        "name": "CODE_19",
+        "size": 1632,
+        "start": "30be:0000"
+      },
+      {
+        "name": "CODE_20",
+        "size": 368,
+        "start": "3124:0000"
+      },
+      {
+        "name": "CODE_21",
+        "size": 11248,
+        "start": "313b:0000"
+      },
+      {
+        "name": "DATA",
+        "size": 6352,
+        "start": "313b:2bf0"
+      },
+      {
+        "name": "HEADER",
+        "size": 11760,
+        "start": "HEADER::00000000"
+      }
+    ],
+    "compiler_spec": "default",
+    "format": "Old-style DOS Executable (MZ)",
+    "functions": 361,
+    "instructions": 7891,
+    "language": "x86:LE:16:Real Mode",
+    "memory_blocks": 24,
+    "needles": [
+      {
+        "hits": 1,
+        "occurrences": [
+          {
+            "at": "3000:2d1c",
+            "offset": "0x2d1c",
+            "references": []
+          }
+        ],
+        "text": "ISLEWAR.SAV"
+      }
+    ],
+    "ranges": [
+      {
+        "end": "1000:9738",
+        "far_calls": 13,
+        "instructions": 76,
+        "start": "1000:964d"
+      },
+      {
+        "end": "1000:9b32",
+        "far_calls": 60,
+        "instructions": 381,
+        "start": "1000:9739"
+      },
+      {
+        "end": "1000:9d5f",
+        "far_calls": 44,
+        "instructions": 194,
+        "start": "1000:9b33"
+      }
+    ]
+  },
+  "seconds": 13.64,
+  "tools": {
+    "ghidra": {
+      "build_date": "20260921",
+      "path": "$HOME/tools/ghidra_12.1.4_PUBLIC",
+      "revision": "8b6bbb857accdfa20dc5b2f5dea471178c2e9fbc",
+      "version": "12.1.4"
+    },
+    "java": {
+      "implementor": "Temurin-21.0.12.1+1",
+      "modules_sha256": "70c5465dabf8e1bec2860631ea3ffd342f0ec23a5e2efd3a389d2abe32448f98",
+      "path": "$HOME/tools/jdk-21.0.12.1+1",
+      "version": "21.0.12.1+1-LTS"
+    }
+  }
+}

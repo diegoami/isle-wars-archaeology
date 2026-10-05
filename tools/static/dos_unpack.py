@@ -24,6 +24,7 @@ Nothing derived from the original is printed or written anywhere else.
 import argparse
 import json
 import os
+import re
 import struct
 import sys
 from pathlib import Path
@@ -104,6 +105,32 @@ def stage(deark, module, source, run_dir, name, env):
     return run_dir / made[0], code, seconds
 
 
+# Deark's own messages (its `-d` lines) that identify the packing; only these are recorded, as numbers
+# and Deark's names for what it found.
+DEARK_SAYS = {
+    "pklite_version": re.compile(r"reported PKLITE version: (\S+)"),
+    "extra_compression": re.compile(r"extra cmpr: (\d+)"),
+    "large_compression": re.compile(r"large cmpr: (\d+)"),
+    "decompressed": re.compile(r"decompressed (\d+ bytes to \d+)"),
+    "exepack_variant": re.compile(r"variant: ([A-Za-z0-9 ./()_-]+)"),
+    "relocation_count": re.compile(r"reloc count: (\d+)"),
+}
+
+
+def deark_says(run_dir, name):
+    """{key: value} of the identifying lines of Deark's messages for one stage."""
+    text = ""
+    for suffix in ("out", "err"):
+        with common.safeio.open_source(run_dir / f"deark-{name}.{suffix}") as fh:
+            text += fh.read().decode("ascii", "replace")
+    found = {}
+    for key, pattern in DEARK_SAYS.items():
+        match = pattern.search(text)
+        if match:
+            found[key] = match.group(1).strip()
+    return found
+
+
 def main(argv=None, env=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--original", default="iw-dos", choices=("iw-dos", "iw-dos-ov6"))
@@ -128,6 +155,7 @@ def main(argv=None, env=None):
             out, code, seconds = stage(deark, module, source, run_dir, name, child_env)
             sha, size = common.sha256_path(out)
             result["stages"].append({"stage": name, "deark_module": module, "exit": code, "seconds": seconds,
+                                     "deark_says": deark_says(run_dir, name),
                                      "output": {"name": out.name, "sha256": sha, "bytes": size}})
             source = out
     finally:

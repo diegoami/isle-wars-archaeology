@@ -9,6 +9,12 @@
 // to that address, and the instructions that carry the string's 16-bit offset as an immediate (a
 // real-mode program names a string by its offset in a data segment, which Ghidra does not always
 // turn into a reference), each with the function that holds it.
+//
+// An argument `range=START-END` (Ghidra addresses, `1000:9b33-1000:9d64`) disassembles from START,
+// following the flow, after the counts above are taken (so they are auto-analysis's own), and writes
+// the instructions from START to END to `listing-<START>.txt` beside the report: in the static
+// folder, for a person to read there, never in a record. The report gets the range, its instruction
+// count and its count of far calls.
 
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.address.Address;
@@ -21,6 +27,7 @@ import ghidra.program.model.mem.MemoryBlock;
 import ghidra.program.model.scalar.Scalar;
 import ghidra.program.model.symbol.Reference;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -52,9 +59,44 @@ public class T26Report extends GhidraScript {
                 out.println("block " + block.getName() + " " + block.getStart() + " " + block.getSize());
             }
             for (int i = 1; i < args.length; i++) {
-                needle(out, memory, args[i]);
+                if (!args[i].startsWith("range=")) {
+                    needle(out, memory, args[i]);
+                }
+            }
+            for (int i = 1; i < args.length; i++) {
+                if (args[i].startsWith("range=")) {
+                    range(out, new File(args[0]).getAbsoluteFile().getParentFile(), args[i].substring(6));
+                }
             }
         }
+    }
+
+    private void range(PrintWriter out, File folder, String spec) throws Exception {
+        String[] ends = spec.split("-");
+        Address start = toAddr(ends[0]);
+        Address end = toAddr(ends[1]);
+        disassemble(start);
+        int count = 0;
+        int farCalls = 0;
+        File listing = new File(folder, "listing-" + ends[0].replace(':', '-') + ".txt");
+        if (listing.exists()) {
+            throw new IllegalStateException("the listing exists already; a run never overwrites one");
+        }
+        try (PrintWriter text = new PrintWriter(listing, "UTF-8")) {
+            InstructionIterator it = currentProgram.getListing().getInstructions(start, true);
+            while (it.hasNext()) {
+                Instruction insn = it.next();
+                if (insn.getAddress().compareTo(end) > 0) {
+                    break;
+                }
+                count++;
+                if (insn.getMnemonicString().equalsIgnoreCase("CALLF")) {
+                    farCalls++;
+                }
+                text.println(insn.getAddress() + "  " + insn);
+            }
+        }
+        out.println("range " + start + " " + end + " instructions=" + count + " far_calls=" + farCalls);
     }
 
     private void needle(PrintWriter out, Memory memory, String text) throws Exception {

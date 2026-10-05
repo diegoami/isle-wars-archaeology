@@ -152,6 +152,28 @@ def original(key, env=None, known_root=None):
     return Original(key, set_id, rel, path, sha256, size)
 
 
+SHA256 = re.compile(r"[0-9a-f]{64}")
+
+
+def derived(root, name, sha256):
+    """(path, size) of a file inside the static folder, made by an earlier run (the unpacked executable),
+    when its sha256 is the one given; SystemExit otherwise. `name` is relative, without `..`, so the
+    file is in the static folder and not an original or a file of a checkout."""
+    if not sha256 or not SHA256.fullmatch(sha256):
+        die("--file needs --sha256 with 64 lowercase hex digits")
+    rel = Path(name)
+    if rel.is_absolute() or ".." in rel.parts:
+        die("--file is a name inside the static folder, relative and without ..")
+    path = Path(root) / rel
+    try:
+        sha, size = sha256_path(path)
+    except (safeio.Refused, OSError) as exc:
+        die(f"{name} cannot be read: {exc}")
+    if sha != sha256:
+        die(f"{name} is not the file with the given sha256 (it is {sha}); nothing was analysed")
+    return path, size
+
+
 def run_id():
     return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 
