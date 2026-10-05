@@ -169,6 +169,31 @@ every outside path: OpenCode checks its file tools, and only `cd`, `rm`, `cp`, `
 shell tool, as read from its source).
 `tests/test_reviewer_permissions.py` checks the rules.
 
+### The OpenCode implementer (T31)
+
+`.opencode/agents/implementer.md` grants the same static folder, to read, and nothing else outside
+its worktree (the owner, 2026-10-05): the reading tasks can then run on an OpenCode model. It gets
+no `/tmp` or TMPDIR grant (a TMPDIR stays inside the worktree, the T13 lesson), so the reviewer's
+`/tmp/iwa-review-*` is not shared. It keeps `edit` for its worktree, and OpenCode's `edit`
+permission takes per-path patterns, so the agent file denies it for the static folder. The edit,
+write and apply_patch tools all ask `edit` with the file's path *relative to the worktree root*
+(`path.relative(worktree, file)`, from OpenCode 1.18.34's source), which for the static folder is
+`../.../.local/share/isle-wars-archaeology/static/...`; the deny pattern is
+`*.local/share/isle-wars-archaeology/static/*`. The same shell denies as the reviewer's apply, and
+`cp` out of the folder is denied too, so the folder's files are not copied into the worktree.
+
+What is not stopped, beyond the reviewer's list above:
+- an edit through a path inside the worktree that reaches the folder (a symlink made in the
+  worktree, which the shell patterns also miss), since the check reads the path text;
+- a `$IWA_STATIC` set elsewhere, which is not granted and is rejected;
+- a read whose output the implementer then writes into the worktree (`cat <file> > docs/x`,
+  `grep ... > x`, or typing the text into the edit tool): nothing in OpenCode can tell derived text
+  from the implementer's own. The agent's prose forbids it (CLAUDE.md rule 18), and the review
+  checks the diff.
+
+`tests/test_implementer_permissions.py` checks the rules, and, where OpenCode is installed, against
+`opencode debug agent implementer`.
+
 ## Keys
 
 In **Claude Code on the web**, set these in the environment's settings: the cloud environment menu

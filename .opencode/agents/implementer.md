@@ -2,9 +2,12 @@
 description: Implementer for one task or fix, run by tools/implement.mjs on the model given on the command line. It works in a worktree the script created, commits and pushes its own branch, and opens the PR.
 mode: all
 permission:
-  edit: allow
+  edit:
+    "*": allow
+    "*.local/share/isle-wars-archaeology/static/*": deny
   external_directory:
     "/tmp/opencode/*": deny
+    "~/.local/share/isle-wars-archaeology/static/*": allow
   task:
     "*": deny
   bash:
@@ -20,6 +23,32 @@ permission:
     "gh pr merge *": deny
     "gh pr review *": deny
     "gh issue edit *": deny
+    "rm *isle-wars-archaeology/static*": deny
+    "rm *IWA_STATIC*": deny
+    "rmdir *isle-wars-archaeology/static*": deny
+    "rmdir *IWA_STATIC*": deny
+    "unlink *isle-wars-archaeology/static*": deny
+    "unlink *IWA_STATIC*": deny
+    "mv *isle-wars-archaeology/static*": deny
+    "mv *IWA_STATIC*": deny
+    "cp *isle-wars-archaeology/static*": deny
+    "cp *IWA_STATIC*": deny
+    "touch *isle-wars-archaeology/static*": deny
+    "touch *IWA_STATIC*": deny
+    "mkdir *isle-wars-archaeology/static*": deny
+    "mkdir *IWA_STATIC*": deny
+    "chmod *isle-wars-archaeology/static*": deny
+    "chmod *IWA_STATIC*": deny
+    "chown *isle-wars-archaeology/static*": deny
+    "chown *IWA_STATIC*": deny
+    "truncate *isle-wars-archaeology/static*": deny
+    "truncate *IWA_STATIC*": deny
+    "tee *isle-wars-archaeology/static*": deny
+    "tee *IWA_STATIC*": deny
+    "sed -i*isle-wars-archaeology/static*": deny
+    "sed -i*IWA_STATIC*": deny
+    "*>*isle-wars-archaeology/static*": deny
+    "*>*IWA_STATIC*": deny
 ---
 
 You implement one task (or one fix). The brief that follows is the contract; this file says how
@@ -31,9 +60,17 @@ the run works.
   `git diff --name-only origin/main...HEAD`; your final report repeats them.
 - Commit and push to your branch after every meaningful step. Never force-push, stash, merge,
   label, or touch another branch or the main checkout. (`git stash` is shared by every worktree.)
-- Stay inside your worktree: no temp directory, home directory, main checkout or other worktree.
-  OpenCode rejects a path outside it, and the script then counts the run as failed. Scratch files
-  live in the worktree and are deleted before you commit. Call tools by name from PATH.
+- Stay inside your worktree: no temp directory, home directory, main checkout or other worktree,
+  but for one read-only place (T31). OpenCode rejects any other path outside it, and the script
+  then counts the run as failed. Scratch files live in the worktree and are deleted before you
+  commit.
+  - **The static folder**, `~/.local/share/isle-wars-archaeology/static/`: unpacked and decompiled
+    output that stays off the repository (CLAUDE.md rule 18). Read it, never write it: read with
+    shell commands (`sha256sum`, `cat`, `grep`, `head`, `ls`) and the `~/` path as written here;
+    never remove, move, copy, create or change anything there, and never copy a line of it into the
+    worktree: no file, no commit, no PR text, no test fixture. Cite a file there by its path and
+    sha256, and describe what it shows in your own words. Put a redirection after the static
+    folder's path, never before it: a `>` ahead of that path is refused as a write there. Call tools by name from PATH.
   Run every shell command from the worktree root with paths relative to it (`grep -n X src/a.cs`,
   not `cd src && grep -n X a.cs`). Never `cd`, and never write `..` in a command: OpenCode checks
   paths against the worktree root, not against an earlier `cd` in the same command, so
