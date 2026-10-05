@@ -1,0 +1,59 @@
+{
+  "note": "The static-analysis tools of T26, and what identifies each: a version and the sha256 of files inside it. Paths are relative to the tools folder ($IWA_TOOLS, else $HOME/tools). `check_tools.py` compares an install with this file. A tool the owner installed from an official archive is identified by its files; the archive's published checksum is recorded where the source publishes one.",
+  "tools": [
+    {
+      "name": "ghidra",
+      "version": "12.1.4",
+      "dir": "ghidra_12.1.4_PUBLIC",
+      "source": "https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.4_build",
+      "archive": {
+        "name": "ghidra_12.1.4_PUBLIC_20260921.zip",
+        "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db",
+        "published_by": "the release page of the source",
+        "checked_here": false
+      },
+      "files": {
+        "Ghidra/application.properties": "e84c26b08545eee63d24a1a8a4dd7905e4209538e2e7192093877c435c64eb67",
+        "Ghidra/Framework/Generic/lib/Generic.jar": "b16e5b07cc0e2c339f4c17cccdb63bca5801aec22f32bd1e63d420050908cafe",
+        "Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling.jar": "bdcb6ef174ef8bc0be46fc979aaad5af5a4820d1f253ac4ea39ca419bce10fa3",
+        "Ghidra/Processors/x86/data/languages/x86.ldefs": "fd75871939ac5c767da7d3c0023e09538c9ebf45f0b5939b4c33205e04e0a666",
+        "support/analyzeHeadless": "302880328a0024ee24cfe0326d4d9a61c2237116d95f2e0e0df090f747f95e30"
+      },
+      "runs": "support/analyzeHeadless <project folder> <project name> -import <file> -processor \"x86:LE:16:Real Mode\" -cspec default -scriptPath tools/static/ghidra -postScript T26Report.java <report file> [<needle>...] -log <log file>; needs JAVA_HOME at JDK 21 or later (tools/static/ghidra_import.py sets it)"
+    },
+    {
+      "name": "java",
+      "version": "21.0.12.1+1-LTS (Eclipse Temurin)",
+      "dir": "jdk-21.0.12.1+1",
+      "source": "https://adoptium.net/temurin/releases/?version=21 (Linux x64 JDK tarball)",
+      "archive": {
+        "name": "the Temurin 21.0.12.1+1 Linux x64 JDK tarball",
+        "sha256": null,
+        "published_by": "Adoptium",
+        "checked_here": false
+      },
+      "files": {
+        "release": "ebbd70bf00bab6d39addf51969c5ff244030b86b29de400b9fb10612ebd3ceec",
+        "lib/modules": "70c5465dabf8e1bec2860631ea3ffd342f0ec23a5e2efd3a389d2abe32448f98",
+        "bin/java": "2a207f5e7d075afa01d97f8048389a64432a44c4a5af0f5e77d6e286ec5f401d"
+      },
+      "runs": "bin/java; Ghidra 12 needs a JDK 21 or later, found through JAVA_HOME"
+    },
+    {
+      "name": "projectorrays",
+      "version": "0.2.0",
+      "dir": "projectorrays-0.2.0",
+      "source": "https://github.com/ProjectorRays/ProjectorRays (tag v0.2.0, commit 8a3d3b4211575170276fc6be350b6b52e96d4750, licence MPL-2.0)",
+      "archive": null,
+      "built_by": "setup/static/build-projectorrays.sh, from that commit",
+      "files": {
+        "bin/projectorrays": "d1c2235bd5f32f4a268a2cd09d2260e143b8caf51124e0da8d9f54fd113c0ea3"
+      },
+      "build_dependencies": [
+        {"name": "libboost1.83-dev", "version": "1.83.0-2.1ubuntu3.2", "deb_sha256": "519ecf2c64308527e15b6582955681d192a832250baa4bc424967aaf7d02d68f", "use": "headers only, unpacked below the tools folder"},
+        {"name": "libmpg123-dev", "version": "1.32.5-1ubuntu1.1", "deb_sha256": "5fe2e9a221025ddd526baf2c2e3a0df5aacc8626f927d14fcb9585414a2d6d40", "use": "the header, unpacked below the tools folder; the library is the system libmpg123.so.0"}
+      ],
+      "runs": "bin/projectorrays decompile <movie> -o <existing folder> --dump-scripts | --dump-json [-v]; reads a movie by its own offsets, so tools/static/iwp_extract.py gives it a work copy of the projector's movie at its original offset"
+    }
+  ]
+}

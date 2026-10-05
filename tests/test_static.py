@@ -41,6 +41,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "tools" / "static"))
 sys.path.insert(0, str(ROOT / "setup" / "iwp"))
+sys.path.insert(0, str(ROOT / "setup" / "static"))
 
 import locations  # noqa: E402
 import safeio  # noqa: E402
@@ -49,6 +50,7 @@ import static_common  # noqa: E402
 import iwp_extract  # noqa: E402
 import ghidra_import  # noqa: E402
 import check_derived_hashes  # noqa: E402
+import check_tools  # noqa: E402
 
 
 def sha(data):
@@ -614,6 +616,58 @@ class DerivedHashesTest(World):
     def test_this_checkout_passes(self):
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(check_derived_hashes.main(["--root", str(ROOT)]), 0)
+
+
+class ToolsCheckTest(World):
+    """setup/static/check_tools.py: an install is compared with the recorded hashes."""
+
+    def manifest(self):
+        folder = self.tmp / "toolsroot" / "thing-1"
+        folder.mkdir(parents=True)
+        (folder / "a.bin").write_bytes(b"aaa")
+        return {"tools": [{"name": "thing", "version": "1", "dir": "thing-1", "files": {"a.bin": sha(b"aaa")}}]}
+
+    def run_check(self, manifest, *extra):
+        path = self.tmp / "tools.json"
+        path.write_text(json.dumps(manifest))
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_tools.main(["--root", str(self.tmp / "toolsroot"), "--manifest", str(path), *extra])
+        return code, out.getvalue()
+
+    def test_a_matching_tool_is_ready(self):
+        code, text = self.run_check(self.manifest())
+        self.assertEqual(code, 0)
+        self.assertIn("thing 1: 1 files match", text)
+        self.assertTrue(text.endswith("ready\n"))
+
+    def test_a_changed_file_is_not_ready(self):
+        manifest = self.manifest()
+        (self.tmp / "toolsroot" / "thing-1" / "a.bin").write_bytes(b"changed")
+        code, text = self.run_check(manifest)
+        self.assertEqual(code, 1)
+        self.assertIn("another sha256", text)
+
+    def test_a_missing_file_a_missing_folder_and_an_unknown_name_are_not_ready(self):
+        manifest = self.manifest()
+        (self.tmp / "toolsroot" / "thing-1" / "a.bin").unlink()
+        self.assertIn("a.bin is missing", self.run_check(manifest)[1])
+        (self.tmp / "toolsroot" / "thing-1").rmdir()
+        code, text = self.run_check(manifest)
+        self.assertEqual(code, 1)
+        self.assertIn("folder thing-1 is missing", text)
+        code, text = self.run_check(manifest, "--only", "nothing")
+        self.assertEqual(code, 1)
+        self.assertIn("not in tools.json", text)
+
+    def test_the_recorded_manifest_is_well_formed_and_names_no_machine_path(self):
+        text = (ROOT / "setup" / "static" / "tools.json").read_text()
+        self.assertEqual(static_common.leaks(text), [])
+        manifest = json.loads(text)
+        for tool in manifest["tools"]:
+            self.assertTrue(tool["files"], tool["name"])
+            for value in tool["files"].values():
+                self.assertRegex(value, r"^[0-9a-f]{64}$")
 
 
 if __name__ == "__main__":
