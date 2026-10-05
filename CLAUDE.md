@@ -142,6 +142,8 @@ indexed in `docs/tasks/README.md`.
     malpaco, and no evidence ever does. Executables, data and help files, and patched builds stay
     on the user's own machines. They are never in this repository, a release, an issue or a cloud
     session. Tasks that need them are C3/C4 only. `tools/check_no_originals.py` runs in CI.
+    Derived output (decompiled code, listings) may be read by the reviewing models' APIs
+    (Anthropic, OpenAI, Z.ai), and is never published (the owner, 2026-10-05, T29).
 19. **Pro is the subject; DOS is history** (U3, U11; the owner, 2026-10-05). The research reads and
     corroborates Windows *Isle Wars Pro*, the shareware/unregistered release. DOS *Isle Wars* findings
     stay as they are, scoped to DOS, and no new DOS work is planned: the two games may differ, so a
