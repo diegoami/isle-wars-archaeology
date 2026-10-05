@@ -5,6 +5,7 @@
 //   node tools/harness/implement.mjs --fix 34 --slug save-path --brief brief.md
 //     [--copy local.ini]...  untracked files copied from the main checkout into the worktree
 //     [--env KEY=VALUE]...   environment for the run
+//   node tools/harness/implement.mjs --self-test   (the reset's save, on a throwaway repository)
 //
 // The main session fills the brief (the task file pasted in full, plus review URLs on a rework
 // round). This script creates or resumes the branch and worktree, runs OpenCode watched, and checks
@@ -21,9 +22,17 @@
 //
 // Exit 0: PR open. Exit 1: the main session decides (read the log). Exit 3: OpenCode unavailable;
 // fall back to a Claude implementer.
+//
+// When an attempt fails and left nothing behind, the reset between attempts first saves the
+// worktree's uncommitted changes (staged, unstaged and untracked) to
+// <workRoot>/<name>.<model key>.<UTC time>.unsaved.patch, a file created exclusively (#87): an
+// implementer that edited files without committing before a rejected tool call ended its run keeps
+// that work. The exit 1 and exit 3 messages name every patch the run saved.
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError } from './lib/opencode.mjs';
 import { runChain } from './lib/chain.mjs';
 import {
@@ -33,7 +42,116 @@ import {
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { repeatable: ['copy', 'env'] });
+// The reset's save (#87): on T13 round 3 an implementer edited five files without committing, a
+// rejected tool call ended its run, and the reset discarded all of it. Before the reset destroys
+// the worktree's state, what the attempt left uncommitted is written to one binary patch.
+
+/**
+ * Saves the worktree's uncommitted changes (staged, unstaged and untracked) against the run's
+ * start commit, to <workRoot>/<name>.<model key>.<UTC time>.unsaved.patch — a file created
+ * exclusively ('.1', '.2', … if the same millisecond ever collides), never an overwrite — and
+ * logs its path. Returns the patch's path, or null when the worktree is clean: nothing changed,
+ * no file. `stamp` exists for tests.
+ */
+export function saveUnsavedWork({ worktree, startSha, workRoot, name, model, log = () => {}, stamp = new Date() }) {
+  if (!sh('git', ['-C', worktree, 'status', '--porcelain'])) return null;
+  sh('git', ['-C', worktree, 'add', '-A']);
+  // sh() trims stdout, which would corrupt a patch's last line; the diff goes through its own
+  // spawn, raw and binary-safe.
+  const d = spawnSync('git', ['-C', worktree, 'diff', '--cached', '--binary', startSha], { encoding: 'buffer' });
+  if (d.error) throw new Error(`git diff could not run: ${d.error.message}`);
+  if (d.status !== 0) throw new Error(`git diff --cached --binary ${startSha} failed (${d.status}):\n${d.stderr}`);
+  const diff = d.stdout;
+  const stampText = stamp.toISOString().replaceAll(':', '-');
+  let file = null;
+  for (let i = 0; !file; i++) {
+    const p = path.join(workRoot, `${name}.${model}.${stampText}${i ? `.${i}` : ''}.unsaved.patch`);
+    try {
+      const fd = fs.openSync(p, 'wx');
+      try { fs.writeFileSync(fd, diff); } finally { fs.closeSync(fd); }
+      file = p;
+    } catch (e) {
+      if (e.code !== 'EEXIST' || i >= 100) throw e;
+    }
+  }
+  log(`unsaved work saved to: ${file}`);
+  return file;
+}
+
+/**
+ * The reset between chain attempts: first save what the failed attempt left uncommitted (above),
+ * then hard-reset to the start commit and drop untracked files, as before. Returns the patch's
+ * path from saveUnsavedWork, or null when there was nothing to save.
+ */
+export function resetWorktree({ worktree, startSha, workRoot, name, model, log, stamp }) {
+  const patch = saveUnsavedWork({ worktree, startSha, workRoot, name, model, log, stamp });
+  sh('git', ['-C', worktree, 'reset', '-q', '--hard', startSha]);
+  sh('git', ['-C', worktree, 'clean', '-q', '-fd']);
+  return patch;
+}
+
+// --self-test: the reset's save, on a throwaway repository, with no OpenCode, gh or network. A
+// tracked change and an untracked file must survive resetWorktree in one patch that applies
+// cleanly to the start commit and restores both; a clean worktree must write no file; and a save
+// must never overwrite an earlier one. Fails when the save is removed.
+export function selfTest() {
+  const failures = [];
+  const ok = (what, cond) => { if (!cond) failures.push(what); };
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'implement-selftest-'));
+  const saves = path.join(dir, 'saves'); // outside the repo, as workRoot always is
+  const repo = path.join(dir, 'repo');
+  try {
+    fs.mkdirSync(repo);
+    const git = (...args) => sh('git', ['-C', repo, ...args]);
+    git('init', '-q');
+    git('config', 'user.email', 'selftest@invalid');
+    git('config', 'user.name', 'selftest');
+    git('config', 'commit.gpgsign', 'false');
+    fs.writeFileSync(path.join(repo, 'tracked.txt'), 'one\n');
+    git('add', '-A');
+    git('commit', '-q', '-m', 'start');
+    const startSha = git('rev-parse', 'HEAD');
+    fs.mkdirSync(saves);
+    const reset = (o) => resetWorktree({ worktree: repo, startSha, workRoot: saves, name: 'selftest', model: 'test-model', log: () => {}, ...o });
+    const stamp = new Date('2026-10-05T12:00:00Z');
+
+    fs.writeFileSync(path.join(repo, 'tracked.txt'), 'one\ntwo\n');
+    fs.writeFileSync(path.join(repo, 'untracked.txt'), 'fresh\n');
+    const patch = reset({ stamp });
+    const want = path.join(saves, 'selftest.test-model.2026-10-05T12-00-00.000Z.unsaved.patch');
+    ok(`the patch is written where the naming says (${patch} vs ${want})`, patch === want && fs.existsSync(want));
+    if (patch !== want || !fs.existsSync(want)) return failures; // no patch: the rest cannot run
+    ok('the worktree is clean after the reset', git('status', '--porcelain') === '');
+    try { git('apply', '--check', want); } catch (e) { failures.push(`the patch does not apply cleanly: ${e.message}`); }
+    git('apply', want);
+    ok('the tracked change is restored', fs.readFileSync(path.join(repo, 'tracked.txt'), 'utf8') === 'one\ntwo\n');
+    ok('the untracked file is restored', fs.readFileSync(path.join(repo, 'untracked.txt'), 'utf8') === 'fresh\n');
+
+    // The worktree is dirty again (the patch was applied): a reset saves it under the new stamp.
+    reset({ stamp: new Date('2026-10-05T12:00:01Z') });
+    // Nothing changed now: no file, even though the first stamp's name is already taken.
+    ok('a clean worktree writes no file', reset({ stamp }) === null && fs.readdirSync(saves).length === 2);
+    // The first stamp again: another name ('.1'), never an overwrite of the first patch.
+    fs.writeFileSync(path.join(repo, 'tracked.txt'), 'one\ntwo\nthree\n');
+    const second = reset({ stamp });
+    ok(`a second save takes another name, not an overwrite (${second})`,
+      second === path.join(saves, 'selftest.test-model.2026-10-05T12-00-00.000Z.1.unsaved.patch'));
+    ok('the second patch holds the second change', second !== null && fs.readFileSync(second, 'utf8').includes('three'));
+    ok('the first patch is intact', fs.readFileSync(want, 'utf8').includes('two') && !fs.readFileSync(want, 'utf8').includes('three'));
+    ok('exactly the three expected patches exist', fs.readdirSync(saves).length === 3);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  return failures;
+}
+
+const a = parseArgs(process.argv.slice(2), { flags: ['self-test'], repeatable: ['copy', 'env'] });
+if (a['self-test']) {
+  const failures = selfTest();
+  for (const f of failures) console.error(`FAIL ${f}`);
+  say(`self-test: ${failures.length ? `${failures.length} checks failed` : 'all checks passed'}`);
+  process.exit(failures.length ? 1 : 0);
+}
 if (!a.task === !a.fix) die(2, 'Give exactly one of --task T<nn> or --fix <issue>.');
 if (a.task && !/^T\d{2,3}$/.test(a.task)) die(2, `--task must look like T07; got ${a.task}`);
 if (!a.slug || !a.brief) die(2, '--slug and --brief are required.');
@@ -95,6 +213,8 @@ const originSha = () => sh('git', ['-C', top, 'rev-parse', `origin/${branch}`], 
 const startSha = sh('git', ['-C', worktree, 'rev-parse', 'HEAD']);
 const startRemote = originSha();
 const startPr = openPr();
+const patches = []; // the unsaved-work patches this run's resets wrote, in save order
+let attemptModel = null; // the chain key of the attempt whose uncommitted work reset saves
 fs.writeFileSync(logFile, '');
 
 // The implementer runs on the agent copied into its worktree, so it must not inherit the reviewer's
@@ -106,6 +226,7 @@ const result = await runChain({
   chain: pre.usable,
   log: say,
   attempt: async (m) => {
+    attemptModel = m;
     const model = config.models[m];
     const watch = watchLine(m, model);
     if (watch) say(watch);
@@ -136,16 +257,19 @@ const result = await runChain({
       || originSha() !== startRemote || (pr && pr !== startPr);
   },
   reset: async () => {
-    sh('git', ['-C', worktree, 'reset', '-q', '--hard', startSha]);
-    sh('git', ['-C', worktree, 'clean', '-q', '-fd']);
+    // Before the hard reset destroys it: the failed attempt's uncommitted work goes to a patch
+    // (saveUnsavedWork, above), so a run a rejected tool call ended is not lost twice (#87).
+    const patch = resetWorktree({ worktree, startSha, workRoot, name, model: attemptModel, log: say });
+    if (patch) patches.push(patch);
   },
 });
 
 say(`run log: ${logFile}`);
 const reasons = result.failures.map((f) => `${f.name}: ${f.reason}`).join('; ');
+const savedNote = patches.length ? ` Unsaved work was saved before the reset: ${patches.join(', ')}.` : '';
 if (!result.ok) {
-  if (result.leftWork) die(1, `The run failed (${reasons}) after committing, pushing or opening a PR on ${branch}; not retrying. The main session decides.`);
-  die(3, `OpenCode unavailable: ${result.sameCause ? `same failure twice: ${result.sameCause} (${reasons})` : reasons}. ${fallback}`);
+  if (result.leftWork) die(1, `The run failed (${reasons}) after committing, pushing or opening a PR on ${branch}; not retrying. The main session decides.${savedNote}`);
+  die(3, `OpenCode unavailable: ${result.sameCause ? `same failure twice: ${result.sameCause} (${reasons})` : reasons}. ${fallback}${savedNote}`);
 }
 if (reasons) say(`fell back: ${reasons}`);
 // The reviewer must not be this model's family: pass it to review.mjs as --exclude.
