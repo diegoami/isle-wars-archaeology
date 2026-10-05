@@ -1,0 +1,658 @@
+{
+ "what": "model of one human attack from the rule read in F011, uniform independent dice assumed; not observed",
+ "per_exchange": {
+  "attacker_wins": "15/36",
+  "defender_wins_including_ties": "21/36"
+ },
+ "end_of_attack": "capture when the defender reaches 0; failure when the attacker is down to 1 army",
+ "rows": [
+  {
+   "attacker_armies": 2,
+   "defender_armies": 1,
+   "p_capture": 0.416667,
+   "e_attacker_losses": 0.5833,
+   "e_defender_losses": 0.4167,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 2,
+   "p_capture": 0.173611,
+   "e_attacker_losses": 0.8264,
+   "e_defender_losses": 0.5903,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 3,
+   "p_capture": 0.072338,
+   "e_attacker_losses": 0.9277,
+   "e_defender_losses": 0.6626,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 4,
+   "p_capture": 0.030141,
+   "e_attacker_losses": 0.9699,
+   "e_defender_losses": 0.6928,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 5,
+   "p_capture": 0.012559,
+   "e_attacker_losses": 0.9874,
+   "e_defender_losses": 0.7053,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 8,
+   "p_capture": 0.000908,
+   "e_attacker_losses": 0.9991,
+   "e_defender_losses": 0.7136,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 10,
+   "p_capture": 0.000158,
+   "e_attacker_losses": 0.9998,
+   "e_defender_losses": 0.7142,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 15,
+   "p_capture": 2e-06,
+   "e_attacker_losses": 1.0,
+   "e_defender_losses": 0.7143,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 2,
+   "defender_armies": 20,
+   "p_capture": 0.0,
+   "e_attacker_losses": 1.0,
+   "e_defender_losses": 0.7143,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 1,
+   "p_capture": 0.659722,
+   "e_attacker_losses": 0.9236,
+   "e_defender_losses": 0.6597,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 2,
+   "p_capture": 0.376157,
+   "e_attacker_losses": 1.4502,
+   "e_defender_losses": 1.0359,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 3,
+   "p_capture": 0.198929,
+   "e_attacker_losses": 1.7287,
+   "e_defender_losses": 1.2348,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 4,
+   "p_capture": 0.100469,
+   "e_attacker_losses": 1.8694,
+   "e_defender_losses": 1.3353,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 5,
+   "p_capture": 0.049188,
+   "e_attacker_losses": 1.9383,
+   "e_defender_losses": 1.3845,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 8,
+   "p_capture": 0.005148,
+   "e_attacker_losses": 1.9939,
+   "e_defender_losses": 1.4242,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 10,
+   "p_capture": 0.001078,
+   "e_attacker_losses": 1.9988,
+   "e_defender_losses": 1.4277,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 15,
+   "p_capture": 1.9e-05,
+   "e_attacker_losses": 2.0,
+   "e_defender_losses": 1.4286,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 3,
+   "defender_armies": 20,
+   "p_capture": 0.0,
+   "e_attacker_losses": 2.0,
+   "e_defender_losses": 1.4286,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 1,
+   "p_capture": 0.801505,
+   "e_attacker_losses": 1.1221,
+   "e_defender_losses": 0.8015,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 2,
+   "p_capture": 0.553385,
+   "e_attacker_losses": 1.8968,
+   "e_defender_losses": 1.3549,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 3,
+   "p_capture": 0.346619,
+   "e_attacker_losses": 2.3821,
+   "e_defender_losses": 1.7015,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 4,
+   "p_capture": 0.203032,
+   "e_attacker_losses": 2.6664,
+   "e_defender_losses": 1.9045,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 5,
+   "p_capture": 0.11329,
+   "e_attacker_losses": 2.825,
+   "e_defender_losses": 2.0178,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 8,
+   "p_capture": 0.016277,
+   "e_attacker_losses": 2.9777,
+   "e_defender_losses": 2.1269,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 10,
+   "p_capture": 0.00403,
+   "e_attacker_losses": 2.9947,
+   "e_defender_losses": 2.1391,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 15,
+   "p_capture": 0.0001,
+   "e_attacker_losses": 2.9999,
+   "e_defender_losses": 2.1428,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 4,
+   "defender_armies": 20,
+   "p_capture": 2e-06,
+   "e_attacker_losses": 3.0,
+   "e_defender_losses": 2.1429,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 1,
+   "p_capture": 0.884211,
+   "e_attacker_losses": 1.2379,
+   "e_defender_losses": 0.8842,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 2,
+   "p_capture": 0.691229,
+   "e_attacker_losses": 2.2056,
+   "e_defender_losses": 1.5754,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 3,
+   "p_capture": 0.490207,
+   "e_attacker_losses": 2.8919,
+   "e_defender_losses": 2.0656,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 4,
+   "p_capture": 0.322688,
+   "e_attacker_losses": 3.3437,
+   "e_defender_losses": 2.3883,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 5,
+   "p_capture": 0.200539,
+   "e_attacker_losses": 3.6244,
+   "e_defender_losses": 2.5889,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 8,
+   "p_capture": 0.037916,
+   "e_attacker_losses": 3.9398,
+   "e_defender_losses": 2.8141,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 10,
+   "p_capture": 0.010917,
+   "e_attacker_losses": 3.9838,
+   "e_defender_losses": 2.8456,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 15,
+   "p_capture": 0.000368,
+   "e_attacker_losses": 3.9995,
+   "e_defender_losses": 2.8568,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 5,
+   "defender_armies": 20,
+   "p_capture": 1e-05,
+   "e_attacker_losses": 4.0,
+   "e_defender_losses": 2.8571,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 1,
+   "p_capture": 0.932456,
+   "e_attacker_losses": 1.3054,
+   "e_defender_losses": 0.9325,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 2,
+   "p_capture": 0.791741,
+   "e_attacker_losses": 2.4139,
+   "e_defender_losses": 1.7242,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 3,
+   "p_capture": 0.615846,
+   "e_attacker_losses": 3.2761,
+   "e_defender_losses": 2.34,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 4,
+   "p_capture": 0.444837,
+   "e_attacker_losses": 3.8988,
+   "e_defender_losses": 2.7849,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 5,
+   "p_capture": 0.30233,
+   "e_attacker_losses": 4.3221,
+   "e_defender_losses": 3.0872,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 8,
+   "p_capture": 0.072629,
+   "e_attacker_losses": 4.8671,
+   "e_defender_losses": 3.4765,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 10,
+   "p_capture": 0.023975,
+   "e_attacker_losses": 4.9598,
+   "e_defender_losses": 3.5427,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 15,
+   "p_capture": 0.001069,
+   "e_attacker_losses": 4.9984,
+   "e_defender_losses": 3.5703,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 6,
+   "defender_armies": 20,
+   "p_capture": 3.5e-05,
+   "e_attacker_losses": 5.0,
+   "e_defender_losses": 3.5714,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 1,
+   "p_capture": 0.977016,
+   "e_attacker_losses": 1.3678,
+   "e_defender_losses": 0.977,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 2,
+   "p_capture": 0.909981,
+   "e_attacker_losses": 2.6418,
+   "e_defender_losses": 1.887,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 3,
+   "p_capture": 0.798255,
+   "e_attacker_losses": 3.7594,
+   "e_defender_losses": 2.6853,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 4,
+   "p_capture": 0.658598,
+   "e_attacker_losses": 4.6814,
+   "e_defender_losses": 3.3439,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 5,
+   "p_capture": 0.513122,
+   "e_attacker_losses": 5.3998,
+   "e_defender_losses": 3.857,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 8,
+   "p_capture": 0.18265,
+   "e_attacker_losses": 6.5632,
+   "e_defender_losses": 4.688,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 10,
+   "p_capture": 0.076404,
+   "e_attacker_losses": 6.8381,
+   "e_defender_losses": 4.8844,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 15,
+   "p_capture": 0.00565,
+   "e_attacker_losses": 6.9902,
+   "e_defender_losses": 4.993,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 8,
+   "defender_armies": 20,
+   "p_capture": 0.00028,
+   "e_attacker_losses": 6.9996,
+   "e_defender_losses": 4.9997,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 1,
+   "p_capture": 0.992179,
+   "e_attacker_losses": 1.3891,
+   "e_defender_losses": 0.9922,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 2,
+   "p_capture": 0.962851,
+   "e_attacker_losses": 2.737,
+   "e_defender_losses": 1.955,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 3,
+   "p_capture": 0.901751,
+   "e_attacker_losses": 3.9995,
+   "e_defender_losses": 2.8568,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 4,
+   "p_capture": 0.808404,
+   "e_attacker_losses": 5.1313,
+   "e_defender_losses": 3.6652,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 5,
+   "p_capture": 0.69172,
+   "e_attacker_losses": 6.0997,
+   "e_defender_losses": 4.3569,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 8,
+   "p_capture": 0.332687,
+   "e_attacker_losses": 7.9762,
+   "e_defender_losses": 5.6973,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 10,
+   "p_capture": 0.169279,
+   "e_attacker_losses": 8.551,
+   "e_defender_losses": 6.1078,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 15,
+   "p_capture": 0.019435,
+   "e_attacker_losses": 8.9598,
+   "e_defender_losses": 6.3998,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 10,
+   "defender_armies": 20,
+   "p_capture": 0.001397,
+   "e_attacker_losses": 8.9975,
+   "e_defender_losses": 6.4268,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 1,
+   "p_capture": 0.999472,
+   "e_attacker_losses": 1.3993,
+   "e_defender_losses": 0.9995,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 2,
+   "p_capture": 0.99639,
+   "e_attacker_losses": 2.7942,
+   "e_defender_losses": 1.9959,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 3,
+   "p_capture": 0.986761,
+   "e_attacker_losses": 4.1757,
+   "e_defender_losses": 2.9826,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 4,
+   "p_capture": 0.965362,
+   "e_attacker_losses": 5.5272,
+   "e_defender_losses": 3.948,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 5,
+   "p_capture": 0.927468,
+   "e_attacker_losses": 6.8256,
+   "e_defender_losses": 4.8755,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 8,
+   "p_capture": 0.706347,
+   "e_attacker_losses": 10.1473,
+   "e_defender_losses": 7.2481,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 10,
+   "p_capture": 0.509231,
+   "e_attacker_losses": 11.7124,
+   "e_defender_losses": 8.366,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 15,
+   "p_capture": 0.138989,
+   "e_attacker_losses": 13.5626,
+   "e_defender_losses": 9.6875,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 15,
+   "defender_armies": 20,
+   "p_capture": 0.021905,
+   "e_attacker_losses": 13.9451,
+   "e_defender_losses": 9.9608,
+   "allowed_by_human_check": false
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 1,
+   "p_capture": 0.999964,
+   "e_attacker_losses": 1.4,
+   "e_defender_losses": 1.0,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 2,
+   "p_capture": 0.999682,
+   "e_attacker_losses": 2.7995,
+   "e_defender_losses": 1.9996,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 3,
+   "p_capture": 0.998505,
+   "e_attacker_losses": 4.1974,
+   "e_defender_losses": 2.9982,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 4,
+   "p_capture": 0.995072,
+   "e_attacker_losses": 5.5905,
+   "e_defender_losses": 3.9932,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 5,
+   "p_capture": 0.987206,
+   "e_attacker_losses": 6.9726,
+   "e_defender_losses": 4.9804,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 8,
+   "p_capture": 0.909603,
+   "e_attacker_losses": 10.9328,
+   "e_defender_losses": 7.8092,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 10,
+   "p_capture": 0.795665,
+   "e_attacker_losses": 13.2493,
+   "e_defender_losses": 9.4638,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 15,
+   "p_capture": 0.39227,
+   "e_attacker_losses": 17.1458,
+   "e_defender_losses": 12.247,
+   "allowed_by_human_check": true
+  },
+  {
+   "attacker_armies": 20,
+   "defender_armies": 20,
+   "p_capture": 0.114358,
+   "e_attacker_losses": 18.5987,
+   "e_defender_losses": 13.2848,
+   "allowed_by_human_check": true
+  }
+ ]
+}

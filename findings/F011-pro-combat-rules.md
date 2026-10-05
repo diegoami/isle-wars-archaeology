@@ -1,0 +1,247 @@
+# F011 In Isle Wars Pro's Lingo a battle is a series of single-die exchanges in which the attacker wins an exchange only on a strictly higher die, the human may attack from a country holding at least as many armies as the target (and at least 2) but loses the attacking country, and the turn, when reduced to 1 army, while the computer attacks only from a stronger country and never forfeits one; a move ends the turn; no option of the options screen touches combat
+
+- **Status**: proposed
+- **Question**: What combat, movement and capture rules does the decompiled Lingo of *Isle Wars Pro* contain, for the human's code path and the computer's? The 17 questions of T20: Q-MOV-01 to Q-MOV-03, Q-CMB-01 to Q-CMB-12, Q-OWN-01 and Q-SET-04 (`questions/pro-static.md`, `questions/malpaco.md`). This is a static reading: every answer says what the code says, and none says what the running game does.
+- **Tests claims**: none. `spec/` has no combat claim, and no run is made. The reading is compared, row by row, with the fragments of `Islepro.txt` that `knowledge-map.md` already lists for Combat, Movement and Ownership change (agreement and one open point are said below).
+- **Experiment and runs**: E009 (static only; no run). Its list of the scripts read, the checks and a model are in `experiments/E009-pro-combat-reading/`.
+- **Artifact**: set `iwp-2.0-996e86c5`, `Islepro.exe`, sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e` (the unregistered build; the same file in all three registered Pro sets, F010). Variant none. Rule 19: Pro only; nothing here is claimed for DOS Isle Wars.
+- **Max intervention**: I0 (the decompiled scripts were only read, in place; nothing was run)
+- **Tier reached**: V0 (static)
+- **Confidence**: for the rules of one exchange, who wins a tie, what a failed human attack costs and what the human's checks refuse (Q-CMB-01 to Q-CMB-07, Q-CMB-09 for the human, Q-MOV-02, Q-SET-04): about 90% that the code says what is stated here (short handlers, read in full, and the bytecode listings agree with the decompiled text at every comparison and draw that matters); about 80% that the running game does the same (one decompiler, no run, the score not decoded). For the frame order (Q-MOV-01, Q-MOV-03, Q-CMB-08, Q-CMB-10 for the human): about 70%, because the order of frames is in the score, which the tool does not decode. For the computer's side and the capture split (Q-OWN-01): about 75%, because the handlers are long and the numbers in them belong to the computer's choices (T27). Q-CMB-12 is not answered, only decomposed (low). Every answer carries its own figure below.
+
+## Answer
+
+Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; scripts are cited as in `questions/pro-static.md` (kind, number, name when it has one, handler). Nothing is quoted: the rules are described in our words (rule 18). "The human" is the code that runs when a person clicks; "the computer" is the code `Computerattack`, `ATTACKHIM` and `ComputerRollDice` run for a computer seat. Two numbers recur: the dice and the armies are integers, and a draw "of 1 to n" is how Director's random function is read (the generator itself is in Director's runtime, T18, and its distribution is not claimed).
+
+**In one paragraph.** To attack, the human picks the country to attack first, then one of its own bordering countries that holds at least as many armies as the target and at least 2. Each click on the attack button is one exchange (five at once when both stacks are big): each side draws one die, the attacker wins only on a strictly higher die, the loser of the exchange loses one army, and a tie therefore costs the attacker. The attack goes on, click by click, until the target has no armies (the human then chooses how many armies to move in) or the attacker is down to 1 army (it then loses the country to the defender's owner, with 1 army left in it, and the turn passes on). The human may stop at any time, attack as often as it likes, and finishes its turn by Pass or by the single move of armies, which also ends the turn. The computer rolls the same dice and loses armies the same way, but it chooses its attacks by its own rules (a stronger country only, with random margins), repeats an attack on its own until a stopping rule trips, makes between none and a few attacks a turn, moves armies once at the end, and never forfeits a country.
+
+### Movement
+
+#### Q-MOV-01 How many moves between own countries per turn, and in which phase?
+
+- **As read (human, confidence about 75%).** One. The move button is on the same turn screen as the attack, pass, cards and cancel buttons, so it can be used after any number of attacks; the move itself (choose the source, choose the destination, choose how many) is followed by the frame that ends the turn: that frame clears the move choices and goes to the cards frame when a country was captured this turn, and to the next turn otherwise, exactly the two exits of the Pass button. Attacking after the move is therefore not offered. `Islepro.txt` says the same (to finish the turn "by pressing" Move or Pass, `knowledge-map.md`, Turn sequence).
+- **As read (computer, about 85%).** One, at the end of its turn: `MakeComputerMove` is called once after all the attack rounds and moves all but one army of one stack to one fixed neighbour (the choice is a table keyed by country, a computer decision, T27).
+- **Same rule?** Yes in count (at most one move, after the attacks); the choices differ (the human chooses source, destination and count; the computer moves all but one).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 26` / `exitFrame()` (the turn screen); `CastScript 64 Movebut2` / `mouseDown()` (the move button); `BehaviorScript 76` / `exitFrame()` (start of the move choice); `CastScript 332 DONE3` / `mouseDown()` (the move itself); `BehaviorScript 331` / `exitFrame()` (what follows); `CastScript 66 Pass2` / `mouseDown()` (the same two exits); `MovieScript 338 MakeComputerMove` / `MakeComputerMove()`; `BehaviorScript 14` / `exitFrame()` (the computer's turn, where it is called once).
+- **What would change it.** That the frame with `BehaviorScript 331` is the one the move button's frame leads to is read from what it does (it mirrors Pass's exits), not from the score. If a recorded turn shows a second move, or an attack after a move, this is wrong.
+- **T28.** In at least 10 human turns in which a move is made, record whether the turn ends at once (the next player's turn starts) and whether an attack can still be started; in at least 5 of them, attack first. Computer: in at least 30 turns, count moves (expect at most one per turn).
+
+#### Q-MOV-02 May a move take every army out of a country, or must one stay?
+
+- **As read (human, about 90%).** At least one army stays, and the whole remainder may move. A country with 1 army cannot be chosen as the source (the click is ignored). Otherwise the player chooses a number from 1 up to the source's armies minus 1: the plus button stops at that cap, the "all" button sets it, the minus button of the move set stops at 1; the move leaves the source with its armies minus the number and adds the number to the destination. "All but one" and "all but two" are therefore possible, "all" is not. The destination must be one of the player's own countries that borders the source directly; the source must border at least one of the player's countries. The destination's army display is clipped at 999 but the stored count is not (one handler, read as written), a corner no ordinary game reaches.
+- **As read (computer, about 90%).** It always moves all but one.
+- **Same rule?** Yes for "one stays"; the amount differs (chosen against fixed).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 400` / `mouseDown()` (the click handler: the source and destination checks); `BehaviorScript 100` / `exitFrame()` (the cap: source armies minus one, counter starts at 1); `CastScript 92 plus3` / `mouseDown()`; `CastScript 93 min3` / `mouseDown()`; `CastScript 94 Pall3` / `mouseDown()`; `CastScript 332 DONE3` / `mouseDown()`; `MovieScript 338 MakeComputerMove` / `MakeComputerMove()`.
+- **What would change it.** Which plus, minus and "all" scripts the move screen uses is decided by the score. The "3" set has a floor of 1 and the placement screen's "2" set a floor of 0 and the same cap; with either, at least one army stays (the cap is the same), so only "may it move 0" depends on it.
+- **T28.** Stacks of 2, 3 and 10 (at least 2 tries each): try all, all but one, all but two; record the result and whether the counter can be taken to 0. Static-only for the 999 clip (no stack of that size can be made in ordinary play).
+
+#### Q-MOV-03 May armies that moved or just captured move again, and over what distance?
+
+- **As read (human, about 75%).** Armies cannot be moved twice in a turn, because a move ends the turn (Q-MOV-01). The distance is one border: the destination must border the source directly; there is no path-through-owned-countries rule. A country just captured is not marked in any way the attack check reads, so the armies that moved into it can attack onward the same turn (the attack check reads only the armies of the two countries).
+- **As read (computer, about 80%).** The same single move at the end; its destination is a fixed neighbour.
+- **Same rule?** Yes.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 400` / `mouseDown()` (the destination check: a direct border of the source); `BehaviorScript 76` / `exitFrame()`; `BehaviorScript 77` / `exitFrame()`; `BehaviorScript 78` / `exitFrame()` (the frames that wait for the source and the destination); `BehaviorScript 331` / `exitFrame()`; `CastScript 332 DONE3` / `mouseDown()`.
+- **What would change it.** The frame order (score). The claim "a captured country can attack on" is an absence in the attack check; the only state read there is the armies.
+- **T28.** After a move, try a second move and an attack (at least 10 turns); try a destination two borders away (at least 3 tries); capture a country and attack from it in the same turn (at least 5 tries).
+
+### Combat
+
+#### Q-CMB-01 Is an attack restricted by the strength of the two countries, and what is compared?
+
+- **As read (human, about 90%).** Yes. After the player has chosen the target (an enemy country that borders at least one of the player's), the attacker is chosen among the player's countries that border the target; the click is refused, with a message that there are not enough armies, when the attacker holds fewer armies than the target or exactly 1. The two raw army counts are compared, with no minus one. So from a country of N armies the targets holding N-1 and N armies are offered, those holding N+1 and N+2 are refused. `Islepro.txt` agrees ("equal or greater", `knowledge-map.md`, Combat).
+- **As read (computer, about 85%).** Stricter and noisy. A country is a candidate attacker when its armies exceed a small floor (see Q-CMB-03); for each enemy neighbour it must hold more armies than the neighbour plus a margin that is 0 or 1, drawn afresh for each candidate country at each call. It therefore never starts an attack at equal armies, and starts at N only against targets holding at most N-1 (margin 0) or N-2 (margin 1). One of the candidate attacks is then drawn (the list is weighted towards pairs on the same island, T27). Once the battle has begun the computer goes on while its country holds at least as many armies as the target (Q-CMB-08).
+- **Same rule?** No: the human's gate is "at least as many", the computer's "more, by a random 1 or 2".
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 43` / `exitFrame()` (the target-choosing state); `BehaviorScript 44` / `exitFrame()` (the attacker-choosing state); `BehaviorScript 400` / `mouseDown()` (the two checks); `MovieScript 334 Computerattack` / `Computerattack()`; `MovieScript 335 GetValidArmys` / `GetvalidArmys()` (the computer's list of front-line countries, the ones with an enemy neighbour); `MovieScript 336 ATTACKHIM` / `ATTACKHIM()` (draws one of the candidates); `CastScript 74 Attack4` / `mouseDown()` (the attack button, which has no strength check of its own).
+- **What would change it.** A button or menu path that starts an attack without the click handler (none found in the 213 scripts: the attack button calls only the dice handler, and only the handler above sets the attacker).
+- **T28.** Attack from N = 2, 4, 8 and 12 against N-1, N, N+1 and N+2 (16 cases, deterministic, once each). Computer: over at least 100 observed attack starts, tabulate attacker armies against target armies (expect none at equal or below).
+
+#### Q-CMB-02 If attacks are restricted, is the threshold equality, a ratio or a difference?
+
+- **As read (about 90%).** Human: equality of the raw counts (attacker at least equal to the target); no ratio and no fixed difference, so the boundary is "equal" at every size. Computer: a fixed difference of 1 or 2 armies (the random margin of Q-CMB-01), again not a ratio, plus the candidate floor of Q-CMB-03. Neither scales with the size of the stacks.
+- **Same rule?** No (equality against a difference of 1 or 2).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 400` / `mouseDown()`; `MovieScript 334 Computerattack` / `Computerattack()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()` (its loop condition, the same "at least equal" test).
+- **What would change it.** As Q-CMB-01.
+- **T28.** The boundary at N = 4, 8, 12 and 20 (deterministic, once each, the human side); for the computer, the lowest attacker-minus-target difference seen over at least 100 starts.
+
+#### Q-CMB-03 How many armies must a country hold to attack?
+
+- **As read (human, about 90%).** At least 2 (a country with 1 army is refused), and at least as many as the target (so at least 2 against a 1-army target). Nothing else about the country is read.
+- **As read (computer, about 85%).** At least 2, in the best case: the country's armies must exceed a floor that is 1 or 2 (drawn afresh for each candidate), or 3 once the computer has already captured a country this turn, and one more for the 23 countries of a fixed list the code names VIPC (its meaning is T27's). So the floor ranges from "more than 1" (2 armies) to "more than 4" (5 armies). Then Q-CMB-01's margin applies.
+- **Same rule?** No (a flat 2 against a random floor of 2 to 5).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 400` / `mouseDown()`; `MovieScript 335 GetValidArmys` / `GetvalidArmys()`; `MovieScript 334 Computerattack` / `Computerattack()`; `MovieScript 1 Startmovie` / `startMovie()` (the list of 23 country numbers).
+- **What would change it.** None expected for the human. For the computer, the floor's exact reading is bytecode-confirmed for the comparison operators only.
+- **T28.** Human: try to attack from 1, 2 and 3 armies against a 1-army neighbour (3 cases). Computer: the smallest attacking stack seen over at least 100 starts.
+
+#### Q-CMB-04 How many dice does the attacker use, and is there a cap?
+
+- **As read (about 90%, both paths).** One die, whatever the number of armies, with no cap; the number of armies decides only how long the attacker can go on. In both handlers each exchange draws one number of 1 to 6 for the attacker and one for the defender. When both stacks are big (human: the attacker has more than 35 armies and the defender more than 15; computer: more than 40 and more than 15) five exchanges are made in one pass instead of one; each of the five is the same single-die exchange, so this changes the pace and where a player can stop, not the odds.
+- **Same rule?** Yes for the dice; the batching threshold differs (35 against 40).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
+- **What would change it.** A different dice rule in a script that no cast member points at (61 scripts were not written by the tool, F010).
+- **T28.** Count exchanges and losses at attacker sizes 2, 3, 4, 5 and 10 against a fixed defender, at least 100 exchanges per size (the board shows both counts after each click). Expect exactly one army lost per exchange at every size.
+
+#### Q-CMB-05 How many dice does the defender use, and is there a cap?
+
+- **As read (about 90%, both paths).** One die, with no cap and no bonus, whatever the defender's armies.
+- **Same rule?** Yes.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
+- **What would change it.** As Q-CMB-04.
+- **T28.** As Q-CMB-04 with the defender at 1, 2, 3, 4 and 10 against a fixed attacker, at least 100 exchanges per size.
+
+#### Q-CMB-06 When the two sides' results are equal, who loses?
+
+- **As read (about 90%, both paths).** The attacker loses one army, and the defender loses none. The test is "attacker strictly higher" for the defender to lose; every other outcome, ties included, costs the attacker. If the dice are uniform, the attacker wins an exchange in 15 of 36 (about 42%) and loses an army in 21 of 36 (about 58%): ties are 6 of the 36. `Islepro.txt` states the same tie rule (`knowledge-map.md`, Combat).
+- **Same rule?** Yes.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`. The bytecode listings of both show a "greater than" for the attacker and a "greater than or equal to" for the defender.
+- **What would change it.** A non-uniform generator (T18) changes the percentages, not the rule.
+- **T28.** Over at least 500 exchanges, the share of exchanges in which the attacker loses an army: 58% (7/12) fits the reading with uniform dice; 50% would mean ties were split; with 500 exchanges the standard error is about 2.2 points.
+
+#### Q-CMB-07 How are the results compared and how many armies are lost per exchange?
+
+- **As read (about 90%, both paths).** One die against one die. Exactly one army is lost per exchange, by the attacker or by the defender and never both and never none. There are no sorted pairs, no proportional loss and no extra loss for a bigger stack.
+- **Same rule?** Yes.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
+- **What would change it.** As Q-CMB-04.
+- **T28.** Record the change in both counts after each click (human), at least 200 exchanges at several sizes: each should be (attacker -1, defender 0) or (0, defender -1) and no other. Computer: the same from the counts shown during its battles.
+
+#### Q-CMB-08 Is one attack order one exchange, or does it repeat; can the attacker withdraw?
+
+- **As read (human, about 85%).** One click on the attack button is one exchange (five when both stacks are big, Q-CMB-04). More exchanges need more clicks. The battle screen is left by one of three exits, tested every frame: the target has no armies (capture, Q-OWN-01), the attacker is down to 1 army (Q-CMB-09), or the quit-attack button, which is always there and returns to the turn screen with the armies as they stand, at no cost that any handler read charges.
+- **As read (computer, about 80%).** Automatic: one order repeats exchanges in a loop, without input, as long as its country holds at least as many armies as the target and none of these stops holds: the target is empty (capture); after every exchange it draws 1 or 2 and stops when its armies are below 2 plus the draw (so at 3 armies it stops about half the time, and at 2 or fewer always); it is one of the fixed-list (VIPC) countries, has already captured this turn and is below 4; it holds more than 5 but fewer than the strongest other enemy neighbour it has. So the computer withdraws on its own rules and keeps a few armies at home; it can end on 1 army when it began with 2.
+- **Same rule?** No: one exchange per click against a repeating loop. The exchange itself is the same.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `CastScript 74 Attack4` / `mouseDown()`; `BehaviorScript 47` / `exitFrame()` (the battle frame); `CastScript 72 QAttack2` / `mouseUp()` (the quit-attack button); `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 336 ATTACKHIM` / `ATTACKHIM()` (sets the strongest-other-neighbour limit); `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
+- **What would change it.** The frame order (score) for the human; for the computer, the reading of the stop conditions was made from the bytecode as well as from the text.
+- **T28.** Human: at least 10 attacks, noting whether more than one exchange follows one click, and the effect of the quit button. Computer: for at least 30 battles, the stop reason and the attacker's armies at the stop.
+
+#### Q-CMB-09 What happens to the attacker after a failed attack?
+
+- **As read (human, about 90%).** A failed attack is one that leaves the attacker with 1 army. The attacking country then changes hands: it goes to the owner of the defending country, with 1 army in it; the defending country keeps the armies it has left. No more attack click is accepted, the card chance of the turn is cancelled (the flag that a country was captured is reset), and the turn passes to the next player. `Islepro.txt` says the attacker "will forfeit not only the turn, but also the country" (`knowledge-map.md`, Combat); the code adds who receives it, which the fragment does not say.
+- **As read (computer, about 85%).** Nothing is forfeited: the forfeit handler is called from the human's loss frame only. A computer's attack ends by one of the stops of Q-CMB-08, and the cost is the armies lost.
+- **Same rule?** No. This is the largest asymmetry found: the penalty of a failed attack applies to the human only.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 81 Lostit` / `Lostit()`; `BehaviorScript 97` / `exitFrame()` (the frame that calls it, resets the capture flag and starts the next turn); `BehaviorScript 47` / `exitFrame()` (the test that leads to it); `MovieScript 337 computerrolldice` / `ComputerRollDice()` (no call to the forfeit handler: the only call of it in the 213 scripts is in `BehaviorScript 97`).
+- **What would change it.** The next-turn frame being the one named "start" is read from what the scripts that jump to it do (it begins the next player's turn), and the score is not decoded.
+- **T28.** Human: at least 5 failed attacks, recording the owner and armies of both countries, whether a card is offered, and whose turn follows. Computer: at least 20 battles that end without a capture, checking that its own country never changes hands.
+
+#### Q-CMB-10 Is the number of attacks per turn limited, and what else ends the attack phase?
+
+- **As read (human, about 70%).** Not limited. The human can start any number of attacks as long as it has a country that passes the check. The phase ends when the player presses Pass, makes the move (which ends the turn), or fails an attack (Q-CMB-09); the game also ends when one player owns all 46 countries. The quit-attack and cancel buttons return to the turn screen without ending it.
+- **As read (computer, about 70%; T27 owns the detail).** Limited, by a draw. The turn makes a number of attack rounds drawn as 1 to 4, plus 1 when the player owns more than 16 countries, plus 3 more above 25, plus 4 when no human seat is left; but with fewer than 8 countries the number is 1 to 3 (and the added terms are dropped). In each round it makes one attack, and a second when it has not yet captured a country this turn and owns more than 8. A round does nothing once a call finds no acceptable attack. With 18 countries or fewer, the whole attack block is skipped in 1 turn in 22 (a draw of 22 out of 22); above 18 it is never skipped. After the rounds comes the move (Q-MOV-01), and a card handler when a country was captured.
+- **Same rule?** No (open-ended against a drawn count).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 26` / `exitFrame()` (the turn screen); `BehaviorScript 27` / `exitFrame()` (the wait for a country to be selected); `BehaviorScript 14` / `exitFrame()` (the computer's turn, where the number of rounds is drawn); `MovieScript 334 Computerattack` / `Computerattack()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`; `CastScript 66 Pass2` / `mouseDown()`; `CastScript 72 QAttack2` / `mouseUp()`.
+- **What would change it.** The human frame order (score). For the computer, whether the "own more than 8" test counts the live list or a copy taken at the start of the turn (list assignment in Lingo shares the list, not read further here).
+- **T28.** Human: at least 10 turns with 3 or more attacks, recording what ended each turn. Computer: the attacks made per turn over at least 30 turns, against the owned-country count.
+
+#### Q-CMB-11 Does anything beyond army counts and chance affect a battle?
+
+- **As read (about 80%, an absence claim).** No. Both dice handlers read only the two armies' counts and the two draws; the defender's colour is read only to word a message. The player's level (the options screen's "strength"), the speed, the production centres, the island or group of either country, the cards and the fixed VIPC list do not enter a human exchange. The speed setting only changes pauses. The level is read by the board set-up, the score file and the defaults, not by any combat handler (a search of all 213 decompiled scripts for it). The VIPC list and the island lists enter the computer's choice of attack and its stops (T27), not the dice. A production centre's event doubles armies outside a battle (T23).
+- **Same rule?** Yes for the dice and their inputs.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`; `MovieScript 363 addtoproductioncenter` / `addtoproductioncenter()` (the centre event, to show where armies change outside a battle).
+- **What would change it.** An absence claim is only as strong as the scripts searched: 61 scripts with no cast member were not written by the tool and not read (F010); a modifier applied before the battle (a card played, a bomb) would show as different army counts, not as a different rule.
+- **T28.** Static-only in practice: a 500-exchange split by any condition can only reveal a shift of about 4 points. Record, over at least 500 exchanges, the attacker-loss share split by whether the attacker is in the VIPC list's countries, to look for a gross effect.
+
+#### Q-CMB-12 Does attacking pay?
+
+- **Not answered; the readable parts are decomposed (confidence low).**
+  - **Cost per exchange.** If the dice are uniform, each exchange costs the attacker an army with probability 7/12 and the defender with 5/12 (Q-CMB-06).
+  - **A model of one human attack** (`experiments/E009-pro-combat-reading/measurements/win-probability-r1.json`, computed from the rule of this finding, not observed): attacker at N against a defender at N captures about 17% (N = 2 and 10), 20% (3 and 5) and 11% (20); with N = 5 against 4, 3 and 2 it captures about 32%, 49% and 69%; with 10 against 8, 5 and 3, about 33%, 69% and 90%; with 20 against 15, 10 and 5, about 39%, 80% and 99%. The attacker needs about twice the defender's armies to capture more often than not. The human check allows an equal-armies attack, which fails about 4 times in 5, and a human failure loses the country (Q-CMB-09; the model counts a failure as one outcome and does not price the lost country). The model is of the human's attack to the end; it does not model the quit button or the computer's stops.
+  - **What a capture yields** (outside this task): the income is the number of countries divided by 3, with a floor of 2, plus a fixed bonus for each island held whole (the reading belongs to T21); a card when at least one country was captured in the turn, and none after a failed attack (T22).
+  - **Whether never attacking is better** depends on the computer's choices (T27) and on the cards and bonuses, so it is not answerable from the dice handlers.
+- **Same rule?** The penalty differs by seat (Q-CMB-09): the human risks a country on each attack, the computer does not.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`; `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()` (the income); `MovieScript 363 addtoproductioncenter` / `addtoproductioncenter()` (the centre doubling); `MovieScript 81 Lostit` / `Lostit()`.
+- **What would change it.** Any value of the dice generator other than uniform (T18) and everything in the AI.
+- **T28.** At least 100 attacks per ratio band (tabulate capture rate against the model above), at least 20 games in which one seat never attacks (as `questions/pro-static.md`).
+
+### Ownership change
+
+#### Q-OWN-01 When an attack captures a country, how many armies move in?
+
+- **As read (human, about 75%).** The country changes owner as soon as the target has no armies. The player then chooses the number to move in: the counter starts at 1 and can go up to the attacker's armies minus 1 (the "all" button sets that). The attacker keeps its armies minus the number, so at least 1 stays; the captured country gets exactly the number chosen (its old count is replaced, and the total is conserved up to the 999 clip). So 1 is the default and the number the counter starts at. Whether the counter can be lowered to 0, which would leave the captured country empty, depends on which minus button the move-in screen carries. Two sets of plus, minus and "all" scripts exist: a "2" set whose minus stops at 0 and a "3" set whose minus stops at 1 (Q-MOV-02). By the names, the move-in's "done" script (a "2") goes with the first set, which would allow 0 and disagree with `Islepro.txt` (at least one army moves in); by the starting value, the counter starts at 1 on the move-in and on the ordinary move (where the "3" set is the match by name), while the placement screen, which starts at 0, is the one that fits the "2" set. About even odds; the score decides, and this is the open point of this finding. With exactly 2 armies, a separate frame sets 1 army on each country without asking; it gives the same result as the move-in when the counter cannot reach 0.
+- **As read (computer, about 75%).** Automatic: the total, the attacker's armies at the capture, is split between the two countries; both get at least 1 in every case read, and the total is conserved. By default the attacker keeps as many as the strongest remaining enemy neighbour holds (at least 1) and the rest go into the captured country; when the attacker has fewer than that, 1 goes in and the rest stay. A series of overrides then changes this for countries in the fixed VIPC list, for production centres, when the captured country has no enemy neighbour, and by random draws (T27 reads them). So the split is neither fixed nor "as many as the dice".
+- **Same rule?** No: the player chooses within 1 (or 0) to the attacker's armies minus 1; the computer's split is an AI decision with the same conservation.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 60` / `exitFrame()` (the move-in frame: owner set, counter starts at 1, cap at attacker minus 1); `CastScript 96 DONE2` / `mouseDown()` (the move-in itself); `CastScript 85 plus2` / `mouseDown()`; `CastScript 87 min2` / `mouseDown()` (floor 0); `CastScript 93 min3` / `mouseDown()` (floor 1); `BehaviorScript 98` / `exitFrame()` (the 2-armies shortcut); `MovieScript 337 computerrolldice` / `ComputerRollDice()` (the computer's split).
+- **What would change it.** The score's choice of buttons for the move-in frame, as said.
+- **T28.** Capture from stacks of 2, 3, 5 and 10 (at least 3 each, human): record both counts after the move-in and try to take the counter to 0. Computer: at least 30 captures, recording both countries' armies and the attacker's armies before the capture.
+
+### Setup
+
+#### Q-SET-04 Does the setup let the player change how attacks are restricted or what a failed attack costs?
+
+- **As read (about 90%).** No. The options screen of the unregistered build carries only: the starting armies (1, 3, 5, 7 or 10; locked in the unregistered build), which seats are human or computer (the seat toggles), the level (hard, normal, easy), the frequency of events (more, normal, less, never; locked in the unregistered build), the speed (fast, normal, slow) and the sound toggle, with a button that saves the defaults. None names an attack rule, a threshold, a dice rule or the cost of a failed attack. The level is read by the board set-up and not by the combat handlers (Q-CMB-11); the speed only changes pauses.
+- **Same rule?** Not applicable (an option screen, shared by both seats).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 457` / `exitFrame()`; `BehaviorScript 479` / `exitFrame()` (the two frame scripts that show the options); `BehaviorScript 496 startingnumarmybehavior` / `mouseDown()`; `BehaviorScript 498 STRENGTHbehavior` / `mouseDown()`; `BehaviorScript 499 FREQbehavior` / `mouseDown()`; `BehaviorScript 500 SPEEDbehavior` / `mouseDown()`; `CastScript 568 HumanH` / `mouseDown()`; `CastScript 569 ComputerC` / `mouseDown()` (the seat toggles); `CastScript 591 ear1` / `mouseUp()`; `CastScript 592 ear2` / `mouseUp()` (the sound toggle).
+- **What would change it.** The registered build is not read, and what it unlocks is `unknown` (rule 19): the locked controls open the starting armies and the frequency, and no other.
+- **T28.** Screen: list the controls on the options screen (one visit). The claim "no combat option" is an absence read from the option handlers; a longer list would refute it.
+
+## Method
+
+- **Artifact and tools.** The decompiled scripts of F010's run `pro-r1` (ProjectorRays 0.2.0 on the movie of `Islepro.exe`, sha256 above), read in place on the owner's machine in the folder `$IWA_STATIC` names; nothing was copied into the repository (rule 18). The scripts' hashes (`ls_sha256`) are those of `experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json`; E009 lists the scripts read with them, and `experiments/E009-pro-combat-reading/check_cited_scripts.py` checks that this finding cites no script, name or handler the record does not have, and (with `--disk`) that each listed script on disk, hashed in place, has the record's hash.
+- **What was read.** In full: each handler cited above (the two dice handlers, the failure handler, the computer's candidate test, attack choice, battle loop and move, the click handler's states, the battle, move and capture frames, the buttons of the move and move-in, the option handlers). The bytecode listing of each of `RollDice`, `ComputerRollDice` and the battle frame was compared with the decompiled text at every comparison, draw and jump the answers depend on, and agrees. A text search of all the decompiled scripts, in the terminal only and with nothing kept, was used for four absence checks: the callers of the forfeit and dice handlers, the uses of the level, the places that set the pace flag and the places that jump to the move and capture frames.
+- **What was not read.** The score (frame order and which sprite carries which button), the cast members (pictures, text), and the 61 scripts that no cast member points at. Where the answer needs the frame order it says so.
+- **Static first (rule 24).** This finding is the static answer; no run was made. T28 corroborates from recorded play, with the counts above.
+- **A model.** `experiments/E009-pro-combat-reading/win_probability.py` computes, exactly, the chance and cost of a human attack from the rule read here, assuming uniform independent dice; its output is `measurements/win-probability-r1.json`. It is a calculation from a reading, not an observation.
+
+## Observations
+
+### The two paths side by side
+
+| | Human | Computer |
+| --- | --- | --- |
+| Attack allowed when | the attacker has at least as many armies as the target and at least 2 | the attacker has more than a floor of 1 to 2 (3 after a capture, plus 1 in the fixed list) and more than the target by 0 or 1, drawn |
+| Dice | one each, attacker wins only on strictly higher | the same |
+| Armies per exchange | one army off the exchange's loser | the same |
+| Pace | one exchange per click (five when the stacks are over 35 and 15) | automatic loop (five per pass over 40 and 15) |
+| Ends when | capture; attacker down to 1; the quit button | capture; its armies below 2 plus a draw of 1 or 2; fixed-list and strongest-neighbour stops; its armies below the target's |
+| Failure costs | the attacking country, the turn and the card chance | armies only |
+| After a capture | the player moves in 1 or more | an automatic split, at least 1 each |
+| Attacks per turn | unlimited | drawn: rounds 1 to 4 plus size terms |
+| Moves per turn | one (ends the turn) | one, at the end |
+
+### Where random numbers are drawn (Randomness)
+
+- **Human battle:** two draws of 1 to 6 per exchange, one for each side, and nothing else in the battle path. The only other draw in the click handler is for the bomb effect (T22).
+- **Computer:** two draws of 1 to 6 per exchange; one draw of 1 or 2 per pass of the battle loop (the stop threshold); per candidate attacker a draw of 1 or 2 (the floor) and of 1 or 2 (the margin); one draw to choose among the candidate attacks; the number of rounds in the turn (1 to 4) and a draw of 22 for skipping the attack block; and, after a capture, draws of 12, 2, 3 and 8 for the split and of 2, 3, 7 and 8 for the move. The generator and its distribution belong to Director's runtime (T18); the percentages in this finding assume it is uniform.
+
+### Agreement with the documents
+
+`Islepro.txt` (knowledge-map.md, Combat and Movement rows) says an attack needs equal or greater armies (agrees: human check), a tie is a loss for the attacker (agrees), an attacker "down to 1" forfeits the turn and the country (agrees; the code adds the receiver and the card), the move or pass finishes the turn (agrees), and that at least one army moves in after a conquest (open: Q-OWN-01).
+
+## Inferences
+
+- The human's and the computer's battles are the same game of single-die exchanges; what differs is the gate, the pace, the stops and the penalty. A faithful model needs both seats' rules: the penalty of a failed attack applies to the human only. From the readings of Q-CMB-04 to Q-CMB-09 and Q-CMB-08, Q-CMB-09.
+- Against a uniform die the attacker is at a disadvantage in every exchange (7 to 5), so a capture is likely only with a clear margin of armies (the model of Q-CMB-12). That is an inference from the rule and an assumed distribution, not an observation.
+- The documents, the decompiled text and the bytecode agree where they overlap; that raises the confidence that the decompiler is faithful on these handlers, but it is the same tool for the text and the listing (the listing is the tool's own disassembly, not an independent one).
+
+## Alternatives considered
+
+- **The decompiler changed a comparison or a constant.** Not excluded by a second decompiler. Made unlikely by the bytecode listing (the tool's own disassembly) agreeing at every operator and constant checked, and by the documents agreeing on the tie rule, the "equal or greater" rule and the forfeit.
+- **Consecutive jumps in one handler: the first or the last wins.** In the battle frame three jumps are written one after another and then a jump to the same frame. If a jump only noted a destination and the first (or the last) one decided, either the later jump to the frame itself would always win and the frame could never be left, or the third jump could never run; the simplest reading that lets the frame be left and uses all three is that a jump takes effect at once and the final jump to "the frame" then names the new frame. Which of two jumps ends up active matters only for the 2-armies shortcut (Q-OWN-01), where the result is the same either way unless the counter may be 0. About 80% on the reading, not shown.
+- **A script outside the 213 holds another rule.** Not excluded (61 scripts unwritten).
+- **The human check is also made somewhere else (a second gate).** Searched: the only place that sets the attacker is the click handler; the attack button calls the dice handler only.
+
+## What this does not establish
+
+- **That the decompiler is faithful in every handler.** One decompiler (ProjectorRays 0.2.0); its bytecode listing was the cross-check, and it is its own output. No run corroborates a behaviour.
+- **Runtime behaviour:** the frame order (the score), which sprite carries which button, and how Director orders consecutive jumps. Every "ends the turn" and "can attack on" here rests on frame scripts read one by one.
+- **The dice generator and its distribution** (T18). Every percentage and the model assume uniform dice.
+- **The registered build,** and everything gated by `UPG` (the starting armies and the frequency in the options screen; any other gate in a script not read). What registration unlocks is `unknown` (rule 19).
+- **The computer's choices** (which country to attack, the split of armies, the move): T27 reads them; here only what Q-CMB-01 to Q-CMB-10 and Q-OWN-01 ask is stated, and the computer's numbers are those of the code, not of play.
+- **DOS Isle Wars.** Nothing here is claimed for it (rule 19).
+- **Any claim about reinforcement, cards, centres, hazards, turn order or victory** (T21, T22, T23, T30), except as named where combat touches them.
+
+## Where the evidence is
+
+- The scripts read, with the record's `ls_sha256`: `experiments/E009-pro-combat-reading/scripts-read.json`; the record they come from: `experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json`. Both are tracked; the decompiled scripts themselves are not (rule 18).
+- The model: `experiments/E009-pro-combat-reading/measurements/win-probability-r1.json` (and the script that made it).
+- The in-place hash check: `experiments/E009-pro-combat-reading/measurements/disk-check-r1.json`.
+- No evidence bundle and no run record exist (no run was made).
+
+## Reproduction
+
+```bash
+python3 experiments/E009-pro-combat-reading/check_cited_scripts.py            # the record checks
+IWA_STATIC=<folder outside every checkout> \
+  python3 experiments/E009-pro-combat-reading/check_cited_scripts.py --disk   # on the machine with the run's folder
+python3 experiments/E009-pro-combat-reading/win_probability.py r2             # a new file beside the old one
+```
+
+To re-read, open the listed scripts in the run's folder on the owner's machine (`iwp-extract-pro-r1`, under its `movie-01-out` folder) and compare with the answers above; no copy of them is kept anywhere in the repository.
