@@ -57,12 +57,15 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "setup" / "iwp"))
 sys.path.insert(0, str(ROOT / "setup" / "iw-dos"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(ROOT / "runtime" / "iw-dos" / "save"))
 import locations  # noqa: E402
 import safeio  # noqa: E402
 import rundir  # noqa: E402
 import dosconf  # noqa: E402
 import navsteps as stepscript  # noqa: E402
 import board  # noqa: E402
+import savefmt  # noqa: E402
+import writer  # noqa: E402
 
 SCRIPT = Path(__file__).resolve()
 EXPERIMENT = "E003"                   # --experiment sets it (E005: T14); every record and path follows it
@@ -312,6 +315,8 @@ class Cycle:
         self.ref = None             # the screen as the last step left it (navsteps.py: wait-change)
         self.script = []            # the parsed --steps script, [] for the E003 cycle
         self.used_savestate = False
+        self.crafted = None                # (position file sha256, the crafted save's sha256) once put-save has run
+        self.position = None               # the --crafted position, read by load_script
         self.mine = self.target = None     # the countries choose-attack remembered
         self.pointer = None                # where the last click step left the pointer
         # "completed" is given only by complete(); any other way out leaves an aborted status.
@@ -513,6 +518,20 @@ class Cycle:
         except (OSError, UnicodeDecodeError, stepscript.Refused) as exc:
             self.fail(f"the steps script is refused: {exc}")
         self.observe(0, "file", "steps script sha256", sha256_bytes(text.encode()))
+        wants = any(verb == "put-save" for verb, _ in self.script)
+        if wants != bool(self.args.crafted):
+            self.fail("the script has put-save and the run has no --crafted position, or the run has --crafted and the "
+                      "script no put-save" if wants else "--crafted is given and the script has no put-save")
+        if wants:
+            try:
+                with safeio.open_source(Path(self.args.crafted)) as fh:
+                    raw = fh.read()
+                self.position = json.loads(raw.decode("utf-8"))
+                savefmt.check(self.position)
+            except (OSError, safeio.Refused, ValueError, savefmt.Refused) as exc:
+                self.fail(f"the --crafted position is refused: {exc}")
+            self.position_sha = sha256_bytes(raw)
+            self.observe(0, "file", "crafted position sha256", self.position_sha)
 
     def navigate(self):
         """Run the script's steps in order, each recorded; the run is not completed unless all finish."""
@@ -661,6 +680,17 @@ class Cycle:
             self.fail(f"step {step - 100}: the shareware notices are on the screen; only {', '.join(NOTICE_KEYS)} is pressed there")
         run(["xdotool", "key", key], env=self.env)
         self.observe(step, "process", f"key {key}", "sent")
+
+    def step_put_save(self, step):
+        """Write the crafted save into the run copy (I3). Only writer.place writes it: the name ISLEWAR.SAV, a run copy
+        of this install, an encodable position. A refusal aborts the run before the game is asked to Load."""
+        try:
+            data, digest = writer.place(self.run_dir, self.install, self.position)
+        except savefmt.Refused as exc:
+            self.fail(f"step {step - 100}: the crafted save was refused: {exc}")
+        self.crafted = (self.position_sha, digest)
+        self.observe(step, "file", "crafted save placed in the run copy as ISLEWAR.SAV: bytes, sha256", f"{len(data)} {digest}")
+        self.say(f"crafted save placed: {len(data)} bytes, sha256 {digest[:16]}")
 
     def step_savestate(self, step):
         """F12+S, then classify what the savestate holds (I2; the file is never kept, it holds the game's memory)."""
@@ -961,13 +991,18 @@ SCREENSHOTS = {"level": "I1", "what": "screenshots of the game window: the X dis
                                     "(passive instrumentation); the files the game wrote read after it wrote them (I0)"}
 
 
-def interventions(args, used_savestate=False):
+def interventions(args, used_savestate=False, crafted=None):
     """Every intervention of the run (run/1: "every intervention, including passive ones"). Every cycle takes
     screenshots (before.png at least), which is I1 (vocabulary/interventions.md; PR #58 R8)."""
     found = [dict(SCREENSHOTS)]
     if used_savestate:
         found.append({"level": "I2", "what": "DOSBox-X savestate saved (F12+S) at a step of the script, its members "
                                              "and memory classified; never restored"})
+    if crafted:
+        found.append({"level": "I3", "what": "a crafted save: ISLEWAR.SAV written by runtime/iw-dos/save/writer.py from the "
+                                             f"position file (sha256 {crafted[0]}) and placed in the run copy at the "
+                                             f"option box, before Load saved game (the save's sha256 is {crafted[1]}); "
+                                             "the reset removes it"})
     if args.probe == "savestate":
         found.append({"level": "I2", "what": "DOSBox-X savestate saved at the option box (F12+S) and restored "
                                              "after the click (F12+L)"})
@@ -985,6 +1020,8 @@ def refused_args(args):
     probe runs around its steps; E005 runs only step scripts."""
     if args.steps and args.probe != "none":
         return f"--probe {args.probe} is refused with --steps (a step script takes its own savestate step)"
+    if args.crafted and not args.steps:
+        return "--crafted needs --steps (the script's put-save places the save)"
     if args.experiment in ("E005", "E007") and not args.steps:
         return f"--experiment {args.experiment} needs --steps"
     return None
@@ -1013,7 +1050,7 @@ def build_record(cycle, commit, machine):
             "platform": "linux-wsl2/dosbox-x-xvfb",
             "fingerprint": cycle.fingerprint,
         },
-        "interventions": interventions(cycle.args, cycle.used_savestate),
+        "interventions": interventions(cycle.args, cycle.used_savestate, cycle.crafted),
         "start_state": {
             "id": "S-run-copy-option-box",
             "sha256": state_sha,
@@ -1062,6 +1099,8 @@ def parser():
     ap.add_argument("--experiment", choices=EXPERIMENTS, default="E003",
                     help="the experiment whose records, manifests and bundles the run writes (default E003)")
     ap.add_argument("--steps", default=None, help="a step script (navsteps.py) in place of the one click on Set level")
+    ap.add_argument("--crafted", default=None, help="a position (JSON, runtime/iw-dos/save/savefmt.py) that the script's "
+                                                    "put-save writes into the run copy as ISLEWAR.SAV (I3)")
     ap.add_argument("--explore", action="store_true", help="print the result; write no record or bundle")
     return ap
 
