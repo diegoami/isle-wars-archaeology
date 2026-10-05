@@ -12,3 +12,10 @@ receives from `scripts/run-arms.sh` since (relative to the repository root). Not
 or a bundle differs from what the cycle wrote: the steps script's own sha256 is in the record's observations and
 is unchanged by the path. The five runs are `sv-easy-1`, `sv-normal-1`, `sv-hard-1`, `sv-hardest-1` and
 `sv-easy-3`; every later run was made with the relative path.
+
+**What this means for the five records (review R1, round 1; the owner's decision of 2026-10-05).** E007-r0001 to
+E007-r0005 are **cleaned copies, not raw records**: their `actions.args` is not what the cycle wrote. The owner
+decided to declare this and not to re-run them; they are kept as they are and are not rewritten or deleted. F009
+marks them "(cleaned)" wherever it cites them, and rests no claim on them alone: every field they show is also shown
+by a pair of raw records (F009, Method, "The five cleaned records"). The originals' one changed string held a
+machine-local path, so it is not kept anywhere in the repository.

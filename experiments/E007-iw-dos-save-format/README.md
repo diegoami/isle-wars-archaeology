@@ -44,3 +44,10 @@ file is append-only. A changed design is a new experiment, or `v2/`.
 - **Correction.** `runs/E007/CORRECTIONS.md`: the five first records had an absolute path in `actions.args`.
 - **More scripts.** `scripts/run-arms.sh`, `scripts/run-crafted.sh` (one recorded run each; wait while another task's DOSBox-X runs), `scripts/save-tables.py`, `scripts/check-stars.py`, `scripts/check-cards.py`, `scripts/check-crafted.py`, `scripts/pair-diffs.py` with `scripts/make-pairs.py`, `scripts/hand-order.py`, `scripts/analyze.sh` (a new `measurements/analysis-<time>/` each time), `scripts/done-when.sh`.
 - **Exploration** `x01` to `x06` is in `measurements/explore/`; it is not a record.
+
+## Round 1 (2026-10-05; appended, the text above is unchanged)
+
+- **The five first records are cleaned copies** (review R1, the owner's decision: declare, don't re-run). E007-r0001 to E007-r0005 had one `actions.args` string replaced before their first commit, so that field is not raw (`runs/E007/CORRECTIONS.md`). F009 marks them "(cleaned)" and gives every field they show a pair of raw records.
+- **Pairs without them** (no new run): `pairs-round1.json` (A3b, A4b with the control E007-r0023; A5b with E007-r0019; C1, two Easy-1 games, E007-r0026 and E007-r0027), tabulated by `scripts/pair-diffs.py` into `measurements/round1-pairs-<time>/`.
+- **The card names** (review R2): only 3 and 7 are named by natural runs; the names of 1, 2, 4, 5, 6, 8 and 9 are I3-only candidates.
+- **The writer's edits** (review R3): a country is a whole number from 1 to 46 and a hand a colour; anything else is refused.
