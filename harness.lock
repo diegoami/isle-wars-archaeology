@@ -12,6 +12,7 @@ adapt .claude/agents/reviewer.md  (effort: medium for Opus, the owner 2026-10-05
 adapt docs/process.md  (§3: the effort comes from harness.json, CLAUDE.md rule 6)
 adapt .claude/skills/switch-model/SKILL.md  (step 4: --variant medium or low for a heavy model, CLAUDE.md rule 6)
 adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness.json keys and the quota check)
+adapt tools/harness/review.mjs  (header comment: the full-profile reviewer is GPT-5.6 Luna, L51; upstream at 0f39634 still says GPT-6 Luna)
 15f1fcb3af4cd07482f39328e2255a71075f4889946901960116f9a3a5b4c16f  .claude/agents/implementer.md
 6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
@@ -39,5 +40,4 @@ b805800c2e945a2b924ce4e13bfba684f624acf045193f63003ae0276be853ac  tools/harness/
 07d110855c842088500aa775e506197b287cfbc725709b09242171bdfe1372a2  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-9266a2c2068b88c392fa92623563fc2317a6ee687a3f7ad5db4ee2625db105f1  tools/harness/review.mjs
 8b8ba70c1820463240c3a9866616c05092b33b53de4dcd2ebe7f8c0b089969fe  tools/harness/switch-model.mjs
