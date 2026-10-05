@@ -1,0 +1,28 @@
++ main session at a6b09b948fdd, 2026-10-05T13:42:18Z
+== control
+{"repeat": 1, "run_id": "E006-r0017", "status": "completed", "seconds": 18.46, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E006-r0018", "status": "completed", "seconds": 18.29, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E006-r0019", "status": "completed", "seconds": 18.41, "recovered": true, "as_expected": true}
+{"repeat": 4, "run_id": "E006-r0020", "status": "completed", "seconds": 18.4, "recovered": true, "as_expected": true}
+{"repeat": 5, "run_id": "E006-r0021", "status": "completed", "seconds": 18.32, "recovered": true, "as_expected": true}
+{"repeat": 6, "run_id": "E006-r0022", "status": "completed", "seconds": 18.35, "recovered": true, "as_expected": true}
+{"repeat": 7, "run_id": "E006-r0023", "status": "completed", "seconds": 18.34, "recovered": true, "as_expected": true}
+{"repeat": 8, "run_id": "E006-r0024", "status": "completed", "seconds": 18.6, "recovered": true, "as_expected": true}
+{"repeat": 9, "run_id": "E006-r0025", "status": "completed", "seconds": 18.38, "recovered": true, "as_expected": true}
+{"repeat": 10, "run_id": "E006-r0026", "status": "completed", "seconds": 18.58, "recovered": true, "as_expected": true}
+exit 0
+== sigkill-mid-cycle
+{"repeat": 1, "run_id": "E006-r0027", "status": "completed", "seconds": 18.38, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E006-r0028", "status": "aborted: game-died: DOSBox-X was gone (exit status -9) before perform", "seconds": 17.13, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E006-r0029", "status": "completed", "seconds": 18.29, "recovered": true, "as_expected": true}
+exit 0
+== close-mid-cycle
+{"repeat": 1, "run_id": "E006-r0030", "status": "completed", "seconds": 18.68, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E006-r0031", "status": "aborted: game-died: DOSBox-X was gone (exit status 1) before wait_for_screen", "seconds": 17.9, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E006-r0032", "status": "completed", "seconds": 18.46, "recovered": true, "as_expected": true}
+exit 0
+== DW4
+ready
+exit 0
+ok: iw-dos-3.1-30121376
+exit 0
