@@ -1,0 +1,23 @@
+$ TMPDIR=<a short folder outside every checkout> python3 tests/mutants_static.py
+killed   IWA_STATIC is not confined (unset, relative, in a checkout, over the repository) (tools/static/static_common.py; 4 test id(s))
+killed   the static folder may overlap the original's folder (tools/static/static_common.py; 1 test id(s))
+killed   a run may reuse a run directory (tools/static/static_common.py; 1 test id(s))
+killed   a link in the original's own name is read through (tools/static/static_common.py; 1 test id(s))
+killed   an original is read without comparing it with its registered sha256 (tools/static/static_common.py; 2 test id(s))
+killed   the bytes a script uses are not checked again against the registered hash (tools/static/static_common.py; 1 test id(s))
+killed   the original is not hashed again after a tool read it by its path (tools/static/static_common.py; 1 test id(s))
+killed   a derived file given to ghidra_import is not compared with its sha256 (tools/static/ghidra_import.py; 1 test id(s))
+killed   ghidra_import accepts a file name that climbs out of the static folder (tools/static/ghidra_import.py; 1 test id(s))
+killed   ghidra_import does not give Ghidra a dot-free project path (tools/static/ghidra_import.py; 1 test id(s))
+killed   a record with a machine path is written (tools/static/static_common.py; 1 test id(s))
+killed   a record replaces an earlier one (tools/static/static_common.py; 1 test id(s))
+killed   a tracked file with a listed hash passes (tools/static/check_derived_hashes.py; 1 test id(s))
+killed   a tracked file named like a derived output passes (tools/static/check_derived_hashes.py; 1 test id(s))
+killed   a tool whose file has another sha256 is ready (setup/static/check_tools.py; 1 test id(s))
+killed   the PKLITE extra flag is read from the large flag's bit (tools/static/dos_identify.py; 1 test id(s))
+killed   an executable without the PKLITE text is called PKLITE (tools/static/dos_identify.py; 1 test id(s))
+killed   a projector without its PJ00 header is accepted (tools/static/iwp_extract.py; 1 test id(s))
+killed   the work copy does not keep the movie header at offset 0 (tools/static/iwp_extract.py; 1 test id(s))
+killed   an embedded file past the end of the file is accepted (tools/static/iwp_extract.py; 1 test id(s))
+20 of 20 mutants killed
+exit=0

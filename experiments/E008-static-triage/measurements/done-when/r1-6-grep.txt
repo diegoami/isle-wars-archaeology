@@ -1,0 +1,3 @@
+$ git grep -n -i -E 'program files|/mnt/|[a-z]:\\\\|/home/|\.local/share' -- tools/static setup/static findings experiments/E008-static-triage ':!experiments/E008-static-triage/measurements/done-when'
+tools/static/static_common.py:50:LEAK = re.compile(r"program files|/mnt/|[A-Za-z]:\\|/home/|\.local/share|/Users/", re.IGNORECASE)
+exit=0

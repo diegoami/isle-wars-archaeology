@@ -1,0 +1,59 @@
+{
+  "data_segment_bases": [],
+  "header_bytes": 4048,
+  "input": {
+    "bytes": 92736,
+    "derived_file_sha256": "1c6f8fb1c9eceb190fc40856110dd6e001a081aa9ea56ad1cbcbf9d99820b2de"
+  },
+  "load_module_bytes": 88688,
+  "marker_counts": {
+    "borland-c": 0,
+    "borland-turbo-pascal": 0,
+    "microsoft-basic": 8,
+    "microsoft-c-library": 2,
+    "other-basic": 0
+  },
+  "markers": {
+    "borland-c": {
+      "Abnormal program termination": null,
+      "Borland C++": null,
+      "Turbo C": null
+    },
+    "borland-turbo-pascal": {
+      "Portions Copyright (c) 1983": null,
+      "Runtime error ": null,
+      "Turbo Pascal": null
+    },
+    "microsoft-basic": {
+      "Advanced feature unavailable": 82624,
+      "Bad record number": 82462,
+      "Error during run-time initialization": 83022,
+      "Error in EXE file": 82924,
+      "FIELD overflow": 82226,
+      "Out of DATA": 81904,
+      "RESUME without error": 82115,
+      "String space corrupt": 82901
+    },
+    "microsoft-c-library": {
+      "- illegal far pointer use": 83356,
+      "- stack overflow": 83128,
+      "run-time error R60": null
+    },
+    "other-basic": {
+      "PowerBASIC": null,
+      "QBX": null,
+      "Turbo Basic": null,
+      "Visual Basic": null
+    }
+  },
+  "needles": [
+    {
+      "hits": [],
+      "text": "ISLEWAR.SAV"
+    },
+    {
+      "hits": [],
+      "text": "ISLEWAR.DFT"
+    }
+  ]
+}

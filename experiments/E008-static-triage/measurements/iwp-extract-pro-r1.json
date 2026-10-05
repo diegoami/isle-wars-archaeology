@@ -1,0 +1,2717 @@
+{
+  "artifact": "iwp-2.0-996e86c5",
+  "embedded_files": [
+    {
+      "chunk_length": 14752,
+      "codec": null,
+      "index": 0,
+      "kind": "other",
+      "length": 14752,
+      "offset": 1808624,
+      "sha256": "16853ee457828ffc030eb688259c3d6b5792324e98348b1d9b93c763d6503193"
+    },
+    {
+      "chunk_length": 21874,
+      "codec": null,
+      "index": 1,
+      "kind": "other",
+      "length": 21874,
+      "offset": 1823376,
+      "sha256": "4ab83b1130d7dff2396bac2db75b0dc598f5392157aa4bb1dd06340951de007d"
+    },
+    {
+      "chunk_length": 18818,
+      "codec": null,
+      "index": 2,
+      "kind": "other",
+      "length": 18818,
+      "offset": 1845250,
+      "sha256": "c8235365e582b7dfcc07818fc12842356bf97b7d6084ef21a008f428915b74f7"
+    },
+    {
+      "chunk_length": 32179,
+      "codec": null,
+      "index": 3,
+      "kind": "other",
+      "length": 32179,
+      "offset": 1864068,
+      "sha256": "43dae44d93e86026903bad41e0e867bb4ac162f3ca3880c2ca9e26e1b989a5e7"
+    },
+    {
+      "chunk_length": 24664,
+      "codec": null,
+      "index": 4,
+      "kind": "other",
+      "length": 24664,
+      "offset": 1896248,
+      "sha256": "bae281290fcbd9e42d0c819d908f688e0ced63f498dd1ae7efbd3cae0618e0e2"
+    },
+    {
+      "chunk_length": 26497,
+      "codec": null,
+      "index": 5,
+      "kind": "other",
+      "length": 26497,
+      "offset": 1920912,
+      "sha256": "36f82a320dedff0ebef3051b56c7ce9bfdef3a081f4e6e5257b6684199415c90"
+    },
+    {
+      "chunk_length": 22407,
+      "codec": null,
+      "index": 6,
+      "kind": "other",
+      "length": 22407,
+      "offset": 1947410,
+      "sha256": "e9ffbca509403742831ffe91fa1c3e0f81645b43604532bd3f75f4ac622a0415"
+    },
+    {
+      "chunk_length": 201668,
+      "codec": null,
+      "index": 7,
+      "kind": "other",
+      "length": 201668,
+      "offset": 1969818,
+      "sha256": "69393c22d4d44c64309070d1cb6860f6fe17f02c546435ac3ea76f548ade76e7"
+    },
+    {
+      "chunk_length": 25049,
+      "codec": null,
+      "index": 8,
+      "kind": "other",
+      "length": 25049,
+      "offset": 2171486,
+      "sha256": "c1ac77a6fd69bfa54bedd88c58673ccc69ed022c11c506423cf5dff333c3f7b5"
+    },
+    {
+      "chunk_length": 132797,
+      "codec": null,
+      "index": 9,
+      "kind": "other",
+      "length": 132797,
+      "offset": 2196536,
+      "sha256": "01b9784837e4b0cda9b642a8c4648558866490596e73f4257adc59d2bd0e1397"
+    },
+    {
+      "chunk_length": 22344,
+      "codec": null,
+      "index": 10,
+      "kind": "other",
+      "length": 22344,
+      "offset": 2329334,
+      "sha256": "d6a4abad7c3e6f2d9e522d9234a7477fb2c601e861ca42f0f94fd6fbb65f51fe"
+    },
+    {
+      "chunk_length": 12954,
+      "codec": null,
+      "index": 11,
+      "kind": "other",
+      "length": 12954,
+      "offset": 2351678,
+      "sha256": "867441fdde77100628d427e0700b7138bd3d7ce4a5520fd08567286524793fb4"
+    },
+    {
+      "chunk_length": 8775,
+      "codec": null,
+      "index": 12,
+      "kind": "other",
+      "length": 8775,
+      "offset": 2364632,
+      "sha256": "9c86aa7d89b9a55cc134233d9222803e817a4704efd46efacd6cb88fea37870d"
+    },
+    {
+      "chunk_length": 163781,
+      "codec": null,
+      "index": 13,
+      "kind": "other",
+      "length": 163781,
+      "offset": 2373408,
+      "sha256": "3a1ceaee1ca58ea182eabe1fac0c3460741fa644fb06a97e462a7db886445076"
+    },
+    {
+      "chunk_length": 48506,
+      "codec": null,
+      "index": 14,
+      "kind": "other",
+      "length": 48506,
+      "offset": 2537190,
+      "sha256": "4c1c236a7de3883b05f7b2b953cb3fbbb669ac28a90eeeaa2e9096f014e2be35"
+    },
+    {
+      "chunk_length": 12451,
+      "codec": null,
+      "index": 15,
+      "kind": "other",
+      "length": 12451,
+      "offset": 2585696,
+      "sha256": "48e51083d75980b3b717403b4753b6388379990008cadcfd3ef5842fc2b4f69a"
+    },
+    {
+      "chunk_length": 30410,
+      "codec": null,
+      "index": 16,
+      "kind": "other",
+      "length": 30410,
+      "offset": 2598148,
+      "sha256": "64dc74e8aa9951169c584072541adbe3f189b2929b2722a398b592dac207d1fb"
+    },
+    {
+      "chunk_length": 4522177,
+      "codec": "MV93",
+      "index": 17,
+      "kind": "director-movie",
+      "length": 4522178,
+      "offset": 2628558,
+      "sha256": "3fe1df66e2c5a501d91e5089a31173c779f459537e5a76946917137993f69b2e"
+    }
+  ],
+  "layout": {
+    "container_chunk_kinds": {
+      "Dict": 1,
+      "File": 18,
+      "List": 1,
+      "RIFX": 1,
+      "imap": 1,
+      "mmap": 1
+    },
+    "container_chunks": 23,
+    "container_imap_version_field": 1406,
+    "container_offset": 1805544,
+    "image_end": 162816,
+    "projector_signature": "PJ00"
+  },
+  "movies": [
+    {
+      "carved_sha256": "3fe1df66e2c5a501d91e5089a31173c779f459537e5a76946917137993f69b2e",
+      "cast_member_count": 650,
+      "cast_member_types": {
+        "bitmap": 389,
+        "script": 121,
+        "shape": 2,
+        "sound": 19,
+        "text": 57,
+        "type 14 (not named by the tool)": 6,
+        "type 15 (not named by the tool)": 56
+      },
+      "chunk_count": 1504,
+      "chunks_by_kind": {
+        "BITD": 389,
+        "CAS*": 1,
+        "CASt": 650,
+        "Cinf": 1,
+        "DRCF": 1,
+        "FCOL": 1,
+        "FXmp": 1,
+        "Fmap": 1,
+        "KEY*": 1,
+        "Lctx": 1,
+        "Lnam": 1,
+        "Lscr": 274,
+        "MCsL": 1,
+        "RIFX": 1,
+        "SCRF": 2,
+        "STXT": 57,
+        "Sord": 1,
+        "VERS": 1,
+        "VWFI": 1,
+        "VWLB": 1,
+        "VWSC": 1,
+        "XMED": 56,
+        "XTRl": 1,
+        "imap": 1,
+        "mmap": 1,
+        "snd ": 19,
+        "sndH": 19,
+        "sndS": 19
+      },
+      "codec": "MV93",
+      "handler_count": 230,
+      "length": 4522178,
+      "movie": 1,
+      "offset": 2628558,
+      "probes": {
+        "Isledft.dat": [
+          {
+            "handler": "startMovie",
+            "reads": false,
+            "script_kind": "MovieScript",
+            "script_name": "Startmovie",
+            "script_number": 1,
+            "writes": true
+          },
+          {
+            "handler": "Getdefaults",
+            "reads": true,
+            "script_kind": "MovieScript",
+            "script_name": "getdefaults",
+            "script_number": 458,
+            "writes": false
+          },
+          {
+            "handler": "SaveDefaults",
+            "reads": false,
+            "script_kind": "MovieScript",
+            "script_name": "getdefaults",
+            "script_number": 458,
+            "writes": true
+          }
+        ],
+        "Islepro.dat": [
+          {
+            "handler": "startMovie",
+            "reads": false,
+            "script_kind": "MovieScript",
+            "script_name": "Startmovie",
+            "script_number": 1,
+            "writes": true
+          },
+          {
+            "handler": "CHECKUPG",
+            "reads": true,
+            "script_kind": "MovieScript",
+            "script_name": "checkupg",
+            "script_number": 480,
+            "writes": false
+          },
+          {
+            "handler": "WRITEUPG",
+            "reads": false,
+            "script_kind": "MovieScript",
+            "script_name": "checkupg",
+            "script_number": 480,
+            "writes": true
+          }
+        ],
+        "Islepro.skr": [
+          {
+            "handler": "mouseUp",
+            "reads": false,
+            "script_kind": "CastScript",
+            "script_name": "reset2",
+            "script_number": 636,
+            "writes": true
+          },
+          {
+            "handler": "startMovie",
+            "reads": false,
+            "script_kind": "MovieScript",
+            "script_name": "Startmovie",
+            "script_number": 1,
+            "writes": true
+          },
+          {
+            "handler": "writescores",
+            "reads": false,
+            "script_kind": "MovieScript",
+            "script_name": "WRITESCORES",
+            "script_number": 455,
+            "writes": true
+          },
+          {
+            "handler": "READSCORES",
+            "reads": true,
+            "script_kind": "MovieScript",
+            "script_name": "READSCORES",
+            "script_number": 471,
+            "writes": false
+          }
+        ]
+      },
+      "projectorrays_exit": 0,
+      "projectorrays_json_exit": 0,
+      "rebuilt_movie": [
+        {
+          "bytes": 4687621,
+          "sha256": "a17201450272c4889e81813e68c6f7b8b1c1ec059357203242352167a6204f50"
+        }
+      ],
+      "reported": "Macromedia Director 7.0",
+      "script_context": {
+        "entries": 277,
+        "valid": 274
+      },
+      "script_count": 213,
+      "scripts": [
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "54f86b5d6ea1948e0d3cefd236e7cf2c593fee4a8b7471ce6338eb89ba8a3087",
+          "lines": 6,
+          "ls_sha256": "871e1a0ec56d1c16bb6d05a35f2bf3c0b7643cb66364633cfb2a8250171ff4f1",
+          "name": "",
+          "number": 100
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "1b65713fd56ac28afbe2b7e836a953dc5f8de7fde35b674d2e8939aae2b3f0d6",
+          "lines": 29,
+          "ls_sha256": "d320c13c9f2775c572ab8ec5956de2ea3f6676faea9b7c5e04e6d92073b5d332",
+          "name": "",
+          "number": 11
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "3bf78fe7fbccafd4c1d41ba51d1d6f95de3c335bfe84aa7ab4805ade7f00284e",
+          "lines": 11,
+          "ls_sha256": "551032c47793deecad93383f4ae39adca45b711539103508a87278770213a6ad",
+          "name": "",
+          "number": 12
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "a48cf9a77b429df827f99d7f86d3ff02204045d6b5fc731dae92f0ad3adf544e",
+          "lines": 14,
+          "ls_sha256": "6b86066153c8fdb73490ca0bba5352048958d827bab31e8a1df8cd9ee78b0d16",
+          "name": "",
+          "number": 13
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "7bbb682003659c482a319b55a74916e9cf8c9c10bdd9c860357e35a0be82b6da",
+          "lines": 123,
+          "ls_sha256": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31",
+          "name": "",
+          "number": 14
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "c8ed19c73662fa030674482e99376ffa22e33c97799eadeea9359482455e01a7",
+          "lines": 11,
+          "ls_sha256": "606e983ed268793bfd4df8a8d827d0489abc989d7fbcbfefddd7ae3a08f955f4",
+          "name": "",
+          "number": 2
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "c2ffa75f32036bb9b08e558323d4550ff5fd4644e1a961a766e995a494179a7e",
+          "lines": 3,
+          "ls_sha256": "c4f7cd498abdcad4bd6db63107a3347de8e9569811e56c0188ba262069139fc0",
+          "name": "",
+          "number": 24
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "b152f13dd025c74ab4708cd3047325c57dbed5003ff8fdca59bf22ecdc7b44de",
+          "lines": 47,
+          "ls_sha256": "a70732d1df2e690c6906a2083d83389bb681b3ac3b404cb76cdab02b8c51710e",
+          "name": "",
+          "number": 26
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "0d31a1fd5ca8cb654477a4f5c2f494fc09845fbd30c3aee14b1574d42c3a5476",
+          "lines": 7,
+          "ls_sha256": "12ac77b0b84fcfae73698948ebc8b6fa17748be739ea439d362161ff364f7751",
+          "name": "",
+          "number": 27
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "b74cc49fa1e4a5321d4956bbb1554fa42a24e87d7a16d624e6f9f7d8d74834b9",
+          "lines": 3,
+          "ls_sha256": "b6ace8466d3c06f7f72ef86b4690e2a15b57eeed4f597970976345ecc68f8824",
+          "name": "",
+          "number": 28
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "c9859c6b0b11e0c879c6741f9297e58c8bbd91ebdda98bfb5feade1ed0da625e",
+          "lines": 9,
+          "ls_sha256": "dd0fbf7df481b8dc3359109d7a2caae0bef13fb6d9cbcdfe91a9971b3be15666",
+          "name": "",
+          "number": 3
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "",
+          "number": 30
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "e84be35b0701bc0676c210ce59ed129c65cd429c48eb3625dcc66bcdc09325e1",
+          "lines": 6,
+          "ls_sha256": "aa6d66c3ac8d4df9a8bb70b2efa14745c6e78f7173a394703537d9fb51303b86",
+          "name": "",
+          "number": 32
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "cc79aad36051c94f65445538f1257f016f645f3effb0ddd996e78704abac3e33",
+          "lines": 8,
+          "ls_sha256": "5b7b7b4bcca3684111f213543c9f67406d1d191b49d08bcb17350a050c8fd904",
+          "name": "",
+          "number": 33
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "049194403f83cda0ecbbf68c62b3a3daba5046061f2152af3d2ae07ef6e7fa39",
+          "lines": 11,
+          "ls_sha256": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e",
+          "name": "",
+          "number": 331
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "e4ccd3c9905f860a7a5692e9eca8ad409f0e97130a05f635f0a969b79c9ddbd0",
+          "lines": 9,
+          "ls_sha256": "6beab3964eafc126afed6d077d5412a043846eb4bd9875aff69b8588b0ece256",
+          "name": "",
+          "number": 340
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "18e76b6fdc6b07312b45859a591363f823cec851be654d0487a66c01b1d9018d",
+          "lines": 9,
+          "ls_sha256": "13915cda361e74e5e80962751277dffe81ae3da316df0e6b5f64824370218e7d",
+          "name": "",
+          "number": 341
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "f4b3a1f2e8fbd2c65cf86a53ee29ea5de6ced135a7aaf5924bb56441055f4ba7",
+          "lines": 44,
+          "ls_sha256": "7877022fba42e47b819c9fc4c358bbc1735403e8933d4722d24413dec1940943",
+          "name": "",
+          "number": 342
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "4c44039d39d57bfb55b38ce4c675d2abdc0b73655524a7b4250785d66465eede",
+          "lines": 10,
+          "ls_sha256": "29b2e650571f5c28edae1fff1819eec1a16d434ef068093996ce3f5afb816ea8",
+          "name": "",
+          "number": 343
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "e885d767d8bacc4164d413844aff005f59c1909fb1417dbe5cc80d43a038559f",
+          "lines": 5,
+          "ls_sha256": "835695f4bc9f25491a767c0f521c9dfbd5f5cf98ce984de86f4f5b87207681dd",
+          "name": "",
+          "number": 358
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "de985bf73c3528da7f498fed23c1292e0b1364169dd62954baf884cddca055ae",
+          "lines": 3,
+          "ls_sha256": "5e6b2d5a7e9394790101f40c312ff38019b73dbbc5abecc56cec707b3dfb59ba",
+          "name": "",
+          "number": 359
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "de985bf73c3528da7f498fed23c1292e0b1364169dd62954baf884cddca055ae",
+          "lines": 3,
+          "ls_sha256": "5e6b2d5a7e9394790101f40c312ff38019b73dbbc5abecc56cec707b3dfb59ba",
+          "name": "",
+          "number": 360
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "f0363ad95efd5929cd659965bbba90e860655e00657a1d4a8cbe7f2de4c1fb47",
+          "lines": 13,
+          "ls_sha256": "ed9514bf7bf554b6e417da71e1c8186a99c985d7de770ae597cb032a12e08e8e",
+          "name": "",
+          "number": 361
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "741dc0104da005a946cf59ac46e5ef6a637cc5e449986ee408995b0748e3cd42",
+          "lines": 19,
+          "ls_sha256": "6ae79a8e7274dc674e6c32afa21c3dd87db79970c45574eb47eb2f5c954668d9",
+          "name": "",
+          "number": 367
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "950bb899c395e41d58dfc8b980065196a13f4863516818ecca1e6ac85cd1ea55",
+          "lines": 6,
+          "ls_sha256": "9f00fb7f7a12496196eb75960cd856e47f1b696dac28aec6c8b93c2c4d1e19ad",
+          "name": "",
+          "number": 368
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "1c64072e52f94aa5a0bfb9122ea11848c6a484aae2cdff2dc15ae4d9d1efebb1",
+          "lines": 3,
+          "ls_sha256": "8ddc1054d5ba9bb15eb3ee9f9949ba0aa30abfa52b3099a809b28c0f289bbdbf",
+          "name": "",
+          "number": 369
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "8f6a535f32cee8f450d434b6578a7cd15b7ece19e7adbf24c95d766b6a88044a",
+          "lines": 6,
+          "ls_sha256": "e39ee770b1c5851b5b06cada0ddaa92f21c688ff138c1a0618ffca5a1181fc1c",
+          "name": "",
+          "number": 371
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "7b79701cd45ec110c4e606510aaa91b74655f2b3145fd42b87c7bd29b6e969af",
+          "lines": 5,
+          "ls_sha256": "1150f23d8744f33d407e01ef9184fbb90a43ec8e94c2df30866b5ac1fb632127",
+          "name": "",
+          "number": 372
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "8430ef89e7aa1b5a4d278d30c164adabf09a2374e7e65c9880a879399dfb2592",
+          "lines": 5,
+          "ls_sha256": "19fe3b6992b222ffaae534e90cb7d2e7e4865f12ffb92c7894f8d70b79b10925",
+          "name": "",
+          "number": 389
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "cbba6813896eb9963e7cf3334fc64fdb09babb81cf16834b81883c4be672b168",
+          "lines": 70,
+          "ls_sha256": "a2ad98578ce9b29d8f9f8efcca506668675f1f550135c3282418c8c52d443a43",
+          "name": "",
+          "number": 4
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "df06cd28679f124fa1f5a95c8079f875bd80a2dd90e9194c930c2b8a59f0acfc",
+          "lines": 401,
+          "ls_sha256": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+          "name": "",
+          "number": 400
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "bac4a396a318e0a20166928c181b0255a634d9e74c50e9b01b7b7dbb6de85a15",
+          "lines": 11,
+          "ls_sha256": "281a362e1fca2c3f1e4b71f0de4bc0617a3d67b5506416511b109e3d92c8688b",
+          "name": "",
+          "number": 41
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "8bfe9500968c6cf6300d42c2373c9a2e8a37bd53651c7f043c4e1de8a772ab89",
+          "lines": 9,
+          "ls_sha256": "590e9d5af4717dae0864115205d991da10d6162e771d10425e30a652a4b88107",
+          "name": "",
+          "number": 43
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "77557e8ef4cdc86c1d76207876c1ba7f723aacc2a437769a7fb53c2338645ea9",
+          "lines": 12,
+          "ls_sha256": "c1c9d86b9a3ef728f6778a52e8661115f008659fb0f549fa3a2eea6644746254",
+          "name": "",
+          "number": 44
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "64da16df30585bd75806d1cf9e9a8c316c206ec240fd65d37db8c4ad12380f41",
+          "lines": 11,
+          "ls_sha256": "c22d8bf8e892c3f6a2e8e001c78332ef296aedb7239872ca4b66f8f7c8b247a9",
+          "name": "",
+          "number": 45
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ca6a064be27e81fd4c79e218fa58a54eeac0b8057e2ee929d32add97c5a9cf2f",
+          "lines": 23,
+          "ls_sha256": "5420b6f062dc9ed7f20254ee889b8e3e7981a43554ab862abaa5e53c72098e0a",
+          "name": "",
+          "number": 450
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "15b9a1b940fb271aae8f16314e35270a7510beb8d10f94420f614f039e68492c",
+          "lines": 20,
+          "ls_sha256": "4e177c989e356a7d2054f079623d4032ce43b3f405175038938ca6430213c43b",
+          "name": "",
+          "number": 453
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ad1317e9d9e134a5569fd02795610c6288aacb5e6e1d50f20d47bc35749cb9e3",
+          "lines": 8,
+          "ls_sha256": "fb0205e03787a900850b76652b0994cfb764aca8ea168ebd187b399ee0402d31",
+          "name": "",
+          "number": 454
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "2c662b9e190e26cdc115ab4e80a90e254ed175f903fbb82ae1f53b079b0beef3",
+          "lines": 4,
+          "ls_sha256": "eccd1db49014fc6adc57469611268adae24f3355a765f9daadc41325fcc8f1ab",
+          "name": "",
+          "number": 456
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "02ff387c33268040e51c20dedb1bcf1707c8c86476ef1284dc58e00da06ac170",
+          "lines": 66,
+          "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+          "name": "",
+          "number": 457
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "d4b8a6e5729ea05b2c234a8f9e3f7f5b01b6850ec3082398afc3ec8cf0ebe238",
+          "lines": 13,
+          "ls_sha256": "8b61075fb247f91495ade2983e3ba78374b6500ea4cf3efd64733908de429f2c",
+          "name": "",
+          "number": 459
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "d758796c526ccbc920d9a265cb25ab64d9dde2eb4c53f714f12484a6ce62280c",
+          "lines": 13,
+          "ls_sha256": "1bb87215cf54b95ad9f27e46c24106c1896b0149bcd2864436f26bb30242c751",
+          "name": "",
+          "number": 460
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ba465c5845179cdbbce0d9d509d5b358b9fa04fef11af628822d3a96e8eb5a42",
+          "lines": 16,
+          "ls_sha256": "3184dceae75c285f381a6373240f10c7d7fd0f22ffab1973dd2469c6ca40c6bf",
+          "name": "",
+          "number": 461
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "76cd049491cf40aeabd96e6b761d7e8b60fef4b1b476dbac6d9ace86993b7e99",
+          "lines": 46,
+          "ls_sha256": "20f3db1f3dc9bec0d7f0d80f20f51a57cbd312c39df3937d95f35750a5a55c1f",
+          "name": "",
+          "number": 463
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "8cc72ea202bdca07d609d76c575f1a2a74aae13a1de977cd76021c1f1439decf",
+          "lines": 8,
+          "ls_sha256": "b6b0db2be63daacbd900530d501445d9f7bc165eb97b5921df6a39103ebd042a",
+          "name": "",
+          "number": 464
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "cfe1a76b936ac0122cc515628b70f99e58cf25bce9490be6ed86285fb5f81202",
+          "lines": 25,
+          "ls_sha256": "0d4c7545df52d9a2fd9cd04eaeaf633f2ac49ba3939ec773c2f97336664eb4b4",
+          "name": "",
+          "number": 465
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "1301f8f372dacc74075b3d815e73d3e6ece617adaeec45104bf45bbb72dadbdd",
+          "lines": 13,
+          "ls_sha256": "ebd6127b097a7937a2200dc374fdbb6b70710d163d40c69dc853b4c665d99a99",
+          "name": "",
+          "number": 469
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "f8d52d518a45e24457b154aa0074f7ae7a6b4754747744f91be0f86fffdcf7ed",
+          "lines": 25,
+          "ls_sha256": "e0c9aede3c6ca94a5fe0dee0c0d041765e28025234c63ba6216ec8c2325f86e6",
+          "name": "",
+          "number": 47
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "a11ed609d38e2948202eccc303c522c88a6875aaab57ef09f70f18ca61b01a50",
+          "lines": 103,
+          "ls_sha256": "f6c4a0b9c5ea90ba02baac9949e6d61fc1aae01ee05113d14bb6da6e713d4fa6",
+          "name": "",
+          "number": 470
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ddb767be0f4df633d0951aa3ff8bc878f6a9c26bf5a706a43568121719ff108c",
+          "lines": 8,
+          "ls_sha256": "fb567b436f8d8bc086502639bfc85b4b9608162416151cf19126aa776b78610e",
+          "name": "",
+          "number": 472
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "d77d5e036fa99886174be0ee34c0be37105f0450f76e7c43a94e69e0fb86e35f",
+          "lines": 52,
+          "ls_sha256": "9d0c6c21ea1d6f984b4bc7fa1275daad717aefbc50f929207b0ab68b03449d64",
+          "name": "",
+          "number": 473
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ed9b1e6893e06b20ab9b7e203987083dd2a8d6e9bbc1e9cd291889515826cc5f",
+          "lines": 16,
+          "ls_sha256": "cc6bd8cca97326342dbfe75c3bb1e3299ca886cacd59b2e6f990b46d1a0c7ada",
+          "name": "",
+          "number": 474
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "a0c196b767b5214b484ae34097cb93b87023c8f424fe58a712ecb9a31efead37",
+          "lines": 16,
+          "ls_sha256": "fda84aef4cd9f2159dc175146a94a93d3d3e2bc04fa4c064eb87a9f6b2eff070",
+          "name": "",
+          "number": 475
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "02ff387c33268040e51c20dedb1bcf1707c8c86476ef1284dc58e00da06ac170",
+          "lines": 66,
+          "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+          "name": "",
+          "number": 479
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "65777e24332d064efdbc8e3702fbb0c8928322ba7f36369734d964a76795f5f5",
+          "lines": 5,
+          "ls_sha256": "b33b959f40b9b409cf5dd023c26d3a59863d5153fb11d57288918f5e2a1f3b2a",
+          "name": "",
+          "number": 48
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "21139d3d7cf3a5007d9f73fdb5d67a446b66f62b4dcc16ff9638a38540c4b55b",
+          "lines": 8,
+          "ls_sha256": "e597c8f9ca12998b4ac7e2e0bdc0ced0b4db9a160010af9c59cfe5b966298938",
+          "name": "",
+          "number": 495
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "d47660e1ddfcf3956ca050f64e623fc845e62abd2af1143b0723652b161b2ff6",
+          "lines": 93,
+          "ls_sha256": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd",
+          "name": "startingnumarmybehavior",
+          "number": 496
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "8a44d409c7bd20ff3eb95b2b8abcfd3be8015981930e701c95f6b17d13488898",
+          "lines": 54,
+          "ls_sha256": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b",
+          "name": "STRENGTHbehavior",
+          "number": 498
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "4e4a3a1cb6822cfb28847cae15ae58100568ce22da6de764f6e116f34a498d9e",
+          "lines": 92,
+          "ls_sha256": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+          "name": "FREQbehavior",
+          "number": 499
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "26fdfa14097587a99d05c0c13fa9749b331d5725bf2526f72628551e9554686e",
+          "lines": 54,
+          "ls_sha256": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29",
+          "name": "SPEEDbehavior",
+          "number": 500
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "df543b682c69d83502ed21350a4367bfabda115fc025f66bc6fdfae731ac1980",
+          "lines": 8,
+          "ls_sha256": "75e8ed7cb370380eb0ee06a5a2534dc945e081736c6411ab3a21f32089dd7dac",
+          "name": "",
+          "number": 501
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "3493abf4f42c5a386c20ca36225771a2cb876b307216ec341fb7a265b78126e3",
+          "lines": 3,
+          "ls_sha256": "2ba68ff2e5336f54a467dbe3d1aaa7bc979a1fd2a6c1171d22052535e26b3458",
+          "name": "",
+          "number": 502
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "1a204d476f87166037565ff5833a5b391b8606e2c9a0410f3863b3a6e1c21e90",
+          "lines": 3,
+          "ls_sha256": "d1937dbc89d7020e6be2f4780bd86338ad6ae1c7e2605273ff67d9a0ea58993c",
+          "name": "",
+          "number": 503
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ec0a67c66a0f07475649d4c7547eec928cae1095113435399b28817ba8425246",
+          "lines": 4,
+          "ls_sha256": "f9d8316af6b262d9890c686f877e9a253a21899fd12a1de80f9be12f5a43d7ec",
+          "name": "",
+          "number": 504
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "e4c019a4b720244aeb5f347bb496ea2af143a3b40b7777386bd3688e868ac8b8",
+          "lines": 27,
+          "ls_sha256": "f3877662792c3113a108c7a0d3ca50b439896f05dd37fabd3b632236a5c10b18",
+          "name": "",
+          "number": 506
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "0e304eb7511c6b29e6ff8d9d98387372f458cc7ba2435be73edf62e7d2bf40ba",
+          "lines": 13,
+          "ls_sha256": "661b0484b3e336a9639abcc45422225baec0df1d59a768c8cdc4d9e95f6a3295",
+          "name": "",
+          "number": 507
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "871a0206641230fc8d732ac6cd3bc5625b24914d15bd93bda85445bfcea37ba8",
+          "lines": 12,
+          "ls_sha256": "5a69a58fc5876e7557748552533749fccc567c90008a0ec940d3f20953cddd13",
+          "name": "",
+          "number": 508
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "4dff6b01659e97f9ce3435adcbdfa2a560678212af467c032c057a70cff4bde7",
+          "lines": 6,
+          "ls_sha256": "5822d7d066555efba87a8bab1fae57e5446bfae979ca3c07daf1965fde0d71a6",
+          "name": "",
+          "number": 509
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "b618d7a603931df2e77872e58551d97119205a36cbbc6209cd189051ba176369",
+          "lines": 6,
+          "ls_sha256": "ef8d4fdd4049933bb9b2b56d51bf46f2aa75f6a7177a91ab257efc2f72be03eb",
+          "name": "",
+          "number": 510
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "3493abf4f42c5a386c20ca36225771a2cb876b307216ec341fb7a265b78126e3",
+          "lines": 3,
+          "ls_sha256": "2ba68ff2e5336f54a467dbe3d1aaa7bc979a1fd2a6c1171d22052535e26b3458",
+          "name": "",
+          "number": 523
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "f3d774421954ffb3270be02bd772622be1381e737d9201e9832ad506a23dd187",
+          "lines": 78,
+          "ls_sha256": "9e90273197885163b6c40845357af18f2484d1ec70d7037e00f44a1bcdca81a5",
+          "name": "pick3cards",
+          "number": 526
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "18198a8d9bb2dcbe36032a254dc6bf0d8ce6e88eba9c51f89dffe5d020fe85de",
+          "lines": 10,
+          "ls_sha256": "4fc0b70243c9e34897ee309314f6822ba7743de3af5670da046e079511388287",
+          "name": "",
+          "number": 53
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "51a8da00bec4ff5f62e73d9c438196bee571a3ea3c027250982fdc071bdc70b1",
+          "lines": 2,
+          "ls_sha256": "5b3c113542eed4e9280ff2caa1d14c9993f1f949df79f3b21c6f15dbf575518b",
+          "name": "",
+          "number": 535
+        },
+        {
+          "handlers": [
+            "enterFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "e362f8c3b68b4e5aa6fd6cc72c749bc3ad060d1d71f469f5cbbce3b3a81a7b53",
+          "lines": 2,
+          "ls_sha256": "28e2764ed5e7158dba42463f34a2b73c346f01db7d9de8a13170455f38cbe787",
+          "name": "",
+          "number": 536
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "6dd18a07bddb747f32f3bfd8895ed8a21d6dafc92288919c7ae0aa32f903ca89",
+          "lines": 57,
+          "ls_sha256": "d27b3093d4844d783c64670230cbc62d220bd980b82a1fbcafb97714589f76f0",
+          "name": "",
+          "number": 54
+        },
+        {
+          "handlers": [
+            "enterFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "e362f8c3b68b4e5aa6fd6cc72c749bc3ad060d1d71f469f5cbbce3b3a81a7b53",
+          "lines": 2,
+          "ls_sha256": "28e2764ed5e7158dba42463f34a2b73c346f01db7d9de8a13170455f38cbe787",
+          "name": "",
+          "number": 540
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "9a16e9bb64664f6403664c628558d2d8c150a941c3542f580a2c01c91d1dbd19",
+          "lines": 23,
+          "ls_sha256": "819af7a1ebab89795cfba7b870d9c447f5ed8ae464af57692389737e8220cb75",
+          "name": "",
+          "number": 548
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "4e8ef04eb973cf437dbd6c1978bdf7d74931987d4367157d0fe537e0973ae863",
+          "lines": 4,
+          "ls_sha256": "9ee5edeccec1b114df300dced90b30de713b61c282057668db7d1c210f9eece8",
+          "name": "",
+          "number": 553
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "ba7f21abf7dc9a368a764488aad05996ef912456e3d075b34806f4108beb6aa7",
+          "lines": 26,
+          "ls_sha256": "f3d7a1f973738a03cf1742949253ff907c956b9636ea04b331a39d88c8fcfe8b",
+          "name": "",
+          "number": 59
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "a9bebb5df4294f34496203a4fefa2fe249f666d44c7fc65b4cf12f2c40854b03",
+          "lines": 16,
+          "ls_sha256": "cf4416e0a9d45894baf13066accc1a0f531147cbc2acf9a47b341eaa68bfc4f0",
+          "name": "",
+          "number": 60
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "29f8be11aff5e9d6dda4b0852db9b8ce7aa43ec7fcb3ac3c0bc120f72a4b7d29",
+          "lines": 11,
+          "ls_sha256": "5d4341261e5c7128809b8d9c7321f66a8e72c70f7491823c382544fa297f5de8",
+          "name": "",
+          "number": 76
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "4ef04aae732c325666b1813feb3be6f0a2bd4bd290f2f2b302bd948567d26c36",
+          "lines": 11,
+          "ls_sha256": "70959a23fe072589625c80707244c31142f7f69c1eb1f65ea38b7b3b108aaa64",
+          "name": "",
+          "number": 77
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "a82c31ee608a31f86930f2e8e197eebfd3bd4e0a85a5b142c68ebbd86ec8e3f9",
+          "lines": 11,
+          "ls_sha256": "4e3a272dfaa7a18b0694c79312e85e76798a3f2a5fcba6be25e3ed11bd1f455e",
+          "name": "",
+          "number": 78
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "2ed292adb99dfbabc47802536b1bb1c37ded92e7ebe78492d83bc812300ff11e",
+          "lines": 3,
+          "ls_sha256": "469b2c045f6aa362fd44ae488d218213eb67f3b113a4230aef9adca2bc000794",
+          "name": "",
+          "number": 79
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "2abeea139ba810865f45574a6bedaa05885070a8b0ca3791639064c438c2e423",
+          "lines": 7,
+          "ls_sha256": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d",
+          "name": "",
+          "number": 97
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "b844d180aa546775ed6828170bb54eb13d3f791754f03106726e8515297a53ac",
+          "lines": 37,
+          "ls_sha256": "ad21f8bd762f66f55ddd1ef3aa5619083ce6f7f7e4cc56eae1531eb8e1e50c02",
+          "name": "",
+          "number": 98
+        },
+        {
+          "handlers": [
+            "exitFrame"
+          ],
+          "kind": "BehaviorScript",
+          "lasm_sha256": "b7fe777675ae05af3b2b1871e0d1d60d94568722f213fe5c7ca801d8732da0f2",
+          "lines": 26,
+          "ls_sha256": "474521c3220a31658a53e7470dc4c50f1ffb2e67bc04837eb4f3844978251795",
+          "name": "",
+          "number": 99
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "E1",
+          "number": 101
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "Y1",
+          "number": 102
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "G1",
+          "number": 103
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "R1",
+          "number": 104
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "B1",
+          "number": 105
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "8e20896cbad45328a2c1394ee423b3cddbe69f9aaa889c1ad5fbcea6bd3deb6a",
+          "lines": 28,
+          "ls_sha256": "0353edf31fa7e1d43460d6798342a464d0da3f81b3465e3ab04edad3c06d9acc",
+          "name": "DONE3",
+          "number": 332
+        },
+        {
+          "handlers": [
+            "mouseUp",
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "da1373b3e6d29357674defc8720134e570645a9af6efc926686c07111dce4f26",
+          "lines": 7,
+          "ls_sha256": "a9750b4d033935be350c1ecd07b71612e69e04d7c99f1c8b11499cdb948d251a",
+          "name": "",
+          "number": 34
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "newgame1",
+          "number": 346
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "3397a613f2652e4118ffc4a198f23bf7bfc656a2606a646ba1a86f109e400c58",
+          "lines": 47,
+          "ls_sha256": "075105ee0779bbea29fe6c744e188db08aa1fca2538a79cd14c9695c85a199d7",
+          "name": "newgame2",
+          "number": 347
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "202e2f88a66eaa35a1d61627f80819cf3763b06e61e33179cd7f8138d6d0787c",
+          "lines": 7,
+          "ls_sha256": "fedc38777ec51ccd6744b8cc333819f21ab4fd5844c14a7bf4828d3cf27eb391",
+          "name": "options2",
+          "number": 349
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "25363a580406620644986575d12e071450e40f5e2ac2b3d4190765925915e859",
+          "lines": 7,
+          "ls_sha256": "8687c54bce6cce846c2d6adcc6a0919db854a6b0e12428b81d7f85997d7b04a6",
+          "name": "soleau2",
+          "number": 351
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "f92f30904d32ec113257e71cd76d45a03cf7040a3850efe0de0a0b2ad1e50d62",
+          "lines": 8,
+          "ls_sha256": "20a9639da0318f1a6664456bc289afd50860dc09f67ce3912cfe30e5b07ee67a",
+          "name": "scores2",
+          "number": 353
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "cbdf3c9a1b4ff129ad82a2c6aa1e4870e44dc107233f838e9f620bbb0f522cf3",
+          "lines": 17,
+          "ls_sha256": "b73e798df77a22b13023f8d2f7760c560ed35f43f6e44479c85764ae34b92a9a",
+          "name": "quit2",
+          "number": 355
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "CONTINUE1",
+          "number": 356
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "53625f594478aeb5376cd972e8af5d24132010b0523f03fcfec15c8fed2e281b",
+          "lines": 11,
+          "ls_sha256": "232a7faeaea7a06383bbb348c4388e9f126cdfd6d19cdaa6d34d83b9ca067272",
+          "name": "CONTINUE2",
+          "number": 357
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "dc2da939c1dc31516cdf65062faab4a2fafc300ba4511d94c20adf15db956cc5",
+          "name": "CARDV1",
+          "number": 376
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+          "name": "CARDV2",
+          "number": 377
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+          "name": "CARDV3",
+          "number": 378
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+          "name": "CARDV4",
+          "number": 379
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+          "name": "CARDV5",
+          "number": 380
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+          "name": "CARDV6",
+          "number": 381
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0",
+          "lines": 27,
+          "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+          "name": "CARDV8",
+          "number": 383
+        },
+        {
+          "handlers": [],
+          "kind": "CastScript",
+          "lasm_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "lines": 0,
+          "ls_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "name": "CARDSLOT1",
+          "number": 384
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "T1",
+          "number": 401
+        },
+        {
+          "handlers": [
+            "mouseDown",
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "0f76709058ac7c11e3cdbc4834c17538e995d9d06e2c4535b72e60f64b5bcd7c",
+          "lines": 7,
+          "ls_sha256": "dd73a38cef2fb4934dc46dda8824a5391de466ccd7cb6662990a0ad36fdd6c3a",
+          "name": "landscape2",
+          "number": 448
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "70e9be6b44555b84a4cc6bae5b2c567496e666a7458a2084fc9acafaf0261558",
+          "lines": 3,
+          "ls_sha256": "218348c21f26901d40b078868d2b6fd2ef2e8684332f95453180d2b2cca359b2",
+          "name": "",
+          "number": 452
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "97890790880f321c257de2ac62e6ea5bcbb36957863334b0147e914c6e04606c",
+          "lines": 16,
+          "ls_sha256": "629bdd4edd0f0ded962f48b25a5a6985ff5d986b3a19f616b23ab39995dadfe4",
+          "name": "CONTINUE6",
+          "number": 476
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "335d2045a7049a113f12036f41c047cf494a4e02c409e76ec03d0d35a5756583",
+          "lines": 17,
+          "ls_sha256": "b03fb41bc754cac23a5242d604add1c0d03ea04605b73bd7974504f6a01c8d59",
+          "name": "CONTINUE5",
+          "number": 477
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "fb1bc1f30ecacb3b81ca51d36e283593888988b87c47e5f23daf0c3223dfe44d",
+          "lines": 12,
+          "ls_sha256": "480e2dca07961b28488842208a4623ad19dc6dd4e892a72112baa90264fa6fd3",
+          "name": "CONTINUE3",
+          "number": 478
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV1",
+          "number": 511
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5fe5996d1f520b8514b90d293e0615e1cec64769bf8fb731f473a0a8d2d6a399",
+          "lines": 3,
+          "ls_sha256": "e99f79a022181d94bfbd577addd9a9a3be3e603e365f1a5735378e21713c29c8",
+          "name": "TCARDV2",
+          "number": 512
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV3",
+          "number": 513
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV4",
+          "number": 514
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV5",
+          "number": 515
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV6",
+          "number": 516
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 3,
+          "ls_sha256": "c39e96a62a57a6707dced0fbab9a06d9c9dffb20a579ea9d85f5d014bb892245",
+          "name": "TCARDV11",
+          "number": 517
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV33",
+          "number": 518
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV44",
+          "number": 519
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV55",
+          "number": 520
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV66",
+          "number": 521
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "tradein1",
+          "number": 527
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "b35aa044c386d66c3099928516363b55ff4003eef1264c89c951d8147c306856",
+          "lines": 114,
+          "ls_sha256": "5d7e3cb49e81abc4fa4bc9d7388f32ed1967de9f5a6b5a821c139d007077b4a7",
+          "name": "tradein2",
+          "number": 528
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "dtradein1",
+          "number": 529
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "2ccd26c8b6ac36be45b820b0f130b9b6024c0ddeffc58bcaf9c172eb15b90068",
+          "lines": 12,
+          "ls_sha256": "8541e4d600c760ef9a9aa720e74835918b87b708369eee421068990143f3b2ff",
+          "name": "dtradein2",
+          "number": 530
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV8",
+          "number": 541
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "TCARDV88",
+          "number": 542
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "66c7eedced21d0cbb24d78733ca3d9bdb6d352d510d4e1657e1081a1f3032de9",
+          "lines": 51,
+          "ls_sha256": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2",
+          "name": "HumanH",
+          "number": 568
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "8143ff80d8b5bf20985a423e06ce8589499d7bf0e75f2b9a982b4848cc6ddd8e",
+          "lines": 44,
+          "ls_sha256": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da",
+          "name": "ComputerC",
+          "number": 569
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "08abdda5a5b2b84b815b5c08e68eedec6bc6eb86442b4dab4b014a93e3051691",
+          "lines": 6,
+          "ls_sha256": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88",
+          "name": "ear1",
+          "number": 591
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "150de095b3a03da6de253de0cdc8f1659e7697c33a4a56c77716dd756bbf17ee",
+          "lines": 7,
+          "ls_sha256": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205",
+          "name": "ear2",
+          "number": 592
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "2ce5cdc021f0a853f05078094804368d72709c407e63c98f4a0cd8b5e3a221e2",
+          "lines": 12,
+          "ls_sha256": "27ecc9cf270ab04b1d60e24662d7d78d57f260bf6f0c0d20afe55a1927dcc50d",
+          "name": "SAVEDEFAULT2",
+          "number": 602
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "8e85ea78328570d1a3e7b399d6619d0a48568c3295e58a006ea4b066b4f19a14",
+          "lines": 11,
+          "ls_sha256": "d184df36a468068210009094db29f91e4cc3ac2c5192a8ac3db1e8d7bf183ca8",
+          "name": "PGAME2",
+          "number": 604
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "RETURN4",
+          "number": 605
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "3b9d18e763ad11c7a621f3b0f16fa22f5bd42f3a348dc944c959ce71fddd4f34",
+          "lines": 11,
+          "ls_sha256": "7a09e814d937978d886d1544ed666fe212f9138363a4f66d248f5972f9c12981",
+          "name": "RETURN5",
+          "number": 606
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "1ba1a34c65ee0e4ba0d34614078e1164a290b145776c52de6a0068ecd61f42ae",
+          "lines": 8,
+          "ls_sha256": "95a8159a5e4f7fd1fa9e3ab5c778439e9c181ea365b55661af0796b23332b9f6",
+          "name": "RETURN6",
+          "number": 607
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "597e15ee0b72eb3b55a75e928cd4cbf0690820a883d8ac8f8908dc65fd73e211",
+          "lines": 9,
+          "ls_sha256": "effb77552554750d3df428a041503fe5328448342fe2f28d1c1d430ba47030f9",
+          "name": "ACCEPT2",
+          "number": 609
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "Attack1",
+          "number": 61
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "98bcba73f9bfb5b8727c513ff04ad3394aac00bf0a6f995af0090cc88fe07bd0",
+          "lines": 11,
+          "ls_sha256": "5184b1b08fb0aae5e50558132a45dae05c59d93adfed67363b474fa93fa6b12e",
+          "name": "KEEP2",
+          "number": 611
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "Reglabel0",
+          "number": 614
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "403a7950a697be99c435f8e9dc6b61c90952a1d8920cdc8645b3facee9523836",
+          "lines": 10,
+          "ls_sha256": "3d3c15211973a81ddddb7c7061330c89992d70b9991f08d93be44f5c2903cee6",
+          "name": "KEEP3",
+          "number": 615
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "3ece42212b929c909ed51f3b24d17c1b7c400af4a79dce09032bbe30a94f14ed",
+          "lines": 7,
+          "ls_sha256": "0d0eacafc73fc0379068b2df31525104cb038d06bb3316e35b76eaa00984a5fe",
+          "name": "Attack2",
+          "number": 62
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "75ca12c5d46a081431fa628ff17bd7ebb3c69c3cef9a14d75bd9b7e39931efe4",
+          "lines": 18,
+          "ls_sha256": "b3072e4bc8efeab85f06050b5d1556a78e60e00402710eecd6679009eaff8131",
+          "name": "ACCEPTLOSS2",
+          "number": 632
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "e3f254bc2b1620545e1562f115c7e6722c75fc342e19afedf72252e37ff07521",
+          "lines": 28,
+          "ls_sha256": "130404c867b910b81fdc8e0c48bbca5e6b1e62de516a00ae7e01e7b4ad7c914b",
+          "name": "reset2",
+          "number": 636
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "f54df0a48b63fd49230571488152bd24413bddf61d7778093f5f608e4049d6a8",
+          "lines": 19,
+          "ls_sha256": "18fad81d3d1c450de539e300f141f96659ba8d1fe0b6f4248d4c68d1181320e0",
+          "name": "HALT1",
+          "number": 637
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "039199daa08f4914c5d34c1cabdb7b9e89b4346f7babdb2c327f33f10e3ec4b2",
+          "lines": 7,
+          "ls_sha256": "a728995644b0ac79b5690e8929ce3a6e9c7abcc86f736388b3ef7f693e7a5588",
+          "name": "Movebut2",
+          "number": 64
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "5345e5a63564987996b3d3b748d2838878049389b3836d619ff115745ef24977",
+          "lines": 16,
+          "ls_sha256": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f",
+          "name": "Pass2",
+          "number": 66
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "915573d194407eddb2cbf1acc485b554ba74df8c62b657b0786f92db3ec90a34",
+          "lines": 36,
+          "ls_sha256": "8438a8cb447d0761f20a5a3a0c01b6fe64b55d581d4d695bb4b3b6e802b36cde",
+          "name": "Printform2",
+          "number": 662
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "b6eb73d62eaf956ee12ecfb2c853a029582075ba0eaccffa964aa3a7ee2a20ed",
+          "lines": 8,
+          "ls_sha256": "05699ad02a87022f9e9df73da15ca8b39cc00ea7f13a8e707815f6b6ad0adb44",
+          "name": "Online2",
+          "number": 664
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "6b695215c667d0261e161e91131079ca961aed12293b8af1826a9e6a24c55939",
+          "lines": 13,
+          "ls_sha256": "196a4706c26d3bab4e01700b7f0d480d0f210bbbdfe9ad6599ead9e9aca29364",
+          "name": "exit2",
+          "number": 666
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "3e607bf25ea82cafa20cb0a75546d32d1a54fbcfcf33e84b25f03ad749b8caa5",
+          "lines": 7,
+          "ls_sha256": "cff8fb7350b1c5131ff8454372d6e403e154a5b868da51acc9facfa98f51ce95",
+          "name": "Help2",
+          "number": 668
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "Returnf1",
+          "number": 670
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c27b92d3cf68774790da3563ec32b1219665c5326284904be83499e13570bcf0",
+          "lines": 14,
+          "ls_sha256": "a444525ba85d0455ac98565adf1e16f5b70a7b555d0ff12453703030856b802b",
+          "name": "returnf2",
+          "number": 671
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "FORM1",
+          "number": 672
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "8c72f9c2fd93012185452ad654e5db86ca775119558623022794249e8f88affe",
+          "lines": 8,
+          "ls_sha256": "cddba24e951a0df059de7dc846a01dbbcab2d8f6d81d02497a62a6d802ad1c12",
+          "name": "form2",
+          "number": 673
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c64a7ee5721e57985af8cf41b3f9f0f1aa9236b1c37a372041f53593a892f360",
+          "lines": 7,
+          "ls_sha256": "da45b20d2bf8ae693b0dfeaaa44ccffe88a658bf735e8963f9a15ab26ef1f8f9",
+          "name": "Card2",
+          "number": 68
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "soleausite1",
+          "number": 687
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "90fcaf3e9ed025c529539c963f0d2b3f281372016da03ad66469a1b27282ce3f",
+          "lines": 11,
+          "ls_sha256": "bc7085cde3642cd504bf72962b64a4416f420e0f643f25bdf8e534ea4f94be05",
+          "name": "soleausite2",
+          "number": 688
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "7ba8c3cbe297fd2c4f2c00d4b924c2f23a90639f4fb6da4e5f7b7ed58af1bdb6",
+          "lines": 8,
+          "ls_sha256": "0cc9f2adf47e9d85ffde6340f9af3eb3275de6c03a72b42ee7b3d54847e12f4f",
+          "name": "Cancel2",
+          "number": 70
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "QAttack1",
+          "number": 71
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "e174a92fa94f9021a87a0d4e8b610735def6fe3e47f13feba3159cbe318deef7",
+          "lines": 12,
+          "ls_sha256": "7722ba6bc860f2ff7d604c2af6771cc563c494a575f14536b0a3816d72ed2a9b",
+          "name": "QAttack2",
+          "number": 72
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a",
+          "lines": 2,
+          "ls_sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44",
+          "name": "Attack3",
+          "number": 73
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "79b17633faf57089a1c689a819c022619ead1aa2ab48bcd5e346e9ba9811c519",
+          "lines": 10,
+          "ls_sha256": "8189dc6c3f5b65e37a8a1008b7b69d8600bab1d3a740d124d5c23edf0be699d7",
+          "name": "Attack4",
+          "number": 74
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1",
+          "lines": 2,
+          "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+          "name": "Pall1",
+          "number": 82
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "616e4ea250deac0f4446de1d4344c1cdf8f026f7384b014d261e8e523d6e9d8b",
+          "lines": 11,
+          "ls_sha256": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5",
+          "name": "Pall2",
+          "number": 83
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "baeb665f19b95bc1f907a63b9190a80bc01c0325baeb08487814851b843770d6",
+          "lines": 13,
+          "ls_sha256": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9",
+          "name": "plus2",
+          "number": 85
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "34b6a4d5e27a80f2c4d3bfa42035f773bbfdc273fe9f0794d767d24af999bb07",
+          "lines": 13,
+          "ls_sha256": "0759a1842164461847b78abb9cebf7623ef0a41aec0756d11ae93ac0fcdacd01",
+          "name": "min2",
+          "number": 87
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "230af253fb0c6094bf99974aee7ec13e5fac0b233fcdf5f98c128a8a8f4d4921",
+          "lines": 29,
+          "ls_sha256": "d14bf57ba5d283e24c6401b834ce5333341559700a5571797b6b1d7b37f1d6e0",
+          "name": "place2",
+          "number": 89
+        },
+        {
+          "handlers": [
+            "mouseUp"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "70e9be6b44555b84a4cc6bae5b2c567496e666a7458a2084fc9acafaf0261558",
+          "lines": 3,
+          "ls_sha256": "218348c21f26901d40b078868d2b6fd2ef2e8684332f95453180d2b2cca359b2",
+          "name": "",
+          "number": 91
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "baeb665f19b95bc1f907a63b9190a80bc01c0325baeb08487814851b843770d6",
+          "lines": 13,
+          "ls_sha256": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9",
+          "name": "plus3",
+          "number": 92
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "9fa00155698f34833187ccd0b6a68f34f24ea8e46a3ad37a9af6553a5afa20eb",
+          "lines": 13,
+          "ls_sha256": "1ddb9260e04df92d478afd5d365ba0aa8298dc3096bc21f8a5f593c31ee89b0a",
+          "name": "min3",
+          "number": 93
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "616e4ea250deac0f4446de1d4344c1cdf8f026f7384b014d261e8e523d6e9d8b",
+          "lines": 11,
+          "ls_sha256": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5",
+          "name": "Pall3",
+          "number": 94
+        },
+        {
+          "handlers": [
+            "mouseDown"
+          ],
+          "kind": "CastScript",
+          "lasm_sha256": "ab22bee3420c90fca00ded6302589abccd59c593aa213afd9e5fef07cbb4a5c2",
+          "lines": 26,
+          "ls_sha256": "6bd5753fa69fcc4ff6d8952886e8c88b365597c2bc55adee071bbebf85618c1c",
+          "name": "DONE2",
+          "number": 96
+        },
+        {
+          "handlers": [
+            "startMovie",
+            "Count15",
+            "count1",
+            "count10",
+            "count30",
+            "count60",
+            "count5",
+            "count3",
+            "count2",
+            "EEMPTY"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "877a12a39783ebef40c2aefc0f5b39b19deda3ca1f3417b7aa3876386418075a",
+          "lines": 217,
+          "ls_sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+          "name": "Startmovie",
+          "number": 1
+        },
+        {
+          "handlers": [
+            "CheckTurn"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "9dd92293350a3b89cf84ddd1453f41a38cd8a9535ba517447c42e5a7005e32d1",
+          "lines": 76,
+          "ls_sha256": "a2ed8e46fdc45dd998a5726e00cdded651cc3e66cb3f39983ae208a124fe3f13",
+          "name": "Checkturn",
+          "number": 10
+        },
+        {
+          "handlers": [
+            "Newgame"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "2807730617d7b53ad55f3fb70283d037e194b1c6074b3cdfb46f00923f7df282",
+          "lines": 53,
+          "ls_sha256": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+          "name": "Newgame",
+          "number": 23
+        },
+        {
+          "handlers": [
+            "Restoreall"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "83e0e6c8125b257542cf3c205527461256a5e0e0a5d6ae643d3b9b645bf7e106",
+          "lines": 2,
+          "ls_sha256": "a7a56a977406dec930d2a1f0781c0e31f8abbad795c41dc9d5e6bba26b50b241",
+          "name": "RestoreAll",
+          "number": 29
+        },
+        {
+          "handlers": [
+            "computerplacearmies"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "cacf2592f306ef58170de078c80c369f6e103fdd7e01f6e4314324d72aa2f5e2",
+          "lines": 903,
+          "ls_sha256": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+          "name": "ComputerPlaceArmies",
+          "number": 333
+        },
+        {
+          "handlers": [
+            "Computerattack"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "dcfc1e27b81c712e9989d962b80dea9b343778888b2f637582fad73d4157fc5a",
+          "lines": 186,
+          "ls_sha256": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411",
+          "name": "Computerattack",
+          "number": 334
+        },
+        {
+          "handlers": [
+            "GetvalidArmys"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "901ef265358dbc0b51847784ffb768a7adab1a86b70947fda08ef245a93bfce2",
+          "lines": 64,
+          "ls_sha256": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67",
+          "name": "GetValidArmys",
+          "number": 335
+        },
+        {
+          "handlers": [
+            "ATTACKHIM"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "2692a3f24e41ed7d985dcb6839239634e3024165c9e65cc7b5c4571d31e90e01",
+          "lines": 82,
+          "ls_sha256": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea",
+          "name": "ATTACKHIM",
+          "number": 336
+        },
+        {
+          "handlers": [
+            "ComputerRollDice"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "aeffef8751770202bec3ef3789f031f157fc65200ecff812e229a800846128a5",
+          "lines": 285,
+          "ls_sha256": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+          "name": "computerrolldice",
+          "number": 337
+        },
+        {
+          "handlers": [
+            "MakeComputerMove"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "d73f6ea1d6fad729020f3bb374be9eaff4d2adc6b67a670d70ec861dd17be5ed",
+          "lines": 315,
+          "ls_sha256": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+          "name": "MakeComputerMove",
+          "number": 338
+        },
+        {
+          "handlers": [
+            "Bottombuttons"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "c37dc5c0cd73154b51c254e6b533e9a99b1df889a8937b57e05baf7b5c199269",
+          "lines": 32,
+          "ls_sha256": "d66dc6d78985bf71cb64b3a9357b95542b9678ccf2e23fb6c28deac2a68a9482",
+          "name": "bottombuttons",
+          "number": 339
+        },
+        {
+          "handlers": [
+            "PUTINCARDS",
+            "PUTINCARDSM"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "6ebca000df880723f74d5bb9f7ef048695c28374b6d4dbe43426eaece9ca8a1e",
+          "lines": 72,
+          "ls_sha256": "eb77a117abbcff742a42d2c544ec2c8643a58896d2b3f8df27b0302d9515d730",
+          "name": "PUTINCARDS",
+          "number": 344
+        },
+        {
+          "handlers": [
+            "SELECTACARD"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "e69c6ca6b9a70697e72a41b6049f51081dadd69acb444d67ebaeb45a81e0dfef",
+          "lines": 91,
+          "ls_sha256": "0bc50c640aeb09aee1ead9094964526976ed2d933a47be05b0fc128880cd565a",
+          "name": "SELECTACARD",
+          "number": 345
+        },
+        {
+          "handlers": [
+            "addtoproductioncenter"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "f8b7d4eaccd900dae61e6ddd4426f34a6c7f1ddbe2f6e027efa3a191ddb84a96",
+          "lines": 27,
+          "ls_sha256": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12",
+          "name": "addtoproductioncenter",
+          "number": 363
+        },
+        {
+          "handlers": [
+            "putinflood"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "e004e2a7f8721fe5b7f0fc4bf6b903af4ba3691ce88ed612136250ca96c9c12e",
+          "lines": 75,
+          "ls_sha256": "7d6643034c808e4ae92cf078e0fceb361806d61afc87b920e8239834cb1fad97",
+          "name": "PutinFlood",
+          "number": 364
+        },
+        {
+          "handlers": [
+            "putinrebellion"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "faa3c4d836bc6c4a95049130d9f584d3d5bfe9c3010b93b9ec8d180151b118b7",
+          "lines": 116,
+          "ls_sha256": "8b60b52b87a15dc1ef4f58e4b48556e0bc0feb2066e53115d23a90bbf8669295",
+          "name": "Putinrebellion",
+          "number": 365
+        },
+        {
+          "handlers": [
+            "CheckCardMatch"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "841fa534e5636dba5eeb1c9e39e5da7945eb35cbb49554b177bd82ebf9dad8c4",
+          "lines": 56,
+          "ls_sha256": "14556981a17aa9bb1accd2ca963572052ccdcc228d7fec7decdcc8bafed4cdbe",
+          "name": "CheckCardMatch",
+          "number": 366
+        },
+        {
+          "handlers": [
+            "CompCheckCardMatch"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "028ceb55d9297569e05811b80a404b8d67826cb405674a23d8be456d6b6db2d4",
+          "lines": 164,
+          "ls_sha256": "81bd1b62fc1ed7368950e8627feda11823167ece5b1e11772ad20f9a3aa0fe29",
+          "name": "CompCheckCardMatch",
+          "number": 397
+        },
+        {
+          "handlers": [
+            "CompCards"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "d39bafc7f0eec0d9089950a1e837fdc72b436bbbc28e8cdac8890b45465fca15",
+          "lines": 84,
+          "ls_sha256": "4595e8243633d8f08addf9ed3f67341b4d79a90e2520060a2974780316b6c258",
+          "name": "CompCards",
+          "number": 398
+        },
+        {
+          "handlers": [
+            "WHOGOESFIRST"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "deedf0c181b2595c6279ed216c024d27864d5b8978dee92a6b19d32b6ade9ee2",
+          "lines": 43,
+          "ls_sha256": "d213ef3a4b8a4b331118851ed781c60f905e495ca6e15d22ceb4f592766260c8",
+          "name": "WHOGOESFIRST",
+          "number": 399
+        },
+        {
+          "handlers": [
+            "writescores"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "4f6ed7326db2daa63ee49f415c16183ebd9a7544f2412b26dcc66f6f8267b39c",
+          "lines": 35,
+          "ls_sha256": "a391db8de5dda491b912fa87123c66ba5998c9e9e6e4fe2b91b7d0710911d610",
+          "name": "WRITESCORES",
+          "number": 455
+        },
+        {
+          "handlers": [
+            "Getdefaults",
+            "SaveDefaults"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "752a35bb38a4636875d73797cc546b1780224ca82b74be9423f4894fd7dc94df",
+          "lines": 79,
+          "ls_sha256": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3",
+          "name": "getdefaults",
+          "number": 458
+        },
+        {
+          "handlers": [
+            "READSCORES"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "b574632fc1022e55a637629f3f23cbce84360ed33fa0f3a64ce4a7a4fb8a1d6c",
+          "lines": 23,
+          "ls_sha256": "60bb20206efcc5cf1cbdddef86366ef311fa240bf2502200c84cbf67c4d9378c",
+          "name": "READSCORES",
+          "number": 471
+        },
+        {
+          "handlers": [
+            "CHECKUPG",
+            "WRITEUPG",
+            "CIPHER",
+            "UNCIPHER"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "42e37426cb3f067b62ca980f7ccb4b16fb30eb50ea961a80d2791268815ef48d",
+          "lines": 103,
+          "ls_sha256": "8e7fa4b8cfcb964198edb33a529bcc5d83d4a51b204b3bb01dee9a16e14e42af",
+          "name": "checkupg",
+          "number": 480
+        },
+        {
+          "handlers": [
+            "showstrength"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "eb2016e24fafffb8b8faaf70e6d418171dff6828352ac95afb146af3381b8490",
+          "lines": 4,
+          "ls_sha256": "4ef4c546c7a7bf5aaf0e32c9c57961731e9c9e2411f4c5c8da4a02a70b46982e",
+          "name": "Showstrength",
+          "number": 49
+        },
+        {
+          "handlers": [
+            "GETUSERNAME",
+            "GETCODENAME1"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "143bc036630419fd77ca58442706cc2018a31ea4fd8154b7b7a1a08f6c0e888c",
+          "lines": 85,
+          "ls_sha256": "c737ceb662b16db26d04369d4ba682e9a3c91815b270b83b8c18243810f2d5bf",
+          "name": "Getusernames",
+          "number": 494
+        },
+        {
+          "handlers": [
+            "Putinboard"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "a3cafab98b9ffd4d958e9531f73586ecf527ecb5118ec7b81827597dbd391d8f",
+          "lines": 176,
+          "ls_sha256": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+          "name": "Putinboard",
+          "number": 5
+        },
+        {
+          "handlers": [
+            "RollDice"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "cca98648ae19eec7c9952a05e8c51433d99e34dd528288bc934b0aa271cfe032",
+          "lines": 50,
+          "ls_sha256": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+          "name": "Rolldice",
+          "number": 50
+        },
+        {
+          "handlers": [
+            "Putinproductioncenters"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "d8bfbdec3db5aeb49acd44cb5be06592e20ef437cc5a5fb75f20eecf84290d29",
+          "lines": 33,
+          "ls_sha256": "9edb5fc3c8d853d0968f9203500196218e25bbe3600a30dc89c79d7fde1aad18",
+          "name": "putinproductioncenters",
+          "number": 51
+        },
+        {
+          "handlers": [
+            "Reordercards",
+            "CompReorderCards"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "5f327807434ac5fa7f358faee0823a3a1abf96979702ca06d9ea7c046dce688e",
+          "lines": 91,
+          "ls_sha256": "554cf5957cadcfbbf387e5a66d329666b330b9400d3920241896d36d82814295",
+          "name": "Reordercards",
+          "number": 532
+        },
+        {
+          "handlers": [
+            "CHECKFOR"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "14b1c1c7639ad7b9554f70bf6ad4d2ba34432de96082db43ec267a282574c2cf",
+          "lines": 19,
+          "ls_sha256": "92a8e23150c1de2da092b8be61b376f39c4d325f6d31e93ccd6bd88a6416ae4b",
+          "name": "checkfor",
+          "number": 549
+        },
+        {
+          "handlers": [
+            "CheckNumberofArmies"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "20a95520a7957c4f9c6537a55fc3385dd32173a2b81641fa204e7983dd1ec78d",
+          "lines": 287,
+          "ls_sha256": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+          "name": "CheckNumberofArmies",
+          "number": 6
+        },
+        {
+          "handlers": [
+            "PutinInfo"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "9cc6bbc66416f1bb3ed7579a1a24535624f3c2b28fde283e0365c78bf2e740bd",
+          "lines": 84,
+          "ls_sha256": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad",
+          "name": "",
+          "number": 75
+        },
+        {
+          "handlers": [
+            "Lostit"
+          ],
+          "kind": "MovieScript",
+          "lasm_sha256": "95b1a1fcf0d51cca3544e375d32309d1627bbb74dabb03579ec4deac7f973d7a",
+          "lines": 35,
+          "ls_sha256": "4b83d0459db957a00e860f9d047ba54c9a3d653bc3ccdc3cd755529c0bebe22e",
+          "name": "Lostit",
+          "number": 81
+        }
+      ],
+      "scripts_by_kind": {
+        "BehaviorScript": 87,
+        "CastScript": 92,
+        "MovieScript": 34
+      },
+      "scripts_without_a_cast_member": 61,
+      "seconds": 0.11,
+      "work_copy_bytes": 7150736,
+      "work_copy_sha256": "b1677afba9a753aebe4521dd2122e17b9ea28984b811f5bf7dad0ee738619986"
+    }
+  ],
+  "original": {
+    "bytes": 7150739,
+    "file": "Islepro.exe",
+    "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e"
+  },
+  "original_unchanged_after_run": true,
+  "tool": {
+    "bytes": 1184104,
+    "name": "projectorrays",
+    "path": "$HOME/tools/projectorrays-0.2.0/bin/projectorrays",
+    "sha256": "d1c2235bd5f32f4a268a2cd09d2260e143b8caf51124e0da8d9f54fd113c0ea3"
+  }
+}

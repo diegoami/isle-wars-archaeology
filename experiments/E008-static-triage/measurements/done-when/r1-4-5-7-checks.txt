@@ -1,0 +1,19 @@
+$ python3 tools/static/check_derived_hashes.py
+checked 1101 tracked files against 365 hashes listed in experiments/E008-static-triage/measurements: none is derived from an original
+exit=0
+$ python3 tools/check_no_originals.py
+no original files tracked (1101 files checked)
+exit=0
+$ python3 tools/check_links.py
+links and JSON ok (1104 files)
+exit=0
+$ python3 setup/static/check_tools.py
+ghidra 12.1.4: 5 files match
+java 21.0.12.1+1-LTS (Eclipse Temurin): 3 files match
+projectorrays 0.2.0: 1 files match
+ready
+exit=0
+$ git ls-files -z | xargs -0 du -b | sort -rn | head -3   (no tracked file over 1 MB)
+89254	experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json
+72069	questions/malpaco.md
+69652	runtime/iwp/spike/cycle.py

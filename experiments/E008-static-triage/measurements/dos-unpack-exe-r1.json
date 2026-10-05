@@ -1,0 +1,70 @@
+{
+  "artifact": "iw-dos-3.1-30121376",
+  "original": {
+    "bytes": 83580,
+    "file": "ISLEWAR.EXE",
+    "sha256": "88e934bb4fa0b074a926d53765bbca251cb38395da50337276aac7d08a5cde45"
+  },
+  "stages": [
+    {
+      "deark_module": "pklite",
+      "exit": 0,
+      "output": {
+        "bytes": 146454,
+        "name": "stage1-pklite.000.exe",
+        "sha256": "840049beb52a545ef75d5005f3ef760621d45dcc03879c777e507a177fe1c23e"
+      },
+      "seconds": 0.0,
+      "stage": "stage1-pklite"
+    },
+    {
+      "deark_module": "exepack",
+      "exit": 0,
+      "output": {
+        "bytes": 159120,
+        "name": "stage2-exepack.000.exe",
+        "sha256": "4dac918a532fa439ad98cd519a1daf43a51067639e1b80855d2b69acab4374d3"
+      },
+      "seconds": 0.0,
+      "stage": "stage2-exepack"
+    }
+  ],
+  "tool": {
+    "bytes": 8242864,
+    "name": "deark",
+    "path": "$HOME/tools/src/deark-1.7.3/deark",
+    "sha256": "70c93ae2755a4682bf249b91c76e088d47225e1bda867916f3a3dae5d4bb8e23"
+  },
+  "unpacked": {
+    "entry_offset_in_module": 123594,
+    "entry_point": "1d78:0b4a",
+    "exepack_decoder_text": false,
+    "file_bytes": 159120,
+    "header_bytes": 11760,
+    "image_bytes_by_header": 159120,
+    "load_module_bytes": 147360,
+    "mz_header": {
+      "bytes_in_last_page": 400,
+      "checksum": 0,
+      "header_paragraphs": 735,
+      "initial_cs": 7544,
+      "initial_ip": 2890,
+      "initial_sp": 2048,
+      "initial_ss": 9210,
+      "max_extra_paragraphs": 65535,
+      "min_extra_paragraphs": 397,
+      "overlay_number": 0,
+      "pages": 311,
+      "relocation_table_offset": 28,
+      "relocations": 2930
+    },
+    "name": "stage2-exepack.000.exe",
+    "pklite_text_at_30": false,
+    "plausible": true,
+    "problems": [],
+    "relocations_outside_module": 0,
+    "run_directory": "deark-exe-r1",
+    "segments_named_by_relocations": 22,
+    "sha256": "4dac918a532fa439ad98cd519a1daf43a51067639e1b80855d2b69acab4374d3"
+  }
+}

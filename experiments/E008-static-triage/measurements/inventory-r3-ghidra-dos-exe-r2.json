@@ -1,0 +1,92 @@
+{
+  "bytes": 2262256,
+  "derived_files": [
+    {
+      "bytes": 196,
+      "path": "analyzeHeadless.err",
+      "sha256": "7703b95d2ffc42923374d85e95b1ed3cde548aea08dc30bbebe98b1f6de9dbfb"
+    },
+    {
+      "bytes": 7099,
+      "path": "analyzeHeadless.out",
+      "sha256": "e7c104dc88ce61e2ae0ff5d6ed6490cd6584fe39e7221a3e27101198157888a3"
+    },
+    {
+      "bytes": 8295,
+      "path": "ghidra.log",
+      "sha256": "84834b48eb9c70af87510e979e90119124d164e08f937c618c17070fabc7db73"
+    },
+    {
+      "bytes": 1919,
+      "path": "listing-1000-964d.txt",
+      "sha256": "41b133304c9558088bc2fe214e10f6c3e56b6b405983d38433176c1fe1ad23e9"
+    },
+    {
+      "bytes": 9550,
+      "path": "listing-1000-9739.txt",
+      "sha256": "442beebe6669cfd386245d19eda5d43beb9193824716058178961e5449ed5e91"
+    },
+    {
+      "bytes": 4833,
+      "path": "listing-1000-9b33.txt",
+      "sha256": "7f36ad4a79e2831bb59a3961a9744fa2236c68c26c82cad0868e17aa7f7c7424"
+    },
+    {
+      "bytes": 0,
+      "path": "project/t26.gpr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 497,
+      "path": "project/t26.rep/idata/00/00000000.prp",
+      "sha256": "936f6af319194921f7f4e0fbf4196124ceba22b681a00ffb0a894597dc032849"
+    },
+    {
+      "bytes": 2228224,
+      "path": "project/t26.rep/idata/00/~00000000.db/db.1.gbf",
+      "sha256": "b2af2bb9396cd52e5ca6fe67cd117dbf86b0a7cedfb89d37428fa8f436eb0398"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/idata/~index.bak",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 117,
+      "path": "project/t26.rep/idata/~index.dat",
+      "sha256": "b688a94f13bc0dad12971200388f5fde2aea3e25b0b602d31ba68d5e4007a305"
+    },
+    {
+      "bytes": 92,
+      "path": "project/t26.rep/idata/~journal.bak",
+      "sha256": "da1bd3463e5c07d369f67643b5bbcc2b9d97f00db01821d8eac566ac6098e2c9"
+    },
+    {
+      "bytes": 158,
+      "path": "project/t26.rep/project.prp",
+      "sha256": "2acc43f616711bb9abd44e636782e4849478b42e544cd79deaed83f9ee877a2c"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/user/~index.dat",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/versioned/~index.bak",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/versioned/~index.dat",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 1040,
+      "path": "report.txt",
+      "sha256": "eee02ac9bb8b514d744450ceeb7dbe96153f6a62adfe730d01299f34bdb6144d"
+    }
+  ],
+  "file_count": 17,
+  "run_directory": "ghidra-dos-exe-r2"
+}

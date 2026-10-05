@@ -1,0 +1,77 @@
+{
+  "bytes": 2392933,
+  "derived_files": [
+    {
+      "bytes": 196,
+      "path": "analyzeHeadless.err",
+      "sha256": "7703b95d2ffc42923374d85e95b1ed3cde548aea08dc30bbebe98b1f6de9dbfb"
+    },
+    {
+      "bytes": 7059,
+      "path": "analyzeHeadless.out",
+      "sha256": "443fa77b729ef2011038d6d2134da1ba18bd68ee6ac615a016d3f6be152147d5"
+    },
+    {
+      "bytes": 8162,
+      "path": "ghidra.log",
+      "sha256": "8aa1e3ce22b050955008fe0947a4348df86b45e5875002356bbf73956be626a7"
+    },
+    {
+      "bytes": 0,
+      "path": "project/t26.gpr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 497,
+      "path": "project/t26.rep/idata/00/00000000.prp",
+      "sha256": "8c986abb5de08f692d292db7a5a0b6bcf01271f597c15fa10e02921998194034"
+    },
+    {
+      "bytes": 2375680,
+      "path": "project/t26.rep/idata/00/~00000000.db/db.1.gbf",
+      "sha256": "0d2f77e8905eff2d5fd147ec9cd57a93e876ac38dbba32dd83e4a290b586a71d"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/idata/~index.bak",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 117,
+      "path": "project/t26.rep/idata/~index.dat",
+      "sha256": "7e651e6b2796e84498747e1c55c8ccf347bf018fa013cf6b5d83805023679700"
+    },
+    {
+      "bytes": 92,
+      "path": "project/t26.rep/idata/~journal.bak",
+      "sha256": "87a5a6c57d9e52db2f72507c5ab598288c515d0f6bad7883bc9a28990f061211"
+    },
+    {
+      "bytes": 158,
+      "path": "project/t26.rep/project.prp",
+      "sha256": "2acc43f616711bb9abd44e636782e4849478b42e544cd79deaed83f9ee877a2c"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/user/~index.dat",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/versioned/~index.bak",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 59,
+      "path": "project/t26.rep/versioned/~index.dat",
+      "sha256": "0a5034997e47499d758115fa580ad21d96557d2a32c89f2263bcfd3fa8a9a6e5"
+    },
+    {
+      "bytes": 736,
+      "path": "report.txt",
+      "sha256": "6f7d8eaff77dc33fadf74e629d17ed62275ef8567de8da8830d58c9216322bd4"
+    }
+  ],
+  "file_count": 14,
+  "run_directory": "ghidra-dos-ov6-r1"
+}
