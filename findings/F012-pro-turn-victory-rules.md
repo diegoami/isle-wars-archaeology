@@ -1,0 +1,280 @@
+# F012 In Isle Wars Pro's Lingo the turn passes round a fixed four-seat order whose first seat is drawn, a game ends only when one seat holds all 46 countries (tested every frame, so at once, mid-turn), or when the computer seats collectively concede to a human seat holding 33 or more countries (an offer made once, between turns, and never repeated once refused), or when the player leaves; there is no turn, round or time limit and no drawn result, the eliminated seat's cards vanish, and the only record kept is the human seat's wins and losses per difficulty in an obfuscated file capped at 50 games in the unregistered build
+
+- **Status**: proposed
+- **Question**: What turn order, victory, end-of-game and concession rules does the decompiled Lingo of *Isle Wars Pro* contain, for the human's code path and the computer's? The 21 questions of T30: Q-TRN-01, Q-TRN-02, Q-TRN-04, Q-VIC-01 to Q-VIC-14, Q-SUR-01, Q-SUR-03, Q-SUR-04, Q-SUR-05 (`questions/pro-static.md`, `questions/malpaco.md`). This is a static reading: every answer says what the code says, and none says what the running game does.
+- **Tests claims**: none. `spec/` has no claim in this area, and no run is made. The reading is set against the two fragments of `Islepro.txt` that `knowledge-map.md` already lists (the first turn is decided randomly; an end-of-game offer to "concede that game and play another one"), in the Observations below.
+- **Experiment and runs**: E010 (static only; no run). Its list of the scripts read and the checks are in `experiments/E010-pro-turn-victory-reading/`.
+- **Artifact**: set `iwp-2.0-996e86c5`, `Islepro.exe`, sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e` (the unregistered build; the same file in all three registered Pro sets, F010). Variant none. Rule 19: Pro only; nothing here is claimed for DOS Isle Wars.
+- **Max intervention**: I0 (the decompiled scripts were only read, in place; nothing was run)
+- **Tier reached**: V0 (static)
+- **Confidence**: for the victory condition and its immediacy, the concession trigger and its permanence, what eliminates a seat and what happens to its cards, and the score record (Q-VIC-07 to Q-VIC-09, Q-SUR-01, Q-SUR-03, Q-SUR-04, the record half of Q-VIC-05): about 90% that the code says what is stated here (the handlers are short and were read in full, and the globals they test were traced to every place that sets them). For the turn sequence and the first-turn draw (Q-TRN-01, Q-TRN-02, Q-TRN-04): about 80%, because the order of frames is in the score, which the tool does not decode; the turn-advance handler itself was read in full. For the stalemate cluster (Q-VIC-01 to Q-VIC-06): the mechanism answers are about 85% and the absence claims (no limit, no draw, no alternative win condition) about 80%, an absence being only as strong as the 213 scripts searched. For Q-SUR-05's stop route: about 65%, the weakest answer here, because two of its frames are only identified by what they do. Every answer carries its own figure below.
+
+## Answer
+
+Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; scripts are cited as in `questions/pro-static.md` (kind, number, name when it has one, handler). Nothing is quoted: the rules are described in our words (rule 18). "The human" is the code that runs when a person clicks or is asked; "the computer" is the code the computer-turn handler runs for a computer seat. Four globals recur: the seat number whose turn it is, a count of player-turns since the deal, a flag that the concession offer has been refused, and a flag that the game is over (set to the winning seat's number, and used only as "over or not" by every reader but one — the end screens re-derive the winner from the country counts).
+
+**In one paragraph.** Seats are numbered 1 to 4 by colour; each turn the number advances by one and wraps, and seats with no countries are skipped, so the order is fixed and only loses members. The first seat of the game is chosen by an animated marker that settles on a randomly drawn seat, and the stored number is then stepped back one so that the turn-advance step lands on the seat shown. A turn is: income computed for the seat, then (human) placement, free-form attack and one move ended by Pass, move or a failed attack (F011), or (computer) the whole turn inside one handler. Between turns a frame draws one event chance (suppressed for the first six player-turns and once any seat holds 39 or more countries), offers the concession, and dispatches to the next turn. The game is over the moment any seat's country count reaches 46 — the test runs every frame of the human's turn screen and between every computer step, and each remaining step is skipped — and also when a human seat holds 33 or more countries, the only human seat, with the game not over and the offer not yet refused: the computers then concede collectively, the accept button ends the game at once as a win, and the refuse button returns to play with the offer banned for the rest of the game. Nothing else ends a game: no turn, round or time limit exists, no share, objective, income, survival or named-player win exists, and no drawn result exists (when the scores screen must name a winner without a 46-country conqueror it takes the seat with the most countries, ties going to the lower seat number). A seat is eliminated at zero countries; its cards are wiped, not inherited. Leaving mid-game through the new-game button with 1 to 9 countries credits the human with a loss; with 10 or more, or already eliminated, nothing is recorded. The only persistent record is six counters — the human seat's wins and losses at each of three difficulty levels — written, obfuscated, to a file beside the game, and refused after 50 recorded games unless the registration flag is set.
+
+### Turn sequence
+
+#### Q-TRN-01 Which phases make up a turn, in what order, and can a phase be skipped, repeated or done out of order?
+
+- **As read (human, about 75%).** One round of the fixed seat order is one turn per seat, made of: the between-turns step (event draw, concession offer, dispatch), a turn-advance step that also computes the seat's income, an optional card-trade check, a placement step (armies must be placed; the placement frames are T21's), and then the turn screen with the attack, move, pass, cards and cancel buttons, where the turn runs free-form until it is ended by Pass, by the single move, or by a failed attack (F011, Q-MOV-01 and Q-CMB-09 to Q-CMB-10). The attack phase can be skipped entirely (Pass at once); the move is optional; placement cannot be skipped. Out of order is not offered: a move ends the turn, and no handler read re-enters placement after the turn screen. `Islepro.txt` agrees that the turn is finished by pressing Move or Pass (`knowledge-map.md`, Turn sequence).
+- **As read (computer, about 80%).** The same order, compressed into one handler: after the turn advance and income, the computer's card check, its placement, its drawn number of attack rounds, one move, and a card draw when it captured a country (F011, Q-CMB-10; the choices are T27's). It cannot attack out of order either: the move comes after all attack rounds.
+- **Same rule?** Yes in sequence; the human spreads its turn over frames with a test every frame, the computer runs its turn as one chain with a game-over test between the steps.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 10 Checkturn` / `CheckTurn()` (advances the seat and counts the turn); `BehaviorScript 14` / `exitFrame()` (the turn-start frame: income, card checks, human or computer branch); `BehaviorScript 4` / `exitFrame()` (the between-turns dispatch); `BehaviorScript 461` / `exitFrame()` (the state reset after it); `BehaviorScript 13` / `exitFrame()` (the placement frame); `BehaviorScript 26` / `exitFrame()` (the human turn screen); `CastScript 66 Pass2` / `mouseDown()` (the turn's end and its two exits); `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()` (income at turn start).
+- **What would change it.** The frame order (score): the chain between-turns → reset → turn-start is read from the jumps each script makes, not from the score; so is the placement frame's place before the turn screen.
+- **T28.** Record the order of actions over at least 10 full human turns and 10 computer turns (placement before attack, move last, what ends each turn); try the move first and an attack after it (F011's counts stand).
+
+#### Q-TRN-02 In what order do players take turns; is it fixed by seat, and what decides who goes first?
+
+- **As read (about 85% for the order, 80% for the first turn).** Fixed by seat: the seat number advances by one each turn and wraps from 4 to 1; seats whose country list is empty are skipped by the same step (a short scan that also handles the wrap). Nothing reorders the seats; eliminations only remove members. Who goes first: after the deal, an animation moves the turn marker between the four seat panels for a drawn number of steps between 9 and 18 (a draw of 1 to 10 plus 8), each step drawing a seat of 1 to 4 and redrawing up to twice when the draw repeats the previous step's seat; when the animation stops, the stored seat number is lowered by one (wrapping 1 to 4). Every turn then begins through the advance step, which adds one — so the compensation lands the first turn on the seat the marker was shown on. That compensation is read from the two handlers, not from the score: if some path began a turn without the advance, the seat before the shown one would play first. `Islepro.txt` agrees only that the first turn is decided randomly (`knowledge-map.md`, Turn sequence).
+- **Same rule?** Not applicable: one mechanism for both seats (the computer seats take their turns through the same advance step).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 10 Checkturn` / `CheckTurn()`; `MovieScript 399 WHOGOESFIRST` / `WHOGOESFIRST()`; `BehaviorScript 3` / `exitFrame()` (the start-of-game frame that calls the draw after the board is dealt); `BehaviorScript 14` / `exitFrame()`; `MovieScript 5 Putinboard` / `Putinboard()` and `MovieScript 23 Newgame` / `Newgame()` (the seat number is reset before the draw).
+- **What would change it.** The frame the score enters after the draw: if it skips the advance step, the first player is the seat before the one shown.
+- **T28.** Over at least 10 games, record which seat goes first against the seat the opening animation stops on; over at least 10 rounds per game, record the turn order and every skip after an elimination.
+
+#### Q-TRN-04 Does the game count turns or rounds, display the count, and what is a "turn"?
+
+- **As read (about 85%).** It counts player-turns: one counter, incremented once in the advance step, so a "turn" is one seat's turn and a round of all seats is four counts (fewer with eliminations). It is reset to zero by the deal and by the new-game reset. It is not displayed: the only readers found are the event gate (no events before the seventh count, Q-VIC-04) and one event frame that sets it back to 5 so that another event can follow soon after (the event itself is T23's). No round counter exists.
+- **Same rule?** Not applicable (one counter for the game).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 10 Checkturn` / `CheckTurn()` (the increment); `MovieScript 5 Putinboard` / `Putinboard()` and `MovieScript 23 Newgame` / `Newgame()` (the resets); `BehaviorScript 4` / `exitFrame()` (the only gate); `BehaviorScript 53` / `exitFrame()` (the event frame that lowers it).
+- **What would change it.** A display would live in a frame script or cast member not read; the 61 unwritten scripts (F010) were not searched for one, so "not displayed" is an absence claim over the scripts read and searched.
+- **T28.** Watch the board over at least two full rounds for any counter; record, for at least 5 games, the player-turns before the first event (expect at least 6).
+
+### Victory and loss
+
+#### Q-VIC-01 Do games stall, and what in the code ends or changes them?
+
+- **As read (mechanisms about 85%; how often games stall is not a code question).** The only automatic endings in the code are: a seat reaching 46 countries (Q-VIC-07); the collective concession at 33 or more human countries (Q-SUR-01); and the stop route for a game with no live human seat (Q-SUR-05). Beyond those, what can change a stalled board is the between-turn event draw (Q-VIC-04) and income growth every turn (which eventually makes attacks pass the gates F011 reads). Nothing else exists: the player-turn counter grows without bound and nothing reads a cap of any kind — no maximum turn, round, time or event count was found in any handler that ends the game. As read, a game in which no seat crosses 33 countries and nobody conquers the board can go on forever; the code holds no rule that stops it.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 10 Checkturn` / `CheckTurn()`; `BehaviorScript 26` / `exitFrame()`; `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()`; `MovieScript 333 ComputerPlaceArmies` / `computerplacearmies()` (every place that sets the game-over global — the complete list, found by searching all 213 decompiled scripts); `BehaviorScript 4` / `exitFrame()` (the concession and stop routes).
+- **What would change it.** An ending hidden in the 61 scripts no cast member points at (F010), or in Director's runtime.
+- **T28.** The measurement this question asks for: at least 100 recorded games per player count with a stated round cap; record the share with no winner at the cap and the board in each, and which of the three endings occurred in the rest.
+
+#### Q-VIC-02 Does the game end on a turn, round or time limit?
+
+- **As read (about 85%, an absence claim).** No. No handler tests a turn, round or time limit against anything; the player-turn counter's only readers are the event gate and the event frame above; the options screen carries no limit control (the full control list is F011's Q-SET-04); and no limit is set at the deal. A game ends only by the routes of Q-VIC-01.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 4` / `exitFrame()`; `BehaviorScript 14` / `exitFrame()`; `MovieScript 10 Checkturn` / `CheckTurn()`; `MovieScript 5 Putinboard` / `Putinboard()` (what the deal sets).
+- **What would change it.** As Q-VIC-01.
+- **T28.** Look for a limit in the options and help text (one visit); run at least 5 games past 100 rounds with no seat at 33 countries and record that nothing ends them.
+
+#### Q-VIC-03 If a limit existed, what happens at a tie? (No limit exists; the tie handling that does exist)
+
+- **As read (about 75%).** There is no limit to tie at (Q-VIC-02). The one place the code must break a near-tie is the scores screen, reached without a 46-country conqueror through the stop and quit routes: it names as winner the seat holding more than 30 countries; when no seat does, it takes the first seat, in seat order, holding the maximum country count. An exact tie in country counts therefore resolves to the lower seat number: no shared win, no tiebreak round, no extension. (Two seats cannot both hold more than 30 of 46; the fallback matters only for games that ended without a winner on the board.)
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 470` / `exitFrame()` (the scores screen's winner pick); `BehaviorScript 463` / `exitFrame()` (the win screen's own, threshold-based pick).
+- **What would change it.** Which frames the stop and quit routes actually pass through (score).
+- **T28.** Static-only in the unregistered build for the exact tie (a limit position cannot be crafted, no save existing); corroborate the winner wording of the two end screens from any ending reached in ordinary play.
+
+#### Q-VIC-04 When a board is locked, which mechanism ends or changes it?
+
+- **As read (about 80%).** Only these, tested once per turn transition, in the between-turns frame: the event draw — one draw of 1 to 8, 1 to 14 or 1 to 21 by the frequency setting (never, when set to never), with the event on exactly one of the outcomes; suppressed while the player-turn count is under 7 and, for the rest of the game, once any seat holds more than 38 countries; one event frame also lowers the count so a second event can follow sooner — and the concession offer at 33 or more human countries. The events themselves (floods, rebellions, moving production centres) are T23's; here only their gate is claimed. Income growth (every seat, every turn) is the only other force: it is not gated. If events are set to never (not the unregistered default) and no seat crosses 33, a locked board stays locked: nothing in the code shakes it.
+- **Same rule?** Not applicable (a between-turns mechanism).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 4` / `exitFrame()` (the draw, the two suppressions, the dispatch to the event frame); `BehaviorScript 53` / `exitFrame()` (the count lowered after an event); `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()` (income, ungated).
+- **What would change it.** The frequency setting's default and mapping are T23's; the registered build may unlock it (rule 19).
+- **T28.** Watch all-computer or never-attack games for at least 100 rounds, logging every event, the turn it came on, and every concession offer; count the turns between events against the three draw ranges.
+
+#### Q-VIC-05 Does a drawn or no-winner result exist, and how is each end announced?
+
+- **As read (about 85%).** No drawn result exists. Every end screen names one army: the win screen (reached at 46 countries, or by accepting the concession) picks the seat with more than 30 countries and displays a winner message in that seat's colour, with a fanfare; the concession screen displays a message that the other forces concede to the leading army; the scores screen, when it must name a winner, uses Q-VIC-03's pick. The outcomes that are not wins for anyone are the player leaving (Q-SUR-05): they go to the options or scores screen with no winner message; the scores screen then records a loss, or nothing. What the player sees at a failed attack — the message that the attacking army has been defeated, the boing sound, the ownership flip — is F011's (Q-CMB-09); the defeat handler itself changes no global of the game's end.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 463` / `exitFrame()`; `BehaviorScript 465` / `exitFrame()`; `BehaviorScript 470` / `exitFrame()`; `MovieScript 81 Lostit` / `Lostit()` (the failed-attack display, for what it does and does not end).
+- **What would change it.** The screens' layout and wording beyond the text fields the scripts set (cast, score).
+- **T28.** Reach each end screen once (win at 46, concession accepted, quit) and note the wording and the sound.
+
+#### Q-VIC-06 What score decides the winner?
+
+- **As read (about 85%).** The country count alone. Every winner pick read — the win screen's, the concession screen's, the scores screen's — compares the four seats' country counts; armies, income, cards and turns are never read for ranking. There is no limit at which a score would be needed (Q-VIC-02); the scores file (below) is a history of the human seat's results, not a ranking used by the game.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 463` / `exitFrame()`; `BehaviorScript 465` / `exitFrame()`; `BehaviorScript 470` / `exitFrame()`; `MovieScript 75` / `PutinInfo()` (the counts the screens rank are built here).
+- **What would change it.** None expected; the three picks were read in full.
+- **T28.** Static-only: no ranking besides the count can be exercised, and any end screen reached in play already shows the count.
+
+#### Q-VIC-07 Is the default win the elimination of every other player, and does the game end at once, mid-turn?
+
+- **As read (about 90%).** Yes to both, with the elimination expressed as one seat holding all 46 countries. The game-over global is set to the seat's number the moment a count reaches 46, and the test runs: every frame of the human's turn screen (so a capture of the last country ends the human's turn mid-screen, before any further click is accepted — the menu handler is skipped as soon as the flag is set); at every turn advance; inside the income handler (where a bomb aftermath can complete a conquest, T22); and in the computer's placement handler, whose test also runs after the computer's battles in the turn chain, each remaining step of which is gated on the flag and skipped. Every route then jumps to the game-over frame; nothing of the turn is played out. One reading note: the computer placement handler's copy of the test credits the green seat's conquest to seat 3 and the red seat's to seat 4 — the opposite of every other handler's mapping; it has no visible effect, because the end screens re-derive the winner from the country counts and use the flag only as "over".
+- **As read (computer, part of the same).** A computer conquering the board ends the game between its own steps: the flag is tested before its move and card draw, and the turn chain exits to the game-over frame.
+- **Same rule?** Yes; the flag, its tests and the exit are shared, only the placing of the tests differs (per frame for the human, per step for the computer).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 26` / `exitFrame()`; `MovieScript 10 Checkturn` / `CheckTurn()`; `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()`; `MovieScript 333 ComputerPlaceArmies` / `computerplacearmies()`; `BehaviorScript 14` / `exitFrame()` (the gates between the computer's steps); `BehaviorScript 461` / `exitFrame()` and `BehaviorScript 13` / `exitFrame()` (the same test at the frames after).
+- **What would change it.** A conquest completing inside a single handler that lacks the test (the computer's battle loop stops at the capture and returns to the gated chain, so none was found).
+- **T28.** Capture the last country partway through a human turn (attack, then try to move or pass before the end screens: at least 5 tries) and record whether any input is accepted; do the same from a computer's conquest (at least 5).
+
+#### Q-VIC-08 What eliminates a player, and what happens to the eliminated seat's cards, armies and turn?
+
+- **As read (about 90%).** A seat is eliminated when its country list is empty — zero countries is the only test; armies live on countries, so they are lost with them (the conqueror takes each country with what it holds). The next time the per-seat lists are rebuilt: the seat's cards are set to none (destroyed, not transferred to the eliminator — the card lists are simply zeroed); the seat is marked dead in the live-seat list; and the turn advance skips it for the rest of the game. The seat is not converted: a dead human seat is not taken over by a computer. If the eliminated seat is the only human one, the elimination prompt of Q-SUR-05 appears. `Islepro.txt` says nothing found about the cards.
+- **Same rule?** Yes; the elimination handling is one shared routine plus the turn advance.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 75` / `PutinInfo()` (the rebuild, the card wipe, the live-seat mark); `MovieScript 10 Checkturn` / `CheckTurn()` (the skip); `BehaviorScript 506` / `exitFrame()` (the human elimination prompt).
+- **What would change it.** None expected: both handlers are short and were read in full.
+- **T28.** Eliminate a player holding at least one card (at least 3 games) and record where the cards go, the turn order after, and the prompt when the seat is the human's.
+
+#### Q-VIC-09 Is there a way to win by holding a share of the board (for some turns)?
+
+- **As read (about 85%, an absence claim).** No. No handler tests a share held for a duration; no per-seat history of holdings exists to test. The thresholds the code does read are single-moment country counts, listed under Observations; none of them is a win by share (the 33-and-more threshold concedes, it does not win, and it is read on the human seat only).
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 4` / `exitFrame()`; `BehaviorScript 463` / `exitFrame()`; `BehaviorScript 470` / `exitFrame()`; `CastScript 347 newgame2` / `mouseUp()` (every threshold-reading handler of this finding).
+- **What would change it.** As Q-VIC-01.
+- **T28.** Screen: look at the options screen (one visit; F011 lists its controls) — no share control exists there; the claim is the absence in the code.
+
+#### Q-VIC-10 Is there a way to win by holding specific provinces or landmasses?
+
+- **As read (about 80%, an absence claim).** No. The game-over setters are the country-count tests of Q-VIC-07 and nothing else (the complete list was searched for across all 213 decompiled scripts); no handler reads a set of target countries for victory. The island tables exist (T21) but feed income bonuses, not a win.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 26` / `exitFrame()`; `MovieScript 10 Checkturn` / `CheckTurn()`; `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()`; `MovieScript 333 ComputerPlaceArmies` / `computerplacearmies()` (the complete set of game-over setters).
+- **What would change it.** As Q-VIC-01.
+- **T28.** Screen: the options and help text (one visit).
+
+#### Q-VIC-11 Is there a way to win by reaching an income level?
+
+- **As read (about 80%, an absence claim).** No. The income handler computes and returns a number to place; no reader of it compares it against a winning level, and no game-over setter reads it.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 6 CheckNumberofArmies` / `CheckNumberofArmies()`; the game-over setters of Q-VIC-10.
+- **What would change it.** As Q-VIC-01.
+- **T28.** Screen: the options and help text (one visit).
+
+#### Q-VIC-12 Is there a way to win by surviving to a given turn?
+
+- **As read (about 80%, an absence claim).** No. The only survival concept in the code is the negative one of elimination (zero countries, Q-VIC-08); no turn count is compared for a win, and the player-turn counter's readers are Q-TRN-04's two.
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 10 Checkturn` / `CheckTurn()`; `BehaviorScript 4` / `exitFrame()`; `BehaviorScript 53` / `exitFrame()` (the counter's only readers); the game-over setters of Q-VIC-10.
+- **What would change it.** As Q-VIC-01.
+- **T28.** Screen: the options and help text (one visit).
+
+#### Q-VIC-13 Is there a win or loss tied to one named player or piece?
+
+- **As read (about 80%, an absence claim).** No. Players are colour seats with numbers; no name is stored for a seat in any handler read, and no test names a target seat. (The scores file names no opponent either, Q-VIC-06's record.)
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; the game-over setters of Q-VIC-10; `MovieScript 455 WRITESCORES` / `writescores()` and `MovieScript 471 READSCORES` / `READSCORES()` (what is stored names no player).
+- **What would change it.** As Q-VIC-01.
+- **T28.** Screen: the options and help text (one visit).
+
+#### Q-VIC-14 Can players in one game have different win conditions?
+
+- **As read (about 85%).** No. One condition serves every seat (hold all 46 countries), plus the one asymmetric ending, the concession — which is not a seat's win condition but an offer the computers make to a dominant human seat. The setup screens offer no per-player goals (F011, Q-SET-04, lists every control), and the score record tracks the human seat's results only.
+- **Same rule?** The asymmetry is the point: the concession path exists only for a human seat holding 33 or more countries.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; the game-over setters of Q-VIC-10; `BehaviorScript 4` / `exitFrame()` (the concession's human-seat condition); `MovieScript 455 WRITESCORES` / `writescores()`.
+- **What would change it.** The registered build (rule 19): what multiple human seats unlock beyond the seat toggles is `unknown`.
+- **T28.** Screen: the setup and briefing screens for per-player goals (one visit).
+
+#### What the end records (`writescores`)
+
+- **As read (about 90%).** One file, beside the game's own movie, holds six counters: the human seat's wins and losses at each of three difficulty levels. It is written as text, passed through the game's own obfuscation routine, re-read and re-written whole on every scored end. A scored end is: the scores screen reached with the quit-early flag unset (a win for the human when the picked winner is the human seat, a loss otherwise), or with that flag set (always a loss). The unregistered build caps the record: when the six counters sum to more than 50 the file is not written and a notice says no more scores can be saved; the registered flag lifts the cap (a reading of the gate, rule 19). The scores screen shows the six counters and a win percentage per difficulty.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 455 WRITESCORES` / `writescores()`; `MovieScript 471 READSCORES` / `READSCORES()`; `BehaviorScript 470` / `exitFrame()` (when it is written and what is shown).
+- **What would change it.** The obfuscation routine was not read beyond its existence; the file's layout claim rests on the six counters' handling.
+- **T28.** Play at least 3 scored games (win, loss, quit-early) and read the scores screen after each; after a concession accepted, check that a win was recorded.
+
+### Surrender
+
+#### Q-SUR-01 Does a game end through an offer to concede before the last opponent is eliminated; who makes the offer and to whom?
+
+- **As read (about 90%).** Yes. The computers make one collective offer to the human: in the between-turns frame, when the game is not over, the offer has not been refused, exactly one human seat is in the game, and that human seat holds more than 32 countries (33 or more) — a computer holding that many cancels the offer — the game branches to a concession screen instead of the next turn. The screen's message says the other forces concede the game to the leading army (with 33 or more of 46 countries the leader is necessarily the human seat). It is one offer from all the computer seats at once, not one per computer. `Islepro.txt`'s end-of-game fragment ("concede that game and play another one", `knowledge-map.md`, Surrender) agrees that a concession ends a game without naming its trigger, which the code adds.
+- **Same rule?** The offer exists only on the human's side; no code path offers a concession to a dominant computer, and a computer never concedes on its own.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 4` / `exitFrame()` (the trigger and its four conditions); `BehaviorScript 465` / `exitFrame()` (the screen and its message); `BehaviorScript 469` / `exitFrame()` (the screen's two buttons).
+- **What would change it.** None expected for the trigger; the screen's wording beyond the text field set is in the cast.
+- **T28.** Play toward a winning position in at least 10 games; record every prompt, the human's country count at each, and whether any computer-dominated position ever produces one (expect none).
+
+#### Q-SUR-03 What triggers the offer, and when is it checked?
+
+- **As read (about 90%).** One measure: the human seat's country count passing 32 (33 or more). No share of armies, income, cards or turns is read. It is checked once per turn transition, in the between-turns frame — not during any turn — so the offer appears between the turn in which the human crosses 32 and the next. The other conditions are as Q-SUR-01's; in particular the offer is suppressed from the start in any game with more than one human seat (unreachable in the unregistered build, which fixes one human seat).
+- **Same rule?** Not applicable.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `BehaviorScript 4` / `exitFrame()`; `BehaviorScript 465` / `exitFrame()`.
+- **What would change it.** None expected.
+- **T28.** Reach known country counts around the boundary (30 to 35, at least 2 games each side) and record when the offer appears; vary armies at a fixed count to check that armies do not matter.
+
+#### Q-SUR-04 How does the offer work: whose choices, and what does each choice cost?
+
+- **As read (about 90%).** The human chooses between two buttons. Accept ends the game at once: the frame chain goes to the win screen, whose message names the human's army the winner (its threshold test is passed by 33 countries), and the game is scored as a win for the human seat. Refuse returns to play — and sets the refusal flag, which no handler clears for the rest of the game (only the deal and the new-game reset clear it): the offer never returns, in that game, whatever the count becomes. The cost of refusing is therefore the loss of the ending itself: from then on the game can end only at 46 countries or by leaving (Q-SUR-05); nothing else is charged — no armies, cards or income. A side effect read as written: the elimination prompt's "play it out" button sets the same flag, so a human who lets the computers play on after elimination has also banned any later concession offer (unreachable in practice, an eliminated seat holding 0 countries; it matters only with several human seats, registered).
+- **Same rule?** Not applicable (the human's choice).
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `CastScript 609 ACCEPT2` / `mouseUp()` (accept: to the win screen); `CastScript 615 KEEP3` / `mouseUp()` (refuse: the flag, back to play); `BehaviorScript 463` / `exitFrame()` (the win screen after accepting); `MovieScript 23 Newgame` / `Newgame()` and `MovieScript 5 Putinboard` / `Putinboard()` (the only clears of the flag); `CastScript 611 KEEP2` / `mouseUp()` (the flag set from the elimination prompt).
+- **What would change it.** None expected; the buttons' handlers are short and read in full.
+- **T28.** Accept in at least 5 games (record the end screen, the scoring, the turn it came on) and refuse in at least 5 (record that no offer returns, to the end of the game or 50 rounds).
+
+#### Q-SUR-05 Can a human resign mid-game, and what happens to their countries, armies and the game?
+
+- **As read (about 80% for the new-game route, 65% for the stop route).** There is no resign control on the board; the ways out are the new-game menu button and, when the human seat is eliminated, the elimination prompt. The new-game button: with exactly one human seat and the game under way, if the human seat holds 1 to 9 countries (alive but weak) the click credits the human with a loss — a message says so, the loss is recorded through the quit-early flag — and the scores screen follows; with 10 or more countries, or already eliminated (zero), nothing is recorded and the options screen for a new game follows. In every case the seat's countries and armies are simply abandoned: nothing redistributes them and the game does not continue (the board is left as it stands; the game is over for that run). The elimination prompt (shown when the human seat's count reaches zero): one button accepts the loss and goes to the scores screen (with one human seat; with several it goes on to the frame after), the other lets the computer armies play the game out, the human watching; during that play-out the between-turns frame's stop route is bypassed by the prompt's own flag. The stop route itself: when no live human seat remains and no flag is set, the between-turns frame branches to a stop screen instead of the next turn (so an all-computer game does not run forever unwatched), whose buttons lead to the scores screen or on; which exact combinations reach it is the least certain reading here (the frames are identified by what they do, not by the score).
+- **Same rule?** The computer seats have no resign path at all; their only way out of a game is the collective concession of Q-SUR-01.
+- **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `CastScript 347 newgame2` / `mouseUp()` (the leave button, the 10-country line, the credited loss); `BehaviorScript 506` / `exitFrame()` (the elimination prompt and its flag) and `BehaviorScript 507` / `exitFrame()` (the same screen's button loop); `CastScript 632 ACCEPTLOSS2` / `mouseUp()` and `CastScript 637 HALT1` / `mouseDown()` (accept the loss); `CastScript 611 KEEP2` / `mouseUp()` (play it out); `BehaviorScript 4` / `exitFrame()` (the stop route); `CastScript 476 CONTINUE6` / `mouseDown()` (the stop screen's buttons); `BehaviorScript 474` / `exitFrame()` (the reset after); `MovieScript 75` / `PutinInfo()` (the live-seat mark that arms the stop route).
+- **What would change it.** The frame identities behind the stop route (score); the elimination prompt's trigger frame was not traced (which attack routes jump to it).
+- **T28.** Use the new-game button at 3, 9, 10 and 11 countries and when eliminated (at least 2 tries each): record the message, whether a loss is recorded, and what the board shows after; when eliminated, take both buttons (at least 3 games each) and record the sequel.
+
+## Method
+
+- **Artifact and tools.** The decompiled scripts of F010's run `pro-r1` (ProjectorRays 0.2.0 on the movie of `Islepro.exe`, sha256 above), read in place on the owner's machine in the folder `$IWA_STATIC` names; nothing was copied into the repository (rule 18). The scripts' hashes (`ls_sha256`) are those of `experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json`; E010 lists the scripts read with them, and `experiments/E010-pro-turn-victory-reading/check_cited_scripts.py` checks that this finding cites no script, name or handler the record does not have, and (with `--disk`) that each listed script on disk, hashed in place, has the record's hash.
+- **What was read.** In full: each handler cited above (the turn advance, the first-turn draw, the between-turns dispatch, the turn-start chain, the turn screen's end tests, the end and scores screens, the concession and elimination screens and all their buttons, the leave button, the info rebuild, the deal's and new game's resets, the income handler's game-over test, the computer placement handler's, the failed-attack display, the two score-file handlers). No bytecode comparison was made for this finding's handlers: none of the answers turns on a comparison operator or a constant below the granularity the decompiled text states plainly (the one number that could be misread, the concession boundary, appears as a single strict comparison in a short handler).
+- **What was searched, in the terminal only and with nothing kept.** Every place that sets or clears the game-over global (four handlers, listed in Q-VIC-07); every user of the player-turn counter (two); every user of the concession-refusal, quit-early, stop and do-not-score globals; the callers of the first-turn draw; and every jump to the between-turn, begin, start, event, concede, game-over and scores frames.
+- **What was not read.** The score (frame order and which sprite carries which button), the cast members (pictures, texts, sounds), the obfuscation routine behind the score file, and the 61 scripts that no cast member points at (F010). Where the answer needs the frame order it says so.
+- **Static first (rule 24).** This finding is the static answer; no run was made. T28 corroborates from recorded play, with the counts above.
+
+## Observations
+
+### The country-count thresholds, side by side
+
+| Count | What the code does there | Where |
+| --- | --- | --- |
+| 0 | the seat is eliminated: cards wiped, seat skipped, live-seat mark cleared | turn advance, info rebuild |
+| 1 to 9 | leaving mid-game credits the human with a loss | the leave button |
+| 10 or more | leaving mid-game records nothing | the leave button |
+| more than 30 (31+) | the win screen's winner test; below it the scores screen falls back to the maximum | the two end screens |
+| more than 32 (33+) | the computers' collective concession offer, human seat only, once per game | the between-turns frame |
+| more than 38 (39+) | events are switched off for the rest of the game | the between-turns frame |
+| 46 | the game is over, at once, mid-turn | every frame and step |
+
+### The two paths side by side
+
+| | Human | Computer |
+| --- | --- | --- |
+| Turn | frames, with the game-over test every frame | one handler chain, with the test between steps |
+| Can resign | by leaving: a loss at 1 to 9 countries, nothing at 10 or more | no resign path; the collective concession only |
+| Concession | offered to it at 33+ countries, once | offers it collectively; a computer at 33+ cancels the offer |
+| Elimination | a prompt: accept the loss, or watch the play-out | cards wiped, seat skipped |
+| Recorded | wins and losses per difficulty, capped at 50 games unregistered | nothing |
+
+### Where random numbers are drawn (Randomness)
+
+- **The first-turn draw:** a number of steps of 9 to 18 (a draw of 1 to 10 plus 8), and per step a seat of 1 to 4, redrawn up to twice when it repeats the previous step. Cosmetic: the compensation of Q-TRN-02 makes the shown seat play first either way; the redraws change only the animation.
+- **The event gate:** one draw of 1 to 8, 1 to 14 or 1 to 21 by the frequency setting, the event on one outcome; never when the setting is "never". The generator and its distribution belong to Director's runtime (T18).
+- No other draw exists on the paths this finding covers (the battle and AI draws are F011's and T27's).
+
+### Agreement with the documents
+
+`Islepro.txt` (knowledge-map.md, Turn sequence and Surrender rows) says the game will "randomly decide who will take the first turn" (agrees: the draw of Q-TRN-02) and offers, at the end of game, to "concede that game and play another one" (agrees in kind: the concession screen of Q-SUR-01; the fragment does not say when, or that the computers offer collectively, which the code adds). The share "half the provinces and half the armies" that malpaco's `RULES.md` guesses for the trigger matches neither half: the code reads one measure, the human seat's country count, at 33 of 46 (about 72%), and no army share at all.
+
+## Inferences
+
+- The concession is the design answer to the stalemate cluster, and it is narrow: it fires only for a dominant human, only once, and refusing it removes the only ending short of conquest. A faithful model that keeps the offer should decide whether refusal is final (as read) or repeating (malpaco's choice to make). From Q-SUR-03 and Q-SUR-04.
+- For an all-computer observation game the code has no ending at all until 46 countries: the stop route needs the watcher's flags. T28's all-AI games should watch for this. From Q-VIC-01 and Q-SUR-05.
+- The win screens' re-derivation of the winner from the counts makes the game-over global's seat number load-bearing nowhere visible; the swapped red and green numbers in the computer placement handler's test are therefore latent, not active. From Q-VIC-07.
+
+## Alternatives considered
+
+- **The first-turn compensation is a bug and the seat before the shown one starts.** Not excluded (the score is not decoded); the reading that the author stepped the number back exactly to cancel the advance step's increment is the simpler one, and every turn after the first passes through the advance anyway. About 80%.
+- **A limit or alternative win condition hides in the 61 unwritten scripts.** Not excluded (F010); the searches covered the 213 written scripts, and every frame on the game's own loop is written.
+- **The stop route is the elimination prompt's accept path.** The accept button's handler was read: it goes to the scores screen or the frame after, not through the stop frame; the stop route is a separate branch of the between-turns frame. The two frames' relationship remains score-dependent, hence the 65%.
+- **"More than 32" is "32 or more".** The comparison is strict in a short handler; at 32 no offer, at 33 the offer. Read as written.
+
+## What this does not establish
+
+- **That the decompiler is faithful in every handler.** One decompiler (ProjectorRays 0.2.0); no bytecode comparison was made for this finding's handlers (Method says why), and no run corroborates a behaviour.
+- **Runtime behaviour:** the frame order (the score), which sprite carries which button, the screens' look and sounds. Every "the frame chain goes to" here rests on the jumps each script makes, read one by one.
+- **The registered build,** and everything gated by the registration global (the score cap of `writescores`, the seat toggles, the other gates F011 lists). What registration unlocks is `unknown` (rule 19).
+- **The score file's obfuscation** (the routine was not read) and its portability.
+- **The events, cards, bombs and computer choices** that share these handlers' frames (T23, T22, T27); here only the turn, victory and concession claims are made.
+- **DOS Isle Wars.** Nothing here is claimed for it (rule 19).
+- **How often games stall,** or any rate: every number above is a threshold or a count in the code, not an observed frequency (T28).
+
+## Where the evidence is
+
+- The scripts read, with the record's `ls_sha256`: `experiments/E010-pro-turn-victory-reading/scripts-read.json`; the record they come from: `experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json`. Both are tracked; the decompiled scripts themselves are not (rule 18).
+- The in-place hash check: `experiments/E010-pro-turn-victory-reading/measurements/disk-check-r1.json`.
+- No evidence bundle and no run record exist (no run was made).
+
+## Reproduction
+
+```bash
+python3 experiments/E010-pro-turn-victory-reading/check_cited_scripts.py            # the record checks
+IWA_STATIC=<folder outside every checkout> \
+  python3 experiments/E010-pro-turn-victory-reading/check_cited_scripts.py --disk   # on the machine with the run's folder
+```
+
+To re-read, open the listed scripts in the run's folder on the owner's machine (`iwp-extract-pro-r1`, under its `movie-01-out` folder) and compare with the answers above; no copy of them is kept anywhere in the repository.
