@@ -1,0 +1,39 @@
++ main session at 7998b7dda895, 2026-10-05T21:18:33Z, from the task's worktree
+== DW3 unittest
+Ran 574 tests in 48.294s
+
+OK
+== DW3 mutants
+53 of 53 mutants killed
+== DW2 sigkill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0110", "status": "completed", "seconds": 10.53, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0111", "status": "aborted: game-died: the game process exited before wait for a screen (status -9)", "seconds": 9.66, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0112", "status": "completed", "seconds": 9.47, "recovered": true, "as_expected": true}
+exit 0
+== DW2 kill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0113", "status": "completed", "seconds": 9.43, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0114", "status": "aborted: game-died: the game process exited before a screenshot observation (status 0)", "seconds": 9.13, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0115", "status": "completed", "seconds": 8.98, "recovered": true, "as_expected": true}
+exit 0
+== DW1
+{"repeat": 1, "run_id": "E004-r0116", "status": "completed", "seconds": 8.75, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0117", "status": "completed", "seconds": 8.91, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0118", "status": "completed", "seconds": 9.32, "recovered": true, "as_expected": true}
+{"repeat": 4, "run_id": "E004-r0119", "status": "completed", "seconds": 8.93, "recovered": true, "as_expected": true}
+{"repeat": 5, "run_id": "E004-r0120", "status": "completed", "seconds": 8.81, "recovered": true, "as_expected": true}
+{"repeat": 6, "run_id": "E004-r0121", "status": "completed", "seconds": 9.06, "recovered": true, "as_expected": true}
+{"repeat": 7, "run_id": "E004-r0122", "status": "completed", "seconds": 8.97, "recovered": true, "as_expected": true}
+{"repeat": 8, "run_id": "E004-r0123", "status": "completed", "seconds": 9.01, "recovered": true, "as_expected": true}
+{"repeat": 9, "run_id": "E004-r0124", "status": "completed", "seconds": 8.8, "recovered": true, "as_expected": true}
+{"repeat": 10, "run_id": "E004-r0125", "status": "completed", "seconds": 9.36, "recovered": true, "as_expected": true}
+exit 0 (98 s)
+== DW5
+ready
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+== prefix vs baseline after all runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
