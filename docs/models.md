@@ -32,9 +32,20 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
 | `deepseek-pro` | DeepSeek V4 Pro, `opencode-go/deepseek-v4-pro` | DeepSeek | probed, not in a pair |
 | `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (it offers no medium; the owner, 2026-10-05) | GLM | probed; implemented T06, and was tried as a calibration reviewer |
+| `alibaba-deepseek-pro` | DeepSeek V4 Pro, `alibaba-token-plan/deepseek-v4-pro`, Alibaba Token Plan | DeepSeek | probed 2026-10-05 (6 s), not in a pair |
+| `alibaba-deepseek-flash` | DeepSeek V4.1 Flash, `alibaba-token-plan/deepseek-v4.1-flash` | DeepSeek | probed 2026-10-05 (7 s), not in a pair |
+| `alibaba-qwen-max` | Qwen 3.8 Max, `alibaba-token-plan/qwen3.8-max`, effort `medium` | Qwen | probed 2026-10-05 (7 s), not in a pair; a new family |
+| `alibaba-qwen-flash` | Qwen 3.8 Flash, `alibaba-token-plan/qwen3.8-flash` | Qwen | probed 2026-10-05 (7 s), not in a pair |
+| `alibaba-glm-5.3` | GLM-5.3, `alibaba-token-plan/glm-5.3`, effort `low` | GLM | probed 2026-10-05 (6 s), not in a pair |
 | (Claude) Sonnet | `task-agent`, `model: sonnet` | Claude | the implementer for research, the user's install and cloud sessions; the fallback implementer; the easy fallback reviewer |
 | (Claude) Opus | `task-agent-heavy`, `model: opus`, effort `medium` | Claude | the hard fallback reviewer; the cloud reviewer |
 | (Claude) Fable | `task-agent-heavy`, `model: fable`, effort `medium` | Claude | allowed, not used yet |
+
+The five `alibaba-*` entries share one monthly credit pool (quota-tracker `alibaba`, window `month`;
+the Personal edition, so Kimi and MiniMax are not available). Their key is the environment variable
+`ALIBABA_TOKEN_PLAN_API_KEY`, which only interactive shells load: launch `implement.mjs` or
+`review.mjs` through `bash -ic '…'` when one of them runs, and never store the key with
+`opencode auth login`. A night discount applies from 22:00 to 08:00 UTC+8 (DeepSeek 50%, Qwen 60%).
 
 A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) runs at effort `high`; a
 heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro) at `medium` at most, and at `low` when
