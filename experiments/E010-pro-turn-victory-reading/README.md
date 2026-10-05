@@ -24,3 +24,7 @@ The score (frame order, which sprite carries which button), the cast members (pi
 ## Append-only
 
 After the first measurement this file is append-only. A changed design is a new experiment. A re-run writes new files beside the old ones, and the finding says which ones it cites.
+
+## Round 1 (review of PR #91)
+
+F012 now also cites the computer's battle chain (`MovieScript 334`, `336`, `337`) and the human's two capture frames (`BehaviorScript 60`, `98`), so `scripts-read.json` lists 37 scripts. The in-place check was re-run into a new file, `measurements/disk-check-r1-round1.json` (37 of 37 match); `disk-check-r1.json` (32 of 32, round 0) is kept.
