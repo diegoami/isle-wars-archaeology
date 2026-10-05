@@ -1,0 +1,6 @@
+73 save files, 67 distinct (50 natural), 0 that do not round-trip
+85 saves compared with their screen (66 natural), 0 differ
+272 cells of 68 saves; 4 patterns; a pattern has one count: True; a count has one pattern: True
+19 crafted runs
+29 pairs
+50 natural saves; best order 'blue green red brown' fits 50; next best fits 39; digits ['1', '2', '3', '7']
