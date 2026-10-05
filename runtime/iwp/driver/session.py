@@ -98,9 +98,11 @@ def guarded(where):
     def decorate(fn):
         @functools.wraps(fn)
         def wrapped(self, *args, **kwargs):
-            self.require_alive(where)
+            if "game" in self.procs:                 # nothing to guard before the game is started
+                self.require_alive(where)
             result = fn(self, *args, **kwargs)
-            self.require_alive(f"{where} (after)")
+            if "game" in self.procs:
+                self.require_alive(f"{where} (after)")
             return result
         return wrapped
     return decorate
@@ -227,8 +229,8 @@ def bind_install_readonly(install):
     read-only here. Every session checks it again (Session.require_install_readonly)."""
     install = str(install)
     try:
-        spike.must(["mount", "--bind", install, install])
-        spike.must(["mount", "-o", "remount,bind,ro", install])
+        spike.must(["mount", "--bind", install, install], require_output=False)
+        spike.must(["mount", "-o", "remount,bind,ro", install], require_output=False)
     except spike.CommandFailed as exc:
         raise SealError(f"the install could not be made read-only inside the run: {exc}") from None
     if spike.install_writable(install):
@@ -480,9 +482,10 @@ class Session(spike.Cycle):
                     self.shot(f"{name}-screen-timeout.png", 2)
                 self.fail(f"the {name} screen was not seen within {timeout} s")
             if stable:
-                def stable_and_alive():          # R3: the stability poll also checks the game is alive
+                def stable_and_alive():          # R3: the stability poll also checks the game is alive,
+                    result = self.screen.stable()    # after the capture, so a death during it is caught
                     self.require_alive(f"the {name} screen was not stable")
-                    return self.screen.stable()
+                    return result
                 if spike.poll(stable_and_alive, 30, 0.1) is None:
                     self.fail(f"the {name} screen never became stable")
             self.reached.add(name)

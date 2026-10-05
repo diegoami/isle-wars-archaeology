@@ -252,7 +252,7 @@ def inner(args, argv):
         sys.exit("IWP_MACHINE is not a machine id (lowercase letters, digits, dashes); nothing was started")
     display = os.environ.get("IWP_CYCLE_DISPLAY") or sessionlib.free_display()
     commit = os.environ["IWP_CYCLE_COMMIT"]
-    spike.must(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"])
+    spike.must(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"], require_output=False)
     sessionlib.bind_install_readonly(locs["IWP_DIR"])
     fingerprint = spike.versions()
     for index in range(1, args.repeats + 1):
@@ -277,7 +277,8 @@ def outer(args, argv):
         sys.exit("the prefix is not safe to launch from; nothing was started: " + "; ".join(problems)[:400])
     try:
         commit = spike.must(["git", "rev-parse", "--short=12", "HEAD"], cwd=ROOT).stdout.decode().strip()
-        dirty = spike.must(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"], cwd=ROOT).stdout
+        dirty = spike.must(["git", "status", "--porcelain", "--", "runtime", "setup", "tools", "formats"],
+                           cwd=ROOT, require_output=False).stdout
     except spike.CommandFailed as exc:
         sys.exit(f"git could not say which commit runs: {exc}; nothing was started")
     if dirty:
