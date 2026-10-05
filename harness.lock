@@ -12,6 +12,7 @@ adapt .claude/agents/reviewer.md  (effort: medium for Opus, the owner 2026-10-05
 adapt docs/process.md  (§3: the effort comes from harness.json, CLAUDE.md rule 6)
 adapt .claude/skills/switch-model/SKILL.md  (step 4: --variant medium or low for a heavy model, CLAUDE.md rule 6)
 adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness.json keys and the quota check)
+adapt .claude/skills/run-task/SKILL.md  (step 2: read a delegated run's final message before any retry, re-route or failure verdict; CLAUDE.md rule 25, the owner 2026-10-05)
 adapt tools/harness/review.mjs  (header comment: the full-profile reviewer is GPT-5.6 Luna, L51; upstream at 0f39634 still says GPT-6 Luna; output rules: the static folder read-only, a /tmp/iwa-review-* TMPDIR, in-place mutations restored, T29)
 adapt docs/review-brief.md  (Blocking means: rate a finding blocking only if likely and past what the task protects, else a follow-up; CLAUDE.md rule 22, the owner 2026-10-05)
 adapt .opencode/agents/reviewer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/ and a /tmp/iwa-review-* TMPDIR; bash denies for writes into the static folder; prose to match; the owner 2026-10-05, T29)
@@ -22,7 +23,6 @@ adapt tools/harness/implement.mjs  (the reset between chain attempts saves the f
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 23d6c95d33242652d642ba3e51be373eb13a00c1279386467bcabdf35add4ac1  .claude/skills/delegate/SKILL.md
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
-b48cccca5d283da0d8db81b07e35edbe156032307ba66851f5c04c219a0b6623  .claude/skills/run-task/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 a58a4c3ec2c56170921e5934e880135d98899d41868b591bafb586887b853ebe  .opencode/agents/implementer.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md

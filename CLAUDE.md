@@ -203,3 +203,27 @@ indexed in `docs/tasks/README.md`.
       on the owner's machine. Findings cite the binary's sha256 and the address or handler, and
       describe behaviour in our own words.
 
+25. **Read a delegated run's result before acting on it** (the owner, 2026-10-05, from
+    goal2-archaeology T23). Before retrying a delegated run, re-routing it to another model, or calling
+    it a failure, read what it returned. Never retry blind.
+    - OpenCode runs (`implement.mjs`, `review.mjs`): exit 1 with an empty diff looks the same for an
+      early end and for a run that stopped and reported a blocker, and the log's tail shows only the
+      last tool output. Read the model's final message from the session record, read-only, with the
+      session id from the run log's `session ses_…` line (never read `auth.json` in that directory):
+
+      ```bash
+      python3 - <<'PY'
+      import sqlite3, json
+      db = 'file:' + __import__('os').path.expanduser('~/.local/share/harness-opencode/data/opencode/opencode.db') + '?mode=ro'
+      c = sqlite3.connect(db, uri=True)
+      sid = 'ses_...'
+      parts = c.execute("select data from part where session_id=? order by time_created", (sid,)).fetchall()
+      texts = [json.loads(d) for (d,) in parts if json.loads(d).get('type') == 'text']
+      print(texts[-1]['text'] if texts else 'no text part')
+      PY
+      ```
+    - Claude agents: read the agent's final report (its hand-back) in full before acting.
+    - A run that stopped and reported gets an answer to its report: amend the task, decide, or
+      escalate. Post the report on the task's issue so it is kept.
+    - Any earlier "model X ends runs early" verdict is unconfirmed until its runs' final messages
+      have been read.

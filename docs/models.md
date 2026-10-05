@@ -305,6 +305,15 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 
 These are observations, each with its source. The trials issues hold the full record.
 
+- **DeepSeek V4 Pro** (implementer, T13 round 3, 2026-10-05):
+  - Three attempts ended on a path outside its worktree, which OpenCode rejects, ending the run.
+    Two were the brief's fault: an outside TMPDIR asked for, and `.git/info/exclude` (in a worktree
+    `.git` points into the main checkout). One was its own habit: scratch output redirected to `/tmp`.
+    It also starts commands with `cd /abs &&` despite the agent file.
+  - Its final messages (read from the session record, rule 25) show runs cut off mid-work, not a
+    stop-and-report. Uncommitted work was lost to implement.mjs's reset until #87 (PR #88).
+  - Briefs to an OpenCode implementer ask for nothing outside the worktree; such lines are the main
+    session's `[C3]` lines. Ask it to commit and push after each step.
 - **DeepSeek V4.1 Flash** (implementer):
   - Sound. It stops correctly on a Done-when it cannot meet.
   - It missed one test-coverage gap that Luna caught (T02: no CLI test for `check --list`), and
