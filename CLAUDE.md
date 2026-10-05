@@ -166,3 +166,13 @@ indexed in `docs/tasks/README.md`.
 
     A model that fails is diagnosed and fixed before any fallback: its log, the brief, the agent
     file, the harness and the login. It is then retried. The diagnosis goes in the same comment.
+22. **Be practical** (the owner, 2026-10-05, a lesson from goal2-archaeology). Be flexible: when
+    something is true with a probability of 80–90%, accept it rather than spend much more time
+    proving it, and say how sure you are.
+    - **Work:** stop investigating once the answer is clearly likely.
+    - **Reviews:** blocking is for a likely problem that gets past what the task protects (a seal,
+      rule 18's originals, a claim with no evidence). An unlikely edge case, or one a later run would
+      expose loudly, is a follow-up.
+    - **Research:** a likely reading is stated with its confidence, as a narrowed claim or a
+      hypothesis. `spec/` still changes only by promotion of reviewed outcomes, and unknown stays
+      unknown (rule 20).
