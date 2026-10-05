@@ -24,3 +24,4 @@ status; this index carries none.
 | T15 | Minimal driver: DOS Isle Wars (W5b) | #63 | T14 |
 | T16 | Save format: DOS `ISLEWAR.SAV` decoded, and a crafted-save setup (W4b follow-on) | #64 | T14 |
 | T26 | Static triage: unpack, identify and load both executables (U32, static first) | #76 | — |
+| T29 | Reviewer read access to the machine-local static folder | #81 | — |
