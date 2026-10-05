@@ -43,6 +43,8 @@ MEASUREMENTS = Path("experiments") / "E008-static-triage" / "measurements"
 # key -> (registered set id, the environment variable that names the original's folder, the file)
 ORIGINALS = {
     "iw-dos": ("iw-dos-3.1-30121376", "IW_DOS_DIR", "ISLEWAR.EXE"),
+    # the set's second executable (PKLITE too; the main program names it among the files it needs)
+    "iw-dos-ov6": ("iw-dos-3.1-30121376", "IW_DOS_DIR", "ISLEWAR.OV6"),
     "iwp": ("iwp-2.0-996e86c5", "IWP_DIR", "Islepro.exe"),
 }
 
