@@ -18,7 +18,8 @@ country's fill:
 
 taken from the star of country 44 in E005-r0037's `human-turn-2.png` (the pixels at x 481..488, y 69..73) and
 checked against country 4's star in the same capture. A star is looked for in a window around the country's number
-box (x from -16 to +24, y from +12 to +32 of the box centre, board.py BOXES): the template's black pixels must all
+box (x from -20 to +30, y from +12 to +42 of the box centre, board.py BOXES; a first window of -16..+24 by +12..+32,
+designed from two stars, missed the star of country 19 (E007-r0022, 33 pixels below its box), so it was widened): the template's black pixels must all
 be black and its four hollow pixels (row 0, columns 0, 3, 4, 7 are not part of the glyph and must not be black;
 likewise row 4) must not be. The window and the glyph are designed from two stars, not measured on the game; the
 table says how many saves it matched on, and the comparison is the evidence.
@@ -41,7 +42,7 @@ GLYPH = ("01100110",
          "11111111",
          "00111100",
          "01100110")
-WINDOW = (-16, 24, 12, 32)          # x from, x to, y from, y to, relative to the number box's centre
+WINDOW = (-20, 30, 12, 42)          # x from, x to, y from, y to, relative to the number box's centre
 EXPERIMENTS = ("E005", "E007")
 
 

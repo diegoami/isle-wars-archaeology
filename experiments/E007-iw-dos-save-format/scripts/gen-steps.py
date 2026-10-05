@@ -118,6 +118,9 @@ ARMS["attack-pass"] = (head("easy", 1, "arm attack-pass: Easy, 1; turn 1 attack 
                        + save("turn2") + place_all() + cards("turn2") + pass_turn("3")
                        + save("turn3") + place_all() + cards("turn3") + pass_turn("4")
                        + save("turn4"))
+ARMS["attack-2"] = (head("easy", 1, "arm attack-2: Easy, 1; turn 1 attack (as E005's turn arm), Save and the CARD button at turn 2 (T16; "
+                                    "attack-pass, which goes on to turn 3, aborted at the turn-3 Save in E007-r0013)")
+                    + save("turn1") + attack_turn("2") + save("turn2") + place_all() + cards("turn2"))
 ARMS["pass-6-normal"] = (head("normal", 3, "arm pass-6-normal: Normal, 3; six human turns of place all and PASS, Save at each (T16)")
                          + "".join(save(f"turn{k}") + place_all() + pass_turn(str(k + 1)) for k in range(1, 7))
                          + save("turn7"))
