@@ -41,6 +41,36 @@
       "id": "openai/gpt-6.1-sol",
       "variant": "low",
       "family": "openai"
+    },
+    "alibaba-deepseek-pro": {
+      "id": "alibaba-token-plan/deepseek-v4-pro",
+      "variant": "high",
+      "family": "deepseek",
+      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
+    },
+    "alibaba-deepseek-flash": {
+      "id": "alibaba-token-plan/deepseek-v4.1-flash",
+      "variant": "high",
+      "family": "deepseek",
+      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
+    },
+    "alibaba-qwen-max": {
+      "id": "alibaba-token-plan/qwen3.8-max",
+      "variant": "medium",
+      "family": "qwen",
+      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
+    },
+    "alibaba-qwen-flash": {
+      "id": "alibaba-token-plan/qwen3.8-flash",
+      "variant": "high",
+      "family": "qwen",
+      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
+    },
+    "alibaba-glm-5.3": {
+      "id": "alibaba-token-plan/glm-5.3",
+      "variant": "low",
+      "family": "glm",
+      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
     }
   },
   "implementer": {

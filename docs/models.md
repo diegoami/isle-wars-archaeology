@@ -32,9 +32,21 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
 | `deepseek-pro` | DeepSeek V4 Pro, `opencode-go/deepseek-v4-pro` | DeepSeek | probed, not in a pair |
 | `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (it offers no medium; the owner, 2026-10-05) | GLM | probed; implemented T06, and was tried as a calibration reviewer |
+| `alibaba-deepseek-pro` | DeepSeek V4 Pro, `alibaba-token-plan/deepseek-v4-pro`, Alibaba Token Plan | DeepSeek | probed 2026-10-05 (6 s), not in a pair |
+| `alibaba-deepseek-flash` | DeepSeek V4.1 Flash, `alibaba-token-plan/deepseek-v4.1-flash` | DeepSeek | probed 2026-10-05 (7 s), not in a pair |
+| `alibaba-qwen-max` | Qwen 3.8 Max, `alibaba-token-plan/qwen3.8-max`, effort `medium` | Qwen | probed 2026-10-05 (7 s), not in a pair; a new family |
+| `alibaba-qwen-flash` | Qwen 3.8 Flash, `alibaba-token-plan/qwen3.8-flash` | Qwen | probed 2026-10-05 (7 s), not in a pair |
+| `alibaba-glm-5.3` | GLM-5.3, `alibaba-token-plan/glm-5.3`, effort `low` | GLM | probed 2026-10-05 (6 s), not in a pair |
 | (Claude) Sonnet | `task-agent`, `model: sonnet` | Claude | the implementer for research, the user's install and cloud sessions; the fallback implementer; the easy fallback reviewer |
 | (Claude) Opus | `task-agent-heavy`, `model: opus`, effort `medium` | Claude | the hard fallback reviewer; the cloud reviewer |
 | (Claude) Fable | `task-agent-heavy`, `model: fable`, effort `medium` | Claude | allowed, not used yet |
+
+The five `alibaba-*` entries share one monthly credit pool (quota-tracker `alibaba`, window `month`;
+the Personal edition, so Kimi and MiniMax are not available). Their key is the environment variable
+`ALIBABA_TOKEN_PLAN_API_KEY`; in WSL it comes from `~/.config/ai-keys.env`, which `~/.bashrc` and
+`~/.profile` load. On "Provider not found" the variable is missing: restart the session or shell, and
+tell the owner if it is still missing. Never store the key with `opencode auth login` (an `auth.json`
+entry overrides the variable). A night discount applies from 22:00 to 08:00 UTC+8 (DeepSeek 50%, Qwen 60%).
 
 A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) runs at effort `high`; a
 heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro) at `medium` at most, and at `low` when
@@ -305,6 +317,15 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 
 These are observations, each with its source. The trials issues hold the full record.
 
+- **DeepSeek V4 Pro** (implementer, T13 round 3, 2026-10-05):
+  - Three attempts ended on a path outside its worktree, which OpenCode rejects, ending the run.
+    Two were the brief's fault: an outside TMPDIR asked for, and `.git/info/exclude` (in a worktree
+    `.git` points into the main checkout). One was its own habit: scratch output redirected to `/tmp`.
+    It also starts commands with `cd /abs &&` despite the agent file.
+  - Its final messages (read from the session record, rule 25) show runs cut off mid-work, not a
+    stop-and-report. Uncommitted work was lost to implement.mjs's reset until #87 (PR #88).
+  - Briefs to an OpenCode implementer ask for nothing outside the worktree; such lines are the main
+    session's `[C3]` lines. Ask it to commit and push after each step.
 - **DeepSeek V4.1 Flash** (implementer):
   - Sound. It stops correctly on a Done-when it cannot meet.
   - It missed one test-coverage gap that Luna caught (T02: no CLI test for `check --list`), and

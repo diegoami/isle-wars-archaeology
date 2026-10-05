@@ -7,27 +7,27 @@ profile full
 copied 2026-10-05
 adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6 per the owner, with L50 and L51)
 adapt docs/tasks/README.md  (this repository's task index)
-adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside the chains (L51); reviewer.hard/sol added; zai-glm-5.3 at low, the owner 2026-10-05)
+adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside the chains (L51); reviewer.hard/sol added; zai-glm-5.3 at low, the owner 2026-10-05; five alibaba-token-plan models registered, outside every chain, 2026-10-05)
 adapt .claude/agents/reviewer.md  (effort: medium for Opus, the owner 2026-10-05)
 adapt docs/process.md  (§3: the effort comes from harness.json, CLAUDE.md rule 6)
 adapt .claude/skills/switch-model/SKILL.md  (step 4: --variant medium or low for a heavy model, CLAUDE.md rule 6)
 adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness.json keys and the quota check)
+adapt .claude/skills/run-task/SKILL.md  (step 2: read a delegated run's final message before any retry, re-route or failure verdict; CLAUDE.md rule 25, the owner 2026-10-05)
 adapt tools/harness/review.mjs  (header comment: the full-profile reviewer is GPT-5.6 Luna, L51; upstream at 0f39634 still says GPT-6 Luna; output rules: the static folder read-only, a /tmp/iwa-review-* TMPDIR, in-place mutations restored, T29)
 adapt docs/review-brief.md  (Blocking means: rate a finding blocking only if likely and past what the task protects, else a follow-up; CLAUDE.md rule 22, the owner 2026-10-05)
 adapt .opencode/agents/reviewer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/ and a /tmp/iwa-review-* TMPDIR; bash denies for writes into the static folder; prose to match; the owner 2026-10-05, T29)
-adapt docs/environment.md  (what the OpenCode reviewer may reach outside its worktree, T29)
+adapt docs/environment.md  (what the OpenCode reviewer (T29) and implementer (T31) may reach outside their worktree)
+adapt .opencode/agents/implementer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/; edit denied there; bash denies for writes into the static folder; prose to match; the owner 2026-10-05, T31)
+adapt tools/harness/implement.mjs  (the reset between chain attempts saves the failed attempt's uncommitted work to <workRoot>/<name>.<model key>.<UTC time>.unsaved.patch, created exclusively, before the hard reset, and the exit 1 and exit 3 messages name the patches; --self-test runs the save's test; #87)
 15f1fcb3af4cd07482f39328e2255a71075f4889946901960116f9a3a5b4c16f  .claude/agents/implementer.md
 6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 23d6c95d33242652d642ba3e51be373eb13a00c1279386467bcabdf35add4ac1  .claude/skills/delegate/SKILL.md
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
-b48cccca5d283da0d8db81b07e35edbe156032307ba66851f5c04c219a0b6623  .claude/skills/run-task/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
-a58a4c3ec2c56170921e5934e880135d98899d41868b591bafb586887b853ebe  .opencode/agents/implementer.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
 a93239e145def70ce1817aceb7704299cdb758c80d2de85fc1420f9573c88bc0  docs/lessons.md
 a9fcfbc04a0858c4d6e217c71df2e2fc72264831130a19986f13071ee5b220a6  tools/harness/guard.mjs
-94816f44e99393dd7aca66b4b4e437b7fc95bac579b67f0ea55d98c24d8f869f  tools/harness/implement.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
 41ade10704eb959a79815b38dd4764a95337850058f2f8c81dc3e074dc3e0798  tools/harness/lib/chain.mjs
 cca3141569cecdf12176d8fe9ed5170cb6ef5013d689e2851afeaa1a0f920c77  tools/harness/lib/common.mjs

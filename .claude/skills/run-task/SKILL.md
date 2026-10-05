@@ -37,6 +37,10 @@ For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the
      `node tools/harness/implement.mjs --task T<nn> --slug <slug> --issue <n> --brief <file>`
      with `run_in_background`, and watch it (below); never poll with sleep.
      - Exit 0: a PR is open. Note the `implemented by:` line.
+     - **Before any retry, re-route or failure verdict (CLAUDE.md rule 25), read what the run
+       returned**: the model's final message from the session record (the query is in rule 25),
+       not the log's tail; for a Claude agent, its hand-back in full. A run that stopped and
+       reported gets an answer (amend, decide or escalate), and its report is posted on the issue.
      - Exit 1: read the log it names. An implementer that stopped and reported goes to step 5,
        or to a task-file amendment on `main` and a re-run.
      - Exit 3: OpenCode unavailable, its model not listed, or Go not logged in (the message gives

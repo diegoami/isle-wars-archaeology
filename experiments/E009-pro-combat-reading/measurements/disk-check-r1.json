@@ -1,0 +1,376 @@
+{
+ "what": "each script listed in scripts-read.json, hashed in place in the static folder of run pro-r1, against the record's ls_sha256 (nothing copied; no path or code kept)",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "matched": 46,
+ "listed": 46,
+ "rows": [
+  {
+   "script": "MovieScript 1",
+   "file": "MovieScript 1 - Startmovie.ls",
+   "bytes": 6443,
+   "sha256_on_disk": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "ls_sha256_in_record": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "match": true
+  },
+  {
+   "script": "MovieScript 6",
+   "file": "MovieScript 6 - CheckNumberofArmies.ls",
+   "bytes": 6956,
+   "sha256_on_disk": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+   "ls_sha256_in_record": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+   "match": true
+  },
+  {
+   "script": "MovieScript 50",
+   "file": "MovieScript 50 - Rolldice.ls",
+   "bytes": 1233,
+   "sha256_on_disk": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+   "ls_sha256_in_record": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+   "match": true
+  },
+  {
+   "script": "MovieScript 81",
+   "file": "MovieScript 81 - Lostit.ls",
+   "bytes": 932,
+   "sha256_on_disk": "4b83d0459db957a00e860f9d047ba54c9a3d653bc3ccdc3cd755529c0bebe22e",
+   "ls_sha256_in_record": "4b83d0459db957a00e860f9d047ba54c9a3d653bc3ccdc3cd755529c0bebe22e",
+   "match": true
+  },
+  {
+   "script": "MovieScript 334",
+   "file": "MovieScript 334 - Computerattack.ls",
+   "bytes": 5638,
+   "sha256_on_disk": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411",
+   "ls_sha256_in_record": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411",
+   "match": true
+  },
+  {
+   "script": "MovieScript 335",
+   "file": "MovieScript 335 - GetValidArmys.ls",
+   "bytes": 1295,
+   "sha256_on_disk": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67",
+   "ls_sha256_in_record": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67",
+   "match": true
+  },
+  {
+   "script": "MovieScript 336",
+   "file": "MovieScript 336 - ATTACKHIM.ls",
+   "bytes": 2738,
+   "sha256_on_disk": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea",
+   "ls_sha256_in_record": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea",
+   "match": true
+  },
+  {
+   "script": "MovieScript 337",
+   "file": "MovieScript 337 - computerrolldice.ls",
+   "bytes": 7741,
+   "sha256_on_disk": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "ls_sha256_in_record": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "match": true
+  },
+  {
+   "script": "MovieScript 338",
+   "file": "MovieScript 338 - MakeComputerMove.ls",
+   "bytes": 6745,
+   "sha256_on_disk": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+   "ls_sha256_in_record": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+   "match": true
+  },
+  {
+   "script": "MovieScript 363",
+   "file": "MovieScript 363 - addtoproductioncenter.ls",
+   "bytes": 639,
+   "sha256_on_disk": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12",
+   "ls_sha256_in_record": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 14",
+   "file": "BehaviorScript 14.ls",
+   "bytes": 2949,
+   "sha256_on_disk": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31",
+   "ls_sha256_in_record": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 26",
+   "file": "BehaviorScript 26.ls",
+   "bytes": 1109,
+   "sha256_on_disk": "a70732d1df2e690c6906a2083d83389bb681b3ac3b404cb76cdab02b8c51710e",
+   "ls_sha256_in_record": "a70732d1df2e690c6906a2083d83389bb681b3ac3b404cb76cdab02b8c51710e",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 27",
+   "file": "BehaviorScript 27.ls",
+   "bytes": 91,
+   "sha256_on_disk": "12ac77b0b84fcfae73698948ebc8b6fa17748be739ea439d362161ff364f7751",
+   "ls_sha256_in_record": "12ac77b0b84fcfae73698948ebc8b6fa17748be739ea439d362161ff364f7751",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 43",
+   "file": "BehaviorScript 43.ls",
+   "bytes": 253,
+   "sha256_on_disk": "590e9d5af4717dae0864115205d991da10d6162e771d10425e30a652a4b88107",
+   "ls_sha256_in_record": "590e9d5af4717dae0864115205d991da10d6162e771d10425e30a652a4b88107",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 44",
+   "file": "BehaviorScript 44.ls",
+   "bytes": 259,
+   "sha256_on_disk": "c1c9d86b9a3ef728f6778a52e8661115f008659fb0f549fa3a2eea6644746254",
+   "ls_sha256_in_record": "c1c9d86b9a3ef728f6778a52e8661115f008659fb0f549fa3a2eea6644746254",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 47",
+   "file": "BehaviorScript 47.ls",
+   "bytes": 583,
+   "sha256_on_disk": "e0c9aede3c6ca94a5fe0dee0c0d041765e28025234c63ba6216ec8c2325f86e6",
+   "ls_sha256_in_record": "e0c9aede3c6ca94a5fe0dee0c0d041765e28025234c63ba6216ec8c2325f86e6",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 60",
+   "file": "BehaviorScript 60.ls",
+   "bytes": 490,
+   "sha256_on_disk": "cf4416e0a9d45894baf13066accc1a0f531147cbc2acf9a47b341eaa68bfc4f0",
+   "ls_sha256_in_record": "cf4416e0a9d45894baf13066accc1a0f531147cbc2acf9a47b341eaa68bfc4f0",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 76",
+   "file": "BehaviorScript 76.ls",
+   "bytes": 365,
+   "sha256_on_disk": "5d4341261e5c7128809b8d9c7321f66a8e72c70f7491823c382544fa297f5de8",
+   "ls_sha256_in_record": "5d4341261e5c7128809b8d9c7321f66a8e72c70f7491823c382544fa297f5de8",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 77",
+   "file": "BehaviorScript 77.ls",
+   "bytes": 232,
+   "sha256_on_disk": "70959a23fe072589625c80707244c31142f7f69c1eb1f65ea38b7b3b108aaa64",
+   "ls_sha256_in_record": "70959a23fe072589625c80707244c31142f7f69c1eb1f65ea38b7b3b108aaa64",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 78",
+   "file": "BehaviorScript 78.ls",
+   "bytes": 232,
+   "sha256_on_disk": "4e3a272dfaa7a18b0694c79312e85e76798a3f2a5fcba6be25e3ed11bd1f455e",
+   "ls_sha256_in_record": "4e3a272dfaa7a18b0694c79312e85e76798a3f2a5fcba6be25e3ed11bd1f455e",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 97",
+   "file": "BehaviorScript 97.ls",
+   "bytes": 102,
+   "sha256_on_disk": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d",
+   "ls_sha256_in_record": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 98",
+   "file": "BehaviorScript 98.ls",
+   "bytes": 881,
+   "sha256_on_disk": "ad21f8bd762f66f55ddd1ef3aa5619083ce6f7f7e4cc56eae1531eb8e1e50c02",
+   "ls_sha256_in_record": "ad21f8bd762f66f55ddd1ef3aa5619083ce6f7f7e4cc56eae1531eb8e1e50c02",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 100",
+   "file": "BehaviorScript 100.ls",
+   "bytes": 214,
+   "sha256_on_disk": "871e1a0ec56d1c16bb6d05a35f2bf3c0b7643cb66364633cfb2a8250171ff4f1",
+   "ls_sha256_in_record": "871e1a0ec56d1c16bb6d05a35f2bf3c0b7643cb66364633cfb2a8250171ff4f1",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 331",
+   "file": "BehaviorScript 331.ls",
+   "bytes": 175,
+   "sha256_on_disk": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e",
+   "ls_sha256_in_record": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 400",
+   "file": "BehaviorScript 400.ls",
+   "bytes": 9857,
+   "sha256_on_disk": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+   "ls_sha256_in_record": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 457",
+   "file": "BehaviorScript 457.ls",
+   "bytes": 1876,
+   "sha256_on_disk": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "ls_sha256_in_record": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 479",
+   "file": "BehaviorScript 479.ls",
+   "bytes": 1876,
+   "sha256_on_disk": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "ls_sha256_in_record": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 496",
+   "file": "BehaviorScript 496 - startingnumarmybehavior.ls",
+   "bytes": 1971,
+   "sha256_on_disk": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd",
+   "ls_sha256_in_record": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 498",
+   "file": "BehaviorScript 498 - STRENGTHbehavior.ls",
+   "bytes": 1098,
+   "sha256_on_disk": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b",
+   "ls_sha256_in_record": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 499",
+   "file": "BehaviorScript 499 - FREQbehavior.ls",
+   "bytes": 1996,
+   "sha256_on_disk": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+   "ls_sha256_in_record": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 500",
+   "file": "BehaviorScript 500 - SPEEDbehavior.ls",
+   "bytes": 1077,
+   "sha256_on_disk": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29",
+   "ls_sha256_in_record": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29",
+   "match": true
+  },
+  {
+   "script": "CastScript 64",
+   "file": "CastScript 64 - Movebut2.ls",
+   "bytes": 103,
+   "sha256_on_disk": "a728995644b0ac79b5690e8929ce3a6e9c7abcc86f736388b3ef7f693e7a5588",
+   "ls_sha256_in_record": "a728995644b0ac79b5690e8929ce3a6e9c7abcc86f736388b3ef7f693e7a5588",
+   "match": true
+  },
+  {
+   "script": "CastScript 66",
+   "file": "CastScript 66 - Pass2.ls",
+   "bytes": 296,
+   "sha256_on_disk": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f",
+   "ls_sha256_in_record": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f",
+   "match": true
+  },
+  {
+   "script": "CastScript 72",
+   "file": "CastScript 72 - QAttack2.ls",
+   "bytes": 306,
+   "sha256_on_disk": "7722ba6bc860f2ff7d604c2af6771cc563c494a575f14536b0a3816d72ed2a9b",
+   "ls_sha256_in_record": "7722ba6bc860f2ff7d604c2af6771cc563c494a575f14536b0a3816d72ed2a9b",
+   "match": true
+  },
+  {
+   "script": "CastScript 74",
+   "file": "CastScript 74 - Attack4.ls",
+   "bytes": 151,
+   "sha256_on_disk": "8189dc6c3f5b65e37a8a1008b7b69d8600bab1d3a740d124d5c23edf0be699d7",
+   "ls_sha256_in_record": "8189dc6c3f5b65e37a8a1008b7b69d8600bab1d3a740d124d5c23edf0be699d7",
+   "match": true
+  },
+  {
+   "script": "CastScript 85",
+   "file": "CastScript 85 - plus2.ls",
+   "bytes": 310,
+   "sha256_on_disk": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9",
+   "ls_sha256_in_record": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9",
+   "match": true
+  },
+  {
+   "script": "CastScript 87",
+   "file": "CastScript 87 - min2.ls",
+   "bytes": 300,
+   "sha256_on_disk": "0759a1842164461847b78abb9cebf7623ef0a41aec0756d11ae93ac0fcdacd01",
+   "ls_sha256_in_record": "0759a1842164461847b78abb9cebf7623ef0a41aec0756d11ae93ac0fcdacd01",
+   "match": true
+  },
+  {
+   "script": "CastScript 92",
+   "file": "CastScript 92 - plus3.ls",
+   "bytes": 310,
+   "sha256_on_disk": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9",
+   "ls_sha256_in_record": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9",
+   "match": true
+  },
+  {
+   "script": "CastScript 93",
+   "file": "CastScript 93 - min3.ls",
+   "bytes": 300,
+   "sha256_on_disk": "1ddb9260e04df92d478afd5d365ba0aa8298dc3096bc21f8a5f593c31ee89b0a",
+   "ls_sha256_in_record": "1ddb9260e04df92d478afd5d365ba0aa8298dc3096bc21f8a5f593c31ee89b0a",
+   "match": true
+  },
+  {
+   "script": "CastScript 94",
+   "file": "CastScript 94 - Pall3.ls",
+   "bytes": 264,
+   "sha256_on_disk": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5",
+   "ls_sha256_in_record": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5",
+   "match": true
+  },
+  {
+   "script": "CastScript 96",
+   "file": "CastScript 96 - DONE2.ls",
+   "bytes": 669,
+   "sha256_on_disk": "6bd5753fa69fcc4ff6d8952886e8c88b365597c2bc55adee071bbebf85618c1c",
+   "ls_sha256_in_record": "6bd5753fa69fcc4ff6d8952886e8c88b365597c2bc55adee071bbebf85618c1c",
+   "match": true
+  },
+  {
+   "script": "CastScript 332",
+   "file": "CastScript 332 - DONE3.ls",
+   "bytes": 695,
+   "sha256_on_disk": "0353edf31fa7e1d43460d6798342a464d0da3f81b3465e3ab04edad3c06d9acc",
+   "ls_sha256_in_record": "0353edf31fa7e1d43460d6798342a464d0da3f81b3465e3ab04edad3c06d9acc",
+   "match": true
+  },
+  {
+   "script": "CastScript 568",
+   "file": "CastScript 568 - HumanH.ls",
+   "bytes": 1217,
+   "sha256_on_disk": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2",
+   "ls_sha256_in_record": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2",
+   "match": true
+  },
+  {
+   "script": "CastScript 569",
+   "file": "CastScript 569 - ComputerC.ls",
+   "bytes": 1125,
+   "sha256_on_disk": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da",
+   "ls_sha256_in_record": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da",
+   "match": true
+  },
+  {
+   "script": "CastScript 591",
+   "file": "CastScript 591 - ear1.ls",
+   "bytes": 104,
+   "sha256_on_disk": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88",
+   "ls_sha256_in_record": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88",
+   "match": true
+  },
+  {
+   "script": "CastScript 592",
+   "file": "CastScript 592 - ear2.ls",
+   "bytes": 131,
+   "sha256_on_disk": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205",
+   "ls_sha256_in_record": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205",
+   "match": true
+  }
+ ]
+}
