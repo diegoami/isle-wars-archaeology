@@ -556,8 +556,9 @@ class Cycle:
         """Click until the screen changes: up to three clicks, `seconds` apart; abort if it never does."""
         for attempt in (1, 2, 3):
             if attempt > 1:
-                # a pointer the game warped away (it recentres it at a turn's start) is not moved by a move to
-                # where X thinks it is: step off by one pixel so that the move back is a real motion
+                # after clicks that changed nothing, the game's pointer was seen in the middle of the screen, not where
+                # X had put it (r0016, r0017; the cause was not isolated). A move to where X thinks the pointer is may
+                # send no motion, so step off by one pixel first and the move back is a real motion
                 run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
                 self.pointer = None
             self.step_click(step, x, y, button)

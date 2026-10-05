@@ -36,3 +36,10 @@ file is append-only. A changed design is a new experiment, or `v2/`.
 - `scripts/cyc.sh ARM STEPS [--explore]`: one run; needs `IW_DOS_DIR`, `IW_DOS_RUN`, `E005_BUNDLES` (and `E005_EXPLORE` with `--explore`) in the environment.
 - `scripts/keep-explore.sh ARM...`: copies the text outputs of `--explore` runs into `measurements/explore/` and lists every capture and kept file by sha256.
 - `steps/x*.steps` are the exploration scripts (not records); `steps/<arm>.steps` are the arms'.
+
+## Round 1 (2026-10-05, PR #58; appended, the text above is unchanged)
+
+- **Correction.** "Maximum intervention level I0 for every arm except `savestate`" above is wrong: every arm takes screenshots, which is I1, so every arm is I1 and `savestate` is I1 and I2. The records r0001 to r0026 declare I0 (`runs/E005/CORRECTIONS.md`); from r0027 the cycle declares I1.
+- **Correction.** "The first board of a game is random" above is a claim that no run tested: the board differs between runs, and the same start picture came up in several runs (F007). Scripts still read the board (`choose-attack`).
+- **Runs r0027 to r0038**, with the corrected cycle (required waits, the notices guarded, no probe with a script, times from the launch): `default` x2, `level-easy-1` x2, `concede-easy` x2, `save-normal-3` x2, `savestate`, `exit`, `turn`, `level-hardest-10`.
+- **Scripts.** `scripts/keep-explore.sh` now runs `scripts/keep-explore.py KEY...` (never replaces or deletes); `scripts/analyze.py BATCH` creates a new batch directory; `scripts/notice-scan.py` and `scripts/board-constants.py` measure the notice detector and the board reader's constants; `scripts/fix-manifest-classes.py` only checks. The round-1 tables are in `measurements/round1/`.

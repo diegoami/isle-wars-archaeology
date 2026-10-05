@@ -1,0 +1,39 @@
+run	arm	status	option_box_after_launch_s	window_after_launch_s	window_poll_after_isolation_check_s	start_click_to_human_turn_s	human_turn_panel_poll_s	cycle_s	captures	capture_min_s	capture_max_s	read_owners_s	read_neighbours_s
+E005-r0001	default	completed	17.03		1.74		28.53	59	0			0.0002	0.084
+E005-r0002	default	completed	17.09		1.73		21.92	51	0			0.0002	0.089
+E005-r0003	level-easy-1	completed	17.07		1.72		20.69	54	0			0.0003	0.100
+E005-r0004	level-easy-1	completed	16.93		1.75		5.47	36	0			0.0002	0.089
+E005-r0005	level-normal-1	completed	16.96		1.62		14.17	46	0			0.0003	0.099
+E005-r0006	level-normal-1	completed	17.03		1.7		31.54	63	0			0.0002	0.090
+E005-r0007	level-easy-3	completed	16.95		1.73		3.86	35	0			0.0002	0.100
+E005-r0008	level-easy-3	completed	17.08		1.72		24.37	54	0			0.0002	0.104
+E005-r0009	level-hard-6	completed	17.02		1.73		19.55	55	0			0.0002	0.096
+E005-r0010	level-hardest-10	completed	17.05		1.63		81.47	113	0			0.0003	0.092
+E005-r0011	turn	completed	16.99		1.72		1.07	98	0			0.0002	0.082
+E005-r0012	turn	completed	17.0		1.7		27.46	119	0			0.0002	0.082
+E005-r0013	buttons	completed	17.05		1.72		5.65	51	0			0.0002	0.080
+E005-r0014	concede-easy	completed	16.95		1.72		13.06	49	0			0.0002	0.082
+E005-r0015	concede-easy	completed	17.12		1.71		11.92	48	0			0.0002	0.079
+E005-r0016	concede-normal	aborted	16.97		1.71		3.99	55	0				
+E005-r0017	concede-normal	aborted	16.9		1.73		28.04	81	0				
+E005-r0018	save-load	completed	16.9		1.71		14.51	70	0			0.0002	0.078
+E005-r0019	save-load	completed	17.03		1.71		27.76	85	0			0.0002	0.076
+E005-r0020	load-none	completed	16.96		1.71			18	0				
+E005-r0021	exit	completed	16.95		1.7		5.51	51	0			0.0002	0.077
+E005-r0022	savestate	completed	16.94		1.7		5.51	38	0			0.0002	0.076
+E005-r0023	concede-normal	completed	16.96		1.7		4.06	40	0			0.0002	0.077
+E005-r0024	concede-normal	completed	17.01		1.72		1.5	41	0			0.0002	0.078
+E005-r0025	save-normal-3	completed	16.95		1.69		10.0	45	0			0.0002	0.079
+E005-r0026	save-normal-3	completed	17.02		1.71		13.47	47	0			0.0002	0.080
+E005-r0027	default	completed	17.0	1.67	1.66	15.84	15.37	44	3	0.063	0.075	0.0002	0.079
+E005-r0028	default	completed	16.92	1.63	1.62	5.99	5.52	33	3	0.058	0.067	0.0002	0.082
+E005-r0029	level-easy-1	completed	17.16	1.61	1.6	14.06	13.07	44	5	0.054	0.063	0.0002	0.084
+E005-r0030	level-easy-1	completed	16.89	1.74	1.73	14.15	13.14	45	5	0.063	0.158	0.0002	0.085
+E005-r0031	concede-easy	completed	16.99	1.73	1.72	12.70	12.24	48	8	0.058	0.075	0.0002	0.078
+E005-r0032	concede-easy	completed	17.1	1.77	1.76	14.20	13.2	49	8	0.060	0.068	0.0002	0.077
+E005-r0033	save-normal-3	completed	17.03	1.66	1.66	16.00	14.95	53	6	0.060	0.088	0.0002	0.077
+E005-r0034	save-normal-3	completed	16.97	1.68	1.66	14.20	12.65	45	6	0.059	0.069	0.0002	0.077
+E005-r0035	savestate	completed	16.95	1.68	1.67	6.34	5.88	37	5	0.053	0.066	0.0002	0.074
+E005-r0036	exit	completed	16.95	1.67	1.66	20.12	18.06	64	7	0.048	0.062	0.0002	0.076
+E005-r0037	turn	completed	16.98	1.66	1.65	23.87	23.41	123	20	0.058	0.083	0.0002	0.077
+E005-r0038	level-hardest-10	completed	17.0	1.67	1.66	82.32	81.31	111	5	0.057	0.069	0.0002	0.078

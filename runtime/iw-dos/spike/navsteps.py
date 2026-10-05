@@ -10,8 +10,8 @@ Coordinates are inside the game's 640x350 window.
     click-change X Y [S] click as `click`, and when the screen has not changed within S seconds (default 6)
                          click again, up to 3 clicks in all; the run aborts if it never changes, or if it
                          is not still within 30 s after the change. For a click that must change the
-                         screen (a dialog, "click to continue"): the game sometimes ignores a click
-                         made while it is drawing
+                         screen (a dialog, "click to continue"): in some runs a first click was not
+                         followed by a change and a second one was (r0033's Save; why is not known)
     rclick-change X Y [S]  the same with the right button
     click-until X Y RX RY RW RH R G B MIN [N]
                          click X,Y, wait up to 3 s for more than MIN pixels of (R,G,B) in the
