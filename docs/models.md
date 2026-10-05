@@ -36,8 +36,12 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | (Claude) Opus | `task-agent-heavy`, `model: opus`, effort `medium` | Claude | the hard fallback reviewer; the cloud reviewer |
 | (Claude) Fable | `task-agent-heavy`, `model: fable`, effort `medium` | Claude | allowed, not used yet |
 
-Every model runs at effort `high`, never `max`. `max` was slower, with no gain (L27). **The
-exception is GPT-6.1 Sol** (the owner, 2026-10-03), which is used sparingly:
+A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) runs at effort `high`; a
+heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro) at `medium` at most, and at `low` when
+medium is not needed (the owner, 2026-10-05). GLM-5.3 offers no medium and runs at `low`; DeepSeek
+V4 Pro's lowest variant is `high`; Opus runs as `task-agent-heavy` (effort `medium`). A heavy model
+switched with `switch-model.mjs` takes `--variant medium` or `--variant low`. Never `max`: it was
+slower, with no gain (L27). **GPT-6.1 Sol** (the owner, 2026-10-03) is also used sparingly:
 - only for hard reviews;
 - at effort `low` (`harness.json`'s `gpt-6.1-sol` and `gpt-6-sol` entries);
 - at `medium` only when the task file says why;

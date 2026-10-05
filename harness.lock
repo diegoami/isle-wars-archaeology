@@ -9,22 +9,22 @@ adapt CLAUDE.md  (project line; conditional rules per what applies; project sect
 adapt docs/tasks/README.md  (this repository's task index)
 adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside the chains (L51); reviewer.hard/sol added; zai-glm-5.3 at low, the owner 2026-10-05)
 adapt .claude/agents/reviewer.md  (effort: medium for Opus, the owner 2026-10-05)
+adapt docs/process.md  (§3: the effort comes from harness.json, CLAUDE.md rule 6)
+adapt .claude/skills/switch-model/SKILL.md  (step 4: --variant medium or low for a heavy model, CLAUDE.md rule 6)
+adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness.json keys and the quota check)
 15f1fcb3af4cd07482f39328e2255a71075f4889946901960116f9a3a5b4c16f  .claude/agents/implementer.md
 6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 0498be803c70005db21b32e0efd572e1a381ebff9cf9dc883ee62108c28a119d  .claude/skills/delegate/SKILL.md
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
 c1b404041f6517599ba239d5620cba888656f9b8bf3bc0ba75738533c9b0b338  .claude/skills/run-task/SKILL.md
-61f8f7b5980bb26962edb7f4adf3bd6778bb4a6eed3e951c3220d043177f7223  .claude/skills/switch-model/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 a58a4c3ec2c56170921e5934e880135d98899d41868b591bafb586887b853ebe  .opencode/agents/implementer.md
 9d0ed40ffb127d21ac782de4f854b89a2ec08782a1517539b67c70f16163c5d0  .opencode/agents/reviewer.md
 7b16727480f8613de7233247ee7f7eb038cf9ecdf67ae3b2bf9cf1668d69d63b  docs/environment.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
 b28589fa6c58ee235d921ce90107d89eb32282bf007240c9c4710f332ae9f017  docs/lessons.md
-920e39543fcefd771fdcf1e0a73f686f58ea6a335e91b39cb577d337887cc02f  docs/process.md
 e881eb259463e8d4747bfec42256128c18338f55a721b4b4d1c0b97ceadb05c4  docs/review-brief.md
-a4c8f4c0ea271f3b5658429a41ddca2ae3d82453590bf9a97704abe377fe20f2  docs/tasks/TEMPLATE.md
 2f8399f3156ca0f97731589382cfaf0b2d1b8ccaba63ffeed4a7b1dc14ff1234  tools/harness/guard.mjs
 94816f44e99393dd7aca66b4b4e437b7fc95bac579b67f0ea55d98c24d8f869f  tools/harness/implement.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs

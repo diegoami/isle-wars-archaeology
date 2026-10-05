@@ -1,6 +1,6 @@
 ---
 name: switch-model
-description: Switch the OpenCode model that implements or reviews (harness.json), safely - live ids, the right login, high effort, the family rule, and a one-word probe before anything is written. Use when the user wants another implementer or reviewer model, when a model keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real tasks.
+description: Switch the OpenCode model that implements or reviews (harness.json), safely - live ids, the right login, the right effort (CLAUDE.md rule 6), the family rule, and a one-word probe before anything is written. Use when the user wants another implementer or reviewer model, when a model keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real tasks.
 ---
 
 # /switch-model: change the implementer's or the reviewer's model
@@ -27,7 +27,8 @@ propose it and the user says yes.
    `node tools/harness/switch-model.mjs --role implementer|reviewer --model PROVIDER/ID --probe --dry-run`.
    - It checks the id against OpenCode's list in the scripts' data directory. On exit 3, give
      the user the login command it prints; the user runs it.
-   - The effort is `high`. `max` is refused.
+   - The effort is `high` unless `--variant` is given. A heavy model takes `--variant medium` or
+     `--variant low` (CLAUDE.md rule 6, the owner 2026-10-05). `max` is refused.
    - It shows the family and refuses the other role's. `--force` is only for when the user is
      switching both roles.
    - The probe is one billed one-word call at that effort.
