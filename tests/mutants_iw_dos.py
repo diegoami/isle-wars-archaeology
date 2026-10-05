@@ -234,7 +234,7 @@ MUTANTS = [
      [T16 + "WriterTest.test_a_run_directory_inside_a_checkout_is_refused"]),
     ("T16: the writer replaces an existing save", "runtime/iw-dos/save/writer.py",
      'data=data, exist="new", mode=0o644)', 'data=data, exist="replace", mode=0o644)',
-     [T16 + "WriterTest.test_an_existing_save_is_never_replaced",
+     [T16 + "WriterTest.test_the_write_itself_never_replaces_a_file_even_when_the_run_copy_check_passes",
       T16 + "WriterTest.test_a_symbolic_link_at_the_name_is_not_written_through"]),
     ("T16: a position the format cannot carry is encoded", "runtime/iw-dos/save/savefmt.py",
      "    check(position)\n    out = [_put(", "    out = [_put(",

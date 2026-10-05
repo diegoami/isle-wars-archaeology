@@ -195,6 +195,13 @@ class WriterTest(seal.World):
             writer.place(self.run_dir, self.install, position())
         self.assertEqual((self.game / "ISLEWAR.SAV").read_bytes(), b"the game's")
 
+    def test_the_write_itself_never_replaces_a_file_even_when_the_run_copy_check_passes(self):
+        (self.game / "ISLEWAR.SAV").write_bytes(b"the game's")
+        with mock.patch.object(writer, "run_copy_problems", return_value=[]):
+            with self.assertRaises(savefmt.Refused):
+                writer.place(self.run_dir, self.install, position())
+        self.assertEqual((self.game / "ISLEWAR.SAV").read_bytes(), b"the game's")
+
     def test_any_name_but_islewar_sav_is_refused_and_nothing_is_written(self):
         for name in ("ISLEWAR.DFT", "ISLEWAR.SCR", "ISLEWAR.DAT", "ISLEWAR.EXE", "islewar.sav", "ISLEWAR.SAV ",
                      "../ISLEWAR.SAV", "/ISLEWAR.SAV", "X.SAV", ""):
