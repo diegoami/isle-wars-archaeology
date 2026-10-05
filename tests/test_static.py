@@ -51,6 +51,7 @@ import iwp_extract  # noqa: E402
 import ghidra_import  # noqa: E402
 import check_derived_hashes  # noqa: E402
 import check_tools  # noqa: E402
+import dos_identify  # noqa: E402
 
 
 def sha(data):
@@ -616,6 +617,54 @@ class DerivedHashesTest(World):
     def test_this_checkout_passes(self):
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(check_derived_hashes.main(["--root", str(ROOT)]), 0)
+
+
+def pklite_header(minor=15, major_flags=0x31, years=b"1990-92"):
+    """A synthetic packed DOS executable: an MZ header and the PKLITE version word and copyright."""
+    header = struct.pack("<14H", 0x5A4D, 124, 164, 1, 6, 4364, 0xFFFF, 5224, 512, 0, 256, 0xFFF0, 82, 0)
+    header += bytes([minor, major_flags]) + b"PKLITE Copr. " + years + b" PKWARE Inc."
+    return header.ljust(164 * 512 - 388, b"\0")
+
+
+class DosIdentifyTest(World):
+    def test_the_header_and_the_pklite_version_word_are_read(self):
+        result = dos_identify.identify(pklite_header())
+        self.assertEqual(result["pklite"], {"minor_version": 15, "major_version": 1, "version": "1.15",
+                                            "extra_compression_flag": True, "large_codebook_flag": True,
+                                            "version_word": "0x310f", "copyright_years": "1990-92"})
+        self.assertEqual(result["pklite_signature_offset"], 30)
+        self.assertEqual(result["mz_header"]["pages"], 164)
+        self.assertEqual(result["mz_header"]["initial_cs"], 0xFFF0)
+
+    def test_each_flag_is_read_from_its_own_bit(self):
+        for word, extra, large, version in ((0x01, False, False, "1.15"), (0x11, True, False, "1.15"),
+                                            (0x21, False, True, "1.15"), (0x02, False, False, "2.15")):
+            with self.subTest(word=word):
+                pk = dos_identify.identify(pklite_header(major_flags=word))["pklite"]
+                self.assertEqual((pk["extra_compression_flag"], pk["large_codebook_flag"], pk["version"]),
+                                 (extra, large, version))
+
+    def test_an_executable_without_the_pklite_text_is_not_called_pklite(self):
+        data = bytearray(pklite_header())
+        data[30:42] = b"SOMETHING ELS"[:12]
+        self.assertIsNone(dos_identify.identify(bytes(data))["pklite"])
+        with self.assertRaises(SystemExit):
+            dos_identify.identify(b"not an exe" * 10)
+
+    def test_the_registered_original_is_required_and_a_record_is_written(self):
+        data = pklite_header()
+        manifest = manifest_for("dos", {"ISLEWAR.EXE": data}, "iw-dos-id")
+        (self.known / "artifacts" / "known.json").write_text(json.dumps({"sets": [{"manifest": manifest}]}))
+        (self.dos / "ISLEWAR.EXE").write_bytes(data)
+        with mock.patch.dict(static_common.ORIGINALS, {"iw-dos": (manifest["id"], "IW_DOS_DIR", "ISLEWAR.EXE")}), \
+                mock.patch.object(static_common, "ROOT", self.known):
+            code, text = self.call(dos_identify, ["--record", "test-identify.json"])
+            self.assertEqual(code, 0, text)
+            record = json.loads((self.known / static_common.MEASUREMENTS / "test-identify.json").read_text())
+            self.assertEqual(record["original"]["sha256"], sha(data))
+            (self.dos / "ISLEWAR.EXE").write_bytes(data[:-1] + b"X")
+            code, _ = self.call(dos_identify, [])
+            self.assertIn("is not the registered file", str(code))
 
 
 class ToolsCheckTest(World):

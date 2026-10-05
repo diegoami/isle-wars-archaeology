@@ -76,6 +76,12 @@ MUTANTS = [
     ("a tool whose file has another sha256 is ready", "setup/static/check_tools.py",
      "            elif sha256_file(path) != expected:", "            elif False:",
      [T + "ToolsCheckTest.test_a_changed_file_is_not_ready"]),
+    ("the PKLITE extra flag is read from the large flag's bit", "tools/static/dos_identify.py",
+     '"extra_compression_flag": bool(major_flags & 0x10)', '"extra_compression_flag": bool(major_flags & 0x20)',
+     [T + "DosIdentifyTest.test_each_flag_is_read_from_its_own_bit"]),
+    ("an executable without the PKLITE text is called PKLITE", "tools/static/dos_identify.py",
+     "    if at == 30:", "    if True:",
+     [T + "DosIdentifyTest.test_an_executable_without_the_pklite_text_is_not_called_pklite"]),
     # ---- the extractor's reading of a projector
     ("a projector without its PJ00 header is accepted", "tools/static/iwp_extract.py",
      '    if data[image_end:image_end + 4] != b"00JP":', "    if False:",
