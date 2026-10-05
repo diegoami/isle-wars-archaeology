@@ -43,9 +43,10 @@ change. The main session never routes by budget. Its job is to keep a switch che
 
 The five `alibaba-*` entries share one monthly credit pool (quota-tracker `alibaba`, window `month`;
 the Personal edition, so Kimi and MiniMax are not available). Their key is the environment variable
-`ALIBABA_TOKEN_PLAN_API_KEY`, which only interactive shells load: launch `implement.mjs` or
-`review.mjs` through `bash -ic '…'` when one of them runs, and never store the key with
-`opencode auth login`. A night discount applies from 22:00 to 08:00 UTC+8 (DeepSeek 50%, Qwen 60%).
+`ALIBABA_TOKEN_PLAN_API_KEY`; in WSL it comes from `~/.config/ai-keys.env`, which `~/.bashrc` and
+`~/.profile` load. On "Provider not found" the variable is missing: restart the session or shell, and
+tell the owner if it is still missing. Never store the key with `opencode auth login` (an `auth.json`
+entry overrides the variable). A night discount applies from 22:00 to 08:00 UTC+8 (DeepSeek 50%, Qwen 60%).
 
 A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) runs at effort `high`; a
 heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro) at `medium` at most, and at `low` when
