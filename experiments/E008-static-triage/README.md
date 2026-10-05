@@ -35,3 +35,21 @@ All in `tools/static/`; each refuses to run when `IWA_STATIC` is unset or inside
 - `measurements/done-when/`: the outputs of the Done-when lines.
 
 A re-run writes new files beside these, never over them.
+
+## Addendum, 2026-10-05 (the DOS half; appended, nothing above changed)
+
+- **The unpacker** is Deark 1.7.3 (the owner's choice; `docs/environment.md`). The first unpack showed
+  that the PKLITE layer holds an image packed again by Microsoft LINK's EXEPACK, so the DOS design's
+  "unpack" step is two Deark runs (`-m pklite`, then `-m exepack`), and the set's second executable,
+  `ISLEWAR.OV6`, packed the same way, is unpacked and imported too.
+- **The probe** finds the save's code through the string constant of the file name: the four bytes
+  before the text are its descriptor, and the places that push the descriptor's offset are the
+  call sites. Ghidra disassembles from there on request (`ghidra_import.py --range`), into listings
+  that stay in `$IWA_STATIC`; a person reads them and F010 describes the order in our words.
+- **Scripts added:** `dos_unpack.py` (the two Deark stages and the plausibility check of the result),
+  `dos_probe.py` (run-time library markers, descriptors and their pushes).
+- **Measurements added:** `dos-unpack-exe-r1.json`, `dos-unpack-exe-r2.json` (the same hashes, and
+  Deark's identifying messages), `dos-unpack-ov6-r1.json`, `dos-unpack-ov6-r2.json`,
+  `dos-probe-exe-r1.json`, `dos-probe-ov6-r1.json`, `ghidra-dos-exe-r1.json` (the import),
+  `ghidra-dos-exe-r2.json` (the import again, with the probe's three ranges), `ghidra-dos-ov6-r1.json`;
+  the Done-when outputs of this round are the `r2-*` files of `measurements/done-when/`.
