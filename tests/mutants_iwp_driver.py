@@ -98,8 +98,8 @@ MUTANTS = [
         S, "                        proc.wait(AFTER_KILL_TIMEOUT)", "                        proc.wait()")],
      [T + "BoundTest.test_stop_x_never_waits_without_a_bound_for_a_process_that_will_not_be_reaped"]),
     ("R3: `wineserver -k` in terminate has no bound", [(
-        S, '        killed = spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)',
-        '        killed = spike.run([spike.WINESERVER, "-k"], env=self.env, timeout=None)')],
+        S, '        ok, _, _ = spike.probe([spike.WINESERVER, "-k"], env=self.env, timeout=WINESERVER_TIMEOUT)',
+        '        ok, _, _ = spike.probe([spike.WINESERVER, "-k"], env=self.env, timeout=None)')],
      [T + "BoundTest.test_a_wineserver_that_never_returns_ends_terminate_with_a_named_error"]),
     ("R3: the namespaced command is waited for without a bound", [(
         R, "        return proc.wait(bound)", "        return proc.wait()")],
@@ -134,10 +134,12 @@ MUTANTS = [
         "        proc.send_signal(sig)")],
      [T + "FaultIdentityTest.test_stop_x_signals_only_a_display_process_that_carries_this_runs_marker"]),
     ("R2/B: a key whose xdotool failed counts as sent", [(
-        C, '            must(["xdotool", "key", args[0]], env=self.env)', '            run(["xdotool", "key", args[0]], env=self.env)')],
+        C, '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)',
+        '            run(["xdotool", "key", args[0]], env=self.env, require_output=False)')],
      [T + "CommandTest.test_a_key_whose_xdotool_fails_is_not_an_action"]),
     ("B: a click whose xdotool click failed counts as sent", [(
-        C, '        must(["xdotool", "click", "1"], env=self.env)', '        run(["xdotool", "click", "1"], env=self.env)')],
+        C, '        must(["xdotool", "click", "1"], env=self.env, require_output=False)',
+        '        run(["xdotool", "click", "1"], env=self.env, require_output=False)')],
      [T + "CommandTest.test_a_click_whose_xdotool_click_fails_is_not_an_action"]),
     ("B: a click whose pointer moves failed counts as sent", [
         (C, """        before = self.screen.raw(rect)
@@ -145,8 +147,10 @@ MUTANTS = [
         run(["xdotool", "mousemove","""),
         (C, """            must(["xdotool", "mousemove", str(x + 1 + self.screen.ox)""",
          """            run(["xdotool", "mousemove", str(x + 1 + self.screen.ox)"""),
-        (C, """            must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back""",
-         """            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back""")],
+        (C, """            must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env,
+                 require_output=False)   # back""",
+         """            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env,
+                 require_output=False)   # back""")],
      [T + "CommandTest.test_a_click_whose_pointer_move_fails_is_not_an_action"]),
     ("B: clicks whose xdotool failed count as sent", [(
         C, '            must(["xdotool", "click", "--repeat",', '            run(["xdotool", "click", "--repeat",')],
@@ -166,10 +170,12 @@ MUTANTS = [
         C, "    done = run(cmd, **kw)\n    if done.returncode != 0:", "    done = run(cmd, **kw)\n    if False:")],
      [T + "MustTest", T + "CommandTest.test_a_key_whose_xdotool_fails_is_not_an_action"]),
     ("R3/C: a game that died before terminate is not noticed", [(
-        S, "        game_dead = \"game\" in self.procs and not self.game_alive()", "        game_dead = False")],
+        S, '        if not self.game_alive():\n            self._set_aborted(f"the game process exited before terminate',
+        '        if False:\n            self._set_aborted(f"the game process exited before terminate')],
      [T + "LivenessTest.test_a_game_that_dies_after_complete_and_before_terminate_is_not_completed"]),
     ("C: a display that died before terminate is not noticed", [(
-        S, "        dead = self.display_dead()\n        game_dead", "        dead = []\n        game_dead")],
+        S, "        dead = self.display_dead()\n        if dead:\n            self._set_aborted(f\"{' and '.join(dead)} exited before terminate\", DisplayError)",
+        "        dead = self.display_dead()\n        if dead:\n            pass")],
      [T + "LivenessTest.test_a_display_that_dies_after_complete_and_before_terminate_is_not_completed"]),
     ("C: the display side is not checked at the stage boundaries", [(
         S, "        self.require_display(where)\n        self.require_game(where)", "        self.require_game(where)")],
@@ -191,6 +197,38 @@ MUTANTS = [
         S, """            self.fail(f"no display of this run's own after {DISPLAY_ATTEMPTS} attempts ({', '.join(tried)})", DisplayError)""",
         "            pass")],
      [T + "DisplayOwnershipTest.test_start_x_fails_closed_when_no_display_of_its_own_is_had"]),
+    # the round-3 (structural) review of PR #54
+    ("R1: an incomplete baseline (a registry file the prefix has, missing or a link in the baseline) is accepted", [(
+        S, "            if not kept.is_file() or kept.is_symlink():\n                incomplete.append(name)\n                continue",
+        "            if not kept.is_file() or kept.is_symlink():\n                continue")],
+     [T + "BaselineCompletenessTest"]),
+    ("R2: a game killed at the entry to terminate is treated as a clean termination", [(
+        S, '        if not self.game_alive():\n            self._set_aborted(f"the game process exited before terminate',
+        '        if False:\n            self._set_aborted(f"the game process exited before terminate')],
+     [T + "TerminateBoundaryTest"]),
+    ("R3: the stability poll does not check the game is alive", [(
+        S, '                    self.require_alive(f"the {name} screen was not stable")',
+        '                    pass')],
+     [T + "StabilityLivenessTest"]),
+    ("R4: file observation has no liveness guard", [(
+        S, '    @guarded("a file observation")\n    def observe_file(self, rel):',
+        '    def observe_file(self, rel):')],
+     [T + "FileObservationLivenessTest"]),
+    ("R5: xprop exit status is ignored, a partial answer registers the window manager", [(
+        C, "    return ok and b\"window id\" in out", "    return b\"window id\" in out")],
+     [T + "WMReadinessTest.test_a_nonzero_xprop_is_not_registered_even_with_window_id_on_stdout"]),
+    ("R6: a failed version probe is parsed, not recorded unknown", [(
+        C, "        if not ok:\n            return \"unknown\"          # R6:", "        if not ok:\n            pass")],
+     [T + "VersionsTest.test_a_failed_probe_is_unknown_not_parsed"]),
+    ("the sweep: one game-facing method loses its guard", [(
+        S, '    @guarded("a file observation")\n    def observe_file(self, rel):',
+        '    def observe_file(self, rel):')],
+     [T + "GuardSweepTest.test_every_game_facing_method_is_decorated_with_the_guard",
+      T + "GuardSweepTest.test_every_public_method_is_guarded_or_an_acknowledged_exception"]),
+    ("the sweep: one raw subprocess call is made outside the checked helper", [(
+        S, '        return spike.spawn(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],',
+        '        return subprocess.Popen(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],')],
+     [T + "CommandHelperSweepTest"]),
 ]
 
 

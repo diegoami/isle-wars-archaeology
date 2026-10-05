@@ -24,6 +24,7 @@ And those of the round-1 review, with the class sweep the owner asked for:
 - R4 and class D, the check immediately before launch repeats the first's: SealSymmetryTest;
 - R5 and class E, the display is the run's own Xvfb's, or another one is tried, or DisplayError: DisplayOwnershipTest.
 """
+import ast
 import contextlib
 import os
 import signal
@@ -93,6 +94,8 @@ class DriverWorld(World):
     def fake_run(self, cmd, **kw):
         if cmd and cmd[0] == spike.WINESERVER:       # the fake wineserver really runs
             return self.real_run(cmd, **kw)
+        if cmd and cmd[:2] == ["git", "rev-parse"]:  # the checked helper needs this command's output
+            return mock.MagicMock(returncode=0, stdout=b"abcdef123456\n", stderr=b"")
         return mock.MagicMock(returncode=0, stdout=b"", stderr=b"")
 
     def stage(self, name):
@@ -841,7 +844,7 @@ class LivenessTest(DriverWorld):
             session.procs["xvfb"].wait()
         with mock.patch.object(sessionlib.Session, "start_x", lambda s: self.display(s)):
             made = self.execute(hooks={"after-title": display_dies})
-        self.assertTrue(made.status.startswith("aborted: display: xvfb exited before the screenshot before.png"), made.status)
+        self.assertTrue(made.status.startswith("aborted: display: xvfb exited before a screenshot observation"), made.status)
         self.assertNotIn("before.png", {n for n, _, _ in made.outputs})
 
 
@@ -947,6 +950,179 @@ class RunnerTest(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 runner.check_args(runner.parser().parse_args(argv))
         runner.check_args(runner.parser().parse_args(["--fault", "sigkill-game", "--fault-repeat", "2"]))
+
+
+class BaselineCompletenessTest(DriverWorld):
+    """Round 3, R1: a baseline missing any registry file the prefix has, or holding a symlink, is refused
+    rather than partly matched (the reset would keep the changed prefix file its baseline lost)."""
+
+    def test_a_baseline_missing_a_registry_file_the_prefix_has_is_refused(self):
+        (self.prefix / "user.reg").write_text("changed-user")
+        (self.baseline / "user.reg").write_text("baseline-user")
+        (self.baseline / "user.reg").unlink()          # the baseline lost a registry file the prefix has
+        made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: seal: "), made.status)
+        self.assertIn("user.reg", made.status)
+        self.assertNotIn("start_game", self.calls)
+
+    def test_a_baseline_holding_a_symlink_for_a_registry_file_the_prefix_has_is_refused(self):
+        (self.prefix / "user.reg").write_text("changed-user")
+        (self.baseline / "user.reg").write_text("baseline-user")
+        (self.baseline / "user.reg").unlink()
+        os.symlink(self.prefix / "user.reg", self.baseline / "user.reg")
+        made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: seal: "), made.status)
+        self.assertIn("user.reg", made.status)
+        self.assertNotIn("start_game", self.calls)
+
+
+class TerminateBoundaryTest(DriverWorld):
+    """Round 3, R2: the liveness check at the point of termination is inside terminate(), not a check before it."""
+
+    def test_a_game_killed_at_entry_to_terminate_is_aborted_and_still_recovered(self):
+        real_terminate = sessionlib.Session.terminate
+
+        def kill_then_terminate(session):
+            session.procs["game"].kill()
+            session.procs["game"].wait()
+            real_terminate(session)
+        with mock.patch.object(sessionlib.Session, "terminate", kill_then_terminate):
+            made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
+        self.assertTrue(made.recovered, "the clean-up and the reset still ran and restored the prefix")
+        self.assertEqual(made.alive(), [])
+
+
+class StabilityLivenessTest(DriverWorld):
+    """Round 3, R3: the stability poll checks the game is alive, not only that the pixels are stable."""
+
+    def test_a_game_that_dies_during_the_stability_poll_aborts_the_screen_wait(self):
+        made = self.session()
+        made.start()
+        self.addCleanup(made.finish)
+
+        def stable_that_kills(screen, crop=None):
+            made.procs["game"].kill()
+            made.procs["game"].wait()
+            return True
+        with mock.patch.object(spike.Screen, "stable", stable_that_kills):
+            with self.assertRaises(errors.GameDied):
+                made.wait_for_screen("title", timeout=2)
+        self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
+        self.assertNotIn("title", made.reached, "a screen whose stability was never confirmed is not reached")
+
+
+class FileObservationLivenessTest(DriverWorld):
+    """Round 3, R4: file observation goes through the liveness guard, like screenshots and regions."""
+
+    def test_observing_a_file_after_the_game_died_raises_game_died(self):
+        made = self.session()
+        made.start()
+        self.addCleanup(made.finish)
+        made.procs["game"].kill()
+        made.procs["game"].wait()
+        with self.assertRaises(errors.GameDied):
+            made.observe_file("a.txt")
+        self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
+
+
+class WMReadinessTest(unittest.TestCase):
+    """Round 3, R5: xfwm4 registers only when xprop exits 0 and reports the registration; a non-zero
+    exit with a plausible partial stdout is "not yet", never registered."""
+
+    def test_a_nonzero_xprop_is_not_registered_even_with_window_id_on_stdout(self):
+        with mock.patch.object(spike, "probe",
+                               return_value=(False, b"_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x123", b"")):
+            self.assertFalse(spike.wm_registered({}))
+
+    def test_a_zero_xprop_with_the_registration_is_registered(self):
+        with mock.patch.object(spike, "probe",
+                               return_value=(True, b"_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x123", b"")):
+            self.assertTrue(spike.wm_registered({}))
+
+    def test_a_zero_xprop_without_the_registration_is_not_registered(self):
+        with mock.patch.object(spike, "probe", return_value=(True, b"", b"")):
+            self.assertFalse(spike.wm_registered({}))
+
+
+class VersionsTest(unittest.TestCase):
+    """Round 3, R6: a failed version probe is recorded unknown, never parsed as a version."""
+
+    def test_a_failed_probe_is_unknown_not_parsed(self):
+        with mock.patch.object(spike, "probe", return_value=(False, b"wine-9.0", b"failed")):
+            versions = spike.versions()
+        self.assertEqual(versions["wine"], "unknown")
+        self.assertEqual(versions["xvfb"], "unknown")
+        self.assertEqual(versions["xfwm4"], "unknown")
+
+    def test_a_successful_probe_is_parsed(self):
+        def fake_probe(cmd, **kw):
+            if cmd and cmd[0] == spike.WINE:
+                return (True, b"wine-9.0\n", b"")
+            return (False, b"", b"")
+        with mock.patch.object(spike, "probe", side_effect=fake_probe):
+            versions = spike.versions()
+        self.assertEqual(versions["wine"], "wine-9.0")
+        self.assertEqual(versions["xdotool"], "unknown")
+
+
+def _session_public_methods():
+    """{method name: [decorator source strings]} of every public method of driver.session.Session."""
+    tree = ast.parse((ROOT / "runtime" / "iwp" / "driver" / "session.py").read_text())
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == "Session":
+            return {item.name: [ast.unparse(d) for d in item.decorator_list]
+                    for item in node.body
+                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and not item.name.startswith("_")}
+    raise AssertionError("Session class not found in session.py")
+
+
+class GuardSweepTest(unittest.TestCase):
+    """The one liveness guard, structurally enforced: every public method of Session goes through the guard
+    (decorated @guarded), or ends a process itself (terminate, stop_x), or is a documented non-game method."""
+
+    GAME_FACING = {"wait_for_screen", "known_screen", "perform", "shot", "observe_screenshot",
+                   "observe_region", "observe_file", "complete"}
+    SELF_GUARDED = {"terminate", "stop_x"}
+    NON_GAME = {"fail", "abort_later", "stage", "require_game", "display_dead", "require_display",
+                "require_alive", "require_install_readonly", "require_baseline", "note_environment",
+                "start", "launch", "set_display", "spawn_xvfb", "display_is_ours", "start_x",
+                "checkpoint", "on", "alive", "wait_gone", "kill_side", "stop_own", "cleanup",
+                "snapshot_and_reset", "finish", "execute"}
+
+    def guarded(self):
+        return {name for name, decos in _session_public_methods().items()
+                if any(d.startswith("guarded(") for d in decos)}
+
+    def test_every_game_facing_method_is_decorated_with_the_guard(self):
+        self.assertEqual(self.GAME_FACING - self.guarded(), set(),
+                         "game-facing methods that do not go through the one liveness guard")
+
+    def test_every_public_method_is_guarded_or_an_acknowledged_exception(self):
+        unaccounted = set(_session_public_methods()) - self.guarded() - self.SELF_GUARDED - self.NON_GAME
+        self.assertEqual(unaccounted, set(),
+                         "public methods of Session that go through neither the guard nor an acknowledged exception")
+
+
+class CommandHelperSweepTest(unittest.TestCase):
+    """Every external command in the driver files goes through the one checked helper (spike.run/must/
+    probe/spawn): no raw subprocess.Popen/run/call/check_* or os.system/popen remains in the driver files."""
+
+    DRIVER_FILES = ("runtime/iwp/driver/session.py", "runtime/iwp/driver/runner.py")
+    LAUNCH = {"subprocess": {"Popen", "run", "call", "check_call", "check_output"},
+              "os": {"system", "popen", "spawnl", "spawnle", "spawnlp", "spawnlpe",
+                     "spawnv", "spawnve", "spawnvp", "spawnvpe"}}
+
+    def test_no_subprocess_call_outside_the_helper(self):
+        found = []
+        for rel in self.DRIVER_FILES:
+            tree = ast.parse((ROOT / rel).read_text())
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
+                        and isinstance(node.func.value, ast.Name):
+                    if node.func.attr in self.LAUNCH.get(node.func.value.id, set()):
+                        found.append(f"{rel}:{node.lineno}")
+        self.assertEqual(found, [], "raw subprocess calls in the driver files outside the checked helper")
 
 
 if __name__ == "__main__":
