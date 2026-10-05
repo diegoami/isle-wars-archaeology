@@ -1,0 +1,21 @@
+{
+  "against": "iwp-extract-pro-r1.json",
+  "markers": {
+    "lasm": "unk and two upper-case hex digits",
+    "ls": "the word ERROR"
+  },
+  "movies": [
+    {
+      "error_words_in_ls": 0,
+      "lasm_files": 213,
+      "lasm_files_with_an_unknown_opcode": 0,
+      "ls_files": 213,
+      "ls_files_with_an_error_word": 0,
+      "movie": 1,
+      "scripts_in_record": 213,
+      "unknown_opcodes_in_lasm": 0
+    }
+  ],
+  "run_directory": "iwp-extract-pro-r1",
+  "tool_source": "ProjectorRays 0.2.0, commit 8a3d3b4211575170276fc6be350b6b52e96d4750"
+}

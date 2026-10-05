@@ -21,7 +21,7 @@ What it does, in order (every step refuses first, `static_common.py`):
 
 Everything derived from the original (the carved movie, the work copy, the decompiled scripts, the
 tool's logs) stays in `<IWA_STATIC>/iwp-extract-<run>/`. `--record NAME` writes the counts, hashes,
-names and addresses to `experiments/E008-static-triage/measurements/NAME`, as a new file, and never
+names and addresses, with the sha256 and size of every file of the run directory (`derived_files`), to `experiments/E008-static-triage/measurements/NAME`, as a new file, and never
 a line of the scripts.
 """
 import argparse
@@ -233,6 +233,7 @@ def main(argv=None, env=None):
         result["movies"].append(entry)
     original.recheck()
     result["original_unchanged_after_run"] = True
+    result["derived_files"] = common.inventory(run_dir)       # every carved, decompiled and dumped file
     if args.record:
         name = args.record if args.record.endswith(".json") else args.record + ".json"
         print(f"record: {common.write_record(name, result)}")

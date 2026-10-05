@@ -1,0 +1,37 @@
+{
+  "bytes": 180649,
+  "derived_files": [
+    {
+      "bytes": 0,
+      "path": "deark-stage1-pklite.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1207,
+      "path": "deark-stage1-pklite.out",
+      "sha256": "ed6376fcef8fc45e3754a26cc5d97dacb5a97979cfdbe69298746d4993d3d9fd"
+    },
+    {
+      "bytes": 0,
+      "path": "deark-stage2-exepack.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 828,
+      "path": "deark-stage2-exepack.out",
+      "sha256": "b5258eaf4fc3b5182fab29f5429b7b8959a9ee6c9b67cea035ba548254ef30e1"
+    },
+    {
+      "bytes": 85878,
+      "path": "stage1-pklite.000.exe",
+      "sha256": "e3a219db2723dccf0e5c2ab4025abbfc19c65a2cb1f98f48cc741203b05eb155"
+    },
+    {
+      "bytes": 92736,
+      "path": "stage2-exepack.000.exe",
+      "sha256": "1c6f8fb1c9eceb190fc40856110dd6e001a081aa9ea56ad1cbcbf9d99820b2de"
+    }
+  ],
+  "file_count": 6,
+  "run_directory": "deark-ov6-r1"
+}

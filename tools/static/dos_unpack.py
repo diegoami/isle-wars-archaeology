@@ -18,7 +18,7 @@ into two log files beside it. The script then checks that the last image is a pl
 executable (`mz_facts`: a valid MZ header, the relocation table inside the header, every relocation
 and the entry point inside the load module, no PKLITE text and no EXEPACK decoder left). It prints,
 and `--record NAME` writes to `experiments/E008-static-triage/measurements/NAME` as a new file, only
-numbers: each file's sha256 and size, the header fields, the counts, Deark's version and sha256.
+numbers: the sha256 and size of every file of the run directory (`derived_files`), the header fields, the counts, Deark's version and sha256.
 Nothing derived from the original is printed or written anywhere else.
 """
 import argparse
@@ -164,6 +164,7 @@ def main(argv=None, env=None):
         final = fh.read()
     result["unpacked"] = dict(mz_facts(final), name=source.name, sha256=common.sha256_bytes(final),
                               run_directory=run_dir.name)
+    result["derived_files"] = common.inventory(run_dir)       # both stages' images and Deark's messages
     if args.record:
         name = args.record if args.record.endswith(".json") else args.record + ".json"
         print(f"record: {common.write_record(name, result)}")

@@ -1,0 +1,2162 @@
+{
+  "bytes": 18369992,
+  "derived_files": [
+    {
+      "bytes": 4687621,
+      "path": "movie-01-out/movie-01.abs.dir",
+      "sha256": "a17201450272c4889e81813e68c6f7b8b1c1ec059357203242352167a6204f50"
+    },
+    {
+      "bytes": 1091,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 100.lasm",
+      "sha256": "54f86b5d6ea1948e0d3cefd236e7cf2c593fee4a8b7471ce6338eb89ba8a3087"
+    },
+    {
+      "bytes": 214,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 100.ls",
+      "sha256": "871e1a0ec56d1c16bb6d05a35f2bf3c0b7643cb66364633cfb2a8250171ff4f1"
+    },
+    {
+      "bytes": 5161,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 11.lasm",
+      "sha256": "1b65713fd56ac28afbe2b7e836a953dc5f8de7fde35b674d2e8939aae2b3f0d6"
+    },
+    {
+      "bytes": 705,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 11.ls",
+      "sha256": "d320c13c9f2775c572ab8ec5956de2ea3f6676faea9b7c5e04e6d92073b5d332"
+    },
+    {
+      "bytes": 2407,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 12.lasm",
+      "sha256": "3bf78fe7fbccafd4c1d41ba51d1d6f95de3c335bfe84aa7ab4805ade7f00284e"
+    },
+    {
+      "bytes": 255,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 12.ls",
+      "sha256": "551032c47793deecad93383f4ae39adca45b711539103508a87278770213a6ad"
+    },
+    {
+      "bytes": 3161,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 13.lasm",
+      "sha256": "a48cf9a77b429df827f99d7f86d3ff02204045d6b5fc731dae92f0ad3adf544e"
+    },
+    {
+      "bytes": 423,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 13.ls",
+      "sha256": "6b86066153c8fdb73490ca0bba5352048958d827bab31e8a1df8cd9ee78b0d16"
+    },
+    {
+      "bytes": 26728,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 14.lasm",
+      "sha256": "7bbb682003659c482a319b55a74916e9cf8c9c10bdd9c860357e35a0be82b6da"
+    },
+    {
+      "bytes": 2949,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 14.ls",
+      "sha256": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31"
+    },
+    {
+      "bytes": 2131,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 2.lasm",
+      "sha256": "c8ed19c73662fa030674482e99376ffa22e33c97799eadeea9359482455e01a7"
+    },
+    {
+      "bytes": 263,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 2.ls",
+      "sha256": "606e983ed268793bfd4df8a8d827d0489abc989d7fbcbfefddd7ae3a08f955f4"
+    },
+    {
+      "bytes": 142,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 24.lasm",
+      "sha256": "c2ffa75f32036bb9b08e558323d4550ff5fd4644e1a961a766e995a494179a7e"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 24.ls",
+      "sha256": "c4f7cd498abdcad4bd6db63107a3347de8e9569811e56c0188ba262069139fc0"
+    },
+    {
+      "bytes": 8402,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 26.lasm",
+      "sha256": "b152f13dd025c74ab4708cd3047325c57dbed5003ff8fdca59bf22ecdc7b44de"
+    },
+    {
+      "bytes": 1109,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 26.ls",
+      "sha256": "a70732d1df2e690c6906a2083d83389bb681b3ac3b404cb76cdab02b8c51710e"
+    },
+    {
+      "bytes": 622,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 27.lasm",
+      "sha256": "0d31a1fd5ca8cb654477a4f5c2f494fc09845fbd30c3aee14b1574d42c3a5476"
+    },
+    {
+      "bytes": 91,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 27.ls",
+      "sha256": "12ac77b0b84fcfae73698948ebc8b6fa17748be739ea439d362161ff364f7751"
+    },
+    {
+      "bytes": 134,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 28.lasm",
+      "sha256": "b74cc49fa1e4a5321d4956bbb1554fa42a24e87d7a16d624e6f9f7d8d74834b9"
+    },
+    {
+      "bytes": 21,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 28.ls",
+      "sha256": "b6ace8466d3c06f7f72ef86b4690e2a15b57eeed4f597970976345ecc68f8824"
+    },
+    {
+      "bytes": 1565,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 3.lasm",
+      "sha256": "c9859c6b0b11e0c879c6741f9297e58c8bbd91ebdda98bfb5feade1ed0da625e"
+    },
+    {
+      "bytes": 210,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 3.ls",
+      "sha256": "dd0fbf7df481b8dc3359109d7a2caae0bef13fb6d9cbcdfe91a9971b3be15666"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 30.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 30.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 702,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 32.lasm",
+      "sha256": "e84be35b0701bc0676c210ce59ed129c65cd429c48eb3625dcc66bcdc09325e1"
+    },
+    {
+      "bytes": 89,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 32.ls",
+      "sha256": "aa6d66c3ac8d4df9a8bb70b2efa14745c6e78f7173a394703537d9fb51303b86"
+    },
+    {
+      "bytes": 1347,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 33.lasm",
+      "sha256": "cc79aad36051c94f65445538f1257f016f645f3effb0ddd996e78704abac3e33"
+    },
+    {
+      "bytes": 179,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 33.ls",
+      "sha256": "5b7b7b4bcca3684111f213543c9f67406d1d191b49d08bcb17350a050c8fd904"
+    },
+    {
+      "bytes": 1135,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 331.lasm",
+      "sha256": "049194403f83cda0ecbbf68c62b3a3daba5046061f2152af3d2ae07ef6e7fa39"
+    },
+    {
+      "bytes": 175,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 331.ls",
+      "sha256": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e"
+    },
+    {
+      "bytes": 1377,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 340.lasm",
+      "sha256": "e4ccd3c9905f860a7a5692e9eca8ad409f0e97130a05f635f0a969b79c9ddbd0"
+    },
+    {
+      "bytes": 180,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 340.ls",
+      "sha256": "6beab3964eafc126afed6d077d5412a043846eb4bd9875aff69b8588b0ece256"
+    },
+    {
+      "bytes": 956,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 341.lasm",
+      "sha256": "18e76b6fdc6b07312b45859a591363f823cec851be654d0487a66c01b1d9018d"
+    },
+    {
+      "bytes": 134,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 341.ls",
+      "sha256": "13915cda361e74e5e80962751277dffe81ae3da316df0e6b5f64824370218e7d"
+    },
+    {
+      "bytes": 8787,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 342.lasm",
+      "sha256": "f4b3a1f2e8fbd2c65cf86a53ee29ea5de6ced135a7aaf5924bb56441055f4ba7"
+    },
+    {
+      "bytes": 995,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 342.ls",
+      "sha256": "7877022fba42e47b819c9fc4c358bbc1735403e8933d4722d24413dec1940943"
+    },
+    {
+      "bytes": 1482,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 343.lasm",
+      "sha256": "4c44039d39d57bfb55b38ce4c675d2abdc0b73655524a7b4250785d66465eede"
+    },
+    {
+      "bytes": 220,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 343.ls",
+      "sha256": "29b2e650571f5c28edae1fff1819eec1a16d434ef068093996ce3f5afb816ea8"
+    },
+    {
+      "bytes": 375,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 358.lasm",
+      "sha256": "e885d767d8bacc4164d413844aff005f59c1909fb1417dbe5cc80d43a038559f"
+    },
+    {
+      "bytes": 60,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 358.ls",
+      "sha256": "835695f4bc9f25491a767c0f521c9dfbd5f5cf98ce984de86f4f5b87207681dd"
+    },
+    {
+      "bytes": 142,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 359.lasm",
+      "sha256": "de985bf73c3528da7f498fed23c1292e0b1364169dd62954baf884cddca055ae"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 359.ls",
+      "sha256": "5e6b2d5a7e9394790101f40c312ff38019b73dbbc5abecc56cec707b3dfb59ba"
+    },
+    {
+      "bytes": 142,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 360.lasm",
+      "sha256": "de985bf73c3528da7f498fed23c1292e0b1364169dd62954baf884cddca055ae"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 360.ls",
+      "sha256": "5e6b2d5a7e9394790101f40c312ff38019b73dbbc5abecc56cec707b3dfb59ba"
+    },
+    {
+      "bytes": 2392,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 361.lasm",
+      "sha256": "f0363ad95efd5929cd659965bbba90e860655e00657a1d4a8cbe7f2de4c1fb47"
+    },
+    {
+      "bytes": 314,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 361.ls",
+      "sha256": "ed9514bf7bf554b6e417da71e1c8186a99c985d7de770ae597cb032a12e08e8e"
+    },
+    {
+      "bytes": 3355,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 367.lasm",
+      "sha256": "741dc0104da005a946cf59ac46e5ef6a637cc5e449986ee408995b0748e3cd42"
+    },
+    {
+      "bytes": 477,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 367.ls",
+      "sha256": "6ae79a8e7274dc674e6c32afa21c3dd87db79970c45574eb47eb2f5c954668d9"
+    },
+    {
+      "bytes": 933,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 368.lasm",
+      "sha256": "950bb899c395e41d58dfc8b980065196a13f4863516818ecca1e6ac85cd1ea55"
+    },
+    {
+      "bytes": 114,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 368.ls",
+      "sha256": "9f00fb7f7a12496196eb75960cd856e47f1b696dac28aec6c8b93c2c4d1e19ad"
+    },
+    {
+      "bytes": 146,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 369.lasm",
+      "sha256": "1c64072e52f94aa5a0bfb9122ea11848c6a484aae2cdff2dc15ae4d9d1efebb1"
+    },
+    {
+      "bytes": 33,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 369.ls",
+      "sha256": "8ddc1054d5ba9bb15eb3ee9f9949ba0aa30abfa52b3099a809b28c0f289bbdbf"
+    },
+    {
+      "bytes": 517,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 371.lasm",
+      "sha256": "8f6a535f32cee8f450d434b6578a7cd15b7ece19e7adbf24c95d766b6a88044a"
+    },
+    {
+      "bytes": 82,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 371.ls",
+      "sha256": "e39ee770b1c5851b5b06cada0ddaa92f21c688ff138c1a0618ffca5a1181fc1c"
+    },
+    {
+      "bytes": 521,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 372.lasm",
+      "sha256": "7b79701cd45ec110c4e606510aaa91b74655f2b3145fd42b87c7bd29b6e969af"
+    },
+    {
+      "bytes": 100,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 372.ls",
+      "sha256": "1150f23d8744f33d407e01ef9184fbb90a43ec8e94c2df30866b5ac1fb632127"
+    },
+    {
+      "bytes": 329,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 389.lasm",
+      "sha256": "8430ef89e7aa1b5a4d278d30c164adabf09a2374e7e65c9880a879399dfb2592"
+    },
+    {
+      "bytes": 61,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 389.ls",
+      "sha256": "19fe3b6992b222ffaae534e90cb7d2e7e4865f12ffb92c7894f8d70b79b10925"
+    },
+    {
+      "bytes": 18237,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 4.lasm",
+      "sha256": "cbba6813896eb9963e7cf3334fc64fdb09babb81cf16834b81883c4be672b168"
+    },
+    {
+      "bytes": 1669,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 4.ls",
+      "sha256": "a2ad98578ce9b29d8f9f8efcca506668675f1f550135c3282418c8c52d443a43"
+    },
+    {
+      "bytes": 82482,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 400.lasm",
+      "sha256": "df06cd28679f124fa1f5a95c8079f875bd80a2dd90e9194c930c2b8a59f0acfc"
+    },
+    {
+      "bytes": 9857,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 400.ls",
+      "sha256": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095"
+    },
+    {
+      "bytes": 1605,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 41.lasm",
+      "sha256": "bac4a396a318e0a20166928c181b0255a634d9e74c50e9b01b7b7dbb6de85a15"
+    },
+    {
+      "bytes": 246,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 41.ls",
+      "sha256": "281a362e1fca2c3f1e4b71f0de4bc0617a3d67b5506416511b109e3d92c8688b"
+    },
+    {
+      "bytes": 1483,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 43.lasm",
+      "sha256": "8bfe9500968c6cf6300d42c2373c9a2e8a37bd53651c7f043c4e1de8a772ab89"
+    },
+    {
+      "bytes": 253,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 43.ls",
+      "sha256": "590e9d5af4717dae0864115205d991da10d6162e771d10425e30a652a4b88107"
+    },
+    {
+      "bytes": 1720,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 44.lasm",
+      "sha256": "77557e8ef4cdc86c1d76207876c1ba7f723aacc2a437769a7fb53c2338645ea9"
+    },
+    {
+      "bytes": 259,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 44.ls",
+      "sha256": "c1c9d86b9a3ef728f6778a52e8661115f008659fb0f549fa3a2eea6644746254"
+    },
+    {
+      "bytes": 1605,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 45.lasm",
+      "sha256": "64da16df30585bd75806d1cf9e9a8c316c206ec240fd65d37db8c4ad12380f41"
+    },
+    {
+      "bytes": 261,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 45.ls",
+      "sha256": "c22d8bf8e892c3f6a2e8e001c78332ef296aedb7239872ca4b66f8f7c8b247a9"
+    },
+    {
+      "bytes": 4382,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 450.lasm",
+      "sha256": "ca6a064be27e81fd4c79e218fa58a54eeac0b8057e2ee929d32add97c5a9cf2f"
+    },
+    {
+      "bytes": 529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 450.ls",
+      "sha256": "5420b6f062dc9ed7f20254ee889b8e3e7981a43554ab862abaa5e53c72098e0a"
+    },
+    {
+      "bytes": 2630,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 453.lasm",
+      "sha256": "15b9a1b940fb271aae8f16314e35270a7510beb8d10f94420f614f039e68492c"
+    },
+    {
+      "bytes": 332,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 453.ls",
+      "sha256": "4e177c989e356a7d2054f079623d4032ce43b3f405175038938ca6430213c43b"
+    },
+    {
+      "bytes": 1363,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 454.lasm",
+      "sha256": "ad1317e9d9e134a5569fd02795610c6288aacb5e6e1d50f20d47bc35749cb9e3"
+    },
+    {
+      "bytes": 183,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 454.ls",
+      "sha256": "fb0205e03787a900850b76652b0994cfb764aca8ea168ebd187b399ee0402d31"
+    },
+    {
+      "bytes": 389,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 456.lasm",
+      "sha256": "2c662b9e190e26cdc115ab4e80a90e254ed175f903fbb82ae1f53b079b0beef3"
+    },
+    {
+      "bytes": 51,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 456.ls",
+      "sha256": "eccd1db49014fc6adc57469611268adae24f3355a765f9daadc41325fcc8f1ab"
+    },
+    {
+      "bytes": 14046,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 457.lasm",
+      "sha256": "02ff387c33268040e51c20dedb1bcf1707c8c86476ef1284dc58e00da06ac170"
+    },
+    {
+      "bytes": 1876,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 457.ls",
+      "sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+    },
+    {
+      "bytes": 2456,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 459.lasm",
+      "sha256": "d4b8a6e5729ea05b2c234a8f9e3f7f5b01b6850ec3082398afc3ec8cf0ebe238"
+    },
+    {
+      "bytes": 333,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 459.ls",
+      "sha256": "8b61075fb247f91495ade2983e3ba78374b6500ea4cf3efd64733908de429f2c"
+    },
+    {
+      "bytes": 2464,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 460.lasm",
+      "sha256": "d758796c526ccbc920d9a265cb25ab64d9dde2eb4c53f714f12484a6ce62280c"
+    },
+    {
+      "bytes": 335,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 460.ls",
+      "sha256": "1bb87215cf54b95ad9f27e46c24106c1896b0149bcd2864436f26bb30242c751"
+    },
+    {
+      "bytes": 2536,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 461.lasm",
+      "sha256": "ba465c5845179cdbbce0d9d509d5b358b9fa04fef11af628822d3a96e8eb5a42"
+    },
+    {
+      "bytes": 377,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 461.ls",
+      "sha256": "3184dceae75c285f381a6373240f10c7d7fd0f22ffab1973dd2469c6ca40c6bf"
+    },
+    {
+      "bytes": 9870,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 463.lasm",
+      "sha256": "76cd049491cf40aeabd96e6b761d7e8b60fef4b1b476dbac6d9ace86993b7e99"
+    },
+    {
+      "bytes": 1213,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 463.ls",
+      "sha256": "20f3db1f3dc9bec0d7f0d80f20f51a57cbd312c39df3937d95f35750a5a55c1f"
+    },
+    {
+      "bytes": 1363,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 464.lasm",
+      "sha256": "8cc72ea202bdca07d609d76c575f1a2a74aae13a1de977cd76021c1f1439decf"
+    },
+    {
+      "bytes": 183,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 464.ls",
+      "sha256": "b6b0db2be63daacbd900530d501445d9f7bc165eb97b5921df6a39103ebd042a"
+    },
+    {
+      "bytes": 6333,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 465.lasm",
+      "sha256": "cfe1a76b936ac0122cc515628b70f99e58cf25bce9490be6ed86285fb5f81202"
+    },
+    {
+      "bytes": 623,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 465.ls",
+      "sha256": "0d4c7545df52d9a2fd9cd04eaeaf633f2ac49ba3939ec773c2f97336664eb4b4"
+    },
+    {
+      "bytes": 2408,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 469.lasm",
+      "sha256": "1301f8f372dacc74075b3d815e73d3e6ece617adaeec45104bf45bbb72dadbdd"
+    },
+    {
+      "bytes": 321,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 469.ls",
+      "sha256": "ebd6127b097a7937a2200dc374fdbb6b70710d163d40c69dc853b4c665d99a99"
+    },
+    {
+      "bytes": 4627,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 47.lasm",
+      "sha256": "f8d52d518a45e24457b154aa0074f7ae7a6b4754747744f91be0f86fffdcf7ed"
+    },
+    {
+      "bytes": 583,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 47.ls",
+      "sha256": "e0c9aede3c6ca94a5fe0dee0c0d041765e28025234c63ba6216ec8c2325f86e6"
+    },
+    {
+      "bytes": 28384,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 470.lasm",
+      "sha256": "a11ed609d38e2948202eccc303c522c88a6875aaab57ef09f70f18ca61b01a50"
+    },
+    {
+      "bytes": 2714,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 470.ls",
+      "sha256": "f6c4a0b9c5ea90ba02baac9949e6d61fc1aae01ee05113d14bb6da6e713d4fa6"
+    },
+    {
+      "bytes": 1363,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 472.lasm",
+      "sha256": "ddb767be0f4df633d0951aa3ff8bc878f6a9c26bf5a706a43568121719ff108c"
+    },
+    {
+      "bytes": 183,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 472.ls",
+      "sha256": "fb567b436f8d8bc086502639bfc85b4b9608162416151cf19126aa776b78610e"
+    },
+    {
+      "bytes": 16461,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 473.lasm",
+      "sha256": "d77d5e036fa99886174be0ee34c0be37105f0450f76e7c43a94e69e0fb86e35f"
+    },
+    {
+      "bytes": 1569,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 473.ls",
+      "sha256": "9d0c6c21ea1d6f984b4bc7fa1275daad717aefbc50f929207b0ab68b03449d64"
+    },
+    {
+      "bytes": 2726,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 474.lasm",
+      "sha256": "ed9b1e6893e06b20ab9b7e203987083dd2a8d6e9bbc1e9cd291889515826cc5f"
+    },
+    {
+      "bytes": 342,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 474.ls",
+      "sha256": "cc6bd8cca97326342dbfe75c3bb1e3299ca886cacd59b2e6f990b46d1a0c7ada"
+    },
+    {
+      "bytes": 2652,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 475.lasm",
+      "sha256": "a0c196b767b5214b484ae34097cb93b87023c8f424fe58a712ecb9a31efead37"
+    },
+    {
+      "bytes": 373,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 475.ls",
+      "sha256": "fda84aef4cd9f2159dc175146a94a93d3d3e2bc04fa4c064eb87a9f6b2eff070"
+    },
+    {
+      "bytes": 14046,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 479.lasm",
+      "sha256": "02ff387c33268040e51c20dedb1bcf1707c8c86476ef1284dc58e00da06ac170"
+    },
+    {
+      "bytes": 1876,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 479.ls",
+      "sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+    },
+    {
+      "bytes": 1353,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 48.lasm",
+      "sha256": "65777e24332d064efdbc8e3702fbb0c8928322ba7f36369734d964a76795f5f5"
+    },
+    {
+      "bytes": 182,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 48.ls",
+      "sha256": "b33b959f40b9b409cf5dd023c26d3a59863d5153fb11d57288918f5e2a1f3b2a"
+    },
+    {
+      "bytes": 1116,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 495.lasm",
+      "sha256": "21139d3d7cf3a5007d9f73fdb5d67a446b66f62b4dcc16ff9638a38540c4b55b"
+    },
+    {
+      "bytes": 175,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 495.ls",
+      "sha256": "e597c8f9ca12998b4ac7e2e0bdc0ced0b4db9a160010af9c59cfe5b966298938"
+    },
+    {
+      "bytes": 16993,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 496 - startingnumarmybehavior.lasm",
+      "sha256": "d47660e1ddfcf3956ca050f64e623fc845e62abd2af1143b0723652b161b2ff6"
+    },
+    {
+      "bytes": 1971,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 496 - startingnumarmybehavior.ls",
+      "sha256": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd"
+    },
+    {
+      "bytes": 9806,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 498 - STRENGTHbehavior.lasm",
+      "sha256": "8a44d409c7bd20ff3eb95b2b8abcfd3be8015981930e701c95f6b17d13488898"
+    },
+    {
+      "bytes": 1098,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 498 - STRENGTHbehavior.ls",
+      "sha256": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b"
+    },
+    {
+      "bytes": 16789,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 499 - FREQbehavior.lasm",
+      "sha256": "4e4a3a1cb6822cfb28847cae15ae58100568ce22da6de764f6e116f34a498d9e"
+    },
+    {
+      "bytes": 1996,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 499 - FREQbehavior.ls",
+      "sha256": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4"
+    },
+    {
+      "bytes": 9770,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 500 - SPEEDbehavior.lasm",
+      "sha256": "26fdfa14097587a99d05c0c13fa9749b331d5725bf2526f72628551e9554686e"
+    },
+    {
+      "bytes": 1077,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 500 - SPEEDbehavior.ls",
+      "sha256": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29"
+    },
+    {
+      "bytes": 956,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 501.lasm",
+      "sha256": "df543b682c69d83502ed21350a4367bfabda115fc025f66bc6fdfae731ac1980"
+    },
+    {
+      "bytes": 200,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 501.ls",
+      "sha256": "75e8ed7cb370380eb0ee06a5a2534dc945e081736c6411ab3a21f32089dd7dac"
+    },
+    {
+      "bytes": 270,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 502.lasm",
+      "sha256": "3493abf4f42c5a386c20ca36225771a2cb876b307216ec341fb7a265b78126e3"
+    },
+    {
+      "bytes": 33,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 502.ls",
+      "sha256": "2ba68ff2e5336f54a467dbe3d1aaa7bc979a1fd2a6c1171d22052535e26b3458"
+    },
+    {
+      "bytes": 229,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 503.lasm",
+      "sha256": "1a204d476f87166037565ff5833a5b391b8606e2c9a0410f3863b3a6e1c21e90"
+    },
+    {
+      "bytes": 37,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 503.ls",
+      "sha256": "d1937dbc89d7020e6be2f4780bd86338ad6ae1c7e2605273ff67d9a0ea58993c"
+    },
+    {
+      "bytes": 349,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 504.lasm",
+      "sha256": "ec0a67c66a0f07475649d4c7547eec928cae1095113435399b28817ba8425246"
+    },
+    {
+      "bytes": 60,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 504.ls",
+      "sha256": "f9d8316af6b262d9890c686f877e9a253a21899fd12a1de80f9be12f5a43d7ec"
+    },
+    {
+      "bytes": 6985,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 506.lasm",
+      "sha256": "e4c019a4b720244aeb5f347bb496ea2af143a3b40b7777386bd3688e868ac8b8"
+    },
+    {
+      "bytes": 728,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 506.ls",
+      "sha256": "f3877662792c3113a108c7a0d3ca50b439896f05dd37fabd3b632236a5c10b18"
+    },
+    {
+      "bytes": 2440,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 507.lasm",
+      "sha256": "0e304eb7511c6b29e6ff8d9d98387372f458cc7ba2435be73edf62e7d2bf40ba"
+    },
+    {
+      "bytes": 329,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 507.ls",
+      "sha256": "661b0484b3e336a9639abcc45422225baec0df1d59a768c8cdc4d9e95f6a3295"
+    },
+    {
+      "bytes": 2199,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 508.lasm",
+      "sha256": "871a0206641230fc8d732ac6cd3bc5625b24914d15bd93bda85445bfcea37ba8"
+    },
+    {
+      "bytes": 313,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 508.ls",
+      "sha256": "5a69a58fc5876e7557748552533749fccc567c90008a0ec940d3f20953cddd13"
+    },
+    {
+      "bytes": 702,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 509.lasm",
+      "sha256": "4dff6b01659e97f9ce3435adcbdfa2a560678212af467c032c057a70cff4bde7"
+    },
+    {
+      "bytes": 89,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 509.ls",
+      "sha256": "5822d7d066555efba87a8bab1fae57e5446bfae979ca3c07daf1965fde0d71a6"
+    },
+    {
+      "bytes": 468,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 510.lasm",
+      "sha256": "b618d7a603931df2e77872e58551d97119205a36cbbc6209cd189051ba176369"
+    },
+    {
+      "bytes": 97,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 510.ls",
+      "sha256": "ef8d4fdd4049933bb9b2b56d51bf46f2aa75f6a7177a91ab257efc2f72be03eb"
+    },
+    {
+      "bytes": 270,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 523.lasm",
+      "sha256": "3493abf4f42c5a386c20ca36225771a2cb876b307216ec341fb7a265b78126e3"
+    },
+    {
+      "bytes": 33,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 523.ls",
+      "sha256": "2ba68ff2e5336f54a467dbe3d1aaa7bc979a1fd2a6c1171d22052535e26b3458"
+    },
+    {
+      "bytes": 12680,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 526 - pick3cards.lasm",
+      "sha256": "f3d774421954ffb3270be02bd772622be1381e737d9201e9832ad506a23dd187"
+    },
+    {
+      "bytes": 1528,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 526 - pick3cards.ls",
+      "sha256": "9e90273197885163b6c40845357af18f2484d1ec70d7037e00f44a1bcdca81a5"
+    },
+    {
+      "bytes": 1166,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 53.lasm",
+      "sha256": "18198a8d9bb2dcbe36032a254dc6bf0d8ce6e88eba9c51f89dffe5d020fe85de"
+    },
+    {
+      "bytes": 178,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 53.ls",
+      "sha256": "4fc0b70243c9e34897ee309314f6822ba7743de3af5670da046e079511388287"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 535.lasm",
+      "sha256": "51a8da00bec4ff5f62e73d9c438196bee571a3ea3c027250982fdc071bdc70b1"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 535.ls",
+      "sha256": "5b3c113542eed4e9280ff2caa1d14c9993f1f949df79f3b21c6f15dbf575518b"
+    },
+    {
+      "bytes": 30,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 536.lasm",
+      "sha256": "e362f8c3b68b4e5aa6fd6cc72c749bc3ad060d1d71f469f5cbbce3b3a81a7b53"
+    },
+    {
+      "bytes": 18,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 536.ls",
+      "sha256": "28e2764ed5e7158dba42463f34a2b73c346f01db7d9de8a13170455f38cbe787"
+    },
+    {
+      "bytes": 9626,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 54.lasm",
+      "sha256": "6dd18a07bddb747f32f3bfd8895ed8a21d6dafc92288919c7ae0aa32f903ca89"
+    },
+    {
+      "bytes": 1305,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 54.ls",
+      "sha256": "d27b3093d4844d783c64670230cbc62d220bd980b82a1fbcafb97714589f76f0"
+    },
+    {
+      "bytes": 30,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 540.lasm",
+      "sha256": "e362f8c3b68b4e5aa6fd6cc72c749bc3ad060d1d71f469f5cbbce3b3a81a7b53"
+    },
+    {
+      "bytes": 18,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 540.ls",
+      "sha256": "28e2764ed5e7158dba42463f34a2b73c346f01db7d9de8a13170455f38cbe787"
+    },
+    {
+      "bytes": 4618,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 548.lasm",
+      "sha256": "9a16e9bb64664f6403664c628558d2d8c150a941c3542f580a2c01c91d1dbd19"
+    },
+    {
+      "bytes": 627,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 548.ls",
+      "sha256": "819af7a1ebab89795cfba7b870d9c447f5ed8ae464af57692389737e8220cb75"
+    },
+    {
+      "bytes": 255,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 553.lasm",
+      "sha256": "4e8ef04eb973cf437dbd6c1978bdf7d74931987d4367157d0fe537e0973ae863"
+    },
+    {
+      "bytes": 41,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 553.ls",
+      "sha256": "9ee5edeccec1b114df300dced90b30de713b61c282057668db7d1c210f9eece8"
+    },
+    {
+      "bytes": 4736,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 59.lasm",
+      "sha256": "ba7f21abf7dc9a368a764488aad05996ef912456e3d075b34806f4108beb6aa7"
+    },
+    {
+      "bytes": 684,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 59.ls",
+      "sha256": "f3d7a1f973738a03cf1742949253ff907c956b9636ea04b331a39d88c8fcfe8b"
+    },
+    {
+      "bytes": 3757,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 60.lasm",
+      "sha256": "a9bebb5df4294f34496203a4fefa2fe249f666d44c7fc65b4cf12f2c40854b03"
+    },
+    {
+      "bytes": 490,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 60.ls",
+      "sha256": "cf4416e0a9d45894baf13066accc1a0f531147cbc2acf9a47b341eaa68bfc4f0"
+    },
+    {
+      "bytes": 2425,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 76.lasm",
+      "sha256": "29f8be11aff5e9d6dda4b0852db9b8ce7aa43ec7fcb3ac3c0bc120f72a4b7d29"
+    },
+    {
+      "bytes": 365,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 76.ls",
+      "sha256": "5d4341261e5c7128809b8d9c7321f66a8e72c70f7491823c382544fa297f5de8"
+    },
+    {
+      "bytes": 1589,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 77.lasm",
+      "sha256": "4ef04aae732c325666b1813feb3be6f0a2bd4bd290f2f2b302bd948567d26c36"
+    },
+    {
+      "bytes": 232,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 77.ls",
+      "sha256": "70959a23fe072589625c80707244c31142f7f69c1eb1f65ea38b7b3b108aaa64"
+    },
+    {
+      "bytes": 1589,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 78.lasm",
+      "sha256": "a82c31ee608a31f86930f2e8e197eebfd3bd4e0a85a5b142c68ebbd86ec8e3f9"
+    },
+    {
+      "bytes": 232,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 78.ls",
+      "sha256": "4e3a272dfaa7a18b0694c79312e85e76798a3f2a5fcba6be25e3ed11bd1f455e"
+    },
+    {
+      "bytes": 217,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 79.lasm",
+      "sha256": "2ed292adb99dfbabc47802536b1bb1c37ded92e7ebe78492d83bc812300ff11e"
+    },
+    {
+      "bytes": 33,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 79.ls",
+      "sha256": "469b2c045f6aa362fd44ae488d218213eb67f3b113a4230aef9adca2bc000794"
+    },
+    {
+      "bytes": 561,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 97.lasm",
+      "sha256": "2abeea139ba810865f45574a6bedaa05885070a8b0ca3791639064c438c2e423"
+    },
+    {
+      "bytes": 102,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 97.ls",
+      "sha256": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d"
+    },
+    {
+      "bytes": 7562,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 98.lasm",
+      "sha256": "b844d180aa546775ed6828170bb54eb13d3f791754f03106726e8515297a53ac"
+    },
+    {
+      "bytes": 881,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 98.ls",
+      "sha256": "ad21f8bd762f66f55ddd1ef3aa5619083ce6f7f7e4cc56eae1531eb8e1e50c02"
+    },
+    {
+      "bytes": 4736,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 99.lasm",
+      "sha256": "b7fe777675ae05af3b2b1871e0d1d60d94568722f213fe5c7ca801d8732da0f2"
+    },
+    {
+      "bytes": 684,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/BehaviorScript 99.ls",
+      "sha256": "474521c3220a31658a53e7470dc4c50f1ffb2e67bc04837eb4f3844978251795"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 101 - E1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 101 - E1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 102 - Y1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 102 - Y1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 103 - G1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 103 - G1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 104 - R1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 104 - R1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 105 - B1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 105 - B1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 6042,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 332 - DONE3.lasm",
+      "sha256": "8e20896cbad45328a2c1394ee423b3cddbe69f9aaa889c1ad5fbcea6bd3deb6a"
+    },
+    {
+      "bytes": 695,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 332 - DONE3.ls",
+      "sha256": "0353edf31fa7e1d43460d6798342a464d0da3f81b3465e3ab04edad3c06d9acc"
+    },
+    {
+      "bytes": 295,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 34.lasm",
+      "sha256": "da1373b3e6d29357674defc8720134e570645a9af6efc926686c07111dce4f26"
+    },
+    {
+      "bytes": 69,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 34.ls",
+      "sha256": "a9750b4d033935be350c1ecd07b71612e69e04d7c99f1c8b11499cdb948d251a"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 346 - newgame1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 346 - newgame1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 11160,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 347 - newgame2.lasm",
+      "sha256": "3397a613f2652e4118ffc4a198f23bf7bfc656a2606a646ba1a86f109e400c58"
+    },
+    {
+      "bytes": 1285,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 347 - newgame2.ls",
+      "sha256": "075105ee0779bbea29fe6c744e188db08aa1fca2538a79cd14c9695c85a199d7"
+    },
+    {
+      "bytes": 664,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 349 - options2.lasm",
+      "sha256": "202e2f88a66eaa35a1d61627f80819cf3763b06e61e33179cd7f8138d6d0787c"
+    },
+    {
+      "bytes": 109,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 349 - options2.ls",
+      "sha256": "fedc38777ec51ccd6744b8cc333819f21ab4fd5844c14a7bf4828d3cf27eb391"
+    },
+    {
+      "bytes": 661,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 351 - soleau2.lasm",
+      "sha256": "25363a580406620644986575d12e071450e40f5e2ac2b3d4190765925915e859"
+    },
+    {
+      "bytes": 108,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 351 - soleau2.ls",
+      "sha256": "8687c54bce6cce846c2d6adcc6a0919db854a6b0e12428b81d7f85997d7b04a6"
+    },
+    {
+      "bytes": 783,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 353 - scores2.lasm",
+      "sha256": "f92f30904d32ec113257e71cd76d45a03cf7040a3850efe0de0a0b2ad1e50d62"
+    },
+    {
+      "bytes": 127,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 353 - scores2.ls",
+      "sha256": "20a9639da0318f1a6664456bc289afd50860dc09f67ce3912cfe30e5b07ee67a"
+    },
+    {
+      "bytes": 2603,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 355 - quit2.lasm",
+      "sha256": "cbdf3c9a1b4ff129ad82a2c6aa1e4870e44dc107233f838e9f620bbb0f522cf3"
+    },
+    {
+      "bytes": 322,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 355 - quit2.ls",
+      "sha256": "b73e798df77a22b13023f8d2f7760c560ed35f43f6e44479c85764ae34b92a9a"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 356 - CONTINUE1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 356 - CONTINUE1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1337,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 357 - CONTINUE2.lasm",
+      "sha256": "53625f594478aeb5376cd972e8af5d24132010b0523f03fcfec15c8fed2e281b"
+    },
+    {
+      "bytes": 183,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 357 - CONTINUE2.ls",
+      "sha256": "232a7faeaea7a06383bbb348c4388e9f126cdfd6d19cdaa6d34d83b9ca067272"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 376 - CARDV1.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 592,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 376 - CARDV1.ls",
+      "sha256": "dc2da939c1dc31516cdf65062faab4a2fafc300ba4511d94c20adf15db956cc5"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 377 - CARDV2.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 581,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 377 - CARDV2.ls",
+      "sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 378 - CARDV3.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 581,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 378 - CARDV3.ls",
+      "sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 379 - CARDV4.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 581,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 379 - CARDV4.ls",
+      "sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 380 - CARDV5.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 581,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 380 - CARDV5.ls",
+      "sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 381 - CARDV6.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 581,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 381 - CARDV6.ls",
+      "sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+    },
+    {
+      "bytes": 4529,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 383 - CARDV8.lasm",
+      "sha256": "5118f7c1922433f4e25acc4f182ad1d6b801bd410775579a4a24598704fb2ea0"
+    },
+    {
+      "bytes": 581,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 383 - CARDV8.ls",
+      "sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+    },
+    {
+      "bytes": 0,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 384 - CARDSLOT1.lasm",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 384 - CARDSLOT1.ls",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 401 - T1.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 401 - T1.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 295,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 448 - landscape2.lasm",
+      "sha256": "0f76709058ac7c11e3cdbc4834c17538e995d9d06e2c4535b72e60f64b5bcd7c"
+    },
+    {
+      "bytes": 69,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 448 - landscape2.ls",
+      "sha256": "dd73a38cef2fb4934dc46dda8824a5391de466ccd7cb6662990a0ad36fdd6c3a"
+    },
+    {
+      "bytes": 146,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 452.lasm",
+      "sha256": "70e9be6b44555b84a4cc6bae5b2c567496e666a7458a2084fc9acafaf0261558"
+    },
+    {
+      "bytes": 33,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 452.ls",
+      "sha256": "218348c21f26901d40b078868d2b6fd2ef2e8684332f95453180d2b2cca359b2"
+    },
+    {
+      "bytes": 2161,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 476 - CONTINUE6.lasm",
+      "sha256": "97890790880f321c257de2ac62e6ea5bcbb36957863334b0147e914c6e04606c"
+    },
+    {
+      "bytes": 300,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 476 - CONTINUE6.ls",
+      "sha256": "629bdd4edd0f0ded962f48b25a5a6985ff5d986b3a19f616b23ab39995dadfe4"
+    },
+    {
+      "bytes": 3227,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 477 - CONTINUE5.lasm",
+      "sha256": "335d2045a7049a113f12036f41c047cf494a4e02c409e76ec03d0d35a5756583"
+    },
+    {
+      "bytes": 359,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 477 - CONTINUE5.ls",
+      "sha256": "b03fb41bc754cac23a5242d604add1c0d03ea04605b73bd7974504f6a01c8d59"
+    },
+    {
+      "bytes": 1672,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 478 - CONTINUE3.lasm",
+      "sha256": "fb1bc1f30ecacb3b81ca51d36e283593888988b87c47e5f23daf0c3223dfe44d"
+    },
+    {
+      "bytes": 215,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 478 - CONTINUE3.ls",
+      "sha256": "480e2dca07961b28488842208a4623ad19dc6dd4e892a72112baa90264fa6fd3"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 511 - TCARDV1.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 511 - TCARDV1.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 148,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 512 - TCARDV2.lasm",
+      "sha256": "5fe5996d1f520b8514b90d293e0615e1cec64769bf8fb731f473a0a8d2d6a399"
+    },
+    {
+      "bytes": 35,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 512 - TCARDV2.ls",
+      "sha256": "e99f79a022181d94bfbd577addd9a9a3be3e603e365f1a5735378e21713c29c8"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 513 - TCARDV3.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 513 - TCARDV3.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 514 - TCARDV4.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 514 - TCARDV4.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 515 - TCARDV5.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 515 - TCARDV5.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 516 - TCARDV6.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 516 - TCARDV6.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 517 - TCARDV11.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 104,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 517 - TCARDV11.ls",
+      "sha256": "c39e96a62a57a6707dced0fbab9a06d9c9dffb20a579ea9d85f5d014bb892245"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 518 - TCARDV33.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 518 - TCARDV33.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 519 - TCARDV44.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 519 - TCARDV44.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 520 - TCARDV55.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 520 - TCARDV55.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 521 - TCARDV66.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 521 - TCARDV66.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 527 - tradein1.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 527 - tradein1.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 25960,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 528 - tradein2.lasm",
+      "sha256": "b35aa044c386d66c3099928516363b55ff4003eef1264c89c951d8147c306856"
+    },
+    {
+      "bytes": 2742,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 528 - tradein2.ls",
+      "sha256": "5d7e3cb49e81abc4fa4bc9d7388f32ed1967de9f5a6b5a821c139d007077b4a7"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 529 - dtradein1.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 529 - dtradein1.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 1457,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 530 - dtradein2.lasm",
+      "sha256": "2ccd26c8b6ac36be45b820b0f130b9b6024c0ddeffc58bcaf9c172eb15b90068"
+    },
+    {
+      "bytes": 209,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 530 - dtradein2.ls",
+      "sha256": "8541e4d600c760ef9a9aa720e74835918b87b708369eee421068990143f3b2ff"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 541 - TCARDV8.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 541 - TCARDV8.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 542 - TCARDV88.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 542 - TCARDV88.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 9782,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 568 - HumanH.lasm",
+      "sha256": "66c7eedced21d0cbb24d78733ca3d9bdb6d352d510d4e1657e1081a1f3032de9"
+    },
+    {
+      "bytes": 1217,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 568 - HumanH.ls",
+      "sha256": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2"
+    },
+    {
+      "bytes": 8229,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 569 - ComputerC.lasm",
+      "sha256": "8143ff80d8b5bf20985a423e06ce8589499d7bf0e75f2b9a982b4848cc6ddd8e"
+    },
+    {
+      "bytes": 1125,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 569 - ComputerC.ls",
+      "sha256": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da"
+    },
+    {
+      "bytes": 646,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 591 - ear1.lasm",
+      "sha256": "08abdda5a5b2b84b815b5c08e68eedec6bc6eb86442b4dab4b014a93e3051691"
+    },
+    {
+      "bytes": 104,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 591 - ear1.ls",
+      "sha256": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88"
+    },
+    {
+      "bytes": 849,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 592 - ear2.lasm",
+      "sha256": "150de095b3a03da6de253de0cdc8f1659e7697c33a4a56c77716dd756bbf17ee"
+    },
+    {
+      "bytes": 131,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 592 - ear2.ls",
+      "sha256": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205"
+    },
+    {
+      "bytes": 1666,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 602 - SAVEDEFAULT2.lasm",
+      "sha256": "2ce5cdc021f0a853f05078094804368d72709c407e63c98f4a0cd8b5e3a221e2"
+    },
+    {
+      "bytes": 229,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 602 - SAVEDEFAULT2.ls",
+      "sha256": "27ecc9cf270ab04b1d60e24662d7d78d57f260bf6f0c0d20afe55a1927dcc50d"
+    },
+    {
+      "bytes": 1331,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 604 - PGAME2.lasm",
+      "sha256": "8e85ea78328570d1a3e7b399d6619d0a48568c3295e58a006ea4b066b4f19a14"
+    },
+    {
+      "bytes": 186,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 604 - PGAME2.ls",
+      "sha256": "d184df36a468068210009094db29f91e4cc3ac2c5192a8ac3db1e8d7bf183ca8"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 605 - RETURN4.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 605 - RETURN4.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1268,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 606 - RETURN5.lasm",
+      "sha256": "3b9d18e763ad11c7a621f3b0f16fa22f5bd42f3a348dc944c959ce71fddd4f34"
+    },
+    {
+      "bytes": 181,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 606 - RETURN5.ls",
+      "sha256": "7a09e814d937978d886d1544ed666fe212f9138363a4f66d248f5972f9c12981"
+    },
+    {
+      "bytes": 701,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 607 - RETURN6.lasm",
+      "sha256": "1ba1a34c65ee0e4ba0d34614078e1164a290b145776c52de6a0068ecd61f42ae"
+    },
+    {
+      "bytes": 116,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 607 - RETURN6.ls",
+      "sha256": "95a8159a5e4f7fd1fa9e3ab5c778439e9c181ea365b55661af0796b23332b9f6"
+    },
+    {
+      "bytes": 1114,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 609 - ACCEPT2.lasm",
+      "sha256": "597e15ee0b72eb3b55a75e928cd4cbf0690820a883d8ac8f8908dc65fd73e211"
+    },
+    {
+      "bytes": 151,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 609 - ACCEPT2.ls",
+      "sha256": "effb77552554750d3df428a041503fe5328448342fe2f28d1c1d430ba47030f9"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 61 - Attack1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 61 - Attack1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1672,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 611 - KEEP2.lasm",
+      "sha256": "98bcba73f9bfb5b8727c513ff04ad3394aac00bf0a6f995af0090cc88fe07bd0"
+    },
+    {
+      "bytes": 226,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 611 - KEEP2.ls",
+      "sha256": "5184b1b08fb0aae5e50558132a45dae05c59d93adfed67363b474fa93fa6b12e"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 614 - Reglabel0.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 614 - Reglabel0.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1225,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 615 - KEEP3.lasm",
+      "sha256": "403a7950a697be99c435f8e9dc6b61c90952a1d8920cdc8645b3facee9523836"
+    },
+    {
+      "bytes": 179,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 615 - KEEP3.ls",
+      "sha256": "3d3c15211973a81ddddb7c7061330c89992d70b9991f08d93be44f5c2903cee6"
+    },
+    {
+      "bytes": 656,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 62 - Attack2.lasm",
+      "sha256": "3ece42212b929c909ed51f3b24d17c1b7c400af4a79dce09032bbe30a94f14ed"
+    },
+    {
+      "bytes": 141,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 62 - Attack2.ls",
+      "sha256": "0d0eacafc73fc0379068b2df31525104cb038d06bb3316e35b76eaa00984a5fe"
+    },
+    {
+      "bytes": 2833,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 632 - ACCEPTLOSS2.lasm",
+      "sha256": "75ca12c5d46a081431fa628ff17bd7ebb3c69c3cef9a14d75bd9b7e39931efe4"
+    },
+    {
+      "bytes": 376,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 632 - ACCEPTLOSS2.ls",
+      "sha256": "b3072e4bc8efeab85f06050b5d1556a78e60e00402710eecd6679009eaff8131"
+    },
+    {
+      "bytes": 10137,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 636 - reset2.lasm",
+      "sha256": "e3f254bc2b1620545e1562f115c7e6722c75fc342e19afedf72252e37ff07521"
+    },
+    {
+      "bytes": 837,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 636 - reset2.ls",
+      "sha256": "130404c867b910b81fdc8e0c48bbca5e6b1e62de516a00ae7e01e7b4ad7c914b"
+    },
+    {
+      "bytes": 3412,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 637 - HALT1.lasm",
+      "sha256": "f54df0a48b63fd49230571488152bd24413bddf61d7778093f5f608e4049d6a8"
+    },
+    {
+      "bytes": 429,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 637 - HALT1.ls",
+      "sha256": "18fad81d3d1c450de539e300f141f96659ba8d1fe0b6f4248d4c68d1181320e0"
+    },
+    {
+      "bytes": 656,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 64 - Movebut2.lasm",
+      "sha256": "039199daa08f4914c5d34c1cabdb7b9e89b4346f7babdb2c327f33f10e3ec4b2"
+    },
+    {
+      "bytes": 103,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 64 - Movebut2.ls",
+      "sha256": "a728995644b0ac79b5690e8929ce3a6e9c7abcc86f736388b3ef7f693e7a5588"
+    },
+    {
+      "bytes": 2190,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 66 - Pass2.lasm",
+      "sha256": "5345e5a63564987996b3d3b748d2838878049389b3836d619ff115745ef24977"
+    },
+    {
+      "bytes": 296,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 66 - Pass2.ls",
+      "sha256": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f"
+    },
+    {
+      "bytes": 10598,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 662 - Printform2.lasm",
+      "sha256": "915573d194407eddb2cbf1acc485b554ba74df8c62b657b0786f92db3ec90a34"
+    },
+    {
+      "bytes": 1265,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 662 - Printform2.ls",
+      "sha256": "8438a8cb447d0761f20a5a3a0c01b6fe64b55d581d4d695bb4b3b6e802b36cde"
+    },
+    {
+      "bytes": 771,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 664 - Online2.lasm",
+      "sha256": "b6eb73d62eaf956ee12ecfb2c853a029582075ba0eaccffa964aa3a7ee2a20ed"
+    },
+    {
+      "bytes": 117,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 664 - Online2.ls",
+      "sha256": "05699ad02a87022f9e9df73da15ca8b39cc00ea7f13a8e707815f6b6ad0adb44"
+    },
+    {
+      "bytes": 1416,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 666 - exit2.lasm",
+      "sha256": "6b695215c667d0261e161e91131079ca961aed12293b8af1826a9e6a24c55939"
+    },
+    {
+      "bytes": 191,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 666 - exit2.ls",
+      "sha256": "196a4706c26d3bab4e01700b7f0d480d0f210bbbdfe9ad6599ead9e9aca29364"
+    },
+    {
+      "bytes": 655,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 668 - Help2.lasm",
+      "sha256": "3e607bf25ea82cafa20cb0a75546d32d1a54fbcfcf33e84b25f03ad749b8caa5"
+    },
+    {
+      "bytes": 106,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 668 - Help2.ls",
+      "sha256": "cff8fb7350b1c5131ff8454372d6e403e154a5b868da51acc9facfa98f51ce95"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 670 - Returnf1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 670 - Returnf1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1698,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 671 - returnf2.lasm",
+      "sha256": "c27b92d3cf68774790da3563ec32b1219665c5326284904be83499e13570bcf0"
+    },
+    {
+      "bytes": 228,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 671 - returnf2.ls",
+      "sha256": "a444525ba85d0455ac98565adf1e16f5b70a7b555d0ff12453703030856b802b"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 672 - FORM1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 672 - FORM1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1479,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 673 - form2.lasm",
+      "sha256": "8c72f9c2fd93012185452ad654e5db86ca775119558623022794249e8f88affe"
+    },
+    {
+      "bytes": 205,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 673 - form2.ls",
+      "sha256": "cddba24e951a0df059de7dc846a01dbbcab2d8f6d81d02497a62a6d802ad1c12"
+    },
+    {
+      "bytes": 665,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 68 - Card2.lasm",
+      "sha256": "c64a7ee5721e57985af8cf41b3f9f0f1aa9236b1c37a372041f53593a892f360"
+    },
+    {
+      "bytes": 106,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 68 - Card2.ls",
+      "sha256": "da45b20d2bf8ae693b0dfeaaa44ccffe88a658bf735e8963f9a15ab26ef1f8f9"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 687 - soleausite1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 687 - soleausite1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1722,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 688 - soleausite2.lasm",
+      "sha256": "90fcaf3e9ed025c529539c963f0d2b3f281372016da03ad66469a1b27282ce3f"
+    },
+    {
+      "bytes": 251,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 688 - soleausite2.ls",
+      "sha256": "bc7085cde3642cd504bf72962b64a4416f420e0f643f25bdf8e534ea4f94be05"
+    },
+    {
+      "bytes": 1479,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 70 - Cancel2.lasm",
+      "sha256": "7ba8c3cbe297fd2c4f2c00d4b924c2f23a90639f4fb6da4e5f7b7ed58af1bdb6"
+    },
+    {
+      "bytes": 172,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 70 - Cancel2.ls",
+      "sha256": "0cc9f2adf47e9d85ffde6340f9af3eb3275de6c03a72b42ee7b3d54847e12f4f"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 71 - QAttack1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 71 - QAttack1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 2403,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 72 - QAttack2.lasm",
+      "sha256": "e174a92fa94f9021a87a0d4e8b610735def6fe3e47f13feba3159cbe318deef7"
+    },
+    {
+      "bytes": 306,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 72 - QAttack2.ls",
+      "sha256": "7722ba6bc860f2ff7d604c2af6771cc563c494a575f14536b0a3816d72ed2a9b"
+    },
+    {
+      "bytes": 29,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 73 - Attack3.lasm",
+      "sha256": "ec2a75182b7c97664f8b54568594006c243d8ed2ce18af1ef58efe636ac1f00a"
+    },
+    {
+      "bytes": 17,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 73 - Attack3.ls",
+      "sha256": "11bd6373148ce05c9b7409ae108a71d1f7d1bcde89ec1875f041b4bd2f7a1a44"
+    },
+    {
+      "bytes": 894,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 74 - Attack4.lasm",
+      "sha256": "79b17633faf57089a1c689a819c022619ead1aa2ab48bcd5e346e9ba9811c519"
+    },
+    {
+      "bytes": 151,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 74 - Attack4.ls",
+      "sha256": "8189dc6c3f5b65e37a8a1008b7b69d8600bab1d3a740d124d5c23edf0be699d7"
+    },
+    {
+      "bytes": 27,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 82 - Pall1.lasm",
+      "sha256": "c9935ed8ac0fd6f2ede99586c9868cbfbcac9e569c392c76230c7454596978d1"
+    },
+    {
+      "bytes": 15,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 82 - Pall1.ls",
+      "sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+    },
+    {
+      "bytes": 1483,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 83 - Pall2.lasm",
+      "sha256": "616e4ea250deac0f4446de1d4344c1cdf8f026f7384b014d261e8e523d6e9d8b"
+    },
+    {
+      "bytes": 264,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 83 - Pall2.ls",
+      "sha256": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5"
+    },
+    {
+      "bytes": 1872,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 85 - plus2.lasm",
+      "sha256": "baeb665f19b95bc1f907a63b9190a80bc01c0325baeb08487814851b843770d6"
+    },
+    {
+      "bytes": 310,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 85 - plus2.ls",
+      "sha256": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9"
+    },
+    {
+      "bytes": 1842,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 87 - min2.lasm",
+      "sha256": "34b6a4d5e27a80f2c4d3bfa42035f773bbfdc273fe9f0794d767d24af999bb07"
+    },
+    {
+      "bytes": 300,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 87 - min2.ls",
+      "sha256": "0759a1842164461847b78abb9cebf7623ef0a41aec0756d11ae93ac0fcdacd01"
+    },
+    {
+      "bytes": 6580,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 89 - place2.lasm",
+      "sha256": "230af253fb0c6094bf99974aee7ec13e5fac0b233fcdf5f98c128a8a8f4d4921"
+    },
+    {
+      "bytes": 776,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 89 - place2.ls",
+      "sha256": "d14bf57ba5d283e24c6401b834ce5333341559700a5571797b6b1d7b37f1d6e0"
+    },
+    {
+      "bytes": 146,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 91.lasm",
+      "sha256": "70e9be6b44555b84a4cc6bae5b2c567496e666a7458a2084fc9acafaf0261558"
+    },
+    {
+      "bytes": 33,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 91.ls",
+      "sha256": "218348c21f26901d40b078868d2b6fd2ef2e8684332f95453180d2b2cca359b2"
+    },
+    {
+      "bytes": 1872,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 92 - plus3.lasm",
+      "sha256": "baeb665f19b95bc1f907a63b9190a80bc01c0325baeb08487814851b843770d6"
+    },
+    {
+      "bytes": 310,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 92 - plus3.ls",
+      "sha256": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9"
+    },
+    {
+      "bytes": 1842,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 93 - min3.lasm",
+      "sha256": "9fa00155698f34833187ccd0b6a68f34f24ea8e46a3ad37a9af6553a5afa20eb"
+    },
+    {
+      "bytes": 300,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 93 - min3.ls",
+      "sha256": "1ddb9260e04df92d478afd5d365ba0aa8298dc3096bc21f8a5f593c31ee89b0a"
+    },
+    {
+      "bytes": 1483,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 94 - Pall3.lasm",
+      "sha256": "616e4ea250deac0f4446de1d4344c1cdf8f026f7384b014d261e8e523d6e9d8b"
+    },
+    {
+      "bytes": 264,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 94 - Pall3.ls",
+      "sha256": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5"
+    },
+    {
+      "bytes": 5488,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 96 - DONE2.lasm",
+      "sha256": "ab22bee3420c90fca00ded6302589abccd59c593aa213afd9e5fef07cbb4a5c2"
+    },
+    {
+      "bytes": 669,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/CastScript 96 - DONE2.ls",
+      "sha256": "6bd5753fa69fcc4ff6d8952886e8c88b365597c2bc55adee071bbebf85618c1c"
+    },
+    {
+      "bytes": 69897,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 1 - Startmovie.lasm",
+      "sha256": "877a12a39783ebef40c2aefc0f5b39b19deda3ca1f3417b7aa3876386418075a"
+    },
+    {
+      "bytes": 6443,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 1 - Startmovie.ls",
+      "sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1"
+    },
+    {
+      "bytes": 16120,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 10 - Checkturn.lasm",
+      "sha256": "9dd92293350a3b89cf84ddd1453f41a38cd8a9535ba517447c42e5a7005e32d1"
+    },
+    {
+      "bytes": 1715,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 10 - Checkturn.ls",
+      "sha256": "a2ed8e46fdc45dd998a5726e00cdded651cc3e66cb3f39983ae208a124fe3f13"
+    },
+    {
+      "bytes": 12968,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 23 - Newgame.lasm",
+      "sha256": "2807730617d7b53ad55f3fb70283d037e194b1c6074b3cdfb46f00923f7df282"
+    },
+    {
+      "bytes": 1561,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 23 - Newgame.ls",
+      "sha256": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939"
+    },
+    {
+      "bytes": 30,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 29 - RestoreAll.lasm",
+      "sha256": "83e0e6c8125b257542cf3c205527461256a5e0e0a5d6ae643d3b9b645bf7e106"
+    },
+    {
+      "bytes": 18,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 29 - RestoreAll.ls",
+      "sha256": "a7a56a977406dec930d2a1f0781c0e31f8abbad795c41dc9d5e6bba26b50b241"
+    },
+    {
+      "bytes": 264254,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 333 - ComputerPlaceArmies.lasm",
+      "sha256": "cacf2592f306ef58170de078c80c369f6e103fdd7e01f6e4314324d72aa2f5e2"
+    },
+    {
+      "bytes": 25785,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 333 - ComputerPlaceArmies.ls",
+      "sha256": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d"
+    },
+    {
+      "bytes": 47249,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 334 - Computerattack.lasm",
+      "sha256": "dcfc1e27b81c712e9989d962b80dea9b343778888b2f637582fad73d4157fc5a"
+    },
+    {
+      "bytes": 5638,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 334 - Computerattack.ls",
+      "sha256": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411"
+    },
+    {
+      "bytes": 11503,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 335 - GetValidArmys.lasm",
+      "sha256": "901ef265358dbc0b51847784ffb768a7adab1a86b70947fda08ef245a93bfce2"
+    },
+    {
+      "bytes": 1295,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 335 - GetValidArmys.ls",
+      "sha256": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67"
+    },
+    {
+      "bytes": 21242,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 336 - ATTACKHIM.lasm",
+      "sha256": "2692a3f24e41ed7d985dcb6839239634e3024165c9e65cc7b5c4571d31e90e01"
+    },
+    {
+      "bytes": 2738,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 336 - ATTACKHIM.ls",
+      "sha256": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea"
+    },
+    {
+      "bytes": 69544,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 337 - computerrolldice.lasm",
+      "sha256": "aeffef8751770202bec3ef3789f031f157fc65200ecff812e229a800846128a5"
+    },
+    {
+      "bytes": 7741,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 337 - computerrolldice.ls",
+      "sha256": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89"
+    },
+    {
+      "bytes": 62540,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 338 - MakeComputerMove.lasm",
+      "sha256": "d73f6ea1d6fad729020f3bb374be9eaff4d2adc6b67a670d70ec861dd17be5ed"
+    },
+    {
+      "bytes": 6745,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 338 - MakeComputerMove.ls",
+      "sha256": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c"
+    },
+    {
+      "bytes": 6479,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 339 - bottombuttons.lasm",
+      "sha256": "c37dc5c0cd73154b51c254e6b533e9a99b1df889a8937b57e05baf7b5c199269"
+    },
+    {
+      "bytes": 893,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 339 - bottombuttons.ls",
+      "sha256": "d66dc6d78985bf71cb64b3a9357b95542b9678ccf2e23fb6c28deac2a68a9482"
+    },
+    {
+      "bytes": 12909,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 344 - PUTINCARDS.lasm",
+      "sha256": "6ebca000df880723f74d5bb9f7ef048695c28374b6d4dbe43426eaece9ca8a1e"
+    },
+    {
+      "bytes": 1624,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 344 - PUTINCARDS.ls",
+      "sha256": "eb77a117abbcff742a42d2c544ec2c8643a58896d2b3f8df27b0302d9515d730"
+    },
+    {
+      "bytes": 16277,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 345 - SELECTACARD.lasm",
+      "sha256": "e69c6ca6b9a70697e72a41b6049f51081dadd69acb444d67ebaeb45a81e0dfef"
+    },
+    {
+      "bytes": 1815,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 345 - SELECTACARD.ls",
+      "sha256": "0bc50c640aeb09aee1ead9094964526976ed2d933a47be05b0fc128880cd565a"
+    },
+    {
+      "bytes": 5382,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 363 - addtoproductioncenter.lasm",
+      "sha256": "f8b7d4eaccd900dae61e6ddd4426f34a6c7f1ddbe2f6e027efa3a191ddb84a96"
+    },
+    {
+      "bytes": 639,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 363 - addtoproductioncenter.ls",
+      "sha256": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12"
+    },
+    {
+      "bytes": 18262,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 364 - PutinFlood.lasm",
+      "sha256": "e004e2a7f8721fe5b7f0fc4bf6b903af4ba3691ce88ed612136250ca96c9c12e"
+    },
+    {
+      "bytes": 1583,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 364 - PutinFlood.ls",
+      "sha256": "7d6643034c808e4ae92cf078e0fceb361806d61afc87b920e8239834cb1fad97"
+    },
+    {
+      "bytes": 22652,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 365 - Putinrebellion.lasm",
+      "sha256": "faa3c4d836bc6c4a95049130d9f584d3d5bfe9c3010b93b9ec8d180151b118b7"
+    },
+    {
+      "bytes": 2359,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 365 - Putinrebellion.ls",
+      "sha256": "8b60b52b87a15dc1ef4f58e4b48556e0bc0feb2066e53115d23a90bbf8669295"
+    },
+    {
+      "bytes": 10552,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 366 - CheckCardMatch.lasm",
+      "sha256": "841fa534e5636dba5eeb1c9e39e5da7945eb35cbb49554b177bd82ebf9dad8c4"
+    },
+    {
+      "bytes": 1141,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 366 - CheckCardMatch.ls",
+      "sha256": "14556981a17aa9bb1accd2ca963572052ccdcc228d7fec7decdcc8bafed4cdbe"
+    },
+    {
+      "bytes": 28897,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 397 - CompCheckCardMatch.lasm",
+      "sha256": "028ceb55d9297569e05811b80a404b8d67826cb405674a23d8be456d6b6db2d4"
+    },
+    {
+      "bytes": 3218,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 397 - CompCheckCardMatch.ls",
+      "sha256": "81bd1b62fc1ed7368950e8627feda11823167ece5b1e11772ad20f9a3aa0fe29"
+    },
+    {
+      "bytes": 13527,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 398 - CompCards.lasm",
+      "sha256": "d39bafc7f0eec0d9089950a1e837fdc72b436bbbc28e8cdac8890b45465fca15"
+    },
+    {
+      "bytes": 1495,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 398 - CompCards.ls",
+      "sha256": "4595e8243633d8f08addf9ed3f67341b4d79a90e2520060a2974780316b6c258"
+    },
+    {
+      "bytes": 7714,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 399 - WHOGOESFIRST.lasm",
+      "sha256": "deedf0c181b2595c6279ed216c024d27864d5b8978dee92a6b19d32b6ade9ee2"
+    },
+    {
+      "bytes": 950,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 399 - WHOGOESFIRST.ls",
+      "sha256": "d213ef3a4b8a4b331118851ed781c60f905e495ca6e15d22ceb4f592766260c8"
+    },
+    {
+      "bytes": 11092,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 455 - WRITESCORES.lasm",
+      "sha256": "4f6ed7326db2daa63ee49f415c16183ebd9a7544f2412b26dcc66f6f8267b39c"
+    },
+    {
+      "bytes": 955,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 455 - WRITESCORES.ls",
+      "sha256": "a391db8de5dda491b912fa87123c66ba5998c9e9e6e4fe2b91b7d0710911d610"
+    },
+    {
+      "bytes": 18330,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 458 - getdefaults.lasm",
+      "sha256": "752a35bb38a4636875d73797cc546b1780224ca82b74be9423f4894fd7dc94df"
+    },
+    {
+      "bytes": 1827,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 458 - getdefaults.ls",
+      "sha256": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3"
+    },
+    {
+      "bytes": 4834,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 471 - READSCORES.lasm",
+      "sha256": "b574632fc1022e55a637629f3f23cbce84360ed33fa0f3a64ce4a7a4fb8a1d6c"
+    },
+    {
+      "bytes": 549,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 471 - READSCORES.ls",
+      "sha256": "60bb20206efcc5cf1cbdddef86366ef311fa240bf2502200c84cbf67c4d9378c"
+    },
+    {
+      "bytes": 22478,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 480 - checkupg.lasm",
+      "sha256": "42e37426cb3f067b62ca980f7ccb4b16fb30eb50ea961a80d2791268815ef48d"
+    },
+    {
+      "bytes": 2562,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 480 - checkupg.ls",
+      "sha256": "8e7fa4b8cfcb964198edb33a529bcc5d83d4a51b204b3bb01dee9a16e14e42af"
+    },
+    {
+      "bytes": 1552,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 49 - Showstrength.lasm",
+      "sha256": "eb2016e24fafffb8b8faaf70e6d418171dff6828352ac95afb146af3381b8490"
+    },
+    {
+      "bytes": 173,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 49 - Showstrength.ls",
+      "sha256": "4ef4c546c7a7bf5aaf0e32c9c57961731e9c9e2411f4c5c8da4a02a70b46982e"
+    },
+    {
+      "bytes": 17185,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 494 - Getusernames.lasm",
+      "sha256": "143bc036630419fd77ca58442706cc2018a31ea4fd8154b7b7a1a08f6c0e888c"
+    },
+    {
+      "bytes": 2151,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 494 - Getusernames.ls",
+      "sha256": "c737ceb662b16db26d04369d4ba682e9a3c91815b270b83b8c18243810f2d5bf"
+    },
+    {
+      "bytes": 40091,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 5 - Putinboard.lasm",
+      "sha256": "a3cafab98b9ffd4d958e9531f73586ecf527ecb5118ec7b81827597dbd391d8f"
+    },
+    {
+      "bytes": 3871,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 5 - Putinboard.ls",
+      "sha256": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab"
+    },
+    {
+      "bytes": 11592,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 50 - Rolldice.lasm",
+      "sha256": "cca98648ae19eec7c9952a05e8c51433d99e34dd528288bc934b0aa271cfe032"
+    },
+    {
+      "bytes": 1233,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 50 - Rolldice.ls",
+      "sha256": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f"
+    },
+    {
+      "bytes": 7543,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 51 - putinproductioncenters.lasm",
+      "sha256": "d8bfbdec3db5aeb49acd44cb5be06592e20ef437cc5a5fb75f20eecf84290d29"
+    },
+    {
+      "bytes": 839,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 51 - putinproductioncenters.ls",
+      "sha256": "9edb5fc3c8d853d0968f9203500196218e25bbe3600a30dc89c79d7fde1aad18"
+    },
+    {
+      "bytes": 14341,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 532 - Reordercards.lasm",
+      "sha256": "5f327807434ac5fa7f358faee0823a3a1abf96979702ca06d9ea7c046dce688e"
+    },
+    {
+      "bytes": 1782,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 532 - Reordercards.ls",
+      "sha256": "554cf5957cadcfbbf387e5a66d329666b330b9400d3920241896d36d82814295"
+    },
+    {
+      "bytes": 3049,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 549 - checkfor.lasm",
+      "sha256": "14b1c1c7639ad7b9554f70bf6ad4d2ba34432de96082db43ec267a282574c2cf"
+    },
+    {
+      "bytes": 367,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 549 - checkfor.ls",
+      "sha256": "92a8e23150c1de2da092b8be61b376f39c4d325f6d31e93ccd6bd88a6416ae4b"
+    },
+    {
+      "bytes": 65308,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 6 - CheckNumberofArmies.lasm",
+      "sha256": "20a95520a7957c4f9c6537a55fc3385dd32173a2b81641fa204e7983dd1ec78d"
+    },
+    {
+      "bytes": 6956,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 6 - CheckNumberofArmies.ls",
+      "sha256": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a"
+    },
+    {
+      "bytes": 19334,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 75.lasm",
+      "sha256": "9cc6bbc66416f1bb3ed7579a1a24535624f3c2b28fde283e0365c78bf2e740bd"
+    },
+    {
+      "bytes": 1896,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 75.ls",
+      "sha256": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad"
+    },
+    {
+      "bytes": 8318,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 81 - Lostit.lasm",
+      "sha256": "95b1a1fcf0d51cca3544e375d32309d1627bbb74dabb03579ec4deac7f973d7a"
+    },
+    {
+      "bytes": 932,
+      "path": "movie-01-out/movie-01.abs/casts/Internal/MovieScript 81 - Lostit.ls",
+      "sha256": "4b83d0459db957a00e860f9d047ba54c9a3d653bc3ccdc3cd755529c0bebe22e"
+    },
+    {
+      "bytes": 0,
+      "path": "movie-01-projectorrays.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 253022,
+      "path": "movie-01-projectorrays.out",
+      "sha256": "a4f87d89ac62ab35e3ee9bb64c740dbc47e2f0f769dde004a4f1d7a27d81564c"
+    },
+    {
+      "bytes": 7150736,
+      "path": "movie-01.abs.dxr",
+      "sha256": "b1677afba9a753aebe4521dd2122e17b9ea28984b811f5bf7dad0ee738619986"
+    },
+    {
+      "bytes": 4522178,
+      "path": "movie-01.dxr",
+      "sha256": "3fe1df66e2c5a501d91e5089a31173c779f459537e5a76946917137993f69b2e"
+    }
+  ],
+  "file_count": 431,
+  "run_directory": "iwp-extract-explore1"
+}

@@ -14,6 +14,9 @@ calls before it reads or writes anything:
   The bytes the caller then uses are the bytes that were hashed.
 - `new_run_dir` and `write_new`: every output is a new file in a new directory of its own, written
   through `setup/iwp/safeio.py` (no link followed, never overwritten).
+- `inventory`: the sha256 and size of every file a run left in its directory (the tool's own files
+  too: a Ghidra database, a listing, a dumped chunk), so that `check_derived_hashes.py` knows each
+  one by its bytes, whatever name a copy of it might be given.
 
 `write_record` is the one way a measurement reaches a tracked path: a JSON file under
 `experiments/E008-static-triage/measurements/`, new, and refused when its text holds a machine path.
@@ -172,6 +175,27 @@ def derived(root, name, sha256):
     if sha != sha256:
         die(f"{name} is not the file with the given sha256 (it is {sha}); nothing was analysed")
     return path, size
+
+
+def inventory(directory):
+    """[{path, sha256, bytes}] for every file under `directory`, sorted by its path relative to it.
+    A link is listed as {path, link: true} and never followed (its target is not the run's)."""
+    base = Path(directory)
+    found = []
+    for folder, dirs, files in os.walk(base, followlinks=False):
+        here = Path(folder)
+        for name in files + [d for d in dirs if (here / d).is_symlink()]:
+            path = here / name
+            rel = path.relative_to(base).as_posix()
+            if path.is_symlink():
+                found.append({"path": rel, "link": True})
+                continue
+            try:
+                sha, size = sha256_path(path)
+            except (safeio.Refused, OSError) as exc:
+                die(f"{rel} cannot be inventoried: {exc}")
+            found.append({"path": rel, "sha256": sha, "bytes": size})
+    return sorted(found, key=lambda item: item["path"])
 
 
 def run_id():

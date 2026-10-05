@@ -19,6 +19,8 @@ OR = T + "OriginalRefusalTest"
 SC = "tools/static/static_common.py"
 DU = "tools/static/dos_unpack.py"
 DP = "tools/static/dos_probe.py"
+IV = "tools/static/inventory_derived.py"
+IN = T + "InventoryTest"
 MUTANTS = [
     # ---- the output never lands in a checkout; IWA_STATIC must be set and confined
     ("IWA_STATIC is not confined (unset, relative, in a checkout, over the repository)", SC,
@@ -131,6 +133,54 @@ MUTANTS = [
     ("an executable without the PKLITE text is called PKLITE", "tools/static/dos_identify.py",
      "    if at == 30:", "    if True:",
      [T + "DosIdentifyTest.test_an_executable_without_the_pklite_text_is_not_called_pklite"]),
+    # ---- round 1, R1: dos_identify refuses as every script does
+    ("dos_identify reads the original without confining IWA_STATIC", "tools/static/dos_identify.py",
+     '    common.static_root(env, originals=("iw-dos",))\n', "",
+     [CO + ".test_every_script_refuses_an_unset_static_folder_and_creates_nothing",
+      CO + ".test_every_script_refuses_a_static_folder_inside_a_checkout_and_writes_nothing"]),
+    ("dos_identify lets the static folder overlap the original's folder", "tools/static/dos_identify.py",
+     '    common.static_root(env, originals=("iw-dos",))', "    common.static_root(env)",
+     [CO + ".test_every_script_refuses_a_static_folder_that_overlaps_the_original"]),
+    ("inventory_derived takes IWA_STATIC without confining it", IV,
+     "    root = common.static_root(env)\n",
+     '    root = Path(env.get("IWA_STATIC") or "/nonexistent")\n',
+     [CO + ".test_every_script_refuses_an_unset_static_folder_and_creates_nothing",
+      CO + ".test_every_script_refuses_a_static_folder_inside_a_checkout_and_writes_nothing"]),
+    # ---- round 1, R2: every file a run leaves is inventoried, and the checker knows it by its bytes
+    ("the inventory lists only the top of a run directory", SC,
+     "    for folder, dirs, files in os.walk(base, followlinks=False):",
+     "    for folder, dirs, files in [next(os.walk(base))]:",
+     [IN + ".test_each_run_records_every_file_of_its_directory",
+      IN + ".test_a_tracked_copy_of_a_listing_a_ghidra_database_or_a_dumped_chunk_fails_under_any_name"]),
+    ("the inventory does not list a link as a link", SC,
+     '            if path.is_symlink():\n                found.append({"path": rel, "link": True})\n                continue\n',
+     "",
+     [IN + ".test_a_link_in_a_run_directory_is_listed_and_not_followed"]),
+    ("ghidra_import does not inventory its run directory", "tools/static/ghidra_import.py",
+     '    result["derived_files"] = common.inventory(run_dir)', "    pass",
+     [IN + ".test_each_run_records_every_file_of_its_directory",
+      IN + ".test_a_tracked_copy_of_a_listing_a_ghidra_database_or_a_dumped_chunk_fails_under_any_name"]),
+    ("iwp_extract does not inventory its run directory", "tools/static/iwp_extract.py",
+     '    result["derived_files"] = common.inventory(run_dir)', "    pass",
+     [IN + ".test_each_run_records_every_file_of_its_directory",
+      IN + ".test_a_tracked_copy_of_a_listing_a_ghidra_database_or_a_dumped_chunk_fails_under_any_name"]),
+    ("dos_unpack does not inventory its run directory", DU,
+     '    result["derived_files"] = common.inventory(run_dir)', "    pass",
+     [IN + ".test_each_run_records_every_file_of_its_directory"]),
+    ("check_derived_hashes ignores the inventoried derived files", "tools/static/check_derived_hashes.py",
+     "            for item in inventoried(doc):", "            for item in ():",
+     [IN + ".test_a_tracked_copy_of_a_listing_a_ghidra_database_or_a_dumped_chunk_fails_under_any_name",
+      IN + ".test_the_checker_counts_the_inventoried_files"]),
+    # ---- round 1, R5: the error-marker count
+    ("iwp_markers counts a marker inside a longer word", "tools/static/iwp_markers.py",
+     'ERROR_WORD = re.compile(r"\\bERROR\\b")', 'ERROR_WORD = re.compile(r"ERROR")',
+     [T + "MarkersTest.test_each_marker_is_counted_as_a_whole_word"]),
+    ("iwp_markers counts files that are not the recorded scripts", "tools/static/iwp_markers.py",
+     "        if (sha, match.group(4)) not in wanted:\n            continue\n", "",
+     [T + "MarkersTest.test_a_script_the_record_does_not_list_is_not_counted"]),
+    ("iwp_markers takes IWA_STATIC without confining it", "tools/static/iwp_markers.py",
+     "    root = common.static_root(env)\n", '    root = Path(env.get("IWA_STATIC") or "/nonexistent")\n',
+     [T + "MarkersTest.test_an_unset_or_in_checkout_static_folder_is_refused"]),
     # ---- the extractor's reading of a projector
     ("a projector without its PJ00 header is accepted", "tools/static/iwp_extract.py",
      '    if data[image_end:image_end + 4] != b"00JP":', "    if False:",

@@ -13,7 +13,8 @@ The input is one of:
 
 Ghidra's project, its log and the report (`tools/static/ghidra/T26Report.java`) are written into the
 new directory `<IWA_STATIC>/ghidra-<run>/`. The report holds counts, addresses and function names.
-`--record NAME` writes those, with the tool versions and the exit code, to
+`--record NAME` writes those, with the tool versions, the exit code and the sha256 and size of every
+file the run left in its directory (`derived_files`), to
 `experiments/E008-static-triage/measurements/NAME` as a new file. No disassembly is printed.
 
 `--range START-END` (addresses as Ghidra writes them, `1000:9b33`) has the post-script disassemble
@@ -153,6 +154,7 @@ def main(argv=None, env=None):
               "analyzeHeadless_exit": code, "seconds": seconds, "needles": args.needle, "ranges": args.range}
     if code == 0 and report.is_file():
         result["report"] = parse_report(report.read_text(encoding="utf-8"))
+    result["derived_files"] = common.inventory(run_dir)       # the project, the listings, the logs
     if args.record:
         name = args.record if args.record.endswith(".json") else args.record + ".json"
         print(f"record: {common.write_record(name, result)}")

@@ -5,16 +5,20 @@
 
 Every output derived from an original (the unpacked executable, the carved movie, a decompiled
 script, a Ghidra database) stays in the machine-local static folder, and is recorded here only by
-sha256 and size, in `experiments/E008-static-triage/measurements/`. This script collects every
-sha256 written in those records, then hashes every tracked file of the checkout and fails when one
-has a listed hash: it would be that output itself. It also fails on a tracked file whose name is
-one of the derived kinds (a Director movie, a Ghidra project file), whatever its bytes.
+sha256 and size, in `experiments/E008-static-triage/measurements/`. Each run's record, and the
+inventories of `inventory_derived.py`, list every file of the run directory under `derived_files`
+(the tool's own files too: a Ghidra database, a listing, a dumped chunk). This script collects every
+sha256 written in those records, the inventoried ones with their path in the run, then hashes
+every tracked file of the checkout and fails when one has a listed hash: it would be that output
+itself, whatever its name. It also fails on a tracked file whose name is one of the derived kinds
+(a Director movie, a Ghidra project file), whatever its bytes.
 
 `tools/check_no_originals.py` does the same for the registered originals; this one covers the
 outputs whose hashes `artifacts/known.json` cannot hold. Exit 0 clean, 1 not, 2 for a usage error.
 """
 import argparse
 import hashlib
+import json
 import re
 import subprocess
 import sys
@@ -38,22 +42,47 @@ def sha256_file(path):
     return digest.hexdigest()
 
 
+def inventoried(doc):
+    """Every {path, sha256} entry of a `derived_files` list anywhere in a parsed record."""
+    if isinstance(doc, dict):
+        for key, value in doc.items():
+            if key == "derived_files" and isinstance(value, list):
+                yield from (item for item in value if isinstance(item, dict) and isinstance(item.get("sha256"), str))
+            else:
+                yield from inventoried(value)
+    elif isinstance(doc, list):
+        for value in doc:
+            yield from inventoried(value)
+
+
 def listed_hashes(root, tracked):
-    """{sha256: the measurement file that lists it}, from every tracked file under measurements/."""
-    found = {}
+    """({sha256: where it is listed}, the number of inventoried files), from every tracked file
+    under measurements/: each `derived_files` entry of a JSON record, then any other sha256."""
+    found, count = {}, 0
     for name in tracked:
-        if name.startswith(MEASUREMENTS + "/"):
-            path = Path(root) / name
-            if path.is_file():
-                for value in HEX.findall(path.read_text(encoding="utf-8", errors="replace")):
-                    found.setdefault(value, name)
-    return found
+        if not name.startswith(MEASUREMENTS + "/"):
+            continue
+        path = Path(root) / name
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if name.endswith(".json"):
+            try:
+                doc = json.loads(text)
+            except ValueError:
+                doc = None
+            for item in inventoried(doc):
+                count += 1
+                found.setdefault(item["sha256"], "%s (the run's file %s)" % (name, item.get("path")))
+        for value in HEX.findall(text):
+            found.setdefault(value, name)
+    return found, count
 
 
 def problems(root):
     root = Path(root)
     tracked = tracked_files(root)
-    listed = listed_hashes(root, tracked)
+    listed, count = listed_hashes(root, tracked)
     found = []
     for name in tracked:
         path = root / name
@@ -65,7 +94,7 @@ def problems(root):
         elif path.stat().st_size and sha256_file(path) in listed:
             found.append(f"{name}: its sha256 is listed in {listed[sha256_file(path)]} as an output derived "
                          "from an original; it must stay in the static folder")
-    return tracked, listed, found
+    return tracked, listed, count, found
 
 
 def main(argv=None):
@@ -76,12 +105,12 @@ def main(argv=None):
     if not (root / ".git").exists():
         print(f"{root}: not a git checkout")
         return 2
-    tracked, listed, found = problems(root)
+    tracked, listed, count, found = problems(root)
     if found:
         print("\n".join(found))
         return 1
-    print(f"checked {len(tracked)} tracked files against {len(listed)} hashes listed in {MEASUREMENTS}: "
-          "none is derived from an original")
+    print(f"checked {len(tracked)} tracked files against {len(listed)} hashes listed in {MEASUREMENTS} "
+          f"({count} inventoried derived files among them): none is derived from an original")
     return 0
 
 

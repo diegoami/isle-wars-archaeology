@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Identify the packer of the DOS Isle Wars executable from its header, in place (T26, U32).
 
-    IW_DOS_DIR=<the copy> python3 tools/static/dos_identify.py [--record NAME]
+    IWA_STATIC=<folder outside every checkout> IW_DOS_DIR=<the copy> python3 tools/static/dos_identify.py
+        [--record NAME]
 
 It hashes `ISLEWAR.EXE` where it is (it must be the registered file of `iw-dos-3.1-30121376`,
 `static_common.original`), reads the MZ header, finds the PKLITE signature and decodes its version
 word, and prints numbers: the header fields, the version, the two flags, the copyright text's
-position. It writes nothing derived from the file and copies nothing. `--record NAME` writes the
+position. It writes nothing derived from the file and copies nothing; it still refuses to run, as
+every static script does, unless `IWA_STATIC` is confined (`static_common.static_root`). `--record NAME` writes the
 numbers to `experiments/E008-static-triage/measurements/NAME`, as a new file.
 
 The version word is read as the PKLITE format notes describe it (Entropymine, "Notes on PKLITE
@@ -57,6 +59,9 @@ def main(argv=None, env=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--record")
     args = parser.parse_args(argv)
+    # It writes nothing derived, but it reads an original, so it refuses as every static script does
+    # (T26): IWA_STATIC set, absolute, outside every checkout, not over the original's folder.
+    common.static_root(env, originals=("iw-dos",))
     original = common.original("iw-dos", env)
     data = original.read()
     result = {"artifact": original.set_id, "original": {"file": original.rel, "sha256": original.sha256,

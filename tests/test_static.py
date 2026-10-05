@@ -54,6 +54,8 @@ import check_tools  # noqa: E402
 import dos_identify  # noqa: E402
 import dos_unpack  # noqa: E402
 import dos_probe  # noqa: E402
+import inventory_derived  # noqa: E402
+import iwp_markers  # noqa: E402
 
 
 def sha(data):
@@ -142,12 +144,21 @@ if "--dump-json" in args:
 '''
 
 FAKE_ANALYZE = '''#!/bin/sh
-# A stand-in for Ghidra's analyzeHeadless: writes the report the post-script would write.
+# A stand-in for Ghidra's analyzeHeadless: writes the report the post-script would write, a project
+# database file, and a listing for each range.
 report=""
+ranges=""
+project="$1"
 case "$1" in */.*) echo "Path element starting with '.' is not permitted" >&2; exit 1;; esac
 while [ $# -gt 0 ]; do
   if [ "$1" = "-postScript" ]; then report="$3"; fi
+  case "$1" in range=*) ranges="$ranges ${1#range=}";; esac
   shift
+done
+mkdir -p "$project/t26.rep/idata/00"
+printf 'a synthetic ghidra database' > "$project/t26.rep/idata/00/~00000000.db"
+for r in $ranges; do
+  printf 'a synthetic listing of %s\n' "$r" > "$(dirname "$report")/listing-$(echo "${r%%-*}" | tr : -).txt"
 done
 cat > "$report" <<EOF
 language=x86:LE:16:Real Mode
@@ -226,7 +237,7 @@ if locations.checkout_of(Path(os.path.realpath(tempfile.gettempdir()))) is not N
     sys.stderr.write(f"\nWARNING: tests/test_static.py: {SKIP_REASON}\n")
 
 PROJECTOR, PLACED = make_projector()
-DOS_BYTES = b"MZ synthetic packed executable"
+DOS_BYTES = b"MZ synthetic packed executable" + bytes(48)        # 64 bytes or more: dos_identify reads a header
 
 
 def registered(manifest, label):
@@ -326,13 +337,21 @@ class World(unittest.TestCase):
     def unpack(self, *extra, env=None):
         return self.call(dos_unpack, ["--run", "t1", *extra], env)
 
+    def inventory(self, *extra, env=None):
+        with mock.patch.object(static_common, "ROOT", self.known):     # its records go to the test's checkout
+            return self.call(inventory_derived, ["--all", "--prefix", "test-inv", *extra], env)
 
-# the scripts that read an original and write derived output, and how each is called
+
+# the scripts that read an original or the static folder, and how each is called
 SCRIPTS = {
     "iwp_extract": lambda world, env: world.extract(env=env),
     "ghidra_import": lambda world, env: world.ghidra_run(env=env),
     "dos_unpack": lambda world, env: world.unpack(env=env),
+    "dos_identify": lambda world, env: world.call(dos_identify, [], env),           # writes nothing derived
+    "inventory_derived": lambda world, env: world.inventory(env=env),              # reads no original
 }
+# the original each script reads (inventory_derived reads none, so it has no original to overlap)
+READS = {"iwp_extract": "iwp", "ghidra_import": "dos", "dos_unpack": "dos", "dos_identify": "dos"}
 
 
 class CheckoutRefusalTest(World):
@@ -389,9 +408,10 @@ class CheckoutRefusalTest(World):
                 self.assertTrue(isinstance(code, str) and "IWA_STATIC" in code, code)
 
     def test_every_script_refuses_a_static_folder_that_overlaps_the_original(self):
-        for name, call in SCRIPTS.items():
+        for name, key in READS.items():
             with self.subTest(script=name):
-                original = self.iwp if name == "iwp_extract" else self.dos
+                original = getattr(self, key)
+                call = SCRIPTS[name]
                 code, _ = call(self, dict(self.env, IWA_STATIC=str(original)))
                 self.assertIn("overlaps", str(code))
 
@@ -422,7 +442,7 @@ class OriginalRefusalTest(World):
 
     def test_a_changed_original_is_refused_by_every_script_and_nothing_is_made(self):
         for script, directory, name in (("iwp_extract", self.iwp, "Islepro.exe"), ("ghidra_import", self.dos, "ISLEWAR.EXE"),
-                                        ("dos_unpack", self.dos, "ISLEWAR.EXE")):
+                                        ("dos_unpack", self.dos, "ISLEWAR.EXE"), ("dos_identify", self.dos, "ISLEWAR.EXE")):
             with self.subTest(script=script):
                 good = (directory / name).read_bytes()
                 self.corrupt(directory, name, good[:-1] + bytes([good[-1] ^ 1]))
@@ -927,6 +947,185 @@ class GhidraRangeTest(World):
                 code, _ = self.ghidra_run("--range", bad)
                 self.assertIn("is not START-END", str(code))
         self.assertEqual(self.static_entries(), [])
+
+
+def walk(directory):
+    """{relative path: sha256} of every file under a directory, for comparing with an inventory."""
+    return {path.relative_to(directory).as_posix(): sha(path.read_bytes())
+            for path in Path(directory).rglob("*") if path.is_file() and not path.is_symlink()}
+
+
+class InventoryTest(World):
+    """T26 round 1, R2: every file a run leaves in the static folder is recorded by sha256 and size, and
+    check_derived_hashes.py knows a tracked copy of any of them, whatever its name."""
+
+    def record(self, name):
+        return json.loads((self.known / static_common.MEASUREMENTS / name).read_text())
+
+    def runs(self):
+        with mock.patch.object(static_common, "ROOT", self.known):
+            self.assertEqual(self.ghidra_run("--range", "1000:0400-1000:0460", "--record", "g.json")[0], 0)
+            self.assertEqual(self.extract("--record", "p.json")[0], 0)
+            self.assertEqual(self.unpack("--record", "d.json")[0], 0)
+
+    def assert_inventory_is_the_folder(self, inventory, folder):
+        self.assertEqual({item["path"]: item["sha256"] for item in inventory}, walk(folder))
+        for item in inventory:
+            self.assertEqual(item["bytes"], (folder / item["path"]).stat().st_size)
+
+    def test_each_run_records_every_file_of_its_directory(self):
+        self.runs()
+        ghidra = self.record("g.json")["derived_files"]
+        self.assert_inventory_is_the_folder(ghidra, self.static / "ghidra-t1")
+        paths = [item["path"] for item in ghidra]
+        for expected in ("listing-1000-0400.txt", "project/t26.rep/idata/00/~00000000.db", "report.txt",
+                         "analyzeHeadless.out"):
+            self.assertIn(expected, paths)
+        extract = self.record("p.json")["derived_files"]
+        self.assert_inventory_is_the_folder(extract, self.static / "iwp-extract-t1")
+        paths = [item["path"] for item in extract]
+        for expected in ("movie-01.dxr", "movie-01.abs.dxr", "movie-01-json/movie/chunks/CASt-0.json",
+                         "movie-01-out/movie/casts/Internal/MovieScript 7 - Saver.ls", "movie-01-projectorrays.out"):
+            self.assertIn(expected, paths)
+        unpack = self.record("d.json")["derived_files"]
+        self.assert_inventory_is_the_folder(unpack, self.static / "deark-t1")
+        self.assertIn("deark-stage1-pklite.out", [item["path"] for item in unpack])
+        for record in ("g.json", "p.json", "d.json"):
+            self.assertEqual(static_common.leaks(json.dumps(self.record(record))), [])
+
+    def test_a_link_in_a_run_directory_is_listed_and_not_followed(self):
+        run = self.static / "by-hand"
+        run.mkdir()
+        (run / "file.bin").write_bytes(b"made by hand")
+        (run / "to-original").symlink_to(self.dos / "ISLEWAR.EXE")
+        self.assertEqual(static_common.inventory(run), [
+            {"path": "file.bin", "sha256": sha(b"made by hand"), "bytes": 12},
+            {"path": "to-original", "link": True}])
+
+    def test_the_inventory_script_records_each_folder_once_and_never_rewrites(self):
+        self.runs()
+        code, text = self.inventory()
+        self.assertEqual(code, 0, text)
+        for folder in ("deark-t1", "ghidra-t1", "iwp-extract-t1"):
+            record = self.record(f"test-inv-{folder}.json")
+            self.assertEqual(record["run_directory"], folder)
+            self.assert_inventory_is_the_folder(record["derived_files"], self.static / folder)
+        before = self.record("test-inv-ghidra-t1.json")
+        (self.static / "ghidra-t1" / "extra.txt").write_text("later")
+        code, _ = self.inventory()
+        self.assertIn("never overwritten", str(code))
+        self.assertEqual(self.record("test-inv-ghidra-t1.json"), before)
+        for bad in (["--dir", "../x", "--prefix", "p"], ["--dir", "x", "--prefix", "../p"]):
+            with self.subTest(argv=bad), mock.patch.object(static_common, "ROOT", self.known):
+                code, _ = self.call(inventory_derived, bad)
+                self.assertIn("not a plain", str(code))
+
+    def test_a_tracked_copy_of_a_listing_a_ghidra_database_or_a_dumped_chunk_fails_under_any_name(self):
+        self.runs()
+        sources = {"notes.txt": ("ghidra-t1", "listing-1000-0400.txt"),
+                   "data.bin": ("ghidra-t1", "project/t26.rep/idata/00/~00000000.db"),
+                   "config.json": ("iwp-extract-t1", "movie-01-json/movie/chunks/Lctx-9.json")}
+        for name, (run, rel) in sources.items():
+            with self.subTest(copy=name):
+                root = self.tmp / ("repo-" + name.replace(".", "-"))
+                (root / static_common.MEASUREMENTS).mkdir(parents=True)
+                subprocess.run(["git", "init", "-q", str(root)], check=True)
+                for record in ("g.json", "p.json"):
+                    (root / static_common.MEASUREMENTS / record).write_bytes(
+                        (self.known / static_common.MEASUREMENTS / record).read_bytes())
+                (root / name).write_bytes((self.static / run / rel).read_bytes())
+                subprocess.run(["git", "add", "-f", "."], cwd=root, check=True)
+                out = io.StringIO()
+                with contextlib.redirect_stdout(out):
+                    code = check_derived_hashes.main(["--root", str(root)])
+                self.assertEqual(code, 1, out.getvalue())
+                self.assertIn(f"{name}: its sha256 is listed in", out.getvalue())
+                self.assertIn(f"(the run's file {rel})", out.getvalue())
+
+    def test_the_checker_counts_the_inventoried_files(self):
+        self.runs()
+        root = self.tmp / "repo-count"
+        (root / static_common.MEASUREMENTS).mkdir(parents=True)
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        (root / static_common.MEASUREMENTS / "g.json").write_bytes(
+            (self.known / static_common.MEASUREMENTS / "g.json").read_bytes())
+        subprocess.run(["git", "add", "-f", "."], cwd=root, check=True)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(check_derived_hashes.main(["--root", str(root)]), 0)
+        count = len(self.record("g.json")["derived_files"])
+        self.assertIn(f"({count} inventoried derived files among them)", out.getvalue())
+
+
+class MarkersTest(World):
+    """T26 round 1, R5: ProjectorRays' error markers are counted, in the scripts the record lists."""
+
+    def extracted(self):
+        with mock.patch.object(static_common, "ROOT", self.known):
+            self.assertEqual(self.extract("--record", "p.json")[0], 0)
+        return self.static / "iwp-extract-t1" / "movie-01-out" / "movie" / "casts" / "Internal"
+
+    def count(self, *extra, env=None):
+        with mock.patch.object(static_common, "ROOT", self.known):
+            return self.call(iwp_markers, ["--dir", "iwp-extract-t1", "--against", "p.json", *extra], env)
+
+    def test_a_clean_output_counts_zero_markers_over_every_listed_script(self):
+        self.extracted()
+        code, text = self.count("--record", "m.json")
+        self.assertEqual(code, 0, text)
+        movie = json.loads((self.known / static_common.MEASUREMENTS / "m.json").read_text())["movies"][0]
+        self.assertEqual((movie["ls_files"], movie["lasm_files"], movie["scripts_in_record"]), (3, 2, 3))
+        self.assertEqual((movie["error_words_in_ls"], movie["unknown_opcodes_in_lasm"]), (0, 0))
+
+    def test_each_marker_is_counted_as_a_whole_word(self):
+        folder = self.tmp / "out"
+        folder.mkdir()
+        texts = {"MovieScript 1.ls": "on a\n  ERROR\n  -- ERROR: Stray endrepeat\n  put ERRORS\nend\n",
+                 "MovieScript 1.lasm": "  unk5F\n  unk5f\n  pushcons 1\n  xunk12\n",
+                 "CastScript 2.ls": "on b\nend\n", "CastScript 2.lasm": "  ret\n"}
+        for name, text in texts.items():
+            (folder / name).write_text(text)
+        scripts = [{"ls_sha256": sha(texts["MovieScript 1.ls"].encode()), "lasm_sha256": sha(texts["MovieScript 1.lasm"].encode())},
+                   {"ls_sha256": sha(texts["CastScript 2.ls"].encode()), "lasm_sha256": sha(texts["CastScript 2.lasm"].encode())}]
+        counts = iwp_markers.count_markers(folder, scripts)
+        self.assertEqual((counts["error_words_in_ls"], counts["ls_files_with_an_error_word"]), (2, 1))
+        self.assertEqual((counts["unknown_opcodes_in_lasm"], counts["lasm_files_with_an_unknown_opcode"]), (1, 1))
+
+    def test_an_empty_script_and_an_empty_listing_are_both_counted(self):
+        folder = self.tmp / "empty"
+        folder.mkdir()
+        (folder / "MovieScript 1.ls").write_text("")
+        (folder / "MovieScript 1.lasm").write_text("  ret\n")
+        (folder / "MovieScript 2.ls").write_text("on b\nend\n")
+        (folder / "MovieScript 2.lasm").write_text("")
+        scripts = [{"ls_sha256": sha(b""), "lasm_sha256": sha(b"  ret\n")},
+                   {"ls_sha256": sha(b"on b\nend\n"), "lasm_sha256": sha(b"")}]
+        counts = iwp_markers.count_markers(folder, scripts)
+        self.assertEqual((counts["ls_files"], counts["lasm_files"]), (2, 2))
+
+    def test_a_changed_or_missing_script_stops_the_count(self):
+        folder = self.extracted()
+        (folder / "BehaviorScript 9.ls").write_text("on mouseDown\n  ERROR\nend\n")
+        code, _ = self.count()
+        self.assertIn("not in movie-01-out with their recorded sha256", str(code))
+
+    def test_a_script_the_record_does_not_list_is_not_counted(self):
+        folder = self.extracted()
+        (folder / "MovieScript 99.ls").write_text("on z\n  ERROR\nend\n")
+        code, text = self.count("--record", "m.json")
+        self.assertEqual(code, 0, text)
+        movie = json.loads((self.known / static_common.MEASUREMENTS / "m.json").read_text())["movies"][0]
+        self.assertEqual((movie["ls_files"], movie["error_words_in_ls"]), (3, 0))
+
+    def test_an_unset_or_in_checkout_static_folder_is_refused(self):
+        self.extracted()
+        checkout = self.tmp / "checkout"
+        (checkout / ".git").mkdir(parents=True)
+        for env, says in ((dict(self.env, IWA_STATIC=""), "IWA_STATIC is not set"),
+                          (dict(self.env, IWA_STATIC=str(checkout)), "inside a checkout")):
+            with self.subTest(says=says):
+                code, _ = self.count(env=env)
+                self.assertIn(says, str(code))
 
 
 if __name__ == "__main__":
