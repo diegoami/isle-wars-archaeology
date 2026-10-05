@@ -52,7 +52,8 @@ indexed in `docs/tasks/README.md`.
      no OpenCode reviewer is available, the Claude fallback would be the implementer's family:
      escalate.
    - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
-     Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
+     Pro, GLM-5.3 and GPT-6 Sol, and on the Alibaba Token Plan (2026-10-05, launched through
+     `bash -ic` for its key) DeepSeek V4 Pro and V4.1 Flash, Qwen 3.8 Max and Flash, and GLM-5.3; Opus and Fable implement only when a task file says why.
    - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
      `medium` only when the task file says why; never `high`.
    - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro)
