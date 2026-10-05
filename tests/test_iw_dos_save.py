@@ -288,6 +288,41 @@ class WriterTest(seal.World):
         self.assertEqual(victim.read_bytes(), b"keep")
 
 
+class EditSelectorTest(unittest.TestCase):
+    """T16 review R3: an edit names a country by a whole number from 1 to 46 and a hand by a colour; anything else is
+    refused, never taken as another country by Python's negative indexing (country 0 was country 46)."""
+
+    BAD_COUNTRIES = ("0", "-1", "-46", "47", "99", "1.5", "1e1", "+3", " 3", "3 ", "", "x", "٣", "0x2")
+
+    def test_countries_1_and_46_are_the_first_and_the_last(self):
+        out = writer.edit(position(), ["armies:1=7", "armies:46=8", "owner:1=red", "owner:46=green"])
+        self.assertEqual((out["armies"][0], out["armies"][45]), (7, 8))
+        self.assertEqual((out["owners"][0], out["owners"][45]), ("red", "green"))
+        self.assertEqual(out["armies"][1:45], position()["armies"][1:45])
+        self.assertEqual(out["owners"][1:45], position()["owners"][1:45])
+
+    def test_a_country_out_of_range_or_not_an_integer_is_refused_and_nothing_changes(self):
+        for kind in ("armies", "owner"):
+            for bad in self.BAD_COUNTRIES:
+                with self.subTest(kind=kind, country=bad):
+                    pos = position()
+                    with self.assertRaisesRegex(ValueError, "country number from 1 to 46"):
+                        writer.edit(pos, [f"{kind}:{bad}={'red' if kind == 'owner' else 9}"])
+                    self.assertEqual(pos, position())
+
+    def test_country_zero_is_not_country_46(self):
+        """The reviewer's case: armies:0=99 on a save whose country 46 holds 1 changed country 46 to 99."""
+        pos = position()
+        pos["armies"][45] = 1
+        with self.assertRaises(ValueError):
+            writer.edit(pos, ["armies:0=99"])
+
+    def test_a_hand_of_a_name_that_is_no_colour_is_refused(self):
+        for bad in ("purple", "Blue", "", "0"):
+            with self.subTest(colour=bad), self.assertRaisesRegex(ValueError, "not a colour"):
+                writer.edit(position(), [f"cards:{bad}=7"])
+
+
 class CommandLineTest(seal.World):
     def setUp(self):
         super().setUp()
@@ -319,6 +354,10 @@ class CommandLineTest(seal.World):
         base.write_bytes(natural_bytes())
         self.assertEqual(self.run_main("craft", str(base), "armies:1=100")[0], 1)
         self.assertEqual(self.run_main("craft", str(base), "owner:1=purple")[0], 1)
+        for bad in ("armies:0=9", "armies:-1=9", "armies:47=9", "owner:0=red", "owner:2.0=red"):
+            code, out, err = self.run_main("craft", str(base), bad)
+            self.assertEqual((code, out), (1, ""), bad)
+            self.assertIn("country number from 1 to 46", err)
         pos = self.tmp / "pos.json"
         pos.write_text(json.dumps(position()))
         code, _, err = self.run_main("write", str(pos), "--run-dir", str(self.install), "--install", str(self.install))

@@ -270,6 +270,21 @@ MUTANTS = [
     ("T16: --crafted is allowed without a script", "runtime/iw-dos/spike/cycle.py",
      "    if args.crafted and not args.steps:", "    if False:",
      [T16 + "PutSaveStepTest.test_put_save_is_allowed_once_and_crafted_needs_steps"]),
+    # ---- T16 round 1 (review R3): the edit's country and colour selectors
+    ("T16 R3: an edit's country has no bound (0 is country 46)", "runtime/iw-dos/save/writer.py",
+     "    if not 1 <= number <= savefmt.COUNTRIES:\n", "    if False:\n",
+     [T16 + "EditSelectorTest.test_a_country_out_of_range_or_not_an_integer_is_refused_and_nothing_changes",
+      T16 + "EditSelectorTest.test_country_zero_is_not_country_46",
+      T16 + "CommandLineTest.test_craft_and_write_refuse_what_cannot_be_encoded_or_placed"]),
+    ("T16 R3: an edit's country is any int() (sign, space, fraction)", "runtime/iw-dos/save/writer.py",
+     '    if not isinstance(arg, str) or not re.fullmatch(r"[0-9]+", arg, re.ASCII):\n', "    if False:\n",
+     [T16 + "EditSelectorTest.test_a_country_out_of_range_or_not_an_integer_is_refused_and_nothing_changes"]),
+    ("T16 R3: an edit's country is int(arg) - 1 again", "runtime/iw-dos/save/writer.py",
+     'out["armies"][country(arg, item)] = int(value)', 'out["armies"][int(arg) - 1] = int(value)',
+     [T16 + "EditSelectorTest.test_country_zero_is_not_country_46"]),
+    ("T16 R3: an edit's hand may be of any name", "runtime/iw-dos/save/writer.py",
+     "            if arg not in savefmt.COLOURS:\n", "            if False:\n",
+     [T16 + "EditSelectorTest.test_a_hand_of_a_name_that_is_no_colour_is_refused"]),
 ]
 
 

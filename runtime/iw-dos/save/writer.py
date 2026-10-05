@@ -22,6 +22,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -87,9 +88,22 @@ def place(run_dir, install, position, name=savefmt.FILE_NAME):
     return data, hashlib.sha256(data).hexdigest()
 
 
+def country(arg, item):
+    """The 0-based index of country `arg`, which must be written as a whole number from 1 to 46 (ASCII digits only,
+    no sign, no space, no fraction). Anything else is a ValueError: Python's negative indexing would otherwise turn
+    country 0 into country 46 and -1 into 45 (T16 review R3)."""
+    if not isinstance(arg, str) or not re.fullmatch(r"[0-9]+", arg, re.ASCII):
+        raise ValueError(f"not a country number from 1 to {savefmt.COUNTRIES}: {arg!r} in {item!r}")
+    number = int(arg)
+    if not 1 <= number <= savefmt.COUNTRIES:
+        raise ValueError(f"not a country number from 1 to {savefmt.COUNTRIES}: {arg!r} in {item!r}")
+    return number - 1
+
+
 def edit(position, edits):
     """The position with each `owner:N=colour`, `armies:N=V`, `cards:colour=D,D`, `centres=N,N`, `dft=A,B`,
-    `settings=A,B` applied (a copy). A bad edit is a ValueError; whether the result can be encoded is encode's to say."""
+    `settings=A,B` applied (a copy). N is a country from 1 to 46 and colour one of savefmt.COLOURS; anything else is a
+    ValueError, as is any other bad edit. Whether the result can be encoded is encode's to say."""
     out = json.loads(json.dumps(position))
     for item in edits:
         key, sep, value = item.partition("=")
@@ -97,11 +111,13 @@ def edit(position, edits):
             raise ValueError(f"not an edit: {item!r}")
         what, _, arg = key.partition(":")
         if what == "owner":
-            out["owners"][int(arg) - 1] = value
+            out["owners"][country(arg, item)] = value
         elif what == "armies":
-            out["armies"][int(arg) - 1] = int(value)
+            out["armies"][country(arg, item)] = int(value)
         elif what == "cards":
-            out["cards"][arg] = [int(ch) for ch in value.split(",") if ch]
+            if arg not in savefmt.COLOURS:
+                raise ValueError(f"not a colour ({', '.join(savefmt.COLOURS)}): {arg!r} in {item!r}")
+            out["cards"][arg] =[int(ch) for ch in value.split(",") if ch]
         elif what in ("centres", "dft", "settings"):
             out[what] = [int(v) for v in value.split(",") if v]
         else:
