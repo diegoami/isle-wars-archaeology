@@ -53,3 +53,14 @@ append-only. A changed design is a new experiment, or `v2/`.
   `IW_DOS_DIR`, `IW_DOS_RUN` and `E006_BUNDLES` in the environment.
 - `scripts/tables.py FIRST LAST`: a new table of the records `E006-rFIRST` to `E006-rLAST` under
   `measurements/tables/` (never over an existing file).
+
+## Round 1 (2026-10-05, T15; appended, the text above is unchanged)
+
+- **Runs** at `bb91e85`: `control` E006-r0001 to r0010 (one command), `sigkill-mid-cycle` r0011 to r0013,
+  `close-mid-cycle` r0014 to r0016. Each command's output is in `measurements/command-output/`.
+- **Scripts added**: `scripts/varies.py FIRST LAST` counts, over the records, the distinct values of every
+  observation and every output, and of the text outputs once the repeat's own work directory, display and times
+  are replaced by placeholders (it reads the bundles from `E006_BUNDLES`).
+- **Note**: `measurements/varies-E006-r0001-r0010.md`, the first table, counts `run.log` as 2 texts once
+  normalised: its pattern for the display (`:6N`) missed repeat 10's `:70`. The next table,
+  `varies-E006-r0001-r0010-20261005T133026Z.md`, replaces any display number and counts 1. Both stay.

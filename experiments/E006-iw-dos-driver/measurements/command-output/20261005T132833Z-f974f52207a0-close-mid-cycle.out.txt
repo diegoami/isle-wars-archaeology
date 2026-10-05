@@ -1,0 +1,39 @@
+$ python3 runtime/iw-dos/driver/repeat.py --arm close-mid-cycle --repeats 3 --fault close --fault-at after-input --fault-repeat 2
+seal at the start: ok
+Xvfb :61 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w1/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 17.13 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.31 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 1, "run_id": "E006-r0014", "status": "completed", "seconds": 18.6, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :62 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w2/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.9 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+ABORT game-died: DOSBox-X was gone (exit status 1) before wait_for_screen
+reset: run copy: copied 0, removed 1
+{"repeat": 2, "run_id": "E006-r0015", "status": "aborted: game-died: DOSBox-X was gone (exit status 1) before wait_for_screen", "seconds": 17.83, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :63 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w3/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 17.14 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.31 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 3, "run_id": "E006-r0016", "status": "completed", "seconds": 18.6, "recovered": true, "as_expected": true}
+exit 0
