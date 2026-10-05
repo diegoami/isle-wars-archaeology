@@ -152,15 +152,44 @@ class CommandFailed(RuntimeError):
     """A helper command whose result the cycle relies on exited non-zero (T13 round 2, class B)."""
 
 
-def must(cmd, **kw):
-    """run(), and CommandFailed unless the command exited 0: for every helper whose result is used (an
-    input sent with xdotool, a capture with import, the display's description from xdpyinfo, the window's
-    id and geometry). A failed command is never taken as done."""
+def must(cmd, require_output=True, **kw):
+    """The checked helper command (T13 round 3, class B): run(), and CommandFailed unless the command
+    exited 0 and, with require_output, produced some stdout. A non-zero exit, a timeout or an empty
+    output where output is required is never taken as done. The calls that legitimately produce no
+    output are the xdotool inputs (mousemove, click, key) and xprop's client list (empty when no
+    client): they pass require_output=False."""
     done = run(cmd, **kw)
     if done.returncode != 0:
         text = (done.stderr or b"").decode(errors="replace").strip().replace("\n", " ")[:200]
         raise CommandFailed(f"{' '.join(map(str, cmd[:2]))} exited {done.returncode}" + (f": {text}" if text else ""))
+    if require_output and not done.stdout.strip():
+        raise CommandFailed(f"{' '.join(map(str, cmd[:2]))} produced no output")
     return done
+
+
+def probe(cmd, timeout=RUN_TIMEOUT, **kw):
+    """Run a helper command whose failure is a state, not an error: returns (exited_zero, stdout,
+    stderr) and never raises on a non-zero exit or empty output. Used where that means "not yet"
+    (the readiness polls: xdpyinfo, xprop, xdotool search) or "record unknown" (the fingerprint's
+    version probes); each such call site names that meaning. A timeout or an unreaped command still
+    raises (a hang is a bound, never "not yet")."""
+    done = run(cmd, timeout=timeout, **kw)
+    return done.returncode == 0, done.stdout, done.stderr
+
+
+def spawn(cmd, **kw):
+    """Start a long-lived process of the run (Xvfb, xfwm4, the game, the namespaced command): it must
+    outlive its caller, so there is no wait and no bound here, only the markers the caller passes in.
+    Beside run() this is the only place a process is started with subprocess."""
+    return subprocess.Popen(cmd, **kw)
+
+
+def wm_registered(env):
+    """True only when xprop exits 0 and reports the supporting WM check (T13 round 3, R5): a non-zero
+    exit, or stdout without the registration, means "not yet", never registered. The exit status and
+    the registration are both required, so a plausible partial answer is not taken for it."""
+    ok, out, _ = probe(["xprop", "-root", "_NET_SUPPORTING_WM_CHECK"], env=env)
+    return ok and b"window id" in out
 
 
 def poll(condition, timeout, interval=0.1):
@@ -493,10 +522,10 @@ class Cycle:
     def start_x(self):
         width, height, depth = self.size
         Path("/tmp/.X11-unix").mkdir(mode=0o1777, exist_ok=True)
-        self.procs["xvfb"] = subprocess.Popen(
+        self.procs["xvfb"] = spawn(
             ["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],
             env=self.display_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        waited = poll(lambda: run(["xdpyinfo"], env=self.env).returncode == 0, 20)
+        waited = poll(lambda: probe(["xdpyinfo"], env=self.env)[0], 20)
         if waited is None:
             self.fail("Xvfb did not accept connections within 20 s")
         info = must(["xdpyinfo"], env=self.env).stdout.decode()
@@ -510,10 +539,9 @@ class Cycle:
         if self.args.wm == "none":
             self.observe(0, "process", "window manager", "none")
             return
-        self.procs["wm"] = subprocess.Popen(["xfwm4", "--compositor=off"], env=self.display_env,
-                                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        waited = poll(lambda: run(["xprop", "-root", "_NET_SUPPORTING_WM_CHECK"], env=self.env
-                                  ).stdout.decode().find("window id") >= 0, 20)
+        self.procs["wm"] = spawn(["xfwm4", "--compositor=off"], env=self.display_env,
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        waited = poll(lambda: wm_registered(self.env), 20)
         if waited is None:
             self.fail("xfwm4 did not register as the window manager within 20 s")
         self.observe(0, "process", "xfwm4 registered (s)", waited)
@@ -528,10 +556,10 @@ class Cycle:
         cmd = game_command()
         self.t_launch = time.monotonic()
         with safeio.create_stream(self.workdir, "wine.log") as log:
-            self.procs["game"] = subprocess.Popen(cmd, cwd=self.game, env=self.env, stdout=log, stderr=log)
+            self.procs["game"] = spawn(cmd, cwd=self.game, env=self.env, stdout=log, stderr=log)
         self.say("launched: " + " ".join(cmd[:-1] + ["<game>"]))
         self.verify_isolation()
-        waited = poll(lambda: run(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.strip(), 90)
+        waited = poll(lambda: probe(["xdotool", "search", "--name", "^Islepro$"], env=self.env)[1].strip(), 90)
         if waited is None:
             self.fail("no Islepro window within 90 s")
         wid = must(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.split()[0].decode()
@@ -693,18 +721,19 @@ class Cycle:
         elif op == "clicks":
             count, x, y = args
             self.click_at(x, y, quiet=True, press=False)
-            must(["xdotool", "click", "--repeat", str(count), "--delay", "80", "1"], env=self.env)
+            must(["xdotool", "click", "--repeat", str(count), "--delay", "80", "1"], env=self.env, require_output=False)
             self.note("screen", f"{count} clicks at {x},{y}", "sent")
         elif op in ("click-any", "click-until", "click-any?", "click-until?"):
             self.click_candidates(op, args)
         elif op == "move":
-            must(["xdotool", "mousemove", str(args[0] + self.screen.ox), str(args[1] + self.screen.oy)], env=self.env)
+            must(["xdotool", "mousemove", str(args[0] + self.screen.ox), str(args[1] + self.screen.oy)], env=self.env,
+                 require_output=False)
         elif op in ("click", "click!"):
             changed = self.click_at(*args)
             if op == "click!" and changed is None:
                 self.fail(f"step on line {step.line}: the screen did not change after the click at {args[0]},{args[1]}")
         elif op == "key":
-            must(["xdotool", "key", args[0]], env=self.env)
+            must(["xdotool", "key", args[0]], env=self.env, require_output=False)
             self.note("screen", f"key {args[0]} sent", "yes")
         elif op == "shot":
             self.shot_step(args[0])
@@ -732,17 +761,20 @@ class Cycle:
             raise stepslib.StepError(f"click {x} {y}: the notice screen is up, and only Exit Game may be clicked there")
         rect = (max(0, x - 50), max(0, y - 14), 100, 28)
         before = self.screen.raw(rect)
-        must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+        must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env,
+             require_output=False)
         # a candidate search (quiet) tries many places that may not react at all: it waits less
         hovered = poll(lambda: self.screen.raw(rect) != before, 0.3 if quiet else 1.5, 0.05)
         if hovered is None:                      # no highlight: a one-pixel move gives the game a motion event
-            must(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+            must(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env,
+                 require_output=False)
             hovered = poll(lambda: self.screen.raw(rect) != before, 0.2 if quiet else 0.5, 0.05)
-            must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)   # back on the point
+            must(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env,
+                 require_output=False)   # back on the point
         if not press:                            # the caller sends the clicks
             return None
         pointer_state = self.screen.raw(self.watch_rect)
-        must(["xdotool", "click", "1"], env=self.env)
+        must(["xdotool", "click", "1"], env=self.env, require_output=False)
         changed = None if quiet else poll(lambda: self.screen.raw(self.watch_rect) != pointer_state, 3, 0.1)
         if not quiet:
             self.note("screen", f"click at {x},{y}: label changed under the pointer (s)",
@@ -826,7 +858,8 @@ class Cycle:
         self.note("screen", f"{name}.png raw RGB8 pixels sha256", pixels)
 
     def window_titles(self):
-        ids = re.findall(r"0x[0-9a-fA-F]+", must(["xprop", "-root", "_NET_CLIENT_LIST"], env=self.env).stdout.decode())
+        ids = re.findall(r"0x[0-9a-fA-F]+", must(["xprop", "-root", "_NET_CLIENT_LIST"], env=self.env,
+                                                    require_output=False).stdout.decode())
         names = []
         for wid in ids:
             names.append(must(["xdotool", "getwindowname", str(int(wid, 16))], env=self.env).stdout.decode().strip())
@@ -1156,8 +1189,10 @@ class Cycle:
 
 def versions():
     def first(cmd, pattern):
-        out = run(cmd)
-        text = (out.stdout + out.stderr).decode(errors="replace")
+        ok, out, err = probe(cmd)
+        if not ok:
+            return "unknown"          # R6: a failed probe is recorded unknown, never parsed as a version
+        text = (out + err).decode(errors="replace")
         match = re.search(pattern, text)
         return match.group(1) if match else "unknown"
     return {
