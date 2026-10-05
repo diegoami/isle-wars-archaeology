@@ -1,0 +1,45 @@
+# round 2, R1: every run folder re-walked with the round-2 inventory (enumeration errors fatal),
+# compared with its inventory-r3 record. The one-off script, not tracked:
+#   """Re-walk every run folder with the round-2 inventory (enumeration errors fatal) and compare it
+#   with its inventory-r3 record. Prints run folder names and counts only."""
+#   import json
+#   import os
+#   import sys
+#   from pathlib import Path
+#   
+#   repo = Path(sys.argv[1])
+#   sys.path.insert(0, str(repo / "tools/static"))
+#   import static_common as common  # noqa: E402
+#   
+#   root = common.static_root(os.environ)
+#   meas = repo / common.MEASUREMENTS
+#   bad = 0
+#   for record_path in sorted(meas.glob("inventory-r3-*.json")):
+#       record = json.loads(record_path.read_text())
+#       folder = record["run_directory"]
+#       now = common.inventory(root / folder)
+#       same = now == record["derived_files"]
+#       bad += not same
+#       print(f"{folder}: {len(now)} files now, {len(record['derived_files'])} in {record_path.name}: "
+#             f"{'equal' if same else 'DIFFERENT'}")
+#   print(f"{bad} folder(s) differ; no folder failed to list")
+#   sys.exit(1 if bad else 0)
+$ IWA_STATIC=<static folder> python3 recheck_inventories.py <checkout>
+deark-exe-r1: 6 files now, 6 in inventory-r3-deark-exe-r1.json: equal
+deark-exe-r2: 6 files now, 6 in inventory-r3-deark-exe-r2.json: equal
+deark-explore: 4 files now, 4 in inventory-r3-deark-explore.json: equal
+deark-main-c3: 6 files now, 6 in inventory-r3-deark-main-c3.json: equal
+deark-ov6-r1: 6 files now, 6 in inventory-r3-deark-ov6-r1.json: equal
+deark-ov6-r2: 6 files now, 6 in inventory-r3-deark-ov6-r2.json: equal
+ghidra-dos-exe-r1: 14 files now, 14 in inventory-r3-ghidra-dos-exe-r1.json: equal
+ghidra-dos-exe-r2: 17 files now, 17 in inventory-r3-ghidra-dos-exe-r2.json: equal
+ghidra-dos-ov6-r1: 14 files now, 14 in inventory-r3-ghidra-dos-ov6-r1.json: equal
+ghidra-dos-packed-r1: 14 files now, 14 in inventory-r3-ghidra-dos-packed-r1.json: equal
+ghidra-main-c3g: 14 files now, 14 in inventory-r3-ghidra-main-c3g.json: equal
+ghidra-packed1: 14 files now, 14 in inventory-r3-ghidra-packed1.json: equal
+iwp-explore: 1364 files now, 1364 in inventory-r3-iwp-explore.json: equal
+iwp-extract-explore1: 431 files now, 431 in inventory-r3-iwp-extract-explore1.json: equal
+iwp-extract-main-c3p: 1366 files now, 1366 in inventory-r3-iwp-extract-main-c3p.json: equal
+iwp-extract-pro-r1: 1366 files now, 1366 in inventory-r3-iwp-extract-pro-r1.json: equal
+0 folder(s) differ; no folder failed to list
+exit=0

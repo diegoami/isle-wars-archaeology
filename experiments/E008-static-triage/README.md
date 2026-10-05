@@ -65,4 +65,9 @@ A re-run writes new files beside these, never over them.
   records are not rewritten. `check_derived_hashes.py` reads these lists.
 - `tools/static/iwp_markers.py` counts ProjectorRays' error markers in the scripts of run `pro-r1`,
   checked against `iwp-extract-pro-r1.json` by sha256: `measurements/iwp-markers-pro-r1.json` (none).
-- `measurements/done-when/r3-*`: the Done-when outputs of this round.
+  Round 2 (R2) checks each script by its own identity and sha256, not the recorded hashes as a set;
+  its re-run, `measurements/iwp-markers-pro-r2.json`, gives the same zeros and is the one cited.
+- `measurements/done-when/r3-*`: the Done-when outputs of round 1.
+- `measurements/done-when/r4-*`: the Done-when outputs of round 2, and `r4-R1-inventory-recheck.txt`:
+  every inventoried run folder walked again with enumeration errors fatal (R1), equal to its
+  `inventory-r3-*` record.
