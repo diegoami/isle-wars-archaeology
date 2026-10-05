@@ -176,3 +176,8 @@ indexed in `docs/tasks/README.md`.
     - **Research:** a likely reading is stated with its confidence, as a narrowed claim or a
       hypothesis. `spec/` still changes only by promotion of reviewed outcomes, and unknown stays
       unknown (rule 20).
+23. **The plan is kept current** (the owner, 2026-10-05). `docs/tasks/README.md` lists every task,
+    written or planned, in order, with its issue and its Merge-after. A planned task has an issue
+    labelled `status:planned` and no task file yet. The status stays in labels (rule 3). The main
+    session updates the plan whenever a task is written, merged, parked or re-planned, or the owner
+    changes direction, and checks it at session start (rule 14) and end.
