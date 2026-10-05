@@ -1,0 +1,6 @@
+[
+ {"id": "A3b", "field": "dft2", "action": "starting armies 1 -> 6 at Easy (control E007-r0023, not E007-r0001: review R1)", "a": ["E007-r0023", 0], "b": ["E007-r0006", 0]},
+ {"id": "A4b", "field": "dft2", "action": "starting armies 1 -> 10 at Easy (control E007-r0023, not E007-r0001: review R1)", "a": ["E007-r0023", 0], "b": ["E007-r0007", 0]},
+ {"id": "A5b", "field": "dft2", "action": "starting armies 1 -> 6 at Hard (control E007-r0019, not E007-r0003: review R1)", "a": ["E007-r0019", 0], "b": ["E007-r0008", 0]},
+ {"id": "C1", "field": "centres", "action": "none: two games started with the same choices, Easy 1 (not E007-r0001: review R1)", "a": ["E007-r0026", 0], "b": ["E007-r0027", 0]}
+]

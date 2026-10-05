@@ -1,0 +1,15 @@
+# arm load-crafted-sound: as load-crafted, then the Sound button once (its label shows the state it toggles to) (T16, I3)
+put-save
+files
+click-change 60 58
+shot after-load
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot loaded-human-turn
+files
+click-change 459 20
+shot sound-clicked
+wait-stable
+click-change 554 20
+shot save-resave
+files

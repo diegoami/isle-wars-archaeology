@@ -1,0 +1,4 @@
+$ sh -c git ls-files evidence/E007 | grep -vc "manifest.json$"; git ls-files evidence/E007 runs/E007 experiments/E007-iw-dos-save-format | grep -ci -E "\.(sav|exe|ov[0-9]|png|rgb|zip)$"
+0
+0
+exit=1

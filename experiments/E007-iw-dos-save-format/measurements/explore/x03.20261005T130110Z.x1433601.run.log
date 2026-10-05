@@ -1,0 +1,44 @@
+15:01:10 IW_DOS_DIR read-only inside the run
+15:01:10 run copy before anything starts: ok
+15:01:10 Xvfb ready after 0.11 s
+15:01:10 run copy and configuration immediately before launch: ok
+15:01:10 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:01:10 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:01:12 window 2097157 at (80, 100) after 1.62 s
+15:01:28 option box reached 17.19 s after launch
+15:01:28 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:01:28 step 1: click-change 60 32 6
+15:01:29 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:01:29 step 3: wait-stable
+15:01:29 step 4: click-change 315 168 6
+15:01:31 step 5: click-change 315 169 6
+15:01:33 step 6: shot board-before-start.png
+15:01:33 board-before-start.png: pixels 01bba3b8e28b9e1e, file 34a48855c6db0688
+15:01:33 step 7: files
+15:01:33 step 8: click-change 510 22 6
+15:01:43 step 9: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:01:45 step 10: wait-stable
+15:01:46 step 11: shot human-turn.png
+15:01:46 human-turn.png: pixels 638b5604b60524a3, file 15a3bd796d65e6f8
+15:01:46 step 12: click-change 507 20 6
+15:01:54 step 13: shot speed-panel.png
+15:01:54 speed-panel.png: pixels db18f515c26e04d1, file 37f1c0ae95f44747
+15:01:54 step 14: click-change 459 20 6
+15:01:55 step 15: shot speed-faster.png
+15:01:56 speed-faster.png: pixels 340f7fbbd1cac80b, file 0a678381bf04cae5
+15:01:56 step 16: click 330 330
+15:01:56 step 17: shot after-click-elsewhere.png
+15:01:56 after-click-elsewhere.png: pixels ce03cfc7ad9be8ca, file d1853f9432038558
+15:01:56 step 18: shot speed-closed.png
+15:01:56 speed-closed.png: pixels ce03cfc7ad9be8ca, file d1853f9432038558
+15:01:56 step 19: click-change 459 20 6
+15:01:58 step 20: shot sound-clicked.png
+15:01:58 sound-clicked.png: pixels 5e2e1d022624c944, file db9202eea21b61bf
+15:01:58 step 21: click-change 554 20 6
+15:02:00 step 22: shot save-turn1.png
+15:02:00 save-turn1.png: pixels ab6af249c5162f28, file 2ddc44849855812c
+15:02:00 step 23: files
+15:02:00 DOSBox-X exit status 0, 0.05 s after term
+15:02:00 processes still alive after terminate: 0
+15:02:00 reset: run copy: copied 0, removed 3
+15:02:00 reset: run copy equals its state before launch: True

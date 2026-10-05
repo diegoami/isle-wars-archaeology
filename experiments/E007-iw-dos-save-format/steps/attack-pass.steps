@@ -1,0 +1,83 @@
+# arm attack-pass: Easy, 1; turn 1 attack (as E005's turn arm), then two turns of place all and PASS; Save and the CARD button at each (T16)
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot select-level
+click-change 315 168
+shot starting-armies
+click-change 315 169
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+files
+click-change 554 20
+shot save-turn1
+files
+choose-attack
+click-mine
+rclick-mine
+shot place-how-many-2
+click-change 284 331
+shot place-turn-menu-2
+click-change 272 323
+click-target
+shot attack-from-where-2
+click-mine
+shot attack-ready-2
+click-until 283 323 258 305 155 40 255 255 85 300
+shot attack-result-2
+files
+click-change 284 331
+until 270 310 140 30 170 0 0 150 20
+wait-stable
+shot after-move-in-2
+click 338 325
+wait-change 10
+wait-stable
+shot draws-card-2
+wait-change 10
+wait-stable
+shot click-to-continue-2
+click-change 335 323
+shot ai-turn-first-2
+wait-change 10
+shot ai-turn-second-2
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-2
+click-change 554 20
+shot save-turn2
+files
+choose-attack
+click-mine
+rclick-mine
+click-change 284 331
+click-change 369 325
+shot cards-turn2
+click 338 325
+wait-change 10
+wait-stable
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-3
+click-change 554 20
+shot save-turn3
+files
+choose-attack
+click-mine
+rclick-mine
+click-change 284 331
+click-change 369 325
+shot cards-turn3
+click 338 325
+wait-change 10
+wait-stable
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-4
+click-change 554 20
+shot save-turn4
+files

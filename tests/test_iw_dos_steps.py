@@ -692,7 +692,7 @@ class ForbiddenControlTest(StepsWorld):
         self.assertEqual(sorted(grammar_verbs()), sorted([
             "click", "rclick", "click-change", "rclick-change", "click-until", "wait-stable", "wait-change", "until",
             "choose-attack", "click-mine", "rclick-mine", "click-target", "rclick-target", "shot", "files", "key",
-            "wait-exit", "savestate"]))
+            "wait-exit", "savestate", "put-save"]))
 
     def test_every_click_verb_is_refused_on_both_buttons_and_on_the_band_s_corners(self):
         tails = {"click": "", "rclick": "", "click-change": " 6", "rclick-change": " 6",

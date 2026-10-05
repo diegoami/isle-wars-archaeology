@@ -1,0 +1,5 @@
+69 save files, 66 distinct (50 natural), 0 that do not round-trip
+83 saves compared with their screen (66 natural), 0 differ
+272 cells of 68 saves; 4 patterns; a pattern has one count: True; a count has one pattern: True
+17 crafted runs
+29 pairs
