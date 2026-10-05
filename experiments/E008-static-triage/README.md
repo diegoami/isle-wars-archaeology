@@ -53,3 +53,16 @@ A re-run writes new files beside these, never over them.
   `dos-probe-exe-r1.json`, `dos-probe-ov6-r1.json`, `ghidra-dos-exe-r1.json` (the import),
   `ghidra-dos-exe-r2.json` (the import again, with the probe's three ranges), `ghidra-dos-ov6-r1.json`;
   the Done-when outputs of this round are the `r2-*` files of `measurements/done-when/`.
+
+## Addendum, round 1 of the review (2026-10-05; appended, nothing above changed)
+
+- `dos_identify.py` now refuses an unset, relative or in-checkout `IWA_STATIC` like the other scripts
+  (it writes nothing derived, but it reads an original).
+- Every script that makes a run folder now lists each file it left there by sha256 and size, as
+  `derived_files` in its record. `tools/static/inventory_derived.py` does the same for the run folders
+  made before: `measurements/inventory-r3-<folder>.json`, one per folder of the static folder on
+  2026-10-05 (the r1 and r2 runs, the explorations and the main session's C3 re-runs). The earlier
+  records are not rewritten. `check_derived_hashes.py` reads these lists.
+- `tools/static/iwp_markers.py` counts ProjectorRays' error markers in the scripts of run `pro-r1`,
+  checked against `iwp-extract-pro-r1.json` by sha256: `measurements/iwp-markers-pro-r1.json` (none).
+- `measurements/done-when/r3-*`: the Done-when outputs of this round.

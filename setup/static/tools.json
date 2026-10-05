@@ -77,5 +77,17 @@
       },
       "runs": "deark -m pklite -d -od <run folder> -o stage1-pklite <ISLEWAR.EXE>, then deark -m exepack -d -od <run folder> -o stage2-exepack <the first output>; tools/static/dos_unpack.py runs both"
     }
+  ],
+  "terminal_only": [
+    {
+      "name": "objdump",
+      "version": "GNU objdump (GNU Binutils for Ubuntu) 2.42",
+      "path_class": "a system package's binary found on PATH (objdump is the distribution's link to its x86-64 binutils binary), not below the tools folder",
+      "source": "Ubuntu package binutils-x86-64-linux-gnu 2.42-4ubuntu2.8 (source package binutils), installed with the system; the binary's md5 equals the package's own md5sums entry",
+      "files": {
+        "x86_64-linux-gnu-objdump": "d0041e7511460b9ebfd95ce4f9d93c7ffea398ffc1cb2c316a220dd8e533db3d"
+      },
+      "use": "T26 only: while locating the places that push ISLEWAR.SAV's descriptor, the implementer looked at bytes of the unpacked DOS image with objdump -m i8086, in the terminal. Nothing it printed was kept or tracked, and no script runs it; the probe's addresses and reading are Ghidra's. check_tools.py does not check it."
+    }
   ]
 }

@@ -232,6 +232,16 @@ and the JDK from their official archives.
 | ProjectorRays (Director decompiler) | 0.2.0, commit `8a3d3b4211575170276fc6be350b6b52e96d4750`, MPL-2.0 | `projectorrays-0.2.0/bin/projectorrays` | `d1c2235bd5f32f4a268a2cd09d2260e143b8caf51124e0da8d9f54fd113c0ea3`; built by `setup/static/build-projectorrays.sh` with the headers of `libboost1.83-dev` 1.83.0-2.1ubuntu3.2 (deb sha256 `519ecf2c64308527e15b6582955681d192a832250baa4bc424967aaf7d02d68f`) and `libmpg123-dev` 1.32.5-1ubuntu1.1 (`5fe2e9a221025ddd526baf2c2e3a0df5aacc8626f927d14fcb9585414a2d6d40`), and the system `libmpg123.so.0` | github.com/ProjectorRays/ProjectorRays, tag `v0.2.0`; its only release asset is a Windows executable, so it is built from source |
 | Deark (the PKLITE and EXEPACK unpacker) | 1.7.3 (`deark -version` prints `Deark version: 1.7.3`), commit `e3c0ef3c6b6b8b697146a4016eb796ac02744785`, an MIT-style licence | `src/deark-1.7.3/deark` | `deark` `70c93ae2755a4682bf249b91c76e088d47225e1bda867916f3a3dae5d4bb8e23` | github.com/jsummers/deark, tag `v1.7.3`, built with `make` in the source tree without changes (the owner's choice and the main session's build, 2026-10-05) |
 
+One more tool was used in T26, in the terminal only, and no script runs it: **GNU objdump**, `GNU
+objdump (GNU Binutils for Ubuntu) 2.42`. It is the system's `objdump` on PATH, the distribution's link
+to its x86-64 binutils binary (not below the tools folder), from the Ubuntu package
+`binutils-x86-64-linux-gnu` 2.42-4ubuntu2.8 (source package `binutils`); the binary
+`x86_64-linux-gnu-objdump` has sha256 `d0041e7511460b9ebfd95ce4f9d93c7ffea398ffc1cb2c316a220dd8e533db3d`,
+and its md5 equals the package's own `md5sums` entry. The implementer looked at bytes of the unpacked
+DOS image with `objdump -m i8086` while locating the places that push a file name; nothing it printed
+was kept or tracked. It is recorded under `terminal_only` in `tools.json`, which `check_tools.py`
+does not check.
+
 **Environment variables.** `IWA_STATIC` (the folder for everything derived; every script refuses it
 unset, relative, inside a checkout, containing this repository, or overlapping an original's folder),
 `IW_DOS_DIR` and `IWP_DIR` (the folders of the originals, read in place, hashed against
@@ -249,6 +259,9 @@ IWA_STATIC=<folder> python3 tools/static/dos_probe.py --file deark-<run>/stage2-
   --sha256 <its sha256> --needle ISLEWAR.SAV --record dos-probe-<run>.json
 IWA_STATIC=<folder> python3 tools/static/ghidra_import.py --file deark-<run>/stage2-exepack.000.exe \
   --sha256 <its sha256> [--range 1000:9b33-1000:9d5f] --run <run> --record ghidra-<run>.json
+IWA_STATIC=<folder> python3 tools/static/inventory_derived.py (--dir <run folder>... | --all) --prefix <prefix>
+IWA_STATIC=<folder> python3 tools/static/iwp_markers.py --dir iwp-extract-<run> \
+  --against iwp-extract-<run>.json --record iwp-markers-<run>.json
 python3 tools/static/check_derived_hashes.py      # no tracked file is an output derived from an original
 ```
 
@@ -272,7 +285,17 @@ python3 tools/static/check_derived_hashes.py      # no tracked file is an output
   the record gets only the range and its counts.
 - Every run is a new folder `<tool>-<run id>` in `$IWA_STATIC`; nothing is overwritten, and
   `--record NAME` writes a new file under `experiments/E008-static-triage/measurements/`, refused when
-  its text holds a machine path.
+  its text holds a machine path. The record lists every file the run left in its folder (the tool's
+  own files too: a Ghidra database, a listing, a dumped chunk) by sha256 and size, as
+  `derived_files`.
+- `tools/static/inventory_derived.py` writes the same `derived_files` list, as a new record, for run
+  folders made before the scripts listed them; `check_derived_hashes.py` then fails on a tracked
+  copy of any listed file, whatever its name.
+- `tools/static/iwp_markers.py` counts ProjectorRays' error markers (the word `ERROR` in a script,
+  an opcode named `unk` and two hex digits in a bytecode listing) in the scripts an extraction
+  record lists, checked by their sha256; it records counts only.
+- `tools/static/dos_identify.py` reads the PKLITE header of `ISLEWAR.EXE` in place and writes nothing
+  derived; it still refuses an unset or in-checkout `IWA_STATIC`, as every script does.
 
 A missing tool is a step to finish, never a reason to fall back to runs (U32): every script stops
 with that message when its tool is not there.
