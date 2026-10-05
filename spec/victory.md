@@ -1,0 +1,19 @@
+# Victory and loss
+
+Written by the main session at promotion, never by a research task. The summary describes only
+`supported` and `corroborated` claims. Everything else stays in the table.
+
+## Summary
+
+*Isle Wars Pro*, unregistered, as read from its code: one seat holding all 46 countries wins (C-VIC-01); there is no turn, round or time limit, no draw and no other win condition, so nothing in the code ends a stalled game (C-VIC-02, C-VIC-03); events, which besides income are the only thing that can shake a locked board, are drawn only while no seat holds 39 or more countries (C-VIC-04); eliminated seats lose their cards to no one (C-VIC-05). Wins and losses are recorded per level, at most 51 games in the unregistered build (C-VIC-06).
+
+## Claims
+
+| ID | Claim | Status | Scope | Basis | Findings |
+| --- | --- | --- | --- | --- | --- |
+| C-VIC-01 | The game is won by one seat holding all 46 countries; a human conquest is caught on the next frame, a computer's at the next turn advance (after its own move and card draw run). | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), not yet corroborated by play (T28); Q-VIC-07, Q-VIC-14; corrected in review round 1 (where computer conquest is detected) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F012](../findings/F012-pro-turn-victory-rules.md) |
+| C-VIC-02 | There is no turn, round or time limit, no draw, and no win by share of the board, objectives, income or survival; the only score is the country count. | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), not yet corroborated by play (T28); Q-VIC-02, Q-VIC-03, Q-VIC-05, Q-VIC-06, Q-VIC-09 to Q-VIC-13 (absences over the scripts read) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F012](../findings/F012-pro-turn-victory-rules.md) |
+| C-VIC-03 | Only three automatic endings exist: all 46 countries, the collective concession, and no live human left; nothing in the code ends a game that has stalled otherwise. | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), not yet corroborated by play (T28); Q-VIC-01 | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F012](../findings/F012-pro-turn-victory-rules.md) |
+| C-VIC-04 | Between turns one event chance is drawn (1 in 8 to 1 in 21 by setting), none in the first six player-turns and none at a transition while any seat holds 39 or more countries; the threshold is re-tested at each transition, not latched. | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), not yet corroborated by play (T28); Q-VIC-04; corrected in review round 1 (not permanent) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F012](../findings/F012-pro-turn-victory-rules.md) |
+| C-VIC-05 | A seat is eliminated at zero countries: its live mark clears at the capture's rebuild, its cards are wiped at a later rebuild (at the latest the next turn advance), never transferred, and the seat is skipped. | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), not yet corroborated by play (T28); Q-VIC-08; corrected in review round 1 (timing) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F012](../findings/F012-pro-turn-victory-rules.md) |
+| C-VIC-06 | Wins and losses are recorded per level; the unregistered build writes a result only while 50 or fewer are recorded, so at most 51. | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), not yet corroborated by play (T28); Q-VIC-14, Q-SUR-05; corrected in review round 1 (off by one) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F012](../findings/F012-pro-turn-victory-rules.md) |
