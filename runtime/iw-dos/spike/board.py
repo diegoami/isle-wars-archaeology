@@ -2,7 +2,7 @@
 countries touch. Pure functions over `raw`, the 640x350 8-bit RGB pixels of the game window.
 
 This is observation only (directly-observable state read from the pixels, F007); it is how an
-exploration script finds a Blue country that borders an enemy on a board that is random in every run.
+exploration script finds a Blue country that borders an enemy on a board that differs between runs.
 It claims nothing about the rules: "touch" means two countries' fills are at most BORDER pixels apart
 on the screen, and the sea routes (the white lines between islands) are not looked at.
 
@@ -16,6 +16,21 @@ Provenance of the constants (CLAUDE.md rule 17):
   the totals of the scoreboard ("BLUE : 17" and so on) agree with the count of boxes of each colour
   (measurements `board-owner-check.tsv`). The names are the scoreboard's: BLUE, RED, GREEN, BROWN (the
   Brown army is drawn grey).
+- SAMPLES (PR #58 R10): designed, not read from the game. The offsets are chosen to fall just outside the
+  number box and its white digits: the boxes found are 9 to 15 pixels wide and 8 or 9 high, so 10 pixels left
+  or right of the centre, or 7 above or below, is outside every box. Checked on the `human-turn.png` of the 23
+  completed records that have one (1058 country readings): no offset lands inside a box, and each offset lands
+  on an army colour in 966 to 1058 of the 1058 (`measurements/round1/constants-20261005T112209Z/board-constants.tsv`);
+  `owner` votes over all eight, and its readings agree with the save's owner codes on 368 of 368 (F007 D10).
+- BORDER (PR #58 R10): designed, with that measurement as its check. Between two countries the game draws one
+  black line, so their fills are 2 pixels apart: on the same 23 screenshots every pair of fills that come within
+  10 pixels of each other in a row or a column is exactly 2 apart (1458 pairs, none at 1 or at 3 to 10). Any
+  BORDER from 2 to 10 therefore gives the same neighbours on them; 3 leaves one pixel of margin. Not looked for:
+  the sea routes (the white lines between islands) and the game's own adjacency, which this module does not
+  claim (no code is read, T14 Scope).
+- derive_boxes' filter (8 or 9 high, 8 to 16 wide, more than 40 pixels, the map area y 20..279): designed around
+  the boxes of x06; on the 23 screenshots it finds boxes of 9 to 15 by 8 or 9, one at every BOXES centre
+  (1058 of 1058 at distance 0, same table). Used by the tests and to re-derive BOXES, never by a run.
 """
 
 WIDTH, HEIGHT = 640, 350
@@ -33,7 +48,7 @@ COLOURS = {"blue": (85, 85, 255), "red": (170, 0, 0), "green": (0, 170, 0), "bro
 BY_COLOUR = {v: k for k, v in COLOURS.items()}
 # Where a country's fill is sampled: beside its number box (the box itself is black and white).
 SAMPLES = [(-10, 0), (10, 0), (-10, 4), (10, 4), (-10, -4), (10, -4), (0, 7), (0, -7)]
-BORDER = 3          # two fills this close, across a black border line, touch
+BORDER = 3          # two fills this close touch: one black border line between them is a gap of 2 (see above)
 
 
 def pixel(raw, x, y):

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Board reader against the scoreboard: the totals runtime/iw-dos/spike/board.py reads from the pixels beside
 each number box, against the four figures of the game's own scoreboard panel ("BLUE : 17" ...) read by eye
-from the same screenshot. Writes measurements/board-owner-check.tsv (a re-run writes <name>.new).
+from the same screenshot. Writes OUTDIR/board-owner-check.tsv, created exclusively through analyze.write, so it is
+never overwritten (PR #58 R3): a re-run is given a new OUTDIR (analyze.py's batch directory).
 
     check-board-reader.py OUTDIR       needs E005_BUNDLES and E005_EXPLORE (machine-local, never written out)
 The eye readings were taken when each screenshot was first looked at (exploration runs x02 to x06, E005-r0011,
@@ -23,7 +24,6 @@ spec = importlib.util.spec_from_file_location("analyze", ROOT / "experiments" / 
 analyze = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(analyze)
 
-EXPLORE = Path(os.environ["E005_EXPLORE"])
 # (where, name, eye reading: blue, red, green, brown)
 CASES = [
     ("explore", "x02.a.png", (17, 8, 12, 9)),
@@ -44,17 +44,14 @@ NOTES = {"attack-result.png": "the conquered country is already Blue on the map 
 def main(outdir):
     rows = ["source\tscreenshot_file_sha256\teye_blue_red_green_brown\treader_blue_red_green_brown\tequal\tnote"]
     for where, name, eye in CASES:
-        path = EXPLORE / name if where == "explore" else analyze.asset(where, name)
+        path = Path(os.environ["E005_EXPLORE"]) / name if where == "explore" else analyze.asset(where, name)
         digest = hashlib.sha256(Path(path).read_bytes()).hexdigest()
         raw = analyze.read_png(path)[2]
         t = board.totals(raw)
         got = (t["blue"], t["red"], t["green"], t["brown"])
         label = f"exploration {name}" if where == "explore" else f"{where} {name}"
         rows.append(f"{label}\t{digest}\t{','.join(map(str, eye))}\t{','.join(map(str, got))}\t{got == eye}\t{NOTES.get(name, '') if where != 'explore' else ''}")
-    out = Path(outdir) / "board-owner-check.tsv"
-    if out.exists():
-        out = Path(outdir) / "board-owner-check.tsv.new"
-    out.write_text("\n".join(rows) + "\n")
+    analyze.write(outdir, "board-owner-check.tsv", "\n".join(rows) + "\n")
     print("\n".join(rows))
 
 
