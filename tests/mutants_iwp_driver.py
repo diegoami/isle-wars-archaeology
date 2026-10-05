@@ -35,7 +35,8 @@ MUTANTS = [
         "        if False:\n            self.fail(f\"the game process exited before")],
      [T + "KillTest"]),
     ("the reset is skipped after an aborted repeat", [(
-        S, '        if hasattr(self, "snap_before"):', '        if hasattr(self, "snap_before") and self.status == "running":')],
+        S, '        if snapshot:\n            self.cleanup("snapshot and reset"',
+        '        if snapshot and self.status == "running":\n            self.cleanup("snapshot and reset"')],
      [T + "KillTest.test_the_reset_runs_after_an_aborted_repeat",
       T + "KillTest.test_the_next_repeat_after_an_aborted_one_starts_from_the_baseline_and_completes"]),
     ("the second prefix check, immediately before the launch, is skipped", [(
@@ -229,12 +230,56 @@ MUTANTS = [
     ("the sweep: one game-facing method loses its guard", [(
         S, '    @guarded("a file observation")\n    def observe_file(self, rel):',
         '    def observe_file(self, rel):')],
-     [T + "GuardSweepTest.test_every_game_facing_method_is_decorated_with_the_guard",
-      T + "GuardSweepTest.test_every_public_method_is_guarded_or_an_acknowledged_exception"]),
+     [T + "GuardSweepTest.test_every_public_method_of_the_effective_interface_is_guarded_or_a_stated_exception"]),
     ("the sweep: one raw subprocess call is made outside the checked helper", [(
         S, '        return spike.spawn(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],',
         '        return subprocess.Popen(["Xvfb", self.display, "-screen", "0", f"{width}x{height}x{depth}", "-nolisten", "tcp"],')],
      [T + "CommandHelperSweepTest"]),
+    # the round-3 review of PR #54 by Sol (round 4: composition, sweeps over the effective interface)
+    ("R1: Session delegates to its engine, so the spike's complete_script() and run_step() are reachable", [(
+        S, "    def __setattr__(self, name, value):",
+        "    def __getattr__(self, name):\n        return getattr(self._engine, name)\n\n    def __setattr__(self, name, value):")],
+     [T + "CompletionRouteTest.test_complete_script_is_no_route_to_completed",
+      T + "GuardSweepTest.test_session_is_not_a_cycle_and_does_not_delegate",
+      T + "GuardSweepTest.test_no_method_of_the_spike_is_reachable_on_a_session"]),
+    ("R1: the engine no longer refuses the spike's complete_script()", [(
+        S, '    SPIKE_ONLY = ("complete_script", "run_script",', '    SPIKE_ONLY = ("run_script",')],
+     [T + "GuardSweepTest.test_the_engine_refuses_the_spikes_own_routes",
+      T + "CompletionRouteTest.test_complete_script_is_no_route_to_completed"]),
+    ("R3: Session inherits the spike's Cycle again (round 3's structure)", [(
+        S, "class Session:\n", "class Session(spike.Cycle):\n")],
+     [T + "GuardSweepTest.test_session_is_not_a_cycle_and_does_not_delegate",
+      T + "GuardSweepTest.test_no_method_of_the_spike_is_reachable_on_a_session",
+      T + "DeadGameStepTest"]),
+    ("R3: an unguarded public run_step() on Session (Sol's route, on the facade)", [(
+        S, "    # ---- what does not touch the game\n",
+        "    def run_step(self, step):\n        return self._engine.run_step(step)\n\n    # ---- what does not touch the game\n")],
+     [T + "GuardSweepTest.test_every_public_method_of_the_effective_interface_is_guarded_or_a_stated_exception",
+      T + "GuardSweepTest.test_no_method_of_the_spike_is_reachable_on_a_session",
+      T + "DeadGameStepTest"]),
+    ("R3: perform() is marked unguarded instead of guarded", [(
+        S, '    @guarded("a step")\n    def perform(self, text):', '    @unguarded("none")\n    def perform(self, text):')],
+     [T + "GuardSweepTest.test_every_public_method_of_the_effective_interface_is_guarded_or_a_stated_exception"]),
+    ("R2: a session refused before its snapshot is recovered (round 3's rule)", [(
+        S, '        self.recovered = snapshot and all(self.cleaned.values()) and self.cleaned.get("snapshot and reset") is True',
+        '        self.recovered = all(self.cleaned.values()) and (not snapshot or self.cleaned.get("snapshot and reset") is True)')],
+     [T + "RefusedSessionRecoveryTest"]),
+    ("R4: Cycle.run_step's key as a bounded raw subprocess.run (Sol's mutant)", [(
+        C, '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)',
+        '            subprocess.run(["xdotool", "key", args[0]], env=self.env, timeout=RUN_TIMEOUT)')],
+     [T + "CommandHelperSweepTest.test_no_raw_or_unchecked_command_on_the_drivers_path"]),
+    ("R4: Cycle.run_step's key as an unchecked run()", [(
+        C, '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)',
+        '            run(["xdotool", "key", args[0]], env=self.env)')],
+     [T + "CommandHelperSweepTest.test_no_raw_or_unchecked_command_on_the_drivers_path"]),
+    ("R4: a raw subprocess call in the setup module the driver runs (prefix.py, on the path)", [(
+        "setup/iwp/prefix.py", "def prefix_problems(prefix, install=None):\n",
+        "def prefix_problems(prefix, install=None):\n    subprocess.run([\"true\"])\n")],
+     [T + "CommandHelperSweepTest.test_no_raw_or_unchecked_command_on_the_drivers_path"]),
+    ("R4: an excluded spike method comes back on the path (the engine stops refusing hover_click)", [(
+        S, '    SPIKE_ONLY = ("complete_script", "run_script", "load_script", "session", "input", "hover_click",',
+        '    SPIKE_ONLY = ("complete_script", "run_script", "load_script", "session", "input",')],
+     [T + "CommandHelperSweepTest.test_the_off_path_exclusions_are_off_the_path"]),
 ]
 
 

@@ -81,10 +81,11 @@ def kill_game(session):
     """What an outsider does: `wineserver -k` of this run's prefix, from a process of its own. What is relied
     on is that the game is then gone, checked with a bound; FaultNotInjected otherwise."""
     session.observe(session.step_no + 1, "process", "fault injected", "wineserver -k")
-    done = spike.run([spike.WINESERVER, "-k"], env=session.env, timeout=sessionlib.WINESERVER_TIMEOUT)
-    session.observe(session.step_no + 1, "process", "fault: wineserver -k exit status", done.returncode)
+    # its exit status is a state, recorded and not relied on (spike.probe): what is relied on is the game gone
+    ok, _, _ = spike.probe([spike.WINESERVER, "-k"], env=session.env, timeout=sessionlib.WINESERVER_TIMEOUT)
+    session.observe(session.step_no + 1, "process", "fault: wineserver -k exited 0", "yes" if ok else "no")
     if spike.poll(lambda: not session.game_alive(), 10, 0.05) is None:
-        raise FaultNotInjected(f"the game survived the injected wineserver -k (exit {done.returncode})")
+        raise FaultNotInjected(f"the game survived the injected wineserver -k (exited 0: {ok})")
 
 
 def game_items(session):
@@ -167,9 +168,10 @@ def write_records(session, bundles, commit, machine, state_sha, argv, fingerprin
             os.close(safeio.open_directory(ROOT / folder / EXPERIMENT, create_below=ROOT))
     except (safeio.Refused, OSError) as exc:
         raise RecordError(f"no record written: {exc}") from None
-    session._error = RecordError
-    session.outputs = spike.store_outputs(session, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
-    manifest = spike.build_manifest(session)
+    engine = session._engine                     # the driver's own record writer reads the session's engine
+    engine._error = RecordError
+    engine.outputs = spike.store_outputs(engine, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
+    manifest = spike.build_manifest(engine)
     record = build_record(session, commit, machine, rep_of(session.args.arm), state_sha, argv, fingerprint)
     try:
         safeio.write_file(ROOT / "evidence" / EXPERIMENT, names["evidence"],

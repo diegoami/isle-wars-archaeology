@@ -23,15 +23,23 @@ And those of the round-1 review, with the class sweep the owner asked for:
 - R3 and class C, the game and the display alive at every boundary, just before terminate too: LivenessTest;
 - R4 and class D, the check immediately before launch repeats the first's: SealSymmetryTest;
 - R5 and class E, the display is the run's own Xvfb's, or another one is tried, or DisplayError: DisplayOwnershipTest.
+And those of the round-3 review by Sol (round 4: Session composes the spike's Cycle instead of inheriting it):
+- R1, complete() is the only completion route, complete_script() is not reachable: CompletionRouteTest, GuardSweepTest;
+- R2, a session refused before its snapshot is not recovered: RefusedSessionRecoveryTest;
+- R3, no step reaches a dead game, and the guard sweep reads the effective interface: DeadGameStepTest, GuardSweepTest;
+- R4, the command sweep covers every file on the driver's path, the reused spike included: CommandHelperSweepTest.
 """
 import ast
 import contextlib
+import inspect
+import json
 import os
 import signal
 import socket
 import stat
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import unittest
@@ -47,7 +55,7 @@ from driver import errors, runner, session as sessionlib  # noqa: E402
 
 spike = sessionlib.spike
 REAL_RUN = spike.run                                # the bounded helper, before any test replaces it
-ORIGINAL_START_X = sessionlib.Session.start_x        # the real one, before DriverWorld replaces it
+ORIGINAL_START_X = sessionlib.Engine.start_x        # the real one, before DriverWorld replaces it
 SAMPLE = b"\x10" * (800 * 600 * 3)
 
 
@@ -81,10 +89,10 @@ class DriverWorld(World):
         stack.enter_context(mock.patch.object(spike.Screen, "raw", return_value=SAMPLE))
         stack.enter_context(mock.patch.object(spike.Screen, "title_up", lambda s: self.screens["title"]))
         stack.enter_context(mock.patch.object(spike.Screen, "options_up", lambda s: self.screens["options"]))
-        stack.enter_context(mock.patch.object(sessionlib.Session, "start_x", self.stage("start_x")))
-        stack.enter_context(mock.patch.object(sessionlib.Session, "start_wm", self.stage("start_wm")))
-        stack.enter_context(mock.patch.object(sessionlib.Session, "start_game", lambda s: self.start_game(s)))
-        stack.enter_context(mock.patch.object(sessionlib.Session, "run_step", self.stage("run_step")))
+        stack.enter_context(mock.patch.object(sessionlib.Engine, "start_x", self.stage("start_x")))
+        stack.enter_context(mock.patch.object(sessionlib.Engine, "start_wm", self.stage("start_wm")))
+        stack.enter_context(mock.patch.object(sessionlib.Engine, "start_game", lambda s: self.start_game(s)))
+        stack.enter_context(mock.patch.object(sessionlib.Engine, "run_step", self.stage("run_step")))
         stack.enter_context(mock.patch.object(sessionlib, "TITLE_TIMEOUT", 1.0))
         stack.enter_context(mock.patch.object(sessionlib, "WAIT_GONE_TIMEOUT", 0.6))
         stack.enter_context(mock.patch.object(sessionlib, "AFTER_KILL_TIMEOUT", 0.6))
@@ -142,7 +150,7 @@ class CompletedTest(DriverWorld):
         self.assertEqual(made.status, "completed", made.status)
         self.assertEqual({"title", "options"}, made.reached)
         self.assertEqual({"before.png", "after.png"}, {n for n, _, c in made.outputs if c == "screenshot"})
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
         self.assertEqual(tree(self.prefix), before, "reset put the prefix back")
         self.assertEqual(self.calls[:4], ["start_x", "start_wm", "start_game", "run_step"])
         self.assertTrue(made.recovered)
@@ -183,10 +191,10 @@ class CompleteTest(DriverWorld):
         made = self.session()
         made.start()
         self.addCleanup(made.finish)
-        made.shot("before.png", 3)
-        made.shot("after.png", 6)
-        made.expected = {"title", "options"}
-        made.reached = {"options"}
+        made._engine.shot("before.png", 3)
+        made._engine.shot("after.png", 6)
+        made._engine.expected = {"title", "options"}
+        made._engine.reached = {"options"}
         with self.assertRaises(errors.ScreenNotReached):
             made.complete()
         self.assertTrue(made.status.startswith("aborted: screen-not-reached: "), made.status)
@@ -195,7 +203,7 @@ class CompleteTest(DriverWorld):
         made = self.session()
         made.start()
         self.addCleanup(made.finish)
-        made.reached = {"title"}
+        made._engine.reached = {"title"}
         with self.assertRaises(errors.StepFailed):
             made.complete()
         self.assertTrue(made.status.startswith("aborted: step-failed: "), made.status)
@@ -227,7 +235,7 @@ class KillTest(DriverWorld):
             session.procs["game"].kill()
             session.procs["game"].wait()
         started = time.monotonic()
-        with mock.patch.object(sessionlib, "TITLE_TIMEOUT", 30), mock.patch.object(sessionlib.Session, "start_game", dies):
+        with mock.patch.object(sessionlib, "TITLE_TIMEOUT", 30), mock.patch.object(sessionlib.Engine, "start_game", dies):
             made = self.execute()
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
         self.assertLess(time.monotonic() - started, 10)
@@ -238,7 +246,7 @@ class KillTest(DriverWorld):
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
         self.assertEqual(tree(self.prefix), before, "what the game wrote is gone after the aborted repeat")
         self.assertFalse((self.prefix / "drive_c" / "Temp").exists())
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
 
     def test_the_next_repeat_after_an_aborted_one_starts_from_the_baseline_and_completes(self):
         first = self.execute(hooks={"after-title": runner.kill_game})
@@ -262,7 +270,7 @@ class SealTest(DriverWorld):
         os.symlink("/", self.prefix / "dosdevices" / "z:")
 
     def test_a_prefix_made_unsafe_after_the_first_seal_is_refused_immediately_before_launch(self):
-        with mock.patch.object(sessionlib.Session, "start_wm", lambda s: self.spoil(s)):
+        with mock.patch.object(sessionlib.Engine, "start_wm", lambda s: self.spoil(s)):
             made = self.execute()
         self.assertTrue(made.status.startswith("aborted: seal: the prefix is not safe to launch from (immediately before launch)"),
                         made.status)
@@ -306,23 +314,23 @@ class WaitTest(DriverWorld):
     def test_a_game_side_process_that_stays_ends_the_wait_at_its_bound_with_none(self):
         self.straggler(self.run_id, "game")
         made = self.session()
-        self.assertIsNone(self.within(5, lambda: made.wait_gone("game", 0.5)))
+        self.assertIsNone(self.within(5, lambda: made._engine.wait_gone("game", 0.5)))
 
     def test_the_wait_is_over_at_once_when_only_another_sessions_process_is_alive(self):
         self.straggler("E004-r0999", "game")                   # another run's game side
         made = self.session()
-        waited = self.within(5, lambda: made.wait_gone("game", 3))
+        waited = self.within(5, lambda: made._engine.wait_gone("game", 3))
         self.assertIsInstance(waited, float, "the wait ended because this run has nothing alive")
         self.assertLess(waited, 1)
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
 
     def test_the_display_side_does_not_hold_the_game_wait(self):
         self.straggler(self.run_id, "display")                 # what xfwm4 leaves: dbus-daemon, at-spi, xfconfd
         made = self.session()
-        waited = self.within(5, lambda: made.wait_gone("game", 3))
+        waited = self.within(5, lambda: made._engine.wait_gone("game", 3))
         self.assertIsInstance(waited, float)
         self.assertLess(waited, 1)
-        self.assertEqual(len(made.alive()), 1, "it is still this run's, and the final check counts it")
+        self.assertEqual(len(made._engine.alive()), 1, "it is still this run's, and the final check counts it")
 
     def test_run_processes_never_matches_a_longer_run_id_or_the_marker_of_nobody(self):
         self.straggler(self.run_id + "0", "game")
@@ -336,11 +344,11 @@ class WaitTest(DriverWorld):
         self.straggler(self.run_id, "game")
         made = self.execute()
         self.assertEqual(made.status, "completed", made.status)
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
 
     def test_a_survivor_that_cannot_be_killed_is_a_named_terminate_error(self):
         self.straggler(self.run_id, "game")
-        with mock.patch.object(sessionlib.Session, "kill_side", lambda s, side: None):
+        with mock.patch.object(sessionlib.Engine, "kill_side", lambda s, side: None):
             made = self.execute()
         self.assertTrue(made.status.startswith("aborted: terminate: "), made.status)
 
@@ -348,7 +356,7 @@ class WaitTest(DriverWorld):
         self.straggler(self.run_id, "display")
         made = self.execute()
         self.assertEqual(made.status, "completed", made.status)
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
 
 
 class EnvironmentTest(DriverWorld):
@@ -365,8 +373,8 @@ class EnvironmentTest(DriverWorld):
     def test_a_stale_bus_is_said_so_in_the_log_and_the_record(self):
         with mock.patch.dict(os.environ, {"DBUS_SESSION_BUS_ADDRESS": "unix:path=/nonexistent/bus"}):
             made = self.session()
-        made.note_environment()
-        self.assertTrue(any("stale" in line and "unset for this run" in line for line in made.log), made.log)
+        made._engine.note_environment()
+        self.assertTrue(any("stale" in line and "unset for this run" in line for line in made._engine.log), made._engine.log)
         values = [o["value"] for o in made.obs if o["field"].startswith("DBUS_SESSION_BUS_ADDRESS")]
         self.assertEqual(values, ["set, stale: unset for the run"])
         self.assertNotIn("/nonexistent", repr(made.obs), "the bus's path is the machine's, not evidence")
@@ -440,8 +448,8 @@ class ActionTest(DriverWorld):
         made.start()
         self.addCleanup(made.finish)
         made.wait_for_screen("title", timeout=2)
-        made.shot("before.png", 3)
-        made.shot("after.png", 6)
+        made._engine.shot("before.png", 3)
+        made._engine.shot("after.png", 6)
         with self.assertRaises(errors.StepFailed):
             made.complete()
         self.assertTrue(made.status.startswith("aborted: step-failed: "), made.status)
@@ -484,10 +492,10 @@ class ActionTest(DriverWorld):
 
         def fails(session, step):
             raise spike.stepslib.StepError("refused")
-        with mock.patch.object(sessionlib.Session, "run_step", fails):
+        with mock.patch.object(sessionlib.Engine, "run_step", fails):
             made = self.execute(refused)
         self.assertTrue(made.status.startswith("aborted: step-failed: step on line 1: refused"), made.status)
-        self.assertEqual(made.actions, [])
+        self.assertEqual(made._engine.actions, [])
 
 
 class RecoveryTest(DriverWorld):
@@ -524,7 +532,7 @@ class RecoveryTest(DriverWorld):
 
     def test_a_terminate_that_fails_after_an_injected_kill_is_not_recovered(self):
         self.straggler(self.run_id, "game")
-        with mock.patch.object(sessionlib.Session, "kill_side", lambda s, side: None):
+        with mock.patch.object(sessionlib.Engine, "kill_side", lambda s, side: None):
             made = self.execute(hooks={"after-title": runner.kill_game})
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
         self.assertFalse(made.recovered)
@@ -615,9 +623,9 @@ class BoundTest(DriverWorld):
                     raise AssertionError("an unbounded wait")
                 raise subprocess.TimeoutExpired("stuck", timeout)
         made = self.session()
-        made.procs = {"wm": Stuck(), "xvfb": Stuck()}
+        made._engine.procs = {"wm": Stuck(), "xvfb": Stuck()}
         with mock.patch.object(sessionlib, "STOP_TIMEOUT", 0.1), mock.patch.object(sessionlib, "AFTER_KILL_TIMEOUT", 0.1):
-            outcome = self.within(5, made.stop_x)
+            outcome = self.within(5, made._engine.stop_x)
         self.assertIsInstance(outcome, errors.TerminateError, outcome)
         for proc in made.procs.values():
             self.assertEqual(len(proc.waits), 2)
@@ -704,7 +712,7 @@ class FaultIdentityTest(DriverWorld):
         made = self.session()
         made.start()
         self.addCleanup(made.finish)
-        with mock.patch.object(sessionlib.Session, "find_game_pid", lambda s: other.pid):
+        with mock.patch.object(sessionlib.Engine, "find_game_pid", lambda s: other.pid):
             with self.assertRaises(runner.FaultNotInjected):
                 runner.sigkill_game(made)
         self.assertIsNone(other.poll(), "another run's process is never signalled")
@@ -721,10 +729,10 @@ class FaultIdentityTest(DriverWorld):
         bare = subprocess.Popen(["sleep", "60"])                 # no marker: not this run's, whatever procs says
         self.children.append(bare)
         made = self.session()
-        made.procs = {"xvfb": bare}
+        made._engine.procs = {"xvfb": bare}
         with mock.patch.object(sessionlib, "STOP_TIMEOUT", 0.2), mock.patch.object(sessionlib, "AFTER_KILL_TIMEOUT", 0.2):
             with self.assertRaises(errors.TerminateError):
-                made.stop_x()
+                made._engine.stop_x()
         self.assertIsNone(bare.poll())
 
     def test_kill_marked_needs_markers(self):
@@ -748,12 +756,12 @@ class CommandTest(DriverWorld):
             session.observe_screenshot("before.png", 3)
             session.perform(steps)
             session.observe_screenshot("after.png", 6)
-        with mock.patch.object(sessionlib.Session, "run_step", spike.Cycle.run_step):
+        with mock.patch.object(sessionlib.Engine, "run_step", spike.Cycle.run_step):
             return self.execute(body)
 
     def assert_failed_step(self, made):
         self.assertTrue(made.status.startswith("aborted: step-failed: step on line 1: xdotool"), made.status)
-        self.assertEqual(made.actions, [])
+        self.assertEqual(made._engine.actions, [])
 
     def test_a_key_whose_xdotool_fails_is_not_an_action(self):
         with self.failing("key"):
@@ -786,7 +794,7 @@ class CommandTest(DriverWorld):
             return self.fake_run(cmd, **kw)
         with mock.patch.object(spike, "run", side_effect=fake):
             with self.assertRaises(spike.CommandFailed):
-                self.session().window_titles()
+                self.session()._engine.window_titles()
 
 
 class MustTest(unittest.TestCase):
@@ -833,7 +841,7 @@ class LivenessTest(DriverWorld):
             real_complete(session)
             session.procs["xvfb"].kill()
             session.procs["xvfb"].wait()
-        with mock.patch.object(sessionlib.Session, "start_x", lambda s: self.display(s)), \
+        with mock.patch.object(sessionlib.Engine, "start_x", lambda s: self.display(s)), \
                 mock.patch.object(sessionlib.Session, "complete", complete_then_display_dies):
             made = self.execute()
         self.assertTrue(made.status.startswith("aborted: display: xvfb exited before terminate"), made.status)
@@ -842,7 +850,7 @@ class LivenessTest(DriverWorld):
         def display_dies(session):
             session.procs["xvfb"].kill()
             session.procs["xvfb"].wait()
-        with mock.patch.object(sessionlib.Session, "start_x", lambda s: self.display(s)):
+        with mock.patch.object(sessionlib.Engine, "start_x", lambda s: self.display(s)):
             made = self.execute(hooks={"after-title": display_dies})
         self.assertTrue(made.status.startswith("aborted: display: xvfb exited before a screenshot observation"), made.status)
         self.assertNotIn("before.png", {n for n, _, _ in made.outputs})
@@ -855,7 +863,7 @@ class SealSymmetryTest(DriverWorld):
         def spoil(session):
             self.calls.append("start_wm")
             (self.prefix / "system.reg").write_text("changed after the first seal")
-        with mock.patch.object(sessionlib.Session, "start_wm", spoil):
+        with mock.patch.object(sessionlib.Engine, "start_wm", spoil):
             made = self.execute()
         self.assertTrue(made.status.startswith("aborted: seal: system.reg of the prefix is not the baseline's "
                                                "(immediately before launch)"), made.status)
@@ -883,7 +891,7 @@ class DisplayOwnershipTest(DriverWorld):
 
     def setUp(self):
         super().setUp()
-        self.made = self.session()
+        self.made = self.session()._engine
         self.made.set_display(sessionlib.free_display())
 
     def listener(self, display, env=None):
@@ -980,17 +988,17 @@ class TerminateBoundaryTest(DriverWorld):
     """Round 3, R2: the liveness check at the point of termination is inside terminate(), not a check before it."""
 
     def test_a_game_killed_at_entry_to_terminate_is_aborted_and_still_recovered(self):
-        real_terminate = sessionlib.Session.terminate
+        real_terminate = sessionlib.Engine.terminate
 
         def kill_then_terminate(session):
             session.procs["game"].kill()
             session.procs["game"].wait()
             real_terminate(session)
-        with mock.patch.object(sessionlib.Session, "terminate", kill_then_terminate):
+        with mock.patch.object(sessionlib.Engine, "terminate", kill_then_terminate):
             made = self.execute()
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
         self.assertTrue(made.recovered, "the clean-up and the reset still ran and restored the prefix")
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
 
     def test_a_sigkilled_game_still_has_the_rest_of_its_side_terminated_and_the_display_stopped(self):
         """E004-r0108: a SIGKILL takes the game process only; the run's other Wine processes (wineserver,
@@ -1001,12 +1009,12 @@ class TerminateBoundaryTest(DriverWorld):
         before = tree(self.prefix)
         made = self.execute(hooks={"after-input": runner.sigkill_game})
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
-        self.assertTrue(made.cleaned.get("terminate"), made.cleaned)
-        self.assertTrue(made.cleaned.get("stopping the display"), made.cleaned)
+        self.assertTrue(made._engine.cleaned.get("terminate"), made._engine.cleaned)
+        self.assertTrue(made._engine.cleaned.get("stopping the display"), made._engine.cleaned)
         self.assertTrue(made.recovered, "the clean-up and the reset ran and restored the prefix")
         self.assertIsNotNone(wine.poll(), "this run's game-side process was killed")
         self.assertIsNone(other.poll(), "another session's process was not touched")
-        self.assertEqual(made.alive(), [])
+        self.assertEqual(made._engine.alive(), [])
         self.assertEqual(tree(self.prefix), before)
 
 
@@ -1083,63 +1091,266 @@ class VersionsTest(unittest.TestCase):
         self.assertEqual(versions["xdotool"], "unknown")
 
 
-def _session_public_methods():
-    """{method name: [decorator source strings]} of every public method of driver.session.Session."""
-    tree = ast.parse((ROOT / "runtime" / "iwp" / "driver" / "session.py").read_text())
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef) and node.name == "Session":
-            return {item.name: [ast.unparse(d) for d in item.decorator_list]
-                    for item in node.body
-                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and not item.name.startswith("_")}
-    raise AssertionError("Session class not found in session.py")
+SPIKE_CYCLE_PUBLIC = sorted(name for name in dir(spike.Cycle) if not name.startswith("_"))
 
 
-class GuardSweepTest(unittest.TestCase):
-    """The one liveness guard, structurally enforced: every public method of Session goes through the guard
-    (decorated @guarded), or ends a process itself (terminate, stop_x), or is a documented non-game method."""
+class GuardSweepTest(DriverWorld):
+    """The one liveness guard over Session's effective interface (T13 round 4, R3): every public attribute of
+    a real Session, inherited included, read at runtime, is either a read-only view of its state or a method
+    defined by Session itself that carries the guard (`guarded`) or a stated exception (`unguarded`); no
+    method of the spike's Cycle is reachable on a Session (R1 and R3: complete_script, run_step, ...)."""
 
-    GAME_FACING = {"wait_for_screen", "known_screen", "perform", "shot", "observe_screenshot",
-                   "observe_region", "observe_file", "complete"}
-    SELF_GUARDED = {"terminate", "stop_x"}
-    NON_GAME = {"fail", "abort_later", "stage", "require_game", "display_dead", "require_display",
-                "require_alive", "require_install_readonly", "require_baseline", "note_environment",
-                "start", "launch", "set_display", "spawn_xvfb", "display_is_ours", "start_x",
-                "checkpoint", "on", "alive", "wait_gone", "kill_side", "stop_own", "cleanup",
-                "snapshot_and_reset", "finish", "execute"}
+    GAME_FACING = {"wait_for_screen", "known_screen", "perform", "observe_screenshot", "observe_region",
+                   "observe_file", "complete"}
+    UNGUARDED = {"start", "finish", "execute", "checkpoint", "on", "observe", "game_alive", "find_game_pid"}
 
-    def guarded(self):
-        return {name for name, decos in _session_public_methods().items()
-                if any(d.startswith("guarded(") for d in decos)}
+    def interface(self):
+        """{public name: 'view' or the function} over dir() of a real Session, inherited names included."""
+        made = self.session()
+        found = {}
+        for name in dir(made):
+            if name.startswith("_"):
+                continue
+            static = inspect.getattr_static(made, name)
+            if isinstance(static, property):
+                with contextlib.suppress(AttributeError):     # snap_before is absent before start()
+                    self.assertFalse(callable(getattr(made, name)), f"the view {name} hands out a callable")
+                found[name] = "view"
+            else:
+                self.assertTrue(callable(static), f"{name} is a public attribute that is neither a view nor a method")
+                found[name] = static
+        return made, found
 
-    def test_every_game_facing_method_is_decorated_with_the_guard(self):
-        self.assertEqual(self.GAME_FACING - self.guarded(), set(),
-                         "game-facing methods that do not go through the one liveness guard")
+    def test_session_is_not_a_cycle_and_does_not_delegate(self):
+        self.assertEqual(sessionlib.Session.__mro__, (sessionlib.Session, object))
+        self.assertNotIn("__getattr__", vars(sessionlib.Session))
+        self.assertIs(sessionlib.Session.__getattribute__, object.__getattribute__)
 
-    def test_every_public_method_is_guarded_or_an_acknowledged_exception(self):
-        unaccounted = set(_session_public_methods()) - self.guarded() - self.SELF_GUARDED - self.NON_GAME
-        self.assertEqual(unaccounted, set(),
-                         "public methods of Session that go through neither the guard nor an acknowledged exception")
+    def test_every_public_method_of_the_effective_interface_is_guarded_or_a_stated_exception(self):
+        made, found = self.interface()
+        methods = {name: fn for name, fn in found.items() if fn != "view"}
+        unmarked = {name for name, fn in methods.items()
+                    if not getattr(fn, "guarded", None) and not getattr(fn, "unguarded", None)}
+        self.assertEqual(unmarked, set(), "public methods of Session that carry neither the guard nor a reason")
+        foreign = {name for name, fn in methods.items() if not fn.__qualname__.startswith("Session.")
+                   or fn.__module__ != sessionlib.__name__}
+        self.assertEqual(foreign, set(), "public methods of Session that Session does not define itself")
+        guarded = {name for name, fn in methods.items() if getattr(fn, "guarded", None)}
+        self.assertEqual(self.GAME_FACING - guarded, set(), "game-facing methods outside the one liveness guard")
+        self.assertEqual(set(methods) - guarded, self.UNGUARDED,
+                         "the unguarded methods are exactly the stated exceptions (a new one needs its reason here)")
+        self.assertEqual(vars(made).keys() - {"_engine", "_hooks"}, set(), "attributes set on the instance")
+
+    def test_no_method_of_the_spike_is_reachable_on_a_session(self):
+        made = self.session()
+        reachable = []
+        for name in SPIKE_CYCLE_PUBLIC:
+            if not callable(getattr(spike.Cycle, name)):
+                continue
+            try:
+                value = getattr(made, name)
+            except AttributeError:
+                continue
+            if name not in vars(sessionlib.Session):          # only Session's own method of the same name may be there
+                reachable.append(name)
+            elif getattr(value, "__func__", None) is getattr(spike.Cycle, name):
+                reachable.append(name)
+        self.assertEqual(reachable, [], "methods of the spike's Cycle reachable on a Session")
+        for name in ("complete_script", "run_step", "run_script", "session", "input", "terminate", "reset"):
+            with self.assertRaises(AttributeError, msg=name):
+                getattr(made, name)
+
+    def test_the_engine_refuses_the_spikes_own_routes(self):
+        engine = self.session()._engine
+        self.assertIn("complete_script", sessionlib.Engine.SPIKE_ONLY)
+        for name in sessionlib.Engine.SPIKE_ONLY:
+            with self.assertRaises(errors.DriverError, msg=name):
+                getattr(engine, name)()
+        self.assertEqual(engine.status, "running")
+
+
+class CompletionRouteTest(DriverWorld):
+    """T13 round 4, R1 (Sol's demonstration): start, before.png and after.png, then the spike's
+    complete_script(), then finish() was completed with no screen reached and no input."""
+
+    def test_complete_script_is_no_route_to_completed(self):
+        made = self.session()
+        made.start()
+        made.observe_screenshot("before.png", 3)
+        made.observe_screenshot("after.png", 6)
+        with self.assertRaises(AttributeError):
+            made.complete_script()
+        with self.assertRaises(errors.DriverError):
+            made._engine.complete_script()
+        made.finish()
+        self.assertNotEqual(made.status, "completed")
+        self.assertTrue(made.status.startswith("aborted: "), made.status)
+        self.assertTrue(made.recovered, "the clean-up and the reset still ran")
+        self.assertEqual(made.reached, set())
+
+    def test_complete_is_the_only_route_and_it_refuses_that_cycle(self):
+        made = self.session()
+        made.start()
+        made.observe_screenshot("before.png", 3)
+        made.observe_screenshot("after.png", 6)
+        with self.assertRaises(errors.ScreenNotReached):
+            made.complete()
+        made.finish()
+        self.assertTrue(made.status.startswith("aborted: screen-not-reached: "), made.status)
+
+
+class DeadGameStepTest(DriverWorld):
+    """T13 round 4, R3 (Sol's demonstration): after the game was killed and reaped, the inherited
+    run_step() sent `key space`, recorded it sent, and left the session running."""
+
+    def test_no_step_reaches_a_dead_game(self):
+        made = self.session()
+        made.start()
+        made.procs["game"].kill()
+        made.procs["game"].wait()
+        with self.assertRaises(AttributeError):
+            made.run_step(spike.stepslib.parse("key space")[0])
+        sent = []
+
+        def recording(cmd, **kw):
+            sent.append(cmd)
+            return self.fake_run(cmd, **kw)
+        with mock.patch.object(sessionlib.Engine, "run_step", spike.Cycle.run_step), \
+                mock.patch.object(spike, "run", side_effect=recording):
+            with self.assertRaises(errors.GameDied):
+                made.perform("key space")
+        self.assertEqual([c for c in sent if c[:2] == ["xdotool", "key"]], [], "a key was sent to a dead game")
+        self.assertNotIn("key space sent", [o["field"] for o in made.obs])
+        self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
+        made.finish()
+
+
+class RefusedSessionRecoveryTest(DriverWorld):
+    """T13 round 4, R2 (Sol's demonstration): a seal that refused an off-baseline prefix started nothing,
+    left system.reg as it was, and still said recovered=True. No snapshot, no reset: never recovered."""
+
+    def test_a_session_refused_before_its_snapshot_is_not_recovered(self):
+        (self.prefix / "system.reg").write_text("not the baseline")
+        made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: seal: system.reg of the prefix is not the baseline's"), made.status)
+        self.assertEqual((self.prefix / "system.reg").read_text(), "not the baseline", "an untrusted prefix is never reset")
+        self.assertEqual(self.calls, [])
+        self.assertFalse(made.recovered)
+        values = {o["field"]: o["value"] for o in made.obs}
+        self.assertTrue(values["reset and restoration of the prefix performed"].startswith("no: "), values)
+        self.assertTrue(values["clean-up: every stage succeeded and the prefix was reset (the next session may start)"]
+                        .startswith("no: "), values)
+        self.assertFalse(runner.as_expected(made, faulted=False))
+        self.assertFalse(runner.as_expected(made, faulted=True))
+
+    def test_a_session_whose_display_failed_before_its_snapshot_is_not_recovered(self):
+        def no_display(session):
+            session.fail("no display of this run's own", errors.DisplayError)
+        with mock.patch.object(sessionlib.Engine, "start_x", no_display):
+            made = self.execute()
+        self.assertTrue(made.status.startswith("aborted: display: "), made.status)
+        self.assertFalse(made.recovered)
+
+
+def _calls(rel, root=None):
+    """(enclosing qualified name, called name as written, line) of every call in a file."""
+    tree = ast.parse(((root or ROOT) / rel).read_text())
+    found = []
+
+    def walk(node, scope):
+        for child in ast.iter_child_nodes(node):
+            named = isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+            if isinstance(child, ast.Call):
+                found.append((".".join(scope), ast.unparse(child.func), child.lineno))
+            walk(child, scope + [child.name] if named else scope)
+    walk(tree, [])
+    return found
 
 
 class CommandHelperSweepTest(unittest.TestCase):
-    """Every external command in the driver files goes through the one checked helper (spike.run/must/
-    probe/spawn): no raw subprocess.Popen/run/call/check_* or os.system/popen remains in the driver files."""
+    """Every external command on the driver's path goes through the checked helpers (T13 round 4, R4): no raw
+    subprocess or os launch or signal, and no unchecked run(), in any file the driver executes, the reused
+    spike and setup modules included. A command's result is checked (must) or explicitly a state (probe);
+    spawn starts the long-lived processes. The exclusions are named, each with its reason, and are shown off
+    the driver's path (overridden or refused by the Engine, or never called by the driver)."""
 
-    DRIVER_FILES = ("runtime/iwp/driver/session.py", "runtime/iwp/driver/runner.py")
-    LAUNCH = {"subprocess": {"Popen", "run", "call", "check_call", "check_output"},
-              "os": {"system", "popen", "spawnl", "spawnle", "spawnlp", "spawnlpe",
-                     "spawnv", "spawnve", "spawnvp", "spawnvpe"}}
+    FILES = tuple(sorted(f"runtime/iwp/driver/{p.name}" for p in (ROOT / "runtime/iwp/driver").glob("*.py"))) + (
+        "runtime/iwp/spike/cycle.py", "runtime/iwp/spike/steps.py",
+        "setup/iwp/prefix.py", "setup/iwp/safeio.py", "setup/iwp/locations.py")
+    LAUNCH = {"subprocess.Popen", "subprocess.run", "subprocess.call", "subprocess.check_call", "subprocess.check_output",
+              "os.system", "os.popen", "os.kill", "os.killpg", "os.spawnl", "os.spawnle", "os.spawnlp", "os.spawnlpe",
+              "os.spawnv", "os.spawnve", "os.spawnvp", "os.spawnvpe", "os.execv", "os.execve", "os.execvp", "os.execvpe"}
+    UNCHECKED = {"run", "spike.run"}
+    HELPERS = {("runtime/iwp/spike/cycle.py", "run"): "the bounded helper itself",
+               ("runtime/iwp/spike/cycle.py", "spawn"): "the long-lived process starter itself",
+               ("runtime/iwp/spike/cycle.py", "must"): "the checked helper, over run()",
+               ("runtime/iwp/spike/cycle.py", "probe"): "the state helper, over run()"}
+    OFF_PATH = {
+        ("runtime/iwp/spike/cycle.py", "Cycle.protect_install"): "the spike's bind; the driver binds the install "
+                                                                  "in bind_install_readonly, and Engine refuses it",
+        ("runtime/iwp/spike/cycle.py", "Cycle.known_screen"): "the spike's; Engine.known_screen overrides it",
+        ("runtime/iwp/spike/cycle.py", "Cycle.hover_click"): "the spike's E001 input; Engine refuses it",
+        ("runtime/iwp/spike/cycle.py", "Cycle.terminate"): "the spike's; Engine.terminate overrides it",
+        ("runtime/iwp/spike/cycle.py", "inner"): "the spike's own command (cycle.py main); never called by the driver",
+        ("runtime/iwp/spike/cycle.py", "outer"): "the spike's own command (cycle.py main); never called by the driver",
+        ("setup/iwp/prefix.py", "start_xvfb"): "prefix.py build (setup); never called by the driver",
+        ("setup/iwp/prefix.py", "build"): "prefix.py build (setup); never called by the driver",
+    }
 
-    def test_no_subprocess_call_outside_the_helper(self):
+    def offenders(self, files=None, root=None):
         found = []
-        for rel in self.DRIVER_FILES:
-            tree = ast.parse((ROOT / rel).read_text())
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
-                        and isinstance(node.func.value, ast.Name):
-                    if node.func.attr in self.LAUNCH.get(node.func.value.id, set()):
-                        found.append(f"{rel}:{node.lineno}")
-        self.assertEqual(found, [], "raw subprocess calls in the driver files outside the checked helper")
+        for rel in files or self.FILES:
+            for scope, name, line in _calls(rel, root):
+                if (rel, scope) in self.OFF_PATH or (rel, scope) in self.HELPERS:
+                    continue
+                if name in self.LAUNCH:
+                    found.append(f"{rel}:{line} {scope}: {name}")
+                if name in self.UNCHECKED:
+                    found.append(f"{rel}:{line} {scope}: unchecked {name}")
+        return found
+
+    def test_every_file_of_this_repository_the_driver_loads_is_swept(self):
+        """What the driver loads, read in a fresh interpreter that imports the driver and nothing else."""
+        probe = ("import sys, json; from pathlib import Path; sys.path.insert(0, 'runtime/iwp'); "
+                 "from driver import runner; root = Path('.').resolve(); "
+                 "print(json.dumps(sorted(Path(m.__file__).resolve().relative_to(root).as_posix() "
+                 "for m in list(sys.modules.values()) if getattr(m, '__file__', None) "
+                 "and Path(m.__file__).resolve().is_relative_to(root))))")
+        done = subprocess.run([sys.executable, "-c", probe], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        loaded = set(json.loads(done.stdout))
+        self.assertIn("runtime/iwp/spike/cycle.py", loaded)
+        self.assertEqual(loaded - set(self.FILES), set(), "files of this repository the driver loads but the sweep skips")
+
+    def test_no_raw_or_unchecked_command_on_the_drivers_path(self):
+        self.assertEqual(self.offenders(), [], "raw or unchecked commands on the driver's path")
+
+    def test_the_off_path_exclusions_are_off_the_path(self):
+        for (rel, scope), reason in self.OFF_PATH.items():
+            if scope.startswith("Cycle."):
+                self.assertIn(scope.split(".", 1)[1], vars(sessionlib.Engine), f"{scope} would run through the Engine")
+        called = set()
+        for rel in self.FILES:
+            if rel.startswith("runtime/iwp/driver/"):
+                called |= {name for _, name, _ in _calls(rel)}
+        for name in ("spike.inner", "spike.outer", "spike.main", "prefixlib.build", "prefixlib.start_xvfb",
+                     "spike.prefixlib.build", "spike.prefixlib.start_xvfb"):
+            self.assertNotIn(name, called, f"the driver calls the excluded {name}")
+
+    def test_the_sweep_finds_a_raw_or_unchecked_command_in_the_reused_spike(self):
+        """Sol's R4 mutant, on a copy: Cycle.run_step's key command as a bounded raw subprocess.run (and as an
+        unchecked run()). The sweep must name Cycle.run_step for both."""
+        text = (ROOT / "runtime/iwp/spike/cycle.py").read_text()
+        old = '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)'
+        self.assertEqual(text.count(old), 1)
+        for mutated in ('            subprocess.run(["xdotool", "key", args[0]], env=self.env, timeout=RUN_TIMEOUT)',
+                        '            run(["xdotool", "key", args[0]], env=self.env)'):
+            with tempfile.TemporaryDirectory() as tmp:
+                copy = Path(tmp) / "runtime/iwp/spike/cycle.py"
+                copy.parent.mkdir(parents=True)
+                copy.write_text(text.replace(old, mutated))
+                found = self.offenders(["runtime/iwp/spike/cycle.py"], Path(tmp))
+            self.assertTrue(any("Cycle.run_step" in f for f in found), (mutated, found))
 
 
 if __name__ == "__main__":

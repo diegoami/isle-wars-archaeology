@@ -18,7 +18,17 @@ first input and `after.png` after the last, and the game was alive at the end; t
 terminate, stop the display and reset the prefix without a fault. Every other way out is
 "aborted: <kind>: <reason>" (the first reason; every later fault is an observation too), and the clean-up
 stages and the reset run in both cases. `recovered` is True only when every clean-up stage succeeded and
-the reset was shown to restore the prefix: a caller may start the next session only then.
+the reset was shown to restore the prefix: a caller may start the next session only then. A session that
+ended before its snapshot of the prefix (a refused seal, no display) performed no reset and is never
+recovered (T13 round 4, R2).
+
+Session is a facade (T13 round 4): it holds the machinery, an Engine built on the spike's Cycle, privately,
+and its public interface is only its own methods, each through the one liveness guard (`guarded`) or with a
+stated reason (`unguarded`), and read-only views of the state. No method of the spike's Cycle (its
+complete_script(), run_step(), ...) is an attribute of a Session, so complete() is its only completion route
+and perform() its only way to send the game a step; the Engine also refuses the spike's own routes
+(Engine.SPIKE_ONLY). tests/test_iwp_driver.py GuardSweepTest checks this over the effective interface, and
+CommandHelperSweepTest checks every command on the driver's path, the reused spike and setup files included.
 
 What the driver keeps from T08 on every launch: the install bound read-only (checked at the start of
 every session), the prefix sealed before anything starts and again immediately before the game starts,
@@ -93,18 +103,30 @@ def guarded(where):
     entry, the after-check only when the method returned without raising, so a first failure keeps its
     reason; a death raises the driver's own GameDied or DisplayError (never an unlabelled one), and the
     waits inside the method carry their own bounds (spike.poll), so an expiry is a bound, never a fixed
-    wait. Methods that themselves end a process (terminate, stop_x) are not decorated: each checks its
-    process inside itself instead."""
+    wait. Every public method of Session carries this guard or `unguarded(reason)`, and
+    tests/test_iwp_driver.py GuardSweepTest checks that over Session's effective interface (T13 round 4)."""
     def decorate(fn):
         @functools.wraps(fn)
         def wrapped(self, *args, **kwargs):
-            if "game" in self.procs:                 # nothing to guard before the game is started
-                self.require_alive(where)
+            engine = self._engine
+            if "game" in engine.procs:               # nothing to guard before the game is started
+                engine.require_alive(where)
             result = fn(self, *args, **kwargs)
-            if "game" in self.procs:
-                self.require_alive(f"{where} (after)")
+            if "game" in engine.procs:
+                engine.require_alive(f"{where} (after)")
             return result
+        wrapped.guarded = where
         return wrapped
+    return decorate
+
+
+def unguarded(reason):
+    """Marks a public method of Session that does not go through the guard, and says why: it starts or
+    ends the game itself and checks liveness where it does (start, finish), it only composes guarded
+    methods (execute), or it neither sends the game anything nor reads its screen (the rest)."""
+    def decorate(fn):
+        fn.unguarded = reason
+        return fn
     return decorate
 
 
@@ -239,8 +261,18 @@ def bind_install_readonly(install):
 
 # --- the session -----------------------------------------------------------------------------
 
-class Session(spike.Cycle):
-    """One launch of the game, from a sealed prefix to a reset one. See the module text."""
+class Engine(spike.Cycle):
+    """The machinery of one session, private to the driver: the spike's Cycle with the driver's stages.
+
+    A caller never holds an Engine: it holds a Session, which keeps its Engine in `_engine` and exposes only
+    the driver's own methods, each through the liveness guard or a stated exception (T13 round 4, R1 and R3:
+    when Session inherited Cycle, the spike's complete_script() and run_step() were public methods of a
+    session, one a completion route past complete(), the other a game input past the guard). The spike's
+    own routes that the driver does not take are refused here too (SPIKE_ONLY), so that even an Engine
+    reached on purpose has no completion route but complete()."""
+
+    SPIKE_ONLY = ("complete_script", "run_script", "load_script", "session", "input", "hover_click",
+                  "protect_install", "execute")
 
     def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24"):
         args = argparse.Namespace(size=size, audio="off", wm="xfwm4", click="hover", terminate="kill", script=None,
@@ -257,7 +289,6 @@ class Session(spike.Cycle):
         self._error = DriverError                    # what fail() raises: the error of the stage that runs
         self.expected = {"title"}                    # the screens complete() requires the body to have reached
         self.reached = set()
-        self.hooks = {}
         self.t0 = None
         self.elapsed = None
         self.events = 0                              # a counter that orders the inputs and the screenshots
@@ -463,7 +494,6 @@ class Session(spike.Cycle):
         self.observe(0, "process", "X display held by this run's Xvfb (attempt)", attempt)
         self.say(f"Xvfb ready after {waited} s on attempt {attempt}, root {dims}x{planes}")
 
-    @guarded("wait for a screen")
     def wait_for_screen(self, name, timeout=None, stable=True):
         """Wait, by pixels, until the named screen ("title", "options", "notice") is up and, with `stable`,
         unchanged between two captures. Seconds waited. ScreenNotReached at the timeout, with a screenshot of
@@ -492,7 +522,6 @@ class Session(spike.Cycle):
             self.observe(2, "screen", f"{name} screen reached, seconds waited", waited)
             return waited
 
-    @guarded("the known screen")
     def known_screen(self):
         """The title screen: waited for by its pixels; the seconds since launch are an observation."""
         self.wait_for_screen("title")
@@ -500,7 +529,6 @@ class Session(spike.Cycle):
         self.observe(2, "screen", "title screen reached and stable, seconds after launch", since)
         self.say(f"title screen reached {since} s after launch")
 
-    @guarded("a step")
     def perform(self, text):
         """Run steps in the E002 step language (runtime/iwp/spike/steps.py). A step the language refuses, or
         that fails, is StepFailed; the game must be alive before each step and after the last."""
@@ -523,18 +551,8 @@ class Session(spike.Cycle):
             self.require_alive("the steps ended")
             self.observe(self.step_no, "process", "input steps that succeeded so far", len(self.actions))
 
-    def checkpoint(self, name):
-        """A named point in the body where an injected fault (or a test) may act; see on()."""
-        for hook in self.hooks.get(name, ()):
-            self.say(f"checkpoint {name}: {getattr(hook, '__name__', 'hook')}")
-            hook(self)
-
-    def on(self, name, hook):
-        self.hooks.setdefault(name, []).append(hook)
-
     # ---- observations
 
-    @guarded("a screenshot")
     def shot(self, name, step):
         self.require_alive(f"the screenshot {name}")
         taken = super().shot(name, step)
@@ -542,7 +560,6 @@ class Session(spike.Cycle):
         self.shot_at[name] = self.events
         return taken
 
-    @guarded("a screenshot observation")
     def observe_screenshot(self, name, step=None):
         """A screenshot of the whole display, kept as a bundle file; (sha256 of the raw pixels, sha256 of the PNG)."""
         if step is None:
@@ -550,7 +567,6 @@ class Session(spike.Cycle):
             step = self.step_no
         return self.shot(name, step)
 
-    @guarded("a region observation")
     def observe_region(self, rect, label):
         """sha256 of the raw pixels of x, y, w, h (the 800x600 stage's coordinates), as an observation."""
         self.require_alive(f"reading the region {label}")
@@ -559,13 +575,11 @@ class Session(spike.Cycle):
         self.observe(self.step_no, "screen", f"region {label} {','.join(map(str, rect))} raw RGB8 sha256", digest)
         return digest
 
-    @guarded("a file observation")
     def observe_file(self, rel):
         """One file of the game copy, read in place: size, sha256 and whether it equals the install's."""
         self.step_no += 1
         self.read_game_file(rel)
 
-    @guarded("the cycle's end")
     def complete(self):
         """The only place a session becomes completed: the body ran, the known screens it expects were
         reached, it acted (an input step of perform() succeeded), `before.png` was taken before its first
@@ -712,14 +726,23 @@ class Session(spike.Cycle):
         terminate and stop boundaries is checked inside terminate() and stop_x() themselves."""
         self.cleanup("terminate", self.terminate if "game" in self.procs else None, TerminateError)
         self.cleanup("stopping the display", self.stop_x, TerminateError)
-        if hasattr(self, "snap_before"):
+        snapshot = hasattr(self, "snap_before")
+        if snapshot:
             self.cleanup("snapshot and reset", self.snapshot_and_reset, ResetError)
         self.cleanup("keeping the logs", self.keep_logs, RecordError)
-        self.recovered = (all(self.cleaned.values())
-                          and (not hasattr(self, "snap_before") or self.cleaned.get("snapshot and reset") is True))
+        # R2 (T13 round 4): recovered means the reset ran and was shown to restore the prefix. A session that
+        # ended before its snapshot (a seal that refused the prefix, a display that never came up) had nothing
+        # to reset to, so no reset or restoration was performed and it is never recovered, whatever else went
+        # well: the prefix it refused may be off its baseline, and it is never reset to manufacture a success.
+        # The next session may start only once a seal has proven the prefix on its baseline (start()).
+        self.recovered = snapshot and all(self.cleaned.values()) and self.cleaned.get("snapshot and reset") is True
+        self.observe(12, "process", "reset and restoration of the prefix performed",
+                     "yes" if snapshot else "no: the session ended before its snapshot, so there was nothing to "
+                     "reset to; the prefix is not proven on its baseline")
         failed = [stage for stage, ok in self.cleaned.items() if not ok]
         self.observe(12, "process", "clean-up: every stage succeeded and the prefix was reset (the next session may start)",
-                     "yes" if self.recovered else "no: " + ", ".join(failed or ["the reset did not run"]))
+                     "yes" if self.recovered else "no: " + ", ".join(
+                         failed or ["no reset was performed (no snapshot of the prefix was taken)"]))
         for fault in self.later_faults:
             self.observe(12, "process", "a fault logged by abort_later (the status keeps only the first reason)", fault[:300])
         if self.status == "running":
@@ -728,8 +751,76 @@ class Session(spike.Cycle):
         self.elapsed = round(time.monotonic() - self.t0, 2) if self.t0 is not None else None
         self.observe(12, "process", "session seconds, from the first seal to the end of the reset", self.elapsed)
 
+
+def _spike_only(name):
+    def refused(self, *args, **kwargs):
+        raise DriverError(f"{name}() is the spike's own route, which the driver never takes (T13 round 4)")
+    refused.__name__ = refused.__qualname__ = name
+    return refused
+
+
+for _name in Engine.SPIKE_ONLY:
+    setattr(Engine, _name, _spike_only(_name))
+
+
+# --- the session: the driver's only public interface ------------------------------------------
+
+def _view(name, doc):
+    """A read-only view of one attribute of the session's engine."""
+    return property(lambda self: getattr(self._engine, name), doc=doc)
+
+
+class Session:
+    """One launch of the game, from a sealed prefix to a reset one. See the module text.
+
+    Composition, not inheritance (T13 round 4, R1 and R3): a Session holds its Engine privately and its
+    public interface is only what is defined here. Every public method goes through the liveness guard
+    (`guarded`) or names why not (`unguarded`); no method of the spike's Cycle is an attribute of a Session,
+    so complete() is the only completion route and perform() the only way to send the game a step. The
+    state a caller or a record reads (status, observations, outputs, processes, ...) is read-only here."""
+
+    def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24"):
+        object.__setattr__(self, "_engine", Engine(run_id, prefix, bundles, install, display, arm, size))
+        object.__setattr__(self, "_hooks", {})
+
+    def __setattr__(self, name, value):
+        raise AttributeError(f"a Session's attributes are read-only (here {name!r}); its state is its engine's")
+
+    run_id = _view("run_id", "the run id, E004-rNNNN")
+    args = _view("args", "the spike's arguments the engine runs with (arm, experiment, size, ...)")
+    status = _view("status", "running, completed (only from complete()) or aborted: <kind>: <reason>")
+    recovered = _view("recovered", "True only when finish() ran every clean-up stage and the reset restored the prefix")
+    elapsed = _view("elapsed", "seconds from the first seal to the end of the reset")
+    obs = _view("obs", "the run/1 observations")
+    outputs = _view("outputs", "(name, path, class) of the bundle files")
+    started = _view("started", "the start time of execute()")
+    ended = _view("ended", "the end time of execute()")
+    procs = _view("procs", "the run's own processes by name: xvfb, wm, game")
+    env = _view("env", "the game side's environment (marked with the run and the side)")
+    display_env = _view("display_env", "the display side's environment")
+    expected = _view("expected", "the known screens complete() requires the body to have reached (a set to update)")
+    reached = _view("reached", "the known screens reached so far")
+    step_no = _view("step_no", "the run/1 step of the last observation")
+    snap_before = _view("snap_before", "the snapshot of the prefix before the launch (absent until it is taken)")
+
+    # ---- the lifecycle
+
+    @unguarded("starts the game: the seal before anything starts and again immediately before the launch, "
+               "and the game and the display alive at the end of the launch (Engine.launch)")
+    def start(self):
+        """The seal, the display, the snapshot, the seal again, the launch."""
+        self._engine.start()
+
+    @unguarded("ends the game: the liveness at the point of terminating and of stopping the display is checked "
+               "inside Engine.terminate and Engine.stop_x, and the clean-up runs whatever died")
+    def finish(self):
+        """Terminate, stop the display, snapshot and reset, keep the logs; sets `recovered`."""
+        self._engine.finish()
+
+    @unguarded("composes start(), the body (which calls guarded methods), complete() (guarded) and finish()")
     def execute(self, body):
-        """start, body(session), complete, finish. Returns the status."""
+        """start, body(session), complete, finish, with one status. Returns the status."""
+        engine = self._engine
         started = now()
         try:
             self.start()
@@ -738,7 +829,70 @@ class Session(spike.Cycle):
         except DriverError:
             pass                                   # fail() recorded why
         except BaseException as exc:               # a crash or an interruption: cleaned up, recorded, never completed
-            self.abort_later(f"{type(exc).__name__}: {exc}")
+            engine.abort_later(f"{type(exc).__name__}: {exc}")
         self.finish()
-        self.started, self.ended = started, now()
-        return self.status
+        engine.started, engine.ended = started, now()
+        return engine.status
+
+    # ---- what touches the game: every one guarded
+
+    @guarded("wait for a screen")
+    def wait_for_screen(self, name, timeout=None, stable=True):
+        """Wait, by pixels, until the named screen is up (and stable); see Engine.wait_for_screen."""
+        return self._engine.wait_for_screen(name, timeout, stable)
+
+    @guarded("the known screen")
+    def known_screen(self):
+        """The title screen, waited for by its pixels."""
+        return self._engine.known_screen()
+
+    @guarded("a step")
+    def perform(self, text):
+        """Steps in the E002 step language; StepFailed when one is refused or fails."""
+        return self._engine.perform(text)
+
+    @guarded("a screenshot observation")
+    def observe_screenshot(self, name, step=None):
+        """A screenshot of the whole display, kept as a bundle file."""
+        return self._engine.observe_screenshot(name, step)
+
+    @guarded("a region observation")
+    def observe_region(self, rect, label):
+        """sha256 of the raw pixels of x, y, w, h, as an observation."""
+        return self._engine.observe_region(rect, label)
+
+    @guarded("a file observation")
+    def observe_file(self, rel):
+        """One file of the game copy, read in place."""
+        return self._engine.observe_file(rel)
+
+    @guarded("the cycle's end")
+    def complete(self):
+        """The only completion route of a session (Engine.complete says what it requires)."""
+        return self._engine.complete()
+
+    # ---- what does not touch the game
+
+    @unguarded("a named point of the body: runs the hooks registered with on() and touches nothing itself; "
+               "a hook that kills the game (an injected fault) is found by the next guarded method")
+    def checkpoint(self, name):
+        """A named point in the body where an injected fault (or a test) may act; see on()."""
+        for hook in self._hooks.get(name, ()):
+            self._engine.say(f"checkpoint {name}: {getattr(hook, '__name__', 'hook')}")
+            hook(self)
+
+    @unguarded("registers a hook; touches nothing")
+    def on(self, name, hook):
+        self._hooks.setdefault(name, []).append(hook)
+
+    @unguarded("appends an observation to the record; touches nothing")
+    def observe(self, step, source, field, value):
+        self._engine.observe(step, source, field, value)
+
+    @unguarded("reads whether the game process is alive; must answer after it died (the fault checks)")
+    def game_alive(self):
+        return self._engine.game_alive()
+
+    @unguarded("reads /proc for the game's pid; must answer after it died (the fault checks)")
+    def find_game_pid(self):
+        return self._engine.find_game_pid()
