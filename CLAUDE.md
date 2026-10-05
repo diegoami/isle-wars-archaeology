@@ -187,4 +187,15 @@ indexed in `docs/tasks/README.md`.
     session keeps the issues current, whenever a task is written, merged, parked or re-planned, or
     the owner changes direction, and checks them at session start (rule 14) and end. To read the
     plan: `gh issue list --label task --state all`.
+24. **Static first** (game-archaeologist U32 at `9a224a3`; the owner, 2026-10-05). A research
+    question is answered by unpacking and decompiling or disassembling the executable first (Ghidra
+    for DOS x86, a recorded Director decompiler for Pro's Lingo), on the owner's machine. Runs of
+    the game are made only when static analysis cannot answer, or to corroborate a static answer.
+    - A finding resting on runs says, in its Method, what static analysis was tried and why it was
+      not enough.
+    - A missing tool is never a reason: install it, or stop and report. Runs made because a tool
+      was missing are a contract defect (research review gate G0a).
+    - Rule 18 holds: unpacked executables, Ghidra projects, extracted casts and decompiled code stay
+      on the owner's machine. Findings cite the binary's sha256 and the address or handler, and
+      describe behaviour in our own words.
 
