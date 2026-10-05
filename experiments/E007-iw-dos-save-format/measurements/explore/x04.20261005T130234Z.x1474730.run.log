@@ -1,0 +1,47 @@
+15:02:34 IW_DOS_DIR read-only inside the run
+15:02:34 run copy before anything starts: ok
+15:02:34 Xvfb ready after 0.11 s
+15:02:34 run copy and configuration immediately before launch: ok
+15:02:34 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:02:34 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:02:36 window 2097157 at (80, 100) after 1.62 s
+15:02:51 option box reached 16.95 s after launch
+15:02:51 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:02:51 step 1: click-change 60 32 6
+15:02:52 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:02:52 step 3: wait-stable
+15:02:53 step 4: click-change 315 168 6
+15:02:54 step 5: click-change 315 169 6
+15:02:56 step 6: shot board-before-start.png
+15:02:56 board-before-start.png: pixels c1827bd9e4134139, file 3d0a5d08fa079066
+15:02:56 step 7: files
+15:02:56 step 8: click-change 510 22 6
+15:03:02 step 9: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:03:17 step 10: wait-stable
+15:03:19 step 11: shot human-turn.png
+15:03:19 human-turn.png: pixels 1ccd92080666edf3, file 149f91925f5dd3b4
+15:03:19 step 12: click-change 554 20 6
+15:03:20 step 13: shot save-turn1.png
+15:03:20 save-turn1.png: pixels 35ff91ee5bf1e18c, file fafeb24b9952a6f0
+15:03:20 step 14: files
+15:03:20 step 15: choose-attack
+15:03:20 step 16: click-mine
+15:03:23 step 17: rclick-mine
+15:03:23 step 18: shot place-how-many.png
+15:03:23 place-how-many.png: pixels 47bc46e6ee836deb, file d5b6fa2f5530594b
+15:03:23 step 19: click-change 284 331 6
+15:03:25 step 20: shot place-turn-menu.png
+15:03:25 place-turn-menu.png: pixels fc79547348d0d4aa, file 97ab40d23ee6fa6b
+15:03:25 step 21: click 338 325
+15:03:25 step 22: wait-change 10
+15:03:28 step 23: wait-stable
+15:03:29 step 24: shot after-pass.png
+15:03:29 after-pass.png: pixels 3dc54b130e8e884f, file 6a63b7de8f8921c8
+15:03:29 step 25: wait-change 20
+15:03:30 step 26: wait-stable
+15:03:31 step 27: shot after-pass-2.png
+15:03:31 after-pass-2.png: pixels 20bde4c766f668e3, file 82303b4b688e6e75
+15:03:31 DOSBox-X exit status 0, 0.05 s after term
+15:03:31 processes still alive after terminate: 0
+15:03:31 reset: run copy: copied 0, removed 3
+15:03:31 reset: run copy equals its state before launch: True

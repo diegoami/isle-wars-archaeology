@@ -39,6 +39,10 @@ Coordinates are inside the game's 640x350 window.
     wait-exit [S]        poll until DOSBox-X has ended by itself (the game's own way out: its last
                          screen, then the autoexec's `exit`); the run aborts after S seconds (default 90)
     savestate            DOSBox-X's own F12+S, then the savestate's members and memory are classified (I2)
+    put-save             write the crafted save (the cycle's --crafted position, encoded by runtime/iw-dos/save/) into
+                         the run copy as ISLEWAR.SAV, while the game waits at its option box; the file is a new file of
+                         the run copy and the reset removes it. An I3 intervention (a crafted save), declared in the
+                         record. Allowed once, and only when the run has --crafted (the cycle checks both)
 
 Every wait is required: a wait that times out aborts the run, so it is never completed past a screen
 it did not see (PR #58 R7). The one poll that does not abort is the "pointer drawn" observation inside
@@ -119,7 +123,7 @@ def parse(text):
             if len(words) not in (2, 3) or seconds < 1:
                 raise Refused(f"{verb} takes X Y [S]: {line!r}")
             steps.append((verb, (x, y, seconds)))
-        elif verb in ("wait-stable", "files", "savestate", "choose-attack", "click-mine", "rclick-mine",
+        elif verb in ("wait-stable", "files", "savestate", "put-save", "choose-attack", "click-mine", "rclick-mine",
                       "click-target", "rclick-target"):
             if words:
                 raise Refused(f"{verb} takes no argument: {line!r}")
@@ -156,6 +160,8 @@ def parse(text):
             chosen = True
         elif verb.endswith(("-mine", "-target")) and not chosen:
             raise Refused(f"{verb} comes before choose-attack")
+    if sum(1 for verb, _ in steps if verb == "put-save") > 1:
+        raise Refused("put-save is allowed once in a script")
     names = [args[0] for verb, args in steps if verb == "shot"]
     if len(names) != len(set(names)):
         raise Refused("two shots have the same name")

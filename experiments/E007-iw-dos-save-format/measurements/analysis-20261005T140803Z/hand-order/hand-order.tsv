@@ -1,0 +1,25 @@
+order of the colours over the last line's four fields	saves where every field's length equals that colour's count	natural saves
+blue green red brown	50	50
+red green blue brown	39	50
+blue red green brown	26	50
+blue brown red green	26	50
+blue green brown red	24	50
+green blue red brown	24	50
+red blue green brown	22	50
+red brown blue green	22	50
+green red blue brown	22	50
+brown green red blue	21	50
+red green brown blue	18	50
+brown green blue red	18	50
+blue red brown green	15	50
+blue brown green red	15	50
+green blue brown red	14	50
+green brown red blue	14	50
+brown blue red green	14	50
+brown red green blue	14	50
+red blue brown green	13	50
+red brown green blue	13	50
+green red brown blue	13	50
+green brown blue red	13	50
+brown blue green red	13	50
+brown red blue green	13	50

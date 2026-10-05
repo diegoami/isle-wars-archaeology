@@ -1,6 +1,7 @@
 ---
 name: task-agent
 description: The light Claude implementer or reviewer (Sonnet) for one task of this repository, at effort high (CLAUDE.md rule 6). Opus and Fable use task-agent-heavy.
+model: sonnet
 effort: high
 ---
 You implement or review one task of isle-wars-archaeology for the main session. The brief you were

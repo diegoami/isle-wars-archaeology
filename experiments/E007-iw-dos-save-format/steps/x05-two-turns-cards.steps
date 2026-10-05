@@ -1,0 +1,47 @@
+# exploration x05: two pass-only turns, the CARD button before PASS (T16)
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click-change 315 168
+click-change 315 169
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 554 20
+shot save-turn1
+files
+choose-attack
+click-mine
+rclick-mine
+click-change 284 331
+click-change 369 325
+shot cards-turn-1
+click-change 100 333
+shot after-cards-click
+click 338 325
+wait-change 10
+wait-stable
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-2
+click-change 554 20
+shot save-turn2
+files
+choose-attack
+click-mine
+rclick-mine
+click-change 284 331
+click-change 369 325
+shot cards-turn-2
+click 338 325
+wait-change 10
+wait-stable
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-3
+click-change 554 20
+shot save-turn3
+files
