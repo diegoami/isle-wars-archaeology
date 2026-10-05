@@ -122,6 +122,23 @@ ARMS["pass-6-normal"] = (head("normal", 3, "arm pass-6-normal: Normal, 3; six hu
                          + "".join(save(f"turn{k}") + place_all() + pass_turn(str(k + 1)) for k in range(1, 7))
                          + save("turn7"))
 
+# The crafted arms (--crafted POSITION): the option box, the save placed, Load saved game, the loaded board, Save again.
+LOAD = """put-save
+files
+click-change 60 58
+shot after-load
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot loaded-human-turn
+files
+"""
+ARMS["load-crafted"] = ("# arm load-crafted: the option box; the crafted save placed in the run copy (--crafted); Load saved game; "
+                        "the loaded board; Save again (T16, I3)\n" + LOAD + save("resave"))
+ARMS["load-crafted-cards"] = ("# arm load-crafted-cards: as load-crafted, then place all and the CARD button (the hand) (T16, I3)\n"
+                              + LOAD + save("resave") + place_all() + cards("loaded"))
+ARMS["load-crafted-speed"] = ("# arm load-crafted-speed: as load-crafted, then the Speed panel (its value) (T16, I3)\n" + LOAD
+                              + "click-change 507 20\nshot speed-panel\nclick 330 330\nwait-change 10\nwait-stable\n" + save("resave"))
+
 if __name__ == "__main__":
     for arm, text in ARMS.items():
         target = STEPS / f"{arm}.steps"

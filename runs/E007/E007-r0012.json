@@ -1,0 +1,2155 @@
+{
+  "schema": "run/1",
+  "run_id": "E007-r0012",
+  "experiment": "E007",
+  "arm": "pass-3",
+  "rep": 1,
+  "code_commit": "7a6faaee350e",
+  "machine": "local",
+  "artifact": {
+    "set": "iw-dos-3.1-30121376",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iw-dos/spike/cycle.py@7a6faaee350e",
+    "platform": "linux-wsl2/dosbox-x-xvfb",
+    "fingerprint": {
+      "dosbox-x": "2024.03.01 SDL2,",
+      "dosbox-x-package": "2024.03.01+dfsg-1build2",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the game window: the X display read with ImageMagick import (passive instrumentation); the files the game wrote read after it wrote them (I0)"
+    }
+  ],
+  "start_state": {
+    "id": "S-run-copy-option-box",
+    "sha256": "ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9",
+    "restore": "fresh private user, mount, PID and network namespaces; IW_DOS_DIR bound read-only; a fresh DOSBox-X process from a generated configuration mounting only the run copy; the run copy as left by setup/iw-dos/iw-dos-runtime.sh and by the previous run's reset, checked with register_artifact.py check --strict before anything starts and again immediately before the launch; start_state.sha256 lists every entry of the run copy with its size, sha256 and modification time"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iw-dos/spike/cycle.py",
+    "sha256": "e356cf098efa79e8b813eb3e1cb717c2cbf138346c3d0262ba6553e9350d327d",
+    "args": [
+      "--experiment",
+      "E007",
+      "--arm",
+      "pass-3",
+      "--steps",
+      "experiments/E007-iw-dos-save-format/steps/pass-3.steps"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "file",
+      "field": "steps script sha256",
+      "value": "902e7b4f4c3dc62332ae62e9570f01700a5d36e69c0f3d9315d2f6141be8fb0f"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "IW_DOS_DIR bound read-only in the run's mount namespace",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "run copy check before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game",
+      "value": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "run copy check immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "configuration check immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X in a network namespace other than the outer process's",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces DOSBox-X sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window at 640x350: poll seconds after the isolation check",
+      "value": "1.66"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window at 640x350, seconds after launch",
+      "value": "1.67"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window position",
+      "value": "80,100"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "option box reached and stable, seconds after launch",
+      "value": "17.01"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png capture and PNG (s)",
+      "value": "0.06"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "pointer drawn at 60,32 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "screen still before the click at 60,32 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 101,
+      "source": "process",
+      "field": "left click at 60,32",
+      "value": "sent"
+    },
+    {
+      "step": 101,
+      "source": "process",
+      "field": "left click at 60,32: seconds after launch",
+      "value": "17.74"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "screen changed after click 1 at 60,32 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 101,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "18.21"
+    },
+    {
+      "step": 102,
+      "source": "screen",
+      "field": "more than 800 pixels of (170, 85, 0) in (272, 138, 80, 18) after (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 102,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "18.23"
+    },
+    {
+      "step": 103,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 103,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "18.68"
+    },
+    {
+      "step": 104,
+      "source": "screen",
+      "field": "select-level.png raw RGB8 pixels sha256",
+      "value": "c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4"
+    },
+    {
+      "step": 104,
+      "source": "screen",
+      "field": "select-level.png capture and PNG (s)",
+      "value": "0.061"
+    },
+    {
+      "step": 104,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "18.76"
+    },
+    {
+      "step": 105,
+      "source": "screen",
+      "field": "pointer drawn at 315,168 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 105,
+      "source": "screen",
+      "field": "screen still before the click at 315,168 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 105,
+      "source": "process",
+      "field": "left click at 315,168",
+      "value": "sent"
+    },
+    {
+      "step": 105,
+      "source": "process",
+      "field": "left click at 315,168: seconds after launch",
+      "value": "19.45"
+    },
+    {
+      "step": 105,
+      "source": "screen",
+      "field": "screen changed after click 1 at 315,168 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 105,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 105,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "19.92"
+    },
+    {
+      "step": 106,
+      "source": "screen",
+      "field": "starting-armies.png raw RGB8 pixels sha256",
+      "value": "2a773602d344c338aa2e06c9de072f5e90d95884b71c23ba001f144edb61224d"
+    },
+    {
+      "step": 106,
+      "source": "screen",
+      "field": "starting-armies.png capture and PNG (s)",
+      "value": "0.055"
+    },
+    {
+      "step": 106,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "19.99"
+    },
+    {
+      "step": 107,
+      "source": "screen",
+      "field": "pointer drawn at 315,169 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 107,
+      "source": "screen",
+      "field": "screen still before the click at 315,169 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 107,
+      "source": "process",
+      "field": "left click at 315,169",
+      "value": "sent"
+    },
+    {
+      "step": 107,
+      "source": "process",
+      "field": "left click at 315,169: seconds after launch",
+      "value": "20.6"
+    },
+    {
+      "step": 107,
+      "source": "screen",
+      "field": "screen changed after click 1 at 315,169 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 107,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "1.5"
+    },
+    {
+      "step": 107,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "22.14"
+    },
+    {
+      "step": 108,
+      "source": "screen",
+      "field": "board-before-start.png raw RGB8 pixels sha256",
+      "value": "3760e9527a4c88227a2f699d640a0d22b04cf59d1c8f39ba4b699a45d3404e27"
+    },
+    {
+      "step": 108,
+      "source": "screen",
+      "field": "board-before-start.png capture and PNG (s)",
+      "value": "0.057"
+    },
+    {
+      "step": 108,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "22.21"
+    },
+    {
+      "step": 109,
+      "source": "file",
+      "field": "run copy at step 9: added/removed/changed",
+      "value": "2/0/0"
+    },
+    {
+      "step": 109,
+      "source": "file",
+      "field": "run copy at step 9: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 109,
+      "source": "file",
+      "field": "run copy at step 9: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 109,
+      "source": "file",
+      "field": "run copy at step 9: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 109,
+      "source": "file",
+      "field": "run copy at step 9: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 109,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "22.21"
+    },
+    {
+      "step": 110,
+      "source": "screen",
+      "field": "pointer drawn at 510,22 (s)",
+      "value": "no change within 5 s"
+    },
+    {
+      "step": 110,
+      "source": "screen",
+      "field": "screen still before the click at 510,22 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 110,
+      "source": "process",
+      "field": "left click at 510,22",
+      "value": "sent"
+    },
+    {
+      "step": 110,
+      "source": "process",
+      "field": "left click at 510,22: seconds after launch",
+      "value": "27.84"
+    },
+    {
+      "step": 110,
+      "source": "screen",
+      "field": "screen changed after click 1 at 510,22 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 110,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 110,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "28.3"
+    },
+    {
+      "step": 111,
+      "source": "screen",
+      "field": "more than 800 pixels of (170, 170, 170) in (390, 10, 230, 20) after (s)",
+      "value": "27.9"
+    },
+    {
+      "step": 111,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "56.2"
+    },
+    {
+      "step": 112,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.97"
+    },
+    {
+      "step": 112,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "57.19"
+    },
+    {
+      "step": 113,
+      "source": "screen",
+      "field": "human-turn.png raw RGB8 pixels sha256",
+      "value": "1a0d08614f5797e0de90396e17dfc8f9c7d71c226d0701c055532673a94d0c88"
+    },
+    {
+      "step": 113,
+      "source": "screen",
+      "field": "human-turn.png capture and PNG (s)",
+      "value": "0.062"
+    },
+    {
+      "step": 113,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "57.27"
+    },
+    {
+      "step": 114,
+      "source": "file",
+      "field": "run copy at step 14: added/removed/changed",
+      "value": "2/0/0"
+    },
+    {
+      "step": 114,
+      "source": "file",
+      "field": "run copy at step 14: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 114,
+      "source": "file",
+      "field": "run copy at step 14: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 114,
+      "source": "file",
+      "field": "run copy at step 14: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 114,
+      "source": "file",
+      "field": "run copy at step 14: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 114,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "57.27"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "pointer drawn at 554,20 (s)",
+      "value": "0.1"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "screen still before the click at 554,20 (s)",
+      "value": "0.92"
+    },
+    {
+      "step": 115,
+      "source": "process",
+      "field": "left click at 554,20",
+      "value": "sent"
+    },
+    {
+      "step": 115,
+      "source": "process",
+      "field": "left click at 554,20: seconds after launch",
+      "value": "58.46"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "screen changed after click 1 at 554,20 (s)",
+      "value": "no change within 6 s"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "pointer drawn at 554,20 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "screen still before the click at 554,20 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 115,
+      "source": "process",
+      "field": "left click at 554,20",
+      "value": "sent"
+    },
+    {
+      "step": 115,
+      "source": "process",
+      "field": "left click at 554,20: seconds after launch",
+      "value": "65.16"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "screen changed after click 2 at 554,20 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 115,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 115,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "65.63"
+    },
+    {
+      "step": 116,
+      "source": "screen",
+      "field": "save-turn1.png raw RGB8 pixels sha256",
+      "value": "02465667b05f4179fac159c0d32925f10e3d0867b901af41771c582fa8cf99b4"
+    },
+    {
+      "step": 116,
+      "source": "screen",
+      "field": "save-turn1.png capture and PNG (s)",
+      "value": "0.064"
+    },
+    {
+      "step": 116,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "65.71"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "run copy at step 17: added/removed/changed",
+      "value": "3/0/0"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "run copy at step 17: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "run copy at step 17: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "run copy at step 17: added ISLEWAR.SAV: bytes, sha256",
+      "value": "525 ab23695b7c0fe06b49e98f3b1043e7747e3d5a9a81dfe9647415228f2fd1299e"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "run copy at step 17: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 117,
+      "source": "file",
+      "field": "run copy at step 17: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 117,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "65.71"
+    },
+    {
+      "step": 118,
+      "source": "screen",
+      "field": "board owners, countries 1 to 46 (read from the pixels beside each number box)",
+      "value": "red,red,green,blue,blue,red,red,red,blue,blue,blue,blue,brown,brown,green,brown,red,green,red,blue,brown,brown,red,green,brown,brown,green,blue,blue,blue,brown,blue,brown,blue,green,green,brown,green,blue,red,blue,blue,red,green,red,blue"
+    },
+    {
+      "step": 118,
+      "source": "screen",
+      "field": "board totals read from the pixels (blue, red, green, brown)",
+      "value": "16,11,9,10"
+    },
+    {
+      "step": 118,
+      "source": "screen",
+      "field": "chosen: mine (Blue) and target (enemy neighbour)",
+      "value": "20 19"
+    },
+    {
+      "step": 118,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "65.81"
+    },
+    {
+      "step": 119,
+      "source": "screen",
+      "field": "pointer drawn at 318,50 (s)",
+      "value": "1.24"
+    },
+    {
+      "step": 119,
+      "source": "screen",
+      "field": "screen still before the click at 318,50 (s)",
+      "value": "0.92"
+    },
+    {
+      "step": 119,
+      "source": "process",
+      "field": "left click at 318,50",
+      "value": "sent"
+    },
+    {
+      "step": 119,
+      "source": "process",
+      "field": "left click at 318,50: seconds after launch",
+      "value": "68.13"
+    },
+    {
+      "step": 119,
+      "source": "screen",
+      "field": "screen changed after click 1 at 318,50 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 119,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 119,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "68.59"
+    },
+    {
+      "step": 120,
+      "source": "process",
+      "field": "right click at 318,50",
+      "value": "sent"
+    },
+    {
+      "step": 120,
+      "source": "process",
+      "field": "right click at 318,50: seconds after launch",
+      "value": "68.73"
+    },
+    {
+      "step": 120,
+      "source": "screen",
+      "field": "screen changed after click 1 at 318,50 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 120,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 120,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "69.2"
+    },
+    {
+      "step": 121,
+      "source": "screen",
+      "field": "pointer drawn at 284,331 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 121,
+      "source": "screen",
+      "field": "screen still before the click at 284,331 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 121,
+      "source": "process",
+      "field": "left click at 284,331",
+      "value": "sent"
+    },
+    {
+      "step": 121,
+      "source": "process",
+      "field": "left click at 284,331: seconds after launch",
+      "value": "69.89"
+    },
+    {
+      "step": 121,
+      "source": "screen",
+      "field": "screen changed after click 1 at 284,331 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 121,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 121,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "70.36"
+    },
+    {
+      "step": 122,
+      "source": "screen",
+      "field": "pointer drawn at 369,325 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 122,
+      "source": "screen",
+      "field": "screen still before the click at 369,325 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 122,
+      "source": "process",
+      "field": "left click at 369,325",
+      "value": "sent"
+    },
+    {
+      "step": 122,
+      "source": "process",
+      "field": "left click at 369,325: seconds after launch",
+      "value": "70.98"
+    },
+    {
+      "step": 122,
+      "source": "screen",
+      "field": "screen changed after click 1 at 369,325 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 122,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 122,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "71.45"
+    },
+    {
+      "step": 123,
+      "source": "screen",
+      "field": "cards-turn1.png raw RGB8 pixels sha256",
+      "value": "740497c0fe0affb97cc263411ec09d33ecd60f36d93c7d9db93b06b6f5123d28"
+    },
+    {
+      "step": 123,
+      "source": "screen",
+      "field": "cards-turn1.png capture and PNG (s)",
+      "value": "0.065"
+    },
+    {
+      "step": 123,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "71.53"
+    },
+    {
+      "step": 124,
+      "source": "screen",
+      "field": "pointer drawn at 338,325 (s)",
+      "value": "1.29"
+    },
+    {
+      "step": 124,
+      "source": "screen",
+      "field": "screen still before the click at 338,325 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 124,
+      "source": "process",
+      "field": "left click at 338,325",
+      "value": "sent"
+    },
+    {
+      "step": 124,
+      "source": "process",
+      "field": "left click at 338,325: seconds after launch",
+      "value": "73.41"
+    },
+    {
+      "step": 124,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "73.41"
+    },
+    {
+      "step": 125,
+      "source": "screen",
+      "field": "screen changed after (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 125,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "2.57"
+    },
+    {
+      "step": 125,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "76.02"
+    },
+    {
+      "step": 126,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 126,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "76.47"
+    },
+    {
+      "step": 127,
+      "source": "screen",
+      "field": "more than 800 pixels of (170, 170, 170) in (390, 10, 230, 20) after (s)",
+      "value": "36.96"
+    },
+    {
+      "step": 127,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "113.44"
+    },
+    {
+      "step": 128,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.97"
+    },
+    {
+      "step": 128,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "114.43"
+    },
+    {
+      "step": 129,
+      "source": "screen",
+      "field": "human-turn-2.png raw RGB8 pixels sha256",
+      "value": "3bef4539ab5c4496c65b96ab400999eac440b411434a838b266d0d64c2da995a"
+    },
+    {
+      "step": 129,
+      "source": "screen",
+      "field": "human-turn-2.png capture and PNG (s)",
+      "value": "0.072"
+    },
+    {
+      "step": 129,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "114.52"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "pointer drawn at 554,20 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "screen still before the click at 554,20 (s)",
+      "value": "0.93"
+    },
+    {
+      "step": 130,
+      "source": "process",
+      "field": "left click at 554,20",
+      "value": "sent"
+    },
+    {
+      "step": 130,
+      "source": "process",
+      "field": "left click at 554,20: seconds after launch",
+      "value": "115.69"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "screen changed after click 1 at 554,20 (s)",
+      "value": "no change within 6 s"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "pointer drawn at 554,20 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "screen still before the click at 554,20 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 130,
+      "source": "process",
+      "field": "left click at 554,20",
+      "value": "sent"
+    },
+    {
+      "step": 130,
+      "source": "process",
+      "field": "left click at 554,20: seconds after launch",
+      "value": "122.48"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "screen changed after click 2 at 554,20 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 130,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 130,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "122.95"
+    },
+    {
+      "step": 131,
+      "source": "screen",
+      "field": "save-turn2.png raw RGB8 pixels sha256",
+      "value": "545551b6df68faa1452f9ad2759448730474d7b443116f53b7e503c1fa851fe8"
+    },
+    {
+      "step": 131,
+      "source": "screen",
+      "field": "save-turn2.png capture and PNG (s)",
+      "value": "0.066"
+    },
+    {
+      "step": 131,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "123.03"
+    },
+    {
+      "step": 132,
+      "source": "file",
+      "field": "run copy at step 32: added/removed/changed",
+      "value": "3/0/0"
+    },
+    {
+      "step": 132,
+      "source": "file",
+      "field": "run copy at step 32: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 132,
+      "source": "file",
+      "field": "run copy at step 32: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 132,
+      "source": "file",
+      "field": "run copy at step 32: added ISLEWAR.SAV: bytes, sha256",
+      "value": "526 07c49086178b0d085b231a2a12a4f7f168a16c9b6b1491890fe014c9f75a80cd"
+    },
+    {
+      "step": 132,
+      "source": "file",
+      "field": "run copy at step 32: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 132,
+      "source": "file",
+      "field": "run copy at step 32: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 132,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "123.03"
+    },
+    {
+      "step": 133,
+      "source": "screen",
+      "field": "board owners, countries 1 to 46 (read from the pixels beside each number box)",
+      "value": "red,red,red,red,blue,red,red,red,blue,blue,blue,blue,brown,brown,green,brown,red,green,red,blue,brown,brown,red,green,brown,brown,green,blue,blue,blue,brown,blue,brown,blue,green,green,brown,green,blue,red,blue,blue,red,green,red,blue"
+    },
+    {
+      "step": 133,
+      "source": "screen",
+      "field": "board totals read from the pixels (blue, red, green, brown)",
+      "value": "15,13,8,10"
+    },
+    {
+      "step": 133,
+      "source": "screen",
+      "field": "chosen: mine (Blue) and target (enemy neighbour)",
+      "value": "20 19"
+    },
+    {
+      "step": 133,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "123.13"
+    },
+    {
+      "step": 134,
+      "source": "screen",
+      "field": "pointer drawn at 318,50 (s)",
+      "value": "1.25"
+    },
+    {
+      "step": 134,
+      "source": "screen",
+      "field": "screen still before the click at 318,50 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 134,
+      "source": "process",
+      "field": "left click at 318,50",
+      "value": "sent"
+    },
+    {
+      "step": 134,
+      "source": "process",
+      "field": "left click at 318,50: seconds after launch",
+      "value": "124.98"
+    },
+    {
+      "step": 134,
+      "source": "screen",
+      "field": "screen changed after click 1 at 318,50 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 134,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 134,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "125.44"
+    },
+    {
+      "step": 135,
+      "source": "process",
+      "field": "right click at 318,50",
+      "value": "sent"
+    },
+    {
+      "step": 135,
+      "source": "process",
+      "field": "right click at 318,50: seconds after launch",
+      "value": "125.58"
+    },
+    {
+      "step": 135,
+      "source": "screen",
+      "field": "screen changed after click 1 at 318,50 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 135,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 135,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "126.05"
+    },
+    {
+      "step": 136,
+      "source": "screen",
+      "field": "pointer drawn at 284,331 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 136,
+      "source": "screen",
+      "field": "screen still before the click at 284,331 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 136,
+      "source": "process",
+      "field": "left click at 284,331",
+      "value": "sent"
+    },
+    {
+      "step": 136,
+      "source": "process",
+      "field": "left click at 284,331: seconds after launch",
+      "value": "126.67"
+    },
+    {
+      "step": 136,
+      "source": "screen",
+      "field": "screen changed after click 1 at 284,331 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 136,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 136,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "127.15"
+    },
+    {
+      "step": 137,
+      "source": "screen",
+      "field": "pointer drawn at 369,325 (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 137,
+      "source": "screen",
+      "field": "screen still before the click at 369,325 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 137,
+      "source": "process",
+      "field": "left click at 369,325",
+      "value": "sent"
+    },
+    {
+      "step": 137,
+      "source": "process",
+      "field": "left click at 369,325: seconds after launch",
+      "value": "127.83"
+    },
+    {
+      "step": 137,
+      "source": "screen",
+      "field": "screen changed after click 1 at 369,325 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 137,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 137,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "128.29"
+    },
+    {
+      "step": 138,
+      "source": "screen",
+      "field": "cards-turn2.png raw RGB8 pixels sha256",
+      "value": "c9b05a4c068f8bf4a9d770c146532c656e163c18a521afcfe8bb9e5404923ca9"
+    },
+    {
+      "step": 138,
+      "source": "screen",
+      "field": "cards-turn2.png capture and PNG (s)",
+      "value": "0.061"
+    },
+    {
+      "step": 138,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "128.37"
+    },
+    {
+      "step": 139,
+      "source": "screen",
+      "field": "pointer drawn at 338,325 (s)",
+      "value": "1.32"
+    },
+    {
+      "step": 139,
+      "source": "screen",
+      "field": "screen still before the click at 338,325 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 139,
+      "source": "process",
+      "field": "left click at 338,325",
+      "value": "sent"
+    },
+    {
+      "step": 139,
+      "source": "process",
+      "field": "left click at 338,325: seconds after launch",
+      "value": "130.26"
+    },
+    {
+      "step": 139,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "130.26"
+    },
+    {
+      "step": 140,
+      "source": "screen",
+      "field": "screen changed after (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 140,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "3.13"
+    },
+    {
+      "step": 140,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "133.43"
+    },
+    {
+      "step": 141,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.98"
+    },
+    {
+      "step": 141,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "134.42"
+    },
+    {
+      "step": 142,
+      "source": "screen",
+      "field": "more than 800 pixels of (170, 170, 170) in (390, 10, 230, 20) after (s)",
+      "value": "27.82"
+    },
+    {
+      "step": 142,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "162.25"
+    },
+    {
+      "step": 143,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "2.05"
+    },
+    {
+      "step": 143,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "164.31"
+    },
+    {
+      "step": 144,
+      "source": "screen",
+      "field": "human-turn-3.png raw RGB8 pixels sha256",
+      "value": "994a1b9ef16dcbf572321861c44ff9aaee8e05847c30791b594229e7cfea96e7"
+    },
+    {
+      "step": 144,
+      "source": "screen",
+      "field": "human-turn-3.png capture and PNG (s)",
+      "value": "0.07"
+    },
+    {
+      "step": 144,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "164.4"
+    },
+    {
+      "step": 145,
+      "source": "screen",
+      "field": "pointer drawn at 554,20 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 145,
+      "source": "screen",
+      "field": "screen still before the click at 554,20 (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 145,
+      "source": "process",
+      "field": "left click at 554,20",
+      "value": "sent"
+    },
+    {
+      "step": 145,
+      "source": "process",
+      "field": "left click at 554,20: seconds after launch",
+      "value": "165.02"
+    },
+    {
+      "step": 145,
+      "source": "screen",
+      "field": "screen changed after click 1 at 554,20 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 145,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 145,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "165.5"
+    },
+    {
+      "step": 146,
+      "source": "screen",
+      "field": "save-turn3.png raw RGB8 pixels sha256",
+      "value": "02724cd036a57126834bf4548921d9a7afc15ef085b079a5d84831305669e37d"
+    },
+    {
+      "step": 146,
+      "source": "screen",
+      "field": "save-turn3.png capture and PNG (s)",
+      "value": "0.071"
+    },
+    {
+      "step": 146,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "165.59"
+    },
+    {
+      "step": 147,
+      "source": "file",
+      "field": "run copy at step 47: added/removed/changed",
+      "value": "3/0/0"
+    },
+    {
+      "step": 147,
+      "source": "file",
+      "field": "run copy at step 47: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 147,
+      "source": "file",
+      "field": "run copy at step 47: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 147,
+      "source": "file",
+      "field": "run copy at step 47: added ISLEWAR.SAV: bytes, sha256",
+      "value": "528 1bbadc7fbb7769d2c095764aea74e200d1066b0f541b9e5866ae1a9b43533b53"
+    },
+    {
+      "step": 147,
+      "source": "file",
+      "field": "run copy at step 47: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 147,
+      "source": "file",
+      "field": "run copy at step 47: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 147,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "165.59"
+    },
+    {
+      "step": 148,
+      "source": "screen",
+      "field": "board owners, countries 1 to 46 (read from the pixels beside each number box)",
+      "value": "red,red,red,red,red,red,red,red,blue,blue,blue,blue,brown,brown,green,brown,red,green,red,blue,brown,brown,red,green,brown,brown,green,blue,blue,blue,brown,blue,brown,blue,green,green,brown,green,blue,red,blue,blue,red,green,red,blue"
+    },
+    {
+      "step": 148,
+      "source": "screen",
+      "field": "board totals read from the pixels (blue, red, green, brown)",
+      "value": "14,14,8,10"
+    },
+    {
+      "step": 148,
+      "source": "screen",
+      "field": "chosen: mine (Blue) and target (enemy neighbour)",
+      "value": "20 19"
+    },
+    {
+      "step": 148,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "165.69"
+    },
+    {
+      "step": 149,
+      "source": "screen",
+      "field": "pointer drawn at 318,50 (s)",
+      "value": "1.2"
+    },
+    {
+      "step": 149,
+      "source": "screen",
+      "field": "screen still before the click at 318,50 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 149,
+      "source": "process",
+      "field": "left click at 318,50",
+      "value": "sent"
+    },
+    {
+      "step": 149,
+      "source": "process",
+      "field": "left click at 318,50: seconds after launch",
+      "value": "167.48"
+    },
+    {
+      "step": 149,
+      "source": "screen",
+      "field": "screen changed after click 1 at 318,50 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 149,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 149,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "167.95"
+    },
+    {
+      "step": 150,
+      "source": "process",
+      "field": "right click at 318,50",
+      "value": "sent"
+    },
+    {
+      "step": 150,
+      "source": "process",
+      "field": "right click at 318,50: seconds after launch",
+      "value": "168.08"
+    },
+    {
+      "step": 150,
+      "source": "screen",
+      "field": "screen changed after click 1 at 318,50 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 150,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 150,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "168.54"
+    },
+    {
+      "step": 151,
+      "source": "screen",
+      "field": "pointer drawn at 284,331 (s)",
+      "value": "0.09"
+    },
+    {
+      "step": 151,
+      "source": "screen",
+      "field": "screen still before the click at 284,331 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 151,
+      "source": "process",
+      "field": "left click at 284,331",
+      "value": "sent"
+    },
+    {
+      "step": 151,
+      "source": "process",
+      "field": "left click at 284,331: seconds after launch",
+      "value": "169.22"
+    },
+    {
+      "step": 151,
+      "source": "screen",
+      "field": "screen changed after click 1 at 284,331 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 151,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 151,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "169.7"
+    },
+    {
+      "step": 152,
+      "source": "screen",
+      "field": "pointer drawn at 369,325 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 152,
+      "source": "screen",
+      "field": "screen still before the click at 369,325 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 152,
+      "source": "process",
+      "field": "left click at 369,325",
+      "value": "sent"
+    },
+    {
+      "step": 152,
+      "source": "process",
+      "field": "left click at 369,325: seconds after launch",
+      "value": "170.31"
+    },
+    {
+      "step": 152,
+      "source": "screen",
+      "field": "screen changed after click 1 at 369,325 (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 152,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 152,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "170.79"
+    },
+    {
+      "step": 153,
+      "source": "screen",
+      "field": "cards-turn3.png raw RGB8 pixels sha256",
+      "value": "3d9f943a5cb321e0e2c8891af3e8f51048432af0f2f94d0f5720f032a7fa7ed8"
+    },
+    {
+      "step": 153,
+      "source": "screen",
+      "field": "cards-turn3.png capture and PNG (s)",
+      "value": "0.071"
+    },
+    {
+      "step": 153,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "170.88"
+    },
+    {
+      "step": 154,
+      "source": "screen",
+      "field": "pointer drawn at 338,325 (s)",
+      "value": "1.38"
+    },
+    {
+      "step": 154,
+      "source": "screen",
+      "field": "screen still before the click at 338,325 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 154,
+      "source": "process",
+      "field": "left click at 338,325",
+      "value": "sent"
+    },
+    {
+      "step": 154,
+      "source": "process",
+      "field": "left click at 338,325: seconds after launch",
+      "value": "172.86"
+    },
+    {
+      "step": 154,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "172.86"
+    },
+    {
+      "step": 155,
+      "source": "screen",
+      "field": "screen changed after (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 155,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "3.14"
+    },
+    {
+      "step": 155,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "176.04"
+    },
+    {
+      "step": 156,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.98"
+    },
+    {
+      "step": 156,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "177.03"
+    },
+    {
+      "step": 157,
+      "source": "screen",
+      "field": "more than 800 pixels of (170, 170, 170) in (390, 10, 230, 20) after (s)",
+      "value": "30.48"
+    },
+    {
+      "step": 157,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "207.51"
+    },
+    {
+      "step": 158,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "2.03"
+    },
+    {
+      "step": 158,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "209.56"
+    },
+    {
+      "step": 159,
+      "source": "screen",
+      "field": "human-turn-4.png raw RGB8 pixels sha256",
+      "value": "fa577203b886dd960eddcb74bc2a08fec51a2cc4fa526a858e534ef4915d68c8"
+    },
+    {
+      "step": 159,
+      "source": "screen",
+      "field": "human-turn-4.png capture and PNG (s)",
+      "value": "0.066"
+    },
+    {
+      "step": 159,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "209.64"
+    },
+    {
+      "step": 160,
+      "source": "screen",
+      "field": "pointer drawn at 554,20 (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 160,
+      "source": "screen",
+      "field": "screen still before the click at 554,20 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 160,
+      "source": "process",
+      "field": "left click at 554,20",
+      "value": "sent"
+    },
+    {
+      "step": 160,
+      "source": "process",
+      "field": "left click at 554,20: seconds after launch",
+      "value": "210.3"
+    },
+    {
+      "step": 160,
+      "source": "screen",
+      "field": "screen changed after click 1 at 554,20 (s)",
+      "value": "0.01"
+    },
+    {
+      "step": 160,
+      "source": "screen",
+      "field": "screen stable after (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 160,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "210.77"
+    },
+    {
+      "step": 161,
+      "source": "screen",
+      "field": "save-turn4.png raw RGB8 pixels sha256",
+      "value": "7397bedc6132b5945dea77274bc50f77ae003d7fa9fa5e05e1aca9506d151a18"
+    },
+    {
+      "step": 161,
+      "source": "screen",
+      "field": "save-turn4.png capture and PNG (s)",
+      "value": "0.068"
+    },
+    {
+      "step": 161,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "210.85"
+    },
+    {
+      "step": 162,
+      "source": "file",
+      "field": "run copy at step 62: added/removed/changed",
+      "value": "3/0/0"
+    },
+    {
+      "step": 162,
+      "source": "file",
+      "field": "run copy at step 62: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 162,
+      "source": "file",
+      "field": "run copy at step 62: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 162,
+      "source": "file",
+      "field": "run copy at step 62: added ISLEWAR.SAV: bytes, sha256",
+      "value": "530 8a2124178aae50c38ed2ffc5f65ba492e8b61ecf6741721ba477a74dd268ac5b"
+    },
+    {
+      "step": 162,
+      "source": "file",
+      "field": "run copy at step 62: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 162,
+      "source": "file",
+      "field": "run copy at step 62: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 162,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "210.85"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "DOSBox-X exit after term (s)",
+      "value": "0.05"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "DOSBox-X exit status",
+      "value": "0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added/removed/changed entries",
+      "value": "3/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added ISLEWAR.SAV: bytes, sha256",
+      "value": "530 8a2124178aae50c38ed2ffc5f65ba492e8b61ecf6741721ba477a74dd268ac5b"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy at the end of the run: added/removed/changed",
+      "value": "3/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy at the end of the run: added ISLEWAR.DFT: bytes, sha256",
+      "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy at the end of the run: added ISLEWAR.DFT: hex",
+      "value": "2031202c2031202c2032200d0a"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy at the end of the run: added ISLEWAR.SAV: bytes, sha256",
+      "value": "530 8a2124178aae50c38ed2ffc5f65ba492e8b61ecf6741721ba477a74dd268ac5b"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy at the end of the run: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy at the end of the run: added ISLEWAR.SCR: hex",
+      "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "run copy after reset equals the run copy before launch",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "cycle seconds, start to end of clean-up",
+      "value": "211"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "store": "release:E007"
+    },
+    {
+      "name": "select-level.png",
+      "sha256": "79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9",
+      "store": "release:E007"
+    },
+    {
+      "name": "starting-armies.png",
+      "sha256": "4d03e6ad09594904a18859a35039f49142d297b416dc8d5ef7c7ecab720dc24f",
+      "store": "release:E007"
+    },
+    {
+      "name": "board-before-start.png",
+      "sha256": "a30677eac21dbb9fe8e93cbaa84a8ce68f9b89916e086178814f925e94a31cc0",
+      "store": "release:E007"
+    },
+    {
+      "name": "s09-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "s09-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "human-turn.png",
+      "sha256": "0e5daf6d15fdfa5b1b6299b6562f64935ba76e52fb9c78ac22935f87a30fc8b0",
+      "store": "release:E007"
+    },
+    {
+      "name": "s14-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "s14-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "save-turn1.png",
+      "sha256": "03ad266730907a2abac47fb4c438eec447cd7f7d849937a58cb280c1d4aae603",
+      "store": "release:E007"
+    },
+    {
+      "name": "s17-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "s17-ISLEWAR.SAV",
+      "sha256": "ab23695b7c0fe06b49e98f3b1043e7747e3d5a9a81dfe9647415228f2fd1299e",
+      "store": "release:E007"
+    },
+    {
+      "name": "s17-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "cards-turn1.png",
+      "sha256": "31f247fb9446d0ad52b02805b46591bd26c8d404c159566a9ba597290008ca53",
+      "store": "release:E007"
+    },
+    {
+      "name": "human-turn-2.png",
+      "sha256": "1de549b9173be0cba68e7652f7497369d996263eea6fe04cf2f438e7d4cc3cfa",
+      "store": "release:E007"
+    },
+    {
+      "name": "save-turn2.png",
+      "sha256": "5d3ed0cbb5fcd78aff73fd11e45989d44e28f652b56e9f4cf6860a09cb7a30b1",
+      "store": "release:E007"
+    },
+    {
+      "name": "s32-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "s32-ISLEWAR.SAV",
+      "sha256": "07c49086178b0d085b231a2a12a4f7f168a16c9b6b1491890fe014c9f75a80cd",
+      "store": "release:E007"
+    },
+    {
+      "name": "s32-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "cards-turn2.png",
+      "sha256": "4bfbb4a98ef7f633cf4ac62a9a75f30630a11adcb846d9bc327054dcacb21e31",
+      "store": "release:E007"
+    },
+    {
+      "name": "human-turn-3.png",
+      "sha256": "8e9ebb5dd1d0e62cea1de3681d9f95c32111e5e5e243384c06ea614b6d79aa3f",
+      "store": "release:E007"
+    },
+    {
+      "name": "save-turn3.png",
+      "sha256": "3c7020ab8e1d5d7cb27463f0bda2a1bb6fb07923c1dbad027bcc216e2cf5b3bd",
+      "store": "release:E007"
+    },
+    {
+      "name": "s47-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "s47-ISLEWAR.SAV",
+      "sha256": "1bbadc7fbb7769d2c095764aea74e200d1066b0f541b9e5866ae1a9b43533b53",
+      "store": "release:E007"
+    },
+    {
+      "name": "s47-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "cards-turn3.png",
+      "sha256": "9c0ed4774c1558572c9c52c2d3391737592b5784939264e4646873e2257787fc",
+      "store": "release:E007"
+    },
+    {
+      "name": "human-turn-4.png",
+      "sha256": "e5499d0e62b3b2d4797c59c13271ccfe70b77fe748103d049512d11bce4bee90",
+      "store": "release:E007"
+    },
+    {
+      "name": "save-turn4.png",
+      "sha256": "eee523509c8e0b901a554c6504da572b30ed903ccb2cb78289add8165de1ffeb",
+      "store": "release:E007"
+    },
+    {
+      "name": "s62-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "s62-ISLEWAR.SAV",
+      "sha256": "8a2124178aae50c38ed2ffc5f65ba492e8b61ecf6741721ba477a74dd268ac5b",
+      "store": "release:E007"
+    },
+    {
+      "name": "s62-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "5208573a2282355928374e1bae995c4a97de48bac933f743288785d3f21e34cb",
+      "store": "release:E007"
+    },
+    {
+      "name": "end-ISLEWAR.DFT",
+      "sha256": "1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271",
+      "store": "release:E007"
+    },
+    {
+      "name": "end-ISLEWAR.SAV",
+      "sha256": "8a2124178aae50c38ed2ffc5f65ba492e8b61ecf6741721ba477a74dd268ac5b",
+      "store": "release:E007"
+    },
+    {
+      "name": "end-ISLEWAR.SCR",
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "store": "release:E007"
+    },
+    {
+      "name": "dosbox.log",
+      "sha256": "3593040f8867ed0f201a4b57c958bc8a7cc2ee4fccc89924bf694ba98b0df550",
+      "store": "release:E007"
+    },
+    {
+      "name": "dosbox.conf.txt",
+      "sha256": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484",
+      "store": "release:E007"
+    },
+    {
+      "name": "run.log",
+      "sha256": "3590780110640f77e1f6107f765e262d08ff83557c6c32876cd42ef097df11cb",
+      "store": "release:E007"
+    }
+  ],
+  "started": "2026-10-05T13:21:32Z",
+  "ended": "2026-10-05T13:25:03Z",
+  "status": "completed"
+}
