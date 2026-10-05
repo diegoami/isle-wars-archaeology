@@ -48,13 +48,15 @@ def pattern(raw, row):
     return "".join(bits)
 
 
-def main(batch):
-    batch = Path(batch)
-    batch.mkdir(parents=True)
-    cells = []           # (run, save, colour, pattern, count)
+def natural_cells():
+    """[(run, "save / screenshot", colour, pattern, count)] over the natural saves of E005 and E007 (the arms `load-*`,
+    which load a crafted save, are left out: the map learned here is then independent of every crafted run)."""
+    cells = []
     for experiment in stars.EXPERIMENTS:
         bundles = Path(os.environ[f"{experiment}_BUNDLES"])
         for record in stars.records(experiment):
+            if record["arm"].startswith("load-"):
+                continue
             manifest = json.loads((ROOT / "evidence" / experiment / f"{record['run_id']}.manifest.json").read_text())
             asset = {e["name"]: bundles / e["asset"] for e in manifest["files"]}
             shots = {o["step"]: o["field"].split(" ")[0] for o in record["observations"]
@@ -71,6 +73,13 @@ def main(batch):
                 for row, colour in enumerate(savefmt.COUNT_ORDER):
                     cells.append((record["run_id"], f"{name} / {shot}", colour, pattern(raw, row),
                                   len(position["cards"][colour])))
+    return cells
+
+
+def main(batch):
+    batch = Path(batch)
+    batch.mkdir(parents=True)
+    cells = natural_cells()
     by_pattern, by_count = defaultdict(set), defaultdict(set)
     for _, _, _, pat, count in cells:
         by_pattern[pat].add(count)

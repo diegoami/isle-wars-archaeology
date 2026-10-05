@@ -12,8 +12,9 @@ For each E007 run whose arm is `load-<variant>` (a crafted save placed by the cy
     crafted save is byte for byte a natural save: the countries whose pixels differ (each differing pixel is given to
     the country whose number box is nearest), and whether anything else differs (the scoreboard panel, x 0..180 and
     y 10..80; the prompt boxes below the board, y 296 and below);
-  - the owners read from the pixels (board.py) against the crafted owners, and the stars against the crafted list
-    (check-stars.py).
+  - the owners read from the pixels (board.py) against the crafted owners, the stars against the crafted list
+    (check-stars.py), and the scoreboard's four `C>` figures against the crafted card counts, read through the map
+    from pattern to count that the natural saves of E005 and E007 give (check-cards.py; no crafted run is in it).
 Needs E005_BUNDLES and E007_BUNDLES. Never overwrites (CLAUDE.md rule 20).
 """
 import json
@@ -31,6 +32,7 @@ import board  # noqa: E402
 import savefmt  # noqa: E402
 
 stars = SourceFileLoader("check_stars", str(HERE / "check-stars.py")).load_module()
+cards = SourceFileLoader("check_cards", str(HERE / "check-cards.py")).load_module()
 SCOREBOARD = (0, 10, 180, 80)        # x0, y0, x1, y1
 PROMPTS_Y = 296
 
@@ -65,6 +67,9 @@ def main(batch):
     batch = Path(batch)
     batch.mkdir(parents=True)
     bundles = Path(os.environ["E007_BUNDLES"])
+    learned = {}
+    for _, _, _, pat, count in cards.natural_cells():
+        learned[pat] = count
     runs = []
     for record in stars.records("E007"):
         if record["arm"].startswith("load-") and record["status"] == "completed":
@@ -86,6 +91,8 @@ def main(batch):
         read = [owners[n] for n in range(1, 47)]
         same_owners = sum(1 for a, b in zip(read, position["owners"]) if a == b)
         seen = stars.stars(loaded)
+        figures = [learned.get(cards.pattern(loaded, row), "?") for row in range(4)]
+        wanted = [len(position["cards"][c]) for c in savefmt.COUNT_ORDER]
         resave = ("no second save" if written is None else
                   "equal to the crafted save" if asset[resaves[-1]].read_bytes() == crafted else
                   "differs in: " + ", ".join(k for k in position if written[k] != position[k]))
@@ -100,10 +107,11 @@ def main(batch):
         else:
             differ = "the control" if arm == "load-base" else "no control run"
         rows.append((record["run_id"], arm, placed_sha[:16] if placed_sha else "-", resave, f"{same_owners} of 46",
-                     ",".join(map(str, seen)), ",".join(map(str, sorted(position["centres"]))), differ))
+                     ",".join(map(str, seen)), ",".join(map(str, sorted(position["centres"]))),
+                     ",".join(map(str, figures)) + (" = the crafted counts" if figures == wanted else f" (crafted {wanted})"), differ))
     with open(batch / "crafted.tsv", "xb") as fh:
         fh.write(("run\tarm\tcrafted save sha256 (16)\tthe game's second Save against it\towners read from the screen equal "
-                  "the crafted\tstars on the screen\tcrafted centres\tpixels that differ from the control's loaded board\n"
+                  "the crafted\tstars on the screen\tcrafted centres\tC> figures on the screen (Blue Red Green Brown)\tpixels that differ from the control's loaded board\n"
                   + "".join("\t".join(r) + "\n" for r in rows)).encode())
     print(f"{len(rows)} crafted runs")
     return 0
