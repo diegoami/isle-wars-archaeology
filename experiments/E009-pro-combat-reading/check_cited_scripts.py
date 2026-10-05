@@ -4,10 +4,11 @@ E009 lists carry the inventory's ls_sha256.
 
   python3 experiments/E009-pro-combat-reading/check_cited_scripts.py
       the record checks only (needs no original; this is what CI can run);
-  IWA_STATIC=<folder> python3 experiments/E009-pro-combat-reading/check_cited_scripts.py --disk [--run r1]
+  IWA_STATIC=<folder> python3 experiments/E009-pro-combat-reading/check_cited_scripts.py --disk [--run r1] [--out r1-round1]
       also hashes each listed decompiled script IN PLACE in the static folder and compares it with the
       record's ls_sha256 (nothing is copied; the static folder must be outside every checkout), and writes
-      measurements/disk-check-<run>.json: names, hashes and booleans only, never a path or a line of code.
+      measurements/disk-check-<out>.json (default <out> = <run>; an existing file is never overwritten):
+      names, hashes and booleans only, never a path or a line of code.
 
 A script is cited in F011 as `Kind N Name` and a handler as `handler()` (the form of tools/check_pro_question_map.py);
 a handler must belong to the closest script cited before it on the same line. Exit 0 when every check holds.
@@ -108,7 +109,9 @@ def main():
         if sc.leaks(text):
             errors.append("the disk record would hold a machine path; not written")
         else:
-            out = HERE / "measurements" / ("disk-check-%s.json" % run)
+            # --out names the output (a re-check of the same run writes a new file); default: the run id
+            tag = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else run
+            out = HERE / "measurements" / ("disk-check-%s.json" % tag)
             if out.exists():
                 print("not overwriting", out.name)
             else:

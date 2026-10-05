@@ -25,3 +25,9 @@ The score (frame order, which sprite carries which button), the cast members (pi
 ## Append-only
 
 After the first measurement this file is append-only. A changed design is a new experiment. A re-run writes new files beside the old ones, and the finding says which ones it cites.
+
+## Rework round 1 (appended)
+
+- `MovieScript 458 getdefaults` was added at the end of `scripts-read.json` (now 47 scripts), because F011's Q-SET-04 now cites the defaults the unregistered path sets. The first 46 entries are unchanged.
+- `check_cited_scripts.py` takes `--out <id>` so that a re-check of the same extract run writes a new file: `measurements/disk-check-r1-round1.json`. `disk-check-r1.json` (46 scripts) is kept as it was.
+- `win_probability.py` models the human's attack only, so the corrections to the computer's stop rules do not touch it, and `win-probability-r1.json` stands.
