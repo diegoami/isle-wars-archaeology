@@ -5,6 +5,8 @@ permission:
   edit: deny
   external_directory:
     "/tmp/opencode/*": deny
+    "~/.local/share/isle-wars-archaeology/static/*": allow
+    "/tmp/iwa-review-*": allow
   task:
     "*": deny
   bash:
@@ -19,6 +21,32 @@ permission:
     "gh pr edit *": deny
     "gh issue edit *": deny
     "gh issue comment *": deny
+    "rm *isle-wars-archaeology/static*": deny
+    "rm *IWA_STATIC*": deny
+    "rmdir *isle-wars-archaeology/static*": deny
+    "rmdir *IWA_STATIC*": deny
+    "unlink *isle-wars-archaeology/static*": deny
+    "unlink *IWA_STATIC*": deny
+    "mv *isle-wars-archaeology/static*": deny
+    "mv *IWA_STATIC*": deny
+    "cp *isle-wars-archaeology/static*": deny
+    "cp *IWA_STATIC*": deny
+    "touch *isle-wars-archaeology/static*": deny
+    "touch *IWA_STATIC*": deny
+    "mkdir *isle-wars-archaeology/static*": deny
+    "mkdir *IWA_STATIC*": deny
+    "chmod *isle-wars-archaeology/static*": deny
+    "chmod *IWA_STATIC*": deny
+    "chown *isle-wars-archaeology/static*": deny
+    "chown *IWA_STATIC*": deny
+    "truncate *isle-wars-archaeology/static*": deny
+    "truncate *IWA_STATIC*": deny
+    "tee *isle-wars-archaeology/static*": deny
+    "tee *IWA_STATIC*": deny
+    "sed -i*isle-wars-archaeology/static*": deny
+    "sed -i*IWA_STATIC*": deny
+    "*>*isle-wars-archaeology/static*": deny
+    "*>*IWA_STATIC*": deny
 ---
 
 You review one pull request. You did not write it. The brief says what to check; this file says
@@ -32,11 +60,22 @@ how the run works.
   HEAD must be the commit it names, and the diff must not be empty; otherwise you are in the wrong
   tree, so say so and stop. Every finding names a file from that diff.
 - Read-only: never edit, commit, push, merge, label or post. The script that runs you posts your
-  review. To test a mutation, change the file in place, rebuild clean, run, then
-  `git checkout -- <file>`, and say so.
-- Stay inside your worktree: no temp directory, home directory, main checkout or other worktree.
-  OpenCode rejects a path outside it, and the script then discards the whole review. Call tools by
-  name from PATH; never inspect where they are installed.
+  review. To test a mutation, change the file in place in your worktree, rebuild clean, run, then
+  `git checkout -- <file>`, and say so; a mutation is never committed.
+- Stay inside your worktree, but for two places (T29). OpenCode rejects any other path outside it,
+  and the script then discards the whole review: never a home directory, main checkout or other
+  worktree.
+  - **The static folder**, `~/.local/share/isle-wars-archaeology/static/`: unpacked and decompiled
+    output that stays off the repository (CLAUDE.md rule 18). Read it, never write it: read with
+    shell commands (`sha256sum`, `cat`, `grep`, `head`, `ls`) and the `~/` path as written here;
+    never remove, move, copy, create or change anything there, and copy nothing from it into the
+    worktree. Your review is published: cite a file there by its path and sha256, and describe what
+    it shows in your own words; never paste its code or text.
+  - **One scratch TMPDIR**, for a Done-when line that needs a TMPDIR outside every checkout: create
+    it with `mktemp -d /tmp/iwa-review-XXXXXX` (never `mkdir` it: OpenCode checks a directory not
+    yet made against `/tmp`, and rejects it), use the exact path it printed, and remove it with
+    `rm -rf <that path>` before your final message. Write outside your worktree only there.
+  Call tools by name from PATH; never inspect where they are installed.
   Run every shell command from the worktree root with paths relative to it (`grep -n X src/a.cs`,
   not `cd src && grep -n X a.cs`). Never `cd`, and never write `..` in a command: OpenCode checks
   paths against the worktree root, not against an earlier `cd` in the same command, so
@@ -44,8 +83,9 @@ how the run works.
   Give the read tool a path relative to the worktree root too (`docs/models.md`), never an
   absolute path: OpenCode resolves a relative path there, although the tool's description asks
   for an absolute one, and a guessed absolute path is rejected and ends the run (L36).
-  Scratch output goes to a file in the worktree root (`2>review-err.txt`), deleted afterwards;
-  never `/tmp`. Run git commands one at a time, never in parallel, and never touch `.git`: a
+  Scratch output goes to a file in the worktree root (`2>review-err.txt`), deleted afterwards, or
+  to the scratch TMPDIR; never elsewhere in `/tmp`. Put a redirection after the static folder's
+  path, never before it: a `>` ahead of that path is refused as a write there. Run git commands one at a time, never in parallel, and never touch `.git`: a
   leftover `index.lock` means wait and retry, not delete.
 - Re-run every Done-when line yourself; the PR's evidence is a convenience, never the proof. Prove
   a finding before reporting it (run it, or delete the behaviour and watch which test fails), or

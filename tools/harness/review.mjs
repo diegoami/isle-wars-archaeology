@@ -183,7 +183,13 @@ const attempt = async (m, second) => {
 
 ---
 OUTPUT RULES (from tools/harness/review.mjs; they override anything above that conflicts):
-- Do not post to GitHub, edit, commit, push, label or merge anything. The script posts your review.
+- Do not post to GitHub, commit, push, label or merge anything. The script posts your review.
+  Edit nothing, but for a mutation made in place in your worktree, restored with
+  \`git checkout -- <file>\` and never committed. Outside your worktree, only read the static
+  folder ~/.local/share/isle-wars-archaeology/static/ (never write there, and never paste its
+  contents into the review), and only write in one TMPDIR made with
+  \`mktemp -d /tmp/iwa-review-XXXXXX\` and removed afterwards. Every other path outside it is
+  forbidden (T29).
 - Your final message is the review and nothing else. Line 1 is exactly: ${header}
   Line 2 is the verdict, alone on its line: approve, approve after named fixes, rework, or user
   decision. Then any where-I-worked lines (worktree, HEAD, diff, the commands you ran), then the

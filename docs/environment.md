@@ -145,6 +145,30 @@ one for Go, `opencode auth login` for OpenAI), and nothing is billed. The script
 own process's environment, only that of the OpenCode processes they start, so nothing needs
 restoring afterwards.
 
+## What the OpenCode reviewer may reach outside its worktree
+
+`.opencode/agents/reviewer.md` grants two places, and only these (T29; the owner, 2026-10-05):
+
+- **The static folder**, `~/.local/share/isle-wars-archaeology/static/`, the default `$IWA_STATIC`,
+  to read: static readings are checked against the decompiled output there, which stays off the
+  repository (CLAUDE.md rule 18). OpenCode 1.18.34 expands the leading `~/` (and `$HOME/`) of a
+  permission pattern to the home directory, so the tracked file holds no machine path. It expands
+  no other variable: a `$IWA_STATIC` set elsewhere is not granted, and a review that reads it is
+  rejected. Keep the static folder at the default place, or extend the grant first.
+- **One scratch TMPDIR** matching `/tmp/iwa-review-*`, which the reviewer makes with
+  `mktemp -d /tmp/iwa-review-XXXXXX` and removes afterwards.
+
+The edit tool is denied everywhere, and the plain shell writes into the static folder (`rm`, `mv`,
+`cp`, `touch`, `mkdir`, `chmod`, `tee`, `sed -i`, a `>` redirection and a few more) are denied by
+the agent's `bash` patterns. Those patterns read command text, so a write through a script, a
+variable other than `IWA_STATIC`, `find -delete`, `sh -c` or a relative path is not stopped: the
+grant guards against mistakes, not against a reviewer set on writing there. The same holds for
+every outside path: OpenCode checks its file tools, and only `cd`, `rm`, `cp`, `mv`, `mkdir`,
+`touch`, `chmod`, `chown` and `cat` among shell commands, against these rules; `head`, `grep` or
+`sha256sum` on a path elsewhere, or a `>` redirection's target, is not rejected (OpenCode 1.18.34's
+shell tool, as read from its source).
+`tests/test_reviewer_permissions.py` checks the rules.
+
 ## Keys
 
 In **Claude Code on the web**, set these in the environment's settings: the cloud environment menu
