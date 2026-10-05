@@ -21,3 +21,5 @@ status; this index carries none.
 | T12 | Use game-archaeologist's pinned validator and register_artifact.py (folds #42, #48) | #49 | — |
 | T13 | Minimal driver: Isle Wars Pro (W5a; folds #40's cycle-time items) | #51 | T09 |
 | T14 | Observable-state inventory: DOS Isle Wars (W4b) | #52 | T11 |
+| T15 | Minimal driver: DOS Isle Wars (W5b) | #63 | T14 |
+| T16 | Save format: DOS `ISLEWAR.SAV` decoded, and a crafted-save setup (W4b follow-on) | #64 | T14 |
