@@ -1,0 +1,488 @@
+{
+ "what": "the decompiled Lingo scripts read for F011 (T20), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "count": 47,
+ "scripts": [
+  {
+   "kind": "MovieScript",
+   "number": 1,
+   "name": "Startmovie",
+   "handlers": [
+    "startMovie",
+    "Count15",
+    "count1",
+    "count10",
+    "count30",
+    "count60",
+    "count5",
+    "count3",
+    "count2",
+    "EEMPTY"
+   ],
+   "lines": 217,
+   "ls_sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 6,
+   "name": "CheckNumberofArmies",
+   "handlers": [
+    "CheckNumberofArmies"
+   ],
+   "lines": 287,
+   "ls_sha256": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 50,
+   "name": "Rolldice",
+   "handlers": [
+    "RollDice"
+   ],
+   "lines": 50,
+   "ls_sha256": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 81,
+   "name": "Lostit",
+   "handlers": [
+    "Lostit"
+   ],
+   "lines": 35,
+   "ls_sha256": "4b83d0459db957a00e860f9d047ba54c9a3d653bc3ccdc3cd755529c0bebe22e"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 334,
+   "name": "Computerattack",
+   "handlers": [
+    "Computerattack"
+   ],
+   "lines": 186,
+   "ls_sha256": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 335,
+   "name": "GetValidArmys",
+   "handlers": [
+    "GetvalidArmys"
+   ],
+   "lines": 64,
+   "ls_sha256": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 336,
+   "name": "ATTACKHIM",
+   "handlers": [
+    "ATTACKHIM"
+   ],
+   "lines": 82,
+   "ls_sha256": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 337,
+   "name": "computerrolldice",
+   "handlers": [
+    "ComputerRollDice"
+   ],
+   "lines": 285,
+   "ls_sha256": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 338,
+   "name": "MakeComputerMove",
+   "handlers": [
+    "MakeComputerMove"
+   ],
+   "lines": 315,
+   "ls_sha256": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 363,
+   "name": "addtoproductioncenter",
+   "handlers": [
+    "addtoproductioncenter"
+   ],
+   "lines": 27,
+   "ls_sha256": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 14,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 123,
+   "ls_sha256": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 26,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 47,
+   "ls_sha256": "a70732d1df2e690c6906a2083d83389bb681b3ac3b404cb76cdab02b8c51710e"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 27,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 7,
+   "ls_sha256": "12ac77b0b84fcfae73698948ebc8b6fa17748be739ea439d362161ff364f7751"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 43,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 9,
+   "ls_sha256": "590e9d5af4717dae0864115205d991da10d6162e771d10425e30a652a4b88107"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 44,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 12,
+   "ls_sha256": "c1c9d86b9a3ef728f6778a52e8661115f008659fb0f549fa3a2eea6644746254"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 47,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 25,
+   "ls_sha256": "e0c9aede3c6ca94a5fe0dee0c0d041765e28025234c63ba6216ec8c2325f86e6"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 60,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 16,
+   "ls_sha256": "cf4416e0a9d45894baf13066accc1a0f531147cbc2acf9a47b341eaa68bfc4f0"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 76,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 11,
+   "ls_sha256": "5d4341261e5c7128809b8d9c7321f66a8e72c70f7491823c382544fa297f5de8"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 77,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 11,
+   "ls_sha256": "70959a23fe072589625c80707244c31142f7f69c1eb1f65ea38b7b3b108aaa64"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 78,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 11,
+   "ls_sha256": "4e3a272dfaa7a18b0694c79312e85e76798a3f2a5fcba6be25e3ed11bd1f455e"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 97,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 7,
+   "ls_sha256": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 98,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 37,
+   "ls_sha256": "ad21f8bd762f66f55ddd1ef3aa5619083ce6f7f7e4cc56eae1531eb8e1e50c02"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 100,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 6,
+   "ls_sha256": "871e1a0ec56d1c16bb6d05a35f2bf3c0b7643cb66364633cfb2a8250171ff4f1"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 331,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 11,
+   "ls_sha256": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 400,
+   "name": "",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 401,
+   "ls_sha256": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 457,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 66,
+   "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 479,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 66,
+   "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 496,
+   "name": "startingnumarmybehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 93,
+   "ls_sha256": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 498,
+   "name": "STRENGTHbehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 54,
+   "ls_sha256": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 499,
+   "name": "FREQbehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 92,
+   "ls_sha256": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 500,
+   "name": "SPEEDbehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 54,
+   "ls_sha256": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29"
+  },
+  {
+   "kind": "CastScript",
+   "number": 64,
+   "name": "Movebut2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 7,
+   "ls_sha256": "a728995644b0ac79b5690e8929ce3a6e9c7abcc86f736388b3ef7f693e7a5588"
+  },
+  {
+   "kind": "CastScript",
+   "number": 66,
+   "name": "Pass2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 16,
+   "ls_sha256": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f"
+  },
+  {
+   "kind": "CastScript",
+   "number": 72,
+   "name": "QAttack2",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 12,
+   "ls_sha256": "7722ba6bc860f2ff7d604c2af6771cc563c494a575f14536b0a3816d72ed2a9b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 74,
+   "name": "Attack4",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 10,
+   "ls_sha256": "8189dc6c3f5b65e37a8a1008b7b69d8600bab1d3a740d124d5c23edf0be699d7"
+  },
+  {
+   "kind": "CastScript",
+   "number": 85,
+   "name": "plus2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 13,
+   "ls_sha256": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9"
+  },
+  {
+   "kind": "CastScript",
+   "number": 87,
+   "name": "min2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 13,
+   "ls_sha256": "0759a1842164461847b78abb9cebf7623ef0a41aec0756d11ae93ac0fcdacd01"
+  },
+  {
+   "kind": "CastScript",
+   "number": 92,
+   "name": "plus3",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 13,
+   "ls_sha256": "a02062403be93bed1aa55382e7803f76e1d0a15c000c63b984c823e0234784a9"
+  },
+  {
+   "kind": "CastScript",
+   "number": 93,
+   "name": "min3",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 13,
+   "ls_sha256": "1ddb9260e04df92d478afd5d365ba0aa8298dc3096bc21f8a5f593c31ee89b0a"
+  },
+  {
+   "kind": "CastScript",
+   "number": 94,
+   "name": "Pall3",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 11,
+   "ls_sha256": "12e6d92d5542a8ca8d8306ce77051204aab2b0d2a03bd63e111bfb55460056b5"
+  },
+  {
+   "kind": "CastScript",
+   "number": 96,
+   "name": "DONE2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 26,
+   "ls_sha256": "6bd5753fa69fcc4ff6d8952886e8c88b365597c2bc55adee071bbebf85618c1c"
+  },
+  {
+   "kind": "CastScript",
+   "number": 332,
+   "name": "DONE3",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 28,
+   "ls_sha256": "0353edf31fa7e1d43460d6798342a464d0da3f81b3465e3ab04edad3c06d9acc"
+  },
+  {
+   "kind": "CastScript",
+   "number": 568,
+   "name": "HumanH",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 51,
+   "ls_sha256": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2"
+  },
+  {
+   "kind": "CastScript",
+   "number": 569,
+   "name": "ComputerC",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 44,
+   "ls_sha256": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da"
+  },
+  {
+   "kind": "CastScript",
+   "number": 591,
+   "name": "ear1",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 6,
+   "ls_sha256": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88"
+  },
+  {
+   "kind": "CastScript",
+   "number": 592,
+   "name": "ear2",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 7,
+   "ls_sha256": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 458,
+   "name": "getdefaults",
+   "handlers": [
+    "Getdefaults",
+    "SaveDefaults"
+   ],
+   "lines": 79,
+   "ls_sha256": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3"
+  }
+ ]
+}
