@@ -111,6 +111,10 @@ indexed in `docs/tasks/README.md`.
    The working strategy, how runs are made, the adjustments and what each model has shown are in
    `docs/models.md`, kept identical to malpaco's copy; the main session keeps it current.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
+   Exception (the owner, 2026-10-05): when the remaining findings are small and change no result
+   (wording, a narrowed claim, a missing test or correction note), the main session grants a third,
+   narrow round for those findings only, without escalating. A finding that could change a result,
+   or let a protected rule be bypassed, still escalates.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing
    failed is re-taken before it is believed.
