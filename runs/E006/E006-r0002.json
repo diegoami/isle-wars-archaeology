@@ -1,0 +1,319 @@
+{
+  "schema": "run/1",
+  "run_id": "E006-r0002",
+  "experiment": "E006",
+  "arm": "control",
+  "rep": 2,
+  "code_commit": "bb91e85d3230",
+  "machine": "local",
+  "artifact": {
+    "set": "iw-dos-3.1-30121376",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iw-dos/driver/repeat.py@bb91e85d3230",
+    "platform": "linux-wsl2/dosbox-x-xvfb",
+    "fingerprint": {
+      "dosbox-x": "unknown",
+      "dosbox-x-package": "2024.03.01+dfsg-1build2",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the game window: the X display read with ImageMagick import (passive instrumentation); the files the game wrote read after it wrote them (I0)"
+    }
+  ],
+  "start_state": {
+    "id": "S-run-copy-option-box",
+    "sha256": "ea77bd8651b51f116403b139098f890704d4af652c82b6137ac439b880a0b8f9",
+    "restore": "fresh private user, mount, PID and network namespaces for the command; IW_DOS_DIR bound read-only once for the command and checked by every repeat's seal; a fresh Xvfb and a fresh DOSBox-X process per repeat, from a generated configuration mounting only the run copy; the run copy checked (register_artifact.py check --strict, links, second names, mounts, aliases) and required equal to the baseline taken at the start of the command, at the start of the repeat and again immediately before the launch; reset to it after every repeat, completed or aborted; start_state.sha256 lists every entry of the run copy with its size, sha256 and modification time"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iw-dos/driver/repeat.py",
+    "sha256": "d2d32dc71dd6e7b64c391c73e1c047ef1c0f436d5e6bb141ec1f39b07d073f5e",
+    "args": [
+      "--arm",
+      "control",
+      "--repeats",
+      "10"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "driver sources sha256 (runtime/iw-dos/driver/*.py, spike cycle.py, navsteps.py, dosconf.py, board.py)",
+      "value": "846301c5707138346e3c9c85c2725109af30813ae59c74de2ac5ee1f2ad6a5c0"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "repeat of the command",
+      "value": "2 of 10"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "fault injected in this repeat",
+      "value": "none"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game",
+      "value": "5e3367e5bb403df64fdb97e1be7c8ff8125003151fa503cfa0bed022969fc979"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "seal at the start: install-read-only",
+      "value": "ok"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "seal at the start: network-namespace",
+      "value": "ok"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "seal at the start: run-copy",
+      "value": "ok"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "seal at the start: baseline",
+      "value": "ok"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "seal at the start: configuration",
+      "value": "ok"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "seal at the start: no-dosbox-x",
+      "value": "ok"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready, display held by this run's Xvfb (s)",
+      "value": "0.05"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "seal immediately before launch: install-read-only",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "seal immediately before launch: network-namespace",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "seal immediately before launch: run-copy",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "seal immediately before launch: baseline",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "seal immediately before launch: configuration",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "seal immediately before launch: no-dosbox-x",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "seal immediately before launch: display held by this run's Xvfb",
+      "value": "ok"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X in a network namespace other than the outer process's",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces DOSBox-X sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window at 640x350, seconds after launch",
+      "value": "1.66"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "DOSBox-X window position",
+      "value": "80,100"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "option-box reached and stable, seconds after launch",
+      "value": "16.99"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "before.png capture and PNG (s)",
+      "value": "0.061"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "pointer drawn at 60,32 (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "screen still before the click at 60,32 (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 101,
+      "source": "process",
+      "field": "left click at 60,32",
+      "value": "sent"
+    },
+    {
+      "step": 101,
+      "source": "process",
+      "field": "left click at 60,32: seconds after launch",
+      "value": "17.72"
+    },
+    {
+      "step": 101,
+      "source": "process",
+      "field": "step done, seconds after launch",
+      "value": "17.72"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "select-level reached and stable, seconds after launch",
+      "value": "18.17"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "after.png raw RGB8 pixels sha256",
+      "value": "c38316e1b2d6fcafd463da950a026a888d15b808a2788987e2f1cba35e0968d4"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "after.png capture and PNG (s)",
+      "value": "0.058"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "DOSBox-X exit after SIGTERM (s); exit status",
+      "value": "0.05; 0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added/removed/changed entries",
+      "value": "1/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "run copy: added ISLEWAR.SCR: bytes, sha256",
+      "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "run copy after reset equals the baseline",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "repeat seconds, start to end of finish",
+      "value": "18.47"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "store": "release:E006"
+    },
+    {
+      "name": "after.png",
+      "sha256": "79ac1e16f5cc5df26acc7e4a7487195973a0e35bbef4985e387150bdf14817c9",
+      "store": "release:E006"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "36aa0ca1ca1b892482bb78e23e5e91f1341780ff194ce37d19a53003cb02938b",
+      "store": "release:E006"
+    },
+    {
+      "name": "dosbox.log",
+      "sha256": "c4dd24f4eac4291d8a4705de5b47975d852a343b6474b9b8ff5ad2eb7facf1c5",
+      "store": "release:E006"
+    },
+    {
+      "name": "dosbox.conf.txt",
+      "sha256": "5e3367e5bb403df64fdb97e1be7c8ff8125003151fa503cfa0bed022969fc979",
+      "store": "release:E006"
+    },
+    {
+      "name": "run.log",
+      "sha256": "64640b222eb07889f7478fa8f22bb3ffef158797bb4ea9dee8d12e18463dd916",
+      "store": "release:E006"
+    }
+  ],
+  "started": "2026-10-05T13:24:35Z",
+  "ended": "2026-10-05T13:24:53Z",
+  "status": "completed"
+}

@@ -1,0 +1,132 @@
+$ python3 runtime/iw-dos/driver/repeat.py --arm control --repeats 10
+seal at the start: ok
+Xvfb :61 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w1/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 17.02 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.24 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 1, "run_id": "E006-r0001", "status": "completed", "seconds": 18.54, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :62 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w2/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.99 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.17 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 2, "run_id": "E006-r0002", "status": "completed", "seconds": 18.47, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :63 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w3/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.98 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.18 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 3, "run_id": "E006-r0003", "status": "completed", "seconds": 18.48, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :64 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w4/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.87 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.07 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 4, "run_id": "E006-r0004", "status": "completed", "seconds": 18.38, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :65 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w5/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.96 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.17 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 5, "run_id": "E006-r0005", "status": "completed", "seconds": 18.48, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :66 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w6/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.93 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.15 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 6, "run_id": "E006-r0006", "status": "completed", "seconds": 18.46, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :67 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w7/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 17.05 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.24 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 7, "run_id": "E006-r0007", "status": "completed", "seconds": 18.54, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :68 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w8/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.97 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.14 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 8, "run_id": "E006-r0008", "status": "completed", "seconds": 18.44, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :69 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w9/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 16.97 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.17 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 9, "run_id": "E006-r0009", "status": "completed", "seconds": 18.47, "recovered": true, "as_expected": true}
+seal at the start: ok
+Xvfb :70 ready after 0.05 s
+seal immediately before launch: ok
+launched: dosbox-x -conf /tmp/w10/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+option-box reached 17.18 s after launch
+before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+step 1: click 60 32
+select-level reached 18.35 s after launch
+after.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+DOSBox-X exit status 0, 0.05 s after SIGTERM
+reset: run copy: copied 0, removed 1
+{"repeat": 10, "run_id": "E006-r0010", "status": "completed", "seconds": 18.64, "recovered": true, "as_expected": true}
+exit 0
