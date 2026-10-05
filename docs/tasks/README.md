@@ -28,3 +28,4 @@ status; this index carries none.
 | T17 | Research-question backlog v2: Pro, static first | #65 | T26 |
 | T20 | Combat rules: Pro Lingo reading | #68 | T17, T29 |
 | T31 | Implementer read access to the machine-local static folder | #89 | T29 |
+| T30 | Turn order, victory and concession: Pro Lingo reading | #85 | T17, T31 |
