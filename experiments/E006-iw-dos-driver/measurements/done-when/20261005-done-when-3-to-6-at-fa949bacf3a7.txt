@@ -1,0 +1,21 @@
+T15 Done-when 3 to 6, taken by the implementer at fa949bacf3a7 (2026-10-05), after all E006 runs (r0001 to r0016).
+TMPDIR is a short directory outside every checkout (/tmp/t15tmp).
+
+DW3  $ python3 -m unittest discover -s tests
+     Ran 398 tests in 22.865s
+     OK
+     $ python3 tests/mutants_iw_dos_driver.py      -> 46 of 46 mutants killed (20261005-mutants-iw-dos-driver-at-fa949bacf3a7.txt)
+     $ python3 tests/mutants_iw_dos.py             -> 57 of 57 mutants killed (20261005-mutants-iw-dos-t11-t14-at-bb91e85.txt;
+                                                      the sources it mutates are unchanged since bb91e85)
+DW4  $ setup/iw-dos/iw-dos-runtime.sh
+     ready
+     $ python3 tools/register_artifact.py check "$IW_DOS_DIR" iw-dos-3.1-30121376 --strict
+     ok: iw-dos-3.1-30121376
+     exit=0
+DW5  $ git grep -n -i -E 'program files|/mnt/|[a-z]:\\\\|/home/|\.local/share' -- runtime/iw-dos setup/iw-dos findings experiments/E006-iw-dos-driver runs/E006 evidence/E006
+     (no output)
+DW6  $ python3 tools/check_no_originals.py
+     no original files tracked (1135 files checked)
+     $ python3 tools/check_links.py
+     links and JSON ok (1135 files)
+     tracked files over 1 MB: none
