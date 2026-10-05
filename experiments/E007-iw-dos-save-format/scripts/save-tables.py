@@ -9,8 +9,10 @@ Needs E005_BUNDLES and E007_BUNDLES in the environment. Writes into BATCH_DIR:
                    run, once per distinct sha256 within the run): run, arm, step file, sha256, bytes, the decoded
                    fields (centres, dft, settings, per-colour owner counts, armies' sum, the card counts and hands)
   dft.tsv          every game-written ISLEWAR.DFT of a run (step file, sha256, text)
-  roundtrip.tsv    for every distinct natural save of E005 and E007: sha256, bytes, whether encode(decode(bytes)) is
-                   the same bytes, and the first difference otherwise (the writer's round-trip, F009)
+  roundtrip.tsv    for every distinct save file of E005 and E007: sha256, bytes, its origin (`natural`: written by
+                   the game in a run that played from its own start; `crafted`: placed by put-save, or written by the
+                   game after it loaded one: the arms `load-*`), whether encode(decode(bytes)) is the same bytes,
+                   and the first difference otherwise (the writer's round-trip, F009)
 Never overwrites (CLAUDE.md rule 20): a new batch directory, each file created exclusively.
 """
 import hashlib
@@ -79,7 +81,8 @@ def main(batch):
                         detail = "" if same else "the bytes differ"
                     except savefmt.Refused as exc:
                         same, detail = False, f"encode refused: {exc}"
-                    trips.append((digest, len(data), "yes" if same else "NO", detail))
+                    origin = "crafted" if record["arm"].startswith("load-") else "natural"
+                    trips.append((digest, len(data), origin, "yes" if same else "NO", detail))
             kept = set()
             for name, path in game_files(record, "ISLEWAR.DFT"):
                 data = path.read_bytes()
@@ -92,9 +95,10 @@ def main(batch):
                                     "settings", "owners", "armies_sum", "card_counts_blue_red_green_brown",
                                     "hands_blue_green_red_brown"])
     put(batch, "dft.tsv", dfts, ["run", "arm", "file", "sha256_16", "bytes", "text (CRLF shown as |)"])
-    put(batch, "roundtrip.tsv", trips, ["sha256", "bytes", "encode(decode(bytes)) equals the bytes", "detail"])
-    bad = [t for t in trips if t[2] != "yes"]
-    print(f"{len(saves)} save files, {len(trips)} distinct, {len(bad)} that do not round-trip")
+    put(batch, "roundtrip.tsv", trips, ["sha256", "bytes", "origin", "encode(decode(bytes)) equals the bytes", "detail"])
+    bad = [t for t in trips if t[3] != "yes"]
+    natural = [t for t in trips if t[2] == "natural"]
+    print(f"{len(saves)} save files, {len(trips)} distinct ({len(natural)} natural), {len(bad)} that do not round-trip")
     return 1 if bad else 0
 
 

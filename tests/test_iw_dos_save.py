@@ -68,7 +68,7 @@ class LayoutTest(unittest.TestCase):
         self.assertEqual(savefmt.decode(data)["cards"], pos["cards"])
 
     def test_a_save_with_no_centre_and_one_with_many_round_trip(self):
-        for centres in ([], [1], list(range(1, 47))):
+        for centres in ([], [1], [1, 2, 3, 4, 5]):
             with self.subTest(len(centres)):
                 pos = dict(position(), centres=centres)
                 self.assertEqual(savefmt.decode(savefmt.encode(pos)), pos)
@@ -124,13 +124,19 @@ class EncodeRefusalTest(unittest.TestCase):
             "a centre twice": lambda p: p.__setitem__("centres", [4, 4]),
             "a card 0": lambda p: p["cards"].__setitem__("blue", [0]),
             "a card 10": lambda p: p["cards"].__setitem__("blue", [10]),
-            "ten cards": lambda p: p["cards"].__setitem__("blue", [1] * 10),
+            "six cards": lambda p: p["cards"].__setitem__("blue", [1] * 6),
+            "six centres": lambda p: p.__setitem__("centres", [1, 2, 3, 4, 5, 6]),
+            "a level of 5": lambda p: p.__setitem__("dft", [5, 1]),
+            "a level of 0": lambda p: p.__setitem__("dft", [0, 1]),
+            "starting armies of 2": lambda p: p.__setitem__("dft", [1, 2]),
+            "a speed of 0": lambda p: p.__setitem__("settings", [0, 0]),
+            "a speed of 10": lambda p: p.__setitem__("settings", [10, 0]),
+            "a sound of 2": lambda p: p.__setitem__("settings", [2, 2]),
             "a missing hand": lambda p: p["cards"].pop("red"),
             "an extra colour": lambda p: p["cards"].__setitem__("white", []),
             "an extra key": lambda p: p.__setitem__("level", 1),
             "a missing key": lambda p: p.pop("settings"),
             "a dft of three": lambda p: p.__setitem__("dft", [1, 1, 1]),
-            "a dft of 100": lambda p: p.__setitem__("dft", [100, 1]),
             "settings as a string": lambda p: p.__setitem__("settings", "20"),
             "not a dict": lambda p: None,
         }
@@ -160,7 +166,9 @@ class EncodeRefusalTest(unittest.TestCase):
     def test_the_extremes_that_are_accepted_round_trip(self):
         pos = position()
         pos["armies"] = [99] * 23 + [0] * 23
-        pos["cards"]["blue"] = [9, 8, 7, 6, 5, 4, 3, 2, 1]
+        pos["cards"]["blue"] = [9, 8, 7, 6, 5]
+        pos["centres"] = [1, 2, 3, 4, 5]
+        pos["dft"], pos["settings"] = [4, 10], [9, 1]
         self.assertEqual(savefmt.decode(savefmt.encode(pos)), pos)
 
 

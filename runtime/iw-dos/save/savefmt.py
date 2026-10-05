@@ -32,9 +32,15 @@ CODE_OWNER = {v: k for k, v in OWNER_CODE.items()}
 COUNT_ORDER = ("blue", "red", "green", "brown")
 HAND_ORDER = ("blue", "green", "red", "brown")
 CARD_DIGITS = range(1, 10)          # a card is one digit (1 to 9) in the last line
-MAX_CARDS = 9                       # what a hand line can hold unambiguously is bounded by the encoding only
-MAX_ARMIES = 99                     # two digits: the largest value the encoder writes (larger is refused)
-MAX_CENTRES = COUNTRIES
+# What the encoder writes is bounded by what was seen or tried (F009), not by what the game would take: a value outside
+# these is refused, which says nothing about whether the game accepts it.
+MAX_CARDS = 5                       # the manual: "You can only hold 5 cards in your hand" (ISLEWAR.DOC); five were loaded (E007-r0036)
+MAX_ARMIES = 99                     # 0 and 99 were loaded and shown (E007-r0032, E007-r0033); natural saves hold 1 to 11
+MAX_CENTRES = 5                     # natural saves list 3 to 5 (E005, E007); three written were loaded (E007-r0031)
+LEVELS = (1, 2, 3, 4)               # the DFT's first value: Easy, Normal, Hard, Hardest (E007-r0001 to E007-r0004)
+START_ARMIES = (1, 3, 6, 10)        # the DFT's second value: the starting armies the game offers (E007-r0001, r0005 to r0007)
+SPEEDS = range(1, 10)               # the first setting: Speed 1 to 9 (the manual); 1, 2, 3 natural, 5 loaded (E007-r0009, r0010, r0037)
+SOUNDS = (0, 1)                     # the second setting: Sound on 0, off 1 (E007-r0011)
 
 
 class SaveError(ValueError):
@@ -120,8 +126,12 @@ def check(position):
     centres = ints(position["centres"], "centres", 1, COUNTRIES)
     if len(centres) > MAX_CENTRES or len(set(centres)) != len(centres):
         raise Refused("centres: each country at most once")
-    ints(position["dft"], "dft", 0, 99, 2)
-    ints(position["settings"], "settings", 0, 99, 2)
+    dft = ints(position["dft"], "dft", 0, 99, 2)
+    if dft[0] not in LEVELS or dft[1] not in START_ARMIES:
+        raise Refused(f"dft: a level of {LEVELS} and starting armies of {START_ARMIES}")
+    settings = ints(position["settings"], "settings", 0, 99, 2)
+    if settings[0] not in SPEEDS or settings[1] not in SOUNDS:
+        raise Refused(f"settings: a speed of 1 to 9 and a sound of {SOUNDS}")
     ints(position["armies"], "armies", 0, MAX_ARMIES, COUNTRIES)
     owners = position["owners"]
     if not isinstance(owners, list) or len(owners) != COUNTRIES or any(o not in OWNER_CODE for o in owners):
