@@ -1,0 +1,4 @@
+$ sh -c python3 tools/validate_records.py runs/E005/*.json evidence/E005/*.json | grep -vc "^ok"; python3 tools/validate_records.py runs/E005/*.json evidence/E005/*.json | grep -c "^ok"
+0
+52
+exit=0

@@ -1,0 +1,51 @@
+[sdl]
+fullscreen=false
+output=surface
+autolock=false
+mouse_emulation=never
+mapperfile=/tmp/w/mapper.map
+[dosbox]
+saveremark=false
+quit warning=false
+captures=/tmp/w/cap
+savefile=/tmp/w/save/state.sav
+synchronize time=false
+[mixer]
+nosound=true
+[speaker]
+pcspeaker=false
+[sblaster]
+sbtype=none
+[gus]
+gus=false
+[midi]
+mpu401=none
+mididevice=none
+[serial]
+serial1=disabled
+serial2=disabled
+serial3=disabled
+serial4=disabled
+[parallel]
+parallel1=disabled
+parallel2=disabled
+parallel3=disabled
+[printer]
+printer=false
+[ipx]
+ipx=false
+[ne2000]
+ne2000=false
+[dos]
+automountall=false
+startcmd=false
+[cpu]
+cycles=fixed 3000
+[autoexec]
+@echo off
+mount c "<IW_DOS_RUN>/game"
+date 01-01-1994
+time 12:00:00
+c:
+ISLEWAR
+exit

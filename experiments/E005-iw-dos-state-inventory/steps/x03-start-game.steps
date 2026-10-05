@@ -1,0 +1,15 @@
+# exploration 3: past "ANYKEY TO START GAME" with a click on the banner
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+shot a
+click 510 22
+wait-change 20
+shot b
+wait-change 20
+shot c
+files

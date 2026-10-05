@@ -1,7 +1,9 @@
 # Tasks
 
-One file per task, `T<nn>.md`, from [`TEMPLATE.md`](TEMPLATE.md). This index carries no status:
-the issue's `status:*` label is the status (`gh issue list --label task --label status:ready`).
+One file per task, `T<nn>.md`, from [`TEMPLATE.md`](TEMPLATE.md). This index lists the task files that
+exist, each with its issue. The plan, including tasks not yet written, is the set of task issues
+(CLAUDE.md rule 23): `gh issue list --label task --state all`. The issue's `status:*` label is the
+status; this index carries none.
 
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
@@ -19,3 +21,9 @@ the issue's `status:*` label is the status (`gh issue list --label task --label 
 | T12 | Use game-archaeologist's pinned validator and register_artifact.py (folds #42, #48) | #49 | — |
 | T13 | Minimal driver: Isle Wars Pro (W5a; folds #40's cycle-time items) | #51 | T09 |
 | T14 | Observable-state inventory: DOS Isle Wars (W4b) | #52 | T11 |
+| T15 | Minimal driver: DOS Isle Wars (W5b) | #63 | T14 |
+| T16 | Save format: DOS `ISLEWAR.SAV` decoded, and a crafted-save setup (W4b follow-on) | #64 | T14 |
+| T26 | Static triage: unpack, identify and load both executables (U32, static first) | #76 | — |
+| T29 | Reviewer read access to the machine-local static folder | #81 | — |
+| T17 | Research-question backlog v2: Pro, static first | #65 | T26 |
+| T20 | Combat rules: Pro Lingo reading | #68 | T17, T29 |

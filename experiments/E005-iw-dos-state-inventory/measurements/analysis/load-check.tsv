@@ -1,0 +1,3 @@
+run	save_turn1_owners_equal_loaded_board	countries_equal_of_46	save_totals	loaded_totals
+E005-r0018	True	46	{'blue': 16, 'red': 14, 'green': 5, 'brown': 11}	{'blue': 16, 'red': 14, 'green': 5, 'brown': 11}
+E005-r0019	True	46	{'blue': 16, 'red': 7, 'green': 14, 'brown': 9}	{'blue': 16, 'red': 7, 'green': 14, 'brown': 9}

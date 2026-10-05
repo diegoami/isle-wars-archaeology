@@ -1,0 +1,37 @@
+{
+  "artifact": "iw-dos-3.1-30121376",
+  "bytes_after_image": 0,
+  "file_bytes": 83580,
+  "header_bytes": 96,
+  "image_bytes_by_header": 83580,
+  "mz_header": {
+    "bytes_in_last_page": 124,
+    "checksum": 0,
+    "header_paragraphs": 6,
+    "initial_cs": 65520,
+    "initial_ip": 256,
+    "initial_sp": 512,
+    "initial_ss": 5224,
+    "max_extra_paragraphs": 65535,
+    "min_extra_paragraphs": 4364,
+    "overlay_number": 0,
+    "pages": 164,
+    "relocation_table_offset": 82,
+    "relocations": 1
+  },
+  "original": {
+    "bytes": 83580,
+    "file": "ISLEWAR.EXE",
+    "sha256": "88e934bb4fa0b074a926d53765bbca251cb38395da50337276aac7d08a5cde45"
+  },
+  "pklite": {
+    "copyright_years": "1990-92",
+    "extra_compression_flag": true,
+    "large_codebook_flag": true,
+    "major_version": 1,
+    "minor_version": 15,
+    "version": "1.15",
+    "version_word": "0x310f"
+  },
+  "pklite_signature_offset": 30
+}

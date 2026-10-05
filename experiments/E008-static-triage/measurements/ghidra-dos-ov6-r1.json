@@ -1,0 +1,142 @@
+{
+  "analyzeHeadless_exit": 0,
+  "input": {
+    "bytes": 92736,
+    "derived_file_sha256": "1c6f8fb1c9eceb190fc40856110dd6e001a081aa9ea56ad1cbcbf9d99820b2de"
+  },
+  "language": "x86:LE:16:Real Mode",
+  "needles": [],
+  "ranges": [],
+  "report": {
+    "blocks": [
+      {
+        "name": "CODE_0",
+        "size": 12480,
+        "start": "1000:0000"
+      },
+      {
+        "name": "CODE_1",
+        "size": 1680,
+        "start": "130c:0000"
+      },
+      {
+        "name": "CODE_2",
+        "size": 3200,
+        "start": "1375:0000"
+      },
+      {
+        "name": "CODE_3",
+        "size": 176,
+        "start": "143d:0000"
+      },
+      {
+        "name": "CODE_4",
+        "size": 128,
+        "start": "1448:0000"
+      },
+      {
+        "name": "CODE_5",
+        "size": 5504,
+        "start": "1450:0000"
+      },
+      {
+        "name": "CODE_6",
+        "size": 2064,
+        "start": "15a8:0000"
+      },
+      {
+        "name": "CODE_7",
+        "size": 416,
+        "start": "1629:0000"
+      },
+      {
+        "name": "CODE_8",
+        "size": 4944,
+        "start": "1643:0000"
+      },
+      {
+        "name": "CODE_9",
+        "size": 544,
+        "start": "1778:0000"
+      },
+      {
+        "name": "CODE_10",
+        "size": 1056,
+        "start": "179a:0000"
+      },
+      {
+        "name": "CODE_11",
+        "size": 1328,
+        "start": "17dc:0000"
+      },
+      {
+        "name": "CODE_12",
+        "size": 31376,
+        "start": "182f:0000"
+      },
+      {
+        "name": "CODE_13",
+        "size": 3328,
+        "start": "1fd8:0000"
+      },
+      {
+        "name": "CODE_14",
+        "size": 320,
+        "start": "20a8:0000"
+      },
+      {
+        "name": "CODE_15",
+        "size": 9264,
+        "start": "20bc:0000"
+      },
+      {
+        "name": "CODE_16",
+        "size": 1632,
+        "start": "22ff:0000"
+      },
+      {
+        "name": "CODE_17",
+        "size": 368,
+        "start": "2365:0000"
+      },
+      {
+        "name": "CODE_18",
+        "size": 8880,
+        "start": "237c:0000"
+      },
+      {
+        "name": "DATA",
+        "size": 2480,
+        "start": "237c:22b0"
+      },
+      {
+        "name": "HEADER",
+        "size": 4048,
+        "start": "HEADER::00000000"
+      }
+    ],
+    "compiler_spec": "default",
+    "format": "Old-style DOS Executable (MZ)",
+    "functions": 509,
+    "instructions": 18990,
+    "language": "x86:LE:16:Real Mode",
+    "memory_blocks": 21,
+    "needles": [],
+    "ranges": []
+  },
+  "seconds": 11.41,
+  "tools": {
+    "ghidra": {
+      "build_date": "20260921",
+      "path": "$HOME/tools/ghidra_12.1.4_PUBLIC",
+      "revision": "8b6bbb857accdfa20dc5b2f5dea471178c2e9fbc",
+      "version": "12.1.4"
+    },
+    "java": {
+      "implementor": "Temurin-21.0.12.1+1",
+      "modules_sha256": "70c5465dabf8e1bec2860631ea3ffd342f0ec23a5e2efd3a389d2abe32448f98",
+      "path": "$HOME/tools/jdk-21.0.12.1+1",
+      "version": "21.0.12.1+1-LTS"
+    }
+  }
+}

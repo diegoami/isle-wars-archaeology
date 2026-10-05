@@ -1,0 +1,2 @@
+$ git grep -n -i -E 'program files|/mnt/|[a-z]:\\\\|/home/|\.local/share' -- tools/static setup/static findings experiments/E008-static-triage ':!experiments/E008-static-triage/measurements/done-when' ':!tools/static/static_common.py'
+exit=1 (1: no line matched, nothing printed)

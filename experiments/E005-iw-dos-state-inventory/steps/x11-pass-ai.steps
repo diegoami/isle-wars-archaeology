@@ -1,0 +1,72 @@
+# exploration 11: a whole human turn, PASS, the computer turns
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+shot board-before-start
+files
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+choose-attack
+click-mine
+wait-change 10
+shot place-selected
+rclick-mine
+wait-change 10
+wait-stable
+shot place-how-many
+click 284 331
+wait-change 10
+wait-stable
+shot place-turn-menu
+click 272 323
+wait-change 10
+wait-stable
+shot attack-what-country
+click-target
+wait-change 10
+shot attack-country-selected
+rclick-target
+wait-change 10
+wait-stable
+shot attack-from-where
+click-mine
+wait-change 10
+shot attack-from-selected
+rclick-mine
+wait-change 10
+wait-stable
+shot attack-ready
+click 283 323
+wait-change 10
+wait-stable
+shot attack-result
+click 284 331
+wait-change 10
+wait-stable
+shot move-in-all
+click 388 331
+wait-change 10
+wait-stable
+shot after-move-in
+click 338 325
+wait-change 10
+shot ai-1
+wait-change 10
+shot ai-2
+wait-change 10
+shot ai-3
+wait-change 10
+shot ai-4
+wait-change 10
+shot ai-5
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-2
+files

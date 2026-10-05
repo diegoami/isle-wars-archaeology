@@ -1,0 +1,27 @@
+{
+  "bytes": 484188,
+  "derived_files": [
+    {
+      "bytes": 146454,
+      "path": "exe.000.exe",
+      "sha256": "840049beb52a545ef75d5005f3ef760621d45dcc03879c777e507a177fe1c23e"
+    },
+    {
+      "bytes": 159120,
+      "path": "exe2.000.exe",
+      "sha256": "4dac918a532fa439ad98cd519a1daf43a51067639e1b80855d2b69acab4374d3"
+    },
+    {
+      "bytes": 85878,
+      "path": "ov6.000.exe",
+      "sha256": "e3a219db2723dccf0e5c2ab4025abbfc19c65a2cb1f98f48cc741203b05eb155"
+    },
+    {
+      "bytes": 92736,
+      "path": "ov62.000.exe",
+      "sha256": "1c6f8fb1c9eceb190fc40856110dd6e001a081aa9ea56ad1cbcbf9d99820b2de"
+    }
+  ],
+  "file_count": 4,
+  "run_directory": "deark-explore"
+}

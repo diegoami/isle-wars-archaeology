@@ -1,0 +1,15 @@
+# exploration 2: Set level, Easy, 1 starting army; what follows
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+shot a
+files
+wait-change 20
+shot b
+wait-change 20
+shot c
+files

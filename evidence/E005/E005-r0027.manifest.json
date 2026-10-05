@@ -1,0 +1,103 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E005-r0027",
+  "experiment": "E005",
+  "store": "release:E005",
+  "artifact": {
+    "set": "iw-dos-3.1-30121376",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 12376,
+      "sha256": "ce3d9ebda664b0646809249e2aa7c7e5714061a09f13c0e26db2da6984caf839",
+      "asset": "ce3d9ebda664b064-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-before-start.png",
+      "bytes": 14032,
+      "sha256": "ebbc1cc8c82e531a837056ea4f35519821628ed8e85acb921fd9f5bad88e2955",
+      "asset": "ebbc1cc8c82e531a-board-before-start.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "s03-ISLEWAR.DFT",
+      "bytes": 9,
+      "sha256": "4e3e822b0a898f806985d865a5e9b5edec095e4cd2caee2a78ade7ab8486ddb5",
+      "asset": "4e3e822b0a898f80-s03-ISLEWAR.DFT",
+      "class": "measurement"
+    },
+    {
+      "name": "s03-ISLEWAR.SCR",
+      "bytes": 20,
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "asset": "1cc857c57bc83a00-s03-ISLEWAR.SCR",
+      "class": "measurement"
+    },
+    {
+      "name": "human-turn.png",
+      "bytes": 14680,
+      "sha256": "90855868e56c5e7624560d032900803ec76655d87f300b36e22f163b2f0b2711",
+      "asset": "90855868e56c5e76-human-turn.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "s08-ISLEWAR.DFT",
+      "bytes": 9,
+      "sha256": "4e3e822b0a898f806985d865a5e9b5edec095e4cd2caee2a78ade7ab8486ddb5",
+      "asset": "4e3e822b0a898f80-s08-ISLEWAR.DFT",
+      "class": "measurement"
+    },
+    {
+      "name": "s08-ISLEWAR.SCR",
+      "bytes": 20,
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "asset": "1cc857c57bc83a00-s08-ISLEWAR.SCR",
+      "class": "measurement"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 262,
+      "sha256": "86b2524bc573bbdc1179d1f23dfe21d502c6f581a4d38ddbb6905bfb3ac195aa",
+      "asset": "86b2524bc573bbdc-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "end-ISLEWAR.DFT",
+      "bytes": 9,
+      "sha256": "4e3e822b0a898f806985d865a5e9b5edec095e4cd2caee2a78ade7ab8486ddb5",
+      "asset": "4e3e822b0a898f80-end-ISLEWAR.DFT",
+      "class": "measurement"
+    },
+    {
+      "name": "end-ISLEWAR.SCR",
+      "bytes": 20,
+      "sha256": "1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50",
+      "asset": "1cc857c57bc83a00-end-ISLEWAR.SCR",
+      "class": "measurement"
+    },
+    {
+      "name": "dosbox.log",
+      "bytes": 4331,
+      "sha256": "db94d26adeb85548506b480d86e70f7330c3bc0b511bc55533c5139d2475ddcc",
+      "asset": "db94d26adeb85548-dosbox.log",
+      "class": "log"
+    },
+    {
+      "name": "dosbox.conf.txt",
+      "bytes": 710,
+      "sha256": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484",
+      "asset": "45eeaf10a0f0488b-dosbox.conf.txt",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 1188,
+      "sha256": "07e7f88ee22f1795eaf7eb367448cd1e9fd12401a4e307cb4ecd14bf1caa0943",
+      "asset": "07e7f88ee22f1795-run.log",
+      "class": "log"
+    }
+  ]
+}

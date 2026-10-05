@@ -28,12 +28,12 @@ indexed in `docs/tasks/README.md`.
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. Each task file names its implementer and its reviewer, at effort `high` at most, and says
+6. Each task file names its implementer and its reviewer, at the effort below, and says
    whether the task is `easy` or `hard`, and why. The pairs (the owner's decision, 2026-10-03):
 
    | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
    | --- | --- | --- | --- | --- |
-   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-6 Luna (direct OpenAI) | Sonnet |
+   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-5.6 Luna (direct OpenAI) | Sonnet |
    | Hard | DeepSeek V4.1 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
 
    - **Hard** is any of:
@@ -54,7 +54,24 @@ indexed in `docs/tasks/README.md`.
    - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
      Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
    - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
-     `medium` only when the task file says why; never `high`. Every other model stays at `high`.
+     `medium` only when the task file says why; never `high`.
+   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro)
+     runs at `medium` at most, and at `low` when medium is not needed. A model that offers no
+     medium takes its lowest variant at or below `high`: GLM-5.3 `low`, DeepSeek V4 Pro `high`
+     (its lowest). Opus runs as `task-agent-heavy` (effort `medium`). A light model (Sonnet, GPT-5.6
+     Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) stays at `high`.
+   - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
+     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`), on its own weekly
+     pool. GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
+     every chain, never the reviewer. Never a Luna on OpenCode Go (`opencode-go/…`).
+   - **Quota first** (harness_imperial L50; the owner, 2026-10-05, superseding every earlier limit
+     on which models may be used): before choosing, recommending or delegating to a model, check
+     its provider with quota-tracker (`docs/environment.md`). A provider that is `exhausted` is not
+     used until it is usable again: take the next model of the pair or chain whose provider has
+     quota, pass it explicitly (`--model`, `--reviewer`, the Agent's model, `opencode -m`), and say
+     so in the run's report or the PR body ("GLM skipped: zai exhausted until 21:40; reviewed by
+     Luna"). Without the service, count a usage-limit error as `exhausted`. Ids still come from the
+     live list (`opencode models <provider>`), never memory.
    - **Sonnet's tripwire** (the owner, 2026-10-04). Every Sonnet brief carries the paragraph in
      `docs/models.md`. Sonnet stops and hands back an `ESCALATE` block when:
      - two hypotheses for the same question have failed;
@@ -79,7 +96,8 @@ indexed in `docs/tasks/README.md`.
    - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
    - **Switching** (the owner's decision, 2026-10-02): the owner decides which models are in use,
      and switches them often, as credits and prices change. The main session does not choose
-     models by budget. It keeps every switch cheap:
+     models by budget; it checks only whether a provider has quota (Quota first, above). It keeps
+     every switch cheap:
      - every candidate stays probed, with a `harness.json` entry;
      - each task file names its implementer and reviewer, one line each;
      - when the owner calls a switch, it is applied to tasks not yet started (and to
@@ -93,6 +111,10 @@ indexed in `docs/tasks/README.md`.
    The working strategy, how runs are made, the adjustments and what each model has shown are in
    `docs/models.md`, kept identical to malpaco's copy; the main session keeps it current.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
+   Exception (the owner, 2026-10-05): when the remaining findings are small and change no result
+   (wording, a narrowed claim, a missing test or correction note), the main session grants a third,
+   narrow round for those findings only, without escalating. A finding that could change a result,
+   or let a protected rule be bypassed, still escalates.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing
    failed is re-taken before it is believed.
@@ -120,9 +142,13 @@ indexed in `docs/tasks/README.md`.
     malpaco, and no evidence ever does. Executables, data and help files, and patched builds stay
     on the user's own machines. They are never in this repository, a release, an issue or a cloud
     session. Tasks that need them are C3/C4 only. `tools/check_no_originals.py` runs in CI.
-19. **Two artifacts, every claim scoped** (U3, U11). DOS *Isle Wars* and Windows *Isle Wars Pro*, the
-    shareware/unregistered releases. A claim holds for both only when it is shown for each. What
-    registration unlocks is `unknown`.
+    Derived output (decompiled code, listings) may be read by the reviewing models' APIs
+    (Anthropic, OpenAI, Z.ai), and is never published (the owner, 2026-10-05, T29).
+19. **Pro is the subject; DOS is history** (U3, U11; the owner, 2026-10-05). The research reads and
+    corroborates Windows *Isle Wars Pro*, the shareware/unregistered release. DOS *Isle Wars* findings
+    stay as they are, scoped to DOS, and no new DOS work is planned: the two games may differ, so a
+    Pro claim never rests on DOS evidence. What registration unlocks is `unknown`, except what Pro's
+    own code shows the unregistered build gates.
 20. **Research follows game-archaeologist ADR-007/008.** Run records are raw and immutable
     (`formats/run-1.schema.json` at the commit `archaeology.json` pins), evidence bundles are release
     assets, and findings start `proposed`. Only the main session writes `spec/`, after review. Unknown
@@ -148,3 +174,32 @@ indexed in `docs/tasks/README.md`.
 
     A model that fails is diagnosed and fixed before any fallback: its log, the brief, the agent
     file, the harness and the login. It is then retried. The diagnosis goes in the same comment.
+22. **Be practical** (the owner, 2026-10-05, a lesson from goal2-archaeology). Be flexible: when
+    something is true with a probability of 80–90%, accept it rather than spend much more time
+    proving it, and say how sure you are.
+    - **Work:** stop investigating once the answer is clearly likely.
+    - **Reviews:** blocking is for a likely problem that gets past what the task protects (a seal,
+      rule 18's originals, a claim with no evidence). An unlikely edge case, or one a later run would
+      expose loudly, is a follow-up.
+    - **Research:** a likely reading is stated with its confidence, as a narrowed claim or a
+      hypothesis. `spec/` still changes only by promotion of reviewed outcomes, and unknown stays
+      unknown (rule 20).
+23. **The plan is the task issues** (the owner, 2026-10-05). Every task, written or planned, is a
+    GitHub issue labelled `task`, with its T-number in the title and its Merge-after in the body.
+    Its `status:*` label is its status (rule 3); a task not yet written is `status:planned`. Nothing
+    else holds the plan: `docs/tasks/README.md` only indexes the task files that exist. The main
+    session keeps the issues current, whenever a task is written, merged, parked or re-planned, or
+    the owner changes direction, and checks them at session start (rule 14) and end. To read the
+    plan: `gh issue list --label task --state all`.
+24. **Static first** (game-archaeologist U32 at `9a224a3`; the owner, 2026-10-05). A research
+    question is answered by unpacking and decompiling or disassembling the executable first (Ghidra
+    for DOS x86, a recorded Director decompiler for Pro's Lingo), on the owner's machine. Runs of
+    the game are made only when static analysis cannot answer, or to corroborate a static answer.
+    - A finding resting on runs says, in its Method, what static analysis was tried and why it was
+      not enough.
+    - A missing tool is never a reason: install it, or stop and report. Runs made because a tool
+      was missing are a contract defect (research review gate G0a).
+    - Rule 18 holds: unpacked executables, Ghidra projects, extracted casts and decompiled code stay
+      on the owner's machine. Findings cite the binary's sha256 and the address or handler, and
+      describe behaviour in our own words.
+

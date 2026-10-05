@@ -1,0 +1,132 @@
+{
+  "data_segment_bases": [
+    "0x213b0"
+  ],
+  "header_bytes": 11760,
+  "input": {
+    "bytes": 159120,
+    "derived_file_sha256": "4dac918a532fa439ad98cd519a1daf43a51067639e1b80855d2b69acab4374d3"
+  },
+  "load_module_bytes": 147360,
+  "marker_counts": {
+    "borland-c": 0,
+    "borland-turbo-pascal": 0,
+    "microsoft-basic": 8,
+    "microsoft-c-library": 3,
+    "other-basic": 0
+  },
+  "markers": {
+    "borland-c": {
+      "Abnormal program termination": null,
+      "Borland C++": null,
+      "Turbo C": null
+    },
+    "borland-turbo-pascal": {
+      "Portions Copyright (c) 1983": null,
+      "Runtime error ": null,
+      "Turbo Pascal": null
+    },
+    "microsoft-basic": {
+      "Advanced feature unavailable": 146642,
+      "Bad record number": 146480,
+      "Error during run-time initialization": 147040,
+      "Error in EXE file": 146942,
+      "FIELD overflow": 146244,
+      "Out of DATA": 145922,
+      "RESUME without error": 146133,
+      "String space corrupt": 146919
+    },
+    "microsoft-c-library": {
+      "- illegal far pointer use": 147374,
+      "- stack overflow": 147146,
+      "run-time error R60": 145716
+    },
+    "other-basic": {
+      "PowerBASIC": null,
+      "QBX": null,
+      "Turbo Basic": null,
+      "Visual Basic": null
+    }
+  },
+  "needles": [
+    {
+      "hits": [
+        {
+          "data_segment_base": "0x213b0",
+          "descriptor_layout_holds": true,
+          "descriptor_offset_in_data_segment": "0x1968",
+          "module_offset": 142620,
+          "pushed_at": [
+            "1000:964d",
+            "1000:9743",
+            "1000:9b89"
+          ],
+          "text_offset_in_data_segment": "0x196c"
+        }
+      ],
+      "text": "ISLEWAR.SAV"
+    },
+    {
+      "hits": [
+        {
+          "data_segment_base": "0x213b0",
+          "descriptor_layout_holds": true,
+          "descriptor_offset_in_data_segment": "0x1450",
+          "module_offset": 141316,
+          "pushed_at": [
+            "1000:1a1b",
+            "1000:1aaa",
+            "1000:1ad7",
+            "1000:1b2c",
+            "1000:7003",
+            "1000:7054",
+            "1000:8bce",
+            "1000:9ad8",
+            "1000:9b38"
+          ],
+          "text_offset_in_data_segment": "0x1454"
+        }
+      ],
+      "text": "ISLEWAR.DFT"
+    },
+    {
+      "hits": [
+        {
+          "data_segment_base": "0x213b0",
+          "descriptor_layout_holds": true,
+          "descriptor_offset_in_data_segment": "0x134e",
+          "module_offset": 141058,
+          "pushed_at": [
+            "1000:00a6",
+            "1000:0bc8"
+          ],
+          "text_offset_in_data_segment": "0x1352"
+        },
+        {
+          "descriptor_layout_holds": false,
+          "module_offset": 142877
+        }
+      ],
+      "text": "ISLEWAR.DAT"
+    },
+    {
+      "hits": [
+        {
+          "data_segment_base": "0x213b0",
+          "descriptor_layout_holds": true,
+          "descriptor_offset_in_data_segment": "0x135e",
+          "module_offset": 141074,
+          "pushed_at": [
+            "1000:00df"
+          ],
+          "text_offset_in_data_segment": "0x1362"
+        },
+        {
+          "descriptor_layout_holds": false,
+          "module_offset": 142864
+        }
+      ],
+      "text": "ISLEWAR.JFT"
+    }
+  ]
+}

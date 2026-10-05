@@ -1,0 +1,31 @@
+# exploration 24: the shareware notices, C then E (Exit To Dos)
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+shot board-before-start
+files
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 602 20
+click-change 287 332
+click-change 480 236
+click-change 368 332
+until 288 292 130 26 170 170 170 400 60
+wait-stable
+shot nag
+key c
+wait-change 15
+until 288 292 130 26 170 170 170 400 20
+wait-stable
+shot registration-notice
+key e
+wait-change 15
+shot after-e
+files

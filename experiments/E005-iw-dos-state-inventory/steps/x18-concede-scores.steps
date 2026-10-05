@@ -1,0 +1,33 @@
+# exploration 18: Quit, Yes, then the scoreboard
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+shot board-before-start
+files
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click 602 20
+wait-change 10
+wait-stable
+click 287 332
+wait-change 10
+wait-stable
+shot after-yes
+files
+click 412 20
+wait-change 10
+wait-stable
+shot scores-after-concede
+files
+click 320 175
+wait-change 10
+wait-stable
+shot back
+files

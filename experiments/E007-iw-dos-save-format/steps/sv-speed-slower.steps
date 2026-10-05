@@ -1,0 +1,26 @@
+# arm sv-speed-slower: Easy, 1; Speed Slower once, the panel closed, Save (T16)
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot select-level
+click-change 315 168
+shot starting-armies
+click-change 315 169
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+files
+click-change 507 20
+shot speed-panel
+click-change 575 20
+shot speed-slower
+click 330 330
+wait-change 10
+wait-stable
+shot speed-closed
+click-change 554 20
+shot save-turn1
+files

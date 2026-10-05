@@ -1,0 +1,9 @@
+# exploration 14: Load saved game on the option box
+click 60 58
+wait-change 15
+wait-stable
+shot after-load
+files
+wait-change 15
+shot later
+files

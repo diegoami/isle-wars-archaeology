@@ -1,0 +1,49 @@
+# exploration 8: first human turn, place, then attack
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+choose-attack
+click-mine
+wait-change 10
+shot selected
+rclick-mine
+wait-change 10
+wait-stable
+shot confirmed
+click 284 331
+wait-change 10
+wait-stable
+shot all-clicked
+click 272 323
+wait-change 10
+wait-stable
+shot attack-clicked
+click-target
+wait-change 10
+shot target-clicked
+rclick-target
+wait-change 10
+wait-stable
+shot target-confirmed
+click-mine
+wait-change 10
+shot mine-clicked
+rclick-mine
+wait-change 10
+shot mine-confirmed
+wait-change 10
+shot r1
+wait-change 10
+shot r2
+wait-change 10
+shot r3
+files

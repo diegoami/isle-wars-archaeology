@@ -1,0 +1,23 @@
+# exploration x01: Speed Faster, Sound off, then Save (T16). Easy, 1 army.
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click-change 315 168
+click-change 315 169
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 507 20
+shot speed-panel
+click-change 459 20
+shot speed-faster
+click-change 527 20
+shot speed-closed
+click-change 459 20
+shot sound-clicked
+click-change 554 20
+shot save-turn1
+files

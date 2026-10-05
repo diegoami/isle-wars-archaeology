@@ -1,0 +1,62 @@
+# arm turn: save, one human turn (place, attack, move in, pass), computer turns, the next turn: save, cards (T14)
+# set the level and the starting armies, start the game, wait for the first human turn
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot select-level
+click-change 315 168
+shot starting-armies
+click-change 315 169
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+files
+click-change 554 20
+shot save-turn1
+files
+choose-attack
+click-mine
+rclick-mine
+shot place-how-many
+click-change 284 331
+shot place-turn-menu
+click-change 272 323
+shot attack-what-country
+click-target
+shot attack-from-where
+click-mine
+shot attack-ready
+click-until 283 323 258 305 155 40 255 255 85 300
+shot attack-result
+files
+click-change 284 331
+until 270 310 140 30 170 0 0 150 20
+wait-stable
+shot after-move-in
+click 338 325
+wait-change 10
+wait-stable
+shot draws-card
+wait-change 10
+wait-stable
+shot click-to-continue
+click-change 335 323
+shot ai-turn-first
+wait-change 10
+shot ai-turn-second
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn-2
+click-change 554 20
+shot save-turn2
+files
+choose-attack
+click-mine
+rclick-mine
+click-change 284 331
+click-change 369 325
+shot cards-turn-2
+files

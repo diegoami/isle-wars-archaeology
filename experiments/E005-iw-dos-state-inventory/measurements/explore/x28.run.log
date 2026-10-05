@@ -1,0 +1,34 @@
+16:22:10 IW_DOS_DIR read-only inside the run
+16:22:10 run copy before anything starts: ok
+16:22:10 Xvfb ready after 0.11 s
+16:22:11 run copy and configuration immediately before launch: ok
+16:22:11 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+16:22:11 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+16:22:12 window 2097157 at (80, 100) after 1.62 s
+16:22:28 option box reached 16.76 s after launch
+16:22:28 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+16:22:28 step 1: click 60 32
+16:22:28 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+16:22:28 step 3: wait-stable
+16:22:29 step 4: click 315 202
+16:22:29 step 5: wait-change 15
+16:22:29 step 6: click 315 203
+16:22:30 step 7: wait-change 15
+16:22:31 step 8: wait-stable
+16:22:32 step 9: shot board-before-start.png
+16:22:32 board-before-start.png: pixels d0bc79a0b01e220c, file 434aed2563671887
+16:22:32 step 10: files
+16:22:32 step 11: click 510 22
+16:22:37 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+16:23:06 step 13: wait-stable
+16:23:08 step 14: shot human-turn.png
+16:23:08 human-turn.png: pixels 1f23264c3bc7194b, file 46910ceb0012da8b
+16:23:08 step 15: click 554 20
+16:23:08 step 16: wait-change 10
+16:23:09 step 17: shot save-turn1.png
+16:23:09 save-turn1.png: pixels 65bb24384c8d2e7e, file 8debb5043f9a425a
+16:23:09 step 18: files
+16:23:09 DOSBox-X exit status 0, 0.05 s after term
+16:23:09 processes still alive after terminate: 0
+16:23:09 reset: run copy: copied 0, removed 3
+16:23:09 reset: run copy equals its state before launch: True

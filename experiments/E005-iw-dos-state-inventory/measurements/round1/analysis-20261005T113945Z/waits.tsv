@@ -1,0 +1,136 @@
+run	status	wait	count	longest_s	timed_out
+E005-r0001	completed	wait-stable or the settling after a click	3	4.23	0
+E005-r0001	completed	a click's screen change	2	0.02	0
+E005-r0001	completed	until	1	28.53	0
+E005-r0002	completed	wait-stable or the settling after a click	3	2.07	0
+E005-r0002	completed	a click's screen change	2	0.02	0
+E005-r0002	completed	until	1	21.92	0
+E005-r0003	completed	wait-stable or the settling after a click	6	2.09	0
+E005-r0003	completed	a click's screen change	4	0.02	0
+E005-r0003	completed	until	2	20.69	0
+E005-r0004	completed	wait-stable or the settling after a click	6	2.05	0
+E005-r0004	completed	a click's screen change	4	0.02	0
+E005-r0004	completed	until	2	5.47	0
+E005-r0005	completed	wait-stable or the settling after a click	6	2.05	0
+E005-r0005	completed	a click's screen change	4	0.04	0
+E005-r0005	completed	until	2	14.17	0
+E005-r0006	completed	wait-stable or the settling after a click	6	2.07	0
+E005-r0006	completed	a click's screen change	4	0.02	0
+E005-r0006	completed	until	2	31.54	0
+E005-r0007	completed	wait-stable or the settling after a click	6	2.04	0
+E005-r0007	completed	a click's screen change	4	0.02	0
+E005-r0007	completed	until	2	3.86	0
+E005-r0008	completed	wait-stable or the settling after a click	6	1.54	0
+E005-r0008	completed	a click's screen change	4	0.03	0
+E005-r0008	completed	until	2	24.37	0
+E005-r0009	completed	wait-stable or the settling after a click	6	4.24	0
+E005-r0009	completed	a click's screen change	4	0.03	0
+E005-r0009	completed	until	2	19.55	0
+E005-r0010	completed	wait-stable or the settling after a click	6	2.03	0
+E005-r0010	completed	a click's screen change	4	0.02	0
+E005-r0010	completed	until	2	81.47	0
+E005-r0011	completed	wait-stable or the settling after a click	28	4.77	0
+E005-r0011	completed	a click's screen change	18	0.02	0
+E005-r0011	completed	wait-change	3	2.02	0
+E005-r0011	completed	until	4	22.88	0
+E005-r0011	completed	click-until	1	0.02	0
+E005-r0012	completed	wait-stable or the settling after a click	28	2.57	0
+E005-r0012	completed	a click's screen change	18	0.03	0
+E005-r0012	completed	wait-change	3	1.30	0
+E005-r0012	completed	until	4	27.46	0
+E005-r0012	completed	click-until	1	0.02	0
+E005-r0013	completed	wait-stable or the settling after a click	12	2.03	0
+E005-r0013	completed	a click's screen change	10	1.32	0
+E005-r0013	completed	until	2	5.65	0
+E005-r0014	completed	wait-stable or the settling after a click	9	2.07	0
+E005-r0014	completed	a click's screen change	7	0.13	0
+E005-r0014	completed	until	2	13.06	0
+E005-r0015	completed	wait-stable or the settling after a click	9	2.05	0
+E005-r0015	completed	a click's screen change	7	0.25	0
+E005-r0015	completed	until	2	11.92	0
+E005-r0016	aborted	wait-stable or the settling after a click	6	1.50	0
+E005-r0016	aborted	a click's screen change	7	0.02	3
+E005-r0016	aborted	until	2	3.99	0
+E005-r0017	aborted	wait-stable or the settling after a click	6	4.22	0
+E005-r0017	aborted	a click's screen change	7	0.02	3
+E005-r0017	aborted	until	2	28.04	0
+E005-r0018	completed	wait-stable or the settling after a click	14	4.14	0
+E005-r0018	completed	a click's screen change	10	0.25	0
+E005-r0018	completed	until	4	14.51	0
+E005-r0019	completed	wait-stable or the settling after a click	14	4.17	0
+E005-r0019	completed	a click's screen change	10	0.13	0
+E005-r0019	completed	until	4	27.76	0
+E005-r0020	completed	wait-stable or the settling after a click	1	0.43	0
+E005-r0020	completed	a click's screen change	1	0.02	0
+E005-r0021	completed	wait-stable or the settling after a click	13	2.03	0
+E005-r0021	completed	a click's screen change	8	0.13	0
+E005-r0021	completed	wait-change	1	0.13	0
+E005-r0021	completed	until	4	5.51	0
+E005-r0021	completed	wait-exit	1	2.25	0
+E005-r0022	completed	wait-stable or the settling after a click	6	2.04	0
+E005-r0022	completed	a click's screen change	4	0.02	0
+E005-r0022	completed	until	2	5.51	0
+E005-r0023	completed	wait-stable or the settling after a click	9	2.03	0
+E005-r0023	completed	a click's screen change	7	0.25	0
+E005-r0023	completed	until	2	4.06	0
+E005-r0024	completed	wait-stable or the settling after a click	9	4.16	0
+E005-r0024	completed	a click's screen change	7	0.13	0
+E005-r0024	completed	until	2	1.50	0
+E005-r0025	completed	wait-stable or the settling after a click	7	3.61	0
+E005-r0025	completed	a click's screen change	5	0.02	0
+E005-r0025	completed	until	2	10.00	0
+E005-r0026	completed	wait-stable or the settling after a click	7	2.07	0
+E005-r0026	completed	a click's screen change	5	0.02	0
+E005-r0026	completed	until	2	13.47	0
+E005-r0027	completed	wait-stable or the settling after a click	3	2.03	0
+E005-r0027	completed	a click's screen change	2	0.02	0
+E005-r0027	completed	until	1	15.37	0
+E005-r0027	completed	still before a click (r0027 on)	2	0.44	0
+E005-r0028	completed	wait-stable or the settling after a click	3	2.03	0
+E005-r0028	completed	a click's screen change	2	0.02	0
+E005-r0028	completed	until	1	5.52	0
+E005-r0028	completed	still before a click (r0027 on)	2	0.44	0
+E005-r0029	completed	wait-stable or the settling after a click	6	1.51	0
+E005-r0029	completed	a click's screen change	4	0.02	0
+E005-r0029	completed	until	2	13.07	0
+E005-r0029	completed	still before a click (r0027 on)	4	0.44	0
+E005-r0030	completed	wait-stable or the settling after a click	6	2.04	0
+E005-r0030	completed	a click's screen change	4	0.02	0
+E005-r0030	completed	until	2	13.14	0
+E005-r0030	completed	still before a click (r0027 on)	4	0.44	0
+E005-r0031	completed	wait-stable or the settling after a click	9	2.04	0
+E005-r0031	completed	a click's screen change	7	0.14	0
+E005-r0031	completed	until	2	12.24	0
+E005-r0031	completed	still before a click (r0027 on)	7	0.44	0
+E005-r0032	completed	wait-stable or the settling after a click	9	2.05	0
+E005-r0032	completed	a click's screen change	7	0.14	0
+E005-r0032	completed	until	2	13.20	0
+E005-r0032	completed	still before a click (r0027 on)	7	0.44	0
+E005-r0033	completed	wait-stable or the settling after a click	7	1.51	0
+E005-r0033	completed	a click's screen change	6	0.02	1
+E005-r0033	completed	until	2	14.95	0
+E005-r0033	completed	still before a click (r0027 on)	6	0.92	0
+E005-r0034	completed	wait-stable or the settling after a click	7	2.01	0
+E005-r0034	completed	a click's screen change	5	0.02	0
+E005-r0034	completed	until	2	12.65	0
+E005-r0034	completed	still before a click (r0027 on)	5	0.44	0
+E005-r0035	completed	wait-stable or the settling after a click	6	2.03	0
+E005-r0035	completed	a click's screen change	4	0.02	0
+E005-r0035	completed	until	2	5.88	0
+E005-r0035	completed	still before a click (r0027 on)	4	0.43	0
+E005-r0036	completed	wait-stable or the settling after a click	13	2.04	0
+E005-r0036	completed	a click's screen change	8	0.15	0
+E005-r0036	completed	wait-change	1	0.01	0
+E005-r0036	completed	until	4	18.06	0
+E005-r0036	completed	still before a click (r0027 on)	8	0.44	0
+E005-r0036	completed	wait-exit	1	2.25	0
+E005-r0037	completed	wait-stable or the settling after a click	28	2.58	0
+E005-r0037	completed	a click's screen change	18	0.02	0
+E005-r0037	completed	wait-change	3	2.05	0
+E005-r0037	completed	until	4	27.51	0
+E005-r0037	completed	click-until	1	0.02	0
+E005-r0037	completed	still before a click (r0027 on)	18	0.44	0
+E005-r0038	completed	wait-stable or the settling after a click	6	1.52	0
+E005-r0038	completed	a click's screen change	4	0.02	0
+E005-r0038	completed	until	2	81.31	0
+E005-r0038	completed	still before a click (r0027 on)	4	0.44	0

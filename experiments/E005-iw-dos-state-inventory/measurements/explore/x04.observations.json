@@ -1,0 +1,860 @@
+[
+ {
+  "step": 0,
+  "source": "file",
+  "field": "steps script sha256",
+  "value": "653d2fb0baac1ab45ce83d3b21ea80e6a6d826eb1fcae525636af23558700648"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "IW_DOS_DIR bound read-only in the run's mount namespace",
+  "value": "yes"
+ },
+ {
+  "step": 0,
+  "source": "file",
+  "field": "run copy check before anything starts: problems found",
+  "value": "0"
+ },
+ {
+  "step": 0,
+  "source": "file",
+  "field": "DOSBox-X configuration, sha256 with the run copy's path as <IW_DOS_RUN>/game",
+  "value": "45eeaf10a0f0488b4875a2ed963ac8aa05f20749116d713e829dcd9faa438484"
+ },
+ {
+  "step": 0,
+  "source": "process",
+  "field": "xvfb ready (s)",
+  "value": "0.05"
+ },
+ {
+  "step": 1,
+  "source": "file",
+  "field": "run copy check immediately before launch: problems found",
+  "value": "0"
+ },
+ {
+  "step": 1,
+  "source": "file",
+  "field": "configuration check immediately before launch: problems found",
+  "value": "0"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "DOSBox-X in a network namespace other than the outer process's",
+  "value": "yes"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "network interfaces DOSBox-X sees",
+  "value": "lo"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "DOSBox-X window at 640x350 after launch (s)",
+  "value": "1.76"
+ },
+ {
+  "step": 1,
+  "source": "process",
+  "field": "DOSBox-X window position",
+  "value": "80,100"
+ },
+ {
+  "step": 2,
+  "source": "screen",
+  "field": "option box reached and stable, seconds after launch",
+  "value": "17.04"
+ },
+ {
+  "step": 3,
+  "source": "screen",
+  "field": "before.png raw RGB8 pixels sha256",
+  "value": "6d7d28500a9562d2a5bf939c7ef1f404e4945f6b7e3beaf6bb33b8a59af6196f"
+ },
+ {
+  "step": 101,
+  "source": "screen",
+  "field": "pointer drawn at 60,32 (s)",
+  "value": "0.09"
+ },
+ {
+  "step": 101,
+  "source": "process",
+  "field": "click at 60,32",
+  "value": "sent"
+ },
+ {
+  "step": 102,
+  "source": "screen",
+  "field": "more than 800 pixels of (170, 85, 0) in (272, 138, 80, 18) after (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 103,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 104,
+  "source": "screen",
+  "field": "pointer drawn at 315,168 (s)",
+  "value": "0.08"
+ },
+ {
+  "step": 104,
+  "source": "process",
+  "field": "click at 315,168",
+  "value": "sent"
+ },
+ {
+  "step": 105,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 105,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 106,
+  "source": "screen",
+  "field": "pointer drawn at 315,169 (s)",
+  "value": "0.09"
+ },
+ {
+  "step": 106,
+  "source": "process",
+  "field": "click at 315,169",
+  "value": "sent"
+ },
+ {
+  "step": 107,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 107,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "1.52"
+ },
+ {
+  "step": 108,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 109,
+  "source": "screen",
+  "field": "pointer drawn at 510,22 (s)",
+  "value": "no change within 5 s"
+ },
+ {
+  "step": 109,
+  "source": "process",
+  "field": "click at 510,22",
+  "value": "sent"
+ },
+ {
+  "step": 110,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 110,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.97"
+ },
+ {
+  "step": 111,
+  "source": "screen",
+  "field": "f01.png raw RGB8 pixels sha256",
+  "value": "324810340f35cb7f532874335656b4f96609ef4fb4998c68a939b41b7308869c"
+ },
+ {
+  "step": 112,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.13"
+ },
+ {
+  "step": 112,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.98"
+ },
+ {
+  "step": 113,
+  "source": "screen",
+  "field": "f02.png raw RGB8 pixels sha256",
+  "value": "9b8870c34e78f60ada253564d301eaaee0c0acde308465d99227205985c7e10d"
+ },
+ {
+  "step": 114,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.14"
+ },
+ {
+  "step": 114,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "1.51"
+ },
+ {
+  "step": 115,
+  "source": "screen",
+  "field": "f03.png raw RGB8 pixels sha256",
+  "value": "1ff68876c5e80e8f89efb833b4fe810f627b0ab9fbef7b6d76b6c00f4d638022"
+ },
+ {
+  "step": 116,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "1.08"
+ },
+ {
+  "step": 116,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 117,
+  "source": "screen",
+  "field": "f04.png raw RGB8 pixels sha256",
+  "value": "d2a35a3fe9ea8c298ab0cee4cb56c3adcda6af82717ac2ac64b66ba3fb3cd8c7"
+ },
+ {
+  "step": 118,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.49"
+ },
+ {
+  "step": 118,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.97"
+ },
+ {
+  "step": 119,
+  "source": "screen",
+  "field": "f05.png raw RGB8 pixels sha256",
+  "value": "a8ca238767001b9d269c160a22b3dc8f548ac658d92f52311f0bbc6e65fc58d2"
+ },
+ {
+  "step": 120,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.73"
+ },
+ {
+  "step": 120,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.44"
+ },
+ {
+  "step": 121,
+  "source": "screen",
+  "field": "f06.png raw RGB8 pixels sha256",
+  "value": "dff1dde665fb64f537cd67c3c0e9169ebb75a3b36bf97ce2e87d997f1b0f7583"
+ },
+ {
+  "step": 122,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.14"
+ },
+ {
+  "step": 122,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "3.11"
+ },
+ {
+  "step": 123,
+  "source": "screen",
+  "field": "f07.png raw RGB8 pixels sha256",
+  "value": "be68d3f0087cb427c919f8472683d3e510a17bee9ae59e5144af557ba40dc627"
+ },
+ {
+  "step": 124,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "1.46"
+ },
+ {
+  "step": 124,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 125,
+  "source": "screen",
+  "field": "f08.png raw RGB8 pixels sha256",
+  "value": "784261ebdbfbd819aa6ace3cfea01c170c5ea77687ff4b8a2b73066e0ca745eb"
+ },
+ {
+  "step": 126,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.37"
+ },
+ {
+  "step": 126,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.97"
+ },
+ {
+  "step": 127,
+  "source": "screen",
+  "field": "f09.png raw RGB8 pixels sha256",
+  "value": "6e964a35e55b0e9e7c9cc51add5b84b751d8ef922c33a61589e010d47b5c6b65"
+ },
+ {
+  "step": 128,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.62"
+ },
+ {
+  "step": 128,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "1.51"
+ },
+ {
+  "step": 129,
+  "source": "screen",
+  "field": "f10.png raw RGB8 pixels sha256",
+  "value": "3d2e8c9f1326c0c0e8587010ed88a3fa9fb371f3fb4123a1c656846e9feb31dc"
+ },
+ {
+  "step": 130,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.25"
+ },
+ {
+  "step": 130,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.97"
+ },
+ {
+  "step": 131,
+  "source": "screen",
+  "field": "f11.png raw RGB8 pixels sha256",
+  "value": "397466ed0b11b279b6f0558bfd28f0c641f1bf685f11b21cc7fa8f0801168a98"
+ },
+ {
+  "step": 132,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.25"
+ },
+ {
+  "step": 132,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 133,
+  "source": "screen",
+  "field": "f12.png raw RGB8 pixels sha256",
+  "value": "9adec55864320b29fc1c6d3b9bfaebce703ee978ea487c8bda9bb884018635be"
+ },
+ {
+  "step": 134,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.02"
+ },
+ {
+  "step": 134,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "1.5"
+ },
+ {
+  "step": 135,
+  "source": "screen",
+  "field": "f13.png raw RGB8 pixels sha256",
+  "value": "2df4d1c4fe57c776f48ab09eabd0e849380845c52a8b6c6613eba8bd05105db8"
+ },
+ {
+  "step": 136,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "1.43"
+ },
+ {
+  "step": 136,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.43"
+ },
+ {
+  "step": 137,
+  "source": "screen",
+  "field": "f14.png raw RGB8 pixels sha256",
+  "value": "9c3d3069f22a990c23d17edb3df2f25adb9b2e0474461c0554d67a6f69af8d39"
+ },
+ {
+  "step": 138,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.37"
+ },
+ {
+  "step": 138,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "0.96"
+ },
+ {
+  "step": 139,
+  "source": "screen",
+  "field": "f15.png raw RGB8 pixels sha256",
+  "value": "eb5268df12c3d17f49e0e6a04880884c1c658d5e57bcced376c35552d389f443"
+ },
+ {
+  "step": 140,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "0.73"
+ },
+ {
+  "step": 140,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "3.1"
+ },
+ {
+  "step": 141,
+  "source": "screen",
+  "field": "f16.png raw RGB8 pixels sha256",
+  "value": "80edbe886301d72f39df0d7c3b65f0f9d1bb9334563fbdbc9b17f60406b2a459"
+ },
+ {
+  "step": 142,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "1.43"
+ },
+ {
+  "step": 142,
+  "source": "screen",
+  "field": "screen stable after (s)",
+  "value": "2.03"
+ },
+ {
+  "step": 143,
+  "source": "screen",
+  "field": "f17.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 144,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 145,
+  "source": "screen",
+  "field": "f18.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 146,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 147,
+  "source": "screen",
+  "field": "f19.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 148,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 149,
+  "source": "screen",
+  "field": "f20.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 150,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 151,
+  "source": "screen",
+  "field": "f21.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 152,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 153,
+  "source": "screen",
+  "field": "f22.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 154,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 155,
+  "source": "screen",
+  "field": "f23.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 156,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 157,
+  "source": "screen",
+  "field": "f24.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 158,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 159,
+  "source": "screen",
+  "field": "f25.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 160,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 161,
+  "source": "screen",
+  "field": "f26.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 162,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 163,
+  "source": "screen",
+  "field": "f27.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 164,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 165,
+  "source": "screen",
+  "field": "f28.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 166,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 167,
+  "source": "screen",
+  "field": "f29.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 168,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 169,
+  "source": "screen",
+  "field": "f30.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 170,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 171,
+  "source": "screen",
+  "field": "f31.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 172,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 173,
+  "source": "screen",
+  "field": "f32.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 174,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 175,
+  "source": "screen",
+  "field": "f33.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 176,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 177,
+  "source": "screen",
+  "field": "f34.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 178,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 179,
+  "source": "screen",
+  "field": "f35.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 180,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 181,
+  "source": "screen",
+  "field": "f36.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 182,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 183,
+  "source": "screen",
+  "field": "f37.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 184,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 185,
+  "source": "screen",
+  "field": "f38.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 186,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 187,
+  "source": "screen",
+  "field": "f39.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 188,
+  "source": "screen",
+  "field": "screen changed after (s)",
+  "value": "no change within 30 s"
+ },
+ {
+  "step": 189,
+  "source": "screen",
+  "field": "f40.png raw RGB8 pixels sha256",
+  "value": "336520827ccea00e7691c3938e92c8359d2704596630ab6607a5b4ded13fa73b"
+ },
+ {
+  "step": 190,
+  "source": "file",
+  "field": "run copy at step 90: added/removed/changed",
+  "value": "2/0/0"
+ },
+ {
+  "step": 190,
+  "source": "file",
+  "field": "run copy at step 90: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 190,
+  "source": "file",
+  "field": "run copy at step 90: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 190,
+  "source": "file",
+  "field": "run copy at step 90: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 190,
+  "source": "file",
+  "field": "run copy at step 90: added ISLEWAR.SCR: hex",
+  "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 9,
+  "source": "process",
+  "field": "DOSBox-X exit after term (s)",
+  "value": "0.05"
+ },
+ {
+  "step": 9,
+  "source": "process",
+  "field": "DOSBox-X exit status",
+  "value": "0"
+ },
+ {
+  "step": 10,
+  "source": "process",
+  "field": "processes of this run still alive after terminate",
+  "value": "0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added/removed/changed entries",
+  "value": "2/0/0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added/removed/changed",
+  "value": "2/0/0"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.DFT: bytes, sha256",
+  "value": "13 1f6cb1255e100e54aad358db58324e33b48824cfdcf0b64244312604ae566271"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.DFT: hex",
+  "value": "2031202c2031202c2032200d0a"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.SCR: bytes, sha256",
+  "value": "20 1cc857c57bc83a00ef11c24b0abaf5ea4c3650292c649650fefd399e7354ab50"
+ },
+ {
+  "step": 8,
+  "source": "file",
+  "field": "run copy at the end of the run: added ISLEWAR.SCR: hex",
+  "value": "302c300d0a302c300d0a302c300d0a302c300d0a"
+ },
+ {
+  "step": 11,
+  "source": "file",
+  "field": "run copy after reset equals the run copy before launch",
+  "value": "yes"
+ },
+ {
+  "step": 12,
+  "source": "process",
+  "field": "cycle seconds, start to end of clean-up",
+  "value": "756"
+ }
+]

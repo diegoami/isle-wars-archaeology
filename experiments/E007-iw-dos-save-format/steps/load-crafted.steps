@@ -1,0 +1,12 @@
+# arm load-crafted: the option box; the crafted save placed in the run copy (--crafted); Load saved game; the loaded board; Save again (T16, I3)
+put-save
+files
+click-change 60 58
+shot after-load
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot loaded-human-turn
+files
+click-change 554 20
+shot save-resave
+files
