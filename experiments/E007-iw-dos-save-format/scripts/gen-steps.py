@@ -142,6 +142,9 @@ ARMS["load-crafted-cards"] = ("# arm load-crafted-cards: as load-crafted, then p
 ARMS["load-crafted-speed"] = ("# arm load-crafted-speed: as load-crafted, then the Speed panel (its value) (T16, I3)\n" + LOAD
                               + "click-change 507 20\nshot speed-panel\nclick 330 330\nwait-change 10\nwait-stable\n" + save("resave"))
 
+ARMS["load-crafted-sound"] = ("# arm load-crafted-sound: as load-crafted, then the Sound button once (its label shows the state it toggles to) "
+                              "(T16, I3)\n" + LOAD + "click-change 459 20\nshot sound-clicked\nwait-stable\n" + save("resave"))
+
 if __name__ == "__main__":
     for arm, text in ARMS.items():
         target = STEPS / f"{arm}.steps"

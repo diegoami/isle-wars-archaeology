@@ -121,12 +121,14 @@ def main(batch):
                 seen = stars(raw)
                 same = seen == sorted(position["centres"])
                 bad += not same
-                rows.append((record["run_id"], record["arm"], name, shot, ",".join(map(str, sorted(position["centres"]))),
+                origin = "crafted" if record["arm"].startswith("load-") else "natural"
+                rows.append((record["run_id"], record["arm"], origin, name, shot, ",".join(map(str, sorted(position["centres"]))),
                              ",".join(map(str, seen)), "yes" if same else "NO"))
     with open(batch / "stars.tsv", "xb") as fh:
-        fh.write(("run\tarm\tsave\tscreenshot\tcentres_in_save\tstars_on_screen\tequal\n"
+        fh.write(("run\tarm\torigin (crafted: the game's Save after loading a crafted save)\tsave\tscreenshot\tcentres_in_save\tstars_on_screen\tequal\n"
                   + "".join("\t".join(r) + "\n" for r in rows)).encode())
-    print(f"{len(rows)} saves compared with their screen, {bad} differ")
+    nat = [r for r in rows if r[2] == "natural"]
+    print(f"{len(rows)} saves compared with their screen ({len(nat)} natural), {bad} differ")
     return 0
 
 
