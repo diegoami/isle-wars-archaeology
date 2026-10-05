@@ -1,0 +1,9 @@
+# exploration 1: Set level, then Easy; what follows
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot level-dialog
+click 315 168
+wait-change 15
+shot after-easy
+files

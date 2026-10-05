@@ -1,0 +1,50 @@
+16:00:38 IW_DOS_DIR read-only inside the run
+16:00:38 run copy before anything starts: ok
+16:00:38 Xvfb ready after 0.12 s
+16:00:38 run copy and configuration immediately before launch: ok
+16:00:38 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+16:00:38 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+16:00:40 window 2097157 at (80, 100) after 1.79 s
+16:00:55 option box reached 16.86 s after launch
+16:00:55 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+16:00:55 step 1: click 60 32
+16:00:56 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+16:00:56 step 3: wait-stable
+16:00:56 step 4: click 315 168
+16:00:56 step 5: wait-change 15
+16:00:57 step 6: click 315 169
+16:00:57 step 7: wait-change 15
+16:00:59 step 8: wait-stable
+16:00:59 step 9: shot board-before-start.png
+16:00:59 board-before-start.png: pixels 637fa503b7c72641, file a65456d77ea4d98b
+16:00:59 step 10: files
+16:00:59 step 11: click 510 22
+16:01:05 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+16:01:28 step 13: wait-stable
+16:01:30 step 14: shot human-turn.png
+16:01:30 human-turn.png: pixels 4543e11ff19b812d, file fb5f164df8ea75ac
+16:01:30 step 15: click 602 20
+16:01:30 step 16: wait-change 10
+16:01:31 step 17: wait-stable
+16:01:32 step 18: click 287 332
+16:01:32 step 19: wait-change 10
+16:01:32 step 20: wait-stable
+16:01:33 step 21: shot after-yes.png
+16:01:33 after-yes.png: pixels 80a98e1d392f9e42, file d828a025a41010db
+16:01:33 step 22: files
+16:01:33 step 23: click 412 20
+16:01:39 step 24: wait-change 10
+16:01:39 step 25: wait-stable
+16:01:40 step 26: shot scores-after-concede.png
+16:01:40 scores-after-concede.png: pixels ca616bf8ab103e53, file 370e8a76b008281b
+16:01:40 step 27: files
+16:01:40 step 28: click 320 175
+16:01:40 step 29: wait-change 10
+16:01:41 step 30: wait-stable
+16:01:43 step 31: shot back.png
+16:01:43 back.png: pixels 5fbc2dcb5569c5c3, file e0a64c4b3f07d683
+16:01:43 step 32: files
+16:01:43 DOSBox-X exit status 0, 0.05 s after term
+16:01:43 processes still alive after terminate: 0
+16:01:43 reset: run copy: copied 0, removed 2
+16:01:43 reset: run copy equals its state before launch: True

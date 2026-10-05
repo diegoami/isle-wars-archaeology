@@ -1,0 +1,42 @@
+20:05:42 IW_DOS_DIR read-only inside the run
+20:05:42 run copy before anything starts: ok
+20:05:42 Xvfb ready after 0.11 s
+20:05:42 run copy and configuration immediately before launch: ok
+20:05:42 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+20:05:42 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+20:05:44 window 2097157 at (80, 100) after 1.74 s
+20:05:59 option box reached 17.12 s after launch
+20:05:59 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+20:05:59 step 1: click-change 60 32 6
+20:06:00 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+20:06:00 step 3: wait-stable
+20:06:00 step 4: shot select-level.png
+20:06:00 select-level.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+20:06:00 step 5: click-change 315 168 6
+20:06:01 step 6: shot starting-armies.png
+20:06:01 starting-armies.png: pixels 2a773602d344c338, file 4d03e6ad09594904
+20:06:01 step 7: click-change 315 169 6
+20:06:03 step 8: shot board-before-start.png
+20:06:03 board-before-start.png: pixels 95c6c4bdd8f54394, file f2b72c61e2a41bda
+20:06:03 step 9: files
+20:06:03 step 10: click-change 510 22 6
+20:06:09 step 11: until (390, 10, 230, 20) (170, 170, 170) 800 150
+20:06:32 step 12: wait-stable
+20:06:34 step 13: shot human-turn.png
+20:06:34 human-turn.png: pixels d987317381c7624d, file 7069808f50360630
+20:06:34 step 14: files
+20:06:34 step 15: click-change 602 20 6
+20:06:35 step 16: shot concede-dialog.png
+20:06:35 concede-dialog.png: pixels a12a93683e227b96, file 7be746045bd140be
+20:06:35 step 17: click-change 287 332 6
+20:06:36 step 18: shot scoreboard-after-concede.png
+20:06:36 scoreboard-after-concede.png: pixels e3fda41b2f36eb80, file c23401a5802c76ad
+20:06:36 step 19: files
+20:06:36 step 20: click-change 480 236 6
+20:06:43 step 21: shot game-over.png
+20:06:43 game-over.png: pixels 8a9588070a0be353, file d232cd0c9b832ed5
+20:06:43 step 22: files
+20:06:43 DOSBox-X exit status 0, 0.05 s after term
+20:06:43 processes still alive after terminate: 0
+20:06:43 reset: run copy: copied 0, removed 2
+20:06:43 reset: run copy equals its state before launch: True

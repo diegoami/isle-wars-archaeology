@@ -1,0 +1,63 @@
+16:02:43 IW_DOS_DIR read-only inside the run
+16:02:43 run copy before anything starts: ok
+16:02:44 Xvfb ready after 0.11 s
+16:02:44 run copy and configuration immediately before launch: ok
+16:02:44 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+16:02:44 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+16:02:45 window 2097157 at (80, 100) after 1.63 s
+16:03:00 option box reached 16.71 s after launch
+16:03:00 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+16:03:00 step 1: click 60 32
+16:03:01 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+16:03:01 step 3: wait-stable
+16:03:01 step 4: click 315 168
+16:03:01 step 5: wait-change 15
+16:03:02 step 6: click 315 169
+16:03:02 step 7: wait-change 15
+16:03:04 step 8: wait-stable
+16:03:04 step 9: shot board-before-start.png
+16:03:04 board-before-start.png: pixels f6b3da384f193eff, file 5723680371b43a3b
+16:03:04 step 10: files
+16:03:04 step 11: click 510 22
+16:03:09 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+16:03:26 step 13: wait-stable
+16:03:29 step 14: shot human-turn.png
+16:03:29 human-turn.png: pixels f091fec6f34a8b15, file a328934fbca5a98f
+16:03:29 step 15: click 554 20
+16:03:29 step 16: wait-change 10
+16:03:29 step 17: wait-stable
+16:03:30 step 18: shot save-1.png
+16:03:30 save-1.png: pixels 0d7f5ca71e57f24b, file 189c0b3d96c33029
+16:03:30 step 19: files
+16:03:30 step 20: wait-change 10
+16:03:31 step 21: shot save-2.png
+16:03:31 save-2.png: pixels 76b0d3f7ed5e5a05, file 8230a7c00caac316
+16:03:31 step 22: click 602 20
+16:03:32 step 23: wait-change 10
+16:03:33 step 24: wait-stable
+16:03:33 step 25: shot quit-dialog.png
+16:03:33 quit-dialog.png: pixels de5c3d6783189e71, file 059ce2dfb2cedaeb
+16:03:33 step 26: click 287 332
+16:03:34 step 27: wait-change 10
+16:03:34 step 28: wait-stable
+16:03:35 step 29: shot scoreboard.png
+16:03:35 scoreboard.png: pixels 80a98e1d392f9e42, file d828a025a41010db
+16:03:35 step 30: files
+16:03:35 step 31: click 320 175
+16:03:40 step 32: wait-change 10
+16:03:41 step 33: wait-stable
+16:03:41 step 34: shot another-game.png
+16:03:41 another-game.png: pixels 4e8c9a5718c00253, file 097774fc9c58fa88
+16:03:41 step 35: click 287 332
+16:03:41 step 36: wait-change 10
+16:03:42 step 37: wait-stable
+16:03:43 step 38: shot after-another-yes.png
+16:03:43 after-another-yes.png: pixels b28e9d9f43b8cd4f, file e6262b467d5aba2f
+16:03:43 step 39: files
+16:03:43 step 40: wait-change 10
+16:03:44 step 41: shot after-another-yes-2.png
+16:03:44 after-another-yes-2.png: pixels 5fbc2dcb5569c5c3, file e0a64c4b3f07d683
+16:03:44 DOSBox-X exit status 0, 0.05 s after term
+16:03:44 processes still alive after terminate: 0
+16:03:44 reset: run copy: copied 0, removed 3
+16:03:44 reset: run copy equals its state before launch: True

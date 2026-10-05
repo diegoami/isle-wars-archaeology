@@ -1,0 +1,30 @@
+15:18:39 IW_DOS_DIR read-only inside the run
+15:18:39 run copy before anything starts: ok
+15:18:39 Xvfb ready after 0.11 s
+15:18:39 run copy and configuration immediately before launch: ok
+15:18:39 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:18:39 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:18:41 window 2097157 at (80, 100) after 1.65 s
+15:18:56 option box reached 17.04 s after launch
+15:18:57 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:18:57 step 1: click 60 32
+15:18:57 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:18:57 step 3: wait-stable
+15:18:57 step 4: click 315 168
+15:18:58 step 5: wait-change 15
+15:18:58 step 6: click 315 169
+15:18:58 step 7: wait-change 15
+15:19:00 step 8: shot a.png
+15:19:00 a.png: pixels 2431f974068b08ec, file 0e11bd2c86a9c0ed
+15:19:00 step 9: click 510 22
+15:19:06 step 10: wait-change 20
+15:19:07 step 11: shot b.png
+15:19:07 b.png: pixels 761c08bc7ded0b52, file 69f643ba66736c98
+15:19:07 step 12: wait-change 20
+15:19:08 step 13: shot c.png
+15:19:08 c.png: pixels 7dd2122cbbe50503, file d57e495a9b97480f
+15:19:08 step 14: files
+15:19:08 DOSBox-X exit status 0, 0.05 s after term
+15:19:08 processes still alive after terminate: 0
+15:19:08 reset: run copy: copied 0, removed 2
+15:19:08 reset: run copy equals its state before launch: True

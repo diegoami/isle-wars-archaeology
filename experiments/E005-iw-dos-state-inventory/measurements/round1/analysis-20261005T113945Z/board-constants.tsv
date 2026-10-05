@@ -1,0 +1,28 @@
+what	value	count	note
+screenshots	35	35	E005-r0001 E005-r0002 E005-r0003 E005-r0004 E005-r0005 E005-r0006 E005-r0007 E005-r0008 E005-r0009 E005-r0010 E005-r0011 E005-r0012 E005-r0013 E005-r0014 E005-r0015 E005-r0018 E005-r0019 E005-r0021 E005-r0022 E005-r0023 E005-r0024 E005-r0025 E005-r0026 E005-r0027 E005-r0028 E005-r0029 E005-r0030 E005-r0031 E005-r0032 E005-r0033 E005-r0034 E005-r0035 E005-r0036 E005-r0037 E005-r0038
+number box found (w x h)	9x8	105	derive_boxes
+number box found (w x h)	10x8	175	derive_boxes
+number box found (w x h)	10x9	35	derive_boxes
+number box found (w x h)	11x8	35	derive_boxes
+number box found (w x h)	12x8	210	derive_boxes
+number box found (w x h)	13x8	560	derive_boxes
+number box found (w x h)	14x8	420	derive_boxes
+number box found (w x h)	15x8	70	derive_boxes
+BOXES centre to the nearest box found (pixels, |dx|+|dy|)	0	1610	of 1610
+SAMPLES offset -10,0 on an army colour	1575	1610	countries x screenshots
+SAMPLES offset 10,0 on an army colour	1610	1610	countries x screenshots
+SAMPLES offset -10,4 on an army colour	1610	1610	countries x screenshots
+SAMPLES offset 10,4 on an army colour	1610	1610	countries x screenshots
+SAMPLES offset -10,-4 on an army colour	1540	1610	countries x screenshots
+SAMPLES offset 10,-4 on an army colour	1505	1610	countries x screenshots
+SAMPLES offset 0,7 on an army colour	1610	1610	countries x screenshots
+SAMPLES offset 0,-7 on an army colour	1470	1610	countries x screenshots
+SAMPLES offset -10,0 inside the number box	0	1610	
+SAMPLES offset 10,0 inside the number box	0	1610	
+SAMPLES offset -10,4 inside the number box	0	1610	
+SAMPLES offset 10,4 inside the number box	0	1610	
+SAMPLES offset -10,-4 inside the number box	0	1610	
+SAMPLES offset 10,-4 inside the number box	0	1610	
+SAMPLES offset 0,7 inside the number box	0	1610	
+SAMPLES offset 0,-7 inside the number box	0	1610	
+smallest gap between two fills (pixels)	2	2220	pairs over all screenshots; BORDER = 3 takes in gaps 1 to 3

@@ -1,0 +1,52 @@
+run	field	save_turn1	save_turn2	note
+E005-r0011	chosen mine, target	32	33	choose-attack, read from the screen at turn 1
+E005-r0011	armies[3]	1	3	
+E005-r0011	armies[7]	1	3	
+E005-r0011	armies[25]	1	4	
+E005-r0011	owner[33]	4	9	the target of the attack at turn 1
+E005-r0011	armies[33]	1	4	the target of the attack at turn 1
+E005-r0011	centres	['8', '21', '1']	['8', '21', '1']	unchanged
+E005-r0011	level	1	1	unchanged
+E005-r0011	armies_set	1	1	unchanged
+E005-r0011	const	['2', '0']	['2', '0']	unchanged
+E005-r0011	n	3	3	unchanged
+E005-r0011	card counts line	0 , 0 , 0 , 0	1 , 0 , 0 , 0	
+E005-r0011	last line	,,,	3,,,	
+E005-r0012	chosen mine, target	20	19	choose-attack, read from the screen at turn 1
+E005-r0012	armies[2]	4	1	
+E005-r0012	owner[3]	2	4	
+E005-r0012	armies[3]	1	4	
+E005-r0012	owner[4]	9	4	
+E005-r0012	armies[4]	1	2	
+E005-r0012	armies[13]	4	3	
+E005-r0012	owner[19]	4	9	the target of the attack at turn 1
+E005-r0012	armies[19]	1	4	the target of the attack at turn 1
+E005-r0012	owner[24]	2	8	
+E005-r0012	armies[24]	1	2	
+E005-r0012	armies[26]	1	2	
+E005-r0012	armies[27]	1	2	
+E005-r0012	centres	['29', '4', '11']	['29', '4', '11']	unchanged
+E005-r0012	level	1	1	unchanged
+E005-r0012	armies_set	1	1	unchanged
+E005-r0012	const	['2', '0']	['2', '0']	unchanged
+E005-r0012	n	3	3	unchanged
+E005-r0012	card counts line	0 , 0 , 1 , 0	1 , 1 , 1 , 1	
+E005-r0012	last line	,3,,	7,3,7,2	
+E005-r0037	chosen mine, target	16	17	choose-attack, read from the screen at turn 1
+E005-r0037	armies[5]	1	2	
+E005-r0037	armies[9]	2	3	
+E005-r0037	armies[13]	1	2	
+E005-r0037	owner[17]	8	9	the target of the attack at turn 1
+E005-r0037	armies[17]	1	3	the target of the attack at turn 1
+E005-r0037	owner[32]	9	2	
+E005-r0037	armies[32]	1	2	
+E005-r0037	owner[34]	4	2	
+E005-r0037	armies[34]	1	3	
+E005-r0037	armies[42]	1	2	
+E005-r0037	centres	['4', '44', '43']	['4', '44', '43']	unchanged
+E005-r0037	level	1	1	unchanged
+E005-r0037	armies_set	1	1	unchanged
+E005-r0037	const	['2', '0']	['2', '0']	unchanged
+E005-r0037	n	3	3	unchanged
+E005-r0037	card counts line	0 , 0 , 1 , 0	1 , 0 , 2 , 0	
+E005-r0037	last line	,3,,	7,37,,	

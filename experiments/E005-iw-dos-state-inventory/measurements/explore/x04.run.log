@@ -1,0 +1,143 @@
+15:19:52 IW_DOS_DIR read-only inside the run
+15:19:52 run copy before anything starts: ok
+15:19:52 Xvfb ready after 0.05 s
+15:19:52 run copy and configuration immediately before launch: ok
+15:19:52 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:19:52 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:19:54 window 2097157 at (80, 100) after 1.76 s
+15:20:09 option box reached 17.04 s after launch
+15:20:09 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:20:09 step 1: click 60 32
+15:20:10 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:20:10 step 3: wait-stable
+15:20:10 step 4: click 315 168
+15:20:10 step 5: wait-change 15
+15:20:11 step 6: click 315 169
+15:20:11 step 7: wait-change 15
+15:20:13 step 8: wait-stable
+15:20:13 step 9: click 510 22
+15:20:18 step 10: wait-change 30
+15:20:19 step 11: shot f01.png
+15:20:19 f01.png: pixels 324810340f35cb7f, file 3371228fa399e76d
+15:20:19 step 12: wait-change 30
+15:20:20 step 13: shot f02.png
+15:20:21 f02.png: pixels 9b8870c34e78f60a, file b98efc0c222e60cf
+15:20:21 step 14: wait-change 30
+15:20:22 step 15: shot f03.png
+15:20:22 f03.png: pixels 1ff68876c5e80e8f, file d3a2cc9776444c8a
+15:20:22 step 16: wait-change 30
+15:20:24 step 17: shot f04.png
+15:20:24 f04.png: pixels d2a35a3fe9ea8c29, file dee2ace826db75f0
+15:20:24 step 18: wait-change 30
+15:20:25 step 19: shot f05.png
+15:20:25 f05.png: pixels a8ca238767001b9d, file 6a21fba4094912ba
+15:20:25 step 20: wait-change 30
+15:20:27 step 21: shot f06.png
+15:20:27 f06.png: pixels dff1dde665fb64f5, file 7933da931ba1e5ba
+15:20:27 step 22: wait-change 30
+15:20:30 step 23: shot f07.png
+15:20:30 f07.png: pixels be68d3f0087cb427, file 09eed05356c59157
+15:20:30 step 24: wait-change 30
+15:20:32 step 25: shot f08.png
+15:20:32 f08.png: pixels 784261ebdbfbd819, file 20ebe736580e963a
+15:20:32 step 26: wait-change 30
+15:20:34 step 27: shot f09.png
+15:20:34 f09.png: pixels 6e964a35e55b0e9e, file 01098ade1c0a4df4
+15:20:34 step 28: wait-change 30
+15:20:36 step 29: shot f10.png
+15:20:36 f10.png: pixels 3d2e8c9f1326c0c0, file 0112349a9db81ab0
+15:20:36 step 30: wait-change 30
+15:20:37 step 31: shot f11.png
+15:20:37 f11.png: pixels 397466ed0b11b279, file a77c46f86e31a04d
+15:20:37 step 32: wait-change 30
+15:20:38 step 33: shot f12.png
+15:20:38 f12.png: pixels 9adec55864320b29, file 7f3e80dfc2c1d8f1
+15:20:38 step 34: wait-change 30
+15:20:40 step 35: shot f13.png
+15:20:40 f13.png: pixels 2df4d1c4fe57c776, file 05004b063ae9c6f9
+15:20:40 step 36: wait-change 30
+15:20:41 step 37: shot f14.png
+15:20:42 f14.png: pixels 9c3d3069f22a990c, file 2c793757d4f9cd3e
+15:20:42 step 38: wait-change 30
+15:20:43 step 39: shot f15.png
+15:20:43 f15.png: pixels eb5268df12c3d17f, file ad9912159bf65801
+15:20:43 step 40: wait-change 30
+15:20:47 step 41: shot f16.png
+15:20:47 f16.png: pixels 80edbe886301d72f, file fdb8c6e57e1e8120
+15:20:47 step 42: wait-change 30
+15:20:50 step 43: shot f17.png
+15:20:51 f17.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:20:51 step 44: wait-change 30
+15:21:21 step 45: shot f18.png
+15:21:21 f18.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:21:21 step 46: wait-change 30
+15:21:51 step 47: shot f19.png
+15:21:51 f19.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:21:51 step 48: wait-change 30
+15:22:21 step 49: shot f20.png
+15:22:21 f20.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:22:21 step 50: wait-change 30
+15:22:51 step 51: shot f21.png
+15:22:51 f21.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:22:51 step 52: wait-change 30
+15:23:22 step 53: shot f22.png
+15:23:22 f22.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:23:22 step 54: wait-change 30
+15:23:52 step 55: shot f23.png
+15:23:52 f23.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:23:52 step 56: wait-change 30
+15:24:22 step 57: shot f24.png
+15:24:22 f24.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:24:22 step 58: wait-change 30
+15:24:52 step 59: shot f25.png
+15:24:52 f25.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:24:52 step 60: wait-change 30
+15:25:22 step 61: shot f26.png
+15:25:22 f26.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:25:22 step 62: wait-change 30
+15:25:52 step 63: shot f27.png
+15:25:52 f27.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:25:52 step 64: wait-change 30
+15:26:23 step 65: shot f28.png
+15:26:23 f28.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:26:23 step 66: wait-change 30
+15:26:53 step 67: shot f29.png
+15:26:53 f29.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:26:53 step 68: wait-change 30
+15:27:24 step 69: shot f30.png
+15:27:24 f30.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:27:24 step 70: wait-change 30
+15:27:54 step 71: shot f31.png
+15:27:54 f31.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:27:54 step 72: wait-change 30
+15:28:24 step 73: shot f32.png
+15:28:24 f32.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:28:24 step 74: wait-change 30
+15:28:54 step 75: shot f33.png
+15:28:54 f33.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:28:54 step 76: wait-change 30
+15:29:24 step 77: shot f34.png
+15:29:25 f34.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:29:26 step 78: wait-change 30
+15:29:56 step 79: shot f35.png
+15:29:56 f35.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:29:56 step 80: wait-change 30
+15:30:26 step 81: shot f36.png
+15:30:26 f36.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:30:26 step 82: wait-change 30
+15:30:56 step 83: shot f37.png
+15:30:56 f37.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:30:56 step 84: wait-change 30
+15:31:26 step 85: shot f38.png
+15:31:27 f38.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:31:27 step 86: wait-change 30
+15:31:57 step 87: shot f39.png
+15:31:57 f39.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:31:57 step 88: wait-change 30
+15:32:28 step 89: shot f40.png
+15:32:28 f40.png: pixels 336520827ccea00e, file de4bdcab3b42d97c
+15:32:28 step 90: files
+15:32:28 DOSBox-X exit status 0, 0.05 s after term
+15:32:28 processes still alive after terminate: 0
+15:32:28 reset: run copy: copied 0, removed 2
+15:32:28 reset: run copy equals its state before launch: True

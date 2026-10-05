@@ -1,0 +1,10 @@
+# arm default: the Default button (T14)
+# Default, start the game, wait for the first human turn
+click-change 128 32
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+files

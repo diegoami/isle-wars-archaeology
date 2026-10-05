@@ -1,0 +1,9 @@
+source	screenshot_file_sha256	eye_blue_red_green_brown	reader_blue_red_green_brown	equal	note
+exploration x02.a.png	417ae55beab0d0c4bdcc6f6cea291fc27ad390e68030a79954dadea698f2d77d	17,8,12,9	17,8,12,9	True	
+exploration x03.a.png	0e11bd2c86a9c0edaca59408481d77ce17d82d8bf54bf16a0aa28edd6714b907	17,12,7,10	17,12,7,10	True	
+exploration x04.f17.png	de4bdcab3b42d97c328e6961597cd52ad68c7119eb70a2721849d79edd7c619d	16,7,14,9	16,7,14,9	True	
+exploration x05.human-turn.png	fcea7d8a1ac84fff0bacdb35b124c7230b22e6426cfdaea81baf2ba8a6a5be20	17,9,12,8	17,9,12,8	True	
+exploration x06.human-turn.png	cdb8ffec30e931f1390dd5bc1611f060e9a79f568251635bf051a56576c0352a	17,10,6,13	17,10,6,13	True	
+E005-r0011 human-turn-2.png	a0b305c7a6d5f21454691eecbc570fc1c6b90ae66cc201b872150f1d24335b1a	18,9,9,10	18,9,9,10	True	
+E005-r0011 attack-result.png	f1a29561fd380111e7cd46e70b8496765e739e75a26d3a1b7aedd35338d06729	17,10,9,10	18,9,9,10	False	the conquered country is already Blue on the map while the scoreboard panel still reads 17: the panel is redrawn at the end of the move in (after-move-in.png reads 18)
+E005-r0012 human-turn-2.png	bbb9631d13b2cce51c73559b9b10cc87fc82636bf11d5d2ae0f5163b0ca5607e	16,12,7,11	16,12,7,11	True	

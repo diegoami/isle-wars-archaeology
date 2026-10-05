@@ -1,0 +1,91 @@
+15:45:25 IW_DOS_DIR read-only inside the run
+15:45:25 run copy before anything starts: ok
+15:45:25 Xvfb ready after 0.11 s
+15:45:25 run copy and configuration immediately before launch: ok
+15:45:25 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:45:25 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:45:27 window 2097157 at (80, 100) after 1.65 s
+15:45:42 option box reached 16.88 s after launch
+15:45:42 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:45:42 step 1: click 60 32
+15:45:42 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:45:42 step 3: wait-stable
+15:45:43 step 4: click 315 168
+15:45:43 step 5: wait-change 15
+15:45:44 step 6: click 315 169
+15:45:44 step 7: wait-change 15
+15:45:45 step 8: wait-stable
+15:45:46 step 9: shot board-before-start.png
+15:45:46 board-before-start.png: pixels d0a97efae3510c48, file af5e1a98aa91a6b8
+15:45:46 step 10: files
+15:45:46 step 11: click 510 22
+15:45:52 step 12: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:46:05 step 13: wait-stable
+15:46:07 step 14: shot human-turn.png
+15:46:07 human-turn.png: pixels 621a31e4526713d3, file 5baef25e53a4f3d5
+15:46:07 step 15: choose-attack
+15:46:07 step 16: click-mine
+15:46:07 step 17: wait-change 10
+15:46:08 step 18: shot place-selected.png
+15:46:08 place-selected.png: pixels a5c28a20917a91f5, file 756f9cffb64c4275
+15:46:08 step 19: rclick-mine
+15:46:13 step 20: wait-change 10
+15:46:13 step 21: wait-stable
+15:46:14 step 22: shot place-how-many.png
+15:46:14 place-how-many.png: pixels 3490196f15c7ba19, file 565fb1fc32586094
+15:46:14 step 23: click 284 331
+15:46:14 step 24: wait-change 10
+15:46:15 step 25: wait-stable
+15:46:15 step 26: shot place-turn-menu.png
+15:46:15 place-turn-menu.png: pixels d99e2bf8cf8f61e7, file da4a6e14927411d8
+15:46:15 step 27: click 272 323
+15:46:15 step 28: wait-change 10
+15:46:16 step 29: wait-stable
+15:46:16 step 30: shot attack-what-country.png
+15:46:16 attack-what-country.png: pixels 69c55415b8bbc7a8, file dc2e25f89d2a20ff
+15:46:16 step 31: click-target
+15:46:17 step 32: wait-change 10
+15:46:17 step 33: shot attack-country-selected.png
+15:46:17 attack-country-selected.png: pixels 3704aa2d7c0a6cd3, file 91a82ec0593c60f6
+15:46:17 step 34: rclick-target
+15:46:23 step 35: wait-change 10
+15:46:33 step 36: wait-stable
+15:46:33 step 37: shot attack-from-where.png
+15:46:34 attack-from-where.png: pixels 3704aa2d7c0a6cd3, file 91a82ec0593c60f6
+15:46:34 step 38: click-mine
+15:46:34 step 39: wait-change 10
+15:46:34 step 40: shot attack-from-selected.png
+15:46:34 attack-from-selected.png: pixels d6a8aac901f0c292, file 74ec1ce8640f7d81
+15:46:34 step 41: rclick-mine
+15:46:40 step 42: wait-change 10
+15:46:50 step 43: wait-stable
+15:46:50 step 44: shot attack-ready.png
+15:46:50 attack-ready.png: pixels d6a8aac901f0c292, file 74ec1ce8640f7d81
+15:46:50 step 45: click 283 323
+15:46:50 step 46: wait-change 10
+15:46:51 step 47: wait-stable
+15:46:51 step 48: shot attack-result.png
+15:46:51 attack-result.png: pixels c5395053f4642837, file 4cb2653112a0d1a7
+15:46:51 step 49: click 284 331
+15:46:52 step 50: wait-change 10
+15:46:52 step 51: wait-stable
+15:46:53 step 52: shot move-in-all.png
+15:46:53 move-in-all.png: pixels 30a11a702b912664, file f8fb4664a8edc9c0
+15:46:53 step 53: click 388 331
+15:46:53 step 54: wait-change 10
+15:47:03 step 55: wait-stable
+15:47:04 step 56: shot after-move-in.png
+15:47:04 after-move-in.png: pixels 26069e74f13ab438, file 272bbe15a4e1ed21
+15:47:04 step 57: click 369 325
+15:47:04 step 58: wait-change 10
+15:47:05 step 59: wait-stable
+15:47:05 step 60: shot cards-clicked.png
+15:47:05 cards-clicked.png: pixels b9398cda35ece5ac, file c43ae54f72a6f2d3
+15:47:05 step 61: wait-change 5
+15:47:07 step 62: shot cards-2.png
+15:47:07 cards-2.png: pixels 69c35c4630f84d5f, file 0632dc7dd40364dc
+15:47:07 step 63: files
+15:47:07 DOSBox-X exit status 0, 0.05 s after term
+15:47:07 processes still alive after terminate: 0
+15:47:07 reset: run copy: copied 0, removed 2
+15:47:07 reset: run copy equals its state before launch: True

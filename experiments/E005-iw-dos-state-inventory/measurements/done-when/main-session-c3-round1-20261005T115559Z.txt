@@ -1,0 +1,13 @@
++ main session at bc7f17529d9d, 2026-10-05T11:55:47Z
+== DW2 (bundles, sha256 checked against manifests)
+E005-r0031 1cc857c57bc83a00-s19-ISLEWAR.SCR 20 sha-ok 30 2c 30 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a
+E005-r0031 e8d21bc902a1e235-s22-ISLEWAR.SCR 21 sha-ok 30 2c 20 31 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a
+E005-r0032 1cc857c57bc83a00-s19-ISLEWAR.SCR 20 sha-ok 30 2c 30 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a
+E005-r0032 e8d21bc902a1e235-s22-ISLEWAR.SCR 21 sha-ok 30 2c 20 31 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a 30 2c 30 0d 0a
+E005-r0010 ce6925f4395a0857-end-ISLEWAR.DFT 14 sha-ok 20 34 20 2c 20 31 30 20 2c 20 32 20 0d 0a
+E005-r0038 ce6925f4395a0857-end-ISLEWAR.DFT 14 sha-ok 20 34 20 2c 20 31 30 20 2c 20 32 20 0d 0a
+== DW5
+ready
+exit 0
+ok: iw-dos-3.1-30121376
+exit 0

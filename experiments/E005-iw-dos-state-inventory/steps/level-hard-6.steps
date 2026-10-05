@@ -1,0 +1,16 @@
+# arm level-hard-6: Set level hard, 6 starting armies (T14)
+# set the level and the starting armies, start the game, wait for the first human turn
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot select-level
+click-change 315 202
+shot starting-armies
+click-change 315 203
+shot board-before-start
+files
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+files

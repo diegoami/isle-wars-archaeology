@@ -1,0 +1,4 @@
+# arm load-none: Load saved game with no save (T14)
+click-change 60 58
+shot no-saved-game
+files

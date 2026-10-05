@@ -1,0 +1,25 @@
+# exploration 27: speed 1, then save (Easy, 1)
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+shot board-before-start
+files
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 507 20
+shot speed-panel
+click-change 459 20
+shot speed-faster
+click-change 527 20
+shot speed-closed
+click 554 20
+wait-change 10
+shot save-turn1
+files

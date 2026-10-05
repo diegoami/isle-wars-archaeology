@@ -1,0 +1,37 @@
+# exploration 20: Save, concede, another game, Load saved game
+click 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+click 315 168
+wait-change 15
+click 315 169
+wait-change 15
+wait-stable
+shot board-before-start
+files
+click 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 554 20
+shot save-1
+files
+click-change 602 20
+shot concede-dialog
+click-change 287 332
+shot scoreboard
+click-change 480 236
+shot game-over
+click-change 287 332
+until 28 22 66 18 170 0 0 150 90
+wait-stable
+shot option-box-again
+click-change 60 58
+shot after-load
+files
+wait-change 20
+wait-stable
+shot after-load-2
+until 390 10 230 20 170 170 170 800 150
+shot loaded-human-turn
+files

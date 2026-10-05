@@ -25,14 +25,20 @@ Machine-local values come from the environment and are never written to a record
     All are confined before anything is mutated or launched (setup/iw-dos/rundir.py).
     E003_MACHINE  the machine id written to records (default: local)
 
+    E005 runs (T14) use --experiment E005 and E005_BUNDLES / E005_EXPLORE in their place.
+
 Usage: cycle.py [--arm NAME] [--cycles fixed-3000|fixed-30000|max] [--clock fixed|host]
                 [--probe none|savestate|memory|dosbox-capture] [--terminate term|kill|close]
+                [--experiment E003|E005] [--steps FILE]
                 [--explore]   (--explore prints the result and writes no record)
+With --steps the one click on Set level is replaced by the script's steps (navsteps.py): the seal
+around them, the launch checks, the reset and the "completed only when" rule are the same.
 """
 import argparse
 import hashlib
 import io
 import json
+import math
 import os
 import re
 import signal
@@ -54,9 +60,12 @@ import locations  # noqa: E402
 import safeio  # noqa: E402
 import rundir  # noqa: E402
 import dosconf  # noqa: E402
+import navsteps as stepscript  # noqa: E402
+import board  # noqa: E402
 
 SCRIPT = Path(__file__).resolve()
-EXPERIMENT = "E003"
+EXPERIMENT = "E003"                   # --experiment sets it (E005: T14); every record and path follows it
+EXPERIMENTS = ("E003", "E005")
 SET_ID = rundir.SET_ID
 DOSBOX = "dosbox-x"
 DISPLAY = ":61"                       # inside the run's own network namespace and /tmp: no clash
@@ -75,6 +84,25 @@ CHOOSE_TEXT = (108, 46, 52, 22)       # "CHOOSE OPTION": light cyan on blue
 DIALOG_TITLE = (272, 138, 80, 18)     # "Select level": the dialog's orange title bar
 SET_LEVEL_CLICK = (60, 32)
 RED, CYAN, ORANGE = (170, 0, 0), (85, 255, 255), (170, 85, 0)
+WRITTEN_NAME = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,11}")   # a file the game wrote, DOS 8.3 and plain
+HEX_LIMIT = 64                        # bytes of a game-written file put in an observation as hex (a design choice:
+                                      # the scoreboard and options files seen are 9 to 21 bytes, a save 523 to 531)
+# The only files whose bytes leave a run (PR #58 R2): the game-written state files E005 found, each a new file of
+# the run copy and none a name of the registered set (F005: ISLEWAR.SCR at launch; E005 exploration x13, x19:
+# ISLEWAR.DFT after Default or Set level, ISLEWAR.SAV after Save). Any other file the run copy gains or changes is
+# recorded by name, size and sha256 only; a file of the registered set (by name or by sha256) never has its bytes kept.
+GAME_WRITTEN = ("ISLEWAR.SCR", "ISLEWAR.DFT", "ISLEWAR.SAV")
+# The game's shareware notices (PR #58 R1; navsteps.py "Forbidden controls"): both draw the outer frames of their
+# two buttons in (255, 85, 85) inside NOTICE_FRAME: 644 pixels on each of the 14 captures of a notice, at most 134
+# on the 462 other captures of E005 (measurements/round1/constants-20261005T112209Z/notice-scan.tsv). NOTICE_MIN is a threshold chosen
+# between the two, leaving room for the pointer over a frame. While the notices are up no click is sent, and no
+# key but NOTICE_KEYS (their <C>ontinue and <E>xit To Dos).
+NOTICE_FRAME, NOTICE_COLOUR, NOTICE_MIN = (287, 291, 282, 25), (255, 85, 85), 400
+NOTICE_KEYS = ("c", "e")
+# Waits of the step verbs (navsteps.py), design choices checked on the E005 records (no required wait of a
+# completed record came near its limit: measurements/round1/required-waits.tsv): STILL_S before a click, STABLE_S
+# for wait-stable and after a click that changed the screen.
+STILL_S, STABLE_S = 5, 30
 
 
 class Abort(RuntimeError):
@@ -243,6 +271,10 @@ class Screen:
     def dialog_up(self):
         return self.count(DIALOG_TITLE, ORANGE) > 800
 
+    def notice_up(self):
+        """The shareware notices (NOTICE_FRAME) are on the screen."""
+        return self.count(NOTICE_FRAME, NOTICE_COLOUR) > NOTICE_MIN
+
     def stable(self):
         """Two captures 0.4 s apart identical (a poll condition, not a wait for a fixed time)."""
         first = self.raw()
@@ -276,6 +308,11 @@ class Cycle:
         self.screen = Screen(self.env)
         self.shots = {}
         self.after_screen_ok = False
+        self.ref = None             # the screen as the last step left it (navsteps.py: wait-change)
+        self.script = []            # the parsed --steps script, [] for the E003 cycle
+        self.used_savestate = False
+        self.mine = self.target = None     # the countries choose-attack remembered
+        self.pointer = None                # where the last click step left the pointer
         # "completed" is given only by complete(); any other way out leaves an aborted status.
         self.status = "running"
 
@@ -302,13 +339,14 @@ class Cycle:
         """The only place a run becomes completed: every stage done, both screenshots taken, the
         click shown to have opened the Select level dialog, and the probe's own outputs taken."""
         have = {name for name, _, _ in self.outputs}
-        wanted = ["before.png", "after.png"] + {"savestate": ["restored.png"],
-                                                "dosbox-capture": ["dosbox-before.png"]}.get(self.args.probe, [])
+        wanted = (["before.png"] + stepscript.shot_names(self.script) if self.script else ["before.png", "after.png"])
+        wanted += {"savestate": ["restored.png"], "dosbox-capture": ["dosbox-before.png"]}.get(self.args.probe, [])
         missing = [name for name in wanted if name not in have]
         if missing:
             self.fail("the cycle ended without " + " and ".join(missing))
         if not self.after_screen_ok:
-            self.fail("the click did not bring up the Select level dialog")
+            self.fail("the steps did not all finish" if self.script
+                      else "the click did not bring up the Select level dialog")
         if self.status == "running":
             self.status = "completed"
 
@@ -383,7 +421,8 @@ class Cycle:
         wid, pos = self.window_geometry()
         self.window = wid
         self.screen.ox, self.screen.oy = pos
-        self.observe(1, "process", f"DOSBox-X window at {GAME_SIZE[0]}x{GAME_SIZE[1]} after launch (s)", waited)
+        self.observe(1, "process", f"DOSBox-X window at {GAME_SIZE[0]}x{GAME_SIZE[1]}: poll seconds after the isolation check", waited)
+        self.observe(1, "process", f"DOSBox-X window at {GAME_SIZE[0]}x{GAME_SIZE[1]}, seconds after launch", self.since_launch())
         self.observe(1, "process", "DOSBox-X window position", f"{pos[0]},{pos[1]}")
         self.say(f"window {wid} at {pos} after {waited} s")
 
@@ -415,6 +454,10 @@ class Cycle:
         self.observe(1, "process", "network interfaces DOSBox-X sees", ",".join(interfaces))
         self.say(f"DOSBox-X in a separate network namespace, interfaces seen: {interfaces}")
 
+    def since_launch(self):
+        """Seconds since DOSBox-X was started (t_launch: just before its process is created)."""
+        return round(time.monotonic() - self.t_launch, 2)
+
     def known_screen(self):
         waited = poll(self.screen.menu_up, 120, 0.25)
         if waited is None:
@@ -434,9 +477,11 @@ class Cycle:
             time.sleep(0.15)
 
     def shot(self, name, step):
+        t0 = time.monotonic()
         pixels, png, data = self.screen.capture(self.workdir, name)
         self.outputs.append((name, self.workdir / name, "screenshot"))
         self.observe(step, "screen", f"{name} raw RGB8 pixels sha256", pixels)
+        self.observe(step, "screen", f"{name} capture and PNG (s)", round(time.monotonic() - t0, 3))
         self.say(f"{name}: pixels {pixels[:16]}, file {png[:16]}")
         self.shots[name] = pixels
         return pixels
@@ -454,6 +499,218 @@ class Cycle:
         self.observe(5, "screen", "Select level dialog after click (s)", "absent" if waited is None else waited)
         self.say(f"pointer drawn {drawn}; dialog after click {waited}")
         self.after_screen_ok = waited is not None and poll(self.screen.stable, 30, 0.1) is not None
+
+    # ---- steps (--steps: T14's navigation; every step is one a player could take with the mouse)
+
+    def load_script(self):
+        """Parse the --steps script before anything is launched; a line the grammar refuses stops the run
+        with nothing started."""
+        path = Path(self.args.steps)
+        try:
+            text = path.read_text(encoding="utf-8")
+            self.script = stepscript.parse(text)
+        except (OSError, UnicodeDecodeError, stepscript.Refused) as exc:
+            self.fail(f"the steps script is refused: {exc}")
+        self.observe(0, "file", "steps script sha256", sha256_bytes(text.encode()))
+
+    def navigate(self):
+        """Run the script's steps in order, each recorded; the run is not completed unless all finish."""
+        for n, (verb, args) in enumerate(self.script, 1):
+            self.say(f"step {n}: {verb} {' '.join(map(str, args))}".rstrip())
+            getattr(self, "step_" + verb.replace("-", "_"))(100 + n, *args)
+            self.observe(100 + n, "process", "step done, seconds after launch", self.since_launch())
+        self.after_screen_ok = True
+
+    def step_click(self, step, x, y, button="1"):
+        """Every click of every step verb is sent here, and only here (click-mine and its kind too). Refused, before
+        the pointer moves, on a forbidden control or while the shareware notices are up (PR #58 R1)."""
+        if stepscript.forbidden(x, y):
+            self.fail(f"step {step - 100}: a click at {x},{y} is on the shareware notices' buttons; never sent")
+        if self.screen.notice_up():
+            self.shot(f"notice-refused-{step}.png", step)
+            self.fail(f"step {step - 100}: the shareware notices are on the screen; no click is sent there")
+        if self.pointer != (x, y):
+            before = self.screen.raw()
+            run(["xdotool", "mousemove", str(x + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+            # an observation, not a condition: the pointer may already be drawn there
+            drawn = poll(lambda: self.screen.raw() != before, 5, 0.05)
+            self.observe(step, "screen", f"pointer drawn at {x},{y} (s)", "no change within 5 s" if drawn is None else drawn)
+            self.pointer = (x, y)
+            # the pointer may be drawn in two frames: click on a still screen, or not at all
+            still = poll(self.screen.stable, STILL_S, 0.05)
+            self.observe(step, "screen", f"screen still before the click at {x},{y} (s)",
+                         f"not still within {STILL_S} s" if still is None else still)
+            if still is None:
+                self.shot(f"not-still-{step}.png", step)
+                self.fail(f"step {step - 100}: the screen was not still within {STILL_S} s before the click at {x},{y}")
+        self.ref = self.screen.raw()
+        run(["xdotool", "click", button], env=self.env)
+        side = "left" if button == "1" else "right"
+        self.observe(step, "process", f"{side} click at {x},{y}", "sent")
+        self.observe(step, "process", f"{side} click at {x},{y}: seconds after launch", self.since_launch())
+
+    def step_rclick(self, step, x, y):
+        self.step_click(step, x, y, "3")
+
+    def step_click_change(self, step, x, y, seconds, button="1"):
+        """Click until the screen changes: up to three clicks, `seconds` apart; abort if it never does."""
+        for attempt in (1, 2, 3):
+            if attempt > 1:
+                # after clicks that changed nothing, the game's pointer was seen in the middle of the screen, not where
+                # X had put it (r0016, r0017; the cause was not isolated). A move to where X thinks the pointer is may
+                # send no motion, so step off by one pixel first and the move back is a real motion
+                run(["xdotool", "mousemove", str(x + 1 + self.screen.ox), str(y + self.screen.oy)], env=self.env)
+                self.pointer = None
+            self.step_click(step, x, y, button)
+            changed = poll(lambda: self.screen.raw() != self.ref, seconds, 0.1)
+            self.observe(step, "screen", f"screen changed after click {attempt} at {x},{y} (s)",
+                         f"no change within {seconds} s" if changed is None else changed)
+            if changed is not None:
+                self.step_wait_stable(step)
+                return
+        self.shot(f"no-change-{step}.png", step)
+        self.fail(f"step {step - 100}: the screen never changed after three clicks at {x},{y}")
+
+    def step_click_until(self, step, x, y, rect, colour, count, tries):
+        """Click until more than `count` pixels of `colour` are in `rect`: one click per try, 3 s each."""
+        for attempt in range(1, tries + 1):
+            self.step_click(step, x, y)
+            seen = poll(lambda: self.screen.count(rect, colour) > count, 3, 0.1)
+            if seen is not None:
+                self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after click {attempt} at {x},{y} (s)", seen)
+                self.step_wait_stable(step)
+                return
+        self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after {tries} clicks at {x},{y}", "not seen")
+        self.shot(f"until-failed-{step}.png", step)
+        self.fail(f"step {step - 100}: the expected screen did not appear after {tries} clicks at {x},{y}")
+
+    def step_rclick_change(self, step, x, y, seconds):
+        self.step_click_change(step, x, y, seconds, "3")
+
+    def step_wait_exit(self, step, seconds):
+        waited = poll(lambda: not self.game_alive(), seconds, 0.25)
+        self.observe(step, "process", "DOSBox-X ended by itself after (s)",
+                     f"still running after {seconds} s" if waited is None else waited)
+        if waited is None:
+            self.fail(f"step {step - 100}: DOSBox-X had not ended by itself within {seconds} s")
+
+    def step_choose_attack(self, step):
+        """Read the board and remember `mine` (a Blue country with an enemy neighbour) and `target`
+        (its nearest enemy neighbour). Aborts when Blue has no such country."""
+        raw = self.screen.raw()
+        owners, touch = board.owners(raw), board.neighbours(raw)
+        self.observe(step, "screen", "board owners, countries 1 to 46 (read from the pixels beside each number box)",
+                     ",".join(owners[n] or "?" for n in sorted(owners)))
+        self.observe(step, "screen", "board totals read from the pixels (blue, red, green, brown)",
+                     ",".join(str(board.totals(raw)[c]) for c in ("blue", "red", "green", "brown")))
+        pairs = [(math.dist(board.BOXES[n], board.BOXES[m]), n, m) for n in sorted(owners) if owners[n] == "blue"
+                 for m in touch[n] if owners[m] and owners[m] != "blue"]
+        if not pairs:
+            self.shot(f"no-pair-{step}.png", step)
+            self.fail(f"step {step - 100}: Blue has no country that touches an enemy")
+        _, self.mine, self.target = min(pairs)
+        self.observe(step, "screen", "chosen: mine (Blue) and target (enemy neighbour)", f"{self.mine} {self.target}")
+
+    def step_click_mine(self, step):
+        self.step_click_change(step, *board.BOXES[self.mine], 6)
+
+    def step_rclick_mine(self, step):
+        self.step_click_change(step, *board.BOXES[self.mine], 6, "3")
+
+    def step_click_target(self, step):
+        self.step_click_change(step, *board.BOXES[self.target], 6)
+
+    def step_rclick_target(self, step):
+        self.step_click_change(step, *board.BOXES[self.target], 6, "3")
+
+    def step_wait_stable(self, step):
+        waited = poll(self.screen.stable, STABLE_S, 0.1)
+        self.observe(step, "screen", "screen stable after (s)", f"not stable within {STABLE_S} s" if waited is None else waited)
+        if waited is None:
+            self.shot(f"not-stable-{step}.png", step)
+            self.fail(f"step {step - 100}: the screen was not stable within {STABLE_S} s")
+        self.ref = self.screen.raw()
+
+    def step_wait_change(self, step, seconds):
+        waited = poll(lambda: self.screen.raw() != self.ref, seconds, 0.1)
+        self.observe(step, "screen", "screen changed after (s)", f"no change within {seconds} s" if waited is None else waited)
+        if waited is None:
+            self.shot(f"no-change-{step}.png", step)
+            self.fail(f"step {step - 100}: the screen did not change within {seconds} s")
+        self.step_wait_stable(step)
+
+    def step_until(self, step, rect, colour, count, seconds):
+        seen = poll(lambda: self.screen.count(rect, colour) > count, seconds, 0.1)
+        self.observe(step, "screen", f"more than {count} pixels of {colour} in {rect} after (s)",
+                     "not seen" if seen is None else seen)
+        if seen is None:
+            self.shot(f"until-failed-{step}.png", step)
+            self.fail(f"step {step - 100}: the expected screen did not appear within {seconds} s")
+
+    def step_shot(self, step, name):
+        self.shot(name, step)
+        self.ref = self.screen.raw()
+
+    def step_files(self, step):
+        self.record_written(f"step {step - 100}", step, f"s{step - 100:02d}")
+
+    def step_key(self, step, key):
+        if key not in NOTICE_KEYS and self.screen.notice_up():
+            self.shot(f"notice-refused-{step}.png", step)
+            self.fail(f"step {step - 100}: the shareware notices are on the screen; only {', '.join(NOTICE_KEYS)} is pressed there")
+        run(["xdotool", "key", key], env=self.env)
+        self.observe(step, "process", f"key {key}", "sent")
+
+    def step_savestate(self, step):
+        """F12+S, then classify what the savestate holds (I2; the file is never kept, it holds the game's memory)."""
+        path = self.workdir / "save" / "state.sav"
+        if path.is_file():
+            safeio.remove(self.workdir / "save", "state.sav")      # an older file must not satisfy the wait
+        self.used_savestate = True
+        self.save_state(step)
+        members, _ = savestate_members(path)
+        self.observe(step, "save", "savestate members (name: bytes)", ", ".join(f"{k}: {v[0]}" for k, v in members.items()))
+
+    def record_written(self, label, step, prefix):
+        """The run copy against its state before launch, now: each file the game added or changed is
+        observed (size, sha256). Its bytes (in hex when at most HEX_LIMIT, and as the bundle output
+        `<prefix>-<NAME>`) are kept only for a file of GAME_WRITTEN that the run copy did not have at the launch
+        and that is no file of the registered set, by name or by sha256 (PR #58 R2). Every file the run copy had
+        at the launch is a file of the set (`check --strict`), so a changed file is recorded by its hash only.
+        A game-written file is evidence for a parsed source; it is never committed."""
+        now_ = snapshot_tree(self.game)
+        added, removed, changed = diff_tree(self.snap_before, now_)
+        registered = rundir.manifest()["files"]
+        set_names = {f["path"].upper() for f in registered}
+        set_hashes = {f["sha256"] for f in registered}
+        self.observe(step, "file", f"run copy at {label}: added/removed/changed", f"{len(added)}/{len(removed)}/{len(changed)}")
+        for p in removed:
+            self.observe(step, "file", f"run copy at {label}: removed {p}", "removed")
+        for p in added + changed:
+            entry = now_[p]
+            if len(entry) != 3 or not WRITTEN_NAME.fullmatch(p):
+                self.observe(step, "file", f"run copy at {label}: {p}", f"not a plain file of the top directory: {entry[0]}")
+                continue
+            how = "added" if p in added else "changed"
+            if how == "changed" or p.upper() not in GAME_WRITTEN or p.upper() in set_names:
+                self.observe(step, "file", f"run copy at {label}: {how} {p}: bytes, sha256", f"{entry[0]} {entry[1]}")
+                self.observe(step, "file", f"run copy at {label}: {how} {p}: bytes not kept",
+                             "a file of the run copy at the launch (the registered set)" if how == "changed"
+                             else "not one of the game-written state files")
+                continue
+            with safeio.open_source(self.game / p) as fh:
+                data = fh.read()
+            digest = sha256_bytes(data)
+            self.observe(step, "file", f"run copy at {label}: {how} {p}: bytes, sha256", f"{len(data)} {digest}")
+            if digest in set_hashes:
+                self.observe(step, "file", f"run copy at {label}: {how} {p}: bytes not kept",
+                             "its sha256 is a file of the registered set")
+                continue
+            if len(data) <= HEX_LIMIT:
+                self.observe(step, "file", f"run copy at {label}: {how} {p}: hex", data.hex())
+            kept = f"{prefix}-{p}"
+            safeio.write_file(self.workdir, kept, data=data, exist="new")
+            self.outputs.append((kept, self.workdir / kept, "save" if p.upper().endswith(".SAV") else "measurement"))
 
     # ---- probes
 
@@ -479,6 +736,8 @@ class Cycle:
         return memory
 
     def probe_at_known_screen(self):
+        if self.script and self.args.probe != "none":
+            self.fail(f"--probe {self.args.probe} is refused with --steps")
         if self.args.probe in ("savestate", "memory"):
             self.save_state(3)
             pixels = self.shot("postsave.png", 3)
@@ -502,6 +761,8 @@ class Cycle:
     def probe_after_input(self):
         if self.args.probe != "savestate":
             return
+        if self.script:
+            self.fail("--probe savestate (F12+L, a restore) is refused with --steps")
         self.hotkey("l")
         back = poll(self.screen.menu_up, 30, 0.1)
         self.observe(7, "screen", "option box back after F12+L (s)", "absent" if back is None else back)
@@ -571,6 +832,8 @@ class Cycle:
                 self.observe(8, "file", f"run copy: added {p}: bytes, sha256", f"{after[p][0]} {after[p][1]}")
         safeio.write_file(self.workdir, "changes.log", data=("\n".join(lines) + "\n").encode(), exist="new")
         self.outputs.append(("changes.log", self.workdir / "changes.log", "log"))
+        if self.script:
+            self.record_written("the end of the run", 8, "end")
 
     def reset(self):
         """Put the run copy back to the registered set (rundir.sync: what the run added loses its
@@ -598,6 +861,8 @@ class Cycle:
         otherwise, and every clean-up stage runs."""
         started = now()
         try:
+            if self.args.steps:
+                self.load_script()
             self.protect_install()
             self.check_seal_only("before anything starts", 0)
             self.write_conf()
@@ -607,8 +872,11 @@ class Cycle:
             self.known_screen()
             self.shot("before.png", 3)
             self.probe_at_known_screen()
-            self.input()
-            self.shot("after.png", 6)
+            if self.script:
+                self.navigate()
+            else:
+                self.input()
+                self.shot("after.png", 6)
             self.probe_after_input()
             self.complete()
         except Abort:
@@ -688,14 +956,37 @@ def versions():
     }
 
 
-def interventions(args):
+SCREENSHOTS = {"level": "I1", "what": "screenshots of the game window: the X display read with ImageMagick import "
+                                    "(passive instrumentation); the files the game wrote read after it wrote them (I0)"}
+
+
+def interventions(args, used_savestate=False):
+    """Every intervention of the run (run/1: "every intervention, including passive ones"). Every cycle takes
+    screenshots (before.png at least), which is I1 (vocabulary/interventions.md; PR #58 R8)."""
+    found = [dict(SCREENSHOTS)]
+    if used_savestate:
+        found.append({"level": "I2", "what": "DOSBox-X savestate saved (F12+S) at a step of the script, its members "
+                                             "and memory classified; never restored"})
     if args.probe == "savestate":
-        return [{"level": "I2", "what": "DOSBox-X savestate saved at the option box (F12+S) and restored "
-                                        "after the click (F12+L)"}]
+        found.append({"level": "I2", "what": "DOSBox-X savestate saved at the option box (F12+S) and restored "
+                                             "after the click (F12+L)"})
     if args.probe == "memory":
-        return [{"level": "I1", "what": "DOSBox-X savestate written at the option box (F12+S) and its Memory "
-                                        "member read; never restored"}]
-    return [{"level": "I0", "what": "none"}]
+        found.append({"level": "I1", "what": "DOSBox-X savestate written at the option box (F12+S) and its Memory "
+                                             "member read; never restored"})
+    if args.probe == "dosbox-capture":
+        found.append({"level": "I1", "what": "DOSBox-X's own screenshot (F12+P) at the option box"})
+    return found
+
+
+def refused_args(args):
+    """Why these arguments may not start a run, or None. Checked before anything starts, outside and inside the
+    namespaces (PR #58 R4): a step script (E005's arms) runs with no probe, so no savestate is restored and no other
+    probe runs around its steps; E005 runs only step scripts."""
+    if args.steps and args.probe != "none":
+        return f"--probe {args.probe} is refused with --steps (a step script takes its own savestate step)"
+    if args.experiment == "E005" and not args.steps:
+        return "--experiment E005 needs --steps"
+    return None
 
 
 def next_run_id():
@@ -721,7 +1012,7 @@ def build_record(cycle, commit, machine):
             "platform": "linux-wsl2/dosbox-x-xvfb",
             "fingerprint": cycle.fingerprint,
         },
-        "interventions": interventions(cycle.args),
+        "interventions": interventions(cycle.args, cycle.used_savestate),
         "start_state": {
             "id": "S-run-copy-option-box",
             "sha256": state_sha,
@@ -767,8 +1058,17 @@ def parser():
     ap.add_argument("--clock", choices=["fixed", "host"], default="fixed")
     ap.add_argument("--probe", choices=["none", "savestate", "memory", "dosbox-capture"], default="none")
     ap.add_argument("--terminate", choices=["term", "kill", "close"], default="term")
+    ap.add_argument("--experiment", choices=EXPERIMENTS, default="E003",
+                    help="the experiment whose records, manifests and bundles the run writes (default E003)")
+    ap.add_argument("--steps", default=None, help="a step script (navsteps.py) in place of the one click on Set level")
     ap.add_argument("--explore", action="store_true", help="print the result; write no record or bundle")
     return ap
+
+
+def explore_key(arm, started, run_id):
+    """The name every output of one --explore run starts with: the arm, the start time and the run id, so that no
+    two runs share a name and none is replaced (PR #58 R3); a clash is refused by exist="new" and aborts the run."""
+    return f"{arm}.{started.replace('-', '').replace(':', '')}.{run_id.rsplit('-', 1)[-1]}"
 
 
 def store_outputs(cycle, directory, name_of, exist):
@@ -789,8 +1089,13 @@ def store_outputs(cycle, directory, name_of, exist):
 
 def inner(args):
     """Runs as PID 1 of the private namespaces: does the cycle and writes the record."""
-    locs = rundir.run_locations(need_bundles=True, explore=args.explore)
-    run_dir, bundles, install = locs["IW_DOS_RUN"], locs["E003_BUNDLES"], locs["IW_DOS_DIR"]
+    global EXPERIMENT
+    why = refused_args(args)
+    if why:
+        sys.exit(f"{why}; nothing was started")
+    EXPERIMENT = args.experiment
+    locs = rundir.run_locations(need_bundles=True, explore=args.explore, experiment=EXPERIMENT)
+    run_dir, bundles, install = locs["IW_DOS_RUN"], locs[f"{EXPERIMENT}_BUNDLES"], locs["IW_DOS_DIR"]
     run_id = os.environ["IW_DOS_CYCLE_ID"]
     machine = os.environ.get("E003_MACHINE", "local")
     if not re.fullmatch(rf"{EXPERIMENT}-x[0-9]+" if args.explore else rf"{EXPERIMENT}-r[0-9]{{4,}}", run_id):
@@ -809,11 +1114,12 @@ def inner(args):
     cycle.execute()
     commit = os.environ["IW_DOS_CYCLE_COMMIT"]
     if args.explore:
-        out = locs.get("E003_EXPLORE", bundles)
-        cycle.outputs = store_outputs(cycle, out, lambda name, _: f"{args.arm}.{name}", "replace")
+        out = locs.get(f"{EXPERIMENT}_EXPLORE", bundles)
+        key = explore_key(args.arm, cycle.started, run_id)
+        cycle.outputs = store_outputs(cycle, out, lambda name, _: f"{key}.{name}", "new")
         try:
-            safeio.write_file(out, f"{args.arm}.observations.json", data=json.dumps(cycle.obs, indent=1).encode(),
-                              exist="replace", create_below=out.parent)
+            safeio.write_file(out, f"{key}.observations.json", data=json.dumps(cycle.obs, indent=1).encode(),
+                              exist="new", create_below=out.parent)
         except (safeio.Refused, OSError) as exc:
             cycle.abort_later(f"the observations were not stored: {exc}")
         print(json.dumps({"run_id": run_id, "status": cycle.status}))
@@ -847,7 +1153,12 @@ def inner(args):
 
 
 def outer(args):
-    locs = rundir.run_locations(need_bundles=True, explore=args.explore)
+    global EXPERIMENT
+    why = refused_args(args)
+    if why:
+        sys.exit(f"{why}; nothing was started")
+    EXPERIMENT = args.experiment
+    locs = rundir.run_locations(need_bundles=True, explore=args.explore, experiment=EXPERIMENT)
     strays = marked_processes()
     if strays:
         sys.exit(f"stale processes of an earlier run are alive: {sorted(set(strays))}; stop them first "
@@ -882,6 +1193,9 @@ def outer(args):
 
 def main():
     args = parser().parse_args()
+    why = refused_args(args)
+    if why:
+        sys.exit(f"{why}; nothing was started")
     if os.environ.get("IW_DOS_CYCLE_INNER") == "1":
         return inner(args)
     return outer(args)

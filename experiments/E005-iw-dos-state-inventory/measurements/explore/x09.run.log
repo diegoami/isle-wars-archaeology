@@ -1,0 +1,85 @@
+15:42:53 IW_DOS_DIR read-only inside the run
+15:42:54 run copy before anything starts: ok
+15:42:54 Xvfb ready after 0.11 s
+15:42:54 run copy and configuration immediately before launch: ok
+15:42:54 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:42:54 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:42:55 window 2097157 at (80, 100) after 1.7 s
+15:43:11 option box reached 16.97 s after launch
+15:43:11 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:43:11 step 1: click 60 32
+15:43:11 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:43:11 step 3: wait-stable
+15:43:12 step 4: click 315 168
+15:43:12 step 5: wait-change 15
+15:43:13 step 6: click 315 169
+15:43:13 step 7: wait-change 15
+15:43:14 step 8: wait-stable
+15:43:15 step 9: click 510 22
+15:43:20 step 10: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:43:26 step 11: wait-stable
+15:43:28 step 12: shot human-turn.png
+15:43:28 human-turn.png: pixels f0ba17270c5e24e3, file a32d2a9448e932c3
+15:43:29 step 13: choose-attack
+15:43:29 step 14: click-mine
+15:43:29 step 15: wait-change 10
+15:43:29 step 16: shot selected.png
+15:43:29 selected.png: pixels 7e1b0820124bfc44, file 0c0195103503c0d1
+15:43:29 step 17: rclick-mine
+15:43:35 step 18: wait-change 10
+15:43:35 step 19: wait-stable
+15:43:36 step 20: shot confirmed.png
+15:43:36 confirmed.png: pixels 586d951fb21b1919, file d0e52b7244c6ee18
+15:43:36 step 21: click 284 331
+15:43:36 step 22: wait-change 10
+15:43:36 step 23: wait-stable
+15:43:37 step 24: shot all-clicked.png
+15:43:37 all-clicked.png: pixels ab12a99a7971f830, file a3175a6b8b9eaf8e
+15:43:37 step 25: click 272 323
+15:43:37 step 26: wait-change 10
+15:43:38 step 27: wait-stable
+15:43:39 step 28: shot attack-clicked.png
+15:43:39 attack-clicked.png: pixels 55179548eb75027f, file 253f6e2a26d8f2c5
+15:43:39 step 29: click-target
+15:43:39 step 30: wait-change 10
+15:43:40 step 31: shot target-clicked.png
+15:43:40 target-clicked.png: pixels 3afa501b4f35c1ce, file ebf5e26094e4d03a
+15:43:40 step 32: rclick-target
+15:43:45 step 33: wait-change 10
+15:43:55 step 34: wait-stable
+15:43:55 step 35: shot target-confirmed.png
+15:43:56 target-confirmed.png: pixels 3afa501b4f35c1ce, file ebf5e26094e4d03a
+15:43:56 step 36: click-mine
+15:43:56 step 37: wait-change 10
+15:43:56 step 38: shot mine-clicked.png
+15:43:56 mine-clicked.png: pixels 445d4dff0d28aa11, file 6c074b723139bc81
+15:43:57 step 39: rclick-mine
+15:44:02 step 40: wait-change 10
+15:44:12 step 41: wait-stable
+15:44:13 step 42: shot mine-confirmed.png
+15:44:13 mine-confirmed.png: pixels 445d4dff0d28aa11, file 6c074b723139bc81
+15:44:13 step 43: click 283 323
+15:44:13 step 44: wait-change 10
+15:44:13 step 45: wait-stable
+15:44:14 step 46: shot a1.png
+15:44:14 a1.png: pixels 92d6b7714c01a772, file 40dae8d9e1edea19
+15:44:14 step 47: click 283 323
+15:44:19 step 48: wait-change 10
+15:44:20 step 49: wait-stable
+15:44:20 step 50: shot a2.png
+15:44:20 a2.png: pixels 0c076d6479cf42de, file 19b396b23a9ec6ea
+15:44:20 step 51: click 283 323
+15:44:26 step 52: wait-change 10
+15:44:26 step 53: wait-stable
+15:44:27 step 54: shot a3.png
+15:44:27 a3.png: pixels 8cbe49d0fd05ab93, file 0bb9aef214da1d7b
+15:44:27 step 55: click 283 323
+15:44:32 step 56: wait-change 10
+15:44:32 step 57: wait-stable
+15:44:33 step 58: shot a4.png
+15:44:33 a4.png: pixels eda9a0b1e829ef13, file caaee5ab0fbc4576
+15:44:33 step 59: files
+15:44:33 DOSBox-X exit status 0, 0.05 s after term
+15:44:33 processes still alive after terminate: 0
+15:44:33 reset: run copy: copied 0, removed 2
+15:44:33 reset: run copy equals its state before launch: True

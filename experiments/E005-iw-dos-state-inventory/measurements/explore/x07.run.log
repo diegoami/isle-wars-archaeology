@@ -1,0 +1,47 @@
+15:39:07 IW_DOS_DIR read-only inside the run
+15:39:07 run copy before anything starts: ok
+15:39:07 Xvfb ready after 0.1 s
+15:39:07 run copy and configuration immediately before launch: ok
+15:39:07 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+15:39:07 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+15:39:09 window 2097157 at (80, 100) after 1.63 s
+15:39:24 option box reached 16.83 s after launch
+15:39:25 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+15:39:25 step 1: click 60 32
+15:39:25 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+15:39:25 step 3: wait-stable
+15:39:25 step 4: click 315 168
+15:39:26 step 5: wait-change 15
+15:39:26 step 6: click 315 169
+15:39:26 step 7: wait-change 15
+15:39:28 step 8: wait-stable
+15:39:28 step 9: click 510 22
+15:39:33 step 10: until (390, 10, 230, 20) (170, 170, 170) 800 150
+15:40:04 step 11: wait-stable
+15:40:06 step 12: shot human-turn.png
+15:40:06 human-turn.png: pixels 14828624f89b7f3a, file 84714e34d82b39c4
+15:40:06 step 13: choose-attack
+15:40:06 step 14: click-mine
+15:40:06 step 15: wait-change 10
+15:40:07 step 16: shot selected.png
+15:40:07 selected.png: pixels 077f0ea3213f2183, file 737d34e08e1602c7
+15:40:07 step 17: rclick-mine
+15:40:12 step 18: wait-change 10
+15:40:12 step 19: wait-stable
+15:40:13 step 20: shot confirmed.png
+15:40:13 confirmed.png: pixels 99afae3c701f0dc6, file 9b7694ae991e14eb
+15:40:13 step 21: click 284 331
+15:40:13 step 22: wait-change 10
+15:40:14 step 23: wait-stable
+15:40:14 step 24: shot all-clicked.png
+15:40:14 all-clicked.png: pixels 0c931bc7694b12de, file 39cfff3e71242062
+15:40:14 step 25: click 388 331
+15:40:14 step 26: wait-change 10
+15:40:25 step 27: wait-stable
+15:40:25 step 28: shot done-clicked.png
+15:40:25 done-clicked.png: pixels b402d3ce51d54850, file c8890a064848a4f9
+15:40:25 step 29: files
+15:40:25 DOSBox-X exit status 0, 0.05 s after term
+15:40:25 processes still alive after terminate: 0
+15:40:25 reset: run copy: copied 0, removed 2
+15:40:25 reset: run copy equals its state before launch: True

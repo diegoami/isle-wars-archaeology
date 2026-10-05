@@ -1,0 +1,48 @@
+20:14:41 IW_DOS_DIR read-only inside the run
+20:14:41 run copy before anything starts: ok
+20:14:42 Xvfb ready after 0.1 s
+20:14:42 run copy and configuration immediately before launch: ok
+20:14:42 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+20:14:42 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+20:14:43 window 2097157 at (80, 100) after 1.72 s
+20:14:59 option box reached 17.06 s after launch
+20:14:59 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+20:14:59 step 1: click-change 60 32 6
+20:15:00 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+20:15:00 step 3: wait-stable
+20:15:00 step 4: shot select-level.png
+20:15:00 select-level.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+20:15:00 step 5: click-change 315 168 6
+20:15:02 step 6: shot starting-armies.png
+20:15:02 starting-armies.png: pixels 2a773602d344c338, file 4d03e6ad09594904
+20:15:02 step 7: click-change 315 169 6
+20:15:04 step 8: shot board-before-start.png
+20:15:04 board-before-start.png: pixels 0362ca0771c68bcf, file 07bee04069b20dd2
+20:15:04 step 9: files
+20:15:04 step 10: click-change 510 22 6
+20:15:11 step 11: until (390, 10, 230, 20) (170, 170, 170) 800 150
+20:15:16 step 12: wait-stable
+20:15:18 step 13: shot human-turn.png
+20:15:18 human-turn.png: pixels f94dd1e6fa028744, file 2085491942be2091
+20:15:18 step 14: files
+20:15:18 step 15: click-change 602 20 6
+20:15:20 step 16: click-change 287 332 6
+20:15:21 step 17: click-change 480 236 6
+20:15:23 step 18: click-change 368 332 6
+20:15:24 step 19: until (288, 292, 130, 26) (170, 170, 170) 400 60
+20:15:27 step 20: wait-stable
+20:15:27 step 21: shot shareware-notice.png
+20:15:27 shareware-notice.png: pixels 468481d32f20f195, file 06d117310d84e114
+20:15:27 step 22: key c
+20:15:27 step 23: wait-change 15
+20:15:28 step 24: until (288, 292, 130, 26) (170, 170, 170) 400 20
+20:15:30 step 25: wait-stable
+20:15:30 step 26: shot registration-notice.png
+20:15:30 registration-notice.png: pixels bdb1b6296b0a652a, file ceedcdec94c8beb7
+20:15:30 step 27: key e
+20:15:30 step 28: wait-exit 90
+20:15:32 step 29: files
+20:15:32 DOSBox-X exit status 0, 0.0 s after term
+20:15:32 processes still alive after terminate: 0
+20:15:32 reset: run copy: copied 0, removed 2
+20:15:32 reset: run copy equals its state before launch: True
