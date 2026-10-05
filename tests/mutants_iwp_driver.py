@@ -206,6 +206,12 @@ MUTANTS = [
         S, '        if not self.game_alive():\n            self._set_aborted(f"the game process exited before terminate',
         '        if False:\n            self._set_aborted(f"the game process exited before terminate')],
      [T + "TerminateBoundaryTest"]),
+    # the round-3 live re-take (E004-r0108): a SIGKILLed game left its side's Wine processes alive
+    ("R2: a game already dead at terminate skips the termination of the rest of its side", [(
+        S, '            self.say("the game had already exited before terminate; the rest of its side is still terminated")\n',
+        '            self.say("the game had already exited before terminate; the rest of its side is still terminated")\n'
+        '            return\n')],
+     [T + "TerminateBoundaryTest.test_a_sigkilled_game_still_has_the_rest_of_its_side_terminated_and_the_display_stopped"]),
     ("R3: the stability poll does not check the game is alive", [(
         S, '                    self.require_alive(f"the {name} screen was not stable")',
         '                    pass')],

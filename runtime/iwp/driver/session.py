@@ -611,13 +611,14 @@ class Session(spike.Cycle):
 
         R2 (T13 round 3): the liveness check at the point of termination is inside this method, not in a
         separate check before it. A game that died on its own since the last check aborts the session here,
-        and the clean-up and the reset still run: there is nothing left to kill, so this stage succeeds."""
+        and the clean-up and the reset still run.
+
+        A dead game process is not a dead game side: after a SIGKILL of the game, the run's wineserver,
+        services, winedevice, explorer and the rest are still alive (E004-r0108: 7 survived). So the full
+        termination below runs whether the game process is alive or not; only the status differs."""
         if not self.game_alive():
             self._set_aborted(f"the game process exited before terminate (status {self.procs['game'].poll()})", GameDied)
-            self.observe(9, "process", "game process exit status", self.procs["game"].poll())
-            self.observe(9, "process", "game side gone after terminate (s)", 0.0)
-            self.say("the game had already exited before terminate; nothing to kill")
-            return
+            self.say("the game had already exited before terminate; the rest of its side is still terminated")
         self.say("wineserver -k")
         # The exit status of `wineserver -k` is a state, not an error: it is 1 when no server is left.
         # What terminate relies on is the game side gone (the bounded wait below), never this exit code.

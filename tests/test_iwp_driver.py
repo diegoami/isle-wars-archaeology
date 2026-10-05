@@ -992,6 +992,23 @@ class TerminateBoundaryTest(DriverWorld):
         self.assertTrue(made.recovered, "the clean-up and the reset still ran and restored the prefix")
         self.assertEqual(made.alive(), [])
 
+    def test_a_sigkilled_game_still_has_the_rest_of_its_side_terminated_and_the_display_stopped(self):
+        """E004-r0108: a SIGKILL takes the game process only; the run's other Wine processes (wineserver,
+        services, explorer...) stay. A dead game must still get the full termination, or they survive into
+        the display stop and the repeat is not recovered. Another session's process is never touched."""
+        wine = self.straggler(self.run_id, "game")                  # the rest of this run's game side
+        other = self.straggler("E004-r0999", "game")                 # another session's, left alone
+        before = tree(self.prefix)
+        made = self.execute(hooks={"after-input": runner.sigkill_game})
+        self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
+        self.assertTrue(made.cleaned.get("terminate"), made.cleaned)
+        self.assertTrue(made.cleaned.get("stopping the display"), made.cleaned)
+        self.assertTrue(made.recovered, "the clean-up and the reset ran and restored the prefix")
+        self.assertIsNotNone(wine.poll(), "this run's game-side process was killed")
+        self.assertIsNone(other.poll(), "another session's process was not touched")
+        self.assertEqual(made.alive(), [])
+        self.assertEqual(tree(self.prefix), before)
+
 
 class StabilityLivenessTest(DriverWorld):
     """Round 3, R3: the stability poll checks the game is alive, not only that the pixels are stable."""
