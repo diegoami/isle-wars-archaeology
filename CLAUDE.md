@@ -28,12 +28,12 @@ indexed in `docs/tasks/README.md`.
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. Each task file names its implementer and its reviewer, at effort `high` at most, and says
+6. Each task file names its implementer and its reviewer, at the effort below, and says
    whether the task is `easy` or `hard`, and why. The pairs (the owner's decision, 2026-10-03):
 
    | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
    | --- | --- | --- | --- | --- |
-   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-6 Luna (direct OpenAI) | Sonnet |
+   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-5.6 Luna (direct OpenAI) | Sonnet |
    | Hard | DeepSeek V4.1 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
 
    - **Hard** is any of:
@@ -54,7 +54,24 @@ indexed in `docs/tasks/README.md`.
    - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
      Pro, GLM-5.3 and GPT-6 Sol; Opus and Fable implement only when a task file says why.
    - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
-     `medium` only when the task file says why; never `high`. Every other model stays at `high`.
+     `medium` only when the task file says why; never `high`.
+   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro)
+     runs at `medium` at most, and at `low` when medium is not needed. A model that offers no
+     medium takes its lowest variant at or below `high`: GLM-5.3 `low`, DeepSeek V4 Pro `high`
+     (its lowest). Opus runs as `task-agent-heavy` (effort `medium`). A light model (Sonnet, GPT-5.6
+     Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) stays at `high`.
+   - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
+     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`), on its own weekly
+     pool. GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
+     every chain, never the reviewer. Never a Luna on OpenCode Go (`opencode-go/…`).
+   - **Quota first** (harness_imperial L50; the owner, 2026-10-05, superseding every earlier limit
+     on which models may be used): before choosing, recommending or delegating to a model, check
+     its provider with quota-tracker (`docs/environment.md`). A provider that is `exhausted` is not
+     used until it is usable again: take the next model of the pair or chain whose provider has
+     quota, pass it explicitly (`--model`, `--reviewer`, the Agent's model, `opencode -m`), and say
+     so in the run's report or the PR body ("GLM skipped: zai exhausted until 21:40; reviewed by
+     Luna"). Without the service, count a usage-limit error as `exhausted`. Ids still come from the
+     live list (`opencode models <provider>`), never memory.
    - **Sonnet's tripwire** (the owner, 2026-10-04). Every Sonnet brief carries the paragraph in
      `docs/models.md`. Sonnet stops and hands back an `ESCALATE` block when:
      - two hypotheses for the same question have failed;
@@ -79,7 +96,8 @@ indexed in `docs/tasks/README.md`.
    - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
    - **Switching** (the owner's decision, 2026-10-02): the owner decides which models are in use,
      and switches them often, as credits and prices change. The main session does not choose
-     models by budget. It keeps every switch cheap:
+     models by budget; it checks only whether a provider has quota (Quota first, above). It keeps
+     every switch cheap:
      - every candidate stays probed, with a `harness.json` entry;
      - each task file names its implementer and reviewer, one line each;
      - when the owner calls a switch, it is applied to tasks not yet started (and to
