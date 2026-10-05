@@ -26,17 +26,22 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | --- | --- | --- | --- |
 | `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash` | GLM | **easy implementer**, the `harness.json` default |
 | `deepseek-flash` | DeepSeek V4.1 Flash, `opencode-go/deepseek-v4.1-flash` | DeepSeek | **hard implementer** (`--model deepseek-flash`) |
-| `luna` | GPT-6 Luna, `openai/gpt-6-luna`, the direct OpenAI route | OpenAI | **easy reviewer**, the `harness.json` default |
+| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, the direct OpenAI route, on its own weekly pool (`gpt-5.6-luna:7d`) | OpenAI | **easy reviewer**, the `harness.json` default (L51, 2026-10-05) |
+| `luna-6` | GPT-6 Luna, `openai/gpt-6-luna`, which draws on OpenAI's main pool with Sol | OpenAI | registered only, outside every chain, never the reviewer (L51); the easy reviewer until 2026-10-05 |
 | `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | **hard reviewer** (`--reviewer gpt-6.1-sol`), used sparingly; probed 2026-10-03 at `high`, PONG in 5 s |
 | `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
 | `deepseek-pro` | DeepSeek V4 Pro, `opencode-go/deepseek-v4-pro` | DeepSeek | probed, not in a pair |
-| `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3` | GLM | probed; implemented T06, and was tried as a calibration reviewer |
+| `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (it offers no medium; the owner, 2026-10-05) | GLM | probed; implemented T06, and was tried as a calibration reviewer |
 | (Claude) Sonnet | `task-agent`, `model: sonnet` | Claude | the implementer for research, the user's install and cloud sessions; the fallback implementer; the easy fallback reviewer |
-| (Claude) Opus | `task-agent`, `model: opus` | Claude | the hard fallback reviewer; the cloud reviewer |
-| (Claude) Fable | `task-agent`, `model: fable` | Claude | allowed, not used yet |
+| (Claude) Opus | `task-agent-heavy`, `model: opus`, effort `medium` | Claude | the hard fallback reviewer; the cloud reviewer |
+| (Claude) Fable | `task-agent-heavy`, `model: fable`, effort `medium` | Claude | allowed, not used yet |
 
-Every model runs at effort `high`, never `max`. `max` was slower, with no gain (L27). **The
-exception is GPT-6.1 Sol** (the owner, 2026-10-03), which is used sparingly:
+A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) runs at effort `high`; a
+heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro) at `medium` at most, and at `low` when
+medium is not needed (the owner, 2026-10-05). GLM-5.3 offers no medium and runs at `low`; DeepSeek
+V4 Pro's lowest variant is `high`; Opus runs as `task-agent-heavy` (effort `medium`). A heavy model
+switched with `switch-model.mjs` takes `--variant medium` or `--variant low`. Never `max`: it was
+slower, with no gain (L27). **GPT-6.1 Sol** (the owner, 2026-10-03) is also used sparingly:
 - only for hard reviews;
 - at effort `low` (`harness.json`'s `gpt-6.1-sol` and `gpt-6-sol` entries);
 - at `medium` only when the task file says why;
@@ -66,7 +71,7 @@ The owner decided on 2026-10-03 that the pair follows the task's difficulty:
 
 | Difficulty | Implementer | If it is unavailable | Reviewer | If it is unavailable |
 | --- | --- | --- | --- | --- |
-| Easy, the default | GLM-5.3 Flash | Sonnet | GPT-6 Luna | Sonnet |
+| Easy, the default | GLM-5.3 Flash | Sonnet | GPT-5.6 Luna | Sonnet |
 | Hard | DeepSeek V4.1 Flash | Sonnet | GPT-6.1 Sol | Opus |
 
 **When a task is hard.** A task is hard if any of these holds:
@@ -143,8 +148,9 @@ the owner says to wait.
 
 - **Diagnose first.** Read the run's `/tmp/harness-opencode/<session>.err.txt`, and probe
   `openai/gpt-6.1-sol` with `switch-model.mjs --probe --dry-run`.
-  - `The usage limit has been reached` means the whole OpenAI account is out of quota. Luna is
-    blocked too, so confirm with a probe of `openai/gpt-6-luna`.
+  - `The usage limit has been reached` means OpenAI's main pool is out of quota. GPT-5.6 Luna has
+    its own weekly pool: check `gpt-5.6-luna:7d` in quota-tracker's `/quota/openai` (L50, L51), and
+    confirm with a probe of `openai/gpt-5.6-luna`.
   - If only Sol fails (the model is unavailable, or its cost is to be avoided), Luna is still an
     option.
 - **Substitutes, in order,** skipping the implementer's family:
@@ -253,7 +259,7 @@ implementer and reviewer time a driver costs. Measured in T08's control runs, r0
   - Exit 3: no review came back, so the Claude reviewer runs (Opus).
   - Exit 4: a review was posted under a note, with no label. The main session reads it and
     applies the label it supports, without paying for a second review.
-- **Claude implementer or reviewer:** `Agent(subagent_type: task-agent, model: <sonnet|opus|fable>, isolation: worktree)`.
+- **Claude implementer or reviewer:** `Agent(subagent_type: task-agent, model: sonnet, isolation: worktree)`, or `task-agent-heavy` with `model: <opus|fable>` (effort `medium`).
   - The agent creates its branch from `origin/main`, pushes it, and opens the PR.
   - A cloud brief first checks the hostname and that `/mnt/c` is absent, and stops if either
     check fails.
@@ -290,6 +296,9 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 | Node 24 on PATH for non-interactive shells | the harness needs Node 20 or later; the nvm default did not reach non-interactive shells | 2026-10-03 |
 | The `[C3]` lines (the install, the Wine prefix, the display) are run by the main session and posted on the PR | an OpenCode reviewer cannot reach outside its worktree, and a rejected tool call fails the run | L26; T03 |
 | When the implementer is Claude, keep a probed heavy reviewer from a third family ready (DeepSeek V4 Pro, GLM-5.3) | both OpenAI reviewers share one account quota: on T08's final round `The usage limit has been reached` stopped GPT-6.1 Sol mid-review and failed the probe of Luna too, and a Claude fallback was not allowed | T08, 2026-10-03 |
+| Check quota-tracker before choosing, recommending or delegating to a model; an `exhausted` provider is skipped for the next model of the chain, passed explicitly, and the skip is said in the report or PR body | a provider out of quota stopped runs mid-review (T08); the owner made the quota check the only limit on which models are used | harness_imperial L50; the owner, 2026-10-05 |
+| The easy reviewer `luna` is GPT-5.6 Luna (`openai/gpt-5.6-luna`, high), on its own weekly pool; GPT-6 Luna is `luna-6`, outside the chains; never a Luna on OpenCode Go | GPT-6 Luna and Sol shared one OpenAI pool, so one exhausted quota blocked both reviewers (T08) | harness_imperial L51, 2026-10-05 |
+| Heavy models at effort `medium` at most, `low` when medium is not needed (Opus as `task-agent-heavy`; GLM-5.3 `low`, offering no medium; DeepSeek V4 Pro stays `high`, its lowest); light models at `high` | the owner's decision | the owner, 2026-10-05 |
 | One OpenCode model per role, then Claude: no long chains of cheap models | chains multiplied wasted attempts; one failure stopped the chain before the next model ran | L27 |
 
 ## What each model has shown so far
