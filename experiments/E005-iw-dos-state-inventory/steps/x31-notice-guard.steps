@@ -1,0 +1,23 @@
+# exploration x31 (round 1, PR #58 R1): the exit arm to the shareware notice, then a click away from its buttons;
+# the cycle must refuse the click (the notices are on the screen) and abort without sending it
+click-change 60 32
+until 272 138 80 18 170 85 0 800
+wait-stable
+shot select-level
+click-change 315 168
+shot starting-armies
+click-change 315 169
+shot board-before-start
+click-change 510 22
+until 390 10 230 20 170 170 170 800 150
+wait-stable
+shot human-turn
+click-change 602 20
+click-change 287 332
+click-change 480 236
+click-change 368 332
+until 288 292 130 26 170 170 170 400 60
+wait-stable
+shot shareware-notice
+click 100 100
+shot never-reached

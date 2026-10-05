@@ -1,0 +1,40 @@
+13:25:34 IW_DOS_DIR read-only inside the run
+13:25:34 run copy before anything starts: ok
+13:25:34 Xvfb ready after 0.11 s
+13:25:34 run copy and configuration immediately before launch: ok
+13:25:34 launched: dosbox-x -conf /tmp/w/dosbox.conf -nogui -nomenu -fastlaunch -nopromptfolder
+13:25:34 DOSBox-X in a separate network namespace, interfaces seen: ['lo']
+13:25:36 window 2097157 at (80, 100) after 1.66 s
+13:25:51 option box reached 16.94 s after launch
+13:25:51 before.png: pixels 6d7d28500a9562d2, file ce3d9ebda664b064
+13:25:51 step 1: click-change 60 32 6
+13:25:52 step 2: until (272, 138, 80, 18) (170, 85, 0) 800 20
+13:25:52 step 3: wait-stable
+13:25:53 step 4: shot select-level.png
+13:25:53 select-level.png: pixels c38316e1b2d6fcaf, file 79ac1e16f5cc5df2
+13:25:53 step 5: click-change 315 168 6
+13:25:54 step 6: shot starting-armies.png
+13:25:54 starting-armies.png: pixels 2a773602d344c338, file 4d03e6ad09594904
+13:25:54 step 7: click-change 315 169 6
+13:25:56 step 8: shot board-before-start.png
+13:25:56 board-before-start.png: pixels 50dcb8d6a4ee9750, file 5297c031c2b91c4c
+13:25:56 step 9: click-change 510 22 6
+13:26:02 step 10: until (390, 10, 230, 20) (170, 170, 170) 800 150
+13:26:26 step 11: wait-stable
+13:26:29 step 12: shot human-turn.png
+13:26:29 human-turn.png: pixels 32084954c6fb5de7, file ca3b67f7337b832f
+13:26:29 step 13: click-change 602 20 6
+13:26:30 step 14: click-change 287 332 6
+13:26:31 step 15: click-change 480 236 6
+13:26:34 step 16: click-change 368 332 6
+13:26:35 step 17: until (288, 292, 130, 26) (170, 170, 170) 400 60
+13:26:38 step 18: wait-stable
+13:26:38 step 19: shot shareware-notice.png
+13:26:38 shareware-notice.png: pixels 468481d32f20f195, file 06d117310d84e114
+13:26:38 step 20: click 100 100
+13:26:38 notice-refused-120.png: pixels 468481d32f20f195, file 06d117310d84e114
+13:26:38 ABORT step 20: the shareware notices are on the screen; no click is sent there
+13:26:38 DOSBox-X exit status 0, 0.05 s after term
+13:26:38 processes still alive after terminate: 0
+13:26:38 reset: run copy: copied 0, removed 2
+13:26:38 reset: run copy equals its state before launch: True
