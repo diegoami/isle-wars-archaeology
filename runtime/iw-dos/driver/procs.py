@@ -13,6 +13,7 @@ place a signal is sent from (T15; T13's review, PR #54, classes A and B).
 """
 import os
 import re
+import secrets
 import signal
 import subprocess
 from pathlib import Path
@@ -23,19 +24,34 @@ INVOCATION = "IW_DOS_DRIVER_INVOCATION"
 MARK = "IW_DOS_DRIVER_RUN"
 SIDE = "IW_DOS_DRIVER_SIDE"
 SIDES = ("game", "display")
+COMMAND = "IW_DOS_DRIVER_COMMAND"   # one token per helper command (must)
+REAP_S = 5                  # s, for a command killed at its bound to be reaped
 COMMAND_BOUND = 30          # s, any one helper command (a capture takes about 0.05 s; `git` and `mount` less than 1 s)
 
 
 def must(cmd, env=None, cwd=None, timeout=COMMAND_BOUND, miss_ok=False):
     """The CompletedProcess of `cmd` (stdout and stderr as bytes), which must exit 0 within `timeout` s;
     CommandFailed otherwise. With miss_ok, exit 1 with empty stdout and stderr returns None (a search that
-    found nothing)."""
+    found nothing).
+
+    The command carries a marker of its own, IW_DOS_DRIVER_COMMAND=<token>; past its bound it is sent SIGKILL
+    through kill_marked with that marker, never by subprocess's own kill (T15 round 1, R4)."""
+    marker = secrets.token_hex(8)
+    full = dict(os.environ if env is None else env, **{COMMAND: marker})
     try:
-        done = subprocess.run(cmd, env=env, cwd=cwd, capture_output=True, timeout=timeout)
-    except subprocess.TimeoutExpired:
-        raise CommandFailed(f"{cmd[0]} ran past its bound of {timeout} s") from None
+        proc = subprocess.Popen(cmd, env=full, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except OSError as exc:
         raise CommandFailed(f"{cmd[0]} could not be started: {type(exc).__name__}") from None
+    try:
+        out, err = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        kill_marked(proc.pid, [item(COMMAND, marker)], signal.SIGKILL)
+        try:
+            proc.communicate(timeout=REAP_S)
+        except subprocess.TimeoutExpired:
+            raise CommandFailed(f"{cmd[0]} ran past its bound of {timeout} s and survived SIGKILL") from None
+        raise CommandFailed(f"{cmd[0]} ran past its bound of {timeout} s") from None
+    done = subprocess.CompletedProcess(cmd, proc.returncode, out, err)
     if miss_ok and done.returncode == 1 and not done.stdout.strip() and not done.stderr.strip():
         return None
     if done.returncode != 0:

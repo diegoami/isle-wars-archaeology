@@ -32,6 +32,7 @@ from driver import errors, procs, repeat, session as sessionlib  # noqa: E402
 spike = sessionlib.spike
 safeio = spike.safeio
 REAL_RUN, REAL_POPEN = subprocess.run, subprocess.Popen
+PROCS_KILL_MARKED = procs.kill_marked
 WATCHDOG_S = 30
 OX, OY = 80, 100
 W, H = spike.GAME_SIZE
@@ -83,6 +84,22 @@ class FakeProc:
         return self.returncode is None and all(i in entries for i in items)
 
 
+FAKE_COMMANDS = ("xdpyinfo", "xdotool", "import", "mount")
+
+
+class FakeCommand:
+    """A helper command (procs.must) answered by DriverWorld.fake_run."""
+    next_pid = 5_000_000
+
+    def __init__(self, done):
+        FakeCommand.next_pid += 1
+        self.pid, self.done, self.returncode = FakeCommand.next_pid, done, None
+
+    def communicate(self, timeout=None):
+        self.returncode = self.done.returncode
+        return self.done.stdout, self.done.stderr
+
+
 class DriverWorld(seal.World):
     """A session over the synthetic world, with the fake game."""
 
@@ -117,13 +134,13 @@ class DriverWorld(seal.World):
                                     (time, "sleep", lambda s: None)):
             stack.enter_context(mock.patch.object(target, name, value))
         stack.enter_context(redirect_stdout(io.StringIO()))
-        original = sessionlib.Session._start_display
+        original = sessionlib._Core._start_display
 
         def start_display(session):
             original(session)
             if self.between_seals:
                 self.between_seals(session)
-        stack.enter_context(mock.patch.object(sessionlib.Session, "_start_display", start_display))
+        stack.enter_context(mock.patch.object(sessionlib._Core, "_start_display", start_display))
         signal.signal(signal.SIGALRM, self._alarm)
         signal.alarm(WATCHDOG_S)
         self.addCleanup(signal.alarm, 0)
@@ -148,11 +165,13 @@ class DriverWorld(seal.World):
             proc = FakeProc(cmd, kw.get("env") or {})
             self.started.append(proc)
             return proc
+        if cmd and cmd[0] in FAKE_COMMANDS:
+            return FakeCommand(self.fake_run(cmd))
         return REAL_POPEN(cmd, *args, **kw)
 
     def fake_run(self, cmd, *args, **kw):
         key = tuple(cmd[:2])
-        if cmd[0] not in ("xdpyinfo", "xdotool", "import", "mount"):
+        if cmd[0] not in FAKE_COMMANDS:
             return REAL_RUN(cmd, *args, **kw)
         self.commands.append(list(cmd))
         if key in self.on_command:
@@ -211,7 +230,6 @@ class DriverWorld(seal.World):
             workdir.mkdir()
         made = sessionlib.Session(run_id, self.run_dir, self.install, workdir, display, self.baseline,
                                   "tok123", "net:[outer]")
-        made.argv = []
         return made
 
     def started_session(self):
@@ -226,11 +244,53 @@ class DriverWorld(seal.World):
 class StructureTest(DriverWorld):
     """The guard and the helpers are in one place each, and every path goes through them."""
 
-    def test_every_public_method_is_guarded_or_listed_as_internal(self):
-        public = {n for n, v in vars(sessionlib.Session).items() if callable(v) and not n.startswith("_")}
-        self.assertEqual(public - set(sessionlib.PUBLIC) - set(sessionlib.INTERNAL), set())
+    def test_the_session_s_whole_callable_surface_is_the_guarded_api(self):
+        """Every public callable reachable on Session, its MRO included (dir, not vars), is a PUBLIC method with
+        its guard; the spike is not among its bases (PR #74 R2, R3)."""
+        self.assertEqual(sessionlib.Session.__mro__, (sessionlib.Session, object))
+        made = self.make()
+        for target in (sessionlib.Session, made):
+            public = {n for n in dir(target) if not n.startswith("_") and callable(getattr(target, n))}
+            self.assertEqual(public, set(sessionlib.PUBLIC), target)
         for name, modes in sessionlib.PUBLIC.items():
             self.assertEqual(getattr(getattr(sessionlib.Session, name), "guard", None), modes, name)
+
+    def test_every_public_callable_of_the_adapter_is_used_or_blocked(self):
+        """The adapter's whole public surface, its MRO included: each name in exactly one of CORE_USED and BLOCKED."""
+        core = sessionlib._Core
+        public = {n for n in dir(core) if not n.startswith("_") and callable(getattr(core, n))}
+        used, blocked = set(sessionlib.CORE_USED), set(sessionlib.BLOCKED)
+        self.assertEqual(used & blocked, set())
+        self.assertEqual(public, used | blocked)
+
+    def test_every_blocked_spike_method_refuses_and_sends_nothing(self):
+        made = self.started_session()
+        core = made._core
+        sent, signals = len(self.commands), len(self.signals)
+        for name in sessionlib.BLOCKED:
+            with self.subTest(name), self.assertRaises(errors.DriverError):
+                getattr(core, name)("s")
+        self.assertEqual((len(self.commands), len(self.signals)), (sent, signals))
+        self.assertIsNone(self.game().returncode)
+        made.finish()
+
+    def test_no_spike_method_the_adapter_uses_runs_a_command_waits_or_signals_by_itself(self):
+        """Each CORE_USED method that the adapter inherits unchanged from the spike sends its commands only through
+        self.sh and waits only through self.wait_until: no call of the spike's run(), poll() or popen(), and no
+        send_signal, kill or terminate (PR #74 R3)."""
+        import ast
+        import inspect
+        for name in sessionlib.CORE_USED:
+            owner = next(k for k in sessionlib._Core.__mro__ if name in vars(k))
+            if owner is not spike.Cycle:
+                continue
+            tree = ast.parse(inspect.cleandoc("\n" + inspect.getsource(getattr(spike.Cycle, name))))
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Call):
+                    func = node.func
+                    bad = ((isinstance(func, ast.Name) and func.id in ("run", "poll", "popen", "run_namespace"))
+                           or (isinstance(func, ast.Attribute) and func.attr in ("send_signal", "kill", "terminate")))
+                    self.assertFalse(bad, f"the spike's {name} calls {ast.unparse(func)} by itself")
 
     def test_no_driver_module_runs_a_command_or_sends_a_signal_but_procs(self):
         import ast
@@ -272,7 +332,7 @@ class GuardTest(DriverWorld):
         made = self.make()
         made.execute(repeat.set_level_cycle)
         self.assertEqual((made.status, made.recovered), ("completed", True))
-        self.assertEqual(made.inputs_sent, 1)
+        self.assertEqual(made._core.inputs_sent, 1)
 
     def test_every_public_method_raises_game_died_when_the_game_is_gone_before_it(self):
         for name, call in self.CALLS.items():
@@ -329,7 +389,7 @@ class GuardTest(DriverWorld):
 
     def test_finish_leaves_no_process_of_the_run_alive_or_says_so(self):
         made = self.make()
-        with mock.patch.object(sessionlib.Session, "_stop_display", lambda self_: None):
+        with mock.patch.object(sessionlib._Core, "_stop_display", lambda self_: None):
             made.execute(repeat.set_level_cycle)
         self.assertTrue(made.status.startswith("aborted: terminate: "), made.status)
         self.assertIn("alive after finish", made.status)
@@ -343,7 +403,7 @@ class GuardTest(DriverWorld):
             made.perform("click 60 32\nclick 100 32")
         clicks = [c for c in self.commands if c[:2] == ["xdotool", "click"]]
         self.assertEqual(len(clicks), 1, "the second step was sent to a dead game")
-        done = [o for o in made.obs if o["field"] == "step done, seconds after launch"]
+        done = [o for o in made.observations if o["field"] == "step done, seconds after launch"]
         self.assertEqual(done, [], "a step the game died in was recorded as done")
         made.finish()
 
@@ -368,9 +428,20 @@ class GuardTest(DriverWorld):
         with mock.patch.object(spike.Cycle, "observe", observe):
             sent = len(self.commands)
             with self.assertRaises(errors.GameDied):
-                made.perform("wait-stable\nclick 100 32")
+                made.perform("wait-stable\nfiles")
         self.assertEqual([c for c in self.commands[sent:] if c[0] == "xdotool"], [],
                          "a command of step 2 was sent to a dead game")
+        self.assertEqual([o for o in made.observations if o["field"].startswith("run copy at step 2")], [],
+                         "step 2 ran on a dead game")
+        made.finish()
+
+    def test_a_public_method_does_not_run_at_all_on_a_dead_game(self):
+        """The guard's before-check, beyond the dispatch's: observe_file sends no command, and must not run."""
+        made = self.started_session()
+        self.kill_game()
+        with self.assertRaises(errors.GameDied):
+            made.observe_file("ISLEWAR.EXE")
+        self.assertEqual([o for o in made.observations if o["field"].startswith("run copy file")], [])
         made.finish()
 
     def test_a_wait_checks_the_game_on_every_poll(self):
@@ -384,16 +455,79 @@ class GuardTest(DriverWorld):
                 self.kill_game()
             return False
         with self.assertRaises(errors.GameDied):
-            made.wait_until(condition, 25)
+            made._core.wait_until(condition, 25)
         self.assertEqual(len(polls), 3)
         made.finish()
 
     def test_a_failure_while_the_game_died_is_reported_as_its_death(self):
         made = self.started_session()
         self.state = "black"
-        with mock.patch.object(sessionlib.Session, "wait_until", lambda self_, c, t, i=0.1: self.kill_game()):
+        with mock.patch.object(sessionlib._Core, "wait_until", lambda self_, c, t, i=0.1: self.kill_game()):
             with self.assertRaises(errors.GameDied):
                 made.wait_for_screen("option-box")
+        made.finish()
+
+
+class InputGateTest(DriverWorld):
+    """An input reaches the game only through a step of perform(), with the notice guard on (PR #74 R1)."""
+
+    def ready(self):
+        made = self.started_session()
+        made.wait_for_screen("option-box")
+        return made, made._core
+
+    def test_an_input_outside_a_step_is_refused_and_not_counted(self):
+        made, core = self.ready()
+        for cmd in (["xdotool", "mousemove", "140", "132"], ["xdotool", "click", "1"], ["xdotool", "key", "Return"]):
+            with self.subTest(cmd):
+                sent = len(self.commands)
+                with self.assertRaises(errors.StepFailed):
+                    core.sh(cmd)
+                self.assertEqual(self.commands[sent:], [])
+        with self.assertRaises(errors.StepFailed):
+            core.step_key(101, "Return")
+        self.assertEqual(core.inputs_sent, 0)
+        made.finish()
+
+    def test_a_click_or_a_key_is_refused_at_the_dispatch_while_the_notices_are_up(self):
+        made, core = self.ready()
+        core.in_step, core.pointer_at = True, (60, 32)
+        with mock.patch.object(core.screen, "notice_up", return_value=True):
+            for cmd in (["xdotool", "click", "1"], ["xdotool", "key", "Return"]):
+                with self.subTest(cmd), self.assertRaises(errors.StepFailed):
+                    core.sh(cmd)
+            core.sh(["xdotool", "key", "c"])
+        self.assertEqual([c for c in self.commands if c[:2] == ["xdotool", "click"]], [])
+        made.finish()
+
+    def test_a_click_on_a_forbidden_point_or_off_the_window_is_refused_at_the_dispatch(self):
+        made, core = self.ready()
+        core.in_step = True
+        for point in ((300, 300), (420, 295), (700, 10), None):
+            with self.subTest(point), self.assertRaises(errors.StepFailed):
+                core.pointer_at = point
+                core.sh(["xdotool", "click", "1"])
+        self.assertEqual([c for c in self.commands if c[:2] == ["xdotool", "click"]], [])
+        made.finish()
+
+    def test_a_key_outside_the_grammar_and_any_other_xdotool_command_are_refused(self):
+        made, core = self.ready()
+        core.in_step = True
+        for cmd in (["xdotool", "key", "u"], ["xdotool", "key", "r"], ["xdotool", "keydown", "F12"],
+                    ["xdotool", "windowkill", "4242"], ["xdotool", "type", "x"]):
+            with self.subTest(cmd), self.assertRaises(errors.StepFailed):
+                core.sh(cmd)
+        self.assertEqual([c for c in self.commands if c[0] == "xdotool" and c[1] not in ("search", "getwindowgeometry")],
+                         [])
+        made.finish()
+
+    def test_a_command_to_a_dead_game_is_refused_at_the_dispatch(self):
+        made, core = self.ready()
+        self.kill_game()
+        sent = len(self.commands)
+        with self.assertRaises(errors.GameDied):
+            core.sh(["import", "-window", "root", "-crop", "4x4+80+100", "+repage", "-depth", "8", "rgb:-"])
+        self.assertEqual(self.commands[sent:], [])
         made.finish()
 
 
@@ -430,7 +564,7 @@ class CommandTest(DriverWorld):
         self.fail_commands = {("xdotool", "click"): 1}
         made = self.make()
         made.execute(repeat.set_level_cycle)
-        self.assertEqual(made.inputs_sent, 0)
+        self.assertEqual(made._core.inputs_sent, 0)
 
 
 class SealSymmetryTest(DriverWorld):
@@ -486,10 +620,10 @@ class SealSymmetryTest(DriverWorld):
                 with contextlib.suppress(FileNotFoundError):
                     (self.tmp / "second-name").unlink()
                 made = self.make()
-                made.write_conf()
-                self.damage(check)(made)
+                made._core.write_conf()
+                self.damage(check)(made._core)
                 with self.assertRaises(errors.SealError) as caught:
-                    made._seal("at the start", 0)
+                    made._core._seal("at the start", 0)
                 self.assertTrue(str(caught.exception).startswith(f"{check} (at the start)"), str(caught.exception))
 
     def test_a_display_not_held_by_this_run_s_xvfb_is_refused_before_the_launch(self):
@@ -541,14 +675,64 @@ class CompletedTest(DriverWorld):
                 made.execute(body)
                 self.assertIn("before.png at a known screen before any input", made.status)
 
+    def test_a_before_shot_captured_before_the_screen_was_reached_is_not_the_before_state(self):
+        """PR #74 R5: a black capture, then the option box, an input and after.png."""
+        def body(session):
+            self.state = "black"
+            session.observe_screenshot("before.png")
+            self.state = "menu"
+            session.wait_for_screen("option-box")
+            session.perform("click 60 32")
+            session.wait_for_screen("select-level")
+            session.observe_screenshot("after.png")
+        made = self.make()
+        made.execute(body)
+        self.assertNotEqual(made.status, "completed")
+        self.assertIn("before.png at a known screen before any input", made.status)
+
+    def test_a_before_shot_that_does_not_show_the_screen_reached_is_not_the_before_state(self):
+        def body(session):
+            session.wait_for_screen("option-box")
+            self.state = "black"              # the screen changed after it was reached, with no input
+            session.observe_screenshot("before.png")
+            self.state = "menu"
+            session.perform("click 60 32")
+            session.wait_for_screen("select-level")
+            session.observe_screenshot("after.png")
+        made = self.make()
+        made.execute(body)
+        self.assertIn("before.png showing option-box", made.status)
+
+    def test_an_after_shot_needs_a_screen_reached_after_the_last_input_and_showing_it(self):
+        def no_wait(session):
+            session.wait_for_screen("option-box")
+            session.observe_screenshot("before.png")
+            session.perform("click 60 32")
+            session.observe_screenshot("after.png")
+
+        def not_shown(session):
+            session.wait_for_screen("option-box")
+            session.observe_screenshot("before.png")
+            session.perform("click 60 32")
+            session.wait_for_screen("select-level")
+            self.state = "black"
+            session.observe_screenshot("after.png")
+        for body, words in ((no_wait, "after.png at a known screen after the last input"),
+                            (not_shown, "after.png showing select-level")):
+            with self.subTest(body.__name__):
+                self.state = "menu"
+                made = self.make()
+                made.execute(body)
+                self.assertIn(words, made.status)
+
     def test_the_game_killed_at_the_entry_to_terminate_is_not_completed(self):
         made = self.make()
-        original = sessionlib.Session._terminate
+        original = sessionlib._Core._terminate
 
         def killed_first(self_):
             self.kill_game()
             original(self_)
-        with mock.patch.object(sessionlib.Session, "_terminate", killed_first):
+        with mock.patch.object(sessionlib._Core, "_terminate", killed_first):
             made.execute(repeat.set_level_cycle)
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
 
@@ -589,7 +773,7 @@ class ResetTest(DriverWorld):
 
     def test_a_reset_that_never_showed_the_baseline_is_not_recovery(self):
         made = self.make()
-        with mock.patch.object(sessionlib.Session, "_snapshot_and_reset", lambda self_: None):
+        with mock.patch.object(sessionlib._Core, "_snapshot_and_reset", lambda self_: None):
             made.execute(repeat.set_level_cycle)
         self.assertNotEqual(made.status, "completed")
         self.assertFalse(made.recovered)
@@ -611,14 +795,14 @@ class BoundTest(DriverWorld):
     def test_wait_until_returns_none_at_its_bound(self):
         made = self.started_session()
         t0 = time.monotonic()
-        self.assertIsNone(made.wait_until(lambda: False, 0.3, 0.01))
+        self.assertIsNone(made._core.wait_until(lambda: False, 0.3, 0.01))
         self.assertLess(time.monotonic() - t0, 5)
         made.finish()
 
     def test_a_screen_that_never_comes_is_screen_not_reached(self):
         made = self.started_session()
         self.state = "black"
-        with mock.patch.dict(sessionlib.SCREENS, {"option-box": ("menu_up", 0.3)}):
+        with mock.patch.dict(sessionlib.SCREENS, {"option-box": (sessionlib.SCREENS["option-box"][0], 0.3)}):
             with self.assertRaises(errors.ScreenNotReached):
                 made.wait_for_screen("option-box")
         made.finish()
@@ -639,7 +823,7 @@ class BoundTest(DriverWorld):
             if cmd[:2] == ["xdotool", "search"]:
                 return subprocess.CompletedProcess(cmd, 1, b"", b"")
             return original(cmd, *a, **kw)
-        with mock.patch.object(subprocess, "run", no_window), mock.patch.object(sessionlib, "WINDOW_S", 0.3), \
+        with mock.patch.object(self, "fake_run", no_window), mock.patch.object(sessionlib, "WINDOW_S", 0.3), \
                 self.assertRaises(errors.LaunchError):
             made.start()
         made.finish()
@@ -649,6 +833,33 @@ class BoundTest(DriverWorld):
         with self.assertRaises(errors.CommandFailed):
             procs.must(["sleep", "20"], timeout=0.3)
         self.assertLess(time.monotonic() - t0, 10)
+
+    def test_a_command_past_its_bound_is_killed_through_kill_marked_with_its_own_marker(self):
+        """PR #74 R4: never subprocess's own kill, never a signal by pid."""
+        sent = []
+
+        def spy(pid, items, sig=signal.SIGKILL):
+            sent.append((pid, items, sig))
+            return PROCS_KILL_MARKED(pid, items, sig)
+        forbidden = AssertionError("a signal outside kill_marked")
+        with mock.patch.object(procs, "kill_marked", spy), \
+                mock.patch.object(REAL_POPEN, "kill", side_effect=forbidden), \
+                mock.patch.object(REAL_POPEN, "terminate", side_effect=forbidden), \
+                mock.patch.object(REAL_POPEN, "send_signal", side_effect=forbidden), \
+                mock.patch.object(os, "kill", side_effect=forbidden), self.assertRaises(errors.CommandFailed):
+            procs.must(["sleep", "20"], timeout=0.3)
+        self.assertEqual(len(sent), 1)
+        pid, items, sig = sent[0]
+        self.assertEqual(sig, signal.SIGKILL)
+        self.assertEqual(len(items), 1)
+        self.assertTrue(items[0].startswith(procs.COMMAND.encode() + b"="))
+        self.assertFalse(os.path.exists(f"/proc/{pid}"), "the command was not reaped")
+
+    def test_every_helper_command_carries_a_marker_of_its_own(self):
+        first = procs.must(["sh", "-c", f"echo ${procs.COMMAND}"]).stdout.strip()
+        second = procs.must(["sh", "-c", f"echo ${procs.COMMAND}"]).stdout.strip()
+        self.assertEqual(len(first), 16)
+        self.assertNotEqual(first, second)
 
     def test_a_game_that_ignores_sigterm_is_killed_and_reported(self):
         made = self.make()
@@ -665,9 +876,9 @@ class BoundTest(DriverWorld):
         with mock.patch.object(sessionlib, "STOP_S", 0.3):
             def body(session):
                 repeat.set_level_cycle(session)
-                session.procs["xvfb"].ignore_term = True
+                session._core.procs["xvfb"].ignore_term = True
             made.execute(body)
-        self.assertEqual(made.procs["xvfb"].returncode, -9)
+        self.assertEqual(made._core.procs["xvfb"].returncode, -9)
         self.assertEqual(made.status, "completed")
 
     def test_the_command_is_killed_at_its_bound(self):
@@ -784,8 +995,8 @@ class RepeatTest(DriverWorld):
                 if fault == "close":
                     self.on_command[("xdotool", "windowkill")] = lambda: self.kill_game(1)
                 with mock.patch.object(sessionlib.Session, "start", start), \
-                        mock.patch.object(sessionlib.Session, "_snapshot_and_reset",
-                                          self.writing_reset(sessionlib.Session._snapshot_and_reset)):
+                        mock.patch.object(sessionlib._Core, "_snapshot_and_reset",
+                                          self.writing_reset(sessionlib._Core._snapshot_and_reset)):
                     code, records = self.run_inner(["--repeats", "3", "--fault", fault, "--fault-repeat", "2"])
                 records = records[-3:]
                 self.assertEqual(code, 0)

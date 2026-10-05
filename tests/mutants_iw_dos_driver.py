@@ -15,16 +15,27 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import mutants_iw_dos as base  # noqa: E402
 
 T = "tests.test_iw_dos_driver."
+ROOT = Path(__file__).resolve().parents[1]
 S, P, R = "runtime/iw-dos/driver/session.py", "runtime/iw-dos/driver/procs.py", "runtime/iw-dos/driver/repeat.py"
 SEAL = '("install-read-only", "network-namespace", "run-copy", "baseline", "configuration", "no-dosbox-x")'
 
 
 def public_entry(name, modes):
     return (f"the guard of {name} is gone", S, f'    "{name}": {modes},\n', "",
-            [T + "StructureTest.test_every_public_method_is_guarded_or_listed_as_internal",
+            [T + "StructureTest.test_the_session_s_whole_callable_surface_is_the_guarded_api",
              T + {"start": "GuardTest.test_start_runs_once",
                   "finish": "GuardTest.test_finish_leaves_no_process_of_the_run_alive_or_says_so"}.get(
                  name, "GuardTest.test_every_public_method_raises_game_died_when_the_game_is_gone_before_it")])
+
+
+def moved(name):
+    """The spike's `name` moved from BLOCKED to CORE_USED: the adapter would then run it as the spike wrote it."""
+    text = (ROOT / S).read_text()
+    old = text[text.index("CORE_USED = ("):text.index("MOVES, CLICKS, KEYS")]
+    new = old.replace(f' "{name}",', "", 1).replace(f'"{name}", ', "", 1).replace(
+        '"step_files", "step_key")', f'"step_files", "step_key", "{name}")', 1)
+    return (f"R3: the spike's {name} is moved to the used names", S, old, new,
+            [T + "StructureTest.test_no_spike_method_the_adapter_uses_runs_a_command_waits_or_signals_by_itself"])
 
 
 def seal_check(name):
@@ -40,10 +51,14 @@ MUTANTS = [
     *[public_entry(n, m) for n, m in (("start", '("none", "live")'), ("wait_for_screen", '("live", "live")'),
                                       ("perform", '("live", "live")'), ("observe_screenshot", '("live", "live")'),
                                       ("observe_region", '("live", "live")'), ("observe_file", '("live", "live")'),
-                                      ("complete", '("live", "live")'), ("finish", '("any", "gone")'))],
-    ("the guard does not check before a method", S, '        self.require(before, f"before {name}")\n', "",
-     [T + "GuardTest.test_every_public_method_raises_game_died_when_the_game_is_gone_before_it"]),
-    ("the guard does not check after a method", S, '        self.require(after, f"after {name}")\n', "",
+                                      ("complete", '("live", "live")'), ("finish", '("any", "gone")'),
+                                      ("on", '("none", "none")'), ("execute", '("none", "any")'),
+                                      ("expect", '("live", "live")'), ("checkpoint", '("live", "any")'),
+                                      ("store_outputs", '("gone", "gone")'))],
+    ("the guard does not check before a method", S, '        core.require(before, f"before {name}")\n', "",
+     [T + "GuardTest.test_every_public_method_raises_game_died_when_the_game_is_gone_before_it",
+      T + "GuardTest.test_a_public_method_does_not_run_at_all_on_a_dead_game"]),
+    ("the guard does not check after a method", S, '        core.require(after, f"after {name}")\n', "",
      [T + "GuardTest.test_a_game_that_dies_during_a_public_method_is_found_after_it"]),
     ("a step is not checked before it runs", S, '            self.require("live", f"before step {n}")\n', "",
      [T + "GuardTest.test_a_game_that_dies_between_two_steps_is_sent_nothing_more"]),
@@ -95,11 +110,71 @@ MUTANTS = [
     ("completed without an input", S, "        if self.inputs_sent < 1:\n", "        if False:\n",
      [T + "CompletedTest.test_a_body_without_an_input_is_never_completed"]),
     ("a failed input command counts as an input", S,
-     "        done = procs.must(cmd, env=self.env)\n        if tuple(cmd[:2]) in INPUT_COMMANDS:\n            self.inputs_sent += 1\n",
-     "        if tuple(cmd[:2]) in INPUT_COMMANDS:\n            self.inputs_sent += 1\n        done = procs.must(cmd, env=self.env)\n",
+     "        if key in INPUT_COMMANDS:\n            self.inputs_sent += 1\n",
+     "        if False:\n            self.inputs_sent += 1\n",
+     [T + "GuardTest.test_a_good_cycle_completes"]),
+    ("an input is counted before its command", S,
+     "        done = procs.must(cmd, env=self.env)\n        if key == MOVES:",
+     "        self.inputs_sent += key in INPUT_COMMANDS\n        done = procs.must(cmd, env=self.env)\n        if key == MOVES:",
      [T + "CommandTest.test_a_failed_click_is_not_an_input"]),
-    ("completed without the before-state", S, "        if not at_known or before != 0:\n", "        if False:\n",
+    ("completed without the before-state", S, "        if before[0] != 0 or before[1] is None:\n", "        if False:\n",
      [T + "CompletedTest.test_a_before_shot_after_an_input_or_without_a_known_screen_is_not_the_before_state"]),
+    # ---- PR #74 round 1
+    ("R5: a before shot taken before the screen was reached is the before-state", S,
+     "        if before[0] != 0 or before[1] is None:\n", "        if before[0] != 0:\n",
+     [T + "CompletedTest.test_a_before_shot_captured_before_the_screen_was_reached_is_not_the_before_state"]),
+    ("R5: a before shot need not show the screen", S, "        elif not before[2]:\n", "        elif False:\n",
+     [T + "CompletedTest.test_a_before_shot_that_does_not_show_the_screen_reached_is_not_the_before_state"]),
+    ("R5: an after shot need not follow a screen reached after the last input", S,
+     "after[0] < 1 or after[1] is None:", "after[0] < 1:",
+     [T + "CompletedTest.test_an_after_shot_needs_a_screen_reached_after_the_last_input_and_showing_it"]),
+    ("R5: an after shot need not show the screen", S, "        elif not after[2]:\n", "        elif False:\n",
+     [T + "CompletedTest.test_an_after_shot_needs_a_screen_reached_after_the_last_input_and_showing_it"]),
+    ("R5: an input does not leave the screen it was sent on", S,
+     "            self.inputs_sent += 1\n            self.current_screen = None\n", "            self.inputs_sent += 1\n",
+     [T + "CompletedTest.test_an_after_shot_needs_a_screen_reached_after_the_last_input_and_showing_it"]),
+    ("R2: Session inherits the spike's Cycle again", S, "class Session:\n", "class Session(spike.Cycle):\n",
+     [T + "StructureTest.test_the_session_s_whole_callable_surface_is_the_guarded_api"]),
+    ("R2: the spike's hotkey is neither used nor blocked", S, '"known_screen", "hotkey", "input",', '"known_screen", "input",',
+     [T + "StructureTest.test_every_public_callable_of_the_adapter_is_used_or_blocked"]),
+    ("R3: the spike's terminate is on the driver's path", S,
+     '"probe_after_input", "terminate", "stop_x",', '"probe_after_input", "stop_x",',
+     [T + "StructureTest.test_every_public_callable_of_the_adapter_is_used_or_blocked"]),
+    moved("terminate"), moved("step_wait_exit"), moved("hotkey"),   # (step_savestate only calls the blocked save_state)
+    ("R3: a blocked method runs", S,
+     "        raise DriverError(f\"the spike's {name}() is not on the driver's path (session.BLOCKED)\")",
+     "        return None",
+     [T + "StructureTest.test_every_blocked_spike_method_refuses_and_sends_nothing"]),
+    ("R1: an input outside a step is sent", S, "        if not self.in_step:\n            raise StepFailed(f\"an input",
+     "        if False:\n            raise StepFailed(f\"an input",
+     [T + "InputGateTest.test_an_input_outside_a_step_is_refused_and_not_counted"]),
+    ("R1: perform does not open the gate for its steps", S, "            self.in_step = True\n", "",
+     [T + "GuardTest.test_a_good_cycle_completes"]),
+    ("R1: a click is sent while the notices are up", S,
+     "            if self.screen.notice_up():\n                raise StepFailed(\"the shareware notices",
+     "            if False:\n                raise StepFailed(\"the shareware notices",
+     [T + "InputGateTest.test_a_click_or_a_key_is_refused_at_the_dispatch_while_the_notices_are_up"]),
+    ("R1: a key is pressed while the notices are up", S,
+     "        if cmd[2] not in spike.NOTICE_KEYS and self.screen.notice_up():", "        if False:",
+     [T + "InputGateTest.test_a_click_or_a_key_is_refused_at_the_dispatch_while_the_notices_are_up"]),
+    ("R1: a click on a forbidden point is sent", S, "            if navsteps.forbidden(*point):", "            if False:",
+     [T + "InputGateTest.test_a_click_on_a_forbidden_point_or_off_the_window_is_refused_at_the_dispatch"]),
+    ("R1: a key outside the grammar is sent", S, "        if len(cmd) != 3 or cmd[2] not in navsteps.KEYS:",
+     "        if len(cmd) != 3:",
+     [T + "InputGateTest.test_a_key_outside_the_grammar_and_any_other_xdotool_command_are_refused"]),
+    ("R1: any xdotool command is sent", S, "        if cmd[:1] == [\"xdotool\"] and key not in (MOVES, CLICKS, KEYS):",
+     "        if False:",
+     [T + "InputGateTest.test_a_key_outside_the_grammar_and_any_other_xdotool_command_are_refused"]),
+    ("R1: a command goes to a dead game", S,
+     "        if self.live_commands:\n            self.require(", "        if False:\n            self.require(",
+     [T + "InputGateTest.test_a_command_to_a_dead_game_is_refused_at_the_dispatch"]),
+    ("R4: the helper's timeout kills by subprocess", P,
+     "        kill_marked(proc.pid, [item(COMMAND, marker)], signal.SIGKILL)\n", "        proc.kill()\n",
+     [T + "BoundTest.test_a_command_past_its_bound_is_killed_through_kill_marked_with_its_own_marker"]),
+    ("R4: a helper command carries no marker", P, "    full = dict(os.environ if env is None else env, **{COMMAND: marker})",
+     "    full = dict(os.environ if env is None else env)",
+     [T + "BoundTest.test_a_command_past_its_bound_is_killed_through_kill_marked_with_its_own_marker",
+      T + "BoundTest.test_every_helper_command_carries_a_marker_of_its_own"]),
     ("a game gone at terminate is taken for terminated", S,
      "            if self.body_ok:\n                raise GameDied(f\"DOSBox-X was gone before terminate",
      "            if False:\n                raise GameDied(f\"DOSBox-X was gone before terminate",
@@ -120,10 +195,10 @@ MUTANTS = [
     ("a wait has no bound", S, "            if time.monotonic() - start > timeout:\n                return None",
      "            if False:\n                return None",
      [T + "BoundTest.test_wait_until_returns_none_at_its_bound"]),
-    ("a named screen has no bound", S, "self.wait_until(getattr(self.screen, predicate), bound, 0.25)",
-     "self.wait_until(getattr(self.screen, predicate), bound * 10 ** 6, 0.25)",
+    ("a named screen has no bound", S, "self.wait_until(lambda: self._screen_up(name), bound, 0.25)",
+     "self.wait_until(lambda: self._screen_up(name), bound * 10 ** 6, 0.25)",
      [T + "BoundTest.test_a_screen_that_never_comes_is_screen_not_reached"]),
-    ("a command has no bound", P, "capture_output=True, timeout=timeout)", "capture_output=True, timeout=None)",
+    ("a command has no bound", P, "out, err = proc.communicate(timeout=timeout)", "out, err = proc.communicate(timeout=None)",
      [T + "BoundTest.test_a_command_past_its_bound_is_stopped"]),
     ("Xvfb's start has no bound", S, "or self.procs[\"xvfb\"].poll() is not None, XVFB_S, 0.05)",
      "or self.procs[\"xvfb\"].poll() is not None, XVFB_S * 10 ** 6, 0.05)",

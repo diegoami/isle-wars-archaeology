@@ -73,7 +73,7 @@ RESTORE = ("fresh private user, mount, PID and network namespaces for the comman
 
 def set_level_cycle(session):
     """The cycle of E006: the option box, `before`, one input (Set level), the Select level dialog, `after`."""
-    session.expected.update({"option-box", "select-level"})
+    session.expect("option-box", "select-level")
     session.wait_for_screen("option-box")
     session.observe_screenshot("before.png")
     session.checkpoint("after-before")
@@ -83,29 +83,32 @@ def set_level_cycle(session):
     session.observe_screenshot("after.png")
 
 
-def wait_gone(session, how):
-    if spike.poll(lambda: session.procs["game"].poll() is not None, GONE_BOUND, 0.05) is None:
+# A fault action gets the session's adapter (Session.checkpoint): it acts on DOSBox-X from outside the session's
+# API, as the command's own fault, and the session finds what it did through its guard.
+
+def wait_gone(core, how):
+    if spike.poll(lambda: core.procs["game"].poll() is not None, GONE_BOUND, 0.05) is None:
         raise FaultNotInjected(f"DOSBox-X survived the injected {how} for {GONE_BOUND} s")
-    session.observe(session.step_no + 100, "process", f"fault: DOSBox-X gone after {how}, exit status",
-                    session.procs["game"].returncode)
+    core.observe(core.step_no + 100, "process", f"fault: DOSBox-X gone after {how}, exit status",
+                 core.procs["game"].returncode)
 
 
-def sigkill_game(session):
+def sigkill_game(core):
     """SIGKILL of DOSBox-X from outside the session, through kill_marked (its markers re-checked)."""
-    session.observe(session.step_no + 100, "process", "fault injected", "SIGKILL of DOSBox-X")
-    if not procs.kill_marked(session.procs["game"].pid, session.items("game"), signal.SIGKILL):
+    core.observe(core.step_no + 100, "process", "fault injected", "SIGKILL of DOSBox-X")
+    if not procs.kill_marked(core.procs["game"].pid, core.items("game"), signal.SIGKILL):
         raise FaultNotInjected("DOSBox-X no longer carried this run's markers; nothing was signalled")
-    wait_gone(session, "SIGKILL")
+    wait_gone(core, "SIGKILL")
 
 
-def close_game(session):
+def close_game(core):
     """DOSBox-X's X client closed (XKillClient, `xdotool windowkill`), as a window manager's kill would."""
-    session.observe(session.step_no + 100, "process", "fault injected", "xdotool windowkill of DOSBox-X's window")
+    core.observe(core.step_no + 100, "process", "fault injected", "xdotool windowkill of DOSBox-X's window")
     try:
-        procs.must(["xdotool", "windowkill", session.window], env=session.env)
+        procs.must(["xdotool", "windowkill", core.window], env=core.env)
     except CommandFailed as exc:
         raise FaultNotInjected(f"the X client was not closed: {exc}") from None
-    wait_gone(session, "windowkill")
+    wait_gone(core, "windowkill")
 
 
 FAULT_ACTIONS = {"sigkill": sigkill_game, "close": close_game}
@@ -159,7 +162,7 @@ def build_record(session, commit, machine, rep, argv, fingerprint):
         "schema": "run/1",
         "run_id": session.run_id,
         "experiment": EXPERIMENT,
-        "arm": session.args.arm,
+        "arm": session.arm,
         "rep": rep,
         "code_commit": commit,
         "machine": machine,
@@ -170,11 +173,11 @@ def build_record(session, commit, machine, rep, argv, fingerprint):
             "fingerprint": fingerprint,
         },
         "interventions": [dict(spike.SCREENSHOTS)],
-        "start_state": {"id": "S-run-copy-option-box", "sha256": spike.listing_hash(session.baseline),
+        "start_state": {"id": "S-run-copy-option-box", "sha256": session.start_state_sha256,
                         "restore": RESTORE},
         "seed": None,
         "actions": {"script": "runtime/iw-dos/driver/repeat.py", "sha256": spike.sha256_file(LAUNCHER), "args": argv},
-        "observations": session.obs,
+        "observations": session.observations,
         "outputs": [{"name": n, "sha256": spike.sha256_file(p), "store": f"release:{EXPERIMENT}"}
                     for n, p, _ in session.outputs],
         "started": session.started,
@@ -206,9 +209,9 @@ def write_records(session, bundles, commit, machine, argv, fingerprint):
             os.close(safeio.open_directory(ROOT / folder / EXPERIMENT, create_below=ROOT))
     except (safeio.Refused, OSError) as exc:
         raise RecordError(f"no record written: {exc}") from None
-    session.outputs = spike.store_outputs(session, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
+    session.store_outputs(bundles)
     manifest = build_manifest(session)
-    record = build_record(session, commit, machine, rep_of(session.args.arm), argv, fingerprint)
+    record = build_record(session, commit, machine, rep_of(session.arm), argv, fingerprint)
     try:
         safeio.write_file(ROOT / "evidence" / EXPERIMENT, names["evidence"],
                           data=(json.dumps(manifest, indent=2) + "\n").encode(), exist="new", create_below=ROOT)
@@ -256,17 +259,16 @@ def run_repeat(index, args, locs, baseline, token, commit, machine, argv, finger
     run_id = next_run_id()
     workdir = WORK_BASE / f"w{index}"
     os.close(safeio.open_directory(workdir, create_below=WORK_BASE))
+    faulted = bool(args.fault) and index == args.fault_repeat
+    notes = [("driver sources sha256 (runtime/iw-dos/driver/*.py, spike cycle.py, navsteps.py, dosconf.py, board.py)",
+              driver_sources_sha256()),
+             ("repeat of the command", f"{index} of {args.repeats}"),
+             ("fault injected in this repeat", f"{args.fault} at {args.fault_at}" if faulted else "none")]
     session = sessionlib.Session(run_id, locs["IW_DOS_RUN"], locs["IW_DOS_DIR"], workdir,
                                  f":{FIRST_DISPLAY + index}", baseline, token, os.environ.get("IW_DOS_OUTER_NETNS"),
-                                 args.arm)
-    session.argv = argv
-    faulted = bool(args.fault) and index == args.fault_repeat
+                                 args.arm, notes)
     if faulted:
         session.on(args.fault_at, FAULT_ACTIONS[args.fault])
-    session.observe(0, "static", "driver sources sha256 (runtime/iw-dos/driver/*.py, spike cycle.py, navsteps.py, "
-                    "dosconf.py, board.py)", driver_sources_sha256())
-    session.observe(0, "static", "repeat of the command", f"{index} of {args.repeats}")
-    session.observe(0, "static", "fault injected in this repeat", f"{args.fault} at {args.fault_at}" if faulted else "none")
     session.execute(set_level_cycle)
     try:
         write_records(session, locs[f"{EXPERIMENT}_BUNDLES"], commit, machine, argv, fingerprint)
