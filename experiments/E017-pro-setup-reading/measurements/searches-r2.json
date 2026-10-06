@@ -1,0 +1,57 @@
+{
+ "what": "T34 round 2: the corrected whole-corpus censuses F019 cites, appended beside searches-r1.json (never overwriting it). Round 1 misread four censuses (registration classification and writers, the seat census's defaults source, the speed helper attribution, the menu walk's Online button); the seed search, the random census and the file-I/O census were re-run and are unchanged, and searches-r1.json still holds them. Search terms are described in words; names, counts and booleans only, no code. Every script reference below is the kind, number and name of the E008 inventory, so it is checkable by experiments/E017-pro-setup-reading/check_cited_scripts.py.",
+ "round": 2,
+ "supersedes": "searches-r1.json for the registration-flag, seat-table, speed and menu-walk sections below; searches-r1.json remains the record for the seed search, the random census and the file-I/O census (re-run unchanged).",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "corrected": {
+  "registration_flag": {
+   "searched": "every decompiled script for the registration flag's name, whole word; every match read and classified, and the flag's assignments cross-checked in the .lasm listings (setlocal against setglobal)",
+   "lexical_matches": 18,
+   "scripts_lexical": ["BehaviorScript 450", "BehaviorScript 470", "BehaviorScript 473", "BehaviorScript 475", "BehaviorScript 496 startingnumarmybehavior", "BehaviorScript 499 FREQbehavior", "BehaviorScript 510", "CastScript 355 quit2", "CastScript 568 HumanH", "CastScript 569 ComputerC", "CastScript 636 reset2", "CastScript 666 exit2", "CastScript 671 returnf2", "MovieScript 1 Startmovie", "MovieScript 458 getdefaults", "MovieScript 480 checkupg", "MovieScript 494 Getusernames", "MovieScript 549 checkfor"],
+   "global_uses": 17,
+   "branches_on_global": 16,
+   "declaration_only": ["CastScript 636 reset2"],
+   "local_write_only": ["MovieScript 1 Startmovie"],
+   "writers_of_global": ["MovieScript 480 checkupg", "MovieScript 494 Getusernames"],
+   "reads": "16 of the 18 lexical matches branch on the global flag (the option locks, the seat toggles, the scores cap and its notice, the scores reset hover, the title and quit/exit routing, the checker, the entry handler, the entry key-watcher trigger, the forcing, the title registration line). CastScript 636 reset2 declares the global without testing or writing it (its bytecode has no reference to it). MovieScript 1 Startmovie assigns a handler-local variable of the same name: the bytecode writes a local (setlocal), while the checker's quit test reads the global, so the startup assignment never reaches the global. The global flag's only writers are MovieScript 480 checkupg (the checker: it clears the flag to 0, then sets it to 1 only when the re-derived scramble matches the entered name and the code equals the fixed literal) and MovieScript 494 Getusernames (the entry handler: it clears the flag to 0 before re-running the checker). No other script writes the global.",
+   "anti_tamper": "the startup scan for the Lingo-initialisation name sets a local to 100; the checker's quit tests the global for 100 and is therefore never reached through that path (round 1's anti-tamper quit claim removed)."
+  },
+  "seat_table": {
+   "searched": "every decompiled script for the seat table's name, whole word; every match read and classified",
+   "scripts_read_or_written": ["BehaviorScript 4", "BehaviorScript 14", "BehaviorScript 457", "BehaviorScript 470", "BehaviorScript 479", "CastScript 347 newgame2", "CastScript 568 HumanH", "CastScript 569 ComputerC", "MovieScript 5 Putinboard", "MovieScript 6 CheckNumberofArmies", "MovieScript 10 Checkturn", "MovieScript 458 getdefaults"],
+   "scripts_declaration_only": ["BehaviorScript 463", "BehaviorScript 465", "BehaviorScript 473", "BehaviorScript 474", "BehaviorScript 506", "CastScript 604 PGAME2", "MovieScript 1 Startmovie", "MovieScript 23 Newgame"],
+   "writers": ["MovieScript 458 getdefaults", "CastScript 568 HumanH", "CastScript 569 ComputerC"],
+   "reads": "20 scripts name the table in all: 12 read or write it (the two event/end frames' checks, the computer turn frame's dispatch, both display frames, the defaults forcing and validation, the end screen's win routing, the new-game credit check, the two toggles, the deal's copy and fill, the turn dispatch, the income's seat checks) and 8 declare it without using it. The only writers are the defaults handler (the preset, the no-human reset and the unregistered forcing) and the two seat toggles. Round 1 named the defaults source BehaviorScript 458; the inventory, the disk file and the bytecode all name it MovieScript 458 getdefaults (corrected here)."
+  },
+  "speed": {
+   "searched": "every decompiled script for the speed value's name, whole word; every match read and classified, and the delay helpers read in full",
+   "scripts": ["BehaviorScript 457", "BehaviorScript 479", "BehaviorScript 500 SPEEDbehavior", "MovieScript 1 Startmovie", "MovieScript 333 ComputerPlaceArmies", "MovieScript 458 getdefaults"],
+   "speed_scaled_helpers": ["Count15", "count10", "count30", "count60", "count5"],
+   "fixed_wait_helpers": ["count1", "count2", "count3"],
+   "reads": "the two display frames, the option button, the defaults load/save, five of the eight delay helpers in MovieScript 1 Startmovie and two animation-repeat loops in the placement handler. The five speed-scaled helpers wait 6, 5, 15, 30 and 3 times the value (Count15, count10, count30, count60, count5); the other three use fixed waits (count1 and count2 wait one tick, count3 waits three) and do not read the value. No rule code reads speed. Round 1 attributed the scaled wait to all eight helpers (corrected here)."
+  },
+  "menu_walk": {
+   "searched": "every handler reachable from the bottom menu and the screens it opens, read in full; each names what it opens or does",
+   "bottom_menu": ["CastScript 347 newgame2", "CastScript 349 options2", "CastScript 351 soleau2", "CastScript 353 scores2", "CastScript 355 quit2", "CastScript 668 Help2"],
+   "soleau_screen": [
+    {"script": "CastScript 662 Printform2", "does": "prints the order form through the print xtra"},
+    {"script": "CastScript 664 Online2", "does": "navigates to the game's own online frame; it does not open a web page"},
+    {"script": "CastScript 688 soleausite2", "does": "calls the browser opener on the publisher's web site"}
+   ],
+   "online_frame": [
+    {"script": "CastScript 672 FORM1", "does": "empty mouseUp (a rollover/no-op sibling)"},
+    {"script": "CastScript 673 form2", "does": "calls the browser opener on the order page"}
+   ],
+   "options_screen": ["CastScript 602 SAVEDEFAULT2", "CastScript 604 PGAME2", "CastScript 591 ear1", "CastScript 592 ear2", "CastScript 605 RETURN4", "CastScript 606 RETURN5", "CastScript 607 RETURN6"],
+   "reads": "no save, load, export or import control exists in any menu. Round 1 recorded CastScript 664 Online2 as opening a web page and stopped at it; it navigates to an internal online frame instead, whose form button (CastScript 673 form2) contains the browser-opening operation. The frame-to-script binding is the score's and is not decoded, so reachability of the online frame's handlers rests on the script names and the navigation target, and is stated with that qualification."
+  }
+ },
+ "unchanged_from_r1": {
+  "seed_search": "re-run unchanged: every one of the 213 scripts, case-insensitively, for the English word for a seed and the name of Director's random-seed property; 0 matches (searches-r1.json).",
+  "random_census": "re-run unchanged: 91 calls of the random-value built-in in 17 scripts; the name has no other occurrence (searches-r1.json).",
+  "file_io_census": "re-run unchanged: 6 scripts touch the file xtra's calls, each accounted for by one of the three files; no other file handler exists (searches-r1.json).",
+  "armies_and_frequency": "re-run unchanged: the starting-armies and event-frequency reader censuses in searches-r1.json."
+ }
+}

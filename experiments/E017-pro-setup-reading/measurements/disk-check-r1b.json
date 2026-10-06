@@ -1,0 +1,384 @@
+{
+ "what": "each script listed in scripts-read.json, hashed in place in the static folder of run pro-r1, against the record's ls_sha256 (nothing copied; no path or code kept)",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "matched": 47,
+ "listed": 47,
+ "rows": [
+  {
+   "script": "BehaviorScript 457",
+   "file": "BehaviorScript 457.ls",
+   "bytes": 1876,
+   "sha256_on_disk": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "ls_sha256_in_record": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 461",
+   "file": "BehaviorScript 461.ls",
+   "bytes": 377,
+   "sha256_on_disk": "3184dceae75c285f381a6373240f10c7d7fd0f22ffab1973dd2469c6ca40c6bf",
+   "ls_sha256_in_record": "3184dceae75c285f381a6373240f10c7d7fd0f22ffab1973dd2469c6ca40c6bf",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 470",
+   "file": "BehaviorScript 470.ls",
+   "bytes": 2714,
+   "sha256_on_disk": "f6c4a0b9c5ea90ba02baac9949e6d61fc1aae01ee05113d14bb6da6e713d4fa6",
+   "ls_sha256_in_record": "f6c4a0b9c5ea90ba02baac9949e6d61fc1aae01ee05113d14bb6da6e713d4fa6",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 473",
+   "file": "BehaviorScript 473.ls",
+   "bytes": 1569,
+   "sha256_on_disk": "9d0c6c21ea1d6f984b4bc7fa1275daad717aefbc50f929207b0ab68b03449d64",
+   "ls_sha256_in_record": "9d0c6c21ea1d6f984b4bc7fa1275daad717aefbc50f929207b0ab68b03449d64",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 474",
+   "file": "BehaviorScript 474.ls",
+   "bytes": 342,
+   "sha256_on_disk": "cc6bd8cca97326342dbfe75c3bb1e3299ca886cacd59b2e6f990b46d1a0c7ada",
+   "ls_sha256_in_record": "cc6bd8cca97326342dbfe75c3bb1e3299ca886cacd59b2e6f990b46d1a0c7ada",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 479",
+   "file": "BehaviorScript 479.ls",
+   "bytes": 1876,
+   "sha256_on_disk": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "ls_sha256_in_record": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 496",
+   "file": "BehaviorScript 496 - startingnumarmybehavior.ls",
+   "bytes": 1971,
+   "sha256_on_disk": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd",
+   "ls_sha256_in_record": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 498",
+   "file": "BehaviorScript 498 - STRENGTHbehavior.ls",
+   "bytes": 1098,
+   "sha256_on_disk": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b",
+   "ls_sha256_in_record": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 499",
+   "file": "BehaviorScript 499 - FREQbehavior.ls",
+   "bytes": 1996,
+   "sha256_on_disk": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+   "ls_sha256_in_record": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 500",
+   "file": "BehaviorScript 500 - SPEEDbehavior.ls",
+   "bytes": 1077,
+   "sha256_on_disk": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29",
+   "ls_sha256_in_record": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 506",
+   "file": "BehaviorScript 506.ls",
+   "bytes": 728,
+   "sha256_on_disk": "f3877662792c3113a108c7a0d3ca50b439896f05dd37fabd3b632236a5c10b18",
+   "ls_sha256_in_record": "f3877662792c3113a108c7a0d3ca50b439896f05dd37fabd3b632236a5c10b18",
+   "match": true
+  },
+  {
+   "script": "CastScript 347",
+   "file": "CastScript 347 - newgame2.ls",
+   "bytes": 1285,
+   "sha256_on_disk": "075105ee0779bbea29fe6c744e188db08aa1fca2538a79cd14c9695c85a199d7",
+   "ls_sha256_in_record": "075105ee0779bbea29fe6c744e188db08aa1fca2538a79cd14c9695c85a199d7",
+   "match": true
+  },
+  {
+   "script": "CastScript 349",
+   "file": "CastScript 349 - options2.ls",
+   "bytes": 109,
+   "sha256_on_disk": "fedc38777ec51ccd6744b8cc333819f21ab4fd5844c14a7bf4828d3cf27eb391",
+   "ls_sha256_in_record": "fedc38777ec51ccd6744b8cc333819f21ab4fd5844c14a7bf4828d3cf27eb391",
+   "match": true
+  },
+  {
+   "script": "CastScript 351",
+   "file": "CastScript 351 - soleau2.ls",
+   "bytes": 108,
+   "sha256_on_disk": "8687c54bce6cce846c2d6adcc6a0919db854a6b0e12428b81d7f85997d7b04a6",
+   "ls_sha256_in_record": "8687c54bce6cce846c2d6adcc6a0919db854a6b0e12428b81d7f85997d7b04a6",
+   "match": true
+  },
+  {
+   "script": "CastScript 353",
+   "file": "CastScript 353 - scores2.ls",
+   "bytes": 127,
+   "sha256_on_disk": "20a9639da0318f1a6664456bc289afd50860dc09f67ce3912cfe30e5b07ee67a",
+   "ls_sha256_in_record": "20a9639da0318f1a6664456bc289afd50860dc09f67ce3912cfe30e5b07ee67a",
+   "match": true
+  },
+  {
+   "script": "CastScript 355",
+   "file": "CastScript 355 - quit2.ls",
+   "bytes": 322,
+   "sha256_on_disk": "b73e798df77a22b13023f8d2f7760c560ed35f43f6e44479c85764ae34b92a9a",
+   "ls_sha256_in_record": "b73e798df77a22b13023f8d2f7760c560ed35f43f6e44479c85764ae34b92a9a",
+   "match": true
+  },
+  {
+   "script": "CastScript 568",
+   "file": "CastScript 568 - HumanH.ls",
+   "bytes": 1217,
+   "sha256_on_disk": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2",
+   "ls_sha256_in_record": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2",
+   "match": true
+  },
+  {
+   "script": "CastScript 569",
+   "file": "CastScript 569 - ComputerC.ls",
+   "bytes": 1125,
+   "sha256_on_disk": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da",
+   "ls_sha256_in_record": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da",
+   "match": true
+  },
+  {
+   "script": "CastScript 591",
+   "file": "CastScript 591 - ear1.ls",
+   "bytes": 104,
+   "sha256_on_disk": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88",
+   "ls_sha256_in_record": "e6c4d59aee9b758bdb0f5c8aa6249adb94934e4541c556e3b71bd4b24814bb88",
+   "match": true
+  },
+  {
+   "script": "CastScript 592",
+   "file": "CastScript 592 - ear2.ls",
+   "bytes": 131,
+   "sha256_on_disk": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205",
+   "ls_sha256_in_record": "b307099e839fc0df432b910e2298df5b30720345eb30a88a6bdc59bc1e317205",
+   "match": true
+  },
+  {
+   "script": "CastScript 602",
+   "file": "CastScript 602 - SAVEDEFAULT2.ls",
+   "bytes": 229,
+   "sha256_on_disk": "27ecc9cf270ab04b1d60e24662d7d78d57f260bf6f0c0d20afe55a1927dcc50d",
+   "ls_sha256_in_record": "27ecc9cf270ab04b1d60e24662d7d78d57f260bf6f0c0d20afe55a1927dcc50d",
+   "match": true
+  },
+  {
+   "script": "CastScript 604",
+   "file": "CastScript 604 - PGAME2.ls",
+   "bytes": 186,
+   "sha256_on_disk": "d184df36a468068210009094db29f91e4cc3ac2c5192a8ac3db1e8d7bf183ca8",
+   "ls_sha256_in_record": "d184df36a468068210009094db29f91e4cc3ac2c5192a8ac3db1e8d7bf183ca8",
+   "match": true
+  },
+  {
+   "script": "CastScript 605",
+   "file": "CastScript 605 - RETURN4.ls",
+   "bytes": 15,
+   "sha256_on_disk": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+   "ls_sha256_in_record": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8",
+   "match": true
+  },
+  {
+   "script": "CastScript 606",
+   "file": "CastScript 606 - RETURN5.ls",
+   "bytes": 181,
+   "sha256_on_disk": "7a09e814d937978d886d1544ed666fe212f9138363a4f66d248f5972f9c12981",
+   "ls_sha256_in_record": "7a09e814d937978d886d1544ed666fe212f9138363a4f66d248f5972f9c12981",
+   "match": true
+  },
+  {
+   "script": "CastScript 607",
+   "file": "CastScript 607 - RETURN6.ls",
+   "bytes": 116,
+   "sha256_on_disk": "95a8159a5e4f7fd1fa9e3ab5c778439e9c181ea365b55661af0796b23332b9f6",
+   "ls_sha256_in_record": "95a8159a5e4f7fd1fa9e3ab5c778439e9c181ea365b55661af0796b23332b9f6",
+   "match": true
+  },
+  {
+   "script": "CastScript 636",
+   "file": "CastScript 636 - reset2.ls",
+   "bytes": 837,
+   "sha256_on_disk": "130404c867b910b81fdc8e0c48bbca5e6b1e62de516a00ae7e01e7b4ad7c914b",
+   "ls_sha256_in_record": "130404c867b910b81fdc8e0c48bbca5e6b1e62de516a00ae7e01e7b4ad7c914b",
+   "match": true
+  },
+  {
+   "script": "CastScript 662",
+   "file": "CastScript 662 - Printform2.ls",
+   "bytes": 1265,
+   "sha256_on_disk": "8438a8cb447d0761f20a5a3a0c01b6fe64b55d581d4d695bb4b3b6e802b36cde",
+   "ls_sha256_in_record": "8438a8cb447d0761f20a5a3a0c01b6fe64b55d581d4d695bb4b3b6e802b36cde",
+   "match": true
+  },
+  {
+   "script": "CastScript 664",
+   "file": "CastScript 664 - Online2.ls",
+   "bytes": 117,
+   "sha256_on_disk": "05699ad02a87022f9e9df73da15ca8b39cc00ea7f13a8e707815f6b6ad0adb44",
+   "ls_sha256_in_record": "05699ad02a87022f9e9df73da15ca8b39cc00ea7f13a8e707815f6b6ad0adb44",
+   "match": true
+  },
+  {
+   "script": "CastScript 668",
+   "file": "CastScript 668 - Help2.ls",
+   "bytes": 106,
+   "sha256_on_disk": "cff8fb7350b1c5131ff8454372d6e403e154a5b868da51acc9facfa98f51ce95",
+   "ls_sha256_in_record": "cff8fb7350b1c5131ff8454372d6e403e154a5b868da51acc9facfa98f51ce95",
+   "match": true
+  },
+  {
+   "script": "CastScript 688",
+   "file": "CastScript 688 - soleausite2.ls",
+   "bytes": 251,
+   "sha256_on_disk": "bc7085cde3642cd504bf72962b64a4416f420e0f643f25bdf8e534ea4f94be05",
+   "ls_sha256_in_record": "bc7085cde3642cd504bf72962b64a4416f420e0f643f25bdf8e534ea4f94be05",
+   "match": true
+  },
+  {
+   "script": "MovieScript 1",
+   "file": "MovieScript 1 - Startmovie.ls",
+   "bytes": 6443,
+   "sha256_on_disk": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "ls_sha256_in_record": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "match": true
+  },
+  {
+   "script": "MovieScript 5",
+   "file": "MovieScript 5 - Putinboard.ls",
+   "bytes": 3871,
+   "sha256_on_disk": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+   "ls_sha256_in_record": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+   "match": true
+  },
+  {
+   "script": "MovieScript 50",
+   "file": "MovieScript 50 - Rolldice.ls",
+   "bytes": 1233,
+   "sha256_on_disk": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+   "ls_sha256_in_record": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+   "match": true
+  },
+  {
+   "script": "MovieScript 75",
+   "file": "MovieScript 75.ls",
+   "bytes": 1896,
+   "sha256_on_disk": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad",
+   "ls_sha256_in_record": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad",
+   "match": true
+  },
+  {
+   "script": "MovieScript 337",
+   "file": "MovieScript 337 - computerrolldice.ls",
+   "bytes": 7741,
+   "sha256_on_disk": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "ls_sha256_in_record": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "match": true
+  },
+  {
+   "script": "MovieScript 339",
+   "file": "MovieScript 339 - bottombuttons.ls",
+   "bytes": 893,
+   "sha256_on_disk": "d66dc6d78985bf71cb64b3a9357b95542b9678ccf2e23fb6c28deac2a68a9482",
+   "ls_sha256_in_record": "d66dc6d78985bf71cb64b3a9357b95542b9678ccf2e23fb6c28deac2a68a9482",
+   "match": true
+  },
+  {
+   "script": "MovieScript 455",
+   "file": "MovieScript 455 - WRITESCORES.ls",
+   "bytes": 955,
+   "sha256_on_disk": "a391db8de5dda491b912fa87123c66ba5998c9e9e6e4fe2b91b7d0710911d610",
+   "ls_sha256_in_record": "a391db8de5dda491b912fa87123c66ba5998c9e9e6e4fe2b91b7d0710911d610",
+   "match": true
+  },
+  {
+   "script": "MovieScript 458",
+   "file": "MovieScript 458 - getdefaults.ls",
+   "bytes": 1827,
+   "sha256_on_disk": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3",
+   "ls_sha256_in_record": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3",
+   "match": true
+  },
+  {
+   "script": "MovieScript 471",
+   "file": "MovieScript 471 - READSCORES.ls",
+   "bytes": 549,
+   "sha256_on_disk": "60bb20206efcc5cf1cbdddef86366ef311fa240bf2502200c84cbf67c4d9378c",
+   "ls_sha256_in_record": "60bb20206efcc5cf1cbdddef86366ef311fa240bf2502200c84cbf67c4d9378c",
+   "match": true
+  },
+  {
+   "script": "MovieScript 480",
+   "file": "MovieScript 480 - checkupg.ls",
+   "bytes": 2562,
+   "sha256_on_disk": "8e7fa4b8cfcb964198edb33a529bcc5d83d4a51b204b3bb01dee9a16e14e42af",
+   "ls_sha256_in_record": "8e7fa4b8cfcb964198edb33a529bcc5d83d4a51b204b3bb01dee9a16e14e42af",
+   "match": true
+  },
+  {
+   "script": "MovieScript 494",
+   "file": "MovieScript 494 - Getusernames.ls",
+   "bytes": 2151,
+   "sha256_on_disk": "c737ceb662b16db26d04369d4ba682e9a3c91815b270b83b8c18243810f2d5bf",
+   "ls_sha256_in_record": "c737ceb662b16db26d04369d4ba682e9a3c91815b270b83b8c18243810f2d5bf",
+   "match": true
+  },
+  {
+   "script": "MovieScript 333",
+   "file": "MovieScript 333 - ComputerPlaceArmies.ls",
+   "bytes": 25785,
+   "sha256_on_disk": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "ls_sha256_in_record": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "match": true
+  },
+  {
+   "script": "CastScript 666",
+   "file": "CastScript 666 - exit2.ls",
+   "bytes": 191,
+   "sha256_on_disk": "196a4706c26d3bab4e01700b7f0d480d0f210bbbdfe9ad6599ead9e9aca29364",
+   "ls_sha256_in_record": "196a4706c26d3bab4e01700b7f0d480d0f210bbbdfe9ad6599ead9e9aca29364",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 450",
+   "file": "BehaviorScript 450.ls",
+   "bytes": 529,
+   "sha256_on_disk": "5420b6f062dc9ed7f20254ee889b8e3e7981a43554ab862abaa5e53c72098e0a",
+   "ls_sha256_in_record": "5420b6f062dc9ed7f20254ee889b8e3e7981a43554ab862abaa5e53c72098e0a",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 475",
+   "file": "BehaviorScript 475.ls",
+   "bytes": 373,
+   "sha256_on_disk": "fda84aef4cd9f2159dc175146a94a93d3d3e2bc04fa4c064eb87a9f6b2eff070",
+   "ls_sha256_in_record": "fda84aef4cd9f2159dc175146a94a93d3d3e2bc04fa4c064eb87a9f6b2eff070",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 510",
+   "file": "BehaviorScript 510.ls",
+   "bytes": 97,
+   "sha256_on_disk": "ef8d4fdd4049933bb9b2b56d51bf46f2aa75f6a7177a91ab257efc2f72be03eb",
+   "ls_sha256_in_record": "ef8d4fdd4049933bb9b2b56d51bf46f2aa75f6a7177a91ab257efc2f72be03eb",
+   "match": true
+  },
+  {
+   "script": "MovieScript 549",
+   "file": "MovieScript 549 - checkfor.ls",
+   "bytes": 367,
+   "sha256_on_disk": "92a8e23150c1de2da092b8be61b376f39c4d325f6d31e93ccd6bd88a6416ae4b",
+   "ls_sha256_in_record": "92a8e23150c1de2da092b8be61b376f39c4d325f6d31e93ccd6bd88a6416ae4b",
+   "match": true
+  }
+ ]
+}
