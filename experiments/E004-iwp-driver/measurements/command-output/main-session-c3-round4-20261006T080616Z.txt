@@ -1,0 +1,368 @@
++ main session at 1e4eec4efc17113c9b2d3a11597c447bb2657e42, 20261006T080616Z, from the task's worktree
+== prefix vs baseline before the runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW2 sigkill-mid-cycle
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.16 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.22 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.53 s at 0,0, size 800x600
+title screen reached 6.52 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.08
+  click at 320,585: screen changed after the click (s): 0.01
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 1, "run_id": "E004-r0142", "status": "completed", "seconds": 10.28, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.42 s at 0,0, size 800x600
+title screen reached 6.54 s after launch
+checkpoint after-title: sigkill_game
+ABORT game-died: the game process exited before a screenshot observation (status -9)
+the game had already exited before terminate; the rest of its side is still terminated
+wineserver -k
+game exit status -9
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 2, "run_id": "E004-r0143", "status": "aborted: game-died: the game process exited before a screenshot observation (status -9)", "seconds": 8.51, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.52 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.01
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 3, "run_id": "E004-r0144", "status": "completed", "seconds": 9.6, "recovered": true, "as_expected": true}
+exit 0
+== DW2 kill-mid-cycle
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.32 s at 0,0, size 800x600
+title screen reached 6.43 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.01
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 1, "run_id": "E004-r0145", "status": "completed", "seconds": 9.36, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.42 s at 0,0, size 800x600
+title screen reached 6.26 s after launch
+checkpoint after-title: kill_game
+ABORT game-died: the game process exited before a screenshot observation (status 0)
+the game had already exited before terminate; the rest of its side is still terminated
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 2, "run_id": "E004-r0146", "status": "aborted: game-died: the game process exited before a screenshot observation (status 0)", "seconds": 8.17, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.27 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 3, "run_id": "E004-r0147", "status": "completed", "seconds": 9.17, "recovered": true, "as_expected": true}
+exit 0
+== DW1 control
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.26 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 1, "run_id": "E004-r0148", "status": "completed", "seconds": 9.15, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.53 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 2, "run_id": "E004-r0149", "status": "completed", "seconds": 9.52, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.42 s at 0,0, size 800x600
+title screen reached 6.51 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 3, "run_id": "E004-r0150", "status": "completed", "seconds": 9.36, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.25 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.01
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 4, "run_id": "E004-r0151", "status": "completed", "seconds": 9.1, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.24 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.01
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 5, "run_id": "E004-r0152", "status": "completed", "seconds": 9.01, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.42 s at 0,0, size 800x600
+title screen reached 6.26 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 6, "run_id": "E004-r0153", "status": "completed", "seconds": 9.09, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.26 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 7, "run_id": "E004-r0154", "status": "completed", "seconds": 9.12, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.42 s at 0,0, size 800x600
+title screen reached 6.36 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.01
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 8, "run_id": "E004-r0155", "status": "completed", "seconds": 9.34, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.12 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.42 s at 0,0, size 800x600
+title screen reached 6.26 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.01
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 9, "run_id": "E004-r0156", "status": "completed", "seconds": 9.42, "recovered": true, "as_expected": true}
+DBUS_SESSION_BUS_ADDRESS is set in the environment; unset for this run, the window manager starts a bus of its own
+prefix seal before anything starts: ok
+Xvfb ready after 0.05 s on attempt 1, root 800x600x24
+xfwm4 registered after 0.11 s
+prefix seal immediately before launch: ok
+launched: unshare -n /usr/lib/wine/wine <game>
+game in a separate network namespace, interfaces seen: ['lo']
+window after 0.43 s at 0,0, size 800x600
+title screen reached 6.52 s after launch
+before.png: pixels fecd0a984e0d2f36, file ae6e98d28d379bb4
+step 1: click! 320 585
+  click at 320,585: label changed under the pointer (s): 0.07
+  click at 320,585: screen changed after the click (s): 0.02
+after.png: pixels e5f2ab05e7e280f4, file 426d77e724d793dd
+wineserver -k
+game exit status 0
+game side gone after terminate: 0.0
+processes still alive after terminate: 0
+reset: prefix equals its state before launch: True
+{"repeat": 10, "run_id": "E004-r0157", "status": "completed", "seconds": 9.36, "recovered": true, "as_expected": true}
+exit 0
+== DW5
+prefix exists: iwp.wineprefix
+links removed: 0
+game copy: copied 0, removed 0
+baseline exists
+tool:python@>=3.11: verified
+tool:wine@9.0: verified
+tool:xvfb: verified
+tool:xfwm4: verified
+tool:xdotool: verified
+facility:display: verified
+artifact:iwp-2.0-996e86c5: verified
+facility:iwp-prefix: verified
+ready
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+== prefix vs baseline after all runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW1/DW4 checks over the new records
+new records: E004-r0140, E004-r0141, E004-r0142, E004-r0143, E004-r0144, E004-r0145, E004-r0146, E004-r0147, E004-r0148, E004-r0149, E004-r0150, E004-r0151, E004-r0152, E004-r0153, E004-r0154, E004-r0155, E004-r0156, E004-r0157
+control count: 12 | all completed: True
+distinct before hashes across control: 1
+Traceback (most recent call last):
+  File "<stdin>", line 17, in <module>
+  File "/usr/lib/python3.12/statistics.py", line 622, in median
+    return (data[i - 1] + data[i]) / 2
+           ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+TypeError: unsupported operand type(s) for /: 'str' and 'int'
+DONE
+== addendum: corrected stats over this transcript's records only (the block above died on a string/number type; no measurement changed)
+new records: E004-r0142..E004-r0157 (16: 2x3 fault-arm repeats, 10 control)
+DW2 sigkill-mid-cycle: r0143 aborted: game-died (status -9), recovered; r0142 and r0144 completed — exit 0
+DW2 kill-mid-cycle: r0146 aborted: game-died (status 0), recovered; r0145 and r0147 completed — exit 0
+DW1 control r0148-r0157: 10 of 10 completed; before-pixels sha256 fecd0a984e0d2f36 in every repeat (1 distinct); seconds 9.01-9.52, median 9.245
+DW4: kill-terminated repeats r0143 8.51 s, r0146 8.17 s; every arm's median (9.245, 8.5-ish per fault arm) below E002's 40-46 s
+DW5: iwp-runtime.sh printed ready (all tools/facilities verified); register_artifact check: unlisted unins000.dat, unins000.exe; ok — exit 0
+prefix vs baseline: equal before the runs and after all runs (all three registry files)

@@ -1,0 +1,29 @@
++ main session at 1e4eec4efc17113c9b2d3a11597c447bb2657e42, 20261006T075933Z, from the task's worktree
+== prefix vs baseline before the runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW2 sigkill-mid-cycle
+IWP_PREFIX overlaps IWP_DIR
+exit 1
+== DW2 kill-mid-cycle
+IWP_PREFIX overlaps IWP_DIR
+exit 1
+== DW1 control
+IWP_PREFIX overlaps IWP_DIR
+exit 1
+== DW5
+IWP_PREFIX overlaps IWP_DIR
+not ready: prefix step 'build' failed
+ok: iwp-2.0-996e86c5
+exit 0
+== prefix vs baseline after all runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW1/DW4 checks over the new records
+new records: E004-r0140, E004-r0141
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+AttributeError: 'list' object has no attribute 'get'
+DONE
