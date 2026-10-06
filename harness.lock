@@ -7,7 +7,7 @@ profile full
 copied 2026-10-06
 adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6 per the owner, with L50 and L51)
 adapt docs/tasks/README.md  (this repository's task index)
-adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside every chain (L51); reviewer.hard/sol; zai-glm-5.3 at low; five alibaba-token-plan models; jail off, the owner 2026-10-05 (#98); seven more entries 2026-10-06, all outside every chain until the owner places them: mm-m3 (thinking), mm-m2.7 (no variant), ali-deepseek-pro (the dated -0813 id), ali-deepseek-flash, ali-qwen-max (low), ali-qwen-flash (medium), ali-glm)
+adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside every chain (L51); reviewer.hard/sol; zai-glm-5.3 at low; five alibaba-token-plan models; jail off, the owner 2026-10-05 (#98); seven more entries 2026-10-06, placed the same day (the owner): implementer chain + mm-m2.7 + ali-qwen-flash; reviewer.hard + ali-glm + ali-qwen-max; the rest explicit-model roles: mm-m3 (thinking), mm-m2.7 (no variant), ali-deepseek-pro (the dated -0813 id), ali-deepseek-flash, ali-qwen-max (low), ali-qwen-flash (medium), ali-glm)
 adapt .claude/agents/reviewer.md  (effort: medium for Opus, the owner 2026-10-05)
 adapt docs/process.md  (§3: the effort comes from harness.json, CLAUDE.md rule 6)
 adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness.json keys and the quota check)
