@@ -1,0 +1,35 @@
+# Starting state
+
+Written by the main session at promotion, never by a research task. The summary describes only
+`supported` and `corroborated` claims. Everything else stays in the table.
+
+## Summary
+
+*Isle Wars Pro*, unregistered, as read from its code: a fresh game runs one fixed chain — the
+new-game reset, a display frame, then a single frame script that makes the whole starting state in
+three calls: the deal, the centre placement (F015), and the first-seat selection (C-STA-01). The
+deal fills a list to 46 entries by drawing seats and appending **computer seats only**, under a
+soft per-seat threshold of 15 counted on first draws and applied as two sweeps of four ordered
+checks (up to eight redraws in one fill iteration; the final redraw still passes the computer-seat
+append gate) (C-STA-02). Each human seat then overwrites **exactly** its level's number of entries
+— 5, 9, 14 or 16 — and the unregistered layout forces exactly one human, at seat 1 (C-STA-03).
+The list is shuffled by 46 draw-and-remove draws, and a per-country pass builds ownership, seat
+lists and one army draw of 1 to the starting-armies option (forced to 3 in this build) per country
+(C-STA-04, C-STA-05). The first seat is an animated draw whose stored result is decremented one
+seat and then compensated by the turn advance, so the last-shown seat plays first when it ends the
+deal occupied (C-STA-06). No file loads a prescribed ownership, army or centre position; the only
+starting state a file can move is the human's dealt share, through the difficulty value the
+unregistered forcing leaves in place (C-STA-07). What varies between games is exactly the deal,
+the armies, the centres and the first seat — the board never does (C-BRD-01).
+
+## Claims
+
+| ID | Claim | Status | Scope | Basis | Findings |
+| --- | --- | --- | --- | --- | --- |
+| C-STA-01 | A fresh game runs a fixed chain: the new-game reset (every country's piece swapped to its empty-country image, card hands emptied), a display frame, and one frame script that calls the deal, the centre placement and the first-seat selection in that order. The deal first zeroes the game-level state — the quit-early, fast-forward, game-over, scoring and turn-local globals — and sets the do-not-score counter to the number of human seats (the counter F012's surrender reading sees at the game's end). Exactly four things vary between games: the deal, the starting armies, the centres and the first seat; the board never does. | supported | Pro, set `iwp-2.0-996e86c5`, unregistered; a static reading of ProjectorRays 0.2.0 output (V0), draw bounds and structures confirmed against the bytecode listing by a committed checker (E016, 25 checks); not yet corroborated by play (T28); Q-STA-03, Q-MAP-06 (deal half) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
+| C-STA-02 | The fill loop: while the deal list holds fewer than 46 entries, draw a seat (1 to 4), increment that seat's draw counter unconditionally (before any test), apply the cap, and append the drawn value **only when it names a computer seat** — so draws on human seats are wasted and the loop repeats until 46 appends. The cap is a soft per-seat threshold of 15 on those first-draw counters, applied as two sweeps of four ordered seat checks in which each redraw reassigns the tested seat, so one fill iteration can redraw up to eight times; the last redraw is unchecked against the threshold only — the computer-seat append gate still applies to it. The counters are counts of first draws, not holdings: a counter can overcount a seat's entries (human draws, redrawn-away first draws) or undercount them (a redraw appending a computer seat without a matching first draw). | supported | as C-STA-01; Q-STA-01, Q-MAP-10 (deal half); about 90% | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
+| C-STA-03 | After the fill, each human seat overwrites **exactly** its level's number of the 46 dealt entries with its own seat number — 5 at difficulty 1, 9 at 2, 14 at 3, 16 at 4 (11 in the registered all-human branch this build cannot reach; read as code data, never claimed as registered behaviour). The unregistered forcing sets the opponent table to exactly one human, at seat 1, so the computer seats split the remaining 41/37/32/30 entries unevenly in time under the soft threshold. This sharpens F016's C-AI-08 "at least" to "exactly" for this build. | supported | as C-STA-01; Q-STA-01, Q-STA-04, Q-AI-03; about 95% (bytecode-checked minimums) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
+| C-STA-04 | The filled list is shuffled by repeated draw-and-remove — one draw per removed entry, 46 draws with descending bounds 46 down to 1 — and a per-country pass then builds the ownership table, the per-seat country lists and the board display from it. The deal list itself is a global (the handlers' shared slot), built and read by the deal handler alone. | supported | as C-STA-01; Q-STA-01; about 90% | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
+| C-STA-05 | The starting armies: one draw of 1 to the starting-armies option value per country, so every country starts with 1 to 3 armies at the unregistered default (the option is forced to 3 after the defaults load). No file-supplied armies value survives in this build. What the armies do to the opening is unestablished (a question for T28 and malpaco, not a reading). | supported | as C-STA-01; Q-STA-02; about 90% | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
+| C-STA-06 | The first seat: an animated draw of 9 to 18 iterations whose stored result is decremented by one seat at the end. The turn-start advance then increments that stored value (wrapping 4 to 1) before dispatching play and skips empty seats, so the last-shown seat plays first **when it ends the deal occupied**; whether the score's frame order can ever leave the advance genuinely skipped is undecoded, and T28 records each seat's initial holdings to tell empty-seat skipping from a skipped advance. | supported | as C-STA-01; Q-STA-01's first-seat half; about 80% (the score's frame order is not decoded) | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
+| C-STA-07 | No file loads a prescribed ownership, army or centre position. Three files are checked or read at start (the registration file, the defaults file and the scores file), and the only starting state a file can move is the human's dealt share: the defaults file's difficulty value survives the unregistered forcing (the seat layout and the starting-armies option do not) and fixes which exact share 5/9/14/16 the human gets. A hand-edited difficulty is T28's to test. | supported | as C-STA-01; Q-STA-05, Q-SET-07's boundary; about 90% | static:decompile (`Islepro.exe` sha256 `c4d7a248…`) | [F018](../findings/F018-pro-deal-rules.md) |
