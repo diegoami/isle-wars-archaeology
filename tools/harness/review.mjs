@@ -10,7 +10,7 @@
 // GitHub (the agent file denies it); this script is the only writer.
 //
 // The models are harness.json's reviewer.chain, then its claudeFallback (the full profile: GPT-5.6
-// Luna on the direct OpenAI route (L51), then Claude Opus; the review profile: GLM-5.3 Flash, Luna and
+// Luna on the direct OpenAI route, then Claude Opus; the review profile: GLM-5.3 Flash, Luna and
 // DeepSeek V4.1 Flash, then the owner). It is never the implementer's model family: --exclude
 // (implement.mjs prints the name on its "implemented by:" line, or "claude"), else a model:<name>
 // label on the PR or --issue. Runs use the scripts' own OpenCode data directory.
@@ -50,7 +50,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
-import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError } from './lib/opencode.mjs';
+import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
 import { credentialJail, OFF_WARNING } from './lib/jail.mjs';
 import { runChain, excludeImplementers, readReview, doneWhenCount, briefTargets } from './lib/chain.mjs';
 import { planPost, publish, postComment, applyLabel, withdrawApproval, combinePlans } from './lib/post.mjs';
@@ -116,10 +116,11 @@ try { opencode = resolveOpenCode(); } catch (e) {
   throw e;
 }
 // OpenCode, and every command it runs, in the credential jail (lib/jail.mjs, #68): the reviewer
-// reads and tests, and this script posts. Where the jail cannot run, the log says so first.
-const jail = credentialJail();
-if (jail.off) say(OFF_WARNING(jail.off));
-else opencode = { exe: jail.exe, prefix: [...jail.args, '--', opencode.exe, ...opencode.prefix] };
+// reads and tests, and this script posts. Only where harness.json turns it on (jail.enabled); where
+// it is on but cannot run, the log says so first.
+const jail = config.jail?.enabled === true ? credentialJail() : { off: 'harness.json does not enable it', quiet: true };
+if (jail.off && !jail.quiet) say(OFF_WARNING(jail.off));
+else if (!jail.off) opencode = { exe: jail.exe, prefix: [...jail.args, '--', opencode.exe, ...opencode.prefix] };
 if (!chain.length) die(3, `OpenCode unavailable: no reviewer left after excluding ${implementedBy.join(', ')}. ${fallback}`);
 // A second opinion (--second-opinion, for a critical PR): reviewer.secondOpinion, else the chain's
 // other models, never the model that wrote the first review (#39).
@@ -222,7 +223,8 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
         if (!(e instanceof OpenCodeInfraError)) throw e;
         return { ok: false, reason: e.reason, detail: e.message };
       }
-      if (run.exitCode !== 0) return { ok: false, reason: `exit ${run.exitCode}`, detail: run.output };
+      // OpenCode's own error stream on a failed run, never the model's output (Luna's R1, round 2).
+      if (run.exitCode !== 0) return { ok: false, reason: keyProblem(run.stderr, model.id, reviewEnv.XDG_DATA_HOME) ?? `exit ${run.exitCode}`, detail: run.output };
       if (run.agentFallback) return { ok: false, reason: 'fell back to the default agent', detail: run.output };
       if (run.permissionRejected) {
         return { ok: false, reason: `permission rejected: ${run.permissionRejected}${run.permissionHint ? `; ${run.permissionHint}` : ''}`, detail: run.output };

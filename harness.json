@@ -1,5 +1,9 @@
 {
   "worktreeRoot": "../{repo}-work",
+  "jail": {
+    "enabled": false,
+    "watch": "Off, the owner 2026-10-05: HARNESS_BWRAP's path is missing on this machine (#98 made it opt-in)."
+  },
   "models": {
     "deepseek-flash": {
       "id": "opencode-go/deepseek-v4.1-flash",
