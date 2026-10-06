@@ -1,0 +1,8 @@
+== addendum: corrected stats over this transcript's records only (the block above died on a string/number type; no measurement changed)
+new records: E004-r0158..E004-r0173 (16: 2x3 fault-arm repeats, 10 control), code_commit b70c013
+DW2 sigkill-mid-cycle: r0159 aborted: game-died, reset performed: yes; r0158 and r0160 completed — exit 0
+DW2 kill-mid-cycle: r0162 aborted: game-died, reset performed: yes; r0161 and r0163 completed — exit 0
+DW1 control r0164-r0173: 10 of 10 completed; before-pixels sha256 fecd0a984e0d2f36... (1 distinct); seconds 9.17-9.52, median 9.375
+DW4: faulted repeats 8.19 s (r0159) and 8.65 s (r0162); every arm's median (9.375, 9.350, 9.090) below E002's 40-46 s
+DW5: iwp-runtime.sh printed ready; register_artifact check: unlisted unins000.dat, unins000.exe; ok — exit 0
+prefix vs baseline: equal before the runs and after all runs (all three registry files)
