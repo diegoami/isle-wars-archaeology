@@ -33,3 +33,6 @@ status; this index carries none.
 | T22 | Cards and trade-ins: Pro Lingo reading | #70 | T17, T29 |
 | T23 | Production centres and hazards: Pro Lingo reading | #71 | T17, T29 |
 | T27 | Computer opponent: Pro Lingo reading | #79 | T17, T29 |
+| T32 | Board and adjacency: Pro Lingo reading (T18 part 1) | #96 | T17, T31 |
+| T33 | The deal and starting state: Pro Lingo reading (T18 part 2) | #97 | T17, T31, T27 |
+| T34 | Setup, seats, files and randomness: Pro Lingo reading (T18 part 3) | #98 | T17, T31 |
