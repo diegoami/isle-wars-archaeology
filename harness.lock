@@ -2,7 +2,7 @@
 # A bump: move this file and every file it lists aside, run adopt.mjs at the new commit,
 # then carry your changes to the adapted files (and any other) over to the new copies.
 # Verify:  grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet
-commit 7a9ebae7f9b04e81524ae71760ca820af8144448
+commit b8c6cde350031be7437255d402a0286234d8e5a5
 profile full
 copied 2026-10-06
 adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6 per the owner, with L50 and L51)
@@ -23,8 +23,9 @@ adapt tools/harness/review.mjs  (output rules: the static folder read-only, a /t
 0c9f0d80af3d6605e73ecda14901b6cb3b829f25641dcf5fc90ca7f7ef42474b  .claude/skills/run-task/SKILL.md
 e99fedef64f7850a76794396088568a4046692abfc6ff14aabadf81bc83fe65c  .claude/skills/switch-model/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
+c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
-f9afb28a392daa39ed9902501133c8bfa760ff77eb655b7cb131a7afdfdba47e  docs/lessons.md
+26abc03efcef23d78e3bbd8d07106afbb1b8f919c70ebff85dcd01a8f48e5c34  docs/lessons.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
 35964958676a12a7aae7493eb162db2249cafbdbf8b12c81643fd69044e3e3b8  tools/harness/implement.mjs
@@ -35,11 +36,11 @@ f9afb28a392daa39ed9902501133c8bfa760ff77eb655b7cb131a7afdfdba47e  docs/lessons.m
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
-9fc504a54659208d5cf46c05cb3b0e5a651c073230811db2b196dac835e49443  tools/harness/lib/opencode.mjs
+44cc792f4867614f7995940862256ee719b5db50a335f6ae432e932d6af0eacf  tools/harness/lib/opencode.mjs
 7d0ee40ee7706ba9209747b9335c133e15e6443b8eebba311ebb41c15f5d382d  tools/harness/lib/post.mjs
-c874bac536218977b37e168dbfa8f5cb084a9dfc782d730d8ab3c1f8d650453f  tools/harness/lib/quota.mjs
+b414bb92b06f6b4d48083146c5986fed8c61cb100906a501042a5879d23b0c4d  tools/harness/lib/quota.mjs
 1298334b7b52bcc72b949a576f33ee1aa0fe162c6693938f8e9cab7de4acf4ce  tools/harness/lib/review-selftest.mjs
-0b8472da849a127efecf63f7fca23779c649ba448a1a2581fd288419b110d5c3  tools/harness/lib/switch.mjs
+7ff1c2e4d238bb3e5e6210ac170d0579a5c3eeada083ea78bb31f4ab4d12c43d  tools/harness/lib/switch.mjs
 4177a849a38ffae17dd460d9c210860d92ef0766dd4d79ca170ee07119c9eae8  tools/harness/lib/unsaved.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
