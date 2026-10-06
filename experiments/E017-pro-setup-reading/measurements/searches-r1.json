@@ -1,0 +1,82 @@
+{
+ "what": "the whole-corpus searches F019's absence claims rest on, over the 213 decompiled scripts of run pro-r1 (read in place in the static folder; nothing kept but this record: names, counts and booleans only, no code). Search terms are described in words; each is re-runnable with any terminal search over the run's folder.",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "seed_search": {
+  "searched": "every one of the 213 decompiled scripts, case-insensitively, for (a) the English word for a seed and (b) the name of Director's random-seed property",
+  "files_searched": 213,
+  "files_matching": 0,
+  "reads": "no handler sets, reads, stores or displays any seed; no seed field exists in any of the three files the game keeps (Q-RND-01)"
+ },
+ "random_census": {
+  "searched": "every decompiled script for the name of Director's random-value built-in, as a whole word",
+  "files_with_calls": 17,
+  "total_calls": 91,
+  "per_script": [
+   {"script": "BehaviorScript 14", "calls": 6},
+   {"script": "BehaviorScript 4", "calls": 1},
+   {"script": "BehaviorScript 400", "calls": 1},
+   {"script": "BehaviorScript 54", "calls": 2},
+   {"script": "MovieScript 5 Putinboard", "calls": 13},
+   {"script": "MovieScript 50 Rolldice", "calls": 2},
+   {"script": "MovieScript 51 putinproductioncenters", "calls": 1},
+   {"script": "MovieScript 333 ComputerPlaceArmies", "calls": 29},
+   {"script": "MovieScript 334 Computerattack", "calls": 2},
+   {"script": "MovieScript 336 ATTACKHIM", "calls": 1},
+   {"script": "MovieScript 337 computerrolldice", "calls": 8},
+   {"script": "MovieScript 338 MakeComputerMove", "calls": 7},
+   {"script": "MovieScript 345 SELECTACARD", "calls": 1},
+   {"script": "MovieScript 364 PutinFlood", "calls": 6},
+   {"script": "MovieScript 365 Putinrebellion", "calls": 5},
+   {"script": "MovieScript 398 CompCards", "calls": 2},
+   {"script": "MovieScript 399 WHOGOESFIRST", "calls": 4}
+  ],
+  "reads": "one stream at the Lingo level: every draw goes through the same built-in, and no script reseeds or redirects it (Q-RND-02, Q-RND-03)"
+ },
+ "file_io_census": {
+  "searched": "every decompiled script for the names of Director's file xtra calls (open, create, read, write)",
+  "scripts_with_file_calls": 6,
+  "per_script": [
+   {"script": "MovieScript 1 Startmovie", "handles": "presence scan of the game folder and its data subfolder; creates the defaults, scores or registration file when missing"},
+   {"script": "MovieScript 455 WRITESCORES", "handles": "the scores file (writes, through the scores reader and the cipher pair)"},
+   {"script": "MovieScript 458 getdefaults", "handles": "the defaults file (reads and writes)"},
+   {"script": "MovieScript 471 READSCORES", "handles": "the scores file (reads)"},
+   {"script": "MovieScript 480 checkupg", "handles": "the registration file (reads and writes)"},
+   {"script": "CastScript 636 reset2", "handles": "the scores file (writes zeros, the scores screen's reset button)"}
+  ],
+  "files_named": ["Isledft.dat", "Islepro.skr", "Islepro.dat"],
+  "reads": "no handler opens any other file; no save, load, export or import exists anywhere in the corpus (Q-SET-05, Q-SET-06)"
+ },
+ "reader_censuses": {
+  "searched": "every decompiled script for each option value's name (whole word); every match read and classified as a reader or not",
+  "speed": {
+   "scripts": ["BehaviorScript 457", "BehaviorScript 479", "BehaviorScript 500 SPEEDbehavior", "MovieScript 1 Startmovie", "MovieScript 333 ComputerPlaceArmies", "MovieScript 458 getdefaults"],
+   "reads": "display (two identical frames), the option button, the delay helpers (each waits a multiple of the value), two animation-repeat loops in the placement handler, and the defaults load/save; no rule code reads it"
+  },
+  "starting_armies": {
+   "scripts": ["BehaviorScript 457", "BehaviorScript 479", "BehaviorScript 496 startingnumarmybehavior", "MovieScript 458 getdefaults", "MovieScript 5 Putinboard"],
+   "reads": "display, option button, defaults load/save, and the deal's per-country draw (F018's list, re-confirmed)"
+  },
+  "event_frequency": {
+   "scripts": ["BehaviorScript 4", "BehaviorScript 457", "BehaviorScript 479", "BehaviorScript 499 FREQbehavior", "MovieScript 458 getdefaults"],
+   "reads": "display, option button, defaults load/save, and the event frame's chance (F015/T23's reader)"
+  },
+  "seat_table": {
+   "scripts_read_or_written": ["BehaviorScript 4", "BehaviorScript 14", "BehaviorScript 457", "BehaviorScript 458 getdefaults", "BehaviorScript 470", "BehaviorScript 479", "CastScript 347 newgame2", "CastScript 568 HumanH", "CastScript 569 ComputerC", "MovieScript 5 Putinboard", "MovieScript 10 Checkturn", "MovieScript 6 CheckNumberofArmies"],
+   "scripts_declaration_only": ["BehaviorScript 463", "BehaviorScript 465", "BehaviorScript 473", "BehaviorScript 474", "BehaviorScript 506", "CastScript 604 PGAME2", "MovieScript 1 Startmovie", "MovieScript 23 Newgame"],
+   "reads": "20 scripts name the table in all: 12 read it (the two event/end frames' checks, the computer turn frame's dispatch, both display frames, the defaults forcing and validation, the end screen's win routing, the new-game credit check, the two toggles, the deal's copy and fill, the turn dispatch, the income's seat checks) and 8 declare it without using it; the only writers are the defaults forcing and the two toggles (F018's writer search, re-confirmed)"
+  },
+  "registration_flag": {
+   "scripts": ["BehaviorScript 450", "BehaviorScript 470", "BehaviorScript 473", "BehaviorScript 475", "BehaviorScript 496 startingnumarmybehavior", "BehaviorScript 499 FREQbehavior", "BehaviorScript 510", "CastScript 355 quit2", "CastScript 568 HumanH", "CastScript 569 ComputerC", "CastScript 636 reset2", "CastScript 666 exit2", "CastScript 671 returnf2", "MovieScript 1 Startmovie", "MovieScript 458 getdefaults", "MovieScript 480 checkupg", "MovieScript 494 Getusernames", "MovieScript 549 checkfor"],
+   "reads": "18 scripts name the flag: 17 branch on it (the option locks, the seat toggles, the scores cap and its notice, the reset button's hover images, the title and quit/exit screen routing, the checker, the entry handler, the entry key-watcher trigger, the title screen's registration line, the forcing, the startup tamper value) and 1 (the scores reset button) declares it without testing it; every gate F019 lists is among them, and no script outside the 18 tests registration"
+  }
+ },
+ "menu_walk": {
+  "searched": "every handler reachable from the bottom menu and the screens it opens, read in full; each names what it opens or does",
+  "bottom_menu": ["new game (CastScript 347)", "options (CastScript 349)", "soleau screen (CastScript 351)", "scores (CastScript 353)", "quit (CastScript 355)", "help (CastScript 668)"],
+  "soleau_screen": ["order-form print (CastScript 662, the print xtra)", "online page (CastScript 664)", "web site (CastScript 688)"],
+  "options_screen": ["save defaults (CastScript 602)", "play game (CastScript 604)", "sound toggle (CastScripts 591 and 592)", "return buttons (CastScripts 605, 606, 607)"],
+  "reads": "no save, load, export or import control exists in any menu (Q-SET-05, Q-SET-06)"
+ }
+}
