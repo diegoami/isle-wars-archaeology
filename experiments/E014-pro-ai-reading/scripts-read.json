@@ -1,0 +1,176 @@
+{
+ "what": "the decompiled Lingo scripts read for F016 (T27), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "count": 21,
+ "scripts": [
+  {
+   "kind": "MovieScript",
+   "number": 1,
+   "name": "Startmovie",
+   "handlers": ["startMovie", "Count15", "count1", "count10", "count30", "count60", "count5", "count3", "count2", "EEMPTY"],
+   "lines": 217,
+   "ls_sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 5,
+   "name": "Putinboard",
+   "handlers": ["Putinboard"],
+   "lines": 176,
+   "ls_sha256": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 6,
+   "name": "CheckNumberofArmies",
+   "handlers": ["CheckNumberofArmies"],
+   "lines": 287,
+   "ls_sha256": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 50,
+   "name": "Rolldice",
+   "handlers": ["RollDice"],
+   "lines": 50,
+   "ls_sha256": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 75,
+   "name": "",
+   "handlers": ["PutinInfo"],
+   "lines": 84,
+   "ls_sha256": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 333,
+   "name": "ComputerPlaceArmies",
+   "handlers": ["computerplacearmies"],
+   "lines": 903,
+   "ls_sha256": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 334,
+   "name": "Computerattack",
+   "handlers": ["Computerattack"],
+   "lines": 186,
+   "ls_sha256": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 335,
+   "name": "GetValidArmys",
+   "handlers": ["GetvalidArmys"],
+   "lines": 64,
+   "ls_sha256": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 336,
+   "name": "ATTACKHIM",
+   "handlers": ["ATTACKHIM"],
+   "lines": 82,
+   "ls_sha256": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 337,
+   "name": "computerrolldice",
+   "handlers": ["ComputerRollDice"],
+   "lines": 285,
+   "ls_sha256": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 338,
+   "name": "MakeComputerMove",
+   "handlers": ["MakeComputerMove"],
+   "lines": 315,
+   "ls_sha256": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 397,
+   "name": "CompCheckCardMatch",
+   "handlers": ["CompCheckCardMatch"],
+   "lines": 164,
+   "ls_sha256": "81bd1b62fc1ed7368950e8627feda11823167ece5b1e11772ad20f9a3aa0fe29"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 398,
+   "name": "CompCards",
+   "handlers": ["CompCards"],
+   "lines": 84,
+   "ls_sha256": "4595e8243633d8f08addf9ed3f67341b4d79a90e2520060a2974780316b6c258"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 458,
+   "name": "getdefaults",
+   "handlers": ["Getdefaults", "SaveDefaults"],
+   "lines": 79,
+   "ls_sha256": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 14,
+   "name": "",
+   "handlers": ["exitFrame"],
+   "lines": 123,
+   "ls_sha256": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 455,
+   "name": "WRITESCORES",
+   "handlers": ["writescores"],
+   "lines": 35,
+   "ls_sha256": "a391db8de5dda491b912fa87123c66ba5998c9e9e6e4fe2b91b7d0710911d610"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 498,
+   "name": "STRENGTHbehavior",
+   "handlers": ["mouseDown"],
+   "lines": 54,
+   "ls_sha256": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 500,
+   "name": "SPEEDbehavior",
+   "handlers": ["mouseDown"],
+   "lines": 54,
+   "ls_sha256": "6f50f2e2c4d97f232bd5a572964ecab7b7a8d8351fda68c780f153d5f7913e29"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 457,
+   "name": "",
+   "handlers": ["exitFrame"],
+   "lines": 66,
+   "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 479,
+   "name": "",
+   "handlers": ["exitFrame"],
+   "lines": 66,
+   "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 506,
+   "name": "",
+   "handlers": ["exitFrame"],
+   "lines": 27,
+   "ls_sha256": "f3877662792c3113a108c7a0d3ca50b439896f05dd37fabd3b632236a5c10b18"
+  }
+ ]
+}
