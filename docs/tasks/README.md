@@ -32,3 +32,4 @@ status; this index carries none.
 | T21 | Reinforcement and island bonuses: Pro Lingo reading | #69 | T17, T31 |
 | T22 | Cards and trade-ins: Pro Lingo reading | #70 | T17, T29 |
 | T23 | Production centres and hazards: Pro Lingo reading | #71 | T17, T29 |
+| T27 | Computer opponent: Pro Lingo reading | #79 | T17, T29 |
