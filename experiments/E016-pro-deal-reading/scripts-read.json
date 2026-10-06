@@ -1,0 +1,211 @@
+{
+ "what": "the decompiled Lingo scripts read for F018 (T33), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "count": 19,
+ "scripts": [
+  {
+   "kind": "MovieScript",
+   "number": 1,
+   "name": "Startmovie",
+   "handlers": [
+    "startMovie",
+    "Count15",
+    "count1",
+    "count10",
+    "count30",
+    "count60",
+    "count5",
+    "count3",
+    "count2",
+    "EEMPTY"
+   ],
+   "lines": 217,
+   "ls_sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 5,
+   "name": "Putinboard",
+   "handlers": [
+    "Putinboard"
+   ],
+   "lines": 176,
+   "ls_sha256": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 23,
+   "name": "Newgame",
+   "handlers": [
+    "Newgame"
+   ],
+   "lines": 53,
+   "ls_sha256": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 49,
+   "name": "Showstrength",
+   "handlers": [
+    "showstrength"
+   ],
+   "lines": 4,
+   "ls_sha256": "4ef4c546c7a7bf5aaf0e32c9c57961731e9c9e2411f4c5c8da4a02a70b46982e"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 51,
+   "name": "putinproductioncenters",
+   "handlers": [
+    "Putinproductioncenters"
+   ],
+   "lines": 33,
+   "ls_sha256": "9edb5fc3c8d853d0968f9203500196218e25bbe3600a30dc89c79d7fde1aad18"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 399,
+   "name": "WHOGOESFIRST",
+   "handlers": [
+    "WHOGOESFIRST"
+   ],
+   "lines": 43,
+   "ls_sha256": "d213ef3a4b8a4b331118851ed781c60f905e495ca6e15d22ceb4f592766260c8"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 455,
+   "name": "WRITESCORES",
+   "handlers": [
+    "writescores"
+   ],
+   "lines": 35,
+   "ls_sha256": "a391db8de5dda491b912fa87123c66ba5998c9e9e6e4fe2b91b7d0710911d610"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 458,
+   "name": "getdefaults",
+   "handlers": [
+    "Getdefaults",
+    "SaveDefaults"
+   ],
+   "lines": 79,
+   "ls_sha256": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 471,
+   "name": "READSCORES",
+   "handlers": [
+    "READSCORES"
+   ],
+   "lines": 23,
+   "ls_sha256": "60bb20206efcc5cf1cbdddef86366ef311fa240bf2502200c84cbf67c4d9378c"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 480,
+   "name": "checkupg",
+   "handlers": [
+    "CHECKUPG",
+    "WRITEUPG",
+    "CIPHER",
+    "UNCIPHER"
+   ],
+   "lines": 103,
+   "ls_sha256": "8e7fa4b8cfcb964198edb33a529bcc5d83d4a51b204b3bb01dee9a16e14e42af"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 2,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 11,
+   "ls_sha256": "606e983ed268793bfd4df8a8d827d0489abc989d7fbcbfefddd7ae3a08f955f4"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 3,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 9,
+   "ls_sha256": "dd0fbf7df481b8dc3359109d7a2caae0bef13fb6d9cbcdfe91a9971b3be15666"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 48,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 5,
+   "ls_sha256": "b33b959f40b9b409cf5dd023c26d3a59863d5153fb11d57288918f5e2a1f3b2a"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 457,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 66,
+   "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 479,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 66,
+   "ls_sha256": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 496,
+   "name": "startingnumarmybehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 93,
+   "ls_sha256": "9942d358867caaa5df45cfbdb96fbac5238867b8b5721e81d0432ddf3a6d66bd"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 498,
+   "name": "STRENGTHbehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 54,
+   "ls_sha256": "5d35800def7865711cc3e4cbb3ec2f23cd1b3ebb960531ee0552282f8fae9b4b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 568,
+   "name": "HumanH",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 51,
+   "ls_sha256": "20370f1e67c986ca1eb0fdb1c264410b15646087d9854e83fb894976f233eed2"
+  },
+  {
+   "kind": "CastScript",
+   "number": 569,
+   "name": "ComputerC",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 44,
+   "ls_sha256": "df15cc9583e194e89b0d1e82d620dfac33e86340309be56c57b11e91455566da"
+  }
+ ]
+}
