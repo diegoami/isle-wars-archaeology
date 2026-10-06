@@ -1,0 +1,112 @@
+{
+ "what": "each script listed in scripts-read.json, hashed in place in the static folder of run pro-r1, against the record's ls_sha256 (nothing copied; no path or code kept)",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "matched": 13,
+ "listed": 13,
+ "rows": [
+  {
+   "script": "MovieScript 1",
+   "file": "MovieScript 1 - Startmovie.ls",
+   "bytes": 6443,
+   "sha256_on_disk": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "ls_sha256_in_record": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "match": true
+  },
+  {
+   "script": "MovieScript 5",
+   "file": "MovieScript 5 - Putinboard.ls",
+   "bytes": 3871,
+   "sha256_on_disk": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+   "ls_sha256_in_record": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+   "match": true
+  },
+  {
+   "script": "MovieScript 6",
+   "file": "MovieScript 6 - CheckNumberofArmies.ls",
+   "bytes": 6956,
+   "sha256_on_disk": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+   "ls_sha256_in_record": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+   "match": true
+  },
+  {
+   "script": "MovieScript 23",
+   "file": "MovieScript 23 - Newgame.ls",
+   "bytes": 1561,
+   "sha256_on_disk": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+   "ls_sha256_in_record": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+   "match": true
+  },
+  {
+   "script": "MovieScript 333",
+   "file": "MovieScript 333 - ComputerPlaceArmies.ls",
+   "bytes": 25785,
+   "sha256_on_disk": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "ls_sha256_in_record": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "match": true
+  },
+  {
+   "script": "MovieScript 334",
+   "file": "MovieScript 334 - Computerattack.ls",
+   "bytes": 5638,
+   "sha256_on_disk": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411",
+   "ls_sha256_in_record": "1efe90ddd7f996c15520cb28afc9728d37bf4880854b9be8c1b498819b645411",
+   "match": true
+  },
+  {
+   "script": "MovieScript 335",
+   "file": "MovieScript 335 - GetValidArmys.ls",
+   "bytes": 1295,
+   "sha256_on_disk": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67",
+   "ls_sha256_in_record": "c410aad49474a4c1efb8f4b48dbcf823ca1014f3209f2f9d39cfd2c3881afd67",
+   "match": true
+  },
+  {
+   "script": "MovieScript 336",
+   "file": "MovieScript 336 - ATTACKHIM.ls",
+   "bytes": 2738,
+   "sha256_on_disk": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea",
+   "ls_sha256_in_record": "614604e885cc3d0d6a209813f07f3896ce8ff4fa47d814313c728bafd7bf80ea",
+   "match": true
+  },
+  {
+   "script": "MovieScript 337",
+   "file": "MovieScript 337 - computerrolldice.ls",
+   "bytes": 7741,
+   "sha256_on_disk": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "ls_sha256_in_record": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "match": true
+  },
+  {
+   "script": "MovieScript 338",
+   "file": "MovieScript 338 - MakeComputerMove.ls",
+   "bytes": 6745,
+   "sha256_on_disk": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+   "ls_sha256_in_record": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 400",
+   "file": "BehaviorScript 400.ls",
+   "bytes": 9857,
+   "sha256_on_disk": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+   "ls_sha256_in_record": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 457",
+   "file": "BehaviorScript 457.ls",
+   "bytes": 1876,
+   "sha256_on_disk": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "ls_sha256_in_record": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 479",
+   "file": "BehaviorScript 479.ls",
+   "bytes": 1876,
+   "sha256_on_disk": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "ls_sha256_in_record": "3651c5aac7a4ca3f594e513e9ce79a5355394de8143918688d7ddca7a7412387",
+   "match": true
+  }
+ ]
+}
