@@ -2,7 +2,7 @@
  "what": "the decompiled Lingo scripts read for F014 (T22), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
  "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
  "run": "pro-r1",
- "count": 36,
+ "count": 38,
  "scripts": [
   {
    "kind": "MovieScript",
@@ -174,6 +174,26 @@
    ],
    "lines": 11,
    "ls_sha256": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 340,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 9,
+   "ls_sha256": "6beab3964eafc126afed6d077d5412a043846eb4bd9875aff69b8588b0ece256"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 343,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 10,
+   "ls_sha256": "29b2e650571f5c28edae1fff1819eec1a16d434ef068093996ce3f5afb816ea8"
   },
   {
    "kind": "BehaviorScript",
