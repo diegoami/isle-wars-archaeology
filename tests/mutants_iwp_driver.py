@@ -313,10 +313,29 @@ MUTANTS = [
 ]
 
 
+def fresh_cache_python(args, cwd=ROOT):
+    """Run python with `args` and a throwaway bytecode cache, and return the CompletedProcess.
+
+    Each run gets a fresh bytecode cache (`-X pycache_prefix` into a throwaway directory): Python
+    accepts a __pycache__ entry when the source's size and mtime second match, and two mutants of
+    one file with the same resulting size, written within the same second, would otherwise have the
+    subprocess silently run the previous mutant's code (seen as flaky SURVIVED lines; the behaviour
+    is visited by tests/test_mutants_cache.py). A fresh cache makes each run compile the source it
+    is given."""
+    import shutil
+    import tempfile
+    cache = tempfile.mkdtemp(prefix="iwp-mutants-pyc-")
+    try:
+        return subprocess.run([sys.executable, "-X", f"pycache_prefix={cache}"] + args,
+                              cwd=cwd, capture_output=True, text=True)
+    finally:
+        shutil.rmtree(cache, ignore_errors=True)
+
+
 def tests_pass(ids):
     """True when the tests pass. A skipped target test proves nothing either way, so any skip
     stops the script loudly instead of reading as a pass or a kill."""
-    done = subprocess.run([sys.executable, "-m", "unittest", "-v"] + ids, cwd=ROOT, capture_output=True, text=True)
+    done = fresh_cache_python(["-m", "unittest", "-v"] + ids)
     skipped = [line for line in done.stderr.splitlines() if " ... skipped" in line]
     if skipped:
         print("STOPPED: target tests skipped, so no mutant can be shown killed:")

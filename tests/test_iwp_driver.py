@@ -117,13 +117,15 @@ class DriverWorld(World):
             self.calls.append(name)
         return stage
 
-    def start_game(self, session):
-        """In place of Session.start_game: a game that writes into the prefix and a process that carries the marker."""
+    def start_game(self, engine):
+        """In place of Engine.start_game (round 4 renamed its receiver: `self` here is the Engine, not a
+        Session), so it uses the same surfaces the real one does — engine.procs and engine.env — and never
+        reaches around the facade from inside."""
         self.calls.append("start_game")
-        session.t_launch = time.monotonic()
+        engine.t_launch = time.monotonic()
         self.write(self.prefix / "drive_c" / "Temp" / "x.dll", b"written by the game")
-        session._engine.procs["game"] = subprocess.Popen(["sleep", "60"], env=session._engine.env)
-        self.pidfile.write_text(str(session._engine.procs["game"].pid))
+        engine.procs["game"] = subprocess.Popen(["sleep", "60"], env=engine.env)
+        self.pidfile.write_text(str(engine.procs["game"].pid))
 
     def straggler(self, run_id, side):
         """A process that carries a marker, as the game side or the display side of a run would."""
@@ -236,10 +238,10 @@ class KillTest(DriverWorld):
     def test_a_game_that_is_gone_before_its_first_screen_is_game_died_at_once_not_a_timeout(self):
         self.screens["title"] = False
 
-        def dies(session):
-            self.start_game(session)
-            session.procs["game"].kill()
-            session.procs["game"].wait()
+        def dies(engine):
+            self.start_game(engine)
+            engine.procs["game"].kill()
+            engine.procs["game"].wait()
         started = time.monotonic()
         with mock.patch.object(sessionlib, "TITLE_TIMEOUT", 30), mock.patch.object(sessionlib.Engine, "start_game", dies):
             made = self.execute()
@@ -821,10 +823,11 @@ class MustTest(unittest.TestCase):
 class LivenessTest(DriverWorld):
     """Round 1, R3 and class C: both sides alive at every stage boundary, just before terminate included."""
 
-    def display(self, session):
-        """In place of Session.start_x: a display process of this run (a `sleep` with its display markers)."""
+    def display(self, engine):
+        """In place of Engine.start_x (`self` here is the Engine, round 4): a display process of this run
+        (a `sleep` with its display markers), through engine.procs and engine.display_env as the real one."""
         self.calls.append("start_x")
-        session._engine.procs["xvfb"] = subprocess.Popen(["sleep", "60"], env=session._engine.display_env)
+        engine.procs["xvfb"] = subprocess.Popen(["sleep", "60"], env=engine.display_env)
 
     def test_a_game_that_dies_after_complete_and_before_terminate_is_not_completed(self):
         real_complete = sessionlib.Session.complete
