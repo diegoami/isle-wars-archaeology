@@ -33,6 +33,12 @@ MOVIE_DIR = ("movie-01-out", "movie-01.abs", "casts", "Internal")
 SOURCE = ("MovieScript", 1, "Startmovie")
 N_COUNTRIES = 46
 TABLE_RE = re.compile(r"^\s*(IslandNum|ISLAND[1-9]|IC[1-9]|VIPC|BR[1-5]|ARRX|ARRY) = \[([0-9, ]*)\]\s*$")
+BOARD_TABLES = (["IslandNum", "VIPC", "ARRX", "ARRY"] + ["ISLAND%d" % i for i in range(1, 10)]
+                + ["IC%d" % i for i in range(1, 10)] + ["BR%d" % k for k in range(1, 6)])
+# the bytecode listing: a `setglobal` line names the global and renders the value it is given; the
+# push instructions since the previous `setglobal` line carry that value's entries, in order
+LASM_SETGLOBAL = re.compile(r"setglobal \d+ \.+ (\S+) = \[")
+LASM_PUSH = re.compile(r"push(?:int\d+|zero)\b.*<(-?\d+)>\s*$")
 
 
 def parse_tables(text):
@@ -46,6 +52,26 @@ def parse_tables(text):
         if name in tables:
             continue
         tables[name] = [int(x) for x in m.group(2).replace(" ", "").split(",") if x != ""]
+    return tables
+
+
+def bytecode_tables(lasm_text):
+    """The same tables as the bytecode listing carries them: the push arguments since the previous
+    setglobal line are the entries of the list the next setglobal stores, in order. Globals assigned a
+    non-list value (a bare number or a constant) are skipped, and their pushes do not leak into the
+    next table."""
+    tables = {}
+    pending = []
+    for line in lasm_text.splitlines():
+        if "setglobal" in line:
+            m = LASM_SETGLOBAL.search(line)
+            if m and pending and m.group(1) not in tables:
+                tables[m.group(1)] = pending
+            pending = []
+            continue
+        p = LASM_PUSH.search(line)
+        if p:
+            pending.append(int(p.group(1)))
     return tables
 
 
@@ -73,14 +99,16 @@ def main():
         errors.append("the start handler on disk does not match the record's ls_sha256")
 
     t = parse_tables(text)
-    for name in (["IslandNum", "VIPC", "ARRX", "ARRY"] + ["ISLAND%d" % i for i in range(1, 10)]
-                 + ["IC%d" % i for i in range(1, 10)] + ["BR%d" % k for k in range(1, 6)]):
+    for name in BOARD_TABLES:
         if name not in t:
             errors.append("table %s not found in the decompiled text" % name)
     if errors:
         for e in errors:
             print("FAIL", e)
         return 1
+
+    lasm = (folder / (file_name(SOURCE[0], SOURCE[1], SOURCE[2])[:-3] + ".lasm")).read_text()
+    bt = bytecode_tables(lasm)
 
     checks = {}
     island_num = t["IslandNum"]
@@ -91,6 +119,13 @@ def main():
         checks["border_table_%d_has_46_entries" % k] = len(br) == N_COUNTRIES
         checks["border_table_%d_entries_in_0_to_46" % k] = all(0 <= v <= N_COUNTRIES for v in br)
     checks["position_tables_have_46_entries_each"] = len(t["ARRX"]) == N_COUNTRIES and len(t["ARRY"]) == N_COUNTRIES
+
+    # Every board table entry confirmed in the bytecode listing: the pushed arguments before the
+    # table's store carry the same numbers in the same order.
+    missing = [name for name in BOARD_TABLES if name not in bt]
+    checks["every_board_table_in_the_bytecode_listing"] = not missing
+    checks["bytecode_entries_match_the_text_table_by_table"] = all(
+        bt.get(name) == t[name] for name in BOARD_TABLES)
 
     # Adjacency: country n's neighbours are the non-zero entries of its five border slots, in slot order.
     adjacency = {}
@@ -197,6 +232,8 @@ def main():
     print("countries %d, islands %d (sizes %s), edges %d directed %d, crossings %d directed %d"
           % (N_COUNTRIES, len(islands), [isl["size"] for isl in islands], total_edges, sum(degrees.values()),
              len(crossings), total_directed))
+    print("bytecode listing: %d of %d board tables found and matched entry by entry"
+          % (sum(1 for name in BOARD_TABLES if bt.get(name) == t[name]), len(BOARD_TABLES)))
     print("checks: %d of %d hold" % (sum(checks.values()), len(checks)))
     for e in errors:
         print("FAIL", e)

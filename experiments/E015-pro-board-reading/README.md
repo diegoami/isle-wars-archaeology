@@ -29,4 +29,6 @@ After the first measurement this file is append-only. A changed design is a new 
 ## Rounds
 
 - `board-tabulation-r1.json` (round 0): the first run. Its symmetry comparison held a bug (the country key taken from the dict iteration as text, so every reverse lookup missed) and the check wrongly failed while all 160 directed border entries do pair up. Kept as measured, never overwritten (rule 20); F017 does not cite it.
-- `board-tabulation-r1b.json` (round 1): the comparison fixed; all 28 checks hold; the file F017 cites.
+- `board-tabulation-r1b.json` (round 1): the comparison fixed; all 28 checks hold. Superseded within the hour by the bytecode cross-check below; F017 does not cite it.
+- `board-tabulation-r1c.json` (round 2): a bytecode cross-check added (every board table entry read back from the push instructions of the `.lasm` listing, in order). Its push regex missed the listing's rendered zero arguments, so four key lists and the three sparse border tables compared short. Kept; F017 does not cite it.
+- `board-tabulation-r1d.json` (round 3): the push regex fixed; all 30 checks hold, and all 27 board tables match the bytecode listing entry by entry. **The file F017 cites.**
