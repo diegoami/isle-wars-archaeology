@@ -67,8 +67,12 @@ how the run works.
   worktree.
   - **The static folder**, `~/.local/share/isle-wars-archaeology/static/`: unpacked and decompiled
     output that stays off the repository (CLAUDE.md rule 18). Read it, never write it: read with
-    shell commands (`sha256sum`, `cat`, `grep`, `head`, `ls`) and the `~/` path as written here;
-    never remove, move, copy, create or change anything there, and copy nothing from it into the
+    `grep`, `sed -n`, `head`, `ls` and `sha256sum`, giving the file's path (quoted when it has
+    spaces) exactly as written here with the leading `~`. Never `cd` into or toward it and never
+    `cat` a file in it: `cd` and `cat` paths are permission-checked as raw command text, and a
+    quoted path fails that check — one such command ends the whole run (2026-10-06, T23). Use
+    `sed -n '1,120p' <file>` where you would have used `cat`.
+    Never remove, move, copy, create or change anything there, and copy nothing from it into the
     worktree. Your review is published: cite a file there by its path and sha256, and describe what
     it shows in your own words; never paste its code or text.
   - **One scratch TMPDIR**, for a Done-when line that needs a TMPDIR outside every checkout: create
