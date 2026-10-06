@@ -1,0 +1,312 @@
+{
+ "what": "each script listed in scripts-read.json, hashed in place in the static folder of run pro-r1, against the record's ls_sha256 (nothing copied; no path or code kept)",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "matched": 38,
+ "listed": 38,
+ "rows": [
+  {
+   "script": "MovieScript 1",
+   "file": "MovieScript 1 - Startmovie.ls",
+   "bytes": 6443,
+   "sha256_on_disk": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "ls_sha256_in_record": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "match": true
+  },
+  {
+   "script": "MovieScript 23",
+   "file": "MovieScript 23 - Newgame.ls",
+   "bytes": 1561,
+   "sha256_on_disk": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+   "ls_sha256_in_record": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+   "match": true
+  },
+  {
+   "script": "MovieScript 50",
+   "file": "MovieScript 50 - Rolldice.ls",
+   "bytes": 1233,
+   "sha256_on_disk": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+   "ls_sha256_in_record": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f",
+   "match": true
+  },
+  {
+   "script": "MovieScript 75",
+   "file": "MovieScript 75.ls",
+   "bytes": 1896,
+   "sha256_on_disk": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad",
+   "ls_sha256_in_record": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad",
+   "match": true
+  },
+  {
+   "script": "MovieScript 333",
+   "file": "MovieScript 333 - ComputerPlaceArmies.ls",
+   "bytes": 25785,
+   "sha256_on_disk": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "ls_sha256_in_record": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "match": true
+  },
+  {
+   "script": "MovieScript 337",
+   "file": "MovieScript 337 - computerrolldice.ls",
+   "bytes": 7741,
+   "sha256_on_disk": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "ls_sha256_in_record": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "match": true
+  },
+  {
+   "script": "MovieScript 344",
+   "file": "MovieScript 344 - PUTINCARDS.ls",
+   "bytes": 1624,
+   "sha256_on_disk": "eb77a117abbcff742a42d2c544ec2c8643a58896d2b3f8df27b0302d9515d730",
+   "ls_sha256_in_record": "eb77a117abbcff742a42d2c544ec2c8643a58896d2b3f8df27b0302d9515d730",
+   "match": true
+  },
+  {
+   "script": "MovieScript 345",
+   "file": "MovieScript 345 - SELECTACARD.ls",
+   "bytes": 1815,
+   "sha256_on_disk": "0bc50c640aeb09aee1ead9094964526976ed2d933a47be05b0fc128880cd565a",
+   "ls_sha256_in_record": "0bc50c640aeb09aee1ead9094964526976ed2d933a47be05b0fc128880cd565a",
+   "match": true
+  },
+  {
+   "script": "MovieScript 366",
+   "file": "MovieScript 366 - CheckCardMatch.ls",
+   "bytes": 1141,
+   "sha256_on_disk": "14556981a17aa9bb1accd2ca963572052ccdcc228d7fec7decdcc8bafed4cdbe",
+   "ls_sha256_in_record": "14556981a17aa9bb1accd2ca963572052ccdcc228d7fec7decdcc8bafed4cdbe",
+   "match": true
+  },
+  {
+   "script": "MovieScript 397",
+   "file": "MovieScript 397 - CompCheckCardMatch.ls",
+   "bytes": 3218,
+   "sha256_on_disk": "81bd1b62fc1ed7368950e8627feda11823167ece5b1e11772ad20f9a3aa0fe29",
+   "ls_sha256_in_record": "81bd1b62fc1ed7368950e8627feda11823167ece5b1e11772ad20f9a3aa0fe29",
+   "match": true
+  },
+  {
+   "script": "MovieScript 398",
+   "file": "MovieScript 398 - CompCards.ls",
+   "bytes": 1495,
+   "sha256_on_disk": "4595e8243633d8f08addf9ed3f67341b4d79a90e2520060a2974780316b6c258",
+   "ls_sha256_in_record": "4595e8243633d8f08addf9ed3f67341b4d79a90e2520060a2974780316b6c258",
+   "match": true
+  },
+  {
+   "script": "MovieScript 532",
+   "file": "MovieScript 532 - Reordercards.ls",
+   "bytes": 1782,
+   "sha256_on_disk": "554cf5957cadcfbbf387e5a66d329666b330b9400d3920241896d36d82814295",
+   "ls_sha256_in_record": "554cf5957cadcfbbf387e5a66d329666b330b9400d3920241896d36d82814295",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 14",
+   "file": "BehaviorScript 14.ls",
+   "bytes": 2949,
+   "sha256_on_disk": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31",
+   "ls_sha256_in_record": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 24",
+   "file": "BehaviorScript 24.ls",
+   "bytes": 29,
+   "sha256_on_disk": "c4f7cd498abdcad4bd6db63107a3347de8e9569811e56c0188ba262069139fc0",
+   "ls_sha256_in_record": "c4f7cd498abdcad4bd6db63107a3347de8e9569811e56c0188ba262069139fc0",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 97",
+   "file": "BehaviorScript 97.ls",
+   "bytes": 102,
+   "sha256_on_disk": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d",
+   "ls_sha256_in_record": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 331",
+   "file": "BehaviorScript 331.ls",
+   "bytes": 175,
+   "sha256_on_disk": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e",
+   "ls_sha256_in_record": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 340",
+   "file": "BehaviorScript 340.ls",
+   "bytes": 180,
+   "sha256_on_disk": "6beab3964eafc126afed6d077d5412a043846eb4bd9875aff69b8588b0ece256",
+   "ls_sha256_in_record": "6beab3964eafc126afed6d077d5412a043846eb4bd9875aff69b8588b0ece256",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 343",
+   "file": "BehaviorScript 343.ls",
+   "bytes": 220,
+   "sha256_on_disk": "29b2e650571f5c28edae1fff1819eec1a16d434ef068093996ce3f5afb816ea8",
+   "ls_sha256_in_record": "29b2e650571f5c28edae1fff1819eec1a16d434ef068093996ce3f5afb816ea8",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 341",
+   "file": "BehaviorScript 341.ls",
+   "bytes": 134,
+   "sha256_on_disk": "13915cda361e74e5e80962751277dffe81ae3da316df0e6b5f64824370218e7d",
+   "ls_sha256_in_record": "13915cda361e74e5e80962751277dffe81ae3da316df0e6b5f64824370218e7d",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 342",
+   "file": "BehaviorScript 342.ls",
+   "bytes": 995,
+   "sha256_on_disk": "7877022fba42e47b819c9fc4c358bbc1735403e8933d4722d24413dec1940943",
+   "ls_sha256_in_record": "7877022fba42e47b819c9fc4c358bbc1735403e8933d4722d24413dec1940943",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 358",
+   "file": "BehaviorScript 358.ls",
+   "bytes": 60,
+   "sha256_on_disk": "835695f4bc9f25491a767c0f521c9dfbd5f5cf98ce984de86f4f5b87207681dd",
+   "ls_sha256_in_record": "835695f4bc9f25491a767c0f521c9dfbd5f5cf98ce984de86f4f5b87207681dd",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 367",
+   "file": "BehaviorScript 367.ls",
+   "bytes": 477,
+   "sha256_on_disk": "6ae79a8e7274dc674e6c32afa21c3dd87db79970c45574eb47eb2f5c954668d9",
+   "ls_sha256_in_record": "6ae79a8e7274dc674e6c32afa21c3dd87db79970c45574eb47eb2f5c954668d9",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 369",
+   "file": "BehaviorScript 369.ls",
+   "bytes": 33,
+   "sha256_on_disk": "8ddc1054d5ba9bb15eb3ee9f9949ba0aa30abfa52b3099a809b28c0f289bbdbf",
+   "ls_sha256_in_record": "8ddc1054d5ba9bb15eb3ee9f9949ba0aa30abfa52b3099a809b28c0f289bbdbf",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 372",
+   "file": "BehaviorScript 372.ls",
+   "bytes": 100,
+   "sha256_on_disk": "1150f23d8744f33d407e01ef9184fbb90a43ec8e94c2df30866b5ac1fb632127",
+   "ls_sha256_in_record": "1150f23d8744f33d407e01ef9184fbb90a43ec8e94c2df30866b5ac1fb632127",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 389",
+   "file": "BehaviorScript 389.ls",
+   "bytes": 61,
+   "sha256_on_disk": "19fe3b6992b222ffaae534e90cb7d2e7e4865f12ffb92c7894f8d70b79b10925",
+   "ls_sha256_in_record": "19fe3b6992b222ffaae534e90cb7d2e7e4865f12ffb92c7894f8d70b79b10925",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 400",
+   "file": "BehaviorScript 400.ls",
+   "bytes": 9857,
+   "sha256_on_disk": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+   "ls_sha256_in_record": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 453",
+   "file": "BehaviorScript 453.ls",
+   "bytes": 332,
+   "sha256_on_disk": "4e177c989e356a7d2054f079623d4032ce43b3f405175038938ca6430213c43b",
+   "ls_sha256_in_record": "4e177c989e356a7d2054f079623d4032ce43b3f405175038938ca6430213c43b",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 526",
+   "file": "BehaviorScript 526 - pick3cards.ls",
+   "bytes": 1528,
+   "sha256_on_disk": "9e90273197885163b6c40845357af18f2484d1ec70d7037e00f44a1bcdca81a5",
+   "ls_sha256_in_record": "9e90273197885163b6c40845357af18f2484d1ec70d7037e00f44a1bcdca81a5",
+   "match": true
+  },
+  {
+   "script": "CastScript 66",
+   "file": "CastScript 66 - Pass2.ls",
+   "bytes": 296,
+   "sha256_on_disk": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f",
+   "ls_sha256_in_record": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f",
+   "match": true
+  },
+  {
+   "script": "CastScript 376",
+   "file": "CastScript 376 - CARDV1.ls",
+   "bytes": 592,
+   "sha256_on_disk": "dc2da939c1dc31516cdf65062faab4a2fafc300ba4511d94c20adf15db956cc5",
+   "ls_sha256_in_record": "dc2da939c1dc31516cdf65062faab4a2fafc300ba4511d94c20adf15db956cc5",
+   "match": true
+  },
+  {
+   "script": "CastScript 377",
+   "file": "CastScript 377 - CARDV2.ls",
+   "bytes": 581,
+   "sha256_on_disk": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "ls_sha256_in_record": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "match": true
+  },
+  {
+   "script": "CastScript 378",
+   "file": "CastScript 378 - CARDV3.ls",
+   "bytes": 581,
+   "sha256_on_disk": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "ls_sha256_in_record": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "match": true
+  },
+  {
+   "script": "CastScript 379",
+   "file": "CastScript 379 - CARDV4.ls",
+   "bytes": 581,
+   "sha256_on_disk": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "ls_sha256_in_record": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "match": true
+  },
+  {
+   "script": "CastScript 380",
+   "file": "CastScript 380 - CARDV5.ls",
+   "bytes": 581,
+   "sha256_on_disk": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "ls_sha256_in_record": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "match": true
+  },
+  {
+   "script": "CastScript 381",
+   "file": "CastScript 381 - CARDV6.ls",
+   "bytes": 581,
+   "sha256_on_disk": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "ls_sha256_in_record": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "match": true
+  },
+  {
+   "script": "CastScript 383",
+   "file": "CastScript 383 - CARDV8.ls",
+   "bytes": 581,
+   "sha256_on_disk": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "ls_sha256_in_record": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b",
+   "match": true
+  },
+  {
+   "script": "CastScript 528",
+   "file": "CastScript 528 - tradein2.ls",
+   "bytes": 2742,
+   "sha256_on_disk": "5d7e3cb49e81abc4fa4bc9d7388f32ed1967de9f5a6b5a821c139d007077b4a7",
+   "ls_sha256_in_record": "5d7e3cb49e81abc4fa4bc9d7388f32ed1967de9f5a6b5a821c139d007077b4a7",
+   "match": true
+  },
+  {
+   "script": "CastScript 530",
+   "file": "CastScript 530 - dtradein2.ls",
+   "bytes": 209,
+   "sha256_on_disk": "8541e4d600c760ef9a9aa720e74835918b87b708369eee421068990143f3b2ff",
+   "ls_sha256_in_record": "8541e4d600c760ef9a9aa720e74835918b87b708369eee421068990143f3b2ff",
+   "match": true
+  }
+ ]
+}
