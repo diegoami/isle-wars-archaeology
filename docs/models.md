@@ -312,6 +312,9 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 | The easy reviewer `luna` is GPT-5.6 Luna (`openai/gpt-5.6-luna`, high), on its own weekly pool; GPT-6 Luna is `luna-6`, outside the chains; never a Luna on OpenCode Go | GPT-6 Luna and Sol shared one OpenAI pool, so one exhausted quota blocked both reviewers (T08) | harness_imperial L51, 2026-10-05 |
 | Heavy models at effort `medium` at most, `low` when medium is not needed (Opus as `task-agent-heavy`; GLM-5.3 `low`, offering no medium; DeepSeek V4 Pro stays `high`, its lowest); light models at `high` | the owner's decision | the owner, 2026-10-05 |
 | One OpenCode model per role, then Claude: no long chains of cheap models | chains multiplied wasted attempts; one failure stopped the chain before the next model ran | L27 |
+| A review brief's first line is exactly `<title> review (<model>)` — no "round 2" in the header; rounds are said in the body | `review.mjs`'s header parser refuses anything else, exit 2 before any model runs | T21 round 2, 2026-10-06 |
+| Tests that need a TMPDIR outside every checkout cannot be run by an OpenCode implementer (its sandbox refuses every outside write, L57); the main session's external-TMPDIR suite run is part of such a task's contract, never optional | T13 round 5: 49 of 602 tests were skips in the implementer's run and failed at the main session's verification; CI was red on a pushed head | T13, 2026-10-06 |
+| While Claude's quota is out, a run whose fallback would be Claude escalates to the owner instead; the main session itself runs GLM-5.3 via Z.ai and is named as GLM-5.3 in PRs and reports | any "Sonnet"/"Opus" agent would actually run GLM-5.3 — same family as the session, not the model the ladder names | the owner, 2026-10-06 |
 
 ## What each model has shown so far
 
