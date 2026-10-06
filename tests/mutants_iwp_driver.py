@@ -290,10 +290,11 @@ MUTANTS = [
         "    if isinstance(value, set):\n        return value")],
      [T + "ViewImmutabilityTest.test_screens_cannot_be_marked_reached_or_expected_by_hand",
       T + "ViewImmutabilityTest.test_a_cycle_whose_screens_never_come_up_is_not_completed_by_marking_them"]),
-    ("R3: a view hands out the engine's live objects again (the process registry)", [(
+    ("R3: a view hands out the engine's live objects again (the round-5 _view)", [(
         S, "    return property(lambda self: _frozen(getattr(self._engine, name)), doc=doc)",
         "    return property(lambda self: getattr(self._engine, name), doc=doc)")],
-     [T + "ViewImmutabilityTest.test_the_process_registry_cannot_lose_the_liveness_guards_entry"]),
+     [T + "ViewImmutabilityTest.test_the_environment_view_cannot_retarget_the_prefix_after_the_seal",
+      T + "ViewImmutabilityTest.test_the_other_views_are_read_only_too"]),
     ("R4: Cycle.run_step's key as a state probe (Sol's round-5 bypass, at the key command)", [(
         C, '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)',
         '            probe(["xdotool", "key", args[0]], env=self.env)')],
@@ -310,6 +311,23 @@ MUTANTS = [
         "            allowed = self.PROBE_SITES.get((rel, scope)) or (99, 'anywhere')")],
      [T + "CommandHelperSweepTest.test_the_sweep_finds_a_must_replaced_by_a_state_probe",
       T + "CommandHelperSweepTest.test_a_probe_beyond_its_named_count_is_an_offender"]),
+    # the round-5 review of PR #54 by Sol (round 6: frozen tuple descendants, process information
+    # instead of handles, provisional completion)
+    ("R1: the snapshot view is not frozen through its tuples (the dictionaries stay live)", [(
+        S, "    if isinstance(value, (list, tuple)):", "    if isinstance(value, list):")],
+     [T + "ViewImmutabilityTest.test_the_snapshot_view_cannot_substitute_the_resets_target"]),
+    ("R2: the process view hands out the engine's Popen handles again", [(
+        S, """    procs = property(lambda self: types.MappingProxyType({name: _ProcView(name, proc)
+                                                          for name, proc in self._engine.procs.items()}),""",
+        "    procs = property(lambda self: self._engine.procs,")],
+     [T + "ViewImmutabilityTest.test_the_process_views_are_information_not_handles",
+      T + "ViewImmutabilityTest.test_the_process_registry_cannot_lose_the_liveness_guards_entry"]),
+    ("R3: complete() publishes the status completed itself, before any reset", [(
+        S, "        self.body_complete = True", '        self.body_complete = True\n        self.status = "completed"')],
+     [T + "ProvisionalCompletionTest"]),
+    ("R3: finish() publishes completed whatever complete() and the reset said", [(
+        S, "            if self.body_complete and self.recovered:", "            if True:")],
+     [T + "ProvisionalCompletionTest.test_a_session_that_never_completed_is_not_published_completed_by_finish"]),
 ]
 
 

@@ -34,6 +34,14 @@ And those of the round-4 review by Sol (round 5: the views are immutable copies,
 - R3, the process registry cannot lose the liveness guard's entry: ViewImmutabilityTest;
 - R4, a must() replaced by probe() is an offender wherever no state is read, and the probes are pinned
   to their named sites and counts: CommandHelperSweepTest.
+And those of the round-5 review by Sol (round 6: the views frozen through their tuples, the processes
+information not handles, the completion provisional until finish):
+- R1, the snapshot view cannot substitute the reset's target, and the reset restores the true baseline:
+  ViewImmutabilityTest.test_the_snapshot_view_cannot_substitute_the_resets_target;
+- R2, the process views are read-only pid/status/alive information, never engine Popen handles:
+  ViewImmutabilityTest.test_the_process_views_are_information_not_handles;
+- R3, complete() publishes only body_complete; finish() alone publishes completed, and not with a
+  failed clean-up or without complete(): ProvisionalCompletionTest.
 """
 import ast
 import contextlib
@@ -147,7 +155,7 @@ class DriverWorld(World):
         for name, hook in (hooks or {}).items():
             made.on(name, hook)
         made.execute(body)
-        self.addCleanup(lambda: made.procs.get("game") and made.procs["game"].poll() is None and made.procs["game"].kill())
+        self.addCleanup(lambda: made._engine.procs.get("game") and made._engine.procs["game"].poll() is None and made._engine.procs["game"].kill())
         return made
 
 
@@ -635,7 +643,7 @@ class BoundTest(DriverWorld):
         with mock.patch.object(sessionlib, "STOP_TIMEOUT", 0.1), mock.patch.object(sessionlib, "AFTER_KILL_TIMEOUT", 0.1):
             outcome = self.within(5, made._engine.stop_x)
         self.assertIsInstance(outcome, errors.TerminateError, outcome)
-        for proc in made.procs.values():
+        for proc in made._engine.procs.values():    # the engine's own objects (the views carry no wait)
             self.assertEqual(len(proc.waits), 2)
             self.assertNotIn(None, proc.waits)
 
@@ -834,8 +842,8 @@ class LivenessTest(DriverWorld):
 
         def complete_then_die(session):
             real_complete(session)
-            session.procs["game"].kill()
-            session.procs["game"].wait()
+            session._engine.procs["game"].kill()
+            session._engine.procs["game"].wait()
         before = tree(self.prefix)
         with mock.patch.object(sessionlib.Session, "complete", complete_then_die):
             made = self.execute()
@@ -848,8 +856,8 @@ class LivenessTest(DriverWorld):
 
         def complete_then_display_dies(session):
             real_complete(session)
-            session.procs["xvfb"].kill()
-            session.procs["xvfb"].wait()
+            session._engine.procs["xvfb"].kill()
+            session._engine.procs["xvfb"].wait()
         with mock.patch.object(sessionlib.Engine, "start_x", lambda s: self.display(s)), \
                 mock.patch.object(sessionlib.Session, "complete", complete_then_display_dies):
             made = self.execute()
@@ -857,8 +865,8 @@ class LivenessTest(DriverWorld):
 
     def test_a_display_that_dies_mid_cycle_stops_the_cycle_before_its_next_screenshot(self):
         def display_dies(session):
-            session.procs["xvfb"].kill()
-            session.procs["xvfb"].wait()
+            session._engine.procs["xvfb"].kill()
+            session._engine.procs["xvfb"].wait()
         with mock.patch.object(sessionlib.Engine, "start_x", lambda s: self.display(s)):
             made = self.execute(hooks={"after-title": display_dies})
         self.assertTrue(made.status.startswith("aborted: display: xvfb exited before a screenshot observation"), made.status)
@@ -999,7 +1007,7 @@ class TerminateBoundaryTest(DriverWorld):
     def test_a_game_killed_at_entry_to_terminate_is_aborted_and_still_recovered(self):
         real_terminate = sessionlib.Engine.terminate
 
-        def kill_then_terminate(session):
+        def kill_then_terminate(session):            # here `session` is the Engine itself (Engine.terminate)
             session.procs["game"].kill()
             session.procs["game"].wait()
             real_terminate(session)
@@ -1036,8 +1044,8 @@ class StabilityLivenessTest(DriverWorld):
         self.addCleanup(made.finish)
 
         def stable_that_kills(screen, crop=None):
-            made.procs["game"].kill()
-            made.procs["game"].wait()
+            made._engine.procs["game"].kill()
+            made._engine.procs["game"].wait()
             return True
         with mock.patch.object(spike.Screen, "stable", stable_that_kills):
             with self.assertRaises(errors.GameDied):
@@ -1053,8 +1061,8 @@ class FileObservationLivenessTest(DriverWorld):
         made = self.session()
         made.start()
         self.addCleanup(made.finish)
-        made.procs["game"].kill()
-        made.procs["game"].wait()
+        made._engine.procs["game"].kill()
+        made._engine.procs["game"].wait()
         with self.assertRaises(errors.GameDied):
             made.observe_file("a.txt")
         self.assertTrue(made.status.startswith("aborted: game-died: "), made.status)
@@ -1215,8 +1223,8 @@ class DeadGameStepTest(DriverWorld):
     def test_no_step_reaches_a_dead_game(self):
         made = self.session()
         made.start()
-        made.procs["game"].kill()
-        made.procs["game"].wait()
+        made._engine.procs["game"].kill()
+        made._engine.procs["game"].wait()
         with self.assertRaises(AttributeError):
             made.run_step(spike.stepslib.parse("key space")[0])
         sent = []
@@ -1310,13 +1318,71 @@ class ViewImmutabilityTest(DriverWorld):
         made = self.session()
         made.start()
         self.assertIn("game", made.procs)
-        made.procs["game"].kill()
-        made.procs["game"].wait()
+        made._engine.procs["game"].kill()
+        made._engine.procs["game"].wait()
         with self.assertRaises(TypeError):
             del made.procs["game"]                              # Sol's R3: this disabled the guard
+        with self.assertRaises(TypeError):
+            made.procs["spare"] = made.procs["game"]
         with self.assertRaises(errors.GameDied):
             made.observe_file("a.txt")
         made.finish()
+
+    def test_the_process_views_are_information_not_handles(self):
+        """Sol's round-6 R2: through the live Popen a caller set `p.poll = lambda: None` on a dead child
+        and game-facing steps stayed alive. The view carries pid, exit status and a dead/alive query
+        instead, every field read-only, and the mutation of a descendant changes nothing."""
+        made = self.session()
+        made.start()
+        self.addCleanup(made.finish)
+        view = made.procs["game"]
+        self.assertEqual(view.pid, made._engine.procs["game"].pid)
+        self.assertTrue(view.alive)
+        self.assertIsNone(view.returncode)
+        for attr, value in (("poll", lambda: None),          # Sol's exact substitution, on the view
+                            ("returncode", 0),
+                            ("pid", 1),
+                            ("alive", lambda: True),
+                            ("wait", lambda: None)):
+            with self.assertRaises(AttributeError):
+                setattr(view, attr, value)
+        made._engine.procs["game"].kill()
+        made._engine.procs["game"].wait()
+        self.assertFalse(made.procs["game"].alive, "a fresh view, asked of /proc, says the child is dead")
+        self.assertEqual(made.procs["game"].returncode, -9)
+        self.assertFalse(made.game_alive(), "the engine's own check is not touched through the view")
+        with self.assertRaises(errors.GameDied):
+            made.perform("key Return")
+        made.finish()
+
+    def test_the_snapshot_view_cannot_substitute_the_resets_target(self):
+        """Sol's round-6 R1: snap_before exposed the engine's live snapshot dictionaries; a body that
+        substituted one (a snapshot of the already-modified prefix) ended `completed` with
+        `recovered=True` while the prefix differed from its baseline, because reset compared against
+        the caller's target. The view is frozen through its tuples, and the reset still restores the
+        engine's own snapshot, end to end."""
+        before = tree(self.prefix)
+
+        def attack(session):
+            runner.options_cycle(session)                    # the good cycle, without complete()
+            with self.assertRaises(TypeError):
+                session.snap_before[1] = spike.snapshot_tree(self.prefix)   # Sol's substitution
+            self.assertIsNot(session.snap_before[1], session._engine.snap_before[1],
+                             "the view's dictionary is a copy, never the engine's")
+            with self.assertRaises(TypeError):
+                session.snap_before[1]["drive_c"] = ("d",)   # the copies are read-only too
+            with self.assertRaises(TypeError):
+                session.snap_before[1]["drive_c/Temp"] = ("d",)
+            with self.assertRaises(AttributeError):
+                session.snap_before = spike.snapshot_tree(self.prefix)
+            self.write(self.prefix / "drive_c" / "left.dll", b"added by the caller")   # what the reset must undo
+        made = self.execute(attack)
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertTrue(made.recovered)
+        self.assertEqual(made.snap_before, made._engine.snap_before, "the view still shows the engine's snapshot")
+        self.assertFalse((self.prefix / "drive_c" / "left.dll").exists(),
+                         "the reset restored the true baseline, not a substituted target")
+        self.assertEqual(tree(self.prefix), before)
 
     def test_the_other_views_are_read_only_too(self):
         made = self.session()
@@ -1332,6 +1398,46 @@ class ViewImmutabilityTest(DriverWorld):
             made.expect("board")
         made.expect("options")
         self.assertEqual(made.expected, {"title", "options"})
+
+
+class ProvisionalCompletionTest(DriverWorld):
+    """T13 round 6, R3 (Sol's demonstration): the public complete() published status="completed" before
+    any termination or reset, so `start(); options_cycle(); complete()` left a session completed with
+    recovered=False, the game alive and no snap_after. complete() now publishes only the provisional
+    body_complete; finish() alone publishes completed, and only with a reset that restored the prefix."""
+
+    def test_complete_publishes_nothing_until_finish_has_reset_the_prefix(self):
+        made = self.session()
+        made.start()
+        runner.options_cycle(made)
+        made.complete()
+        self.assertEqual(made.status, "running", "the status is provisional between complete and finish")
+        self.assertTrue(made.body_complete)
+        self.assertFalse(made.recovered)
+        self.assertFalse(hasattr(made._engine, "snap_after"), "no reset has run yet")
+        self.assertTrue(made.game_alive(), "the game is still running: nothing was terminated")
+        made.finish()
+        self.assertEqual(made.status, "completed")
+        self.assertTrue(made.recovered)
+        self.assertTrue(hasattr(made._engine, "snap_after"))
+        self.assertFalse(made.game_alive())
+
+    def test_a_failed_clean_up_keeps_the_completion_unpublished(self):
+        with mock.patch.object(spike.Cycle, "reset", return_value=False):
+            made = self.execute()
+        self.assertTrue(made.body_complete, "the body's cycle itself was a good one")
+        self.assertNotEqual(made.status, "completed", made.status)
+        self.assertTrue(made.status.startswith("aborted: reset: "), made.status)
+        self.assertFalse(made.recovered)
+
+    def test_a_session_that_never_completed_is_not_published_completed_by_finish(self):
+        made = self.session()
+        made.start()
+        made.finish()
+        self.assertFalse(made.body_complete)
+        self.assertTrue(made.recovered, "the clean-up itself succeeded")
+        self.assertNotEqual(made.status, "completed", made.status)
+        self.assertTrue(made.status.startswith("aborted: driver-bug: the cycle stopped before its end"), made.status)
 
 
 def _calls(rel, root=None):

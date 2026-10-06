@@ -12,10 +12,12 @@ code does the seal, the screens, the step language and the reset; this module ad
     session.finish()                      # terminate, stop the display, snapshot, reset, keep the logs
 
 or `session.execute(body)`, which is start, `body(session)`, complete and finish with one status. The
-status is "completed" only from complete(), after the body, and only when the known screens the body
-expects were reached, at least one input step of perform() succeeded, `before.png` was taken before the
-first input and `after.png` after the last, and the game was alive at the end; then finish() must also
-terminate, stop the display and reset the prefix without a fault. Every other way out is
+status is "completed" only from finish(), and only when complete() had run first — after the body, and
+only when the known screens the body expects were reached, at least one input step of perform()
+succeeded, `before.png` was taken before the first input and `after.png` after the last, and the game
+was alive at the end — and finish() itself then terminated, stopped the display and reset the prefix
+without a fault (T13 round 6, R3: complete() alone publishes only `body_complete`, never the status).
+Every other way out is
 "aborted: <kind>: <reason>" (the first reason; every later fault is an observation too), and the clean-up
 stages and the reset run in both cases. `recovered` is True only when every clean-up stage succeeded and
 the reset was shown to restore the prefix: a caller may start the next session only then. A session that
@@ -303,7 +305,8 @@ class Engine(spike.Cycle):
         self.shot_at = {}                            # screenshot name -> event
         self.later_faults = []                       # every fault after the first, and every clean-up fault
         self.cleaned = {}                            # clean-up stage -> succeeded without a fault
-        self.recovered = False                       # set by finish(): every clean-up stage succeeded
+        self.recovered = False                # set by finish(): every clean-up stage succeeded
+        self.body_complete = False            # set by complete(): the body's cycle was a good one (round 6, R3)
 
     # ---- named failures
 
@@ -588,9 +591,12 @@ class Engine(spike.Cycle):
         self.read_game_file(rel)
 
     def complete(self):
-        """The only place a session becomes completed: the body ran, the known screens it expects were
-        reached, it acted (an input step of perform() succeeded), `before.png` was taken before its first
-        input and `after.png` after its last, and the game was still alive."""
+        """The only route by which a body's cycle may be completed (T13 round 6, R3): the body ran, the
+        known screens it expects were reached, it acted (an input step of perform() succeeded),
+        `before.png` was taken before its first input and `after.png` after its last, and the game was
+        still alive. What it publishes is provisional (`body_complete` True, the status still
+        "running"): the status becomes "completed" only in finish(), when termination and the reset have
+        succeeded too, so the public status never claims completion of a session that was not reset."""
         have = {name for name, _, _ in self.outputs}
         missing = [name for name in ("before.png", "after.png") if name not in have]
         if missing:
@@ -606,8 +612,7 @@ class Engine(spike.Cycle):
         if not self.shot_at.get("after.png", 0) > self.actions[-1][0]:
             self.fail("after.png was not taken after the last input", StepFailed)
         self.require_alive("the cycle ended")
-        if self.status == "running":
-            self.status = "completed"
+        self.body_complete = True
 
     # ---- terminate
 
@@ -729,8 +734,10 @@ class Engine(spike.Cycle):
 
     def finish(self):
         """Terminate, stop the display, snapshot and reset, keep the logs; every stage runs, whatever failed
-        before. The status is left aborted unless complete() ran and nothing here failed. The liveness at the
-        terminate and stop boundaries is checked inside terminate() and stop_x() themselves."""
+        before. This is the only place the status "completed" is published (T13 round 6, R3), and only when
+        complete() ran (its checks passed, `body_complete`) and every clean-up stage succeeded with the
+        reset shown to restore the prefix (`recovered`); the status is left aborted otherwise. The liveness
+        at the terminate and stop boundaries is checked inside terminate() and stop_x() themselves."""
         self.cleanup("terminate", self.terminate if "game" in self.procs else None, TerminateError)
         self.cleanup("stopping the display", self.stop_x, TerminateError)
         snapshot = hasattr(self, "snap_before")
@@ -753,8 +760,11 @@ class Engine(spike.Cycle):
         for fault in self.later_faults:
             self.observe(12, "process", "a fault logged by abort_later (the status keeps only the first reason)", fault[:300])
         if self.status == "running":
-            self._error = DriverError
-            self.status = f"aborted: {DriverError.kind}: the cycle stopped before its end"
+            if self.body_complete and self.recovered:
+                self.status = "completed"          # published here only: the reset was shown to restore the prefix
+            else:
+                self._error = DriverError
+                self.status = f"aborted: {DriverError.kind}: the cycle stopped before its end"
         self.elapsed = round(time.monotonic() - self.t0, 2) if self.t0 is not None else None
         self.observe(12, "process", "session seconds, from the first seal to the end of the reset", self.elapsed)
 
@@ -795,17 +805,53 @@ class _FrozenArgs:
         return f"read-only args {object.__getattribute__(self, '_fields')!r}"
 
 
+class _ProcView:
+    """One process of the run as the caller sees it: a name, a pid, the exit status at this read and a
+    dead/alive query, never the engine's Popen (T13 round 6, R2: through the live handle a caller set
+    `p.poll = lambda: None` on a dead child and game-facing steps stayed alive). Every attribute is
+    read-only, `alive` is asked of /proc at each access (so it keeps answering after the process died),
+    and there is no method on it that touches the process."""
+    __slots__ = ("name", "pid", "_returncode")
+
+    def __init__(self, name, proc):
+        object.__setattr__(self, "name", name)
+        object.__setattr__(self, "pid", proc.pid)
+        object.__setattr__(self, "_returncode", proc.poll())
+
+    @property
+    def returncode(self):
+        """The exit status as it was at this read (None while the process ran); it is a copy, not a handle."""
+        return self._returncode
+
+    @property
+    def alive(self):
+        """Whether /proc still shows this pid running (not a zombie); asked anew at each access."""
+        return spike.Cycle.is_alive(self.pid)
+
+    def __setattr__(self, item, value):
+        raise AttributeError("the session's process view is read-only")
+
+    def __delattr__(self, item):
+        raise AttributeError("the session's process view is read-only")
+
+    def __repr__(self):
+        return f"<process {self.name} pid {self.pid}, {'alive' if self.alive else 'dead'}>"
+
+
 def _frozen(value):
     """An immutable copy of one piece of engine state, made fresh at every read: the caller's view is
-    never the live object (T13 round 5, R1 to R3: the live dict let a caller retarget WINEPREFIX after
+    never the live object (T13 round 5, R1 to R3:     the live dict let a caller retarget WINEPREFIX after
     the seal, the live set let it mark screens reached by hand, the live process registry let it delete
-    the liveness guard's entry). Maps become read-only mappings, sets frozensets, lists tuples, a
-    namespace a read-only namespace; the copies of one read snapshot the state at that moment."""
+    the liveness guard's entry, and the live snapshot dictionaries inside a tuple let one be substituted
+    for the reset's target, T13 round 6, R1). Maps become read-only mappings, sets frozensets, lists
+    and tuples tuples of frozen descendants (a tuple is frozen through: its items were the live snapshot
+    dictionaries), a namespace a read-only namespace; the copies of one read snapshot the state at that
+    moment."""
     if isinstance(value, dict):
         return types.MappingProxyType({k: _frozen(v) for k, v in value.items()})
     if isinstance(value, set):
         return frozenset(_frozen(v) for v in value)
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
         return tuple(_frozen(v) for v in value)
     if isinstance(value, argparse.Namespace):
         return _FrozenArgs(vars(value))
@@ -825,9 +871,12 @@ class Session:
     (`guarded`) or names why not (`unguarded`); no method of the spike's Cycle is an attribute of a Session,
     so complete() is the only completion route and perform() the only way to send the game a step. The
     state a caller or a record reads (status, observations, outputs, processes, ...) is read-only here:
-    every view is an immutable copy, never the engine's live object (T13 round 5, R1 to R3), so no caller
-    can retarget the launched environment, mark a screen reached, edit what complete() requires or delete
-    the liveness guard's process; expect() is the one way to name the screens a body will reach."""
+    every view is an immutable copy, never the engine's live object (T13 round 5, R1 to R3, and round 6:
+    the process views carry pid, exit status and a dead/alive query instead of the engine's Popen handles,
+    and the snapshot view freezes the dictionaries inside its tuples), so no caller can retarget the
+    launched environment, mark a screen reached, edit what complete() requires, delete the liveness
+    guard's process, quiet its dead-game check or substitute the reset's target; expect() is the one way
+    to name the screens a body will reach."""
 
     def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24"):
         object.__setattr__(self, "_engine", Engine(run_id, prefix, bundles, install, display, arm, size))
@@ -838,14 +887,22 @@ class Session:
 
     run_id = _view("run_id", "the run id, E004-rNNNN")
     args = _view("args", "the spike's arguments the engine runs with (arm, experiment, size, ...)")
-    status = _view("status", "running, completed (only from complete()) or aborted: <kind>: <reason>")
+    status = _view("status", "running, completed (published by finish() only, when complete() ran and the reset "
+                             "restored the prefix) or aborted: <kind>: <reason>")
     recovered = _view("recovered", "True only when finish() ran every clean-up stage and the reset restored the prefix")
+    body_complete = _view("body_complete", "True after complete() passed its checks: the provisional completion, "
+                                           "which finish() turns into the status completed only when the reset "
+                                           "restored the prefix (T13 round 6, R3)")
     elapsed = _view("elapsed", "seconds from the first seal to the end of the reset")
     obs = _view("obs", "the run/1 observations")
     outputs = _view("outputs", "(name, path, class) of the bundle files")
     started = _view("started", "the start time of execute()")
     ended = _view("ended", "the end time of execute()")
-    procs = _view("procs", "the run's own processes by name (xvfb, wm, game), as a read-only mapping")
+    procs = property(lambda self: types.MappingProxyType({name: _ProcView(name, proc)
+                                                          for name, proc in self._engine.procs.items()}),
+                     doc="the run's own processes by name (xvfb, wm, game), as read-only views: name, pid, "
+                         "returncode and a dead/alive query, never the engine's process handles "
+                         "(T13 round 6, R2)")
     env = _view("env", "the game side's environment (marked with the run and the side), as it was at this read")
     display_env = _view("display_env", "the display side's environment, as it was at this read")
     expected = _view("expected", "the known screens complete() requires the body to have reached (set through expect())")
@@ -864,7 +921,8 @@ class Session:
     @unguarded("ends the game: the liveness at the point of terminating and of stopping the display is checked "
                "inside Engine.terminate and Engine.stop_x, and the clean-up runs whatever died")
     def finish(self):
-        """Terminate, stop the display, snapshot and reset, keep the logs; sets `recovered`."""
+        """Terminate, stop the display, snapshot and reset, keep the logs; sets `recovered` and publishes the
+        status completed only when complete() ran and the reset restored the prefix (T13 round 6, R3)."""
         self._engine.finish()
 
     @unguarded("composes start(), the body (which calls guarded methods), complete() (guarded) and finish()")
@@ -918,7 +976,8 @@ class Session:
 
     @guarded("the cycle's end")
     def complete(self):
-        """The only completion route of a session (Engine.complete says what it requires)."""
+        """The only completion route of a session (Engine.complete says what it requires); it publishes the
+        provisional body_complete, and finish() alone publishes the status completed (T13 round 6, R3)."""
         return self._engine.complete()
 
     # ---- what does not touch the game
