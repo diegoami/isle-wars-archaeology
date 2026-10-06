@@ -30,3 +30,4 @@ __pycache__/
 *.pyc
 # game-archaeologist's research protocol (T06, A6): the researcher block stops unless scratch/ is ignored.
 scratch/
+.claude/settings.local.json.clother-*.bak
