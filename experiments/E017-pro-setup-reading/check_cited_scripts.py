@@ -23,6 +23,7 @@ ROOT = HERE.parents[1]
 FINDING = ROOT / "findings" / "F019-pro-setup-rules.md"
 INVENTORY = ROOT / "experiments" / "E008-static-triage" / "measurements" / "iwp-extract-pro-r1.json"
 LIST = HERE / "scripts-read.json"
+SEARCH_RECORDS = [HERE / "measurements" / "searches-r2.json"]
 SCRIPT_REF = re.compile(r"^(MovieScript|BehaviorScript|CastScript) (\d+)(?: (\S+))?$")
 HANDLER_REF = re.compile(r"^(\S+)\(\)$")
 MOVIE_DIR = ("movie-01-out", "movie-01.abs", "casts", "Internal")
@@ -55,11 +56,44 @@ def file_name(s):
     return "%s %d - %s.ls" % (s["kind"], s["number"], s["name"]) if s["name"] else "%s %d.ls" % (s["kind"], s["number"])
 
 
+def _strings(node):
+    if isinstance(node, str):
+        yield node
+    elif isinstance(node, dict):
+        for value in node.values():
+            yield from _strings(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _strings(value)
+
+
+def search_record_refs(scripts, errors):
+    """Every `Kind N Name` string in a corrected search record resolves to the inventory."""
+    total = 0
+    for path in SEARCH_RECORDS:
+        if not path.exists():
+            errors.append("missing search record %s" % path.name)
+            continue
+        for text in _strings(json.loads(path.read_text())):
+            m = SCRIPT_REF.match(text)
+            if not m:
+                continue
+            total += 1
+            kind, num, name = m.group(1), int(m.group(2)), m.group(3)
+            s = scripts.get((kind, num))
+            if s is None:
+                errors.append("%s: no script %s %d" % (path.name, kind, num))
+            elif (name or "") != s["name"]:
+                errors.append("%s: %s %d is named %r, cited %r" % (path.name, kind, num, s["name"], name))
+    return total
+
+
 def main():
     errors = []
     inv = json.loads(INVENTORY.read_text())
     scripts = {(s["kind"], s["number"]): s for s in inv["movies"][0]["scripts"]}
     found = cited(FINDING.read_text(), scripts, errors)
+    refs = search_record_refs(scripts, errors)
 
     listed = json.loads(LIST.read_text())
     entries = listed["scripts"]
@@ -76,8 +110,8 @@ def main():
                 errors.append("listed %s %d: %s differs from the inventory" % (e["kind"], e["number"], field))
     for k in sorted(found - set(keys)):
         errors.append("F019 cites %s %d, which E017 does not list" % k)
-    print("F019 cites %d scripts; E017 lists %d; every one is in the inventory with its ls_sha256: %s"
-          % (len(found), len(entries), "yes" if not errors else "NO"))
+    print("F019 cites %d scripts; E017 lists %d; the search record names %d scripts; every one is in the inventory with its ls_sha256: %s"
+          % (len(found), len(entries), refs, "yes" if not errors else "NO"))
 
     if "--disk" in sys.argv:
         sys.path.insert(0, str(ROOT / "tools" / "static"))

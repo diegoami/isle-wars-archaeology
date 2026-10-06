@@ -2,7 +2,7 @@
  "what": "the decompiled Lingo scripts read for F019 (T34), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
  "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
  "run": "pro-r1",
- "count": 47,
+ "count": 51,
  "scripts": [
   {
    "kind": "BehaviorScript",
@@ -487,6 +487,46 @@
    ],
    "lines": 19,
    "ls_sha256": "92a8e23150c1de2da092b8be61b376f39c4d325f6d31e93ccd6bd88a6416ae4b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 611,
+   "name": "KEEP2",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 11,
+   "ls_sha256": "5184b1b08fb0aae5e50558132a45dae05c59d93adfed67363b474fa93fa6b12e"
+  },
+  {
+   "kind": "CastScript",
+   "number": 615,
+   "name": "KEEP3",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 10,
+   "ls_sha256": "3d3c15211973a81ddddb7c7061330c89992d70b9991f08d93be44f5c2903cee6"
+  },
+  {
+   "kind": "CastScript",
+   "number": 672,
+   "name": "FORM1",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 2,
+   "ls_sha256": "f24a0ffd14608d99af49fe83194ac938be3192169d4120b7035bfe556cc629c8"
+  },
+  {
+   "kind": "CastScript",
+   "number": 673,
+   "name": "form2",
+   "handlers": [
+    "mouseUp"
+   ],
+   "lines": 8,
+   "ls_sha256": "cddba24e951a0df059de7dc846a01dbbcab2d8f6d81d02497a62a6d802ad1c12"
   }
  ]
 }
