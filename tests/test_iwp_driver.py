@@ -28,6 +28,12 @@ And those of the round-3 review by Sol (round 4: Session composes the spike's Cy
 - R2, a session refused before its snapshot is not recovered: RefusedSessionRecoveryTest;
 - R3, no step reaches a dead game, and the guard sweep reads the effective interface: DeadGameStepTest, GuardSweepTest;
 - R4, the command sweep covers every file on the driver's path, the reused spike included: CommandHelperSweepTest.
+And those of the round-4 review by Sol (round 5: the views are immutable copies, the state probes are pinned):
+- R1, the environment view cannot retarget WINEPREFIX after the seal: ViewImmutabilityTest;
+- R2, screens cannot be marked reached or expected by hand: ViewImmutabilityTest;
+- R3, the process registry cannot lose the liveness guard's entry: ViewImmutabilityTest;
+- R4, a must() replaced by probe() is an offender wherever no state is read, and the probes are pinned
+  to their named sites and counts: CommandHelperSweepTest.
 """
 import ast
 import contextlib
@@ -116,8 +122,8 @@ class DriverWorld(World):
         self.calls.append("start_game")
         session.t_launch = time.monotonic()
         self.write(self.prefix / "drive_c" / "Temp" / "x.dll", b"written by the game")
-        session.procs["game"] = subprocess.Popen(["sleep", "60"], env=session.env)
-        self.pidfile.write_text(str(session.procs["game"].pid))
+        session._engine.procs["game"] = subprocess.Popen(["sleep", "60"], env=session._engine.env)
+        self.pidfile.write_text(str(session._engine.procs["game"].pid))
 
     def straggler(self, run_id, side):
         """A process that carries a marker, as the game side or the display side of a run would."""
@@ -210,7 +216,7 @@ class CompleteTest(DriverWorld):
 
     def test_a_body_that_never_waits_for_the_screen_is_not_completed(self):
         def lazy(session):
-            session.expected.update({"title", "options"})
+            session.expect("title", "options")
             session.observe_screenshot("before.png", 3)
             session.observe_screenshot("after.png", 6)
         made = self.execute(lazy)
@@ -818,7 +824,7 @@ class LivenessTest(DriverWorld):
     def display(self, session):
         """In place of Session.start_x: a display process of this run (a `sleep` with its display markers)."""
         self.calls.append("start_x")
-        session.procs["xvfb"] = subprocess.Popen(["sleep", "60"], env=session.display_env)
+        session._engine.procs["xvfb"] = subprocess.Popen(["sleep", "60"], env=session._engine.display_env)
 
     def test_a_game_that_dies_after_complete_and_before_terminate_is_not_completed(self):
         real_complete = sessionlib.Session.complete
@@ -1102,7 +1108,7 @@ class GuardSweepTest(DriverWorld):
 
     GAME_FACING = {"wait_for_screen", "known_screen", "perform", "observe_screenshot", "observe_region",
                    "observe_file", "complete"}
-    UNGUARDED = {"start", "finish", "execute", "checkpoint", "on", "observe", "game_alive", "find_game_pid"}
+    UNGUARDED = {"start", "finish", "execute", "checkpoint", "on", "observe", "expect", "game_alive", "find_game_pid"}
 
     def interface(self):
         """{public name: 'view' or the function} over dir() of a real Session, inherited names included."""
@@ -1252,6 +1258,79 @@ class RefusedSessionRecoveryTest(DriverWorld):
         self.assertFalse(made.recovered)
 
 
+class ViewImmutabilityTest(DriverWorld):
+    """T13 round 5, R1 to R3 (Sol's demonstrations on the round-4 views): the public views were the
+    engine's live objects, so a caller could retarget WINEPREFIX after the seal, mark screens reached
+    by hand and get `completed` with no screen wait, or delete the liveness guard's process entry and
+    keep using game-facing methods after death. Every view is now an immutable copy."""
+
+    def test_the_environment_view_cannot_retarget_the_prefix_after_the_seal(self):
+        made = self.session()
+        made.start()
+        self.addCleanup(made.finish)
+        self.assertEqual(made.env["WINEPREFIX"], str(self.prefix))
+        with self.assertRaises(TypeError):
+            made.env["WINEPREFIX"] = str(self.tmp / "another-prefix")
+        self.assertEqual(made._engine.env["WINEPREFIX"], str(self.prefix),
+                         "the environment the game was launched with is unchanged")
+        self.assertEqual(made.env["WINEPREFIX"], str(self.prefix))
+
+    def test_screens_cannot_be_marked_reached_or_expected_by_hand(self):
+        made = self.session()
+        with self.assertRaises((AttributeError, TypeError)):
+            made.reached.update({"title", "options"})
+        with self.assertRaises((AttributeError, TypeError)):
+            made.reached.add("title")
+        with self.assertRaises((AttributeError, TypeError)):
+            made.expected.clear()
+        with self.assertRaises((AttributeError, TypeError)):
+            made.expected.add("title")
+        self.assertEqual(made.reached, set())
+        self.assertEqual(made.expected, {"title"})
+
+    def test_a_cycle_whose_screens_never_come_up_is_not_completed_by_marking_them(self):
+        self.screens["title"] = False
+        self.screens["options"] = False
+
+        def cheat(session):
+            session.expect("title", "options")
+            with self.assertRaises((AttributeError, TypeError)):
+                session.reached.update({"title", "options"})    # Sol's R2: this made it completed
+            session.observe_screenshot("before.png", 3)
+            session.perform("key space")
+            session.observe_screenshot("after.png", 6)
+        made = self.execute(cheat)
+        self.assertTrue(made.status.startswith("aborted: screen-not-reached: "), made.status)
+        self.assertEqual(made.reached, set())
+
+    def test_the_process_registry_cannot_lose_the_liveness_guards_entry(self):
+        made = self.session()
+        made.start()
+        self.assertIn("game", made.procs)
+        made.procs["game"].kill()
+        made.procs["game"].wait()
+        with self.assertRaises(TypeError):
+            del made.procs["game"]                              # Sol's R3: this disabled the guard
+        with self.assertRaises(errors.GameDied):
+            made.observe_file("a.txt")
+        made.finish()
+
+    def test_the_other_views_are_read_only_too(self):
+        made = self.session()
+        with self.assertRaises((AttributeError, TypeError)):
+            made.obs.append({"step": 0})
+        with self.assertRaises((AttributeError, TypeError)):
+            made.args.arm = "faulted"
+        self.assertEqual(made.args.arm, "control")
+
+    def test_expect_names_only_known_screens_and_is_the_only_way_to_expected(self):
+        made = self.session()
+        with self.assertRaises(ValueError):
+            made.expect("board")
+        made.expect("options")
+        self.assertEqual(made.expected, {"title", "options"})
+
+
 def _calls(rel, root=None):
     """(enclosing qualified name, called name as written, line) of every call in a file."""
     tree = ast.parse(((root or ROOT) / rel).read_text())
@@ -1271,8 +1350,11 @@ class CommandHelperSweepTest(unittest.TestCase):
     """Every external command on the driver's path goes through the checked helpers (T13 round 4, R4): no raw
     subprocess or os launch or signal, and no unchecked run(), in any file the driver executes, the reused
     spike and setup modules included. A command's result is checked (must) or explicitly a state (probe);
-    spawn starts the long-lived processes. The exclusions are named, each with its reason, and are shown off
-    the driver's path (overridden or refused by the Engine, or never called by the driver)."""
+    spawn starts the long-lived processes. And (T13 round 5, R4) a state probe is allowed only at its named
+    sites, as many as named: replacing a checked must() by an unchecked probe() — Sol's round-4 bypass, at
+    Cycle.run_step's key command and at the read-only bind — is an offender like a raw call, because the
+    sweep then sees a probe where no state is read. The exclusions are named, each with its reason, and are
+    shown off the driver's path (overridden or refused by the Engine, or never called by the driver)."""
 
     FILES = tuple(sorted(f"runtime/iwp/driver/{p.name}" for p in (ROOT / "runtime/iwp/driver").glob("*.py"))) + (
         "runtime/iwp/spike/cycle.py", "runtime/iwp/spike/steps.py",
@@ -1284,7 +1366,19 @@ class CommandHelperSweepTest(unittest.TestCase):
     HELPERS = {("runtime/iwp/spike/cycle.py", "run"): "the bounded helper itself",
                ("runtime/iwp/spike/cycle.py", "spawn"): "the long-lived process starter itself",
                ("runtime/iwp/spike/cycle.py", "must"): "the checked helper, over run()",
-               ("runtime/iwp/spike/cycle.py", "probe"): "the state helper, over run()"}
+               ("runtime/iwp/spike/cycle.py", "probe"): "the state helper, over run(), allowed only at PROBE_SITES"}
+    # Where a state probe is legitimate: (file, enclosing scope) -> (how many, why the result is a state and
+    # not something relied on). A probe anywhere else on the driver's path — a must() replaced by probe() —
+    # is an offender (T13 round 5, R4).
+    PROBE_SITES = {
+        ("runtime/iwp/spike/cycle.py", "wm_registered"): (1, "whether the window manager registered: a state"),
+        ("runtime/iwp/spike/cycle.py", "Cycle.start_x"): (1, "the readiness poll of the display: a state"),
+        ("runtime/iwp/spike/cycle.py", "Cycle.start_game"): (1, "the poll for the game's window: a state"),
+        ("runtime/iwp/spike/cycle.py", "versions.first"): (1, "a version probe: a state, unknown when it fails"),
+        ("runtime/iwp/driver/session.py", "Engine.display_is_ours"): (1, "whether the display answers: a state"),
+        ("runtime/iwp/driver/session.py", "Engine.terminate"): (2, "wineserver -k's exit status, recorded and never relied on"),
+        ("runtime/iwp/driver/runner.py", "kill_game"): (1, "the outsider's fault: wineserver -k's exit status, recorded and never relied on"),
+    }
     OFF_PATH = {
         ("runtime/iwp/spike/cycle.py", "Cycle.protect_install"): "the spike's bind; the driver binds the install "
                                                                   "in bind_install_readonly, and Engine refuses it",
@@ -1299,6 +1393,7 @@ class CommandHelperSweepTest(unittest.TestCase):
 
     def offenders(self, files=None, root=None):
         found = []
+        probes = {}
         for rel in files or self.FILES:
             for scope, name, line in _calls(rel, root):
                 if (rel, scope) in self.OFF_PATH or (rel, scope) in self.HELPERS:
@@ -1307,6 +1402,16 @@ class CommandHelperSweepTest(unittest.TestCase):
                     found.append(f"{rel}:{line} {scope}: {name}")
                 if name in self.UNCHECKED:
                     found.append(f"{rel}:{line} {scope}: unchecked {name}")
+                if name.rsplit(".", 1)[-1] == "probe":
+                    probes[(rel, scope)] = probes.get((rel, scope), 0) + 1
+        for (rel, scope), count in sorted(probes.items()):
+            allowed = self.PROBE_SITES.get((rel, scope))
+            if allowed is None:
+                found.append(f"{rel}: {scope}: probe outside its named sites "
+                             f"(no state is read there; a must() replaced by probe() lands here)")
+            elif count > allowed[0]:
+                found.append(f"{rel}: {scope}: {count} probes where {allowed[0]} are named "
+                             f"(a must() replaced by probe() lands here)")
         return found
 
     def test_every_file_of_this_repository_the_driver_loads_is_swept(self):
@@ -1351,6 +1456,43 @@ class CommandHelperSweepTest(unittest.TestCase):
                 copy.write_text(text.replace(old, mutated))
                 found = self.offenders(["runtime/iwp/spike/cycle.py"], Path(tmp))
             self.assertTrue(any("Cycle.run_step" in f for f in found), (mutated, found))
+
+    def test_the_sweep_finds_a_must_replaced_by_a_state_probe(self):
+        """Sol's round-5 R4 bypass, on copies: a checked must() replaced by an unchecked probe() still reads a
+        command's effect, so it is an offender wherever no state is read — at Cycle.run_step's key command
+        (accepted by the round-4 sweep) and at the read-only bind in session.py, which passed every sweep test."""
+        cases = (
+            ("runtime/iwp/spike/cycle.py",
+             '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)',
+             '            probe(["xdotool", "key", args[0]], env=self.env)',
+             "Cycle.run_step"),
+            ("runtime/iwp/driver/session.py",
+             '        spike.must(["mount", "--bind", install, install], require_output=False)',
+             '        spike.probe(["mount", "--bind", install, install])',
+             "bind_install_readonly"),
+        )
+        for rel, old, mutated, scope in cases:
+            text = (ROOT / rel).read_text()
+            self.assertEqual(text.count(old), 1, (rel, old))
+            with tempfile.TemporaryDirectory() as tmp:
+                copy = Path(tmp) / rel
+                copy.parent.mkdir(parents=True)
+                copy.write_text(text.replace(old, mutated))
+                found = self.offenders([rel], Path(tmp))
+            self.assertTrue(any(scope in f and "probe" in f for f in found), (rel, found))
+
+    def test_a_probe_beyond_its_named_count_is_an_offender(self):
+        """A probe in a scope that has none named (Engine.launch) is an offender: the sites and their counts
+        pin where state probes may be, so a must() swapped for a probe() cannot hide in a nearby scope."""
+        text = (ROOT / "runtime/iwp/driver/session.py").read_text()
+        old = '            self.require_alive("the end of the launch")'
+        self.assertEqual(text.count(old), 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            copy = Path(tmp) / "runtime/iwp/driver/session.py"
+            copy.parent.mkdir(parents=True)
+            copy.write_text(text.replace(old, old + '\n        spike.probe(["true"])'))
+            found = self.offenders(["runtime/iwp/driver/session.py"], Path(tmp))
+        self.assertTrue(any("Engine.launch" in f and "probe" in f for f in found), found)
 
 
 if __name__ == "__main__":

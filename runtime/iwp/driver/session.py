@@ -24,11 +24,17 @@ recovered (T13 round 4, R2).
 
 Session is a facade (T13 round 4): it holds the machinery, an Engine built on the spike's Cycle, privately,
 and its public interface is only its own methods, each through the one liveness guard (`guarded`) or with a
-stated reason (`unguarded`), and read-only views of the state. No method of the spike's Cycle (its
+stated reason (`unguarded`), and read-only views of the state. Every view is an immutable copy of the
+engine's state, made at each read (T13 round 5, R1 to R3): the live objects let a caller retarget
+WINEPREFIX after the seal, mark a screen reached by hand, or delete the liveness guard's process entry, so
+no view hands out the engine's own dict, set or list, and expect() is the one way to name the screens a
+body will reach. No method of the spike's Cycle (its
 complete_script(), run_step(), ...) is an attribute of a Session, so complete() is its only completion route
 and perform() its only way to send the game a step; the Engine also refuses the spike's own routes
-(Engine.SPIKE_ONLY). tests/test_iwp_driver.py GuardSweepTest checks this over the effective interface, and
-CommandHelperSweepTest checks every command on the driver's path, the reused spike and setup files included.
+(Engine.SPIKE_ONLY). tests/test_iwp_driver.py GuardSweepTest checks this over the effective interface,
+ViewImmutabilityTest checks that the views cannot mutate the engine, and
+CommandHelperSweepTest checks every command on the driver's path, the reused spike and setup files included,
+with every state probe (spike.probe) allowed only at its named sites (T13 round 5, R4).
 
 What the driver keeps from T08 on every launch: the install bound read-only (checked at the start of
 every session), the prefix sealed before anything starts and again immediately before the game starts,
@@ -55,6 +61,7 @@ import argparse
 import contextlib
 import functools
 import os
+import types
 import re
 import signal
 import subprocess
@@ -765,9 +772,49 @@ for _name in Engine.SPIKE_ONLY:
 
 # --- the session: the driver's only public interface ------------------------------------------
 
+class _FrozenArgs:
+    """The spike's arguments as the caller sees them: a namespace whose fields cannot be written."""
+    __slots__ = ("_fields",)
+
+    def __init__(self, fields):
+        object.__setattr__(self, "_fields", dict(fields))
+
+    def __getattr__(self, name):
+        try:
+            return object.__getattribute__(self, "_fields")[name]
+        except KeyError:
+            raise AttributeError(name) from None
+
+    def __setattr__(self, item, value):
+        raise AttributeError("the session's arguments are read-only")
+
+    def __delattr__(self, item):
+        raise AttributeError("the session's arguments are read-only")
+
+    def __repr__(self):
+        return f"read-only args {object.__getattribute__(self, '_fields')!r}"
+
+
+def _frozen(value):
+    """An immutable copy of one piece of engine state, made fresh at every read: the caller's view is
+    never the live object (T13 round 5, R1 to R3: the live dict let a caller retarget WINEPREFIX after
+    the seal, the live set let it mark screens reached by hand, the live process registry let it delete
+    the liveness guard's entry). Maps become read-only mappings, sets frozensets, lists tuples, a
+    namespace a read-only namespace; the copies of one read snapshot the state at that moment."""
+    if isinstance(value, dict):
+        return types.MappingProxyType({k: _frozen(v) for k, v in value.items()})
+    if isinstance(value, set):
+        return frozenset(_frozen(v) for v in value)
+    if isinstance(value, list):
+        return tuple(_frozen(v) for v in value)
+    if isinstance(value, argparse.Namespace):
+        return _FrozenArgs(vars(value))
+    return value
+
+
 def _view(name, doc):
-    """A read-only view of one attribute of the session's engine."""
-    return property(lambda self: getattr(self._engine, name), doc=doc)
+    """A read-only view of one attribute of the session's engine: an immutable copy, never the live object."""
+    return property(lambda self: _frozen(getattr(self._engine, name)), doc=doc)
 
 
 class Session:
@@ -777,7 +824,10 @@ class Session:
     public interface is only what is defined here. Every public method goes through the liveness guard
     (`guarded`) or names why not (`unguarded`); no method of the spike's Cycle is an attribute of a Session,
     so complete() is the only completion route and perform() the only way to send the game a step. The
-    state a caller or a record reads (status, observations, outputs, processes, ...) is read-only here."""
+    state a caller or a record reads (status, observations, outputs, processes, ...) is read-only here:
+    every view is an immutable copy, never the engine's live object (T13 round 5, R1 to R3), so no caller
+    can retarget the launched environment, mark a screen reached, edit what complete() requires or delete
+    the liveness guard's process; expect() is the one way to name the screens a body will reach."""
 
     def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24"):
         object.__setattr__(self, "_engine", Engine(run_id, prefix, bundles, install, display, arm, size))
@@ -795,11 +845,11 @@ class Session:
     outputs = _view("outputs", "(name, path, class) of the bundle files")
     started = _view("started", "the start time of execute()")
     ended = _view("ended", "the end time of execute()")
-    procs = _view("procs", "the run's own processes by name: xvfb, wm, game")
-    env = _view("env", "the game side's environment (marked with the run and the side)")
-    display_env = _view("display_env", "the display side's environment")
-    expected = _view("expected", "the known screens complete() requires the body to have reached (a set to update)")
-    reached = _view("reached", "the known screens reached so far")
+    procs = _view("procs", "the run's own processes by name (xvfb, wm, game), as a read-only mapping")
+    env = _view("env", "the game side's environment (marked with the run and the side), as it was at this read")
+    display_env = _view("display_env", "the display side's environment, as it was at this read")
+    expected = _view("expected", "the known screens complete() requires the body to have reached (set through expect())")
+    reached = _view("reached", "the known screens reached so far (established by wait_for_screen only)")
     step_no = _view("step_no", "the run/1 step of the last observation")
     snap_before = _view("snap_before", "the snapshot of the prefix before the launch (absent until it is taken)")
 
@@ -872,6 +922,16 @@ class Session:
         return self._engine.complete()
 
     # ---- what does not touch the game
+
+    @unguarded("names the known screens the body will wait for; touches nothing itself. The set it fills is "
+               "private engine state (T13 round 5, R2): a view of it is read-only, so no caller can narrow "
+               "what complete() requires")
+    def expect(self, *names):
+        """Add the named known screens to those complete() requires the body to have reached."""
+        for name in names:
+            if name not in SCREENS:
+                raise ValueError(f"{name!r} is not a known screen; the driver knows {sorted(SCREENS)}")
+        self._engine.expected.update(names)
 
     @unguarded("a named point of the body: runs the hooks registered with on() and touches nothing itself; "
                "a hook that kills the game (an injected fault) is found by the next guarded method")

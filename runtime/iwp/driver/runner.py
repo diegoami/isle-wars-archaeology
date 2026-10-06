@@ -63,7 +63,7 @@ RESTORE = ("fresh private user, mount and PID namespaces, the install bound read
 
 def options_cycle(session):
     """The cycle of E004: the title screen, `before`, one input (Options), the Options screen, `after`."""
-    session.expected.update({"title", "options"})
+    session.expect("title", "options")
     session.known_screen()
     session.checkpoint("after-title")
     session.observe_screenshot("before.png", 3)
@@ -81,8 +81,10 @@ def kill_game(session):
     """What an outsider does: `wineserver -k` of this run's prefix, from a process of its own. What is relied
     on is that the game is then gone, checked with a bound; FaultNotInjected otherwise."""
     session.observe(session.step_no + 1, "process", "fault injected", "wineserver -k")
-    # its exit status is a state, recorded and not relied on (spike.probe): what is relied on is the game gone
-    ok, _, _ = spike.probe([spike.WINESERVER, "-k"], env=session.env, timeout=sessionlib.WINESERVER_TIMEOUT)
+    # its exit status is a state, recorded and not relied on (spike.probe): what is relied on is the game gone.
+    # The environment is the engine's own (never a view: views are immutable copies, T13 round 5, R1), so the
+    # fault always names the prefix the driver sealed and launched.
+    ok, _, _ = spike.probe([spike.WINESERVER, "-k"], env=session._engine.env, timeout=sessionlib.WINESERVER_TIMEOUT)
     session.observe(session.step_no + 1, "process", "fault: wineserver -k exited 0", "yes" if ok else "no")
     if spike.poll(lambda: not session.game_alive(), 10, 0.05) is None:
         raise FaultNotInjected(f"the game survived the injected wineserver -k (exited 0: {ok})")
@@ -126,12 +128,12 @@ def rep_of(arm):
     return 1 + sum(1 for p in folder.glob("*.json") if json.loads(p.read_text()).get("arm") == arm)
 
 
-def build_record(session, commit, machine, rep, state_sha, argv, fingerprint):
+def build_record(engine, commit, machine, rep, state_sha, argv, fingerprint):
     return {
         "schema": "run/1",
-        "run_id": session.run_id,
+        "run_id": engine.run_id,
         "experiment": EXPERIMENT,
-        "arm": session.args.arm,
+        "arm": engine.args.arm,
         "rep": rep,
         "code_commit": commit,
         "machine": machine,
@@ -146,12 +148,12 @@ def build_record(session, commit, machine, rep, state_sha, argv, fingerprint):
         "start_state": {"id": "S-cold-prefix-title", "sha256": state_sha, "restore": RESTORE},
         "seed": None,
         "actions": {"script": "runtime/iwp/driver/run_cycle.py", "sha256": spike.sha256_file(LAUNCHER), "args": argv},
-        "observations": session.obs,
+        "observations": engine.obs,
         "outputs": [{"name": n, "sha256": spike.sha256_file(p), "store": f"release:{EXPERIMENT}"}
-                    for n, p, _ in session.outputs],
-        "started": session.started,
-        "ended": session.ended,
-        "status": session.status,
+                    for n, p, _ in engine.outputs],
+        "started": engine.started,
+        "ended": engine.ended,
+        "status": engine.status,
     }
 
 
@@ -172,7 +174,7 @@ def write_records(session, bundles, commit, machine, state_sha, argv, fingerprin
     engine._error = RecordError
     engine.outputs = spike.store_outputs(engine, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
     manifest = spike.build_manifest(engine)
-    record = build_record(session, commit, machine, rep_of(session.args.arm), state_sha, argv, fingerprint)
+    record = build_record(engine, commit, machine, rep_of(engine.args.arm), state_sha, argv, fingerprint)
     try:
         safeio.write_file(ROOT / "evidence" / EXPERIMENT, names["evidence"],
                           data=(json.dumps(manifest, indent=2) + "\n").encode(), exist="new", create_below=ROOT)

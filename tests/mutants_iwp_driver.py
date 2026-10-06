@@ -280,6 +280,36 @@ MUTANTS = [
         S, '    SPIKE_ONLY = ("complete_script", "run_script", "load_script", "session", "input", "hover_click",',
         '    SPIKE_ONLY = ("complete_script", "run_script", "load_script", "session", "input",')],
      [T + "CommandHelperSweepTest.test_the_off_path_exclusions_are_off_the_path"]),
+    # the round-4 review of PR #54 by Sol (round 5: immutable views, pinned state probes)
+    ("R1: a view hands out the engine's live environment again (the round-4 views)", [(
+        S, "    if isinstance(value, dict):\n        return types.MappingProxyType({k: _frozen(v) for k, v in value.items()})",
+        "    if isinstance(value, dict):\n        return value")],
+     [T + "ViewImmutabilityTest.test_the_environment_view_cannot_retarget_the_prefix_after_the_seal"]),
+    ("R2: a view hands out the engine's live set again (reached, expected)", [(
+        S, "    if isinstance(value, set):\n        return frozenset(_frozen(v) for v in value)",
+        "    if isinstance(value, set):\n        return value")],
+     [T + "ViewImmutabilityTest.test_screens_cannot_be_marked_reached_or_expected_by_hand",
+      T + "ViewImmutabilityTest.test_a_cycle_whose_screens_never_come_up_is_not_completed_by_marking_them"]),
+    ("R3: a view hands out the engine's live objects again (the process registry)", [(
+        S, "    return property(lambda self: _frozen(getattr(self._engine, name)), doc=doc)",
+        "    return property(lambda self: getattr(self._engine, name), doc=doc)")],
+     [T + "ViewImmutabilityTest.test_the_process_registry_cannot_lose_the_liveness_guards_entry"]),
+    ("R4: Cycle.run_step's key as a state probe (Sol's round-5 bypass, at the key command)", [(
+        C, '            must(["xdotool", "key", args[0]], env=self.env, require_output=False)',
+        '            probe(["xdotool", "key", args[0]], env=self.env)')],
+     [T + "CommandHelperSweepTest.test_no_raw_or_unchecked_command_on_the_drivers_path",
+      T + "CommandHelperSweepTest.test_the_sweep_finds_a_must_replaced_by_a_state_probe"]),
+    ("R4: the read-only bind as a state probe (Sol's round-5 bypass, at the bind command)", [(
+        S, '        spike.must(["mount", "--bind", install, install], require_output=False)',
+        '        spike.probe(["mount", "--bind", install, install])')],
+     [T + "CommandHelperSweepTest.test_no_raw_or_unchecked_command_on_the_drivers_path",
+      T + "CommandHelperSweepTest.test_the_sweep_finds_a_must_replaced_by_a_state_probe"]),
+    ("R4: every state probe is allowed anywhere again (the round-4 sweep)", [(
+        "tests/test_iwp_driver.py",
+        "            allowed = self.PROBE_SITES.get((rel, scope))",
+        "            allowed = self.PROBE_SITES.get((rel, scope)) or (99, 'anywhere')")],
+     [T + "CommandHelperSweepTest.test_the_sweep_finds_a_must_replaced_by_a_state_probe",
+      T + "CommandHelperSweepTest.test_a_probe_beyond_its_named_count_is_an_offender"]),
 ]
 
 
