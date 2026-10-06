@@ -1,0 +1,8 @@
+Rework round 1, after E004-r0030 to r0045 (2026-10-04, at a464f266d8ae)
+$ bash setup/iwp/iwp-runtime.sh | tail -1
+ready
+$ python3 tools/register_artifact.py check "$IWP_DIR" iwp-2.0-996e86c5; echo "register_artifact exit=$?"
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+register_artifact exit=0

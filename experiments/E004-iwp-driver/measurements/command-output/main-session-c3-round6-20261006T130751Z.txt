@@ -1,0 +1,26 @@
++ main session addendum at 9cdb4221337341bd35025f44c5813e55a1ca31ab, 20261006T130751Z: DW5, prefix-after, DW3 (suite + mutants twice, external TMPDIR)
+== DW5 iwp-runtime.sh
+facility:iwp-prefix: verified
+ready
+exit 0
+== DW5 register_artifact check
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+== prefix vs baseline after all runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW3 suite + mutants x2, TMPDIR=/tmp/iwa-t13-r6 (a short directory outside every checkout)
+(verbatim from the run's captured output; run at HEAD 9cdb422 by the main session)
+9cdb422
+Ran 609 tests in 49.382s
+
+OK
+killed   R3: finish() publishes completed whatever complete() and the reset said (1 test id(s))
+73 of 73 mutants killed
+73 of 73 mutants killed
+(note: a mid-run `git checkout -- runtime/iwp/driver/session.py` by the main session raced the
+first mutants pass between two mutants; such a race could only produce a false SURVIVED line,
+and no survived line appears in either pass, both 73/73 killed)

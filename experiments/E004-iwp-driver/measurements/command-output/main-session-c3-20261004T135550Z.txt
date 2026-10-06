@@ -1,0 +1,23 @@
++ main session at 38e58720e091, 2026-10-04T13:55:50Z, from the task's worktree (a worktree under /tmp is hidden by the run's private /tmp; see main-session-c3-20261004T135333Z.txt)
+== DW1
+{"repeat": 1, "run_id": "E004-r0017", "status": "completed", "seconds": 14.99, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0018", "status": "completed", "seconds": 14.92, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0019", "status": "completed", "seconds": 14.84, "as_expected": true}
+{"repeat": 4, "run_id": "E004-r0020", "status": "completed", "seconds": 15.21, "as_expected": true}
+{"repeat": 5, "run_id": "E004-r0021", "status": "completed", "seconds": 15.21, "as_expected": true}
+{"repeat": 6, "run_id": "E004-r0022", "status": "completed", "seconds": 15.52, "as_expected": true}
+{"repeat": 7, "run_id": "E004-r0023", "status": "completed", "seconds": 14.68, "as_expected": true}
+{"repeat": 8, "run_id": "E004-r0024", "status": "completed", "seconds": 14.91, "as_expected": true}
+{"repeat": 9, "run_id": "E004-r0025", "status": "completed", "seconds": 15.22, "as_expected": true}
+{"repeat": 10, "run_id": "E004-r0026", "status": "completed", "seconds": 15.53, "as_expected": true}
+exit 0 (155 s)
+== DW2
+{"repeat": 1, "run_id": "E004-r0027", "status": "completed", "seconds": 15.2, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0028", "status": "aborted: game-died: the game process exited before the options screen appeared (status -9)", "seconds": 14.59, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0029", "status": "completed", "seconds": 14.49, "as_expected": true}
+exit 0
+== DW5 after the runs
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0

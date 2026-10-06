@@ -1,0 +1,36 @@
++ main session at a4a687e2d0f4, 2026-10-05T20:24:58Z, from the task's worktree
+== DW3 unittest (TMPDIR outside every checkout)
+Ran 573 tests in 50.339s
+
+OK
+== DW3 mutants
+killed   the sweep: one raw subprocess call is made outside the checked helper (1 test id(s))
+52 of 52 mutants killed
+== DW1
+{"repeat": 1, "run_id": "E004-r0094", "status": "completed", "seconds": 11.8, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0095", "status": "completed", "seconds": 10.02, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0096", "status": "completed", "seconds": 10.19, "recovered": true, "as_expected": true}
+{"repeat": 4, "run_id": "E004-r0097", "status": "completed", "seconds": 10.21, "recovered": true, "as_expected": true}
+{"repeat": 5, "run_id": "E004-r0098", "status": "completed", "seconds": 10.05, "recovered": true, "as_expected": true}
+{"repeat": 6, "run_id": "E004-r0099", "status": "completed", "seconds": 10.08, "recovered": true, "as_expected": true}
+{"repeat": 7, "run_id": "E004-r0100", "status": "completed", "seconds": 10.06, "recovered": true, "as_expected": true}
+{"repeat": 8, "run_id": "E004-r0101", "status": "completed", "seconds": 10.06, "recovered": true, "as_expected": true}
+{"repeat": 9, "run_id": "E004-r0102", "status": "completed", "seconds": 10.09, "recovered": true, "as_expected": true}
+{"repeat": 10, "run_id": "E004-r0103", "status": "completed", "seconds": 10.16, "recovered": true, "as_expected": true}
+exit 0 (104 s)
+== DW2 kill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0104", "status": "completed", "seconds": 10.17, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0105", "status": "aborted: game-died: the game process exited before a screenshot observation (status 0)", "seconds": 9.21, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0106", "status": "completed", "seconds": 10.3, "recovered": true, "as_expected": true}
+exit 0
+== DW2 sigkill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0107", "status": "completed", "seconds": 9.94, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0108", "status": "aborted: game-died: the game process exited before wait for a screen (status -9)", "seconds": 9.51, "recovered": false, "as_expected": false}
+exit 1
+== DW5
+ready
+exit 0
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0

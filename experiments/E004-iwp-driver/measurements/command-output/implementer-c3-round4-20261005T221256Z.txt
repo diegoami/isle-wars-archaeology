@@ -1,0 +1,38 @@
++ T13 round 4 implementer (Opus) at 286a4c57eb69, 2026-10-05T22:12:56Z, from the task's worktree
+== prefix vs baseline before the runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW2 sigkill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0126", "status": "completed", "seconds": 10.59, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0127", "status": "aborted: game-died: the game process exited before wait for a screen (status -9)", "seconds": 8.52, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0128", "status": "completed", "seconds": 9.17, "recovered": true, "as_expected": true}
+exit 0 (31 s)
+== DW2 kill-mid-cycle
+{"repeat": 1, "run_id": "E004-r0129", "status": "completed", "seconds": 9.67, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0130", "status": "aborted: game-died: the game process exited before a screenshot observation (status 0)", "seconds": 8.48, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0131", "status": "completed", "seconds": 9.13, "recovered": true, "as_expected": true}
+exit 0 (31 s)
+== DW1 control
+{"repeat": 1, "run_id": "E004-r0132", "status": "completed", "seconds": 9.26, "recovered": true, "as_expected": true}
+{"repeat": 2, "run_id": "E004-r0133", "status": "completed", "seconds": 8.95, "recovered": true, "as_expected": true}
+{"repeat": 3, "run_id": "E004-r0134", "status": "completed", "seconds": 9.47, "recovered": true, "as_expected": true}
+{"repeat": 4, "run_id": "E004-r0135", "status": "completed", "seconds": 9.23, "recovered": true, "as_expected": true}
+{"repeat": 5, "run_id": "E004-r0136", "status": "completed", "seconds": 9.43, "recovered": true, "as_expected": true}
+{"repeat": 6, "run_id": "E004-r0137", "status": "completed", "seconds": 9.32, "recovered": true, "as_expected": true}
+{"repeat": 7, "run_id": "E004-r0138", "status": "completed", "seconds": 10.19, "recovered": true, "as_expected": true}
+{"repeat": 8, "run_id": "E004-r0139", "status": "completed", "seconds": 12.29, "recovered": true, "as_expected": true}
+{"repeat": 9, "run_id": "E004-r0140", "status": "completed", "seconds": 11.47, "recovered": true, "as_expected": true}
+{"repeat": 10, "run_id": "E004-r0141", "status": "completed", "seconds": 10.06, "recovered": true, "as_expected": true}
+exit 0 (108 s)
+== DW5
+ready
+unlisted: unins000.dat
+unlisted: unins000.exe
+ok: iwp-2.0-996e86c5
+exit 0
+== prefix vs baseline after all runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+DONE
