@@ -32,7 +32,7 @@
    {"script": "MovieScript 398 CompCards", "calls": 2},
    {"script": "MovieScript 399 WHOGOESFIRST", "calls": 4}
   ],
-  "reads": "one stream at the Lingo level: every draw goes through the same built-in, and no script reseeds or redirects it (Q-RND-02, Q-RND-03)"
+  "reads": "one stream at the Lingo level: every draw goes through the same built-in, whose name has no other occurrence in the corpus, and no script names the runtime's seeding property (the seed search)"
  },
  "file_io_census": {
   "searched": "every decompiled script for the names of Director's file xtra calls (open, create, read, write)",
