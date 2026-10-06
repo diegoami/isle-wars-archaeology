@@ -8,16 +8,19 @@ Reads the decompiled text of `MovieScript 1 - Startmovie` IN PLACE in the static
 parses the board tables it builds (the per-country island numbers, the nine island member lists, the
 per-island key-country lists, the 23-country key list, the five border tables and the two position
 tables), and writes measurements/board-tabulation-<out>.json (default <out> = <run>; an existing file is
-never overwritten). The output holds derived, tabulated data only: counts, member lists, adjacency in
-both directions, degrees, the island crossing graph, and one boolean per check — never a line of the
-decompiled text and never a machine path.
+never overwritten). The output holds derived, tabulated data only: all 27 board tables as plain
+number lists (the per-country island numbers, the member lists, the zero-padded per-island key lists,
+the 23-country key list, the five border tables and the two coordinate tables), plus counts, member
+lists with their zero padding dropped, adjacency in both directions, degrees, the island crossing
+graph, and one boolean per check — never a line of the decompiled text and never a machine path.
 
 Checks (a property a script checks is checked, not read):
-  table lengths (46 entries each; entries in range); no self-neighbour; no duplicate neighbour within
-  a country; symmetry (every border entry listed on both sides); connectivity of the whole board from
-  one country; the nine member lists forming a disjoint cover; the per-country island numbers agreeing
-  with the member lists; the per-island key lists (zero-padded) concatenating to the 23-country key
-  list in order; every key country inside its own island; 46 distinct positions.
+  table lengths (46 entries each; entries in range); no self-neighbour (with the detector itself
+  exercised against an injected self-edge, so a self-edge cannot pass unnoticed); no duplicate
+  neighbour within a country; symmetry (every border entry listed on both sides); connectivity of the
+  whole board from one country; the nine member lists forming a disjoint cover; the per-country island
+  numbers agreeing with the member lists; the per-island key lists (zero-padded) concatenating to the
+  23-country key list in order; every key country inside its own island; 46 distinct positions.
 Exit 0 when every check holds.
 """
 import json
@@ -79,6 +82,12 @@ def file_name(kind, number, name):
     return "%s %d - %s.ls" % (kind, number, name)
 
 
+def has_self_neighbour(adj):
+    """True when any country lists itself among its neighbours. The keys of `adj` are country numbers
+    as text; the neighbours are integers, so the key must be converted before the membership test."""
+    return any(int(c) in ns for c, ns in adj.items())
+
+
 def main():
     errors = []
     sys.path.insert(0, str(ROOT / "tools" / "static"))
@@ -131,7 +140,10 @@ def main():
     adjacency = {}
     for c in range(1, N_COUNTRIES + 1):
         adjacency[str(c)] = [t["BR%d" % k][c - 1] for k in range(1, 6) if t["BR%d" % k][c - 1] != 0]
-    checks["no_self_neighbour"] = all(c not in ns for c, ns in adjacency.items())
+    checks["no_self_neighbour"] = not has_self_neighbour(adjacency)
+    # The detector itself is exercised: a synthetic self-edge must be found, so a comparison bug that
+    # silently passes every board (a text key against integer neighbours) cannot hide one again.
+    checks["self_neighbour_detector_catches_an_injected_self_edge"] = has_self_neighbour({"1": [1, 2]})
     checks["no_duplicate_neighbour_within_a_country"] = all(len(set(ns)) == len(ns) for ns in adjacency.values())
     checks["adjacency_symmetric"] = all(
         sorted(adjacency[str(c)]) == sorted([d for d in range(1, N_COUNTRIES + 1)
@@ -203,6 +215,7 @@ def main():
                    "island_crossing_directed_entries": total_directed,
                    "degree_histogram": {str(d): sum(1 for v in degrees.values() if v == d)
                                         for d in sorted(set(degrees.values()))}},
+        "tables": {name: t[name] for name in BOARD_TABLES},
         "islands": islands,
         "island_of_country": island_num,
         "adjacency": adjacency,
