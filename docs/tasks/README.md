@@ -30,3 +30,4 @@ status; this index carries none.
 | T31 | Implementer read access to the machine-local static folder | #89 | T29 |
 | T30 | Turn order, victory and concession: Pro Lingo reading | #85 | T17, T31 |
 | T21 | Reinforcement and island bonuses: Pro Lingo reading | #69 | T17, T31 |
+| T22 | Cards and trade-ins: Pro Lingo reading | #70 | T17, T29 |
