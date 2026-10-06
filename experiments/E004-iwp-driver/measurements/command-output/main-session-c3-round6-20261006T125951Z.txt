@@ -1,0 +1,14 @@
++ main session at 9cdb4221337341bd35025f44c5813e55a1ca31ab, 20261006T125951Z, from the task's worktree
+== prefix vs baseline before the runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW2 sigkill-mid-cycle
+runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run
+exit 1
+== DW2 kill-mid-cycle
+runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run
+exit 1
+== DW1 control
+runtime/, setup/, tools/ or formats/ has uncommitted changes; commit before a recorded run
+exit 1

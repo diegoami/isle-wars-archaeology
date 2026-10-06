@@ -1,0 +1,14 @@
++ main session at 9cdb4221337341bd35025f44c5813e55a1ca31ab, 20261006T125852Z, from the task's worktree
+== prefix vs baseline before the runs
+system.reg = baseline
+user.reg = baseline
+userdef.reg = baseline
+== DW2 sigkill-mid-cycle
+stale processes of an earlier run or of setup are alive: [915335]; stop them first (nothing was started)
+exit 1
+== DW2 kill-mid-cycle
+stale processes of an earlier run or of setup are alive: [915335]; stop them first (nothing was started)
+exit 1
+== DW1 control
+stale processes of an earlier run or of setup are alive: [915335]; stop them first (nothing was started)
+exit 1
