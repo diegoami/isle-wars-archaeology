@@ -1,0 +1,379 @@
+{
+ "what": "the decompiled Lingo scripts read for F014 (T22), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "count": 36,
+ "scripts": [
+  {
+   "kind": "MovieScript",
+   "number": 1,
+   "name": "Startmovie",
+   "handlers": [
+    "startMovie",
+    "Count15",
+    "count1",
+    "count10",
+    "count30",
+    "count60",
+    "count5",
+    "count3",
+    "count2",
+    "EEMPTY"
+   ],
+   "lines": 217,
+   "ls_sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 23,
+   "name": "Newgame",
+   "handlers": [
+    "Newgame"
+   ],
+   "lines": 53,
+   "ls_sha256": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 50,
+   "name": "Rolldice",
+   "handlers": [
+    "RollDice"
+   ],
+   "lines": 50,
+   "ls_sha256": "70a85fd9b6ac40b5f70766f63f0c7a8361415754bba2dcb9b57c22850d26670f"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 75,
+   "name": "",
+   "handlers": [
+    "PutinInfo"
+   ],
+   "lines": 84,
+   "ls_sha256": "94288b5b60f2cf9b31dbbb0594a0aecb4e3cbbde8d0ea94aa307b148d86015ad"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 333,
+   "name": "ComputerPlaceArmies",
+   "handlers": [
+    "computerplacearmies"
+   ],
+   "lines": 903,
+   "ls_sha256": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 337,
+   "name": "computerrolldice",
+   "handlers": [
+    "ComputerRollDice"
+   ],
+   "lines": 285,
+   "ls_sha256": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 344,
+   "name": "PUTINCARDS",
+   "handlers": [
+    "PUTINCARDS",
+    "PUTINCARDSM"
+   ],
+   "lines": 72,
+   "ls_sha256": "eb77a117abbcff742a42d2c544ec2c8643a58896d2b3f8df27b0302d9515d730"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 345,
+   "name": "SELECTACARD",
+   "handlers": [
+    "SELECTACARD"
+   ],
+   "lines": 91,
+   "ls_sha256": "0bc50c640aeb09aee1ead9094964526976ed2d933a47be05b0fc128880cd565a"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 366,
+   "name": "CheckCardMatch",
+   "handlers": [
+    "CheckCardMatch"
+   ],
+   "lines": 56,
+   "ls_sha256": "14556981a17aa9bb1accd2ca963572052ccdcc228d7fec7decdcc8bafed4cdbe"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 397,
+   "name": "CompCheckCardMatch",
+   "handlers": [
+    "CompCheckCardMatch"
+   ],
+   "lines": 164,
+   "ls_sha256": "81bd1b62fc1ed7368950e8627feda11823167ece5b1e11772ad20f9a3aa0fe29"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 398,
+   "name": "CompCards",
+   "handlers": [
+    "CompCards"
+   ],
+   "lines": 84,
+   "ls_sha256": "4595e8243633d8f08addf9ed3f67341b4d79a90e2520060a2974780316b6c258"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 532,
+   "name": "Reordercards",
+   "handlers": [
+    "Reordercards",
+    "CompReorderCards"
+   ],
+   "lines": 91,
+   "ls_sha256": "554cf5957cadcfbbf387e5a66d329666b330b9400d3920241896d36d82814295"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 14,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 123,
+   "ls_sha256": "7269909717428a47b8de7e9e5d80791cf6c7a5025f88ec1fb1a34a476c0cce31"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 24,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 3,
+   "ls_sha256": "c4f7cd498abdcad4bd6db63107a3347de8e9569811e56c0188ba262069139fc0"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 97,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 7,
+   "ls_sha256": "101a5e952ae6b687e890c5d76722a7fd8607e5f0d82d97eddd03c26cbc47273d"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 331,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 11,
+   "ls_sha256": "548a2c702dc70e9f11b06391b90603d941cbd4241b3e647803e9e9a5743a404e"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 341,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 9,
+   "ls_sha256": "13915cda361e74e5e80962751277dffe81ae3da316df0e6b5f64824370218e7d"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 342,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 44,
+   "ls_sha256": "7877022fba42e47b819c9fc4c358bbc1735403e8933d4722d24413dec1940943"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 358,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 5,
+   "ls_sha256": "835695f4bc9f25491a767c0f521c9dfbd5f5cf98ce984de86f4f5b87207681dd"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 367,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 19,
+   "ls_sha256": "6ae79a8e7274dc674e6c32afa21c3dd87db79970c45574eb47eb2f5c954668d9"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 369,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 3,
+   "ls_sha256": "8ddc1054d5ba9bb15eb3ee9f9949ba0aa30abfa52b3099a809b28c0f289bbdbf"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 372,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 5,
+   "ls_sha256": "1150f23d8744f33d407e01ef9184fbb90a43ec8e94c2df30866b5ac1fb632127"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 389,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 5,
+   "ls_sha256": "19fe3b6992b222ffaae534e90cb7d2e7e4865f12ffb92c7894f8d70b79b10925"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 400,
+   "name": "",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 401,
+   "ls_sha256": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 453,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 20,
+   "ls_sha256": "4e177c989e356a7d2054f079623d4032ce43b3f405175038938ca6430213c43b"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 526,
+   "name": "pick3cards",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 78,
+   "ls_sha256": "9e90273197885163b6c40845357af18f2484d1ec70d7037e00f44a1bcdca81a5"
+  },
+  {
+   "kind": "CastScript",
+   "number": 66,
+   "name": "Pass2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 16,
+   "ls_sha256": "6101565418d4fcd5345fe4408a11211eb78b1622dc2cde34e3d718b5a51a2f1f"
+  },
+  {
+   "kind": "CastScript",
+   "number": 376,
+   "name": "CARDV1",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "dc2da939c1dc31516cdf65062faab4a2fafc300ba4511d94c20adf15db956cc5"
+  },
+  {
+   "kind": "CastScript",
+   "number": 377,
+   "name": "CARDV2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 378,
+   "name": "CARDV3",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 379,
+   "name": "CARDV4",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 380,
+   "name": "CARDV5",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 381,
+   "name": "CARDV6",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 383,
+   "name": "CARDV8",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 27,
+   "ls_sha256": "80944e5cb680b876c9c332716d25f3099e8e7cedbe8b13afb32450868cc68b3b"
+  },
+  {
+   "kind": "CastScript",
+   "number": 528,
+   "name": "tradein2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 114,
+   "ls_sha256": "5d7e3cb49e81abc4fa4bc9d7388f32ed1967de9f5a6b5a821c139d007077b4a7"
+  },
+  {
+   "kind": "CastScript",
+   "number": 530,
+   "name": "dtradein2",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 12,
+   "ls_sha256": "8541e4d600c760ef9a9aa720e74835918b87b708369eee421068990143f3b2ff"
+  }
+ ]
+}
