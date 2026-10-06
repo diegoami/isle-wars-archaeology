@@ -1,0 +1,198 @@
+{
+ "what": "the decompiled Lingo scripts read for F015 (T23), with the ls_sha256 of the run pro-r1 record (experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json). The scripts themselves are not kept here (rule 18).",
+ "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+ "run": "pro-r1",
+ "count": 18,
+ "scripts": [
+  {
+   "kind": "MovieScript",
+   "number": 1,
+   "name": "Startmovie",
+   "handlers": [
+    "startMovie",
+    "Count15",
+    "count1",
+    "count10",
+    "count30",
+    "count60",
+    "count5",
+    "count3",
+    "count2",
+    "EEMPTY"
+   ],
+   "lines": 217,
+   "ls_sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 5,
+   "name": "Putinboard",
+   "handlers": [
+    "Putinboard"
+   ],
+   "lines": 176,
+   "ls_sha256": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 6,
+   "name": "CheckNumberofArmies",
+   "handlers": [
+    "CheckNumberofArmies"
+   ],
+   "lines": 287,
+   "ls_sha256": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 10,
+   "name": "Checkturn",
+   "handlers": [
+    "CheckTurn"
+   ],
+   "lines": 76,
+   "ls_sha256": "a2ed8e46fdc45dd998a5726e00cdded651cc3e66cb3f39983ae208a124fe3f13"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 23,
+   "name": "Newgame",
+   "handlers": [
+    "Newgame"
+   ],
+   "lines": 53,
+   "ls_sha256": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 51,
+   "name": "putinproductioncenters",
+   "handlers": [
+    "Putinproductioncenters"
+   ],
+   "lines": 33,
+   "ls_sha256": "9edb5fc3c8d853d0968f9203500196218e25bbe3600a30dc89c79d7fde1aad18"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 333,
+   "name": "ComputerPlaceArmies",
+   "handlers": [
+    "computerplacearmies"
+   ],
+   "lines": 903,
+   "ls_sha256": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 337,
+   "name": "computerrolldice",
+   "handlers": [
+    "ComputerRollDice"
+   ],
+   "lines": 285,
+   "ls_sha256": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 338,
+   "name": "MakeComputerMove",
+   "handlers": [
+    "MakeComputerMove"
+   ],
+   "lines": 315,
+   "ls_sha256": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 363,
+   "name": "addtoproductioncenter",
+   "handlers": [
+    "addtoproductioncenter"
+   ],
+   "lines": 27,
+   "ls_sha256": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 364,
+   "name": "PutinFlood",
+   "handlers": [
+    "putinflood"
+   ],
+   "lines": 75,
+   "ls_sha256": "7d6643034c808e4ae92cf078e0fceb361806d61afc87b920e8239834cb1fad97"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 365,
+   "name": "Putinrebellion",
+   "handlers": [
+    "putinrebellion"
+   ],
+   "lines": 116,
+   "ls_sha256": "8b60b52b87a15dc1ef4f58e4b48556e0bc0feb2066e53115d23a90bbf8669295"
+  },
+  {
+   "kind": "MovieScript",
+   "number": 458,
+   "name": "getdefaults",
+   "handlers": [
+    "Getdefaults",
+    "SaveDefaults"
+   ],
+   "lines": 79,
+   "ls_sha256": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 3,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 9,
+   "ls_sha256": "dd0fbf7df481b8dc3359109d7a2caae0bef13fb6d9cbcdfe91a9971b3be15666"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 4,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 70,
+   "ls_sha256": "a2ad98578ce9b29d8f9f8efcca506668675f1f550135c3282418c8c52d443a43"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 53,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 10,
+   "ls_sha256": "4fc0b70243c9e34897ee309314f6822ba7743de3af5670da046e079511388287"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 54,
+   "name": "",
+   "handlers": [
+    "exitFrame"
+   ],
+   "lines": 57,
+   "ls_sha256": "d27b3093d4844d783c64670230cbc62d220bd980b82a1fbcafb97714589f76f0"
+  },
+  {
+   "kind": "BehaviorScript",
+   "number": 499,
+   "name": "FREQbehavior",
+   "handlers": [
+    "mouseDown"
+   ],
+   "lines": 92,
+   "ls_sha256": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4"
+  }
+ ]
+}

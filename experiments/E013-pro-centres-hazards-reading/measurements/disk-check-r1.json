@@ -1,0 +1,152 @@
+{
+ "what": "each script listed in scripts-read.json, hashed in place in the static folder of run pro-r1, against the record's ls_sha256 (nothing copied; no path or code kept)",
+ "record": "experiments/E008-static-triage/measurements/iwp-extract-pro-r1.json",
+ "matched": 18,
+ "listed": 18,
+ "rows": [
+  {
+   "script": "MovieScript 1",
+   "file": "MovieScript 1 - Startmovie.ls",
+   "bytes": 6443,
+   "sha256_on_disk": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "ls_sha256_in_record": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+   "match": true
+  },
+  {
+   "script": "MovieScript 5",
+   "file": "MovieScript 5 - Putinboard.ls",
+   "bytes": 3871,
+   "sha256_on_disk": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+   "ls_sha256_in_record": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+   "match": true
+  },
+  {
+   "script": "MovieScript 6",
+   "file": "MovieScript 6 - CheckNumberofArmies.ls",
+   "bytes": 6956,
+   "sha256_on_disk": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+   "ls_sha256_in_record": "9a475637ad84188ab8a74e91cb94fd0518a40bc5f69e75797823a5faa9af5d2a",
+   "match": true
+  },
+  {
+   "script": "MovieScript 10",
+   "file": "MovieScript 10 - Checkturn.ls",
+   "bytes": 1715,
+   "sha256_on_disk": "a2ed8e46fdc45dd998a5726e00cdded651cc3e66cb3f39983ae208a124fe3f13",
+   "ls_sha256_in_record": "a2ed8e46fdc45dd998a5726e00cdded651cc3e66cb3f39983ae208a124fe3f13",
+   "match": true
+  },
+  {
+   "script": "MovieScript 23",
+   "file": "MovieScript 23 - Newgame.ls",
+   "bytes": 1561,
+   "sha256_on_disk": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+   "ls_sha256_in_record": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+   "match": true
+  },
+  {
+   "script": "MovieScript 51",
+   "file": "MovieScript 51 - putinproductioncenters.ls",
+   "bytes": 839,
+   "sha256_on_disk": "9edb5fc3c8d853d0968f9203500196218e25bbe3600a30dc89c79d7fde1aad18",
+   "ls_sha256_in_record": "9edb5fc3c8d853d0968f9203500196218e25bbe3600a30dc89c79d7fde1aad18",
+   "match": true
+  },
+  {
+   "script": "MovieScript 333",
+   "file": "MovieScript 333 - ComputerPlaceArmies.ls",
+   "bytes": 25785,
+   "sha256_on_disk": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "ls_sha256_in_record": "bc2cde231c2b8f675764aa69684a87f100b895cce90b106aec1df49ec02d5a0d",
+   "match": true
+  },
+  {
+   "script": "MovieScript 337",
+   "file": "MovieScript 337 - computerrolldice.ls",
+   "bytes": 7741,
+   "sha256_on_disk": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "ls_sha256_in_record": "ae0c7941466af264481a2548a02013d2b23868c525f17a558ccc74375bdb5f89",
+   "match": true
+  },
+  {
+   "script": "MovieScript 338",
+   "file": "MovieScript 338 - MakeComputerMove.ls",
+   "bytes": 6745,
+   "sha256_on_disk": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+   "ls_sha256_in_record": "d5eccc8e35ff7880adf56b2f049ffd9ca0c4b87cf3a8f8d0d631eb6638e0d34c",
+   "match": true
+  },
+  {
+   "script": "MovieScript 363",
+   "file": "MovieScript 363 - addtoproductioncenter.ls",
+   "bytes": 639,
+   "sha256_on_disk": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12",
+   "ls_sha256_in_record": "ee7120f229282987e832fb2f15ed17bf3b975bae840aaffa5e7202822a0feb12",
+   "match": true
+  },
+  {
+   "script": "MovieScript 364",
+   "file": "MovieScript 364 - PutinFlood.ls",
+   "bytes": 1583,
+   "sha256_on_disk": "7d6643034c808e4ae92cf078e0fceb361806d61afc87b920e8239834cb1fad97",
+   "ls_sha256_in_record": "7d6643034c808e4ae92cf078e0fceb361806d61afc87b920e8239834cb1fad97",
+   "match": true
+  },
+  {
+   "script": "MovieScript 365",
+   "file": "MovieScript 365 - Putinrebellion.ls",
+   "bytes": 2359,
+   "sha256_on_disk": "8b60b52b87a15dc1ef4f58e4b48556e0bc0feb2066e53115d23a90bbf8669295",
+   "ls_sha256_in_record": "8b60b52b87a15dc1ef4f58e4b48556e0bc0feb2066e53115d23a90bbf8669295",
+   "match": true
+  },
+  {
+   "script": "MovieScript 458",
+   "file": "MovieScript 458 - getdefaults.ls",
+   "bytes": 1827,
+   "sha256_on_disk": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3",
+   "ls_sha256_in_record": "4b350cea974139670a7f7c42be5f606ce279cb0b11b090771887e8f2aab217b3",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 3",
+   "file": "BehaviorScript 3.ls",
+   "bytes": 210,
+   "sha256_on_disk": "dd0fbf7df481b8dc3359109d7a2caae0bef13fb6d9cbcdfe91a9971b3be15666",
+   "ls_sha256_in_record": "dd0fbf7df481b8dc3359109d7a2caae0bef13fb6d9cbcdfe91a9971b3be15666",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 4",
+   "file": "BehaviorScript 4.ls",
+   "bytes": 1669,
+   "sha256_on_disk": "a2ad98578ce9b29d8f9f8efcca506668675f1f550135c3282418c8c52d443a43",
+   "ls_sha256_in_record": "a2ad98578ce9b29d8f9f8efcca506668675f1f550135c3282418c8c52d443a43",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 53",
+   "file": "BehaviorScript 53.ls",
+   "bytes": 178,
+   "sha256_on_disk": "4fc0b70243c9e34897ee309314f6822ba7743de3af5670da046e079511388287",
+   "ls_sha256_in_record": "4fc0b70243c9e34897ee309314f6822ba7743de3af5670da046e079511388287",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 54",
+   "file": "BehaviorScript 54.ls",
+   "bytes": 1305,
+   "sha256_on_disk": "d27b3093d4844d783c64670230cbc62d220bd980b82a1fbcafb97714589f76f0",
+   "ls_sha256_in_record": "d27b3093d4844d783c64670230cbc62d220bd980b82a1fbcafb97714589f76f0",
+   "match": true
+  },
+  {
+   "script": "BehaviorScript 499",
+   "file": "BehaviorScript 499 - FREQbehavior.ls",
+   "bytes": 1996,
+   "sha256_on_disk": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+   "ls_sha256_in_record": "b5c06d0bdd05217feff37220fa9b3ba88c38c8c378b67736f51db2b259f559d4",
+   "match": true
+  }
+ ]
+}
