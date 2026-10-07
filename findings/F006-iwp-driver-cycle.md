@@ -36,7 +36,7 @@
   - the game and the display were alive just before terminate;
   - the clean-up observation "every stage succeeded and the prefix was reset" is `yes`.
 
-  **Only times vary** across the ten ([`tables/E004-r0062-E004-r0077-stage-times.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-E004-r0077-stage-times.md)). The same four hashes are those of every completed repeat of B1 to B4. The PNG hashes of `before` and `after` are the ones F002 reports for E001-E004-r0028 to E004-r0030, from another driver and another prefix build. The `start_state` differs from F002's (`34ac62c3...`); the cause was not investigated (the prefix has since been used by E002's runs and by `setup/iwp/iwp-runtime.sh`).
+  **Only times vary** across the ten ([`tables/E004-r0062-r0077-stage-times.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-r0077-stage-times.md)). The same four hashes are those of every completed repeat of B1 to B4. The PNG hashes of `before` and `after` are the ones F002 reports for E001-r0028 to E001-r0030, from another driver and another prefix build. The `start_state` differs from F002's (`34ac62c3...`); the cause was not investigated (the prefix has since been used by E002's runs and by `setup/iwp/iwp-runtime.sh`).
 - **Time.** A repeat, from the first seal to the end of the reset, took a median of **9.88 s** (9.78 to 12.64, n=10) in B5's control. Every repeat is kill-terminated (`wineserver -k`). That is below E002's 40 to 46 s for a kill-terminated run. The earlier controls took 15.06 s (B1), 15.10 s (B2), 16.15 s (B3) and 11.12 s (B4). The time goes to (B5 control, medians):
 
   | Stage | Median s |
@@ -60,10 +60,10 @@
   - the install read-only inside the run, the prefix sealed with 0 problems, and the registry files equal to their baseline, both before anything starts and again immediately before the launch;
   - the game in its own network namespace, seeing only `lo`;
   - no process of the run alive after terminate;
-  - the prefix after reset equal to the prefix before the launch ([`tables/E004-r0062-E004-r0077-cycle-table.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-E004-r0077-cycle-table.md)).
+  - the prefix after reset equal to the prefix before the launch ([`tables/E004-r0062-r0077-cycle-table.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-r0077-cycle-table.md)).
 
   B1 to B4 recorded the same, except that their check immediately before the launch did not repeat the install and baseline comparisons.
-- **The bus (#40's second item).** The driver unsets `DBUS_SESSION_BUS_ADDRESS` for its children, and says in the log and the record whether it was set and stale. xfwm4 registered within 0.12 to 0.49 s in all 77 records, with a stale address (B1 to B3) and with a live one (B4, B5). That a stale address is what kept E002's xfwm4 from registering (E004-r0002, E004-r0003) is a hypothesis, below.
+- **The bus (#40's second item).** The driver unsets `DBUS_SESSION_BUS_ADDRESS` for its children, and says in the log and the record whether it was set and stale. xfwm4 registered within 0.12 to 0.49 s in all 77 records, with a stale address (B1 to B3) and with a live one (B4, B5). That a stale address is what kept E002's xfwm4 from registering (E002-r0002, E002-r0003) is a hypothesis, below.
 
 ## Method
 
@@ -127,10 +127,10 @@ The spike changed in five ways:
 ## Observations
 
 Per-repeat values are in the tables of each batch, made once by `make_tables.py` from the records:
-- B5: `measurements/tables/E004-r0062-E004-r0077-*.md`;
-- B4: `measurements/tables/E004-r0046-E004-r0061-*.md`;
-- B3: `measurements/tables/E004-r0030-E004-r0045-*.md`;
-- B2: `measurements/tables/E004-r0017-E004-r0029-*.md`;
+- B5: `measurements/tables/E004-r0062-r0077-*.md`;
+- B4: `measurements/tables/E004-r0046-r0061-*.md`;
+- B3: `measurements/tables/E004-r0030-r0045-*.md`;
+- B2: `measurements/tables/E004-r0017-r0029-*.md`;
 - B1: `measurements/cycle-table.md` and `measurements/stage-times.md`.
 
 The commands' own output is in `measurements/command-output/`.
@@ -153,7 +153,7 @@ These come from exploratory diagnoses made while the driver was built ([`measure
 
 - **What E002's 30 s after `wineserver -k` was.** Hypothesis: the spike's poll ran to its 30 s timeout on processes of the display side, not on Wine. Seen once (diagnosis 1): right after `wineserver -k`, the processes carrying the run's marker were six non-Wine processes (`dbus-launch`, two `dbus-daemon`, `at-spi-bus-launcher`, `at-spi2-registryd`, `xfconfd`), the same in three listings 2 s apart. What started them was not read; that xfwm4 did, through `dbus-launch --autolaunch` for want of a bus, is a guess. E004 measures something else: how long this driver waits for its own game side and display side. That does not show what E002's poll waited for. A controlled test would run the spike's terminate with the processes listed and their parents read, in records.
 - **The stale bus and the display side's 3 s.** Hypothesis: with a stale `DBUS_SESSION_BUS_ADDRESS` in the driver's environment, xfwm4 starts the daemons above, and they take about 3 s to end after the display stops. The batches agree with it: every record with a stale address (B1 to B3) took 2.99 to 3.05 s, and every record with a live one (B4, B5) took 0.00 s. The comparison was not controlled. The batches also differ in time of day, load and code, and no record lists the processes. A controlled test would alternate the two conditions within one command, with the display side's processes listed.
-- **The stale bus and E002's E004-r0002 and E004-r0003.** Hypothesis: the stale address kept xfwm4 from registering there. Seen in exploration (diagnosis 2): with the stale address set for the children, the spike's xfwm4 did not register within 20 s; with it unset, it registered. No E004 arm sets the stale address for the children, so E004 shows only that xfwm4 registers with it unset.
+- **The stale bus and E002's E002-r0002 and E002-r0003.** Hypothesis: the stale address kept xfwm4 from registering there. Seen in exploration (diagnosis 2): with the stale address set for the children, the spike's xfwm4 did not register within 20 s; with it unset, it registered. No E004 arm sets the stale address for the children, so E004 shows only that xfwm4 registers with it unset.
 - **`TMPDIR`.** Seen while building the driver, without records (diagnosis 3):
   - with `TMPDIR` set to a folder the run's private `/tmp` lacks, Wine stopped at once (`unable to create wineserver tmpdir`);
   - with `TMPDIR=/tmp` it aborted once (`free(): invalid pointer`, status -6);
