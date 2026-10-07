@@ -27,7 +27,7 @@
 ### The writer
 
 - **The writer writes a position as the game's own bytes** (R017). `runtime/iw-dos/save/savefmt.py` decodes the bytes of a save into a position and encodes a position back, and encode followed by decode returns the position; `encode(decode(bytes))` equals the bytes for each of the 50 distinct natural saves of E005 and E007 (E007-r0001 (cleaned), E007-r0003 (cleaned), E007-r0012, E007-r0014, E007-r0025, E005-r0011, E005-r0037, and the others in `saves/roundtrip.tsv`). It refuses a position outside the values that were seen or tried (the domain is in the module's constants, each with the runs it comes from: static:runtime/iw-dos/save/savefmt.py:35), as in E007-r0032 and E007-r0036. An edit names a country by a whole number from 1 to 46 and a hand by a colour; anything else is refused (`writer.edit`, since round 1).
-- **The writer places a save only in a run copy, and only as `ISLEWAR.SAV`.** `runtime/iw-dos/save/writer.py` writes into `<run directory>/game` of a run directory outside every checkout that is not `IW_DOS_DIR` under any name and holds the registered set intact, creating the file new; the cycle's `put-save` step calls it after the launch checks and before Load saved game, and the reset removes the file (E007-r0028, E007-r0029).
+- **The writer places a save only in a run copy, and only as `ISLEWAR.SAV`.** `runtime/iw-dos/save/writer.py` writes into `&lt;run directory&gt;/game` of a run directory outside every checkout that is not `IW_DOS_DIR` under any name and holds the registered set intact, creating the file new; the cycle's `put-save` step calls it after the launch checks and before Load saved game, and the reset removes the file (E007-r0028, E007-r0029).
 
 ## Method
 
