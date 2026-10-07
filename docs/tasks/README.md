@@ -37,3 +37,4 @@ status; this index carries none.
 | T33 | The deal and starting state: Pro Lingo reading (T18 part 2) | #97 | T17, T31, T27 |
 | T34 | Setup, seats, files and randomness: Pro Lingo reading (T18 part 3) | #98 | T17, T31 |
 | T28 | Pro corroboration of the Lingo rule readings, from recorded play | #80 | T13, T20, T21, T22, T23, T27, T30 |
+| T25 | Bring the findings into game-archaeologist's `check_citations.py` form | #57 | — |
