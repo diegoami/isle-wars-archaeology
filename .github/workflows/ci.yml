@@ -22,5 +22,9 @@ jobs:
       - run: python3 tools/check_links.py
       # The copied harness tools run here (harness.lock pins them).
       - run: node tools/harness/review.mjs --self-test
+      # Citation discipline for the findings with runs (T25, Done-when 2/4). The list is
+      # explicit, not findings/F*.md: F001 and F004 are purely static and F010+ are out of
+      # scope at the pinned 1bcdb70 tool, so a glob over all findings could never be green.
+      - run: for f in findings/F002-iwp-runtime-wine-xvfb.md findings/F003-iwp-observable-state-inventory.md findings/F005-iw-dos-runtime-dosbox-x.md findings/F006-iwp-driver-cycle.md findings/F007-iw-dos-observable-state-inventory.md findings/F009-iw-dos-save-format.md; do python3 tools/check_citations.py "$f" || exit 1; done
       # Registration, the format rules and the guards (T02).
       - run: python3 -m unittest discover -s tests

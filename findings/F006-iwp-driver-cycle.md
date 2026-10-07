@@ -4,12 +4,12 @@
 - **Question**: Can a reusable driver (`runtime/iwp/driver/`, W5a) take Isle Wars Pro from a known state to a known screen, give one input, observe before and after, terminate and reset, ten times in one command with an identical `before` screenshot? Does a game killed in the middle of a cycle make that repeat `aborted`, with the next repeat starting from the baseline? How long does a kill-terminated repeat take against E002's 40 to 46 s? (E004, task T13, W5a; folds #40's first two items.)
 - **Tests claims**: none (runtime; no game rule)
 - **Experiment and runs**: E004; runs E004-r0001 to E004-r0077, all in `runs/E004/`, in five batches. Each batch is one or more commands at one commit:
-  - **B5, E004-r0062 to r0077, at `74bfcb5a888b`: the driver of this PR after round 2 of its review, and the batch this finding's answers cite.** r0062 to r0071 are the `control` arm (one command of ten repeats); r0072 to r0074 `kill-mid-cycle`; r0075 to r0077 `sigkill-mid-cycle`.
-  - B6, E004-r0126 to r0141, at `286a4c57eb69`: round 4's driver, in which `Session` composes the spike's `Cycle` instead of inheriting it (below). Not a new answer: it shows round 4 keeps B5's results. Control r0132 to r0141, ten `completed`, every `before` screenshot the same pixels as B5's (sha256 `fecd0a984e0d2f36…`), a median of 9.45 s a repeat (8.95 to 12.29); `kill-mid-cycle` r0129 to r0131 and `sigkill-mid-cycle` r0126 to r0128, the middle repeat of each `aborted: game-died`, recovered, and the next one completed; the prefix's registry files equal to the baseline before and after ([`command-output/implementer-c3-round4-20261005T221256Z.txt`](../experiments/E004-iwp-driver/measurements/command-output/implementer-c3-round4-20261005T221256Z.txt)). E004-r0078 to r0125 ran round 3's drivers and are reported on PR #54, not here. One of them, r0109, is a session whose first seal refused a prefix off its baseline: its clean-up observation says `yes` (recovered) although no reset ran. Round 4 records `no` for that case (R2 of round 3's review).
-  - B4, E004-r0046 to r0061, at `7b665df2c361`: the main session's re-take of round 1. Control r0046 to r0055, `kill-mid-cycle` r0056 to r0058, `sigkill-mid-cycle` r0059 to r0061.
-  - B3, E004-r0030 to r0045, at `a464f266d8ae`: round 1. Control r0030 to r0039, `kill-mid-cycle` r0040 to r0042, `sigkill-mid-cycle` r0043 to r0045.
-  - B2, E004-r0017 to r0029, at `38e58720e091`: the main session's re-run of round 0. Control r0017 to r0026, and `sigkill-mid-cycle` r0027 to r0029 only.
-  - B1, E004-r0001 to r0016, at `c6588a95fc48`: round 0. Control r0001 to r0010, `kill-mid-cycle` r0011 to r0013, `sigkill-mid-cycle` r0014 to r0016.
+  - **B5, E004-r0062 to E004-r0077, at `74bfcb5a888b`: the driver of this PR after round 2 of its review, and the batch this finding's answers cite.** E004-r0062 to E004-r0071 are the `control` arm (one command of ten repeats); E004-r0072 to E004-r0074 `kill-mid-cycle`; E004-r0075 to E004-r0077 `sigkill-mid-cycle`.
+  - B6, E004-r0126 to E004-r0141, at `286a4c57eb69`: round 4's driver, in which `Session` composes the spike's `Cycle` instead of inheriting it (below). Not a new answer: it shows round 4 keeps B5's results. Control E004-r0132 to E004-r0141, ten `completed`, every `before` screenshot the same pixels as B5's (sha256 `fecd0a984e0d2f36…`), a median of 9.45 s a repeat (8.95 to 12.29); `kill-mid-cycle` E004-r0129 to E004-r0131 and `sigkill-mid-cycle` E004-r0126 to E004-r0128, the middle repeat of each `aborted: game-died`, recovered, and the next one completed; the prefix's registry files equal to the baseline before and after ([`command-output/implementer-c3-round4-20261005T221256Z.txt`](../experiments/E004-iwp-driver/measurements/command-output/implementer-c3-round4-20261005T221256Z.txt)). E004-r0078 to E004-r0125 ran round 3's drivers and are reported on PR #54, not here. One of them, E004-r0109, is a session whose first seal refused a prefix off its baseline: its clean-up observation says `yes` (recovered) although no reset ran. Round 4 records `no` for that case (R2 of round 3's review).
+  - B4, E004-r0046 to E004-r0061, at `7b665df2c361`: the main session's re-take of round 1. Control E004-r0046 to E004-r0055, `kill-mid-cycle` E004-r0056 to E004-r0058, `sigkill-mid-cycle` E004-r0059 to E004-r0061.
+  - B3, E004-r0030 to E004-r0045, at `a464f266d8ae`: round 1. Control E004-r0030 to E004-r0039, `kill-mid-cycle` E004-r0040 to E004-r0042, `sigkill-mid-cycle` E004-r0043 to E004-r0045.
+  - B2, E004-r0017 to E004-r0029, at `38e58720e091`: the main session's re-run of round 0. Control E004-r0017 to E004-r0026, and `sigkill-mid-cycle` E004-r0027 to E004-r0029 only.
+  - B1, E004-r0001 to E004-r0016, at `c6588a95fc48`: round 0. Control E004-r0001 to E004-r0010, `kill-mid-cycle` E004-r0011 to E004-r0013, `sigkill-mid-cycle` E004-r0014 to E004-r0016.
 
   B1 to B4 ran earlier drivers. Rounds 0 and 1 of the review (PR #54) found that those drivers could accept, by these paths:
   - a failed reset after an abort (B1, B2);
@@ -19,7 +19,7 @@
   - a registry change between the two seals (B1 to B4);
   - another server's display (B1 to B4).
 
-  None of these paths is known to have occurred in their records. Their records stay, and are cited here as earlier measurements of the same cycle. Nine repeats aborted by design and stay: r0012, r0015, r0028, r0041, r0044, r0057, r0060, r0073, r0076.
+  None of these paths is known to have occurred in their records. Their records stay, and are cited here as earlier measurements of the same cycle. Nine repeats aborted by design and stay: E004-r0012, E004-r0015, E004-r0028, E004-r0041, E004-r0044, E004-r0057, E004-r0060, E004-r0073, E004-r0076.
 - **Artifact**: set `iwp-2.0-996e86c5`, variant none. No repeat clicked Save as default or played a game.
 - **Max intervention**: I1 (screenshots of the display and read-only reads of `/proc` and of the game copy; no memory read, no modified file)
 - **Tier reached**: V2 (the original, headless, under Wine; no native Windows run, so no V3)
@@ -27,43 +27,43 @@
 
 ## Answer
 
-- **Ten repeats, one command, one state.** In B5, `python3 runtime/iwp/driver/run_cycle.py` exited 0 and wrote ten `completed` records, E004-r0062 to r0071 ([`command-output/rework2-74bfcb5-control.out.txt`](../experiments/E004-iwp-driver/measurements/command-output/rework2-74bfcb5-control.out.txt)). In all ten:
-  - the `before` screenshot has the same raw-pixel sha256, `fecd0a984e0d2f36...`, and the same PNG file sha256, `ae6e98d28d379bb4...`;
-  - the `after` screenshot (the Options screen) has the same PNG sha256, `426d77e724d793dd...`;
-  - `start_state.sha256` is the same, `b1df17775116d148...`;
-  - one input step succeeded, with every helper command of it exiting 0; `before.png` was taken before it and `after.png` after it;
-  - the display was held by this run's own Xvfb at the first attempt;
-  - the game and the display were alive just before terminate;
-  - the clean-up observation "every stage succeeded and the prefix was reset" is `yes`.
+- **Ten repeats, one command, one state.** In B5, `python3 runtime/iwp/driver/run_cycle.py` exited 0 and wrote ten `completed` records, E004-r0062 to E004-r0071 ([`command-output/rework2-74bfcb5-control.out.txt`](../experiments/E004-iwp-driver/measurements/command-output/rework2-74bfcb5-control.out.txt)). In all ten:
+  - the `before` screenshot has the same raw-pixel sha256, `fecd0a984e0d2f36...`, and the same PNG file sha256, `ae6e98d28d379bb4...` (E004-r0062 to E004-r0071);
+  - the `after` screenshot (the Options screen) has the same PNG sha256, `426d77e724d793dd...` (E004-r0062 to E004-r0071);
+  - `start_state.sha256` is the same, `b1df17775116d148...` (E004-r0062 to E004-r0071);
+  - one input step succeeded, with every helper command of it exiting 0; `before.png` was taken before it and `after.png` after it (E004-r0062 to E004-r0071);
+  - the display was held by this run's own Xvfb at the first attempt (E004-r0062 to E004-r0071);
+  - the game and the display were alive just before terminate (E004-r0062 to E004-r0071);
+  - the clean-up observation "every stage succeeded and the prefix was reset" is `yes` (E004-r0062 to E004-r0071).
 
-  **Only times vary** across the ten ([`tables/E004-r0062-r0077-stage-times.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-r0077-stage-times.md)). The same four hashes are those of every completed repeat of B1 to B4. The PNG hashes of `before` and `after` are the ones F002 reports for E001-r0028 to r0030, from another driver and another prefix build. The `start_state` differs from F002's (`34ac62c3...`); the cause was not investigated (the prefix has since been used by E002's runs and by `setup/iwp/iwp-runtime.sh`).
-- **Time.** A repeat, from the first seal to the end of the reset, took a median of **9.88 s** (9.78 to 12.64, n=10) in B5's control. Every repeat is kill-terminated (`wineserver -k`). That is below E002's 40 to 46 s for a kill-terminated run. The earlier controls took 15.06 s (B1), 15.10 s (B2), 16.15 s (B3) and 11.12 s (B4). The time goes to (B5 control, medians):
+  - **Only times vary** across the ten ([`tables/E004-r0062-r0077-stage-times.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-r0077-stage-times.md)). The same four hashes are those of every completed repeat of B1 to B4. The PNG hashes of `before` and `after` are the ones F002 reports for E001-r0028 to E001-r0030, from another driver and another prefix build. The `start_state` differs from F002's (`34ac62c3...`); the cause was not investigated (the prefix has since been used by E002's runs and by `setup/iwp/iwp-runtime.sh`).
+- **Time.** A repeat, from the first seal to the end of the reset, took a median of **9.88 s** (9.78 to 12.64, n=10) in B5's control (E004-r0062 to E004-r0071). Every repeat is kill-terminated (`wineserver -k`). That is below E002's 40 to 46 s for a kill-terminated run. The earlier controls took 15.06 s (B1), 15.10 s (B2), 16.15 s (B3) and 11.12 s (B4). The time goes to (B5 control, medians):
 
-  | Stage | Median s |
-  | --- | --- |
-  | Xvfb ready, xfwm4 registered | 0.05, 0.12 |
-  | snapshot of the prefix before the launch | 0.46 |
-  | game window after launch | 0.53 |
-  | title screen reached and stable, after launch | 6.51 |
-  | terminate (`wineserver -k`, the bounded wait) | 0.50 |
-  | display side gone after Xvfb and xfwm4 stopped | 0.00 |
-  | snapshot, diff and reset | 1.04 |
+| Stage | Median s | Runs |
+| --- | --- | --- |
+| Xvfb ready, xfwm4 registered | 0.05, 0.12 | E004-r0062 to E004-r0071 |
+| snapshot of the prefix before the launch | 0.46 | E004-r0062 to E004-r0071 |
+| game window after launch | 0.53 | E004-r0062 to E004-r0071 |
+| title screen reached and stable, after launch | 6.51 | E004-r0062 to E004-r0071 |
+| terminate (`wineserver -k`, the bounded wait) | 0.50 | E004-r0062 to E004-r0071 |
+| display side gone after Xvfb and xfwm4 stopped | 0.00 | E004-r0062 to E004-r0071 |
+| snapshot, diff and reset | 1.04 | E004-r0062 to E004-r0071 |
 
-  The title screen is the largest measured stage: 6.5 to 9.6 s over the completed repeats of B1 to B5; F002 had 6.6 to 6.7 s. These records measure elapsed time. They do not show whether any stage could be shorter, nor why the batches differ: B1 to B3 spent about 3 s more each repeat on the display side (next point), and their other stages were slower too. B5's first repeat (12.64 s) spent 2.84 s on the snapshot before the launch, against 0.45 to 0.53 s in the others.
-- **The game side is gone at once after `wineserver -k`. The display side took about 3 s to end in B1 to B3, and no measurable time in B4 and B5.** In all 77 records, "game side gone after terminate" is 0.00 or 0.01 s. In every record that reached it, "display side gone after the display was stopped" is 2.99 to 3.05 s in B1 to B3 and 0.00 s in B4 and B5. The batches differ in one recorded condition, among others not recorded: in every record of B1 to B3 the driver's own environment had a `DBUS_SESSION_BUS_ADDRESS` naming a bus that did not exist ("set, stale"), and in every record of B4 and B5 the address named a bus that existed ("set"). The driver unsets the address for its children in both cases. That the stale address is what made the display side take 3 s is a hypothesis (below): the batches were not a controlled comparison. The driver tells the two sides apart by a second marker, `IWP_CYCLE_SIDE`, inherited from what started each process, and waits with a bound for the game side only (#40's first item).
-- **A game killed at either checkpoint aborts that repeat, the reset restores the prefix, and the next completes.** In B5:
-  - r0073 (an outside `wineserver -k` after the title screen) is `aborted: game-died: the game process exited before the screenshot before.png (status 0)`;
-  - r0076 (SIGKILL of the game process after the Options click, sent through the driver's marker check) is `aborted: game-died: the game process exited before the options screen appeared (status -9)`.
+  - The title screen is the largest measured stage: 6.5 to 9.6 s over the completed repeats of B1 to B5; F002 had 6.6 to 6.7 s (E004-r0001 to E004-r0077). These records measure elapsed time. They do not show whether any stage could be shorter, nor why the batches differ: B1 to B3 spent about 3 s more each repeat on the display side (next point), and their other stages were slower too. B5's first repeat (12.64 s) spent 2.84 s on the snapshot before the launch, against 0.45 to 0.53 s in the others.
+- **The game side is gone at once after `wineserver -k`. The display side took about 3 s to end in B1 to B3, and no measurable time in B4 and B5.** In all 77 records, "game side gone after terminate" is 0.00 or 0.01 s. In every record that reached it, "display side gone after the display was stopped" is 2.99 to 3.05 s in B1 to B3 and 0.00 s in B4 and B5. The batches differ in one recorded condition, among others not recorded: in every record of B1 to B3 the driver's own environment had a `DBUS_SESSION_BUS_ADDRESS` naming a bus that did not exist ("set, stale"), and in every record of B4 and B5 the address named a bus that existed ("set"). The driver unsets the address for its children in both cases. That the stale address is what made the display side take 3 s is a hypothesis (below): the batches were not a controlled comparison. The driver tells the two sides apart by a second marker, `IWP_CYCLE_SIDE`, inherited from what started each process, and waits with a bound for the game side only (#40's first item; E004-r0001 to E004-r0077).
+- **A game killed at either checkpoint aborts that repeat, the reset restores the prefix, and the next completes** (E004-r0073, E004-r0076). In B5:
+  - E004-r0073 (an outside `wineserver -k` after the title screen) is `aborted: game-died: the game process exited before the screenshot before.png (status 0)`;
+  - E004-r0076 (SIGKILL of the game process after the Options click, sent through the driver's marker check) is `aborted: game-died: the game process exited before the options screen appeared (status -9)`.
 
-  In both, "prefix after reset equals prefix before launch" is `yes` and the clean-up observation is `yes`. The next repeat (r0074, r0077) completed with the same `start_state.sha256` and the same `before` hash as the control, and each command exited 0. The same held for every fault record of the earlier batches (listed under Inferences). The command exits 0 for a fault arm only when the faulted repeat is `aborted: game-died`, its clean-up succeeded, and every other repeat completed.
-- **The seal is kept.** In all 16 records of B5:
-  - the install read-only inside the run, the prefix sealed with 0 problems, and the registry files equal to their baseline, both before anything starts and again immediately before the launch;
-  - the game in its own network namespace, seeing only `lo`;
-  - no process of the run alive after terminate;
+  - In both, "prefix after reset equals prefix before launch" is `yes` and the clean-up observation is `yes`. The next repeat (E004-r0074, E004-r0077) completed with the same `start_state.sha256` and the same `before` hash as the control, and each command exited 0. The same held for every fault record of the earlier batches (listed under Inferences). The command exits 0 for a fault arm only when the faulted repeat is `aborted: game-died`, its clean-up succeeded, and every other repeat completed.
+- **The seal is kept.** In all 16 records of B5 (E004-r0062 to E004-r0077):
+  - the install read-only inside the run, the prefix sealed with 0 problems, and the registry files equal to their baseline, both before anything starts and again immediately before the launch (E004-r0062 to E004-r0077);
+  - the game in its own network namespace, seeing only `lo` (E004-r0062 to E004-r0077);
+  - no process of the run alive after terminate (E004-r0062 to E004-r0077);
   - the prefix after reset equal to the prefix before the launch ([`tables/E004-r0062-r0077-cycle-table.md`](../experiments/E004-iwp-driver/measurements/tables/E004-r0062-r0077-cycle-table.md)).
 
-  B1 to B4 recorded the same, except that their check immediately before the launch did not repeat the install and baseline comparisons.
-- **The bus (#40's second item).** The driver unsets `DBUS_SESSION_BUS_ADDRESS` for its children, and says in the log and the record whether it was set and stale. xfwm4 registered within 0.12 to 0.49 s in all 77 records, with a stale address (B1 to B3) and with a live one (B4, B5). That a stale address is what kept E002's xfwm4 from registering (r0002, r0003) is a hypothesis, below.
+  - B1 to B4 recorded the same, except that their check immediately before the launch did not repeat the install and baseline comparisons (E004-r0001 to E004-r0061).
+- **The bus (#40's second item).** The driver unsets `DBUS_SESSION_BUS_ADDRESS` for its children, and says in the log and the record whether it was set and stale. xfwm4 registered within 0.12 to 0.49 s in all 77 records, with a stale address (B1 to B3) and with a live one (B4, B5). That a stale address is what kept E002's xfwm4 from registering (E002-r0002, E002-r0003) is a hypothesis, below.
 
 ## Method
 
@@ -135,7 +135,7 @@ Per-repeat values are in the tables of each batch, made once by `make_tables.py`
 
 The commands' own output is in `measurements/command-output/`.
 
-| Quantity | B5 control (r0062 to r0071) | B5 fault arms (r0072 to r0077) | B1 to B4 control (40 repeats) |
+| Quantity | B5 control (E004-r0062 to E004-r0071) | B5 fault arms (E004-r0072 to E004-r0077) | B1 to B4 control (40 repeats) |
 | --- | --- | --- | --- |
 | records, completed / aborted | 10 / 0 | 4 / 2 | 40 / 0 |
 | `before` pixels sha256 distinct values | 1 | 1 (4 completed) | 1 |
@@ -153,7 +153,7 @@ These come from exploratory diagnoses made while the driver was built ([`measure
 
 - **What E002's 30 s after `wineserver -k` was.** Hypothesis: the spike's poll ran to its 30 s timeout on processes of the display side, not on Wine. Seen once (diagnosis 1): right after `wineserver -k`, the processes carrying the run's marker were six non-Wine processes (`dbus-launch`, two `dbus-daemon`, `at-spi-bus-launcher`, `at-spi2-registryd`, `xfconfd`), the same in three listings 2 s apart. What started them was not read; that xfwm4 did, through `dbus-launch --autolaunch` for want of a bus, is a guess. E004 measures something else: how long this driver waits for its own game side and display side. That does not show what E002's poll waited for. A controlled test would run the spike's terminate with the processes listed and their parents read, in records.
 - **The stale bus and the display side's 3 s.** Hypothesis: with a stale `DBUS_SESSION_BUS_ADDRESS` in the driver's environment, xfwm4 starts the daemons above, and they take about 3 s to end after the display stops. The batches agree with it: every record with a stale address (B1 to B3) took 2.99 to 3.05 s, and every record with a live one (B4, B5) took 0.00 s. The comparison was not controlled. The batches also differ in time of day, load and code, and no record lists the processes. A controlled test would alternate the two conditions within one command, with the display side's processes listed.
-- **The stale bus and E002's r0002 and r0003.** Hypothesis: the stale address kept xfwm4 from registering there. Seen in exploration (diagnosis 2): with the stale address set for the children, the spike's xfwm4 did not register within 20 s; with it unset, it registered. No E004 arm sets the stale address for the children, so E004 shows only that xfwm4 registers with it unset.
+- **The stale bus and E002's E002-r0002 and E002-r0003.** Hypothesis: the stale address kept xfwm4 from registering there. Seen in exploration (diagnosis 2): with the stale address set for the children, the spike's xfwm4 did not register within 20 s; with it unset, it registered. No E004 arm sets the stale address for the children, so E004 shows only that xfwm4 registers with it unset.
 - **`TMPDIR`.** Seen while building the driver, without records (diagnosis 3):
   - with `TMPDIR` set to a folder the run's private `/tmp` lacks, Wine stopped at once (`unable to create wineserver tmpdir`);
   - with `TMPDIR=/tmp` it aborted once (`free(): invalid pointer`, status -6);
@@ -163,10 +163,10 @@ These come from exploratory diagnoses made while the driver was built ([`measure
 
 ## Inferences
 
-- On the game, recovery is shown only at the two checkpoints the fault arms use, by these records. In each case the faulted repeat aborted with `game-died`, its reset restored the prefix, and the next repeat completed.
-  - `after-title`, `wineserver -k`: r0012 then r0013 (B1); r0041 then r0042 (B3); r0057 then r0058 (B4); r0073 then r0074 (B5).
-  - `after-input`, SIGKILL: r0015 then r0016 (B1); r0028 then r0029 (B2, which has only this arm); r0044 then r0045 (B3); r0060 then r0061 (B4); r0076 then r0077 (B5).
-- A death at any other point was not tried on the game: during the launch, during a screen wait, between the end of the body and terminate, during terminate. The unit tests visit the driver's handling of some of these points with a fake game (a game dead before its first screen, a game or a display dead just before terminate, a display dead mid-cycle). That shows the driver's logic, not what the game or Wine does there.
+- On the game, recovery is shown only at the two checkpoints the fault arms use, by these records (E004-r0012, E004-r0013, E004-r0015, E004-r0016, E004-r0028, E004-r0029, E004-r0041, E004-r0042, E004-r0044, E004-r0045, E004-r0057, E004-r0058, E004-r0060, E004-r0061, E004-r0073, E004-r0074, E004-r0076, E004-r0077). In each case the faulted repeat aborted with `game-died`, its reset restored the prefix, and the next repeat completed.
+  - `after-title`, `wineserver -k`: E004-r0012 then E004-r0013 (B1); E004-r0041 then E004-r0042 (B3); E004-r0057 then E004-r0058 (B4); E004-r0073 then E004-r0074 (B5).
+  - `after-input`, SIGKILL: E004-r0015 then E004-r0016 (B1); E004-r0028 then E004-r0029 (B2, which has only this arm); E004-r0044 then E004-r0045 (B3); E004-r0060 then E004-r0061 (B4); E004-r0076 then E004-r0077 (B5).
+- A death at any other point was not tried on the game, by these records (E004-r0001 to E004-r0077): during the launch, during a screen wait, between the end of the body and terminate, during terminate. The unit tests visit the driver's handling of some of these points with a fake game (a game dead before its first screen, a game or a display dead just before terminate, a display dead mid-cycle). That shows the driver's logic, not what the game or Wine does there.
 
 ## Alternatives considered
 
@@ -189,7 +189,7 @@ These come from exploratory diagnoses made while the driver was built ([`measure
 
 ## Where the evidence is
 
-- Run records: `runs/E004/E004-r0001.json` to `E004-r0077.json` (B5: r0062 to r0077).
+- Run records: `runs/E004/E004-r0001.json` to `E004-r0077.json` (B5: E004-r0062 to E004-r0077).
 - Evidence manifests: `evidence/E004/E004-r0001.manifest.json` to `E004-r0077.manifest.json`.
 - The bundles (screenshots, `changes.log`, `run.log`, `wine.log`) are kept locally, outside the repository; the main session uploads them to release `E004` after review. Each file is named `<sha256[:16]>-<name>`, as its manifest says.
 - Tables, diagnoses and the command output: `experiments/E004-iwp-driver/measurements/`.
