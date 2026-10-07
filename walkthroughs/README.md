@@ -7,6 +7,10 @@ path is blocked (the seal requires a read-only mount, which requires a user
 namespace, which breaks Wine's connection to the X server on the user's
 desktop). The native Windows path avoids all of that.
 
+**The chosen path (the owner, 2026-10-07): video-only, the owner just plays.**
+See `video-walkthrough.md`. The poller and click-driver below remain the
+fallback paths when a question needs a driven screen, not a played one.
+
 ## The split
 
 - **Windows side (you)**: runs the PowerShell poller, launches the game, and
