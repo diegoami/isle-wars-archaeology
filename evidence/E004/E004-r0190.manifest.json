@@ -1,0 +1,19 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E004-r0190",
+  "experiment": "E004",
+  "store": "release:E004",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "run.log",
+      "bytes": 414,
+      "sha256": "a69f4cf87da82f0b97751afbed96b839bfdb008dd02977663972893df81aa9ee",
+      "asset": "a69f4cf87da82f0b-run.log",
+      "class": "log"
+    }
+  ]
+}

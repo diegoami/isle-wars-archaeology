@@ -1,0 +1,132 @@
+{
+  "schema": "run/1",
+  "run_id": "E004-r0190",
+  "experiment": "E004",
+  "arm": "control",
+  "rep": 121,
+  "code_commit": "e597195493bc",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "runtime/iwp/driver/run_cycle.py@e597195493bc",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only once for the command and checked at the start of every repeat; the prefix sealed (drive mapping, links, second names, mounts, the registered game copy) and its registry files equal to their baseline before anything starts, and the prefix sealed again immediately before each launch; start_state.sha256 lists every entry of the prefix with the size and sha256 of each file and the target of each link, the registry files included; the prefix is reset to that state after every repeat, completed or aborted"
+  },
+  "seed": null,
+  "actions": {
+    "script": "runtime/iwp/driver/run_cycle.py",
+    "sha256": "9147cfd4a6561c140fa3565fe248129a1c6a34c517fc11df94d9ccdef4f33665",
+    "args": [
+      "--repeats",
+      "1",
+      "--arm",
+      "control"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "driver sources sha256 (runtime/iwp/driver/*.py, spike cycle.py and steps.py)",
+      "value": "3f432ba32c7ed6b140b1db3c7002de0a94ed9a07e8fb74039e464f641a1b21ec"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "fault injected in this repeat",
+      "value": "none"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "DBUS_SESSION_BUS_ADDRESS in the driver's environment",
+      "value": "set: unset for the run"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install read-only inside the run (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "display side gone after the display was stopped (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'stopping the display' took (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'keeping the logs' took (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "reset and restoration of the prefix performed",
+      "value": "no: the session ended before its snapshot, so there was nothing to reset to; the prefix is not proven on its baseline"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "clean-up: every stage succeeded and the prefix was reset (the next session may start)",
+      "value": "no: no reset was performed (no snapshot of the prefix was taken)"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "session seconds, from the first seal to the end of the reset",
+      "value": "0.05"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "run.log",
+      "sha256": "a69f4cf87da82f0b97751afbed96b839bfdb008dd02977663972893df81aa9ee",
+      "store": "release:E004"
+    }
+  ],
+  "started": "2026-10-07T09:28:39Z",
+  "ended": "2026-10-07T09:28:39Z",
+  "status": "aborted: seal: system.reg of the prefix is not the baseline's (before anything starts); something outside the driver changed the prefix (the reset would not bring it back to this state)"
+}
