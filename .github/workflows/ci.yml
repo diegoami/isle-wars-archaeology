@@ -23,6 +23,6 @@ jobs:
       # The copied harness tools run here (harness.lock pins them).
       - run: node tools/harness/review.mjs --self-test
       # Citation discipline for findings (T25).
-      - run: python3 tools/check_citations.py findings/
+      - run: for f in findings/F*.md; do python3 tools/check_citations.py "$f" || exit 1; done
       # Registration, the format rules and the guards (T02).
       - run: python3 -m unittest discover -s tests
