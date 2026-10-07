@@ -121,7 +121,7 @@ Poll intervals are 0.05 to 0.25 s. The fixed sleeps are the 0.4 s between the tw
 
 ## Observations
 
-Raw values, from the records (`observations`); the full list for each run is in [`measurements/records-E003-r0001-E003-r0012.txt`](../experiments/E003-iw-dos-runtime-spike/measurements/records-E003-r0001-E003-r0012.txt).
+Raw values, from the records (`observations`); the full list for each run is in [`measurements/records-r0001-r0012.txt`](../experiments/E003-iw-dos-runtime-spike/measurements/records-r0001-r0012.txt).
 
 Control runs:
 
