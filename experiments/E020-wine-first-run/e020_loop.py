@@ -15,7 +15,10 @@ after its line is logged.
 Readiness is never assumed (T38 round 3, R1): when `QUIET_ATTEMPTS` `quiet` blocks pass without a
 quiet board, the loop sends nothing more. It marks its summary `ended: aborted: not-ready: ...` and
 raises the click-driver's `NotReady`, which ends the session with the status `aborted: not-ready:
-<reason>` (Session.execute keeps the reason); the summary is never a normal one.
+<reason>` (Session.execute keeps the reason); the summary is never a normal one. After each `quiet`
+block that was not quiet, the screen is read before the next (T38 round 5, R1): only the board, with
+or without its menu, or the elimination notice is waited on; any other screen ends the sitting as an
+unknown screen (below), so a screen that never settles is not mistaken for a busy board.
 
 The screen is read by pixels, never assumed (T38 round 4; runtime/iwp/driver/screens.py, measured
 from the frames of sitting 20261008T184505Z):
@@ -49,6 +52,7 @@ QUIET_ATTEMPTS = 6        # `quiet` blocks before a turn is given up: 6 x (4 s +
                           # F003 measured 15 to 33 s for the computers' turns
 BOARD = ("board", "board-menu")
 NEW_GAME_ON = ("title", "board-menu")   # New Game is on these screens (the menu row lit; E002-r0018/r0019)
+WAIT_ON = BOARD + ("eliminated",)      # screens a readiness wait keeps waiting on (round 5, R1)
 PLAYOUT_POLL = 5          # s between screen readings while the computers play out; no input is sent
 FINAL_FRAME = "unknown-screen.png"
 
@@ -91,7 +95,8 @@ class BatchLoop:
     def play_game(self):
         """Turns until the human cannot place, `turns_max`, the time, the elimination notice (then the
         play-out) or a screen the loop does not recognise. The reason the game ended for the loop."""
-        self.wait_quiet()
+        if not self.wait_quiet():
+            return "unknown-screen"
         for turn in range(1, self.turns_max + 1):
             if self.out_of_time():
                 self.summary["ended"] = "sitting-seconds"
@@ -100,7 +105,8 @@ class BatchLoop:
             ended = self.turn()
             if ended:
                 return ended
-            self.wait_quiet()
+            if not self.wait_quiet():
+                return "unknown-screen"
         return "turns-max"
 
     def turn(self):
@@ -112,7 +118,8 @@ class BatchLoop:
         if self.place():
             return None
         self.driver.run_block("dismiss")
-        self.wait_quiet()
+        if not self.wait_quiet():
+            return "unknown-screen"
         screen = self.driver.read_screen()
         if screen not in BOARD:
             return self.off_board(screen)
@@ -161,14 +168,22 @@ class BatchLoop:
         self.driver.note(event="ended", ended="unknown-screen", screen=screen, sha256=digest)
 
     def wait_quiet(self):
-        """`quiet` until the board was unchanged for its time, at most QUIET_ATTEMPTS times. NotReady,
-        after the summary says so, when it never was: no further input is sent (R1)."""
+        """`quiet` until the board was unchanged for its time, at most QUIET_ATTEMPTS times; True when
+        it was. A `quiet` block sends no input. After a block that was not quiet the screen is read
+        before the next one (T38 round 5, R1): a screen that is neither the board nor the elimination
+        notice ends the sitting as an unknown screen (its final frame, no click), and the wait is
+        False. NotReady, after the summary says so, when a known screen never went quiet: no further
+        input is sent (round 3, R1)."""
         for _ in range(QUIET_ATTEMPTS):
             try:
                 if self.driver.run_block("quiet").get("quiet"):
-                    return
+                    return True
             except NotReady:
-                continue
+                pass
+            screen = self.driver.read_screen()
+            if screen not in WAIT_ON:
+                self.unknown_screen(screen)
+                return False
         where = ", ".join(f"{k} {v}" for k, v in sorted(self.driver.context.items()))
         reason = f"the board was not quiet after {QUIET_ATTEMPTS} quiet blocks ({where})"
         self.summary["ended"] = f"aborted: {NotReady.kind}: {reason}"

@@ -529,6 +529,35 @@ class ScreenLoopTest(unittest.TestCase):
                 self.assertEqual([n["reason"] for n in driver.notes if n.get("event") == "game-end"],
                                  ["unknown-screen"])
 
+    def test_an_unknown_screen_that_never_settles_ends_the_sitting_unclicked(self):
+        """Round 4 review, R1: the screen is read between quiet blocks that were not quiet, so an
+        unknown screen that never settles ends as `unknown-screen` (its final frame, no click), not as
+        `not-ready`; whether the driver answers it with `quiet: False` or with NotReady."""
+        for raises in (False, True):
+            with self.subTest(raises=raises):
+                driver = FakeDriver([1, 1], noisy=99, raises=raises, screens=["title", "unknown"])
+                loop, summary = self.loop(driver)
+                self.assertEqual(driver.trail, ["read:title", "new-game", "quiet", "read:unknown"])
+                self.assertEqual((summary["ended"], summary["screen"], summary["final_frame"]),
+                                 ("unknown-screen", "unknown", "f" * 64))
+                self.assertEqual(driver.frames, [e020_loop.FINAL_FRAME])
+                self.assertEqual([n["reason"] for n in driver.notes if n.get("event") == "game-end"],
+                                 ["unknown-screen"])
+
+    def test_a_known_screen_that_never_settles_still_aborts_not_ready(self):
+        """The round 3 guard holds: the board, with or without its menu, and the notice are waited on,
+        read between the blocks, and never acted on when they do not settle."""
+        for screen in e020_loop.WAIT_ON:
+            with self.subTest(screen=screen):
+                driver = FakeDriver([1], noisy=99, raises=True, screens=["title"] + [screen] * 99)
+                loop = e020_loop.BatchLoop(driver, dict(self.batch, games_max="1"), clock=lambda: 0)
+                with self.assertRaises(e020_loop.NotReady):
+                    loop.run()
+                self.assertEqual([n for n, _ in driver.blocks], ["new-game"] + ["quiet"] * e020_loop.QUIET_ATTEMPTS)
+                self.assertEqual(driver.readings, ["title"] + [screen] * e020_loop.QUIET_ATTEMPTS)
+                self.assertTrue(loop.summary["ended"].startswith("aborted: not-ready"), loop.summary)
+                self.assertEqual(driver.frames, [])
+
     def test_new_game_is_sent_only_on_the_title_or_the_board_with_its_menu(self):
         """Before game 1, and after a game whose placement was refused: any other screen ends the sitting."""
         for before_first in ("unknown", "board", "eliminated"):
