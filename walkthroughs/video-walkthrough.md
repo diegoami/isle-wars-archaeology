@@ -100,9 +100,11 @@ timing.
 - **Per-action memory state** (optional, behind the static-first gate in constraint B of
   rule 18). A periodic memory dump of the wine process around specific frames, where the
   Lingo reading (F014 / F019) names the state that matters.
-- **A click-driver** (`runtime/iwp/driver/clicks.py`) that executes a step list in the E002
-  step language through xdotool at known coordinates, for the cases where the static reading
-  names the input and the question is what the game does given the input.
+- **A click-driver** (`runtime/iwp/driver/clicks.py`) that sends step blocks in the E002 step
+  language through the session (`Session.perform`: the session's own display, the screen-change
+  checks of `click!`, the bounded waits of `settle`), at known coordinates, for the cases where
+  the static reading names the input and the question is what the game does given the input. It
+  logs every attempted step, failed ones included, to the sitting's `actions.jsonl`.
 
 ### What the model-driven path does not do
 
@@ -152,7 +154,9 @@ The machinery is implemented (T38, [T38](../docs/tasks/T38.md), issue #114): the
 `/mnt/c/Temp/iwp-shots/wine/<YYYYMMDDTHHMMSSZ>/` (constraint A). The batch list is
 `experiments/E020-wine-first-run/scenarios.txt`.
 
-After the owner's go-ahead, the first dispatch (batch 1, then batch 2) is:
+After the owner's go-ahead, the first dispatch (batch 1, then batch 2) is run from the
+repository root, with the E004 environment (`IWP_DIR`, `IWP_PREFIX` and `E020_BUNDLES`, outside
+every checkout; `IWP_MACHINE`):
 
 ```bash
 bash tools/wine-driver.sh --batch cmb-accumulation
@@ -160,10 +164,13 @@ bash tools/wine-driver.sh --batch bomb-sampling
 ```
 
 `--batch NAME --help` prints the batch's targets and never starts wine; a batch outside
-"Why a run is made" is refused by name before wine starts (constraint B). A sitting's frames and
-readings become the committed records with
+"Why a run is made" is refused by name before wine starts (constraint B). Before the launch the
+sitting checks that the install's and the run copy's `Islepro.exe` are the F019 row's binary,
+and refuses otherwise. A sitting's frames and readings (`readings.jsonl`, written by the reading
+pass after the sitting) become the committed records with
 `bash tools/wine-driver.sh --records --sitting <dir> --batch <name>`: records at
 `runs/E020/<batch>/<run-id>.json` and manifests at `evidence/E020/<run-id>.manifest.json`
-(every file class `recording`, constraint C). The batch checker is
+(every file class `recording`, constraint C). The record keeps the sitting's own status: an
+aborted sitting is committed aborted (rule 20). The batch checker is
 `python3 experiments/E020-wine-first-run/check_records.py`; the count checker is
 `python3 tools/check_counts.py experiments/E020-wine-first-run/scenarios.txt`.

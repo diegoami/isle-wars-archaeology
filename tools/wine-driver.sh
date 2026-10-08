@@ -4,7 +4,7 @@
 #   bash tools/wine-driver.sh --batch cmb-accumulation --help   # prints batch 1's targets, exit 0
 #   bash tools/wine-driver.sh --batch bomb-sampling --help      # prints batch 2's targets, exit 0
 #   bash tools/wine-driver.sh --batch unknown-x --help          # refuses it by name, non-zero
-#   bash tools/wine-driver.sh --batch <name>                    # the real dispatch (user's machine)
+#   bash tools/wine-driver.sh --batch <name>                    # one sitting (user's machine, owner's go-ahead)
 #   bash tools/wine-driver.sh --records --sitting <dir> --batch <name>
 #
 # `--batch NAME --help` never starts wine: the launcher prints the batch's targets from

@@ -19,25 +19,53 @@ mistake-rich record.
   `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e` (F019's one known-good row,
   T35). No registered build is ever run (rule 19).
 - **Runtime**: `wine-on-user-machine-iwp-2.0` (the only recognised platform token, constraint C),
-  local, C0 (the install never leaves the user's machine, constraint A). The E004 machinery
-  (`runtime/iwp/driver/session.py`) launches the session; the watcher and click-driver are T38's.
+  local, C0 (the install never leaves the user's machine, constraint A). A sitting runs as the
+  E004 command does: private user, mount and PID namespaces, a private /tmp, the install bound
+  read-only, and one `Session` (`runtime/iwp/driver/session.py`: the seal, its own Xvfb, the game in
+  its own network namespace, every wait bounded). The watcher and the click-driver are T38's.
 - **Design**:
-  - `scenarios.txt` is the batch list: one block per batch, with its questions, its step file, its
-    count floor and its structural vocabulary. It is the single source the dispatcher
-    (`tools/wine-driver.sh`) and `tools/check_counts.py` read.
-  - `launcher.py` resolves a batch and either prints its targets (`--help`, never starts wine) or
-    runs it; a batch outside the list is refused by name before wine starts (constraint B).
+  - `scenarios.txt` is the batch list: one block per batch, with its questions, its event and the
+    fields an event carries, its floors, its loop bounds and its claims. The dispatcher
+    (`tools/wine-driver.sh`) and `tools/check_counts.py` both read it.
+  - `launcher.py` resolves a batch and prints its targets (`--help`, never starts wine), runs a
+    sitting, or exports one (`--records`); a batch outside the list is refused by name before wine
+    starts (constraint B). It has no option that moves the sitting directory.
+  - `e020_sitting.py`: the one sitting root `/mnt/c/Temp/iwp-shots/wine/` (refused when it is a
+    link, inside a checkout or this repository, or overlaps the install, the prefix or the
+    bundles), the sitting directory created new, and the binary's identity measured before the
+    launch (the install's and the run copy's `Islepro.exe` equal the F019 row).
+  - `play.steps` holds the step blocks (E002 step language): `new-game` (E002 `loss-easy.steps`'
+    order: New Game, EASY, Play Game; mid-game at EASY New Game goes straight to the setup screen,
+    E002-r0018), `quiet` (the board unchanged for 4 s, bounded), `place` (E002's `click-until` over
+    the proven country points: the placement row lights only for a country the human owns),
+    `commit` (ALL, PLACE, PASS, CONTINUE) and `dismiss`. No block attacks.
+  - `e020_loop.py` plays games of place-all and pass from those blocks until the human cannot
+    place, `turns_max`, `games_max` or `sitting_seconds`, and logs each game's start and end.
+    The click-driver (`runtime/iwp/driver/clicks.py`) sends every step through `Session.perform`
+    and logs every attempted step, failed ones included, to `actions.jsonl`; the watcher
+    (`runtime/iwp/driver/watcher.py`) captures the game window on the session's display.
   - The sitting directory is `/mnt/c/Temp/iwp-shots/wine/<YYYYMMDDTHHMMSSZ>/` on the user's machine
-    (constraint A): `sitting.json`, `frames/`, `frames-index.jsonl`, `actions.jsonl`, `dumps/`,
-    `watcher.log`, and the optional `readings.jsonl` the reading pass writes.
-  - `--records --sitting DIR --batch NAME` turns a sitting's frames and readings into
-    `runs/E020/<batch>/<run-id>.json` and `evidence/E020/<run-id>.manifest.json`, refusing a
-    reading field outside the batch's vocabulary and never overwriting an existing record.
-  - `check_records.py` is the batch checker of Done-when 3, 4 and 6.
+    (constraint A): `sitting.json` (the session's status, times, versions, commit, the block
+    file's sha256 and the measured binary), `frames/`, `frames-index.jsonl`, `actions.jsonl`,
+    `dumps/`, `session/` (the session's before and after screenshots and logs), `watcher.log`, and
+    `readings.jsonl`, which the reading pass writes after the sitting: one event per line (game,
+    seq, the frames it was read from, and the batch's event fields by pixels, no OCR).
+  - `e020_export.py` (`--records --sitting DIR --batch NAME`) turns one sitting directory into
+    `runs/E020/<batch>/<run-id>.json` and `evidence/E020/<run-id>.manifest.json`, or writes
+    nothing: it requires `sitting.json` as the proof of the sitting and keeps its status and
+    provenance, checks every frame against its index, refuses an event that is not complete, not
+    of a game the click-driver started, not unique, or whose values are not integers and colour
+    words, and takes run ids experiment-wide, never writing over a file.
+  - `check_records.py` is the batch checker of Done-when 3, 4 and 6; `tools/check_counts.py` is
+    Done-when 8's: complete events by (sitting, game, seq), real games, and per-arm targets per
+    claim before `outcomes.json` may declare a claim `corroborated`.
 - **Outputs**: run records at `runs/E020/<batch>/<run-id>.json`; evidence manifests at
-  `evidence/E020/<run-id>.manifest.json`; bundles are release `E020` assets, never committed. The
-  sitting directory is never committed.
+  `evidence/E020/<run-id>.manifest.json`; per-claim outcomes, when declared, at
+  `experiments/E020-wine-first-run/outcomes.json`. The sitting directory is never committed.
 - **Walkthroughs**: `walkthroughs/video-walkthrough.md` "Model plays under Wine" is the playbook.
+- **Not yet built**: the reading pass (army counters, owners and countries from the frames, by
+  pixels). It needs the counters' glyphs, which only a sitting's frames show; until it exists a
+  sitting exports with no event, and Done-when 8's floors stay unmet.
 
 ## Constraint map
 
@@ -45,8 +73,8 @@ mistake-rich record.
 | --- | --- |
 | A locality | the sitting directory under `/mnt/c/Temp/iwp-shots/wine/`; records reference by hash only |
 | B static-first | `scenarios.txt` is exactly "Why a run is made"; an unknown batch is refused by name |
-| C per-run tagging | `runtime.platform = wine-on-user-machine-iwp-2.0`, `artifact.set/variant` and `start_state.sha256` against F019; `files[].class = recording` |
-| D text handling | records carry `kind:role` fields and raw counters; the watcher and click-driver log structural names only |
+| C per-run tagging | `runtime.platform = wine-on-user-machine-iwp-2.0`, `artifact.set/variant`, and `start_state.sha256` = the binary measured before the launch, checked against F019; `files[].class = recording`, and only `evidence-manifest/1` documents pass as manifests |
+| D text handling | records carry `kind:role` fields whose values are integers or colour words only; the watcher and click-driver log structural values only |
 | E corroboration | the task is not T28 and touches none of its records; the sitting corroborates |
 | F tool check | `tools/check_no_originals.py` re-runs the F019 gate over every committed record |
 | G per-claim wording | no `spec/` file is touched; amendments go through the per-claim finding |
@@ -54,6 +82,7 @@ mistake-rich record.
 ## Scripts
 
 - `bash tools/wine-driver.sh --batch <name> [--help]` — the dispatcher.
+- `bash tools/wine-driver.sh --records --sitting <dir> --batch <name>` — the export.
 - `python3 tools/check_counts.py experiments/E020-wine-first-run/scenarios.txt` — the count checker.
 - `python3 experiments/E020-wine-first-run/check_records.py` — the batch record/manifest checker.
 
