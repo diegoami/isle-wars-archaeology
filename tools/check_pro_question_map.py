@@ -23,7 +23,7 @@ INVENTORY = ROOT / "experiments" / "E008-static-triage" / "measurements" / "iwp-
 
 SCRIPT_REF = re.compile(r"^(MovieScript|BehaviorScript|CastScript) (\d+)(?: (\S+))?$")
 HANDLER_REF = re.compile(r"^(\S+)\(\)$")
-TASKS = {"T20", "T21", "T22", "T23", "T24", "T27", "T32", "T33", "T34"}
+TASKS = {"T20", "T21", "T22", "T23", "T24", "T27", "T30", "T32", "T33", "T34"}
 CORR = ("play", "static-only", "screen")
 CONF = ("high", "medium", "low")
 
