@@ -1,0 +1,18 @@
+docs: keep the rule 18 amendment scaffolding as the audit trail
+
+The three files produced when rule 18 was amended on 2026-10-08 (the
+patch, the commit-msg, the apply script) were left in the working tree
+untracked. They are not part of the rule change itself, but they are
+the only machine-readable record of how the change was applied: the
+exact diff, the verbatim commit message, and the apply-and-commit
+helper that produced the commit.
+
+Move them into docs/rule-amendments/ so future rule amendments have a
+home and so a future agent (or the owner, in six months) reading the
+git log can find the patch that produced any rule change in this
+repository.
+
+The apply script is updated to point at the new paths so it still
+works for future operators who want to re-apply or re-read the patch.
+
+Co-Authored-By: Claude Code <noreply@anthropic.com>

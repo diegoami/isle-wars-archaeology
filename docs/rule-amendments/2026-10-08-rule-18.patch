@@ -1,0 +1,91 @@
+diff --git a/CLAUDE.md b/CLAUDE.md
+index 53805e4..ed10280 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -142,10 +142,82 @@ indexed in `docs/tasks/README.md`.
+     name are never reused (owner, 2026-10-02). Only behaviour and design learned here passes to
+     malpaco, and no evidence ever does. Executables, data and help files, and patched builds stay
+     on the user's own machines. They are never in this repository, a release, an issue or a cloud
+-    session. Tasks that need them are C3/C4 only. `tools/check_no_originals.py` runs in CI.
+-    Derived output (decompiled code, listings) may be read by the reviewing models' APIs
+-    (Anthropic, OpenAI, Z.ai, and Alibaba since the owner chose Qwen for T21 on 2026-10-06), and is
+-    never published (the owner, 2026-10-05, T29). Free OpenRouter models never see it.
++    session. `tools/check_no_originals.py` runs in CI. Derived output (decompiled code, listings)
++    may be read by the reviewing models' APIs (Anthropic, OpenAI, Z.ai, and Alibaba since the
++    owner chose Qwen for T21 on 2026-10-06), and is never published (the owner, 2026-10-05, T29).
++    Free OpenRouter models never see it.
++
++    **Carve-out (owner, 2026-10-08): model-driven run capture under Wine on the user's machine.**
++    A model agent may run the original Pro binary under Wine for the purpose of T28-style run
++    capture and T24-style UI observation, on the user's machine, with the following constraints.
++    This carve-out does not apply to the DOS original (C2), to any non-Pro game, to free OpenRouter
++    models, or to any cloud session.
++
++    - **A. Locality.** The binary, the installer, the install directory, the run copy, savestates,
++      memory dumps, screenshots, recordings, and any patched build stay on the user's machine.
++      They are never in this repository, a release, an issue, a cloud session, or any tool input
++      that leaves the user's machine. The carve-out adds the option of a Wine process under the
++      agent's control, on the same machine, for run capture; it does not move the binary.
++    - **B. Static-first gate.** A model agent that runs the original does so under the existing
++      static-first rule (rule 24): the Lingo is read and the Lingo reading names the state and
++      the input the model will probe before any run is made. A run is made because the static
++      reading is exhausted, not because the tool is convenient.
++    - **C. Per-run tagging.** Per-frame evidence from a model-driven run is recorded as class
++      `recording` in the evidence manifest (formats/evidence-manifest-1), not as `screenshot` of
++      a human session. The run record's `runtime.platform` is `wine-on-user-machine` (or a more
++      specific token the task file names). The binary's sha256 is in `start_state.sha256` against
++      the F019-known hash.
++    - **D. Text handling.** The text of the original (event names, card names, screen labels, the
++      title "Isle Wars Pro") is paraphrased or quoted only in the per-claim finding, not in run
++      records' `observations[].field` or `observations[].value`. The rule's "their ... text and
++      name are never reused" wording holds in the run record; the per-claim finding is where the
++      original's text is cited, with the same rules as a static reading's quote.
++    - **E. Corroboration, not replacement.** The model-driven run does not replace the owner's
++      Bandicam captures. T28's owner-plays model stays. Model-driven runs are corroboration and
++      per-action timing; owner's recordings are the play-length, game-sense, and mistake-rich
++      record. The playbook (`walkthroughs/video-walkthrough.md`) is updated to say so.
++    - **F. Tool check.** `tools/check_no_originals.py` gains a check: a model run with
++      `runtime.platform` starting with `wine-on-user-machine` is allowed iff the run record's
++      `start_state.sha256` matches the F019-known `Islepro.exe` hash for the set+variant the run
++      record names. The existing case-insensitive `*.[eE][xX][eE]` bar remains.
++    - **G. Per-claim wording.** "The human" / "the owner's play" wording in `spec/` and
++      `findings/` is amended per claim, not in bulk. A bulk re-write would falsify readings that
++      genuinely are about the human. The amendments are made by the per-claim finding's
++      promotion, the same path every spec change takes (rule 20).
++
++    **Out of scope of this carve-out (separate decisions if you want them).**
++    - DOS Isle Wars (C2): not covered. The DOS original stays out per rule 18's body and
++      rule 19's scoping.
++    - Cloud sessions: not covered. Rule 6's cloud brief is unchanged.
++    - Free OpenRouter models: not covered. The free-models bar in rule 18 is unchanged.
++    - Anything outside the Isle Wars Pro binary: not covered.
++
++    **What stays unchanged.**
++    - Rule 18's first paragraph (the "no licence; explored, never copied" wording, the "their
++      code, assets, text and name are never reused" wording, the "behaviour and design learned
++      here passes to malpaco, and no evidence ever does" wording) is unchanged.
++    - The no-originals-in-repo / no-originals-in-release / no-originals-in-issue /
++      no-originals-in-cloud-session bar is unchanged.
++    - Rule 20 (measurements are committed) is unchanged.
++    - Rule 24 (static first) is unchanged.
++    - The T29 carve-out for the decompiled Lingo is unchanged.
++
++    **Companion changes (in follow-up commits, owner's call).**
++    - `walkthroughs/video-walkthrough.md`: add a "Model plays under Wine" section that names the
++      watcher, the click-driver, the per-frame evidence bundle, and the "corroboration, not
++      primary evidence" framing.
++    - `tools/check_no_originals.py`: add constraint F's check, behind a feature flag if you want
++      to land this in two steps.
++    - `F019` (pro setup rules): pin the known-good `Islepro.exe` sha256 for the set+variant the
++      run records will name, in a table the new check reads.
++    - A new T-number, `T<nn>`, for the Wine-driver work, with a task file naming the
++      implementer, the reviewer, the difficulty, and the Done-when. Its Merge-after is the list
++      of T-numbers whose claims depend on the "human plays" wording and which `T<nn>` will
++      amend.
++    - The harness copies in `docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate`
++      skills, and `harness_imperial` propagate this rule change (memory:
++      propagate-harness-fixes). They are amended when the next task that reads the carve-out is
++      dispatched, not in this commit.
+ 19. **Pro is the subject; DOS is history** (U3, U11; the owner, 2026-10-05). The research reads and
+     corroborates Windows *Isle Wars Pro*, the shareware/unregistered release. DOS *Isle Wars* findings
+     stay as they are, scoped to DOS, and no new DOS work is planned: the two games may differ, so a
