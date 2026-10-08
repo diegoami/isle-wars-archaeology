@@ -156,8 +156,14 @@ indexed in `docs/tasks/README.md`.
     - **A. Locality.** The binary, the installer, the install directory, the run copy, savestates,
       memory dumps, screenshots, recordings, and any patched build stay on the user's machine.
       They are never in this repository, a release, an issue, a cloud session, or any tool input
-      that leaves the user's machine. The carve-out adds the option of a Wine process under the
-      agent's control, on the same machine, for run capture; it does not move the binary.
+      that leaves the user's machine, with one exception (the owner, 2026-10-08): the screenshots
+      and frames of a model-driven sitting may be read by the same model APIs as derived output
+      (Anthropic, OpenAI, Z.ai, Alibaba), to inspect a sitting or review its records. They hold no
+      confidential information. Free OpenRouter models never see them, and they are still never
+      committed, uploaded or posted. The binary, the install, the run copy, savestates, memory
+      dumps and patched builds stay under the full bar. The carve-out adds the option of a Wine
+      process under the agent's control, on the same machine, for run capture; it does not move
+      the binary.
     - **B. Static-first gate.** A model agent that runs the original does so under the existing
       static-first rule (rule 24): the Lingo is read and the Lingo reading names the state and
       the input the model will probe before any run is made. A run is made because the static
