@@ -39,3 +39,6 @@ status; this index carries none.
 | T28 | Pro corroboration of the Lingo rule readings, from recorded play | #80 | T13, T20, T21, T22, T23, T27, T30 |
 | T25 | Bring the findings into game-archaeologist's `check_citations.py` form | #57 | — |
 | T24 | UI observations for malpaco: Isle Wars Pro | #72 | T17 |
+| T35 | F019 known-good Islepro.exe sha256 table for the rule 18 carve-out | #107 | T36, T37 |
+| T36 | `check_no_originals.py` constraint F: gate wine-on-user-machine runs on F019 hash | #108 | T35, T37 |
+| T37 | Wine driver: model-driven run capture under rule 18 carve-out | #109 | T35, T36 |
