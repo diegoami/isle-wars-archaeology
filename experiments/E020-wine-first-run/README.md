@@ -123,7 +123,11 @@ mistake-rich record.
     `seconds_elapsed` are 161 / 20.08 s and 127 / 20.1 s, about 8.0 and 6.3 per second. The
     measurements made with the corrected gate are `20261008T224312Z` and `20261008T224341Z`
     (temporary folder, 7.99 and 8.00 per second) and `20261008T224403Z` (frames on `/mnt/c`, 6.96
-    per second).
+    per second); `20261008T225810Z` (8.00 per second) after T42 round 3.
+  - **Duplicates and the stored frame** (T42 round 3). A capture equal to the frame stored last is
+    indexed as a duplicate only while that stored file still exists with its sha256; otherwise the
+    capture is stored afresh under a new name, and the old file is never written over. A frame whose
+    bytes change on the move into the sitting is removed and not indexed.
   - `e020_export.py` (`--records --sitting DIR --batch NAME`) turns one sitting directory into
     `runs/E020/<batch>/<run-id>.json` and `evidence/E020/<run-id>.manifest.json`, or writes
     nothing: it requires `sitting.json` as the proof of the sitting and keeps its status and
