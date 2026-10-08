@@ -26,7 +26,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import board  # noqa: E402
+import boardreader  # noqa: E402
 import pngdecode  # noqa: E402
 
 ROOT = HERE.parents[2]
@@ -101,7 +101,7 @@ def select_notices(args):
 
 def montage(args):
     doc = json.loads(Path(args.selection).read_text(encoding="utf-8"))
-    anchors = board.load_anchors()
+    anchors = boardreader.load_anchors()
     Path(args.dir).mkdir(parents=True, exist_ok=True)
     crops, number = [], 0
     for item in doc["selection"]:

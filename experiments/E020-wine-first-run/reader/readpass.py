@@ -27,8 +27,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import board  # noqa: E402
-import events  # noqa: E402
+import boardreader  # noqa: E402
+import exchange_events  # noqa: E402
 import glyphs  # noqa: E402
 import pngdecode  # noqa: E402
 
@@ -87,7 +87,7 @@ def _read_job(job):
     if templates is None:
         templates = _read_job.cache[template_path] = glyphs.Templates.load(template_path)
     rgb = pngdecode.decode_file(path)
-    return board.read_board(rgb, templates), board.current_seat(rgb)
+    return boardreader.read_board(rgb, templates), boardreader.current_seat(rgb)
 
 
 _read_job.cache = {}
@@ -123,7 +123,7 @@ def run(sitting, measurements, templates=DEFAULT_TEMPLATES, write_events=True, p
     windows = computer_windows(actions)
     game_of = game_of_steps(actions)
     results = read_frames(sitting, rows, templates, processes)
-    adjacency = events.load_adjacency()
+    adjacency = exchange_events.load_adjacency()
 
     def window_of(step):
         for i, (lo, hi) in enumerate(windows):
@@ -146,7 +146,7 @@ def run(sitting, measurements, templates=DEFAULT_TEMPLATES, write_events=True, p
         if w0 is None or w0 != w1 or game_of(s0) != game_of(s1):
             pairs["outside-a-computer-turn"] += 1
             continue
-        reason, values = events.classify(results[i][0], results[i + 1][0], results[i][1], results[i + 1][1], adjacency)
+        reason, values = exchange_events.classify(results[i][0], results[i + 1][0], results[i][1], results[i + 1][1], adjacency)
         pairs[reason] += 1
         if reason == "exchange":
             game = game_of(s0)

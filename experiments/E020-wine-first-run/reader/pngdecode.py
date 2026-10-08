@@ -122,7 +122,7 @@ def encode(rgb, filters=None):
         kind = 0 if filters is None else filters[y % len(filters)]
         cur = flat[y].tolist()
         line = list(cur)
-        for i in range(stride):
+        for i in range(stride if kind else 0):
             a = cur[i - 3] if i >= 3 else 0
             b = previous[i]
             c = previous[i - 3] if i >= 3 else 0

@@ -23,7 +23,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import board  # noqa: E402
+import boardreader  # noqa: E402
 import glyphs  # noqa: E402
 import pngdecode  # noqa: E402
 
@@ -51,7 +51,7 @@ def score(labels, root=SITTING_ROOT, templates=None, out=print):
         by_frame[(entry["sitting"], entry["frame"])].append(entry)
     boards = {}
     for (sitting, sha) in by_frame:
-        boards[(sitting, sha)] = board.read_board(pngdecode.decode_file(frame_path(root, sitting, sha)), templates)
+        boards[(sitting, sha)] = boardreader.read_board(pngdecode.decode_file(frame_path(root, sitting, sha)), templates)
     visible = [e for e in entries if e["visible"]]
     hidden = [e for e in entries if not e["visible"]]
     army_wrong, owner_wrong, unread, armies_read, owners_read, reasons = [], [], 0, 0, 0, Counter()
