@@ -226,6 +226,20 @@ Items 5 (speed) and 8 (strength) are the defaults values the unregistered forcin
 python3 experiments/E017-pro-setup-reading/check_cited_scripts.py            # F019's citations and the search record against the inventory
 IWA_STATIC=<folder outside every checkout> \
   python3 experiments/E017-pro-setup-reading/check_cited_scripts.py --disk --out r2   # the on-disk hash check
+python3 experiments/E017-pro-setup-reading/check_known_good_hashes.py        # the known-good row's contract (T35)
 ```
 
 To re-read, open the listed scripts in the run's folder on the owner's machine (`iwp-extract-pro-r1`, under its `movie-01-out` folder) and compare with the answers above; no copy of them is kept anywhere in the repository. To re-run the searches, any terminal search over that folder reproduces the counts in `searches-r1.json` and the corrected ones in `searches-r2.json`.
+
+## Known-good binary hashes
+
+The rule 18 carve-out (CLAUDE.md, 2026-10-08) lets a model agent run the original Pro binary under Wine on the user's machine, and its constraint F makes that permission operational: a run record whose `runtime.platform` starts with `wine-on-user-machine` is allowed only when its `start_state.sha256` is the known-good `Islepro.exe` hash for the set+variant the record names. This section is the table that gate reads (the gate itself is T36's, in `tools/check_no_originals.py`), and the row's contract is pinned by `experiments/E017-pro-setup-reading/check_known_good_hashes.py`, the test this finding carries with its experiment record (the test must fail when the row is removed, mutated or left a placeholder).
+
+| Set | Variant | File | sha256 | Install path | Signed on |
+| --- | --- | --- | --- | --- | --- |
+| `iwp-2.0-996e86c5` | `unregistered` | `Islepro.exe` | `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e` | `/mnt/c/Users/<owner>/Downloads/Isle-Wars-Pro_Win_EN_v20-Shareware/` | 2026-10-08 |
+
+- The hash is the one the Artifact line above pins, the one `artifacts/known.json` registers for the set's `Islepro.exe` (7150739 bytes), and the one every Pro finding cites: three independent records, one value. The contract test checks all three agree.
+- `<owner>` is this repository's standing anonymised form of the Windows account name: personal data stays out of the repository, the same convention run/1's `machine` field states for paths. The run tooling supplies the real path at run time (`IWP_DIR`, `setup/iwp/prefix.py`) and no run record or measurement carries it; the `Downloads/Isle-Wars-Pro_Win_EN_v20-Shareware/` part is the acquired install's directory name (`artifacts/known.json`: installed from an installer the user downloaded from myabandonware.com).
+- This table is the canonical source for the carve-out gate; the in-line sha256 in the Artifact line stays the static reading's source citation. `spec/setup.md` points here for the binary its claims cite.
+- The table holds exactly one row, and nothing here pins a sha256 for any other set+variant: a registered build, or any other copy, needs its own task, its own F019 entry and its own review. An empty or removed table refuses every wine-on-user-machine record, which is the right failure direction.
