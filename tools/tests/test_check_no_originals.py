@@ -218,6 +218,30 @@ class WineGateCliTest(unittest.TestCase):
             result = run_tool(repo)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_the_cli_refuses_an_unrecognised_suffix_wine_record(self):
+        """Sol's R1 at the CLI level: the whole check refuses an unrecognised suffix even when
+        the hash, set and variant match the F019 row, and names the platform and its suffix."""
+        platform = WINE + "-iwp-2.0-evil-suffix"
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(platform=platform))
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn(GATE_CODE, result.stdout)
+            self.assertIn(platform, result.stdout)
+
+    def test_the_cli_passes_a_recognised_suffix_wine_record(self):
+        """The other half of the CLI contract: the task file's legitimate suffixed platform
+        passes end to end when its hash, set and variant match the F019 row."""
+        platform = WINE + "-iwp-2.0"
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(platform=platform))
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_no_wine_gate_skips_the_gate(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = make_repo(tmp)
