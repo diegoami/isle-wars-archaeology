@@ -1,0 +1,261 @@
+{
+ "what": "census of numeral-coloured blobs 17 to 19 pixels high over every frame of the sittings",
+ "frames": 2267,
+ "sittings": [
+  "20261008T184505Z",
+  "20261008T195537Z",
+  "20261008T204817Z"
+ ],
+ "blobs": [
+  {
+   "sha256": "01d1005472591fd40c5a24f7dd67d6e2f60c8f02f325b377ddd0f9363de20559",
+   "width": 12,
+   "height": 18,
+   "pixels": 108,
+   "occurrences": 39746,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "674588caff7f2571ef33458b821679fd4d047dc0f853b6f90800847670b38e7f",
+    "x": 55,
+    "y": 318
+   }
+  },
+  {
+   "sha256": "58d27d3dcdbe5401d195333ab48cc4523e9c1e139b9915ade1b32de2c9d63ee5",
+   "width": 13,
+   "height": 18,
+   "pixels": 128,
+   "occurrences": 25855,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "674588caff7f2571ef33458b821679fd4d047dc0f853b6f90800847670b38e7f",
+    "x": 45,
+    "y": 255
+   }
+  },
+  {
+   "sha256": "8e1bf5f5964ac157c129fd1c759b8c9d78883a698ed711bbc74acb671b347de6",
+   "width": 13,
+   "height": 18,
+   "pixels": 134,
+   "occurrences": 22239,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "674588caff7f2571ef33458b821679fd4d047dc0f853b6f90800847670b38e7f",
+    "x": 45,
+    "y": 186
+   }
+  },
+  {
+   "sha256": "47a6f3414cc34db5068bd20273d6d413f7cec9dfdb5f6cb4d505a8a2383560e8",
+   "width": 15,
+   "height": 18,
+   "pixels": 143,
+   "occurrences": 6876,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "9d1f7545190d86f1c37a8d8e088ac876503a5c6e4b2d4adfa095982d9f217404",
+    "x": 444,
+    "y": 433
+   }
+  },
+  {
+   "sha256": "f4be771bb6a159d225b4b1f9cf06fe3cb0d164ea463ff19393fe7cda04e0df3f",
+   "width": 13,
+   "height": 18,
+   "pixels": 134,
+   "occurrences": 3326,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "7a02787ce479047b2bb6f432519815d61717ce8365c2b0ad7ae1671bb8aadd97",
+    "x": 127,
+    "y": 372
+   }
+  },
+  {
+   "sha256": "8a0abdcaf721f159d789b2f3749dd5082c62740080337ded82c9f350f54cb1f4",
+   "width": 14,
+   "height": 18,
+   "pixels": 152,
+   "occurrences": 2102,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "b5601b8b7d29185637a8737f9a2bb5337e2f176165eb82909a430f6379abcb6d",
+    "x": 395,
+    "y": 285
+   }
+  },
+  {
+   "sha256": "7e63217651f989f78e166691d7614d2374252b9ab2de6bae024a66c595b9f1da",
+   "width": 13,
+   "height": 18,
+   "pixels": 106,
+   "occurrences": 1183,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "f0521bc60da21064a999b95ac2500717c14c814e61dfcafffa5ed19950e06882",
+    "x": 510,
+    "y": 394
+   }
+  },
+  {
+   "sha256": "9787af03b54f25b447b625688124960d999bd54212d7216c031a331d124b2ada",
+   "width": 14,
+   "height": 18,
+   "pixels": 173,
+   "occurrences": 853,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "aaa97f2ebea14b9a4b4ff93128c8b790c04203a74a02e50651ca542d8e8fc4aa",
+    "x": 509,
+    "y": 394
+   }
+  },
+  {
+   "sha256": "9db16c67f99b901161d36ab7c960b7cf555953dc0030f5955a91437bab8e4e99",
+   "width": 14,
+   "height": 18,
+   "pixels": 151,
+   "occurrences": 751,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "82fd75cc101ad3528f2a9750f0db5ae8bc908b9b773b8ae1595a39c950182322",
+    "x": 155,
+    "y": 424
+   }
+  },
+  {
+   "sha256": "468f6736a228b5f49ca23d7343378778df055ce26b18291a00d62af2722dbd19",
+   "width": 14,
+   "height": 18,
+   "pixels": 144,
+   "occurrences": 513,
+   "colours": [
+    "white",
+    "cyan"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "19ba4c0ef5d08e465bf8d9374356a086496d95cbd57a17b455927998aed833ad",
+    "x": 463,
+    "y": 354
+   }
+  },
+  {
+   "sha256": "549f54258e981d093474050bb702f78987f04d755c51d44162bffa81e85037e4",
+   "width": 16,
+   "height": 17,
+   "pixels": 41,
+   "occurrences": 227,
+   "colours": [
+    "white"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "aaa316610c904299769babc732ffae28bfd12404579ab621b58aafbf4a322c06",
+    "x": 181,
+    "y": 369
+   }
+  },
+  {
+   "sha256": "8d7cfd74cff99e4580adec21f717d5e0f7f208d52fd29f4d8b0c72c91cd6cede",
+   "width": 11,
+   "height": 18,
+   "pixels": 105,
+   "occurrences": 195,
+   "colours": [
+    "white"
+   ],
+   "example": {
+    "sitting": "20261008T184505Z",
+    "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+    "x": 157,
+    "y": 272
+   }
+  },
+  {
+   "sha256": "714d4cdc7db131d39190cd2016ba4c489400da2841ce83e4dcd998914f23bd05",
+   "width": 13,
+   "height": 18,
+   "pixels": 133,
+   "occurrences": 1,
+   "colours": [
+    "white"
+   ],
+   "example": {
+    "sitting": "20261008T204817Z",
+    "frame": "8f19a10ec5ac32efede475afe7c7a39d5301f2dcbf0d6cde5971492060573d8f",
+    "x": 557,
+    "y": 131
+   }
+  },
+  {
+   "sha256": "c84b02e1f40f0cec6280795ef8bf68a0f19e4742a688fbeb673385639f1dc0d0",
+   "width": 15,
+   "height": 18,
+   "pixels": 142,
+   "occurrences": 1,
+   "colours": [
+    "white"
+   ],
+   "example": {
+    "sitting": "20261008T204817Z",
+    "frame": "b9e56c6b854050851e1550c2cb11bd853348b2ea662c3091c3bf184a7a34d7f6",
+    "x": 262,
+    "y": 164
+   }
+  },
+  {
+   "sha256": "966f15c6a9e92496c41f6f54aac0e3a71efca4e4a28893bbf5351704d45550b4",
+   "width": 13,
+   "height": 18,
+   "pixels": 128,
+   "occurrences": 1,
+   "colours": [
+    "white"
+   ],
+   "example": {
+    "sitting": "20261008T204817Z",
+    "frame": "2eba9fe5f87856a15486d02b3f0f5639452b1bece5afe5bb22f3265184aecc39",
+    "x": 263,
+    "y": 164
+   }
+  }
+ ]
+}

@@ -1,0 +1,2890 @@
+{
+ "what": "the reader validation sample: the army count and the owner colour of selected countries, read by looking at the frames",
+ "selection": [
+  "measurements/sample-selection.json (seeded random frames and countries, chosen without looking at the reader)",
+  "measurements/sample-selection-notices.json (frames under a notice, found by the screens module, a second stratum so that hidden numerals are in the sample)"
+ ],
+ "method": "each reading was labelled from a 3x zoomed crop of the frame around the country, before the reader was run on the sample; a numeral drawn in cyan is labelled with its digits like a white one; visible is false when a notice, its text or its edge covers the numeral, wholly or in part",
+ "readings": [
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 7,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 15,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 17,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 20,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 22,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 30,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 42,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b46d1d28b54b1db64292c86350ea0e058afc43134e709143d786d12515c98dab",
+   "country": 46,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 3,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 13,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 25,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 26,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 30,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 31,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 34,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 42,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "2dad629631cddc64c88378ae0d8d8e84f87a73e13da6892c0f9fe723a615ab12",
+   "country": 46,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 13,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 18,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 22,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 28,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 29,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 30,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 34,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 36,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "f1b1ebd81714aeb39d1b91cdac7384f647069d36e307aacf292ad284cf2efc45",
+   "country": 37,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 6,
+   "army": 27,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 13,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 14,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 22,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 24,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 27,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 31,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 32,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "cb10d5853fb69901aa25694b982211488059e0ce2bf221581f17b660efa5bc92",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 7,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 8,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 23,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 25,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 27,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 28,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 35,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 38,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e142c3b1c4dbf6518028817da0137de1205b2276e8e12457ea4bc57743bbac6f",
+   "country": 43,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 1,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 7,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 13,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 25,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 27,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 28,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 33,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 40,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "e66c14d84351bcab325464ab1bd69fca316a3566b7a481b147bc87dca792e111",
+   "country": 44,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 2,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 6,
+   "army": 37,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 19,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 23,
+   "army": 4,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 24,
+   "army": 4,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 33,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 37,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "d204174e526b469be59bb2b726576f3c038510956dbcc42f1e1d27e08a623a5d",
+   "country": 42,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 1,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 2,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 12,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 21,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 22,
+   "army": 18,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 25,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 34,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "4ee761a0f65cba0d710e1b15f5f45703a25ac1b854ccf6fd57027ca5823b6310",
+   "country": 44,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 6,
+   "army": 33,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 7,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 8,
+   "army": 9,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 9,
+   "army": 5,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 13,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 19,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 34,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 40,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "5670ef3131aa086797c64359390da3f39f703963cd0ae6ec9eb0a6bbe409e284",
+   "country": 44,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 3,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 5,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 16,
+   "army": 3,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 20,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 24,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 25,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 26,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 37,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "af734bf3e04152636321212d49654ba2496fafc949ee7223c28e651708a9bc4e",
+   "country": 39,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 14,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 15,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 21,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 23,
+   "army": 4,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 25,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 36,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 43,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "74ea7a5e67fb09197a996be9e408f4e1403af591b289e3d18489ae7582131998",
+   "country": 46,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 3,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 8,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 9,
+   "army": 5,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 12,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 24,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 26,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 32,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 37,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "b4bd2529a5e0f1922f058c710e1fa4db4165ad7c1339c05778039a294b36ccca",
+   "country": 46,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 1,
+   "army": 18,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 8,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 13,
+   "army": 8,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 17,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 29,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 33,
+   "army": 8,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 34,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 40,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+   "country": 42,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 8,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 9,
+   "army": 5,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 16,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 20,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 25,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 29,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 31,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 33,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+   "country": 39,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 2,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 4,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 16,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 26,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 30,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 32,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 35,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 40,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+   "country": 41,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 3,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 5,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 7,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 29,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 31,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 36,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 40,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 43,
+   "army": 6,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+   "country": 44,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 9,
+   "army": 4,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 11,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 13,
+   "army": 20,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 15,
+   "army": 19,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 19,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 22,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 33,
+   "army": 7,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 39,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+   "country": 42,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 6,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 12,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 18,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 22,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 25,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 30,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 33,
+   "army": 8,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 34,
+   "army": 5,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+   "country": 36,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 1,
+   "army": 3,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 9,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 22,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 24,
+   "army": 3,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 26,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 39,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 40,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 41,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+   "country": 44,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 3,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 10,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 11,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 26,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 27,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 29,
+   "army": 4,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 33,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 36,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+   "country": 37,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 1,
+   "army": 9,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 2,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 6,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 15,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 16,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 17,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 20,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 41,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+   "country": 44,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 6,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 8,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 14,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 16,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 23,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 29,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 36,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 41,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+   "country": 44,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 7,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 8,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 10,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 18,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 19,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 22,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 25,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 30,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+   "country": 36,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 10,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 13,
+   "army": 17,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 14,
+   "army": 4,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 16,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 20,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 27,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 33,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 35,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+   "country": 37,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 2,
+   "army": 34,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 9,
+   "army": 7,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 11,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 19,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 23,
+   "army": 5,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 30,
+   "army": 4,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 36,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 41,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "84febf0a43d73ffe7941e8228c549e385945af6fa1c77c0bfe72fef0d9db279b",
+   "country": 43,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 4,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 7,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 10,
+   "army": 3,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 20,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 23,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 26,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 27,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 32,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "e86f3d83d024ca0d3cdf4f7fc1d512fd9e361bc6ef3a6874b8fdee21cd7bddb0",
+   "country": 40,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 3,
+   "army": 9,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 9,
+   "army": 4,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 13,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 17,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 30,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 32,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 37,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 38,
+   "army": 4,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d337200173c05b2e3189c583e5a334fe3cd2e2b4d13690532797ff46a5ed5a1a",
+   "country": 44,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 1,
+   "army": 11,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 14,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 20,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 39,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 40,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 41,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 43,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 45,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "2d741d84a6e911902dfa04a98f421f1468ae87a2b0086db6f538ed0c91b6b265",
+   "country": 46,
+   "army": 4,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 3,
+   "army": 17,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 5,
+   "army": 9,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 9,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 18,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 21,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 22,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 32,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 34,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "5f87c7d56a19e0ca22fcc048772c7b03dd69d25a028633dd196ec7b48a0093b4",
+   "country": 39,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 2,
+   "army": 8,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 8,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 16,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 20,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 22,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 26,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 33,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 34,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "110a956a50fbbaf8de8f490a232dc39752bd69cfbcf8c309c426089182a35b58",
+   "country": 46,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 9,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 10,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 17,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 24,
+   "army": 6,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 31,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 38,
+   "army": 4,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 40,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 41,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "7e1efd91fc76a3d6378c536b0b5e981c8c2349cd272ab70865b822c2a286ee8e",
+   "country": 46,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 1,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 7,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 19,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 23,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 26,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 35,
+   "army": 3,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 41,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 42,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "787bba503c53ca7e6792a625e8951dc39352f02851d523b286d48e0f98bd2426",
+   "country": 44,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 1,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 10,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 15,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 18,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 24,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 30,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 34,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "9805a1244dea84ec1fd06bf104ce009744a631af6f10d8648588d2aba694f2dd",
+   "country": 38,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 4,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 25,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 26,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 28,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 30,
+   "army": 2,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 33,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 38,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 41,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "12f3326ccdf256fd926316bd0e3a7e35ec827386f084bb9312cf165350a9847f",
+   "country": 46,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 4,
+   "army": 1,
+   "owner": "blue",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 9,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 14,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 16,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 19,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 22,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 28,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 33,
+   "army": 2,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "d64892e8910d7d4bd56c4d54538dc67eb0af716def8974f8c0099b4ae3d2702a",
+   "country": 46,
+   "army": 4,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 1,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 3,
+   "army": 7,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 8,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 22,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 34,
+   "army": 5,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 35,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 36,
+   "army": 6,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 40,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "debcd6bf0bbf836bc74bf3f28336bbff35415aa5a23a245e433179a275e8de53",
+   "country": 43,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 3,
+   "army": 3,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 11,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 12,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 15,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 17,
+   "army": 1,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 21,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 22,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 23,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 26,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 41,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 43,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0",
+   "country": 45,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 1,
+   "army": 18,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 11,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 13,
+   "army": 8,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 19,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 20,
+   "army": 1,
+   "owner": "green",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 21,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 23,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 29,
+   "army": 2,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 33,
+   "army": 3,
+   "owner": "yellow",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 37,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 39,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+   "country": 43,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 4,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 6,
+   "army": 2,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 9,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 18,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 19,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 21,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 25,
+   "army": 1,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 26,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 30,
+   "army": 3,
+   "owner": "red",
+   "visible": true
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 44,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 45,
+   "army": null,
+   "owner": null,
+   "visible": false
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+   "country": 46,
+   "army": null,
+   "owner": null,
+   "visible": false
+  }
+ ]
+}

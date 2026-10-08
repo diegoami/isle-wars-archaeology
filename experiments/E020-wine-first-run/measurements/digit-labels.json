@@ -1,0 +1,16 @@
+{
+ "what": "digit label of each numeral bitmap of the census (digit-census-r1.json), by the bitmap's shape",
+ "basis": "each bitmap was printed as ASCII and its example crop (census example: sitting, frame sha256, x, y) was looked at; every digit 0-9 has one bitmap, drawn the same in white and in cyan. Not labelled, so never matched (the reader marks a country holding one unread): the 16x17 ring of a country label (549f54...), a '1' clipped by a grey overlay on its right edge (8d7cfd..., 195 blobs of sitting 20261008T184505Z, whose right neighbour cannot be seen), and three one-off damaged glyphs (714d4c..., c84b02..., 966f15...)",
+ "labels": {
+  "01d1005472591fd40c5a24f7dd67d6e2f60c8f02f325b377ddd0f9363de20559": "1",
+  "58d27d3dcdbe5401d195333ab48cc4523e9c1e139b9915ade1b32de2c9d63ee5": "3",
+  "8e1bf5f5964ac157c129fd1c759b8c9d78883a698ed711bbc74acb671b347de6": "2",
+  "47a6f3414cc34db5068bd20273d6d413f7cec9dfdb5f6cb4d505a8a2383560e8": "4",
+  "f4be771bb6a159d225b4b1f9cf06fe3cb0d164ea463ff19393fe7cda04e0df3f": "5",
+  "8a0abdcaf721f159d789b2f3749dd5082c62740080337ded82c9f350f54cb1f4": "6",
+  "7e63217651f989f78e166691d7614d2374252b9ab2de6bae024a66c595b9f1da": "7",
+  "9787af03b54f25b447b625688124960d999bd54212d7216c031a331d124b2ada": "8",
+  "9db16c67f99b901161d36ab7c960b7cf555953dc0030f5955a91437bab8e4e99": "9",
+  "468f6736a228b5f49ca23d7343378778df055ce26b18291a00d62af2722dbd19": "0"
+ }
+}
