@@ -27,6 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import walks  # noqa: E402
+import records as e019_records  # noqa: E402
 
 QUESTIONS = ROOT / "questions" / "pro-static.md"
 INVENTORY = ROOT / "experiments" / "E008-static-triage" / "measurements" / "iwp-extract-pro-r1.json"
@@ -82,6 +83,13 @@ def count_target(spec, cell):
     return (None, 0, None)
 
 
+def count_field(spec):
+    """The observation field a spec's count target is measured under: its `measured` word when the
+    target is a proxy the recorder cannot identify exactly (Q-UI-07's centre moves), else its word."""
+    declared = spec.get("count") or {}
+    return declared.get("measured", declared.get("word"))
+
+
 def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None):
     """Every failure of the catalogue as a line; [] when the Done-when 3 holds."""
     root = Path(root)
@@ -105,9 +113,10 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             errors.append(f"{qid}: {drift}")
 
     # the records: one file per question walk under runs/E019/<batch>/
-    counts = {}
+    counts = {}                         # qid -> summed count of its measured field
+    present = {}                        # qid -> [paths of any record, any status]
+    seen = {}                           # qid -> [completed records] (only these cover a question)
     record_dirs = sorted((root / "runs" / "E019").glob("*") if (root / "runs" / "E019").is_dir() else [])
-    seen = {}
     for folder in record_dirs:
         if not folder.is_dir():
             continue
@@ -129,22 +138,52 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             if spec is None:
                 errors.append(f"{where}: arm {record.get('arm')!r} names no catalogue question")
                 continue
-            seen.setdefault(qid, []).append(record)
             where = f"{where} ({qid})"
+            present.setdefault(qid, []).append(path)
+
+            # R1: the record's identity and the properties the task requires of it. A record of the
+            # wrong artifact set (a DOS set, or the wrong Pro successor) is never this walk's.
+            want_set = e019_records.artifact_set_for(spec)
+            got_set = (record.get("artifact") or {}).get("set")
+            if got_set != want_set:
+                errors.append(f"{where}: artifact set {got_set!r} is not the walk's {want_set!r}")
+            if (record.get("artifact") or {}).get("variant") is not None:
+                errors.append(f"{where}: artifact variant {(record.get('artifact') or {}).get('variant')!r} "
+                              "is not None")
+            if not isinstance(record.get("start_state"), dict) or not record["start_state"].get("sha256"):
+                errors.append(f"{where}: no start_state sha256 (the seal)")
+            observations = record.get("observations")
+            if not isinstance(observations, list) or not all(isinstance(o, dict) for o in observations):
+                errors.append(f"{where}: observations is not a list of objects")
+                observations = []
+            outputs = record.get("outputs")
+            if not isinstance(outputs, list) or not all(isinstance(o, dict) for o in outputs):
+                errors.append(f"{where}: outputs is not a list of objects")
+                outputs = []
             if record.get("status") != "completed":
                 continue                      # data, but it does not cover the question
+
+            # R2: only a completed record covers the question; it is added to `seen` after this test
+            seen.setdefault(qid, []).append(record)
             batch = folder.name
             if batch != spec["batch"]:
                 errors.append(f"{where}: sits in {batch}, its walk's batch is {spec['batch']}")
-            fields = [o.get("field", "") for o in record.get("observations", [])]
-            values = [o.get("value", "") for o in record.get("observations", [])]
+            fields = [o.get("field", "") for o in observations]
+            values = [o.get("value", "") for o in observations]
             if not any(f == "observation" for f in fields):
                 errors.append(f"{where}: no per-question observation")
             word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
             if word:
-                got = sum(int(o["value"]) for o in record.get("observations", [])
-                          if o.get("field") == f"count: {word}" and str(o.get("value", "")).isdigit())
+                field = count_field(spec)
+                got = sum(int(o["value"]) for o in observations
+                          if o.get("field") == f"count: {field}"
+                          and str(o.get("value", "")).isdigit())
                 counts[qid] = counts.get(qid, 0) + got
+                declared = spec.get("count") or {}
+                if declared.get("measured") and field != declared["word"]:
+                    if not any(f == f"count note: {declared['word']}" for f in fields):
+                        errors.append(f"{where}: counts {field!r} in place of {declared['word']!r} "
+                                      "and carries no count note")
             if spec.get("timing") and not any(f.startswith("timing:") for f in fields):
                 errors.append(f"{where}: its walk is frame-timed and no timing is recorded")
             if spec.get("hit_areas") and not any(f.startswith("hit-area:") for f in fields):
@@ -154,31 +193,46 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                 if have < minimum_reads:
                     errors.append(f"{where}: read {kind} recorded {have} times, its spec wants {minimum_reads}")
             for state in spec.get("states", []):
-                if not any(o.get("name") == f"state-{state}.png" for o in record.get("outputs", [])):
+                if not any(o.get("name") == f"state-{state}.png" for o in outputs):
                     errors.append(f"{where}: no state-{state}.png among its outputs")
+            for cycle_png in ("before.png", "after.png"):
+                if not any(o.get("name") == cycle_png for o in outputs):
+                    errors.append(f"{where}: no {cycle_png} among its outputs (the cycle's before/after)")
             manifest = root / "evidence" / "E019" / batch / f"{path.stem}.manifest.json"
             if not manifest.is_file():
                 errors.append(f"{where}: no evidence manifest at {manifest.relative_to(root)}")
             else:
                 try:
-                    named = {f["sha256"] for f in json.loads(manifest.read_text(encoding="utf-8"))["files"]}
-                except (ValueError, KeyError) as exc:
+                    doc = json.loads(manifest.read_text(encoding="utf-8"))
+                    named = {f["sha256"] for f in doc["files"]}
+                    manifest_set = (doc.get("artifact") or {}).get("set")
+                except (ValueError, KeyError, TypeError) as exc:
                     errors.append(f"{manifest.relative_to(root)}: unreadable manifest: {exc}")
-                    named = set()
-                for out in record.get("outputs", []):
+                    named, manifest_set = set(), None
+                if manifest_set != want_set:
+                    errors.append(f"{manifest.relative_to(root)}: artifact set {manifest_set!r} is not "
+                                  f"the walk's {want_set!r}")
+                if (doc.get("artifact") or {}).get("variant") is not None:
+                    errors.append(f"{manifest.relative_to(root)}: artifact variant "
+                                  f"{(doc.get('artifact') or {}).get('variant')!r} is not None")
+                for out in outputs:
                     if out.get("sha256") not in named:
                         errors.append(f"{where}: output {out.get('name')} is not in its manifest by hash")
             for value in values:
                 errors.extend(citation_errors(value, scripts, where))
 
-    # coverage and the targets, over the completed records
+    # coverage and the targets, over the completed records only
     for qid in ids:
+        spec = walks.WALKS.get(qid, {})
         if qid not in seen:
-            errors.append(f"{qid}: no record under runs/E019 (the walk has not run)")
+            why = "its records were aborted" if qid in present else "the walk has not run"
+            errors.append(f"{qid}: no completed record under runs/E019 ({why})")
             continue
-        word, minimum, _ = count_target(walks.WALKS.get(qid, {}), rows[qid]["corroboration"])
-        if word and counts.get(qid, 0) < minimum:
-            errors.append(f"{qid}: count {word} is {counts.get(qid, 0)}, the row wants at least {minimum}")
+        word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
+        if word:
+            field = count_field(spec)
+            if counts.get(qid, 0) < minimum:
+                errors.append(f"{qid}: count {field} is {counts.get(qid, 0)}, the row wants at least {minimum}")
 
     # F020: a section per question, each with an Observation line of the catalogue's vocabulary
     if not f020_path.is_file():
@@ -198,6 +252,12 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                               "(the walk's record may be missing, or the section is still pending)")
                 continue
             errors.extend(citation_errors(body, scripts, f"F020 {qid}"))
+            declared = (walks.WALKS.get(qid) or {}).get("count") or {}
+            if (declared.get("measured") and declared["measured"] != declared.get("word")
+                    and m.group(1) == "observed"):
+                errors.append(f"{qid}: F020 is observed, but the walk counts {declared['measured']!r} "
+                              f"as a proxy for {declared['word']!r}; a narrowed observation is the "
+                              "honest one")
 
     return errors
 

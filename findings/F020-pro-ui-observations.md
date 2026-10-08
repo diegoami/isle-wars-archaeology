@@ -6,7 +6,7 @@
 - **Experiment and runs**: E019; the walk table, the recorder and the check are [`experiments/E019-pro-ui/`](../experiments/E019-pro-ui/README.md). The runs are named in each batch's sections as they are recorded, with each record's path under `runs/E019/<batch>/` and each screenshot's hash. No batch has run yet: the walks are the main session's ([C3], the install is on the user's machine), and this catalogue is turned from the records when they exist. Nothing is fabricated: a question with no record stays pending below.
 - **Artifact**: set `iwp-2.0-996e86c5`, variant none, for every walk that cannot write a file of the set; set `iwp-2.0-de5a82a2` for the walks that pass through the mid-game loss, which credits a loss and writes `xtras/Islepro.skr` (F003): Q-UI-04, Q-UI-11, Q-UI-21. Rule 19: Pro only; nothing here is claimed for DOS Isle Wars.
 - **Max intervention**: I1 (screenshots of the display and read-only reads of `/proc` and of the game copy; the recorder's own screen reads are pixels-read only — quantised colour censuses, luminance censuses, text-row heights, hover maps, timed watches. No OCR pass anywhere, and no cast member or score byte is ever quoted)
-- **Tier reached**: V2 (the original, headless, under Wine; no native Windows run, so no V3)
+- **Tier reached**: V0 (no batch has run yet: the walk table, the recorder and the check exist, and the observations below are still pending the [C3] walks. The tier becomes V2 — the original, headless, under Wine — when the walks' records are turned in; no native Windows run, so no V3)
 - **Confidence**: per entry, and it is written with each observation when the records are turned in. The look of every screen is in the cast and the score, which stay undecoded, so every entry that describes a look rests on the screenshots themselves (the rows' own `medium` and `low` confidences say the same).
 
 ## Method
@@ -160,9 +160,9 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 #### Q-UI-07 Recordings of at least 5 centre moves
 
 - **Sources (the row's):** `BehaviorScript 54` / `exitFrame()`; `MovieScript 51 putinproductioncenters` / `Putinproductioncenters()` (the event message and the centre flash).
-- **Walk**: batch `events-end`; the same watch as Q-UI-06, recorded under this question. Which flash candidate is a centre move is not decidable by pixels alone, and the record says so; the catalogue describes what the shots and timestamps show.
-- **Observation**: pending the [C3] walk.
-- **What would change it**: a decode of the event messages' text, which the pixels-read rule keeps out.
+- **Walk**: batch `events-end`; the same watch as Q-UI-06, but only the board-area changes are counted — the region where the centre flash of `Putinproductioncenters()` is drawn — and the strip's changes are recorded beside them. Which flash candidate is a centre move is not decidable by pixels: the record emits `count: centre-flash candidates`, never `count: centre moves`, and carries a `count note` saying the row's word is proxied. The catalogue describes what the shots and timestamps show.
+- **Observation**: pending the [C3] walk; the catalogue's entry will be `narrowed` (the row's "at least 5 centre moves" is proxied by 5 board-area flash candidates, never claimed as identified centre moves).
+- **What would change it**: a decode of the event messages' text, which the pixels-read rule keeps out, or a runtime signal that distinguishes the five event kinds.
 
 #### Q-UI-11 Screenshots of the end screen after a win, a loss and a concession
 

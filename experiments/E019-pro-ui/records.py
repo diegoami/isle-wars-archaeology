@@ -13,6 +13,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 EXPERIMENT = "E019"
 
+# The two artifact sets a walk may be recorded under (artifacts/known.json; the recorder passes one to
+# the driver, the checker compares each record's `artifact.set` with it). The successor set is for the
+# walks that may write xtras/Islepro.skr by crediting a loss (F003); every other walk records the base
+# set. They are repeated here (the driver's cycle.py holds the same ids) so the check can compare a
+# record's identity without importing the driver, and a test pins them to the driver's constants.
+ARTIFACT_SET = "iwp-2.0-996e86c5"
+ARTIFACT_SET_SAVED_FILES = "iwp-2.0-de5a82a2"
+
+
+def artifact_set_for(spec):
+    """The artifact set a walk's record belongs to: the successor set when the walk may write a file
+    of the set (may_write_saved_files), the base set otherwise."""
+    return ARTIFACT_SET_SAVED_FILES if spec.get("may_write_saved_files") else ARTIFACT_SET
+
 # The walk's intervention level, the same wording the E004 driver records (vocabulary/interventions.md).
 INTERVENTIONS = [{"level": "I1", "what": "screenshots of the display and read-only reads of /proc and of "
                                          "the game copy; no memory read, no modified file"}]

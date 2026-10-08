@@ -17,6 +17,7 @@ import walks  # noqa: E402
 import pixels  # noqa: E402
 import records as e019_records  # noqa: E402
 import check_ui_catalogue  # noqa: E402
+import run_walk  # noqa: E402
 import test_runs  # noqa: E402  (the amended record-layout rule)
 
 QUESTIONS = ROOT / "questions" / "pro-static.md"
@@ -33,6 +34,7 @@ BRIEF_BATCHES = [
 FRAME_TIMED = {"Q-UI-06", "Q-UI-13", "Q-UI-16"}
 HIT_AREAS = {"Q-UI-18"}
 STATIC_ONLY = {"Q-UI-14", "Q-UI-21"}
+PROXIED = {"Q-UI-07"}   # its row target is proxied by a measured field, so F020 is narrowed
 
 
 def catalogue_ids():
@@ -55,8 +57,13 @@ def synthetic_record(run_id, qid, batch, status="completed", counts=True, timing
     if observation:
         observations.append(obs(99, "observation", f"the {qid} walk recorded its screens and reads", "screen"))
     if counts and spec.get("count"):
-        value = count_value if count_value is not None else spec["count"]["at_least"]
-        observations.append(obs(98, f"count: {spec['count']['word']}", value))
+        declared = spec["count"]
+        field = declared.get("measured", declared["word"])
+        value = count_value if count_value is not None else declared["at_least"]
+        observations.append(obs(98, f"count: {field}", value))
+        if field != declared["word"]:
+            observations.append(obs(98, f"count note: {declared['word']}",
+                                    f"the walk measures {field!r}, not {declared['word']!r}", "static"))
     if timing and spec.get("timing"):
         observations.append(obs(97, "timing: walk watch", "12.34 s between changes"))
     for kind, minimum in spec.get("reads", {}).items():
@@ -79,7 +86,7 @@ def synthetic_record(run_id, qid, batch, status="completed", counts=True, timing
         "rep": 1,
         "code_commit": "0" * 12,
         "machine": "local",
-        "artifact": {"set": "iwp-2.0-996e86c5", "variant": None},
+        "artifact": {"set": e019_records.artifact_set_for(spec), "variant": None},
         "runtime": {"driver": "experiments/E019-pro-ui/run_walk.py@000000000000", "platform": "test",
                     "fingerprint": {"wine": "test"}},
         "interventions": [{"level": "I1", "what": "screenshots of the display and read-only reads"}],
@@ -94,9 +101,9 @@ def synthetic_record(run_id, qid, batch, status="completed", counts=True, timing
     }
 
 
-def synthetic_manifest(run_id, outputs):
+def synthetic_manifest(run_id, outputs, set_id):
     return {"schema": "evidence-manifest/1", "run_id": run_id, "experiment": "E019",
-            "store": "release:E019", "artifact": {"set": "iwp-2.0-996e86c5", "variant": None},
+            "store": "release:E019", "artifact": {"set": set_id, "variant": None},
             "files": [{"name": o["name"], "bytes": 1, "sha256": o["sha256"],
                        "asset": f"{o['sha256'][:16]}-{o['name']}", "class": "screenshot"}
                       for o in outputs]}
@@ -110,6 +117,8 @@ def write_f020(root, observed=(), status_of=None):
         lines.append(f"#### {qid} question text")
         if status_of and qid in status_of:
             status = status_of[qid]
+        elif qid in PROXIED:
+            status = "narrowed"
         elif qid in observed:
             status = "observed"
         elif qid in STATIC_ONLY:
@@ -144,7 +153,9 @@ def build_tmp_tree(tmp, missing=(), aborted=(), low_count=False, no_observation=
             evidence = tmp / "evidence" / "E019" / batch
             evidence.mkdir(parents=True, exist_ok=True)
             (evidence / f"{run_id}.manifest.json").write_text(
-                json.dumps(synthetic_manifest(run_id, record["outputs"]), indent=1), encoding="utf-8")
+                json.dumps(synthetic_manifest(run_id, record["outputs"],
+                                              e019_records.artifact_set_for(walks.WALKS[qid])), indent=1),
+                encoding="utf-8")
     return write_f020(tmp, observed=set(catalogue_ids()) - set(missing) - set(aborted), status_of=status_of)
 
 
@@ -354,6 +365,217 @@ class CheckCatalogueTest(unittest.TestCase):
         errors = check_ui_catalogue.run_checks(ROOT, questions_path=QUESTIONS, inventory_path=INVENTORY)
         self.assertTrue(errors)
         self.assertTrue(any("Q-UI-01" in e for e in errors), errors)
+
+    # --- R1: a record of the wrong artifact set is never this walk's ---------------------------
+
+    def _one_record(self, tmp):
+        return next((Path(tmp) / "runs" / "E019" / "play").glob("*.json"))
+
+    def test_a_record_of_the_wrong_artifact_set_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            path = self._one_record(tmp)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            record["artifact"]["set"] = "iw-dos-3.1-30121376"          # the known DOS set
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("artifact set" in e and "iw-dos" in e for e in errors), errors)
+
+    def test_the_successor_set_is_the_one_the_loss_walks_must_use(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            # Q-UI-04 may write xtras/Islepro.skr (may_write_saved_files): its base set must fail
+            path = next((Path(tmp) / "runs" / "E019" / "title-options").glob("E019-*.json"))
+            record = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(record["artifact"]["set"], e019_records.ARTIFACT_SET_SAVED_FILES)
+            record["artifact"]["set"] = e019_records.ARTIFACT_SET
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("artifact set" in e for e in errors), errors)
+
+    def test_a_record_with_the_wrong_variant_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            path = self._one_record(tmp)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            record["artifact"]["variant"] = "registered"
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("variant" in e for e in errors), errors)
+
+    def test_a_manifest_of_the_wrong_artifact_set_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            manifest = next((Path(tmp) / "evidence" / "E019" / "play").glob("*.manifest.json"))
+            doc = json.loads(manifest.read_text(encoding="utf-8"))
+            doc["artifact"]["set"] = "iw-dos-3.1-30121376"
+            manifest.write_text(json.dumps(doc), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("artifact set" in e and "iw-dos" in e for e in errors), errors)
+
+    def test_a_record_without_the_seal_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            path = self._one_record(tmp)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            record["start_state"].pop("sha256")
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("start_state" in e for e in errors), errors)
+
+    def test_a_record_without_the_cycle_screenshots_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            path = self._one_record(tmp)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            record["outputs"] = [o for o in record["outputs"] if o["name"] != "before.png"]
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("before.png" in e for e in errors), errors)
+
+    # --- R2: an aborted record never covers a question -----------------------------------------
+
+    def test_an_aborted_no_count_question_does_not_cover(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            # Q-UI-05 declares no count, so only coverage decides it; its F020 line is observed
+            build_tmp_tree(tmp, aborted=["Q-UI-05"], status_of={"Q-UI-05": "observed"})
+            errors = self.run_check(tmp)
+            self.assertTrue(any("Q-UI-05" in e and "completed" in e for e in errors), errors)
+
+    # --- R4: a proxied count uses its measured field and says so --------------------------------
+
+    def _q_ui_07_record(self, tmp):
+        for path in sorted((Path(tmp) / "runs" / "E019" / "events-end").glob("E019-*.json")):
+            if json.loads(path.read_text(encoding="utf-8")).get("arm") == "q-ui-07":
+                return path
+        raise AssertionError("no Q-UI-07 record in the fixture")
+
+    def test_a_proxied_count_must_use_its_measured_field(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            path = self._q_ui_07_record(tmp)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            for o in record["observations"]:
+                if o["field"] == "count: centre-flash candidates":
+                    o["field"] = "count: centre moves"       # the old, unsupported claim
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("Q-UI-07" in e and "centre-flash candidates" in e for e in errors),
+                            errors)
+
+    def test_a_proxied_count_without_a_note_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp)
+            path = self._q_ui_07_record(tmp)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            record["observations"] = [o for o in record["observations"]
+                                      if not o["field"].startswith("count note:")]
+            path.write_text(json.dumps(record), encoding="utf-8")
+            errors = self.run_check(tmp)
+            self.assertTrue(any("count note" in e for e in errors), errors)
+
+    def test_an_observed_proxied_section_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build_tmp_tree(tmp, status_of={"Q-UI-07": "observed"})
+            errors = self.run_check(tmp)
+            self.assertTrue(any("Q-UI-07" in e and "proxy" in e for e in errors), errors)
+
+
+class RecorderCountsTest(unittest.TestCase):
+    """The recorder emits a `count:` for every declared target, and never claims an identification
+    its pixels cannot make (the classes of R3 and R4)."""
+
+    class FakeSession:
+        def __init__(self):
+            self.observed = []
+
+        def observe(self, step, source, field, value):
+            self.observed.append({"field": field, "value": str(value)})
+
+        def perform(self, line):
+            pass
+
+    def stamp(self, qid):
+        spec = dict(walks.WALKS[qid], qid=qid)
+        ctx = run_walk.Ctx(spec)
+        declared = spec.get("count") or {}
+        target = declared.get("at_least", 0)
+        measure = declared.get("measure")
+        if measure == "shots":
+            ctx.shots = target
+        elif measure == "attempts":
+            ctx.attempts = target
+        elif measure == "labels":
+            ctx.labels = {f"label-{i}" for i in range(target)}
+        elif measure:
+            ctx.counts[measure] = target
+        session = self.FakeSession()
+        run_walk.stamp_walk_summaries(session, ctx)
+        return session.observed
+
+    def test_every_declared_count_target_is_emitted(self):
+        for qid, spec in walks.WALKS.items():
+            declared = spec.get("count")
+            if not declared:
+                continue
+            with self.subTest(qid=qid):
+                field = declared.get("measured", declared["word"])
+                fields = [o["field"] for o in self.stamp(qid)]
+                self.assertIn(f"count: {field}", fields, qid)
+
+    def test_a_proxied_count_uses_the_measured_word_and_carries_a_note(self):
+        fields = [o["field"] for o in self.stamp("Q-UI-07")]
+        self.assertIn("count: centre-flash candidates", fields)
+        self.assertIn("count note: centre moves", fields)
+        self.assertNotIn("count: centre moves", fields)
+
+    def test_the_declared_shots_target_is_reachable_by_the_walks_own_shots(self):
+        """A `shots` target must not exceed the shots the walk's actions actually take (the R3
+        class: a target the recorder cannot produce). Runtime shot counts (Q-UI-15's awards) are
+        the walk's own report and are not previewed here."""
+        def planned_shots(spec):
+            shots = sum(1 for kind, *rest in spec["actions"]
+                        if kind == "step" and rest[0].startswith("shot "))
+            for kind, *rest in spec["actions"]:
+                if kind == "composite" and rest[0] == "computer_turns" and rest[1].get("shots", True):
+                    shots += rest[1].get("passes", 1)
+            return shots
+
+        for qid, spec in walks.WALKS.items():
+            declared = spec.get("count") or {}
+            if declared.get("measure") != "shots":
+                continue
+            composites = {a[1] for a in spec["actions"] if a[0] == "composite"}
+            if "card_turns" in composites:
+                continue                      # award shots depend on the deal, reported at run time
+            with self.subTest(qid=qid):
+                self.assertGreaterEqual(planned_shots(spec), declared["at_least"], qid)
+
+    def test_a_shot_step_increments_the_live_screenshot_count(self):
+        ctx = run_walk.Ctx(dict(walks.WALKS["Q-UI-14"], qid="Q-UI-14"))
+        run_walk.perform(self.FakeSession(), ctx, "shot something")
+        self.assertEqual(ctx.shots, 1)
+
+    def test_a_click_any_group_increments_the_attempt_count(self):
+        ctx = run_walk.Ctx(dict(walks.WALKS["Q-UI-09"], qid="Q-UI-09"))
+        run_walk.perform(self.FakeSession(), ctx, "click-any? 400 300 100 100 700 200")
+        self.assertEqual(ctx.attempts, 1)
+
+    def test_the_recorder_and_the_driver_agree_on_the_artifact_sets(self):
+        sys.path.insert(0, str(ROOT / "runtime" / "iwp" / "spike"))
+        import cycle as spike  # noqa: E402
+        self.assertEqual(e019_records.ARTIFACT_SET, spike.SET_ID)
+        self.assertEqual(e019_records.ARTIFACT_SET_SAVED_FILES, spike.SUCCESSOR2_ID)
 
 
 if __name__ == "__main__":

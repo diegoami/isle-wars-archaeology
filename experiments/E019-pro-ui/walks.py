@@ -134,7 +134,7 @@ WALKS = {
         "batch": "title-options",
         "title": "every screen reached by walking each menu path",
         "may_write_saved_files": True,   # the mid-game New Game credits a loss (F003)
-        "count": {"word": "screens", "at_least": 8},
+        "count": {"word": "screens", "at_least": 8, "measure": "shots"},
         "actions": [
             ("step", "shot title"),
             ("step", f"click {OPTIONS_CLICK[0]} {OPTIONS_CLICK[1]}"),
@@ -188,7 +188,7 @@ WALKS = {
         "batch": "title-options",
         "title": "three timed walkthroughs with click counts",
         "may_write_saved_files": False,
-        "count": {"word": "walkthroughs", "at_least": 3},
+        "count": {"word": "walkthroughs", "at_least": 3, "measure": "walkthroughs"},
         "actions": [("composite", "title_options_rounds", {"rounds": 3})],
         "notes": [
             "each round is title -> Options -> title, timed with the monotonic clock and counted "
@@ -199,7 +199,7 @@ WALKS = {
         "batch": "title-options",
         "title": "screenshots at each supported resolution",
         "may_write_saved_files": False,
-        "count": {"word": "resolutions", "at_least": 4},
+        "count": {"word": "resolutions", "at_least": 4, "measure": "resolutions"},
         "sizes": ["640x480x24", "800x600x24", "1024x768x24", "1280x1024x24"],
         "actions": [
             ("step", "shot title-at-this-size"),
@@ -219,7 +219,7 @@ WALKS = {
         "batch": "title-options",
         "title": "the event-frequency option, on and off",
         "may_write_saved_files": False,
-        "count": {"word": "screenshots", "at_least": 2},
+        "count": {"word": "screenshots", "at_least": 2, "measure": "shots"},
         "actions": [
             ("step", f"click {OPTIONS_CLICK[0]} {OPTIONS_CLICK[1]}"),
             ("wait", "options"),
@@ -240,7 +240,7 @@ WALKS = {
         "batch": "board-pieces",
         "title": "the board at the one player count the build allows, and in greyscale",
         "may_write_saved_files": False,
-        "count": {"word": "screenshots", "at_least": 1},
+        "count": {"word": "screenshots", "at_least": 1, "measure": "shots"},
         "reads": {"colour-census": 1, "greyscale-census": 1},
         "regions": ["board-area"],
         "actions": [
@@ -260,7 +260,7 @@ WALKS = {
         "batch": "board-pieces",
         "title": "boards with production centres at the default size, and the centre flash",
         "may_write_saved_files": False,
-        "count": {"word": "screenshots", "at_least": 2},
+        "count": {"word": "screenshots", "at_least": 2, "measure": "shots"},
         "reads": {"timed-watch": 1},
         "regions": ["board-area", "message-strip"],
         "actions": [
@@ -281,7 +281,7 @@ WALKS = {
         "batch": "board-pieces",
         "title": "the army-count text, measured by pixel rows",
         "may_write_saved_files": False,
-        "count": {"word": "screenshots", "at_least": 1},
+        "count": {"word": "screenshots", "at_least": 1, "measure": "shots"},
         "reads": {"text-rows": 1},
         "regions": ["board-area", "message-strip", "phase-panel"],
         "actions": [
@@ -363,7 +363,7 @@ WALKS = {
         "batch": "play",
         "title": "every panel with per-player figures, through one turn",
         "may_write_saved_files": False,
-        "count": {"word": "panels", "at_least": 4},
+        "count": {"word": "panels", "at_least": 4, "measure": "shots"},
         "regions": ["board-area", "turn-panel", "phase-panel", "attack-panel"],
         "actions": [
             *_TURN_TO_ATTACK,
@@ -383,7 +383,7 @@ WALKS = {
         "batch": "play",
         "title": "the status texts and the button frames through one full turn",
         "may_write_saved_files": False,
-        "count": {"word": "panels", "at_least": 4},
+        "count": {"word": "panels", "at_least": 4, "measure": "shots"},
         "reads": {"text-rows": 1},
         "regions": ["message-strip", "turn-panel", "phase-panel"],
         "actions": [
@@ -407,7 +407,7 @@ WALKS = {
         "batch": "play",
         "title": "the computer's turns, timed",
         "may_write_saved_files": False,
-        "count": {"word": "computer turns", "at_least": 20},
+        "count": {"word": "computer turns", "at_least": 20, "measure": "computer turns"},
         "timing": "frame-timed",
         "regions": ["message-strip", "phase-panel", "board-area"],
         "actions": [
@@ -428,7 +428,7 @@ WALKS = {
         "batch": "play",
         "title": "holding, playing and discarding cards",
         "may_write_saved_files": False,
-        "count": {"word": "screenshots", "at_least": 1},
+        "count": {"word": "screenshots", "at_least": 1, "measure": "shots"},
         "regions": ["message-strip"],
         "actions": [
             *_REACH_BOARD,
@@ -447,7 +447,7 @@ WALKS = {
         "batch": "play",
         "title": "the battle text updates and pauses, timed",
         "may_write_saved_files": False,
-        "count": {"word": "attacks", "at_least": 20},
+        "count": {"word": "attacks", "at_least": 20, "measure": "attacks"},
         "timing": "frame-timed",
         "regions": ["attack-panel", "message-strip"],
         "actions": [
@@ -470,12 +470,12 @@ WALKS = {
         "batch": "events-end",
         "title": "the event message, flash and sound, frame-timed",
         "may_write_saved_files": False,
-        "count": {"word": "events", "at_least": 5},
+        "count": {"word": "events", "at_least": 5, "measure": "events"},
         "timing": "frame-timed",
         "regions": ["message-strip", "board-area"],
         "actions": [
             *_REACH_BOARD,
-            ("composite", "event_watch", {"turns": 30, "need": 5,
+            ("composite", "event_watch", {"turns": 30, "need": 5, "word": "events",
                                           "watch": ["message-strip", "board-area"]}),
         ],
         "notes": [
@@ -491,24 +491,29 @@ WALKS = {
         "batch": "events-end",
         "title": "the centre event's message and flash",
         "may_write_saved_files": False,
-        "count": {"word": "centre moves", "at_least": 5},
+        "count": {"word": "centre moves", "at_least": 5, "measured": "centre-flash candidates",
+                  "measure": "centre-flash candidates"},
         "regions": ["message-strip", "board-area"],
         "actions": [
             *_REACH_BOARD,
             ("composite", "event_watch", {"turns": 30, "need": 5,
+                                          "word": "centre-flash candidates",
+                                          "count_regions": ["board-area"],
                                           "watch": ["message-strip", "board-area"]}),
         ],
         "notes": [
-            "the same flash candidates as Q-UI-06, recorded under this question: which candidate "
-            "is a centre move is not decidable by pixels alone, and the record says so; the "
-            "catalogue describes what the recorded shots and timestamps show",
+            "a centre move is not decidable by pixels: the walk counts the board-area flash "
+            "candidates (the region the centre flash is drawn in) and the record says so; the row's "
+            "'at least 5 centre moves' is proxied by 5 centre-flash candidates, never claimed as "
+            "identified centre moves, and F020's entry is narrowed",
+            "the catalogue describes what the recorded shots and timestamps show",
         ],
     },
     "Q-UI-11": {
         "batch": "events-end",
         "title": "the end screens after a win, a loss and a concession",
         "may_write_saved_files": True,   # the loss path credits a loss (F003)
-        "count": {"word": "end states", "at_least": 1},
+        "count": {"word": "end states", "at_least": 1, "measure": "shots"},
         "actions": [
             *_REACH_BOARD,
             ("step", f"click {NEWGAME_CLICK[0]} {NEWGAME_CLICK[1]}"),
@@ -526,7 +531,7 @@ WALKS = {
         "title": "looking for an event log over one long session",
         "may_write_saved_files": False,
         "absence": True,
-        "count": {"word": "screens", "at_least": 12},
+        "count": {"word": "screens", "at_least": 9, "measure": "shots"},
         "reads": {"absence-tour": 1},
         "actions": [
             ("step", "shot title"),
@@ -541,14 +546,15 @@ WALKS = {
             ("step", "settle"),
             *_REACH_BOARD,
             ("composite", "computer_turns", {"passes": 5, "watch": ["message-strip", "phase-panel"],
-                                             "seconds": 25, "interval": 0.25, "shots": False}),
+                                             "seconds": 25, "interval": 0.25, "shots": True}),
             ("step", "shot board-long-session"),
         ],
         "notes": [
             "absence walk: the tour visits the title, options, scores, setup, board and the turn "
-            "phases over a long session (five passes of computer turns), shots each, and records "
-            "that no list-of-events control was seen on any of them; 'absence confirmed on the "
-            "screens visited' is the observation, never a proof",
+            "phases over a long session (five passes of computer turns), and shots each screen "
+            "visited (nine: title, options, scores, one per pass, and the board); it records that "
+            "no list-of-events control was seen on any of them; 'absence confirmed on the screens "
+            "visited' is the observation, never a proof",
         ],
     },
     "Q-UI-21": {
@@ -588,7 +594,7 @@ WALKS = {
         "batch": "inputs-sounds",
         "title": "attempts at each illegal action, and their messages",
         "may_write_saved_files": False,
-        "count": {"word": "attempts", "at_least": 3},
+        "count": {"word": "attempts", "at_least": 3, "measure": "attempts"},
         "regions": ["message-strip", "board-area"],
         "actions": [
             *_TURN_TO_ATTACK,
@@ -639,7 +645,7 @@ WALKS = {
         "batch": "inputs-sounds",
         "title": "inputs against actions, and measured hit areas",
         "may_write_saved_files": False,
-        "count": {"word": "labels", "at_least": 3},
+        "count": {"word": "labels", "at_least": 3, "measure": "labels"},
         "hit_areas": True,
         "regions": ["bottom-bar", "return-button", "turn-menu-band"],
         "actions": [

@@ -45,8 +45,14 @@ file is append-only. A changed design is a new experiment, or `v2/`.
     board through the setup screen's Play Game and wait for the computer players' opening turns
     to go quiet, as E002's tour did.
   - the count targets are the rows' own ("at least 5 events", "at least 20 computer turns",
-    "at least 20 attacks", and so on). A walk that sees fewer records fewer and is re-run — a
-    re-run writes new records beside the old ones and says which it cites; nothing is padded.
+    "at least 20 attacks", and so on), each declared in `walks.py` with the counter that measures
+    it (`shots`, `attempts`, `labels`, a composite's counter, or `resolutions`), and the recorder
+    emits a `count:` observation for every one of them — a target the recorder cannot produce is a
+    defect, not a walk. Q-UI-07's "at least 5 centre moves" is the one proxy: the pixels cannot
+    identify a centre move, so the recorder counts board-area `centre-flash candidates`, carries a
+    `count note` saying the row's word is proxied, and F020's entry is `narrowed`. A walk that sees
+    fewer records fewer and is re-run — a re-run writes new records beside the old ones and says
+    which it cites; nothing is padded.
   - the Quit path stops at the unregistered notice: T13's driver terminates by kill, so Exit Game
     is never clicked inside a recorded walk. The Soleau Games label is a refused rectangle
     (`runtime/iwp/spike/steps.py`); its screens are never walked.

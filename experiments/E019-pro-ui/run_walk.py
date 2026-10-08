@@ -88,7 +88,8 @@ class Ctx:
         self.step = 50                     # the recorder's own observations start past the driver's
         self.counts = {}                   # count word -> value
         self.labels = set()                # bottom-bar bands whose hover map reacted
-        self.shots = 0
+        self.shots = 0                     # the walk's own screenshots (the `shot` steps)
+        self.attempts = 0                  # the `click-any?` groups (attempts the game may refuse)
 
     def obs(self, session, field, value, source="screen"):
         session.observe(self.step, source, field, str(value))
@@ -99,11 +100,16 @@ class Ctx:
 
 
 def perform(session, ctx, line):
-    """One step-language line; a click or key counts as an input of this walk."""
+    """One step-language line; a click or key counts as an input of this walk, a `shot` as one of the
+    walk's screenshots, and a `click-any?` group as one attempted (possibly refused) input."""
     session.perform(line)
     first = line.split()[0]
     if first in sessionlib.INPUT_OPS:
         ctx.count("inputs", 1)
+    if first == "shot":
+        ctx.shots += 1
+    if first in ("click-any?", "click-any"):
+        ctx.attempts += 1
 
 
 def region_rect(label):
@@ -314,12 +320,16 @@ def composite_attack_exchanges(session, ctx, turns=8, exchanges=3, need=20, watc
             "timed observations carry each exchange", "static")
 
 
-def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip", "board-area")):
+def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip", "board-area"),
+                          word=None, count_regions=None):
     """Q-UI-06 and Q-UI-07: play turns and watch for the event flash — a change taking in a large
     share of a watched region for one short interval. Candidates are counted and timestamped; the
     strip's changes are recorded beside them. Whether a candidate is a flood, a rebellion or a
-    centre move is not decidable by pixels; the record says so."""
-    word = "events" if ctx.spec["qid"] == "Q-UI-06" else "centre moves"
+    centre move is not decidable by pixels; the record says so, and `count_regions` names the region
+    a question's count may be taken from (Q-UI-07 counts only the board area, where the centre
+    flash is drawn; Q-UI-06 counts either)."""
+    word = word or (ctx.spec.get("count") or {}).get("measured") or "flash candidates"
+    countable = tuple(count_regions) if count_regions else tuple(watch)
     candidates = 0
     for t in range(1, turns + 1):
         if candidates >= need:
@@ -327,7 +337,9 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
         place_and_attack(session, ctx)
         leave_attack_and_pass(session, ctx)
         for label in watch:
-            candidates += timed_watch(session, ctx, label, 15, WATCH_INTERVAL, flashes=True)
+            got = timed_watch(session, ctx, label, 15, WATCH_INTERVAL, flashes=True)
+            if label in countable:
+                candidates += got
             if candidates >= need:
                 break
     ctx.count(word, candidates)
@@ -352,10 +364,10 @@ def composite_card_turns(session, ctx, turns=10):
         if read_region(session, strip) != before:
             awards += 1
             perform(session, ctx, f"shot card-award-{t}")
-    ctx.count("screenshots", awards)
     ctx.obs(session, "cards note",
             "a card follows a capture; the award notice is what this walk can reach (the turn "
-            "menu's CARD button has no measured point, F003)", "static")
+            f"menu's CARD button has no measured point, F003); {awards} award shot(s) taken",
+            "static")
 
 
 COMPOSITES = {
@@ -392,9 +404,45 @@ def run_actions(session, spec, ctx):
             raise ValueError(f"unknown walk action {kind!r}")
 
 
+def measured_count(ctx):
+    """The value of the spec's declared count target, from the walk's own counters: `shots`,
+    `attempts`, `labels` and `resolutions` are the recorder's live counters; every other target is
+    the counter a composite filled (`ctx.counts[measure]`). None when it cannot be produced."""
+    declared = ctx.spec.get("count") or {}
+    measure = declared.get("measure")
+    if measure == "shots":
+        return ctx.shots
+    if measure == "attempts":
+        return ctx.attempts
+    if measure == "labels":
+        return len(ctx.labels)
+    if measure == "resolutions":
+        return 1
+    if measure:
+        return ctx.counts.get(measure)
+    return None
+
+
 def stamp_walk_summaries(session, ctx):
-    """The counts and the absence/ear notes, after the walk's actions."""
-    for word, value in sorted(ctx.counts.items()):
+    """The counts and the absence/ear notes, after the walk's actions. Every declared count target
+    is emitted under the word the recorder actually measures (`measured` when a target is proxied,
+    e.g. Q-UI-07's centre moves are counted as centre-flash candidates); a proxied count also carries
+    a `count note` naming the substitution, so no record claims an identification its pixels cannot
+    make."""
+    emitted = dict(ctx.counts)
+    declared = ctx.spec.get("count")
+    if declared:
+        field = declared.get("measured", declared["word"])
+        if field not in emitted:
+            value = measured_count(ctx)
+            if value is not None:
+                emitted[field] = value
+        if field != declared["word"]:
+            ctx.obs(session, f"count note: {declared['word']}",
+                    f"the walk measures {field!r}, not {declared['word']!r}: which event a flash "
+                    "candidate is cannot be decided by pixels; the shots and timestamps are the "
+                    "evidence, and this is a proxy, never an identification")
+    for word, value in sorted(emitted.items()):
         if word != "inputs":
             ctx.obs(session, f"count: {word}", value)
     if ctx.spec.get("reads", {}).get("absence-tour"):
@@ -406,25 +454,19 @@ def stamp_walk_summaries(session, ctx):
                 "the ear switch was clicked and clicked back; the shots before and after are the "
                 "record of its reaction. Audio is off in this runtime: the driver's display "
                 "namespace has no sound device, so no sound is captured here")
-    if ctx.spec.get("hit_areas"):
-        ctx.obs(session, "count: labels", len(ctx.labels))
 
 
 def walk_body(spec, ctx):
-    """The session body of one walk: the known screens, before.png, the walk, after.png."""
+    """The session body of one walk: the known screens, before.png, the walk, after.png. The counts
+    and notes are stamped after the walk's own shots, so their numbers include every screenshot."""
     def body(session):
         session.expect(*walks.expects_of(spec))
         session.known_screen()
         session.observe_screenshot("before.png")
         run_actions(session, spec, ctx)
-        stamp_walk_summaries(session, ctx)
         session.observe_screenshot("after.png")
+        stamp_walk_summaries(session, ctx)
     return body
-
-
-def count_shots(session):
-    """The walk's screenshots so far, by name (the absence note uses it)."""
-    return len({name for name, _, _ in session._engine.outputs if name.endswith(".png")})
 
 
 # --- records ----------------------------------------------------------------------------------
@@ -501,7 +543,7 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint):
     spec = dict(walks.WALKS[qid])
     spec["qid"] = qid
     run_id = next_run_id()
-    set_id = spike.SUCCESSOR2_ID if spec.get("may_write_saved_files") else spike.SET_ID
+    set_id = records.artifact_set_for(spec)
     session = Session(run_id, locs["IWP_PREFIX"], locs[f"{EXPERIMENT}_BUNDLES"], locs["IWP_DIR"],
                       display, records.arm_of_question(qid), size or "800x600x24")
     ctx = Ctx(spec)
@@ -510,7 +552,6 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint):
     session.observe(0, "static", "speed setting",
                     "normal (the unlocked default; every timing is a wall-clock reading at it)")
     session.execute(walk_body(spec, ctx))
-    ctx.shots = count_shots(session)
     state_sha = spike.start_state_sha(session.snap_before[1]) if hasattr(session, "snap_before") else "0" * 64
     try:
         write_records(session, spec, locs[f"{EXPERIMENT}_BUNDLES"], commit, machine, state_sha,
