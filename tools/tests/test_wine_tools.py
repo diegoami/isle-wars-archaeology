@@ -725,10 +725,11 @@ class ScreenLoopTest(unittest.TestCase):
                 self.assertEqual(summary["loss_credited"], 1)
 
     def test_after_the_scoreboards_continue_only_the_title_starts_the_next_game(self):
-        for screen in ("unknown", "board", "board-menu", "eliminated", "game-over", "scoreboard"):
-            with self.subTest(screen=screen):
+        for screen, games_max in [(s, g) for s in ("unknown", "board", "board-menu", "eliminated", "game-over", "scoreboard")
+                                  for g in ("1", "4")]:      # the last game too: never "games-max" after an unproven screen
+            with self.subTest(screen=screen, games_max=games_max):
                 driver = FakeDriver([1], screens=["title", "board-menu", "scoreboard", screen])
-                _, summary = self.loop(driver)
+                _, summary = self.loop(driver, games_max=games_max)
                 self.assertEqual(driver.trail[-3:], ["note:loss-credited", "scoreboard-continue", "read:" + screen])
                 self.assertEqual([n for n, _ in driver.blocks].count("scoreboard-continue"), 1)   # clicked once
                 self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
