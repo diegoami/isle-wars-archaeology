@@ -134,7 +134,7 @@ WALKS = {
         "batch": "title-options",
         "title": "every screen reached by walking each menu path",
         "may_write_saved_files": True,   # the mid-game New Game credits a loss (F003)
-        "count": {"word": "screens", "at_least": 8, "measure": "shots"},
+        "count": {"word": "distinct screenshots", "at_least": 8, "measure": "distinct shots"},
         "actions": [
             ("step", "shot title"),
             ("step", f"click {OPTIONS_CLICK[0]} {OPTIONS_CLICK[1]}"),
@@ -199,7 +199,8 @@ WALKS = {
         "batch": "title-options",
         "title": "screenshots at each supported resolution",
         "may_write_saved_files": False,
-        "count": {"word": "resolutions", "at_least": 4, "measure": "resolutions"},
+        "count": None,          # the sizes are checked as sizes: one completed record per size, each
+                        # carrying its measured display size (check_ui_catalogue.py, R5)
         "sizes": ["640x480x24", "800x600x24", "1024x768x24", "1280x1024x24"],
         "actions": [
             ("step", "shot title-at-this-size"),
@@ -266,8 +267,7 @@ WALKS = {
         "actions": [
             *_REACH_BOARD,
             ("step", "shot board-with-centres-1"),
-            ("timed_watch", "message-strip", 20, 0.25),
-            ("timed_watch", "board-area", 20, 0.5),
+            ("timed_watch", ["message-strip", "board-area"], 20, 0.25),   # one loop polls both
             ("step", "shot board-with-centres-2"),
         ],
         "notes": [
@@ -363,7 +363,7 @@ WALKS = {
         "batch": "play",
         "title": "every panel with per-player figures, through one turn",
         "may_write_saved_files": False,
-        "count": {"word": "panels", "at_least": 4, "measure": "shots"},
+        "count": {"word": "screenshots", "at_least": 4, "measure": "shots"},
         "regions": ["board-area", "turn-panel", "phase-panel", "attack-panel"],
         "actions": [
             *_TURN_TO_ATTACK,
@@ -383,7 +383,7 @@ WALKS = {
         "batch": "play",
         "title": "the status texts and the button frames through one full turn",
         "may_write_saved_files": False,
-        "count": {"word": "panels", "at_least": 4, "measure": "shots"},
+        "count": {"word": "screenshots", "at_least": 4, "measure": "shots"},
         "reads": {"text-rows": 1},
         "regions": ["message-strip", "turn-panel", "phase-panel"],
         "actions": [
@@ -407,7 +407,10 @@ WALKS = {
         "batch": "play",
         "title": "the computer's turns, timed",
         "may_write_saved_files": False,
-        "count": {"word": "computer turns", "at_least": 20, "measure": "computer turns"},
+        # a proxy: the pixels do not identify a computer turn; the walk counts its own PASS clicks and
+        # derives the turns from the default seats (three computer players, F003's options table)
+        "count": {"word": "computer turns", "at_least": 20, "measured": "computer turns derived from passes",
+                  "measure": "computer turns derived from passes"},
         "timing": "frame-timed",
         "regions": ["message-strip", "phase-panel", "board-area"],
         "actions": [
@@ -438,9 +441,9 @@ WALKS = {
             "the hand screen is not walked: the turn menu's CARD button has no measured point "
             "(E002's tour never used it; F003's Screens table says so), and it stays unmeasured "
             "rather than guessed",
-            "a card is awarded on a capture; the walk plays up to 10 aggressive turns and shots "
-            "the award notice each time one comes, so a run with no capture records fewer than "
-            "the target and is re-run rather than padded",
+            "the walk plays up to 10 aggressive turns, clicks CONTINUE after each pass and shots "
+            "the message strip each time it changed; whether a shot shows a card award is the "
+            "catalogue's reading of it, not the recorder's",
         ],
     },
     "Q-UI-16": {
@@ -470,18 +473,21 @@ WALKS = {
         "batch": "events-end",
         "title": "the event message, flash and sound, frame-timed",
         "may_write_saved_files": False,
-        "count": {"word": "events", "at_least": 5, "measure": "events"},
+        # a proxy: which event a large change is cannot be decided by pixels (R3, round 2)
+        "count": {"word": "events", "at_least": 5, "measured": "flash candidates",
+                  "measure": "flash candidates"},
         "timing": "frame-timed",
         "regions": ["message-strip", "board-area"],
         "actions": [
             *_REACH_BOARD,
-            ("composite", "event_watch", {"turns": 30, "need": 5, "word": "events",
+            ("composite", "event_watch", {"turns": 30, "need": 5, "word": "flash candidates",
                                           "watch": ["message-strip", "board-area"]}),
         ],
         "notes": [
-            "an event is counted from pixels: a flash candidate is a change that takes in a large "
-            "share of the watched region for one short interval; the strip's changes are recorded "
-            "with it, timestamped",
+            "an event is not identified by pixels: the walk counts flash candidates (poll ticks in "
+            "which a watched region changed over a large share of its pixels) and shots each one; a "
+            "candidate may be an ordinary redraw or one of a flash's two transitions, so the row's "
+            "'at least 5 events' is proxied, never claimed, and F020's entry is narrowed",
             "events are random at the one frequency the unregistered build allows (F019); a walk "
             "that sees fewer than the target records fewer and is re-run, never padded",
             "timings are wall-clock readings at speed = normal (the unlocked default, F003)",
@@ -513,7 +519,7 @@ WALKS = {
         "batch": "events-end",
         "title": "the end screens after a win, a loss and a concession",
         "may_write_saved_files": True,   # the loss path credits a loss (F003)
-        "count": {"word": "end states", "at_least": 1, "measure": "shots"},
+        "count": {"word": "screenshots", "at_least": 1, "measure": "shots"},
         "actions": [
             *_REACH_BOARD,
             ("step", f"click {NEWGAME_CLICK[0]} {NEWGAME_CLICK[1]}"),
@@ -531,7 +537,7 @@ WALKS = {
         "title": "looking for an event log over one long session",
         "may_write_saved_files": False,
         "absence": True,
-        "count": {"word": "screens", "at_least": 9, "measure": "shots"},
+        "count": {"word": "screenshots", "at_least": 9, "measure": "shots"},
         "reads": {"absence-tour": 1},
         "actions": [
             ("step", "shot title"),
@@ -552,9 +558,9 @@ WALKS = {
         "notes": [
             "absence walk: the tour visits the title, options, scores, setup, board and the turn "
             "phases over a long session (five passes of computer turns), and shots each screen "
-            "visited (nine: title, options, scores, one per pass, and the board); it records that "
-            "no list-of-events control was seen on any of them; 'absence confirmed on the screens "
-            "visited' is the observation, never a proof",
+            "visited (nine: title, options, scores, one per pass, and the board); the record names "
+            "the screenshots and nothing more: whether a list-of-events control is on any of them is "
+            "the catalogue's reading, made by inspecting them (R7, round 2)",
         ],
     },
     "Q-UI-21": {
@@ -645,7 +651,7 @@ WALKS = {
         "batch": "inputs-sounds",
         "title": "inputs against actions, and measured hit areas",
         "may_write_saved_files": False,
-        "count": {"word": "labels", "at_least": 3, "measure": "labels"},
+        "count": {"word": "bands with a hover reaction", "at_least": 3, "measure": "labels"},
         "hit_areas": True,
         "regions": ["bottom-bar", "return-button", "turn-menu-band"],
         "actions": [
@@ -668,7 +674,8 @@ WALKS = {
             "pointer and records whether the watched band reacted (the highlight the game draws "
             "under the pointer); no grid point is clicked, so the walk fires no action",
             "the Soleau label's area is refused by the step language and its points are skipped; "
-            "the record counts the labels that reacted",
+            "the record counts the label bands (the measured click points +/- 40 px) in which a "
+            "point reacted",
             "the click hit areas proper are in the score (not decoded); the hover-reactive area "
             "is what this walk measures",
         ],

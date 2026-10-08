@@ -44,15 +44,31 @@ file is append-only. A changed design is a new experiment, or `v2/`.
   - every board read happens **after the deal** (the deal is random, F018): the walks reach the
     board through the setup screen's Play Game and wait for the computer players' opening turns
     to go quiet, as E002's tour did.
-  - the count targets are the rows' own ("at least 5 events", "at least 20 computer turns",
-    "at least 20 attacks", and so on), each declared in `walks.py` with the counter that measures
-    it (`shots`, `attempts`, `labels`, a composite's counter, or `resolutions`), and the recorder
-    emits a `count:` observation for every one of them — a target the recorder cannot produce is a
-    defect, not a walk. Q-UI-07's "at least 5 centre moves" is the one proxy: the pixels cannot
-    identify a centre move, so the recorder counts board-area `centre-flash candidates`, carries a
-    `count note` saying the row's word is proxied, and F020's entry is `narrowed`. A walk that sees
-    fewer records fewer and is re-run — a re-run writes new records beside the old ones and says
-    which it cites; nothing is padded.
+  - the count targets are the rows' own where a row names one ("at least 5 events", "at least
+    20 computer turns", "at least 20 attacks", "at least 5 centre moves"), else the walk table's,
+    each declared in `walks.py` with the counter that measures it (`shots`, `distinct shots` — the
+    distinct raw-pixel hashes among the walk's own screenshots —, `attempts`, `labels`, or a
+    composite's counter), and the recorder emits a `count:` observation for every one of them — a
+    target the recorder cannot produce is a defect, not a walk.
+  - **the recorder writes measurements, never identifications.** Three rows' words need an
+    identification the pixels cannot make, and their targets are proxies: Q-UI-06's events and
+    Q-UI-07's centre moves are counted as `flash candidates` / `centre-flash candidates` (poll ticks
+    in which a watched region changed over a large share of its pixels, each one shot; a redraw or
+    either transition of a flash makes one), and Q-UI-13's computer turns as `computer turns
+    derived from passes` (the walk's own PASS clicks the game took, times the three default
+    computer seats, F003). Each carries a `count note` naming the substitution, and their F020
+    entries can only be `narrowed`. The absence tour (Q-UI-14) records the screenshots it took and
+    nothing more; whether any shows an event log is the catalogue's reading of them. Each record's
+    `observation` is the recorder's summary of what it measured (the screenshots, counts, reads
+    and timing observations), with the reading left to F020.
+  - a target is met by one completed record: counts are never added across records, so a repeat
+    is not a second instance. A walk that sees fewer records fewer and is re-run — a re-run writes
+    new records beside the old ones and says which it cites; nothing is padded.
+  - every walk measures the display it ran on (the pixel count of one capture of the whole
+    display, beside the size it asked for); Q-UI-19 is covered only by a completed record at each
+    of its four sizes whose measured pixel count equals the size asked for.
+  - every timed watch polls all its regions together in one loop (a shared budget spent by
+    sequential per-region loops starved every region but the first: round 2's R4).
   - the Quit path stops at the unregistered notice: T13's driver terminates by kill, so Exit Game
     is never clicked inside a recorded walk. The Soleau Games label is a refused rectangle
     (`runtime/iwp/spike/steps.py`); its screens are never walked.
@@ -67,7 +83,9 @@ file is append-only. A changed design is a new experiment, or `v2/`.
   - run records: `runs/E019/<batch>/`;
   - evidence manifests: `evidence/E019/<batch>/`, bundles in release `E019`;
   - the catalogue: `findings/F020-pro-ui-observations.md`, status `proposed`, no rule claims;
-  - the check: `python3 experiments/E019-pro-ui/check_ui_catalogue.py` (the task's Done-when 3).
+  - the check: `python3 experiments/E019-pro-ui/check_ui_catalogue.py`. It fails until the walks
+    have run and F020 is turned from their records (T39, #117); T24's Done-when runs its checks on
+    the recorder's own output, end to end with a fake session (`tests/test_e019_ui_catalogue.py`).
 
 ## Scripts
 
@@ -78,13 +96,17 @@ file is append-only. A changed design is a new experiment, or `v2/`.
 - `records.py`: the record and manifest shapes, the batch paths, the arm/question mapping.
 - `run_walk.py`: the command. `--question Q-UI-06` (repeatable) or `--batch events-end`. Needs
   `IWP_PREFIX`, `IWP_DIR` and `E019_BUNDLES`, as E004 does; refuses to start when runtime, setup,
-  tools, formats or this folder have uncommitted changes.
-- `check_ui_catalogue.py`: maps every recorded file to its question id and asserts the coverage,
-  the targets, the observation lines, the manifests and the citations (Done-when 3).
+  tools, formats or this folder have uncommitted changes. Its timed loops run on its own `CLOCK`
+  and `SLEEP`, and `run_walk()` takes the session factory and the records' root, so the tests drive
+  every walk with a fake session.
+- `check_ui_catalogue.py`: maps every recorded file to its question id and checks every record
+  (any status: identity, place, manifest, citations) and every completed one (the seal, the
+  fields of `required_fields()`, the outputs of `required_outputs()`, the observation summary,
+  the measured display size, one count per record), then the coverage, the targets and F020.
 
 ## Division of work (the task file's)
 
-The implementer writes the recorder, the walk table and the check; the main session runs the
-walks on the install ([C3]) and posts the records on the task's PR; the implementer turns the
-records into the catalogue. No record is ever fabricated: until a walk has run, its question has
+The implementer writes the recorder, the walk table and the check (T24); the main session runs
+the walks on the install ([C3]) and the records are turned into the catalogue in T39 (#117), by
+the owner's decision of 2026-10-08 that split T24. No record is ever fabricated: until a walk has run, its question has
 no record, and the check fails naming it.

@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
-"""E019 (T24): the catalogue check — Done-when 3 of the task.
+"""E019 (T24): the catalogue check.
 
     python3 experiments/E019-pro-ui/check_ui_catalogue.py
 
+It fails until the walks have run and the catalogue is turned from their records (T39, #117); this
+task's own Done-when runs its checks on the recorder's output in tests/test_e019_ui_catalogue.py.
+
 Exits 0 when every piece holds:
-- every `Q-UI-*` row of questions/pro-static.md and Q-PLY-04 has at least one completed E019
-  record, under runs/E019/<batch>/, whose arm names the question;
-- every such record carries the per-question observation, meets its question's count target (the
-  row's "at least N <word>" when the row names one, else the walk table's), carries timing
-  observations when the walk is frame-timed, hit-area observations for Q-UI-18, the reads its
-  spec names, and the four reference states for Q-UI-21; its evidence manifest exists and names
-  every output's hash;
+- every record under runs/E019/<batch>/, whatever its status, is an E019 run/1 record of its walk's
+  artifact set and variant, sits in its walk's batch, has an evidence manifest of the same set that
+  names every output by hash, and cites no script or handler outside the E008 inventory;
+- every `Q-UI-*` row of questions/pro-static.md and Q-PLY-04 has at least one completed record,
+  whose arm names the question;
+- every completed record carries the seal (a start_state sha256), every field of
+  required_fields() (the walk question, the speed setting, the measured display size, the
+  per-question observation, the declared count and, for a proxy, its count note, timings when the
+  walk is frame-timed, hit areas for Q-UI-18, the reads its spec names) and the outputs of
+  required_outputs(); its observation is the recorder's summary and names only screenshots the
+  record holds; its display size was measured equal to the size it asked for;
+- a count target is met by one completed record (the row's "at least N <word>" when the row names
+  one, else the walk table's), never by adding records; Q-UI-19 has a completed record at every
+  display size its walk names;
 - findings/F020-pro-ui-observations.md has a section per question with an Observation line whose
   status is one of observed, narrowed, static-only, unestablished (a pending section fails);
 - no record's observations, and no F020 section, cites a script or handler that the E008
@@ -36,6 +46,8 @@ STATUSES = ("observed", "narrowed", "static-only", "unestablished")
 SCRIPT = re.compile(r"(MovieScript|BehaviorScript|CastScript) (\d+)(?: ([A-Za-z][A-Za-z0-9_]*))?")
 HANDLER = re.compile(r"\b([A-Za-z][A-Za-z0-9_]*)\(\)")
 AT_LEAST = re.compile(r"at least (\d+) ([a-z ]+)")
+SIZE = re.compile(r"(\d+)x(\d+)(?:x\d+)?")
+HEX64 = re.compile(r"[0-9a-f]{64}")
 
 
 def catalogue_ids(rows):
@@ -85,13 +97,56 @@ def count_target(spec, cell):
 
 def count_field(spec):
     """The observation field a spec's count target is measured under: its `measured` word when the
-    target is a proxy the recorder cannot identify exactly (Q-UI-07's centre moves), else its word."""
+    target is a proxy the recorder cannot identify exactly (Q-UI-06's events, Q-UI-07's centre moves,
+    Q-UI-13's computer turns), else its word."""
     declared = spec.get("count") or {}
     return declared.get("measured", declared.get("word"))
 
 
-def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None):
-    """Every failure of the catalogue as a line; [] when the Done-when 3 holds."""
+def is_proxy(spec):
+    declared = spec.get("count") or {}
+    return bool(declared.get("measured")) and declared["measured"] != declared.get("word")
+
+
+def required_fields(spec):
+    """The observation fields a completed record of this walk must carry, as (field, match) with
+    match "exact" or "prefix". The check refuses a completed record that lacks any of them, and the
+    end-to-end test drops each one from the recorder's own output to show that it does."""
+    fields = [("walk question", "exact"), ("speed setting", "exact"), ("display size", "exact"),
+              ("observation", "exact")]
+    declared = spec.get("count")
+    if declared:
+        fields.append((f"count: {count_field(spec)}", "exact"))
+        if is_proxy(spec):
+            fields.append((f"count note: {declared['word']}", "exact"))
+    if spec.get("timing"):
+        fields.append(("timing:", "prefix"))
+    if spec.get("hit_areas"):
+        fields.append(("hit-area:", "prefix"))
+    for kind in spec.get("reads", {}):
+        fields.append((f"read: {kind}", "exact"))
+    return fields
+
+
+def required_outputs(spec):
+    """The outputs a completed record of this walk must name: the cycle's before/after and, for
+    Q-UI-21, the four reference states."""
+    return ["before.png", "after.png"] + [f"state-{state}.png" for state in spec.get("states", [])]
+
+
+def has_field(fields, field, match):
+    return any(f == field for f in fields) if match == "exact" else any(f.startswith(field) for f in fields)
+
+
+def size_pixels(size):
+    """Pixel count of a size like 800x600x24 (None when it is not one)."""
+    m = SIZE.fullmatch(str(size))
+    return int(m.group(1)) * int(m.group(2)) if m else None
+
+
+def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None, f020=True):
+    """Every failure of the catalogue as a line; [] when the catalogue is complete. With f020=False
+    only the records are checked (the end-to-end test of the recorder's own output)."""
     root = Path(root)
     f020_path = Path(f020_path) if f020_path else root / "findings" / "F020-pro-ui-observations.md"
     errors = []
@@ -113,7 +168,8 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             errors.append(f"{qid}: {drift}")
 
     # the records: one file per question walk under runs/E019/<batch>/
-    counts = {}                         # qid -> summed count of its measured field
+    best = {}                           # qid -> the highest count one completed record reached
+    sizes = {}                          # qid -> the display sizes its completed records showed
     present = {}                        # qid -> [paths of any record, any status]
     seen = {}                           # qid -> [completed records] (only these cover a question)
     record_dirs = sorted((root / "runs" / "E019").glob("*") if (root / "runs" / "E019").is_dir() else [])
@@ -127,13 +183,13 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                 errors.append(f"{path.relative_to(root)}: not JSON: {exc}")
                 continue
             where = path.relative_to(root)
-            if record.get("schema") != "run/1" or record.get("experiment") != "E019":
+            if not isinstance(record, dict) or record.get("schema") != "run/1" or record.get("experiment") != "E019":
                 errors.append(f"{where}: not an E019 run/1 record")
                 continue
             if record.get("run_id") != path.stem:
                 errors.append(f"{where}: run_id is not the file name")
                 continue
-            qid = record.get("arm", "").upper()
+            qid = str(record.get("arm", "")).upper()
             spec = walks.WALKS.get(qid)
             if spec is None:
                 errors.append(f"{where}: arm {record.get('arm')!r} names no catalogue question")
@@ -141,17 +197,15 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             where = f"{where} ({qid})"
             present.setdefault(qid, []).append(path)
 
-            # R1: the record's identity and the properties the task requires of it. A record of the
-            # wrong artifact set (a DOS set, or the wrong Pro successor) is never this walk's.
+            # --- every record, whatever its status: identity, place, manifest, citations ------------
+            # (round 2, R6: an aborted record is data the repository keeps, so it is checked like any
+            # other; only coverage and the targets wait for a completed one)
             want_set = e019_records.artifact_set_for(spec)
-            got_set = (record.get("artifact") or {}).get("set")
-            if got_set != want_set:
-                errors.append(f"{where}: artifact set {got_set!r} is not the walk's {want_set!r}")
-            if (record.get("artifact") or {}).get("variant") is not None:
-                errors.append(f"{where}: artifact variant {(record.get('artifact') or {}).get('variant')!r} "
-                              "is not None")
-            if not isinstance(record.get("start_state"), dict) or not record["start_state"].get("sha256"):
-                errors.append(f"{where}: no start_state sha256 (the seal)")
+            artifact = record.get("artifact") if isinstance(record.get("artifact"), dict) else {}
+            if artifact.get("set") != want_set:
+                errors.append(f"{where}: artifact set {artifact.get('set')!r} is not the walk's {want_set!r}")
+            if artifact.get("variant") is not None:
+                errors.append(f"{where}: artifact variant {artifact.get('variant')!r} is not None")
             observations = record.get("observations")
             if not isinstance(observations, list) or not all(isinstance(o, dict) for o in observations):
                 errors.append(f"{where}: observations is not a list of objects")
@@ -160,44 +214,12 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             if not isinstance(outputs, list) or not all(isinstance(o, dict) for o in outputs):
                 errors.append(f"{where}: outputs is not a list of objects")
                 outputs = []
-            if record.get("status") != "completed":
-                continue                      # data, but it does not cover the question
-
-            # R2: only a completed record covers the question; it is added to `seen` after this test
-            seen.setdefault(qid, []).append(record)
+            for out in outputs:
+                if not HEX64.fullmatch(str(out.get("sha256", ""))):
+                    errors.append(f"{where}: output {out.get('name')} has no sha256")
             batch = folder.name
             if batch != spec["batch"]:
                 errors.append(f"{where}: sits in {batch}, its walk's batch is {spec['batch']}")
-            fields = [o.get("field", "") for o in observations]
-            values = [o.get("value", "") for o in observations]
-            if not any(f == "observation" for f in fields):
-                errors.append(f"{where}: no per-question observation")
-            word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
-            if word:
-                field = count_field(spec)
-                got = sum(int(o["value"]) for o in observations
-                          if o.get("field") == f"count: {field}"
-                          and str(o.get("value", "")).isdigit())
-                counts[qid] = counts.get(qid, 0) + got
-                declared = spec.get("count") or {}
-                if declared.get("measured") and field != declared["word"]:
-                    if not any(f == f"count note: {declared['word']}" for f in fields):
-                        errors.append(f"{where}: counts {field!r} in place of {declared['word']!r} "
-                                      "and carries no count note")
-            if spec.get("timing") and not any(f.startswith("timing:") for f in fields):
-                errors.append(f"{where}: its walk is frame-timed and no timing is recorded")
-            if spec.get("hit_areas") and not any(f.startswith("hit-area:") for f in fields):
-                errors.append(f"{where}: its walk measures hit areas and none is recorded")
-            for kind, minimum_reads in spec.get("reads", {}).items():
-                have = sum(1 for f in fields if f == f"read: {kind}")
-                if have < minimum_reads:
-                    errors.append(f"{where}: read {kind} recorded {have} times, its spec wants {minimum_reads}")
-            for state in spec.get("states", []):
-                if not any(o.get("name") == f"state-{state}.png" for o in outputs):
-                    errors.append(f"{where}: no state-{state}.png among its outputs")
-            for cycle_png in ("before.png", "after.png"):
-                if not any(o.get("name") == cycle_png for o in outputs):
-                    errors.append(f"{where}: no {cycle_png} among its outputs (the cycle's before/after)")
             manifest = root / "evidence" / "E019" / batch / f"{path.stem}.manifest.json"
             if not manifest.is_file():
                 errors.append(f"{where}: no evidence manifest at {manifest.relative_to(root)}")
@@ -205,21 +227,93 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                 try:
                     doc = json.loads(manifest.read_text(encoding="utf-8"))
                     named = {f["sha256"] for f in doc["files"]}
-                    manifest_set = (doc.get("artifact") or {}).get("set")
-                except (ValueError, KeyError, TypeError) as exc:
+                    manifest_artifact = doc.get("artifact") if isinstance(doc.get("artifact"), dict) else {}
+                except (ValueError, KeyError, TypeError, AttributeError) as exc:
                     errors.append(f"{manifest.relative_to(root)}: unreadable manifest: {exc}")
-                    named, manifest_set = set(), None
-                if manifest_set != want_set:
-                    errors.append(f"{manifest.relative_to(root)}: artifact set {manifest_set!r} is not "
-                                  f"the walk's {want_set!r}")
-                if (doc.get("artifact") or {}).get("variant") is not None:
+                    named, manifest_artifact = set(), {}
+                if manifest_artifact.get("set") != want_set:
+                    errors.append(f"{manifest.relative_to(root)}: artifact set {manifest_artifact.get('set')!r} "
+                                  f"is not the walk's {want_set!r}")
+                if manifest_artifact.get("variant") is not None:
                     errors.append(f"{manifest.relative_to(root)}: artifact variant "
-                                  f"{(doc.get('artifact') or {}).get('variant')!r} is not None")
+                                  f"{manifest_artifact.get('variant')!r} is not None")
                 for out in outputs:
                     if out.get("sha256") not in named:
                         errors.append(f"{where}: output {out.get('name')} is not in its manifest by hash")
-            for value in values:
-                errors.extend(citation_errors(value, scripts, where))
+            for o in observations:
+                errors.extend(citation_errors(str(o.get("value", "")), scripts, where))
+
+            if record.get("status") != "completed":
+                continue                      # data, but it does not cover the question
+
+            # --- a completed record: it covers its question only if it carries everything ----------
+            seen.setdefault(qid, []).append(record)
+            start_state = record.get("start_state") if isinstance(record.get("start_state"), dict) else {}
+            seal = str(start_state.get("sha256", ""))
+            if not HEX64.fullmatch(seal) or seal == "0" * 64:
+                errors.append(f"{where}: no start_state sha256 (the seal)")
+            fields = [str(o.get("field", "")) for o in observations]
+            by_field = {}
+            for o in observations:
+                by_field.setdefault(str(o.get("field", "")), []).append(str(o.get("value", "")))
+            for field, match in required_fields(spec):
+                if not has_field(fields, field, match):
+                    errors.append(f"{where}: no {field!r} observation"
+                                  + (" (no per-question observation)" if field == "observation" else ""))
+            for name in required_outputs(spec):
+                if not any(o.get("name") == name for o in outputs):
+                    errors.append(f"{where}: no {name} among its outputs")
+            if by_field.get("walk question", [qid])[0] != qid:
+                errors.append(f"{where}: its walk question is {by_field['walk question'][0]!r}")
+
+            # the per-question observation: the recorder's summary of what it measured, which names
+            # the question and only screenshots the record holds
+            for value in by_field.get("observation", [])[:1]:
+                try:
+                    summary = json.loads(value)
+                    shots = summary["screenshots"]
+                    if summary.get("question") != qid:
+                        errors.append(f"{where}: its observation names {summary.get('question')!r}")
+                    names = {o.get("name") for o in outputs}
+                    for shot in shots:
+                        if shot not in names:
+                            errors.append(f"{where}: its observation names {shot}, which is not among its outputs")
+                except (ValueError, KeyError, TypeError) as exc:
+                    errors.append(f"{where}: its observation is not the recorder's summary: {exc!r}")
+
+            # the count: one value per record, and a target is met by one record (a re-run is a new
+            # record, never added to an old one: R5's class, a repeat is not a second instance)
+            word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
+            if word:
+                field = count_field(spec)
+                values = by_field.get(f"count: {field}", [])
+                if len(values) > 1:
+                    errors.append(f"{where}: {len(values)} 'count: {field}' observations, one wanted")
+                elif values and not values[0].isdigit():
+                    errors.append(f"{where}: count {field} is {values[0]!r}, not a number")
+                elif values:
+                    best[qid] = max(best.get(qid, 0), int(values[0]))
+
+            for kind, minimum_reads in spec.get("reads", {}).items():
+                have = len(by_field.get(f"read: {kind}", []))
+                if have < minimum_reads:
+                    errors.append(f"{where}: read {kind} recorded {have} times, its spec wants {minimum_reads}")
+
+            # the display size: measured, and equal to the size the walk asked for (R5)
+            for value in by_field.get("display size", [])[:1]:
+                try:
+                    shown = json.loads(value)
+                    requested, measured = shown["requested"], shown["display pixels"]
+                except (ValueError, KeyError, TypeError) as exc:
+                    errors.append(f"{where}: its display size is not a measurement: {exc!r}")
+                    continue
+                if size_pixels(requested) is None or size_pixels(requested) != measured:
+                    errors.append(f"{where}: display size {requested!r} measured {measured!r} pixels")
+                    continue
+                if spec.get("sizes") and requested not in spec["sizes"]:
+                    errors.append(f"{where}: display size {requested!r} is not one its walk names")
+                    continue
+                sizes.setdefault(qid, set()).add(requested)
 
     # coverage and the targets, over the completed records only
     for qid in ids:
@@ -229,10 +323,15 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             errors.append(f"{qid}: no completed record under runs/E019 ({why})")
             continue
         word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
-        if word:
-            field = count_field(spec)
-            if counts.get(qid, 0) < minimum:
-                errors.append(f"{qid}: count {field} is {counts.get(qid, 0)}, the row wants at least {minimum}")
+        if word and best.get(qid, 0) < minimum:
+            errors.append(f"{qid}: count {count_field(spec)} reached {best.get(qid, 0)} in its best record, "
+                          f"the target is at least {minimum}")
+        for size in spec.get("sizes") or []:
+            if size not in sizes.get(qid, set()):
+                errors.append(f"{qid}: no completed record shows the display size {size}")
+
+    if not f020:
+        return errors
 
     # F020: a section per question, each with an Observation line of the catalogue's vocabulary
     if not f020_path.is_file():

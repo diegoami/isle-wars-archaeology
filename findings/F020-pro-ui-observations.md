@@ -3,7 +3,7 @@
 - **Status**: proposed
 - **Question**: What does one screen walk of *Isle Wars Pro* show for each of the 22 `Q-UI-*` rows of [`questions/pro-static.md`](../questions/pro-static.md) and for Q-PLY-04 — the screens and their menu paths, the board and its pieces, the panels and status texts, the events' messages and flashes, the end screens, the inputs and their hit areas, the sound switch, and the timings the player waits through? (E019, task T24.) The static findings F011–F016, F018 and F019 cover the rules; this catalogue records the visible half, which no finding yet holds. The two rows the static map left `none found` — Q-UI-14 (no event log) and Q-UI-21 (the board look) — are recorded here by walking the game and looking.
 - **Tests claims**: none. This is a catalogue: every entry is an observation of what a recorded walk shows, never a rule about how the game decides anything, and nothing here is promoted into `spec/`. Where an entry cites code, it cites the question row's sources (script kind, number, name and handler only, as the questions map does); the decompiled scripts are never quoted (CLAUDE.md rule 18).
-- **Experiment and runs**: E019; the walk table, the recorder and the check are [`experiments/E019-pro-ui/`](../experiments/E019-pro-ui/README.md). The runs are named in each batch's sections as they are recorded, with each record's path under `runs/E019/<batch>/` and each screenshot's hash. No batch has run yet: the walks are the main session's ([C3], the install is on the user's machine), and this catalogue is turned from the records when they exist. Nothing is fabricated: a question with no record stays pending below.
+- **Experiment and runs**: E019; the walk table, the recorder and the check are [`experiments/E019-pro-ui/`](../experiments/E019-pro-ui/README.md). The runs are named in each batch's sections as they are recorded, with each record's path under `runs/E019/<batch>/` and each screenshot's hash. No batch has run yet: the walks are the main session's ([C3], the install is on the user's machine), and this catalogue is turned from the records when they exist (T39, #117; T24 delivers the recorder, the check and this structure). Nothing is fabricated: a question with no record stays pending below.
 - **Artifact**: set `iwp-2.0-996e86c5`, variant none, for every walk that cannot write a file of the set; set `iwp-2.0-de5a82a2` for the walks that pass through the mid-game loss, which credits a loss and writes `xtras/Islepro.skr` (F003): Q-UI-04, Q-UI-11, Q-UI-21. Rule 19: Pro only; nothing here is claimed for DOS Isle Wars.
 - **Max intervention**: I1 (screenshots of the display and read-only reads of `/proc` and of the game copy; the recorder's own screen reads are pixels-read only — quantised colour censuses, luminance censuses, text-row heights, hover maps, timed watches. No OCR pass anywhere, and no cast member or score byte is ever quoted)
 - **Tier reached**: V0 (no batch has run yet: the walk table, the recorder and the check exist, and the observations below are still pending the [C3] walks. The tier becomes V2 — the original, headless, under Wine — when the walks' records are turned in; no native Windows run, so no V3)
@@ -11,11 +11,13 @@
 
 ## Method
 
-One walk per question: one launch of the game through T13's driver, one `run/1` record under `runs/E019/<batch>/`, the screenshots as release assets named by hash. The recorder (`experiments/E019-pro-ui/run_walk.py`) performs the question's walk from the measured points of E002's recorded scripts (F003) and the driver's constants (F002's exploration), and reads the screen by pixels only. Timings are wall-clock readings at speed = normal, the unlocked default; each timing record observes the options file equal to the shipped one, which is that default (F003). Every board read happens after the deal (the deal is random, F018), so no two walks show the same board. The count targets are the rows' own; a walk that sees fewer records fewer and is re-run, never padded.
+One walk per question: one launch of the game through T13's driver, one `run/1` record under `runs/E019/<batch>/`, the screenshots as release assets named by hash. The recorder (`experiments/E019-pro-ui/run_walk.py`) performs the question's walk from the measured points of E002's recorded scripts (F003) and the driver's constants (F002's exploration), and reads the screen by pixels only. Timings are wall-clock readings at speed = normal, the unlocked default; each timing record observes the options file equal to the shipped one, which is that default (F003). Every board read happens after the deal (the deal is random, F018), so no two walks show the same board. The count targets are the rows' own where a row names one; a target is met by one record, never by adding records, and a walk that sees fewer records fewer and is re-run, never padded. Every timed watch polls its regions together in one loop.
+
+The recorder writes measurements, never identifications. Each record's `observation` is the recorder's summary of what it measured — the screenshots, the counts, the reads and the timing observations — and the reading of them is this catalogue's. Three rows' targets need an identification the pixels cannot make and are proxied, with a `count note` in the record: Q-UI-06's events and Q-UI-07's centre moves are counted as flash candidates (large changes, each shot), and Q-UI-13's computer turns are derived from the walk's own PASS clicks; their entries can only be `narrowed`.
 
 Batches, one commit each, in the task's order: title and options (Q-UI-04, Q-UI-10, Q-UI-19, Q-UI-22), board and pieces (Q-UI-01, Q-UI-02, Q-UI-03, Q-UI-05, Q-UI-20, Q-PLY-04), play (Q-UI-08, Q-UI-12, Q-UI-13, Q-UI-15, Q-UI-16), events and end (Q-UI-06, Q-UI-07, Q-UI-11, Q-UI-14, Q-UI-21), inputs and sounds (Q-UI-09, Q-UI-17, Q-UI-18).
 
-The check `python3 experiments/E019-pro-ui/check_ui_catalogue.py` maps every recorded file to its question id and asserts the coverage, the targets, the observation lines and the citations. It fails, naming the questions, until the walks have run.
+The check `python3 experiments/E019-pro-ui/check_ui_catalogue.py` maps every recorded file to its question id and asserts the coverage, the targets, the observation lines and the citations. It fails, naming the questions, until the walks have run (T39).
 
 ## Observations
 
@@ -53,7 +55,7 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 #### Q-UI-19 Screenshots at each supported resolution
 
 - **Sources (the row's):** `MovieScript 1 Startmovie` / `startMovie()` (a start-up check of the desktop size).
-- **Walk**: batch `title-options`; one launch per desktop size (640x480, 800x600, 1024x768, 1280x1024), the title and the Options screen shot at each. The driver assumes the 800x600 stage is centred in the game window, so a size where the title is not detected is recorded as its own outcome, not skipped.
+- **Walk**: batch `title-options`; one launch per desktop size (640x480, 800x600, 1024x768, 1280x1024), the title and the Options screen shot at each, and the display's pixel count measured beside the size asked for; the question is covered only by a record at each of the four sizes. The driver assumes the 800x600 stage is centred in the game window, so a size where the title is not detected is recorded as its own outcome, not skipped.
 - **Boundary the catalogue states**: the projector-level windowing — what the projector does with the desktop size — belongs to the projector, not the Lingo, and this catalogue notes that and stops.
 - **Observation**: pending the [C3] walk.
 - **What would change it**: a decode of the start-up check (the row's `low` confidence says the code is one handler), or a run on native Windows (V3).
@@ -128,15 +130,15 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 #### Q-UI-13 Timed recordings of at least 20 computer turns
 
 - **Sources (the row's):** `MovieScript 334 Computerattack` / `Computerattack()`; `MovieScript 336 ATTACKHIM` / `ATTACKHIM()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`; `MovieScript 338 MakeComputerMove` / `MakeComputerMove()`; `MovieScript 333 ComputerPlaceArmies` / `computerplacearmies()` (the computer's status texts, flashes and busy-wait pauses).
-- **Walk**: batch `play`; seven passes at the default seats are 21 computer turns; every change of the message strip, the phase panel and the board area is timestamped, so the pauses show as the gaps between changes.
+- **Walk**: batch `play`; seven passes; the message strip, the phase panel and the board area are polled together after each PASS and every change is timestamped, so the pauses show as the gaps between changes. The computer turns are not identified on the screen: the record counts the PASS clicks the game took and derives the turns from the three default computer seats (21 for seven passes, F003), with a count note.
 - **Timing caveat (the record carries it)**: the pause lengths depend on the speed setting; the walk times at speed = normal, the unlocked default (F003), and a future task can re-time at FAST or SLOW.
-- **Observation**: pending the [C3] walk.
+- **Observation**: pending the [C3] walk; the catalogue's entry will be `narrowed` (the row's "at least 20 computer turns" is derived from passes, never counted on the screen).
 - **What would change it**: a decode of the busy-wait helpers, or timings at another speed.
 
 #### Q-UI-15 Screenshots and recordings of holding, playing and discarding cards
 
 - **Sources (the row's):** `MovieScript 344 PUTINCARDS` / `PUTINCARDS()`, `PUTINCARDSM()`; `BehaviorScript 526 pick3cards` / `mouseDown()`; `CastScript 376 CARDV1` / `mouseDown()`; `CastScript 528 tradein2` / `mouseDown()`; `BehaviorScript 342` / `exitFrame()` (the hand display, the selection, the trade-in and the discard click).
-- **Walk**: batch `play`; up to ten aggressive turns; after each pass the recorder clicks Continue and records whether the message strip changed (the award notice), with a shot when it did. The hand screen is not walked: the turn menu's CARD button has no measured point (E002's tour never used it; F003 says so), and it stays unmeasured rather than guessed.
+- **Walk**: batch `play`; up to ten aggressive turns; after each pass the recorder clicks Continue and records whether the message strip changed, with a shot when it did; whether a shot shows a card award is the catalogue's reading of it. The hand screen is not walked: the turn menu's CARD button has no measured point (E002's tour never used it; F003 says so), and it stays unmeasured rather than guessed.
 - **Observation**: pending the [C3] walk.
 - **What would change it**: the card images and layout are in the cast (the row's `medium` confidence); a measured point for the CARD button.
 
@@ -153,8 +155,8 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 #### Q-UI-06 Frame-timed recordings of at least 5 events
 
 - **Sources (the row's):** `BehaviorScript 54` / `exitFrame()`; `MovieScript 364 PutinFlood` / `putinflood()`; `MovieScript 365 Putinrebellion` / `putinrebellion()` (the typed event message, a flash and a sound).
-- **Walk**: batch `events-end`; up to thirty turns with the message strip and the board area watched; a flash candidate is a change taking in a large share of the watched pixels for one short interval, counted and timestamped. Events are random at the one frequency the unregistered build allows (F019); a walk that sees fewer than the target records fewer and is re-run, never padded.
-- **Observation**: pending the [C3] walk.
+- **Walk**: batch `events-end`; up to thirty turns with the message strip and the board area polled together; a flash candidate is a poll tick in which a watched region changed over a large share of its pixels, counted once per tick, timestamped and shot. A candidate is not an identified event — an ordinary redraw or either transition of a flash makes one — so the record emits `count: flash candidates`, never `count: events`, with a count note. Events are random at the one frequency the unregistered build allows (F019); a walk that sees fewer than the target records fewer and is re-run, never padded.
+- **Observation**: pending the [C3] walk; the catalogue's entry will be `narrowed` (the row's "at least 5 events" is proxied by flash candidates; which shots show an event is the catalogue's reading of them).
 - **What would change it**: the timing comes from busy-wait helpers whose length depends on the speed setting (the row's `medium` confidence).
 
 #### Q-UI-07 Recordings of at least 5 centre moves
@@ -174,7 +176,7 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 #### Q-UI-14 Screenshots of any log after a long game (the static map's `none found`)
 
 - **Sources (the row's):** none found: searched all handlers for a stored list of events; only status text fields were found.
-- **Walk**: batch `events-end`; an absence walk: the tour visits the title, options, scores, setup, board and the turn phases over a long session (five passes of computer turns), shots each, and records that no list-of-events control was seen on any of them. "Absence confirmed on the screens visited" is the observation, never a proof.
+- **Walk**: batch `events-end`; an absence walk: the tour visits the title, options, scores, setup, board and the turn phases over a long session (five passes of computer turns), and shots each; the record names the screenshots and nothing more. Whether any of them shows a list-of-events control is the catalogue's reading, made by inspecting the shots: "absence confirmed on the screens visited" can be this entry's observation, never the recorder's, and never a proof.
 - **Observation**: pending the [C3] walk; the catalogue's entry will be `static-only`, with what the walk looked for and did not find.
 - **What would change it**: a screen the walk did not visit, or a control the shots show and the walk misread.
 
