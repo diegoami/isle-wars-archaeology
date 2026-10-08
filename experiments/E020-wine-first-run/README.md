@@ -93,6 +93,41 @@ mistake-rich record.
     `dumps/`, `session/` (the session's before and after screenshots and logs), `watcher.log`, and
     `readings.jsonl`, which the reading pass writes after the sitting: one event per line (game,
     seq, the frames it was read from, and the batch's event fields by pixels, no OCR).
+  - **Capture rate** (T42, `docs/tasks/T42.md`). The first sittings grabbed a frame about every 1.4 s
+    (a 1.0 s pause after each `import`, plus the capture and a geometry read), and the computer plays
+    several exchanges in that time. The watcher now keeps a deadline-driven schedule
+    (`DEFAULT_INTERVAL` 0.125 s, 8 frames per second wanted, 5 required), reads the window geometry
+    once per 5 s, lets each capture land in a local staging folder (`/dev/shm`), and stores a frame
+    identical to the one before it once: the index line of the repeat names the stored frame, has the
+    same `sha256`, and says `"duplicate": true`, so every index line still names a file that exists
+    with the sha256 it records. Every line also carries `epoch_ms` (when the capture started) and
+    `capture_ms` (how long `import` ran). At most `MAX_FRAMES` (20000) frames are stored per sitting;
+    past it the watcher logs `frame cap reached` and stops. The method is unchanged (`import -window
+    <id>`, the game window and never the root window, the session's own environment), so the reader
+    reads the same PNGs. The rate is measured with no game, on an Xvfb the command starts itself:
+    `python3 runtime/iwp/driver/watcher.py --measure-rate --seconds 20` captures an animated test
+    window of synthetic 800x600 images, prints the sustained frames per second, exits 0 only at 5 or
+    more, and writes `rate.json`, `frames-index.jsonl` and `watcher.log` to a new folder under
+    `measurements/capture/` (never over an old one). A game window under Wine may take longer to
+    capture than the test window: the sitting's `capture_ms` values show it.
+  - **Rate gate** (T42 round 2, PR #129 review R1 to R3). The rate is every indexed capture (stored
+    or duplicate; a failed capture is not counted and fails the run) divided by the measurement's
+    interval, from its start to the end of the last capture or to the deadline, whichever is later;
+    it is compared with 5 unrounded, and `rate.json` keeps it unrounded (only the printed line
+    rounds). The Xvfb counts as the measurement's own only while the process it started holds the
+    display's listening socket, and a display equal to the caller's `DISPLAY` is refused.
+  - **Rate measurements.** `20261008T222520Z` (temporary folder) and `20261008T222628Z` (frames on
+    `/mnt/c`) were made with T42's first gate, which divided the captures after the first by the time
+    between the first and the last capture start and rounded the rate before comparing it (PR #129
+    review, R1 and R2); their `fps` is that figure, not the rate defined above. Their captures over
+    `seconds_elapsed` are 161 / 20.08 s and 127 / 20.1 s, about 8.0 and 6.3 per second. The
+    measurements made with the corrected gate are `20261008T224312Z` and `20261008T224341Z`
+    (temporary folder, 7.99 and 8.00 per second) and `20261008T224403Z` (frames on `/mnt/c`, 6.96
+    per second); `20261008T225810Z` (8.00 per second) after T42 round 3.
+  - **Duplicates and the stored frame** (T42 round 3). A capture equal to the frame stored last is
+    indexed as a duplicate only while that stored file still exists with its sha256; otherwise the
+    capture is stored afresh under a new name, and the old file is never written over. A frame whose
+    bytes change on the move into the sitting is removed and not indexed.
   - `e020_export.py` (`--records --sitting DIR --batch NAME`) turns one sitting directory into
     `runs/E020/<batch>/<run-id>.json` and `evidence/E020/<run-id>.manifest.json`, or writes
     nothing: it requires `sitting.json` as the proof of the sitting and keeps its status and
