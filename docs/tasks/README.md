@@ -43,3 +43,5 @@ status; this index carries none.
 | T36 | `check_no_originals.py` constraint F: gate wine-on-user-machine runs on F019 hash | #108 | T35, T37 |
 | T37 | Wine driver: model-driven run capture under rule 18 carve-out | #109 | T35, T36 |
 | T38 | First model-driven run under Wine: the watcher, the click-driver and the E020 sitting | #114 | T20, T21, T22, T23, T27, T30, T37 |
+| T40 | E020 reader and counts: read the sittings' frames by pixels | #119 | T38 |
+| T41 | E020 driver: play each game to its end, and the Scoreboard | #123 | T38 |
