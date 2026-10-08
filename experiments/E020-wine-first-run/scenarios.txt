@@ -1,0 +1,32 @@
+# E020 batch list: exactly the batches docs/tasks/T38.md's "Why a run is made" names.
+#
+# The dispatcher (tools/wine-driver.sh --batch NAME --help) and tools/check_counts.py both read
+# this file; the dispatcher refuses any batch that is not one of these, by name, before wine
+# starts (constraint B of the rule 18 carve-out, CLAUDE.md 2026-10-08).
+#
+# Format: one INI block per batch. `steps` names the E002-language step file beside this one.
+# `vocabulary` is the exact structural field vocabulary the batch's records carry (Done-when 4:
+# every `field` is a `kind:role` name of lowercase letters and hyphens). `*_min` keys are the
+# Scope Counts line; `corroborate_min` is the walkthroughs/f011-questions.md target at which an
+# outcome may be called `corroborated`.
+
+[batch cmb-accumulation]
+questions = Q-CMB-04 Q-CMB-05 Q-CMB-06 Q-CMB-07 Q-CMB-11
+source = Session B computer-vs-computer accumulation: place all armies, pass, repeat
+steps = batch-cmb-accumulation.steps
+exchanges_field = counter:attacker-before
+exchanges_sides = counter:attacker-before counter:attacker-after counter:defender-before counter:defender-after
+exchanges_min = 100
+corroborate_min = 500
+vocabulary = counter:attacker-before counter:attacker-after counter:defender-before counter:defender-after
+note = Batch 1: at least 100 exchanges with before/after counters for both sides in the first sitting; the walkthroughs/f011-questions.md counts accumulate across sittings
+
+[batch bomb-sampling]
+questions = C-CRD-06 Q-BON-08
+source = normal play until the computer draws and trades the bomb (the bomb comes only from captures, C-CRD-01); no forced deal, no patched build
+steps = batch-bomb-sampling.steps
+bomb_plays_field = owner:victim
+bomb_plays_min = 9
+games_min = 3
+vocabulary = owner:victim counter:victim-before counter:victim-after hand:bomber
+note = Batch 2: at least 9 computer bomb plays across at least 3 games
