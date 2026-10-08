@@ -16,7 +16,10 @@ What it pins, each a round-1 finding:
 - round 4: the screen is read through Session.screen_name (pixels of the session's own capture, here
   synthetic frames painted by e020_fixtures.screen_frame): the elimination notice is answered with
   KEEP PLAYING once and nothing more is sent; an unknown screen ends the sitting cleanly, with a
-  last screenshot whose sha256 is logged, and no click.
+  last screenshot whose sha256 is logged, and no click;
+- T41: a game has no turn limit and ends by the human's elimination and the winner notice (the tests
+  that need a whole game say so with `short_game`); time running out in a live game ends the sitting
+  with no click; the Scoreboard is left by one CONTINUE and the next game starts from the title.
 """
 import json
 import os
@@ -45,7 +48,7 @@ if launcher is None:
     _spec.loader.exec_module(launcher)
 
 BLOCKS = (ROOT / "experiments" / "E020-wine-first-run" / "play.steps").read_text()
-BATCH = {"games_max": "1", "turns_max": "2", "sitting_seconds": "1000"}
+BATCH = {"games_max": "1", "sitting_seconds": "1000"}
 
 
 class FakeWatcher:
@@ -84,6 +87,7 @@ class E020SessionTest(base.DriverWorld):
         self.playout_reads = 2               # board readings in the play-out before the screen is unknown
         self.playout_end = "unknown"         # what the play-out ends on (round 6: the winner notice)
         self.after_continue = "title"        # what the winner notice's CONTINUE shows (round 6)
+        self.after_scoreboard = "title"      # what the Scoreboard's CONTINUE shows (T41)
         self.reads = []
         patcher = mock.patch.object(base.spike.Screen, "raw", lambda screen, crop=None: self.raw(crop))
         patcher.start()
@@ -128,6 +132,8 @@ class E020SessionTest(base.DriverWorld):
             self.screen = "board"
         elif point == (401, 534):
             self.screen = self.after_continue
+        elif point == (401, 526):
+            self.screen = self.after_scoreboard
 
     def raw(self, crop):
         """The session's capture: the whole stage (Session.screen_name and screen_winner read it) or a
@@ -144,11 +150,17 @@ class E020SessionTest(base.DriverWorld):
         clicked = [tuple(a) for o, a, _ in self.sent if o == "click!"]
         return not step.args and self.unsettled_after is not None and clicked[-1:] == [self.unsettled_after]
 
-    def sitting(self):
+    def short_game(self, passes=2):
+        """A whole game: the human is eliminated after `passes` PASS clicks and the computers finish it."""
+        self.eliminated_after_passes = passes
+        self.playout_end = "game-over"
+
+    def sitting(self, batch=BATCH, loop_factory=None):
         made = self.session()
         summary = {}
         with mock.patch.dict(os.environ, {"DISPLAY": ":wrong"}):
-            made.execute(launcher.make_body(self.paths, BATCH, BLOCKS, summary, watcher_factory=FakeWatcher))
+            made.execute(launcher.make_body(self.paths, batch, BLOCKS, summary, watcher_factory=FakeWatcher,
+                                            loop_factory=loop_factory))
         self.addCleanup(lambda: made._engine.procs.get("game") and made._engine.procs["game"].poll() is None
                         and made._engine.procs["game"].kill())
         return made, summary
@@ -158,9 +170,10 @@ class E020SessionTest(base.DriverWorld):
 
     def test_a_sitting_that_ran_its_loop_is_completed_by_sessions_own_guard(self):
         """R2: the inputs are Session's actions, between before.png and after.png."""
+        self.short_game()
         made, summary = self.sitting()
         self.assertEqual(made.status, "completed", made.status)
-        self.assertEqual(summary, {"games": 1, "turns": 2, "placements": 2, "ended": "games-max"})
+        self.assertEqual(summary, {"games": 1, "turns": 2, "placements": 2, "eliminated": True, "ended": "games-max"})
         self.assertGreater(len(made._engine.actions), 0)
         self.assertEqual({o for o, _, _ in self.sent} - {"watch", "settle", "click", "click!", "click-until?",
                                                          "click-any?"}, set())
@@ -168,6 +181,7 @@ class E020SessionTest(base.DriverWorld):
 
     def test_every_step_and_the_watcher_are_on_the_sessions_display(self):
         """R1: the session's display (":99" in this world), never the caller's ":wrong"."""
+        self.short_game()
         self.sitting()
         self.assertEqual({d for _, _, d in self.sent}, {":99"})
         self.assertEqual([(w.window, w.env["DISPLAY"]) for w in FakeWatcher.made], [("0x2a", ":99")])
@@ -207,12 +221,13 @@ class E020SessionTest(base.DriverWorld):
         self.assertNotEqual(summary.get("ended"), "games-max")
 
     def test_the_actions_log_names_the_game_and_its_end(self):
+        self.short_game()
         self.sitting()
         events = [(l.get("event"), l.get("game"), l.get("reason")) for l in self.actions()
                   if l.get("event") in ("game-start", "game-end")]
-        self.assertEqual(events, [("game-start", 1, None), ("game-end", 1, "turns-max")])
+        self.assertEqual(events, [("game-start", 1, None), ("game-end", 1, "played-out: game-over")])
         self.assertEqual([l["screen"] for l in self.actions() if l.get("event") == "screen"],
-                         ["title", "board-menu", "board-menu"])
+                         ["title", "board-menu", "board-menu", "eliminated", "board", "board", "game-over", "title"])
 
     def test_the_elimination_notice_is_answered_with_keep_playing_once_then_no_input(self):
         """Round 4: turn 2 starts on the notice (sitting 20261008T184505Z's turn 16). One click on
@@ -269,6 +284,62 @@ class E020SessionTest(base.DriverWorld):
         self.assertEqual(made.status, "completed", made.status)
         self.assertEqual([tuple(a) for o, a, _ in self.sent if o.startswith("click")][-1], (401, 534))
         self.assertEqual((summary["ended"], summary["screen"]), ("unknown-screen", "unknown"))
+        self.assertIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
+
+    def test_a_game_past_the_old_turn_limit_keeps_playing_to_its_end(self):
+        """T41: the batch of the earlier design carried `turns_max` 2; sitting 20261008T204817Z stopped its
+        game at the cap and sent New Game from the board. Now the game is played to the human's elimination
+        (its 5th PASS), and New Game is sent once, on the title."""
+        self.short_game(passes=5)
+        made, summary = self.sitting(dict(BATCH, turns_max="2"))
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertEqual((summary["turns"], summary["ended"]), (5, "games-max"))
+        clicks = [tuple(a) for o, a, _ in self.sent if o == "click!"]
+        self.assertEqual(clicks.count((417, 530)), 5)
+        self.assertEqual(clicks.count((100, 585)), 1)
+
+    def test_time_running_out_in_a_live_game_ends_the_sitting_through_the_session_with_no_click(self):
+        """T41: the clock passes `sitting_seconds` after the second PASS, in the middle of game 1, which the
+        human has not lost. The sitting completes (the session's own finish), and the last input sent is
+        that PASS's CONTINUE check: no New Game, no placement, no click on a board."""
+        def clock():
+            return 10 ** 6 if [a for o, a, _ in self.sent if o == "click!" and tuple(a) == (417, 530)][1:] else 0
+        made, summary = self.sitting(dict(BATCH, games_max="4"),
+                                     loop_factory=lambda clicks, batch: e020_loop.BatchLoop(clicks, batch, clock=clock))
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertEqual((summary["ended"], summary["turns"], summary["games"]), ("sitting-seconds", 2, 1))
+        self.assertEqual([a for o, a, _ in self.sent if o == "click!" and tuple(a) == (100, 585)], [(100, 585)])
+        self.assertEqual(self.sent[-1][0], "settle")                # the second turn's `quiet` block, then nothing
+        self.assertEqual([l["reason"] for l in self.actions() if l.get("event") == "game-end"], ["sitting-seconds"])
+
+    def test_the_scoreboard_after_the_winner_notice_is_left_by_one_continue_and_the_next_game_starts_on_the_title(self):
+        """T41: the winner notice's CONTINUE leads to the Scoreboard (the game credited a loss). `loss-credited`
+        is logged before the click, CONTINUE (401,526) once, and the next game starts from the title."""
+        self.short_game(passes=1)
+        self.after_continue = "scoreboard"
+        made, summary = self.sitting(dict(BATCH, games_max="2"))
+        self.assertEqual(made.status, "completed", made.status)
+        lines = self.actions()
+        credited = [l for l in lines if l.get("event") == "loss-credited"]
+        scoreboard = [l for l in lines if l.get("block") == "scoreboard-continue"]
+        self.assertEqual(len(credited), 2)            # game 1's, and game 2's (one PASS: lost the same way)
+        self.assertEqual([(l["op"], l["args"], l["status"]) for l in scoreboard[:2]],
+                         [("watch", [], "ok"), ("click!", [401, 526], "ok")])
+        self.assertLess(lines.index(credited[0]), lines.index(scoreboard[0]))
+        self.assertEqual([(l["event"], l["game"]) for l in lines if l.get("event") == "game-start"], [("game-start", 1), ("game-start", 2)])
+        self.assertLess(lines.index(scoreboard[1]), lines.index([l for l in lines if l.get("event") == "game-start"][1]))
+        self.assertEqual(summary["loss_credited"], 2)       # game 2 (one PASS) is lost to the same notice again
+        self.assertEqual(summary["ended"], "games-max")
+
+    def test_anything_but_the_title_after_the_scoreboard_ends_the_sitting_cleanly(self):
+        self.short_game(passes=1)
+        self.after_continue = "scoreboard"
+        self.after_scoreboard = "unknown"
+        made, summary = self.sitting(dict(BATCH, games_max="2"))
+        self.assertEqual(made.status, "completed", made.status)
+        clicks = [tuple(a) for o, a, _ in self.sent if o == "click!"]
+        self.assertEqual(clicks[-1], (401, 526))
+        self.assertEqual((summary["ended"], summary["screen"], summary["games"]), ("unknown-screen", "unknown", 1))
         self.assertIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
 
     def test_an_unknown_screen_ends_the_sitting_cleanly_without_a_click(self):

@@ -12,11 +12,14 @@
 #   Values by role: counter, hand, country, game, event, sitting are plain integers; owner is a
 #   colour word (tools/check_counts.py value_problem).
 # - `events_min` and `games_min`: Scope's Counts line (the first sitting's floors).
-# - `games_max`, `turns_max`, `sitting_seconds`: the loop's bounds. The loop plays a game until
-#   the human can no longer place (the game is over for the human) or `turns_max` turns, then starts
-#   the next game, until `games_max` games or `sitting_seconds`. The events are read from the
-#   frames after the sitting, so the loop cannot stop on a live count; a sitting that ends short
-#   is recorded as it is, and tools/check_counts.py prints the shortfall per arm.
+# - `games_max`, `sitting_seconds`: the loop's bounds. A game has no turn limit (T41, the owner,
+#   2026-10-08): the loop plays it until the human is eliminated (KEEP PLAYING, then the winner
+#   notice) or a computer wins, then starts the next game from the title, until `games_max` games or
+#   `sitting_seconds`. A sitting never quits a live game: New Game is sent only on the title screen,
+#   and when `sitting_seconds` runs out in the middle of a game the sitting ends without a click.
+#   The events are read from the frames after the sitting, so the loop cannot
+#   stop on a live count; a sitting that ends short is recorded as it is, and tools/check_counts.py
+#   prints the shortfall per arm.
 # - `claims`: the claim ids whose outcome tools/check_counts.py checks against their own per-arm
 #   rule before `corroborated` is allowed (experiments/E020-wine-first-run/outcomes.json).
 # - `vipc_countries`: Q-CMB-11's split, the fixed VIPC list as the board's country numbers (F017,
@@ -34,7 +37,6 @@ event_fields = counter:attacker-before counter:attacker-after counter:defender-b
 events_min = 100
 games_min = 1
 games_max = 4
-turns_max = 30
 sitting_seconds = 5400
 claims = Q-CMB-04 Q-CMB-05 Q-CMB-06 Q-CMB-07 Q-CMB-11
 vipc_countries = 1 3 5 7 8 9 13 14 15 23 24 26 27 32 33 34 36 37 38 43 44 45 46
@@ -50,7 +52,6 @@ event_fields = owner:bomber owner:victim country:victim counter:victim-before co
 events_min = 9
 games_min = 3
 games_max = 8
-turns_max = 40
 sitting_seconds = 10800
 claims = C-CRD-06 Q-BON-08
 note = Batch 2 (F014): the computer's bomb targets, read from the frames; the owner-play record (T28) is primary for play-length, game-sense and mistake claims, this sitting is corroboration and per-action timing

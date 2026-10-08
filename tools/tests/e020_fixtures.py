@@ -86,11 +86,13 @@ def record(batch, run_id, sitting_epoch, events, fields_of, frames=("a" * 64, "b
 GROUND = (128, 128, 128)
 PAINT = {"score-panel": (0, 0, 0), "menu": (140, 239, 247), "subtitle": (0, 200, 255),
          "keep-playing": (189, 8, 66), "accept-loss": (180, 170, 30), "notice-panel": (0, 0, 100),
-         "continue": (181, 189, 181)}
+         "continue": (181, 189, 181), "scoreboard-button": (181, 189, 181), "scoreboard-easy": (0, 0, 0),
+         "scoreboard-normal": (0, 0, 0), "scoreboard-hard": (0, 0, 0)}
 SCREEN_PARTS = {"unknown": (), "board": ("score-panel",), "board-menu": ("score-panel", "menu"),
                 "title": ("subtitle", "menu"),
                 "eliminated": ("score-panel", "keep-playing", "accept-loss", "notice-panel"),
-                "game-over": ("score-panel", "notice-panel", "continue")}
+                "game-over": ("score-panel", "notice-panel", "continue"),
+                "scoreboard": ("scoreboard-button", "scoreboard-easy", "scoreboard-normal", "scoreboard-hard")}
 # The score panel's seat numbers (round 6), in the colours measured on the frames.
 SEAT_PAINT = {"blue": (49, 156, 255), "yellow": (255, 255, 0), "red": (255, 49, 49), "green": (0, 206, 49)}
 ZERO = 60       # the pixels a seat's 0 fills (58 to 67 measured on the winner notice)

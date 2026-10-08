@@ -320,6 +320,26 @@ class ExportTest(TmpWorld):
         self.assertEqual(self.export(a)[1], "runs/E020/cmb-accumulation/E020-r0003.json")   # a re-read: beside
         self.assertEqual(e020_export.next_run_id(self.repo), "E020-r0004")
 
+    def test_a_game_started_after_a_credited_loss_is_never_recorded_under_the_shipped_set(self):
+        """T41: after `loss-credited` the game has written its scoreboard file, so a later game ran on the
+        successor set, which F019 has no row for. Refused, nothing written; a credit that came last is not."""
+        def with_lines(sitting, *lines):
+            path = sitting / "actions.jsonl"
+            path.write_text(path.read_text() + "".join(json.dumps(l) + "\n" for l in lines))
+        refused, _ = make_sitting(self.wine, sid="20261008T120000Z")
+        with_lines(refused, {"seq": 5, "game": 1, "turn": 3, "event": "loss-credited"},
+                   {"seq": 6, "game": 2, "turn": 0, "event": "game-start"})
+        with self.assertRaises(e020_export.ExportRefused) as caught:
+            self.export(refused)
+        self.assertIn("never the shipped set", str(caught.exception))
+        self.assertIn("iwp-2.0-de5a82a2", str(caught.exception))
+        self.assertFalse((self.repo / "runs").exists() and any((self.repo / "runs").rglob("*.json")))
+        self.assertFalse((self.repo / "evidence").exists() and any((self.repo / "evidence").rglob("*.json")))
+        last, _ = make_sitting(self.wine, sid="20261008T130000Z")
+        with_lines(last, {"seq": 5, "game": 1, "turn": 3, "event": "loss-credited"})
+        record = self.record("cmb-accumulation", self.export(last)[1].split("/")[-1][:-5])
+        self.assertEqual(record["artifact"], {"set": "iwp-2.0-996e86c5", "variant": "unregistered"})
+
     def test_a_record_is_never_written_over(self):
         sitting, _ = make_sitting(self.wine)
         with mock.patch.object(e020_export, "next_run_id", return_value="E020-r0001"):
@@ -360,6 +380,16 @@ class BlocksTest(unittest.TestCase):
         self.assertEqual([str(a) for a in args[5:]], coordinates)
         self.assertEqual(len(args[5:]), 88)        # 44 points: the list coordinates.md holds (it says 46)
 
+    def test_the_scoreboards_continue_is_one_click_inside_its_button(self):
+        """T41: the button's centre (401,526), E002's "Continue (after loss)" is 400,526; one click, which
+        must change the screen."""
+        from driver import screens
+        self.assertEqual(self.ops("scoreboard-continue"), [("watch", ()), ("click!", screens.SCOREBOARD_CONTINUE_CLICK)])
+        x, y, w, h = 327, 514, 148, 25          # the button as measured (walkthroughs/coordinates.md)
+        cx, cy = screens.SCOREBOARD_CONTINUE_CLICK
+        self.assertTrue(x <= cx < x + w and y <= cy < y + h)
+        self.assertNotEqual(screens.SCOREBOARD_CONTINUE_CLICK, screens.CONTINUE_CLICK)   # not the winner notice's
+
     def test_no_block_attacks_and_every_wait_is_a_settle(self):
         for name, steps in self.blocks.items():
             for step in steps:
@@ -373,7 +403,7 @@ class FakeDriver:
 
     def __init__(self, place_results, noisy=0, raises=False, quiet_script=None, screens=None):
         self.place_results = list(place_results)
-        self.screens = list(screens or [])   # successive screen readings; `board-menu` once spent
+        self.screens = ["title"] if screens is None else list(screens)   # successive readings; `board-menu` once spent
         self.readings, self.frames, self.trail, self.sleeps = [], [], [], []   # trail: blocks and readings, in order
         self.noisy = noisy
         self.raises = raises                 # a noisy board raises NotReady, as the click-driver's settle does
@@ -398,6 +428,8 @@ class FakeDriver:
 
     def note(self, **fields):
         self.notes.append(dict(self.context, **fields))
+        if fields.get("event") == "loss-credited":
+            self.trail.append("note:loss-credited")
 
     def read_screen(self):
         screen = self.screens.pop(0) if self.screens else "board-menu"
@@ -417,17 +449,32 @@ class FakeDriver:
 
 
 class LoopTest(unittest.TestCase):
-    batch = {"games_max": "2", "turns_max": "3", "sitting_seconds": "1000"}
+    batch = {"games_max": "2", "sitting_seconds": "1000"}
 
-    def test_a_game_plays_turns_until_the_human_cannot_place(self):
-        driver = FakeDriver([5, 9, None, None, 1, 1, 1])
+    def test_a_game_has_no_turn_limit(self):
+        """T41: `turns_max` (a batch of the earlier design may still carry it) no longer ends a game. Sitting
+        20261008T204817Z stopped game 1 at turn 30 and sent New Game from the board, which credited a loss;
+        now the game is played past it, to its end (here the winner notice, at the 8th turn)."""
+        driver = FakeDriver([1] * 7, screens=["title"] + ["board-menu"] * 7 + ["game-over", "title"])
+        loop = e020_loop.BatchLoop(driver, dict(self.batch, games_max="1", turns_max="3"), clock=lambda: 0)
+        summary = loop.run()
+        names = [n for n, _ in driver.blocks]
+        self.assertEqual(names.count("place"), 7)
+        self.assertEqual(summary, {"games": 1, "turns": 7, "placements": 7, "ended": "games-max"})
+        self.assertEqual([n["reason"] for n in driver.notes if n["event"] == "game-end"], ["game-over"])
+        self.assertEqual(names.count("new-game"), 1)
+
+    def test_a_refused_placement_stops_the_sitting_and_never_sends_new_game(self):
+        """T41: the human cannot place on the board with its menu row lit, so the game is live: a last
+        frame, no click, and no next game (New Game from that board is what credited the loss)."""
+        driver = FakeDriver([1, None, None], screens=["title", "board-menu", "board-menu", "board-menu", "board-menu"])
         summary = e020_loop.BatchLoop(driver, self.batch, clock=lambda: 0).run()
         names = [n for n, _ in driver.blocks]
-        self.assertEqual(names[:2], ["new-game", "quiet"])
-        self.assertEqual(summary, {"games": 2, "turns": 5, "placements": 5, "ended": "games-max"})
-        self.assertEqual([n["reason"] for n in driver.notes if n["event"] == "game-end"],
-                         ["placement-refused", "turns-max"])
-        self.assertIn("dismiss", names)
+        self.assertEqual(names.count("new-game"), 1)
+        self.assertEqual(names[-3:], ["dismiss", "quiet", "place"])  # the last placement try; nothing after it
+        self.assertEqual((summary["ended"], summary["screen"], summary["games"]), ("placement-refused", "board-menu", 1))
+        self.assertEqual(driver.frames, [e020_loop.FINAL_FRAME])
+        self.assertEqual([n["reason"] for n in driver.notes if n["event"] == "game-end"], ["placement-refused"])
 
     def test_no_commit_without_a_placement(self):
         driver = FakeDriver([None, None])
@@ -472,16 +519,28 @@ class LoopTest(unittest.TestCase):
         summary = e020_loop.BatchLoop(driver, self.batch, clock=lambda: next(times)).run()
         self.assertEqual(summary["ended"], "sitting-seconds")
 
+    def test_time_running_out_in_a_live_game_ends_the_sitting_with_no_click(self):
+        """T41: the clock passes `sitting_seconds` after the second turn, in the middle of game 1. The
+        loop sends nothing more: no placement, no New Game, and no next game (games_max is 4)."""
+        driver = FakeDriver([1] * 9)
+        clock = lambda: 2000 if [n for n, _ in driver.blocks].count("commit") >= 2 else 0
+        summary = e020_loop.BatchLoop(driver, self.batch, clock=clock).run()
+        names = [n for n, _ in driver.blocks]
+        self.assertEqual(names, ["new-game", "quiet", "place", "commit", "quiet", "place", "commit", "quiet"])
+        self.assertEqual((summary["ended"], summary["games"], summary["turns"]), ("sitting-seconds", 1, 2))
+        self.assertEqual([n["reason"] for n in driver.notes if n["event"] == "game-end"], ["sitting-seconds"])
+        self.assertEqual(driver.frames, [])
+
     def test_every_game_start_names_its_ordinal(self):
-        driver = FakeDriver([None, None, None, None])
-        e020_loop.BatchLoop(driver, self.batch, clock=lambda: 0).run()
+        driver = FakeDriver([1, 1], screens=["title", "game-over", "title", "game-over", "title"])
+        e020_loop.BatchLoop(driver, dict(self.batch, games_max="2"), clock=lambda: 0).run()
         self.assertEqual([n["game"] for n in driver.notes if n["event"] == "game-start"], [1, 2])
 
 
 class ScreenLoopTest(unittest.TestCase):
     """T38 round 4: the elimination notice (keep playing), clean stops on unknown screens, and New
     Game only on a screen proven to be the title or the board with its menu row."""
-    batch = {"games_max": "4", "turns_max": "30", "sitting_seconds": "1000"}
+    batch = {"games_max": "4", "sitting_seconds": "1000"}
 
     def loop(self, driver, clock=lambda: 0, **batch):
         made = e020_loop.BatchLoop(driver, dict(self.batch, **batch), clock=clock,
@@ -564,20 +623,16 @@ class ScreenLoopTest(unittest.TestCase):
                 self.assertTrue(loop.summary["ended"].startswith("aborted: not-ready"), loop.summary)
                 self.assertEqual(driver.frames, [])
 
-    def test_new_game_is_sent_only_on_the_title_or_the_board_with_its_menu(self):
-        """Before game 1, and after a game whose placement was refused: any other screen ends the sitting."""
-        for before_first in ("unknown", "board", "eliminated"):
+    def test_new_game_is_sent_only_on_the_title(self):
+        """Before game 1 any other screen ends the sitting, and so does the board with its menu row lit
+        (T41): from it New Game quits a live game. After a game, the next one starts on the title only."""
+        for before_first in ("unknown", "board", "board-menu", "eliminated", "game-over", "scoreboard"):
             with self.subTest(before_first=before_first):
                 driver = FakeDriver([], screens=[before_first])
                 _, summary = self.loop(driver)
                 self.assertEqual(driver.blocks, [])
                 self.assertEqual((summary["games"], summary["ended"]), (0, "unknown-screen"))
                 self.assertNotIn("game-start", [n.get("event") for n in driver.notes])
-        # game 1's placement refused on the board with its menu (New Game proven), then the screen changed
-        driver = FakeDriver([None, None], screens=["title", "board-menu", "board-menu", "board-menu", "unknown"])
-        _, summary = self.loop(driver)
-        self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
-        self.assertEqual((summary["games"], summary["ended"]), (1, "unknown-screen"))
 
     def test_the_second_sittings_winner_notice_ends_the_game_and_continue_is_clicked_once(self):
         """Sitting 20261008T195537Z: after KEEP PLAYING the winner notice came up and was read as the
@@ -600,12 +655,12 @@ class ScreenLoopTest(unittest.TestCase):
     def test_the_winner_notice_at_a_turns_start_ends_the_game(self):
         for winner in ("green", None):
             with self.subTest(winner=winner):
-                driver = FakeDriver([1, 1], screens=["title", "board-menu", "game-over", "board-menu"])
+                driver = FakeDriver([1, 1], screens=["title", "board-menu", "game-over", "title"])
                 driver.winner = winner
                 _, summary = self.loop(driver, games_max="1")
                 self.assertEqual(driver.trail, ["read:title", "new-game", "quiet", "read:board-menu", "place", "commit",
                                                 "quiet", "read:game-over", "winner", "game-over-continue",
-                                                "read:board-menu"])
+                                                "read:title"])
                 ends = [n for n in driver.notes if n.get("event") == "game-end"]
                 self.assertEqual([(n["reason"], n["ended"], n["winner"], n["turn"]) for n in ends],
                                  [("game-over", "game-over", winner, 2)])
@@ -613,7 +668,7 @@ class ScreenLoopTest(unittest.TestCase):
                 self.assertEqual(driver.frames, [])
 
     def test_after_continue_only_a_proven_new_game_screen_starts_the_next_game(self):
-        for screen in ("unknown", "board", "eliminated", "game-over"):
+        for screen in ("unknown", "board", "board-menu", "eliminated", "game-over"):
             with self.subTest(screen=screen):
                 driver = FakeDriver([1], screens=["title", "board-menu", "game-over", screen])
                 _, summary = self.loop(driver)
@@ -635,11 +690,59 @@ class ScreenLoopTest(unittest.TestCase):
         self.assertEqual(driver.frames, [])
 
     def test_a_refused_placement_on_a_board_without_its_menu_is_not_a_game_end(self):
-        """No menu row: New Game is not on the screen, so the loop stops instead of starting a game."""
+        """No menu row: the game is not the human's turn, so the loop stops instead of starting a game."""
         driver = FakeDriver([None, None], screens=["title", "board-menu", "board", "board"])
         _, summary = self.loop(driver)
         self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
         self.assertEqual((summary["ended"], summary["screen"]), ("unknown-screen", "board"))
+
+    # --- T41: the Scoreboard ---------------------------------------------------------------------
+
+    def test_the_scoreboard_after_the_winner_notice_is_left_once_and_the_title_starts_the_next_game(self):
+        """The game credited a loss: `loss-credited` is logged before the click, CONTINUE (block
+        `scoreboard-continue`) once, then the screen is read, and New Game is sent on the title only."""
+        driver = FakeDriver([1], screens=["title", "board-menu", "game-over", "scoreboard", "title", "unknown"])
+        _, summary = self.loop(driver, games_max="2")
+        self.assertEqual(driver.trail[driver.trail.index("game-over-continue"):][:6],
+                         ["game-over-continue", "read:scoreboard", "note:loss-credited", "scoreboard-continue",
+                          "read:title", "new-game"])
+        self.assertEqual([n for n, _ in driver.blocks].count("scoreboard-continue"), 1)
+        self.assertEqual((summary["games"], summary["loss_credited"], summary["ended"]), (2, 1, "unknown-screen"))
+
+    def test_the_scoreboard_at_a_turns_start_and_in_the_play_out_ends_the_game(self):
+        for screens, reason in ((["title", "board-menu", "scoreboard", "title", "unknown"], "scoreboard"),
+                                (["title", "board-menu", "eliminated", "board", "scoreboard", "title", "unknown"],
+                                 "played-out: scoreboard")):
+            with self.subTest(reason=reason):
+                driver = FakeDriver([1], screens=screens)
+                _, summary = self.loop(driver, games_max="2")
+                ends = [n["reason"] for n in driver.notes if n.get("event") == "game-end"]
+                self.assertEqual(ends[0], reason)
+                self.assertEqual([n for n, _ in driver.blocks].count("scoreboard-continue"), 1)
+                self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 2)       # game 2: from the title
+                self.assertEqual(driver.trail[driver.trail.index("note:loss-credited"):][:3],
+                                 ["note:loss-credited", "scoreboard-continue", "read:title"])
+                self.assertEqual(summary["loss_credited"], 1)
+
+    def test_after_the_scoreboards_continue_only_the_title_starts_the_next_game(self):
+        for screen in ("unknown", "board", "board-menu", "eliminated", "game-over", "scoreboard"):
+            with self.subTest(screen=screen):
+                driver = FakeDriver([1], screens=["title", "board-menu", "scoreboard", screen])
+                _, summary = self.loop(driver)
+                self.assertEqual(driver.trail[-3:], ["note:loss-credited", "scoreboard-continue", "read:" + screen])
+                self.assertEqual([n for n, _ in driver.blocks].count("scoreboard-continue"), 1)   # clicked once
+                self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
+                self.assertEqual((summary["ended"], summary["screen"]), ("unknown-screen", screen))
+                self.assertEqual(driver.frames, [e020_loop.FINAL_FRAME])
+
+    def test_the_scoreboard_between_quiet_blocks_is_waited_on_not_unknown(self):
+        driver = FakeDriver([1], screens=["title", "board-menu", "scoreboard", "scoreboard", "title"],
+                            quiet_script=[True, False, True])
+        _, summary = self.loop(driver, games_max="1")
+        self.assertEqual(driver.trail[:9], ["read:title", "new-game", "quiet", "read:board-menu", "place", "commit",
+                                            "quiet", "read:scoreboard", "quiet"])
+        self.assertEqual(driver.frames, [])
+        self.assertEqual(summary["ended"], "games-max")
 
 
 # --- Done-when 3/4/6 through check_records ------------------------------------------------------
