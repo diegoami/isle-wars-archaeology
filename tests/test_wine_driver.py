@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-for _name in ("test_watcher", "test_clicks", "test_check_counts", "test_wine_tools"):
+for _name in ("test_watcher", "test_clicks", "test_check_counts", "test_wine_tools", "test_screens"):
     _spec = importlib.util.spec_from_file_location(f"t38_{_name}", ROOT / "tools" / "tests" / f"{_name}.py")
     _module = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(_module)

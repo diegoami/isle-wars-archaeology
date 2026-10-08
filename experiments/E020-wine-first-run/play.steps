@@ -48,3 +48,12 @@ click-any? 402 531
 # CONTINUE when it is there; the loop then waits for a quiet board and tries the placement again.
 watch 262 502 276 70
 click-any? 402 531
+
+# --- block eliminated-keep-playing
+# The elimination notice (runtime/iwp/driver/screens.py `eliminated`, measured from the frames of
+# sitting 20261008T184505Z, steps 164 to 176): of its two buttons in the bottom bar, the one that lets
+# the computers play the game out, red, centre 665,531 (walkthroughs/coordinates.md). The owner's
+# decision (T38 round 4): keep playing. Sent once; the notice must go (the screen changes). After it
+# the loop sends nothing and only reads the screen while the computers play.
+watch all
+click! 665 531

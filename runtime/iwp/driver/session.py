@@ -80,6 +80,7 @@ import safeio  # noqa: E402
 import steps as stepslib  # noqa: E402
 
 from . import errors  # noqa: E402
+from . import screens  # noqa: E402
 from .errors import (DriverError, DisplayError, GameDied, LaunchError, ResetError, RecordError,  # noqa: E402
                      ScreenNotReached, SealError, StepFailed, TerminateError)
 
@@ -585,6 +586,12 @@ class Engine(spike.Cycle):
         self.observe(self.step_no, "screen", f"region {label} {','.join(map(str, rect))} raw RGB8 sha256", digest)
         return digest
 
+    def screen_name(self):
+        """The screen the game shows, by pixel counts on measured regions (screens.name_of; T38 round 4):
+        eliminated, board-menu, board, title or unknown. Reads the stage; sends nothing."""
+        self.require_alive("reading the screen")
+        return screens.name_of(self.screen.raw((0, 0) + spike.STAGE))
+
     def observe_file(self, rel):
         """One file of the game copy, read in place: size, sha256 and whether it equals the install's."""
         self.step_no += 1
@@ -972,6 +979,11 @@ class Session:
     def observe_region(self, rect, label):
         """sha256 of the raw pixels of x, y, w, h, as an observation."""
         return self._engine.observe_region(rect, label)
+
+    @guarded("a screen reading")
+    def screen_name(self):
+        """The screen the game shows (screens.name_of): eliminated, board-menu, board, title or unknown."""
+        return self._engine.screen_name()
 
     @guarded("a file observation")
     def observe_file(self, rel):

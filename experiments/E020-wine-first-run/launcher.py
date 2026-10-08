@@ -233,7 +233,9 @@ def make_body(paths, batch, blocks_text, summary, watcher_factory=None, loop_fac
     def body(active):
         active.expect("title")
         active.known_screen()
-        clicks = ClickDriver(active.perform, lambda: active.obs, paths["actions"], blocks)
+        clicks = ClickDriver(active.perform, lambda: active.obs, paths["actions"], blocks,
+                             screen=active.screen_name,                         # pixels, never OCR (round 4)
+                             shot=lambda name: active.observe_screenshot(name)[1])   # the PNG file's sha256
         watcher = watcher_factory(active.window, dict(active.env), paths["frames"], paths["index"],
                                   paths["log"], lambda: clicks.seq)
         thread, stop = watcher.start()

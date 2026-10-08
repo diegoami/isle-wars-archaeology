@@ -12,7 +12,11 @@ What it pins, each a round-1 finding:
 - R10: a `click!` the screen did not answer aborts the sitting through the session (step-failed),
   with the step's line logged as failed first (R12);
 - round 3, R1: a board that never goes quiet, or a `settle` that never settles inside a block,
-  sends no further input and ends the sitting `aborted: not-ready: <reason>`, with no normal summary.
+  sends no further input and ends the sitting `aborted: not-ready: <reason>`, with no normal summary;
+- round 4: the screen is read through Session.screen_name (pixels of the session's own capture, here
+  synthetic frames painted by e020_fixtures.screen_frame): the elimination notice is answered with
+  KEEP PLAYING once and nothing more is sent; an unknown screen ends the sitting cleanly, with a
+  last screenshot whose sha256 is logged, and no click.
 """
 import json
 import os
@@ -28,6 +32,7 @@ import test_iwp_driver as base  # noqa: E402  (DriverWorld: the E004 test world)
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools" / "tests"))
 import e020_fixtures  # noqa: E402,F401  (puts experiments/E020-wine-first-run on sys.path)
+import e020_loop  # noqa: E402
 import e020_sitting  # noqa: E402
 from driver import session as sessionlib  # noqa: E402
 
@@ -74,6 +79,16 @@ class E020SessionTest(base.DriverWorld):
         patcher = mock.patch.object(sessionlib.Engine, "run_step", lambda engine, step: self.run_step(engine, step))
         patcher.start()
         self.addCleanup(patcher.stop)
+        self.screen = "title"                # what the synthetic capture shows (round 4)
+        self.eliminated_after_passes = None  # the notice comes up after this many PASS clicks
+        self.playout_reads = 2               # board readings in the play-out before the screen is unknown
+        self.reads = []
+        patcher = mock.patch.object(base.spike.Screen, "raw", lambda screen, crop=None: self.raw(crop))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        patcher = mock.patch.object(e020_loop, "PLAYOUT_POLL", 0)
+        patcher.start()
+        self.addCleanup(patcher.stop)
         self.paths = e020_sitting.sitting_paths(self.tmp / "wine", e020_fixtures.SID)
         for key in ("frames", "dumps", "session"):
             self.paths[key].mkdir(parents=True)
@@ -96,6 +111,27 @@ class E020SessionTest(base.DriverWorld):
                 engine.fail(f"step on line {step.line}: the screen did not change after the click at "
                             f"{step.args[0]},{step.args[1]}")
             engine.note("screen", f"click at {step.args[0]},{step.args[1]}: screen changed after the click (s)", 0.02)
+            self.screen_after_click(tuple(step.args))
+
+    def screen_after_click(self, point):
+        """The synthetic game's screen: Play Game shows the board with its menu; the notice comes up
+        after the PASS clicks named; KEEP PLAYING shows the board (the computers play on)."""
+        if point == (565, 532):
+            self.screen = "board-menu"
+        elif point == (417, 530) and self.eliminated_after_passes is not None:
+            passes = [a for o, a, _ in self.sent if o == "click!" and tuple(a) == (417, 530)]
+            if len(passes) >= self.eliminated_after_passes:
+                self.screen = "eliminated"
+        elif point == (665, 531):
+            self.screen = "board"
+
+    def raw(self, crop):
+        """The session's capture: the whole stage (Session.screen_name reads it) or a crop of it."""
+        if crop == (0, 0, 800, 600):
+            self.reads.append(self.screen)
+            if self.screen == "board" and self.reads.count("board") > self.playout_reads:
+                self.screen = self.reads[-1] = "unknown"
+        return e020_fixtures.screen_frame(self.screen)
 
     def never_settles(self, step):
         if tuple(step.args) in self.unsettled:
@@ -167,8 +203,46 @@ class E020SessionTest(base.DriverWorld):
 
     def test_the_actions_log_names_the_game_and_its_end(self):
         self.sitting()
-        events = [(l.get("event"), l.get("game"), l.get("reason")) for l in self.actions() if "event" in l]
+        events = [(l.get("event"), l.get("game"), l.get("reason")) for l in self.actions()
+                  if l.get("event") in ("game-start", "game-end")]
         self.assertEqual(events, [("game-start", 1, None), ("game-end", 1, "turns-max")])
+        self.assertEqual([l["screen"] for l in self.actions() if l.get("event") == "screen"],
+                         ["title", "board-menu", "board-menu"])
+
+    def test_the_elimination_notice_is_answered_with_keep_playing_once_then_no_input(self):
+        """Round 4: turn 2 starts on the notice (sitting 20261008T184505Z's turn 16). One click on
+        KEEP PLAYING, then only screen readings; the game's end (an unknown screen) ends the sitting
+        with a last screenshot and no click. New Game (100,585) is never sent off the title."""
+        self.eliminated_after_passes = 1
+        made, summary = self.sitting()
+        self.assertEqual(made.status, "completed", made.status)
+        clicks = [tuple(a) for o, a, _ in self.sent if o in ("click", "click!", "click-until?", "click-any?")]
+        self.assertEqual(clicks[-1], (665, 531))                    # nothing sent after KEEP PLAYING
+        self.assertEqual(clicks.count((665, 531)), 1)
+        self.assertEqual(clicks.count((100, 585)), 1)               # game 1's New Game, on the title only
+        self.assertEqual(self.reads[-3:], ["board", "board", "unknown"])
+        self.assertEqual((summary["ended"], summary["screen"], summary["eliminated"], summary["turns"]),
+                         ("unknown-screen", "unknown", True, 1))
+        lines = self.actions()
+        keep = [l for l in lines if l.get("block") == "eliminated-keep-playing"]
+        self.assertEqual([(l["op"], l["args"], l["status"], l["turn"]) for l in keep],
+                         [("watch", [], "ok", 2), ("click!", [665, 531], "ok", 2)])
+        ended = [l for l in lines if l.get("event") == "ended"]
+        shot = {name: path for name, path, _ in made.outputs}[e020_loop.FINAL_FRAME]
+        self.assertEqual([(l["ended"], l["sha256"]) for l in ended],
+                         [("unknown-screen", e020_fixtures.sha(Path(shot).read_bytes()))])
+        self.assertEqual(summary["final_frame"], ended[0]["sha256"])
+
+    def test_an_unknown_screen_ends_the_sitting_cleanly_without_a_click(self):
+        """Round 4: Play Game led to a screen the loop does not know: a last screenshot, no click."""
+        made = None
+        with mock.patch.object(self, "screen_after_click", lambda point: None):   # the title stays up
+            made, summary = self.sitting()
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertEqual((summary["ended"], summary["screen"], summary["turns"]), ("unknown-screen", "title", 0))
+        self.assertEqual([tuple(a) for o, a, _ in self.sent if o.startswith("click")][-1], (565, 532))
+        self.assertNotIn("click-until?", [o for o, _, _ in self.sent])
+        self.assertIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
 
 
 if __name__ == "__main__":

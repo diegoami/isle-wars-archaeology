@@ -173,7 +173,33 @@ class ClickDriverTest(unittest.TestCase):
 
     def test_the_e020_block_file_parses_and_holds_the_blocks_the_loop_needs(self):
         blocks = parse_blocks((ROOT / "experiments" / "E020-wine-first-run" / "play.steps").read_text())
-        self.assertEqual(set(blocks), {"new-game", "quiet", "place", "commit", "dismiss"})
+        self.assertEqual(set(blocks), {"new-game", "quiet", "place", "commit", "dismiss", "eliminated-keep-playing"})
+
+    def test_keep_playing_is_one_click_that_must_change_the_screen_at_the_measured_point(self):
+        """T38 round 4: the notice's KEEP PLAYING, at the centre measured from sitting 20261008T184505Z."""
+        from driver import screens
+        blocks = parse_blocks((ROOT / "experiments" / "E020-wine-first-run" / "play.steps").read_text())
+        steps = [(s.op, s.args) for s in blocks["eliminated-keep-playing"]]
+        self.assertEqual(steps, [("watch", ()), ("click!", screens.KEEP_PLAYING_CLICK)])
+
+    def test_a_screen_reading_is_logged_and_sends_nothing(self):
+        session = FakeSession()
+        driver = ClickDriver(session.perform, lambda: session.obs, self.actions, parse_blocks(BLOCKS),
+                             screen=lambda: "eliminated", shot=lambda name: "e" * 64)
+        driver.context = {"game": 1, "turn": 16}
+        self.assertEqual(driver.read_screen(), "eliminated")
+        self.assertEqual(driver.final_frame("unknown-screen.png"), "e" * 64)
+        self.assertEqual(session.sent, [])
+        line = json.loads(self.actions.read_text().splitlines()[-1])
+        self.assertEqual((line["event"], line["screen"], line["turn"]), ("screen", "eliminated", 16))
+
+    def test_without_a_screen_reader_the_driver_refuses_to_guess(self):
+        session = FakeSession()
+        driver = ClickDriver(session.perform, lambda: session.obs, self.actions, parse_blocks(BLOCKS))
+        with self.assertRaises(StepFailed):
+            driver.read_screen()
+        with self.assertRaises(StepFailed):
+            driver.final_frame("unknown-screen.png")
 
 
 if __name__ == "__main__":

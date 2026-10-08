@@ -25,6 +25,11 @@ block after it is sent. The loop may retry a `quiet` block that raised it, withi
 that bound it ends the sitting with it (e020_loop.py), and the session records it as the sitting's
 status (Session.execute).
 
+The driver also reads the screen for the loop (T38 round 4): `read_screen` asks the session which
+screen is up (Session.screen_name: pixel counts on measured regions, runtime/iwp/driver/screens.py)
+and logs the answer as an `event: screen` line; `final_frame` takes a last screenshot through the
+session and returns its sha256. Neither sends the game anything.
+
 Each line of `actions.jsonl` is written whether the step succeeded or not (R12): `status` is `ok` or
 `failed`, a failed step carries the driver error's kind, and the line is on disk before the failure
 propagates. A line carries structural values only (constraint D): the block, the step's line in
@@ -126,8 +131,10 @@ class ClickDriver:
     ones each step added to say what the screen showed. `context` (a dict of small integers or
     words: game, turn) is copied into every line."""
 
-    def __init__(self, perform, observations, actions_path, blocks, clock=time.time):
+    def __init__(self, perform, observations, actions_path, blocks, clock=time.time, screen=None, shot=None):
         self.perform = perform
+        self.screen = screen                 # () -> the screen's name (Session.screen_name; T38 round 4)
+        self.shot = shot                     # (file name) -> sha256 of the screenshot file it took
         self.observations = observations
         self.actions_path = Path(actions_path)
         self.blocks = blocks
@@ -172,6 +179,20 @@ class ClickDriver:
         line.update(status="ok", ms=int((self.clock() - started) * 1000), outcome=outcome)
         self.log(line)
         return outcome
+
+    def read_screen(self):
+        """The screen's name, read by pixels (no input), logged as a line of its own (`event: screen`)."""
+        if self.screen is None:
+            raise StepFailed("the click-driver has no screen reader")
+        name = self.screen()
+        self.note(event="screen", screen=name)
+        return name
+
+    def final_frame(self, name):
+        """A last screenshot, taken through the session (no input); the sha256 of its file."""
+        if self.shot is None:
+            raise StepFailed("the click-driver has no screenshot")
+        return self.shot(name)
 
     def note(self, **fields):
         """A line of the loop's own (a game started or ended, and why), in the same file."""

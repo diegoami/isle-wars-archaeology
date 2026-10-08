@@ -38,12 +38,23 @@ mistake-rich record.
     order: New Game, EASY, Play Game; mid-game at EASY New Game goes straight to the setup screen,
     E002-r0018), `quiet` (the board unchanged for 4 s, bounded), `place` (E002's `click-until` over
     the proven country points: the placement row lights only for a country the human owns),
-    `commit` (ALL, PLACE, PASS, CONTINUE) and `dismiss`. No block attacks.
+    `commit` (ALL, PLACE, PASS, CONTINUE), `dismiss` and `eliminated-keep-playing` (one click on
+    the elimination notice's KEEP PLAYING, 665,531; round 4). No block attacks.
   - `e020_loop.py` plays games of place-all and pass from those blocks until the human cannot
     place, `turns_max`, `games_max` or `sitting_seconds`, and logs each game's start and end.
     A wait is never ignored: a `settle` that does not settle stops its block (`not-ready`), and
     when six `quiet` blocks pass without a quiet board the loop sends nothing more and the sitting
     ends `aborted: not-ready: <reason>` (round 3, R1).
+    The screen is read by pixels before each placement attempt, before New Game and during a
+    play-out (`runtime/iwp/driver/screens.py`, measured from sitting 20261008T184505Z; round 4).
+    On the elimination notice the loop clicks KEEP PLAYING once (the owner's decision), then sends
+    nothing and reads the screen while the computers play, within `sitting_seconds`. New Game is
+    sent only on the title or on the board with its menu row lit. Any other screen where the loop
+    would act ends the sitting cleanly: a last screenshot (`session/unknown-screen.png`), an
+    `ended: unknown-screen` line with its sha256 in `actions.jsonl`, and no click.
+    Sitting 20261008T184505Z (round 3's driver) met the notice at turn 16, tried the placement
+    points, clicked New Game where it is not, and ended `aborted: step-failed`; it is exported as
+    `E020-r0001`, with no events (no reading pass yet).
     The click-driver (`runtime/iwp/driver/clicks.py`) sends every step through `Session.perform`
     and logs every attempted step, failed ones included, to `actions.jsonl`; the watcher
     (`runtime/iwp/driver/watcher.py`) captures the game window on the session's display.

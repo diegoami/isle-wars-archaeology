@@ -79,3 +79,36 @@ def record(batch, run_id, sitting_epoch, events, fields_of, frames=("a" * 64, "b
         obs += [{"step": step, "source": "screen", "ref": f"sha256:{d}"} for d in frames]
     return {"schema": "run/1", "run_id": run_id, "experiment": "E020", "arm": batch, "observations": obs,
             "outputs": [{"name": f"{i}.png", "sha256": d, "store": "release:E020"} for i, d in enumerate(frames)]}
+
+
+# --- synthetic stage captures for runtime/iwp/driver/screens.py (T38 round 4) -------------------
+# Plain colours painted on the measured regions, on a neutral grey ground that no test's colour matches.
+GROUND = (128, 128, 128)
+PAINT = {"score-panel": (0, 0, 0), "menu": (140, 239, 247), "subtitle": (0, 200, 255),
+         "keep-playing": (189, 8, 66), "accept-loss": (180, 170, 30), "notice-panel": (0, 0, 100)}
+SCREEN_PARTS = {"unknown": (), "board": ("score-panel",), "board-menu": ("score-panel", "menu"),
+                "title": ("subtitle", "menu"),
+                "eliminated": ("score-panel", "keep-playing", "accept-loss", "notice-panel")}
+
+
+def stage_frame(*parts, pixels=None):
+    """An 800x600 RGB capture with the named regions of screens.TESTS painted in their colour.
+    `pixels` limits a part to its first N pixels (row by row), to sit just below or at a minimum."""
+    from driver import screens
+    frame = bytearray(bytes(GROUND) * (800 * 600))
+    for part in parts:
+        x, y, w, h = screens.TESTS[part].rect
+        left = (pixels or {}).get(part, w * h)
+        for row in range(y, y + h):
+            n = min(w, left)
+            if n <= 0:
+                break
+            start = (row * 800 + x) * 3
+            frame[start:start + n * 3] = bytes(PAINT[part]) * n
+            left -= n
+    return bytes(frame)
+
+
+def screen_frame(name):
+    """A synthetic capture of one named screen (screens.NAMES)."""
+    return stage_frame(*SCREEN_PARTS[name])
