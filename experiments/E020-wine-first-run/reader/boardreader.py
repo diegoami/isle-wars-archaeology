@@ -36,6 +36,14 @@ def load_anchors(path=ANCHORS_FILE):
     return {int(k): (v["x"], v["y"]) for k, v in doc["anchors"].items()}
 
 
+def measured_only_anchors(path=ANCHORS_FILE):
+    """The countries whose anchor has no click point in walkthroughs/coordinates.md to check it
+    against (#120), measured from the frames alone: anchors.json's `measured_only`. score.py holds
+    each to at least 5 labelled readings from 3 frames (the task's R3 amendment, 2026-10-09)."""
+    doc = json.loads(Path(path).read_text(encoding="utf-8"))
+    return sorted(int(c) for c in doc["measured_only"])
+
+
 def land_family(rgb):
     """The colour family of each pixel of an (h, w, 3) uint8 array: 0 none (sea, shadow, grey,
     glyph), 1 blue, 2 green, 3 red, 4 yellow. The land is drawn in four seat colours, each with

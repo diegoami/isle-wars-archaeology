@@ -8,7 +8,10 @@
                                                   a second stratum: frames under a notice (found by
                                                   the screens module's pixel tests), so that hidden
                                                   numerals are in the sample
-  sample.py montage --selection FILE --dir DIR    one zoomed crop per selected reading, captioned
+  sample.py anchors --out sample-selection-anchors.json --exclude sample-selection.json sample-selection-notices.json
+                                                  a third stratum (R3): the measured-only anchors
+                                                  (11, 15) on new seeded random frames
+  sample.py montage --selection FILE --dir DIR   one zoomed crop per selected reading, captioned
                                                   with its number, in sheets of 24, for labelling
                                                   by eye (ImageMagick; the sheets stay on the
                                                   machine: they hold the game's pixels)
@@ -99,6 +102,32 @@ def select_notices(args):
     return 0
 
 
+def select_anchors(args):
+    """A third stratum (T40 round 2, R3): the countries whose anchor was measured from the frames
+    alone (anchors.json `measured_only`, 11 and 15), on seeded random frames of each sitting that the
+    sample does not hold yet, so that each has at least 5 labelled readings from 3 frames. Seeded,
+    and blind to the reader like the first two."""
+    rng = random.Random(SEED + 2)
+    taken = set()
+    for path in args.exclude:
+        taken |= {(item["sitting"], item["frame"]) for item in json.loads(Path(path).read_text(encoding="utf-8"))["selection"]}
+    countries = boardreader.measured_only_anchors()
+    chosen = []
+    for sitting, rows in index_of(args.root).items():
+        by_sha = {}
+        for row in rows:
+            by_sha.setdefault(row["sha256"], row)
+        free = [r for r in sorted(by_sha.values(), key=lambda r: r["name"]) if (sitting, r["sha256"]) not in taken]
+        for row in rng.sample(free, args.per_sitting):
+            chosen.append({"sitting": sitting, "frame": row["sha256"], "name": row["name"], "countries": countries})
+    doc = {"what": "the measured-anchor stratum of the validation sample: seeded random frames of each sitting, "
+                   "not already in the sample, each labelled for every measured-only country",
+           "seed": SEED + 2, "frames_per_sitting": args.per_sitting, "countries": countries, "selection": chosen}
+    Path(args.out).write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+    print(f"{len(chosen)} frames, {sum(len(c['countries']) for c in chosen)} readings -> {args.out}")
+    return 0
+
+
 def montage(args):
     doc = json.loads(Path(args.selection).read_text(encoding="utf-8"))
     anchors = boardreader.load_anchors()
@@ -135,6 +164,12 @@ def main(argv=None):
     p.add_argument("--per-kind", type=int, default=2, help="frames per sitting and notice screen")
     p.add_argument("--countries", type=int, default=12)
     p.set_defaults(fn=select_notices)
+    p = sub.add_parser("anchors")
+    p.add_argument("--root", default=str(SITTING_ROOT))
+    p.add_argument("--out", required=True)
+    p.add_argument("--exclude", nargs="+", required=True, help="the selections already in the sample")
+    p.add_argument("--per-sitting", type=int, default=2)
+    p.set_defaults(fn=select_anchors)
     p = sub.add_parser("montage")
     p.add_argument("--root", default=str(SITTING_ROOT))
     p.add_argument("--selection", required=True)

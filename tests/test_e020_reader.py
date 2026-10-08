@@ -11,13 +11,16 @@ What each test pins, and what would make it fail (rule 9, rule 10):
   half-covered or text-covered numeral is unread, never a wrong number; a ring cut by the window
   does not spoil a country; an owner is read only when one colour holds 70% of the land;
 - seat: the boxed row of the score panel;
-- events: a pair is an exchange only when exactly two adjacent countries changed and the rest holds
-  (a pair where three changed, a capture, a placement, an unread country, the human's seat, two
-  countries of one owner, two countries that do not border each other: none is an event);
-- pass: windows of computer turns from the click-driver's log, events written in the form
-  e020_export.py reads, and a frame pair of three changes writes none;
+- events: a pair is a net observation (never an exchange, round 2 R1) only when exactly two adjacent
+  countries changed and the rest holds (a pair where three changed, a capture, a placement, an
+  unread country, the human's seat, two countries of one owner, two countries that do not border
+  each other: none is one);
+- pass: windows of computer turns from the click-driver's log, nets written with kind `net` in the
+  form e020_export.py reads, exported as `net:seq`, the same nets re-derived from the committed
+  per-frame readings, and a frame pair of three changes writes none;
 - score: exit 0 only when the sample is big enough, accurate enough, mostly read and every hidden
-  numeral unread.
+  numeral unread; a repeated (sitting, frame, country) label is refused (R2); each measured-only
+  anchor needs 5 readings from 3 frames, and the committed sample has them (R3).
 """
 import contextlib
 import hashlib
@@ -351,9 +354,10 @@ class EventTest(unittest.TestCase):
     def classify(self, after, before=None, seat_before="yellow", seat_after="yellow"):
         return exchange_events.classify(before or self.before, after, seat_before, seat_after, self.adjacency)
 
-    def test_two_adjacent_countries_lowering_is_an_exchange(self):
+    def test_two_adjacent_countries_lowering_is_a_net_never_an_exchange(self):
         reason, values = self.classify(self.after(a_8=3, a_43=4))
-        self.assertEqual(reason, "exchange")
+        self.assertEqual(reason, "net")                       # R1: the net of one or more exchanges
+        self.assertNotIn("exchange", exchange_events.REASONS)
         self.assertEqual(values, {
             "counter:attacker-before": "5", "counter:attacker-after": "4", "counter:defender-before": "5",
             "counter:defender-after": "3", "country:attacker": "43", "country:defender": "8",
@@ -365,7 +369,7 @@ class EventTest(unittest.TestCase):
 
     def test_the_attacker_is_the_seat_in_turn(self):
         reason, values = self.classify(self.after(a_8=3, a_43=4), seat_before="red", seat_after="red")
-        self.assertEqual((reason, values["country:attacker"]), ("exchange", "8"))
+        self.assertEqual((reason, values["country:attacker"]), ("net", "8"))
 
     def test_a_pair_where_more_than_two_countries_changed_is_not_an_event(self):
         reason, values = self.classify(self.after(a_8=3, a_43=4, a_9=4))
@@ -470,7 +474,7 @@ class PassTest(unittest.TestCase):
             self.assertEqual(events[0]["seq"], 1)
             self.assertEqual(events[0]["frames"], [shas[1], shas[2]])
             self.assertEqual(events[0]["values"]["counter:defender-after"], "3")
-            self.assertEqual(summary["pairs"], {"exchange": 1, "many-changes": 1, "no-change": 1, "outside-a-computer-turn": 1})
+            self.assertEqual(summary["pairs"], {"net": 1, "many-changes": 1, "no-change": 1, "outside-a-computer-turn": 1})
             self.assertEqual(summary["frames"], 5)
             lines = [json.loads(line) for line in (measurements / "frame-readings-20261008T000000Z.jsonl").read_text().splitlines()]
             self.assertEqual([line["computer_turn"] for line in lines], [False, True, True, True, True])
@@ -490,8 +494,20 @@ class PassTest(unittest.TestCase):
             observations = e020_export.events(paths, batch, {s: Path(tmp) / s for s in shas}, {1})
             self.assertEqual(len([o for o in observations if "field" in o]), 2 + 8)
             self.assertEqual([o["ref"] for o in observations if "ref" in o], [f"sha256:{shas[1]}", f"sha256:{shas[2]}"])
+            # R1: the reader's pair is a net, written as one, and the export writes net:seq, never event:seq
+            self.assertEqual(events[0]["kind"], "net")
+            fields = {o["field"] for o in observations if "field" in o}
+            self.assertIn("net:seq", fields)
+            self.assertNotIn("event:seq", fields)
             with self.assertRaises(SystemExit):                    # a measured output is never overwritten
                 readpass.run(sitting, measurements, template_path, True, 2)
+            # the same nets from the committed per-frame readings, without reading a frame
+            (sitting / "readings.jsonl").rename(sitting / "readings-first.jsonl")
+            again = readpass.rederive(sitting, measurements / "frame-readings-20261008T000000Z.jsonl")
+            self.assertEqual(again["nets"], 1)
+            self.assertEqual((sitting / "readings.jsonl").read_text(), (sitting / "readings-first.jsonl").read_text())
+            with self.assertRaises(SystemExit):
+                readpass.rederive(sitting, measurements / "frame-readings-20261008T000000Z.jsonl")
 
 
 class ScoreTest(unittest.TestCase):
@@ -578,6 +594,51 @@ class ScoreTest(unittest.TestCase):
                 code, lines = self.run_score(labels, root)
             self.assertEqual(code, 1)
             self.assertIn("more than 10% unread", lines[-1])
+
+
+    def test_duplicate_labels_are_refused_before_scoring(self):
+        """R2 (Sol's case): 30 distinct readings over 30 frames of three sittings, each labelled seven
+        times, with every board read right, scored ok on "210 visible readings" in round 1."""
+        readings = [{"sitting": f"s{i % 3}", "frame": f"{i:064x}", "country": 20, "army": 3, "owner": "red",
+                     "visible": True} for i in range(30)] * 7
+        board = {c: {"army": 3, "owner": "red", "mark": "white", "why": None} for c in range(1, 47)}
+        with mock.patch.object(score, "frame_path", return_value=None), \
+                mock.patch.object(score.pngdecode, "decode_file", return_value=None), \
+                mock.patch.object(score.boardreader, "read_board", return_value=board):
+            code, lines = score.score({"readings": readings}, "/nowhere", templates=object(), measured_only=[])
+            self.assertEqual(code, 1, lines)
+            self.assertIn("30 (sitting, frame, country) label(s) appear more than once", lines[-1])
+            code, lines = score.score({"readings": readings[:30]}, "/nowhere", templates=object(), measured_only=[])
+            self.assertEqual(code, 1)                              # the 30 distinct ones are too few, not duplicates
+            self.assertIn("fewer than 200 visible readings", lines[-1])
+
+    def test_a_measured_only_anchor_needs_five_readings_from_three_frames(self):
+        """R3 (the task's amendment): a country whose anchor was measured from the frames alone counts
+        only with at least 5 visible labelled readings of it from at least 3 frames."""
+        with tempfile.TemporaryDirectory() as tmp:
+            labels, root = self.sample(tmp)                        # 6 frames, every country labelled
+            with mock.patch.object(score, "MIN_FRAMES", 6):
+                code, lines = score.score(labels, root, templates(), measured_only=[11, 15])
+                self.assertEqual(code, 0, lines)
+                self.assertIn("measured-only anchor, country 11: 6 visible readings from 6 frames, army right on 6",
+                              "\n".join(lines))
+                frames = sorted({(r["sitting"], r["frame"]) for r in labels["readings"]})
+                thin = {"readings": [r for r in labels["readings"]       # country 11 kept on 2 frames only
+                                     if r["country"] != 11 or (r["sitting"], r["frame"]) in frames[:2]]}
+                code, lines = score.score(thin, root, templates(), measured_only=[11, 15])
+                self.assertEqual(code, 1)
+                self.assertIn("country 11's measured anchor has fewer than 5 visible readings from 3 frames", lines[-1])
+
+    def test_the_committed_sample_is_distinct_and_holds_each_measured_anchor(self):
+        """DW2's sample as committed: no repeated label (R2), and 11 and 15, the anchors with no click
+        point (anchors.json `measured_only`), each with 5 visible readings from 3 frames (R3)."""
+        doc = json.loads((ROOT / "experiments" / "E020-wine-first-run" / "measurements" / "labels.json").read_text())
+        self.assertEqual(score.duplicates(doc["readings"]), [])
+        self.assertEqual(boardreader.measured_only_anchors(), [11, 15])
+        for c in boardreader.measured_only_anchors():
+            own = [r for r in doc["readings"] if r["country"] == c and r["visible"]]
+            self.assertGreaterEqual(len(own), score.MIN_ANCHOR_READINGS, c)
+            self.assertGreaterEqual(len({(r["sitting"], r["frame"]) for r in own}), score.MIN_ANCHOR_FRAMES, c)
 
 
 class MeasureTest(unittest.TestCase):

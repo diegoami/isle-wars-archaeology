@@ -12,8 +12,10 @@ raw and immutable; T38 round 2, R3, R6, R7).
   becomes `start_state.sha256` only when it is the F019 row's (the export re-reads the table);
 * every frame of `frames-index.jsonl` exists and has the sha256 the index says;
 * `readings.jsonl` (the reading pass's output, optional: a sitting with no reading yet is exported
-  with no event) holds one event per line, `{"game": n, "seq": n, "frames": [sha256, ...],
-  "values": {field: value}}`, whose game is one the click-driver started (`actions.jsonl`), whose
+  with no event) holds one event per line, `{"kind": k, "game": n, "seq": n, "frames": [sha256, ...],
+  "values": {field: value}}`, whose kind is the batch's event (`exchange`, `bomb`: one event,
+  written with `event:seq`) or `net` (T40 round 2, R1: the net of one or more of them between two
+  frames, written with `net:seq`, which tools/check_counts.py never counts as an event), whose game is one the click-driver started (`actions.jsonl`), whose
   (game, seq) is unique, whose frames (at least two, distinct) are frames of the index, and whose
   values are exactly the batch's event fields, each valid for its role (tools/check_counts.py
   value_problem: integers and colour words only, so no text of the original reaches a record).
@@ -49,6 +51,10 @@ EXPERIMENT = sitting.EXPERIMENT
 RUN_ID = re.compile(rf"^{EXPERIMENT}-r(\d{{4,}})(?:\.manifest)?\.json$")
 SHA = re.compile(r"^[0-9a-f]{64}$")
 RESTORE = "fresh prefix sync from the F019 install, no save"
+# vocabulary/interventions.md: screenshots are passive instrumentation, I1 (T40 round 2, R4). A
+# sitting's frames are the watcher's screenshots of the display, so every record declares them.
+INTERVENTIONS = [{"level": "I1", "what": "screenshots of the display (the watcher's frames of the Xvfb screen); "
+                  "no memory read, no modified file"}]
 SUCCESSOR_SET = "iwp-2.0-de5a82a2"    # artifacts/known.json: the shipped set with xtras/Islepro.skr declared a runtime write
 
 
@@ -127,6 +133,10 @@ def events(paths, batch, frames, games):
             raise ExportRefused(f"{where}: game {game!r} is not a game the click-driver started; nothing was written")
         if not isinstance(seq, int) or isinstance(seq, bool) or seq < 1 or (game, seq) in seen:
             raise ExportRefused(f"{where}: seq {seq!r} is not a new event ordinal of game {game}; nothing was written")
+        kind = event.get("kind")
+        if not isinstance(kind, str) or kind not in (batch.get("event"), "net"):
+            raise ExportRefused(f"{where}: kind {kind!r} is neither the batch's event {batch.get('event')!r} nor "
+                                "'net'; a reading says which it is; nothing was written")
         seen.add((game, seq))
         cited = event.get("frames")
         if not isinstance(cited, list) or len(set(map(str, cited))) < 2 or any(c not in frames for c in cited):
@@ -134,7 +144,8 @@ def events(paths, batch, frames, games):
         values = event.get("values")
         if not isinstance(values, dict) or sorted(values) != sorted(fields):
             raise ExportRefused(f"{where}: the values are exactly the batch's event fields {fields}; nothing was written")
-        rows = [("game:ordinal", str(game)), ("event:seq", str(seq))] + [(f, values[f]) for f in fields]
+        seq_field = check_counts.NET_SEQ if kind == "net" else "event:seq"
+        rows = [("game:ordinal", str(game)), (seq_field, str(seq))] + [(f, values[f]) for f in fields]
         for field, value in rows:
             problem = check_counts.value_problem(field, value)
             if problem:
@@ -190,7 +201,7 @@ def build(paths, name, batch, doc, run_id, rep, table):
         "artifact": {"set": sitting.SET_ID, "variant": sitting.VARIANT},
         "runtime": {"driver": f"experiments/{EXPERIMENT}-wine-first-run/launcher.py@{doc['driver_commit']}",
                     "platform": sitting.PLATFORM, "fingerprint": fingerprint},
-        "interventions": [{"level": "I0", "what": "none"}],
+        "interventions": [dict(i) for i in INTERVENTIONS],
         "start_state": {"id": "S-iwp-prefix-sync", "sha256": doc["binary"]["sha256"], "restore": RESTORE},
         "seed": None,
         "actions": {"script": f"experiments/{EXPERIMENT}-wine-first-run/play.steps",

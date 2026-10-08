@@ -134,7 +134,7 @@ After the first run this file is append-only. A changed design is a new experime
 ## T40: the reading pass (appended; `docs/tasks/T40.md`, issue #119)
 
 The reading pass that the "Not yet built" note above says was missing is `reader/`. It turns a
-sitting's frames into per-frame readings and exchange events, by pixels only (no OCR, no text):
+sitting's frames into per-frame readings and net observations, by pixels only (no OCR, no text):
 
 - `pngdecode.py` reads the frames (8-bit RGB, every PNG filter). `glyphs.py` finds the blobs of the
   two numeral colours and matches them against bitmap templates. `boardreader.py` reads the 46
@@ -149,12 +149,35 @@ sitting's frames into per-frame readings and exchange events, by pixels only (no
   (`measurements/anchor-labels.json` says which country each is); 44 lie within 34 pixels of a click
   point of `walkthroughs/coordinates.md`, countries 11 and 15 (which that list lacks, #120) are
   measured from the same frames.
-- An event is two consecutive frames of one computer's turn in which exactly two bordering countries
-  changed and nothing else is ambiguous (`exchange_events.py` lists what is not an event). The
-  sampling limit is built in: frames are about 1.4 s apart and the computer plays several exchanges in
-  that time, so an event is the net of two or more exchanges. `outcomes.json` and
-  `measurements/events-tabulation-r1.json` say what that means for each claim.
+  The two measured-only anchors are named in `reader/anchors.json` (`measured_only`), and `score.py`
+  holds each to at least 5 visible labelled readings from at least 3 frames (the task's amendment of
+  2026-10-09, Sol's round-1 R3): the third stratum of the sample,
+  `measurements/sample-selection-anchors.json`, adds six seeded random frames, two per sitting,
+  labelled for both. `score.py` also refuses a sample with a (sitting, frame, country) labelled twice
+  (R2).
+- A **net observation** is two consecutive frames of one computer's turn in which exactly two
+  bordering countries changed and nothing else is ambiguous (`exchange_events.py` lists what is not
+  one). The sampling limit is built in: frames are about 1.4 s apart and the computer plays several
+  exchanges in that time, so what changed is the net of one or more exchanges, never one known to be
+  single. Round 2 (Sol's R1) makes that machine-readable: the reader writes kind `net`, the export
+  writes `net:seq` (never `event:seq`), and `tools/check_counts.py` counts nets apart, never as
+  exchanges, while every claim rule refuses any input that holds one, whatever its floors.
+  `outcomes.json` and `measurements/nets-tabulation-r2.json` (descriptive only) say what that means
+  for each claim; `measurements/events-tabulation-r1.json` is round 1's table of the same 55 nets,
+  kept as it was.
 - Outputs, per sitting: `measurements/frame-readings-<id>.jsonl` and `readings-summary-<id>.json`
-  (numbers and colour words only), `<sitting>/readings.jsonl` (the events, the form `e020_export.py`
-  reads); the records `E020-r0003` to `E020-r0005` are their exports. `E020-r0001` and `E020-r0002`
-  stay as they were, with no events.
+  (numbers and colour words only; round 1's summaries call the nets `exchange` and `events`, which
+  round 2 renamed), and `<sitting>/readings.jsonl` on the user's machine (the nets, the form
+  `e020_export.py` reads). Round 2 re-derived it from the committed per-frame readings
+  (`readpass.py --from-frame-readings`, no frame read again; the same 55 lines with `"kind": "net"`)
+  and kept round 1's file beside it as `<sitting>/readings-r1.jsonl`. The records `E020-r0004`
+  (20261008T184505Z), `E020-r0005` (20261008T195537Z) and `E020-r0006` (20261008T204817Z) are their
+  exports. Round 1's exports of the same sittings, numbered `E020-r0003` to `E020-r0005` on this
+  branch before T41's `E020-r0003` reached main, were never merged and were replaced by these (with
+  `net:seq` and I1). `E020-r0001` to `E020-r0003` stay as they were, with no events.
+- Intervention: every record of a sitting declares I1, screenshots (`vocabulary/interventions.md`;
+  Sol's round-1 R4). `E020-r0001` to `E020-r0003`, exported before this fix, declare I0; they are not
+  changed, and `runs/E020/CORRECTIONS.md` says so beside them.
+- The evidence bundles stay on the user's machine (constraint A of the rule 18 carve-out), so no
+  `release:E020` exists to download: a reviewer cannot re-hash the frames from a release, only on
+  this machine (Sol's round-1 R5, by design).

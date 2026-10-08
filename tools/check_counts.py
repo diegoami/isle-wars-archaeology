@@ -22,6 +22,13 @@ real games, never of field occurrences or export ids):
   re-reads that disagree on an event are a problem); two events with one identity in one record
   are a problem.
 * A **game** is a distinct (sitting, game) pair among the counted events.
+* A **net observation** (T40 round 2, R1) is a group that carries `net:seq` in place of
+  `event:seq`: two frames between which two bordering countries changed, which is the net of one or
+  more exchanges, never known to be one. It is checked like an event (every field once, valid
+  values, two frames the record holds) and counted apart, as a descriptive measurement. It is never
+  an event: no floor counts it and every claim rule refuses its input when one is among it
+  (`exchanges_only`), whatever the floors. A group with both `event:seq` and `net:seq` is a
+  problem.
 
 Per-claim corroboration (R9): `experiments/E020-wine-first-run/outcomes.json`, when committed,
 declares one outcome per claim id (`corroborated`, `narrowed`, `unestablished` or `pending`). A
@@ -49,7 +56,7 @@ EXPERIMENT = "E020"
 # --- the field vocabulary and the value each role may carry (constraint D; R6) ----------------
 
 FIELD = re.compile(r"^[a-z][a-z-]*:[a-z][a-z-]*$")      # Done-when 4's structural kind:role name
-INTEGER_KINDS = frozenset({"counter", "hand", "game", "event", "country", "sitting"})
+INTEGER_KINDS = frozenset({"counter", "hand", "game", "event", "net", "country", "sitting"})
 COLOUR_KINDS = frozenset({"owner"})
 COLOURS = frozenset({"blue", "green", "red", "yellow"})  # the four seat colours (F019 Q-SET-02: seat 1 blue)
 COUNTRIES = 46                                           # F017: the board's countries are numbered 1 to 46
@@ -73,7 +80,7 @@ def value_problem(field, value):
         if not INTEGER.fullmatch(value):
             return f"{field}: {value!r} is not a plain non-negative integer"
         number = int(value)
-        if kind in ("game", "event") and number < 1:
+        if kind in ("game", "event", "net") and number < 1:
             return f"{field}: {value!r} is an ordinal, from 1"
         if kind == "country" and not 1 <= number <= COUNTRIES:
             return f"{field}: {value!r} is not a country index from 1 to {COUNTRIES}"
@@ -109,7 +116,10 @@ def event_fields(batch):
 
 def vocabulary(batch):
     """Every field a record of the batch may carry."""
-    return ["sitting:epoch", "game:ordinal", "event:seq"] + event_fields(batch)
+    return ["sitting:epoch", "game:ordinal", "event:seq", NET_SEQ] + event_fields(batch)
+
+
+NET_SEQ = "net:seq"       # the ordinal of a net observation, which is never an event (R1)
 
 
 # --- records and events -------------------------------------------------------------------------
@@ -129,11 +139,13 @@ def records_of(batch, records_root=RECORDS):
     return out
 
 
-def events_of(doc, name, batch):
-    """({identity: values}, problems) for one record: its complete events, each once."""
+def observations_of(doc, name, batch):
+    """({identity: values} of events, {identity: values} of net observations, problems) for one
+    record: its complete events and its complete net observations, each once. A net observation is
+    never among the events (R1)."""
     problems = []
     if not isinstance(doc, dict) or doc.get("schema") != "run/1":
-        return {}, ["not a run/1 document"]
+        return {}, {}, ["not a run/1 document"]
     if doc.get("experiment") != EXPERIMENT or doc.get("arm") != name:
         problems.append(f"experiment {doc.get('experiment')!r} arm {doc.get('arm')!r} is not "
                         f"{EXPERIMENT} {name!r}")
@@ -163,17 +175,23 @@ def events_of(doc, name, batch):
         groups[step].append(obs)
     if len(sittings) != 1:
         problems.append(f"{len(sittings)} sitting:epoch observations; a record names exactly one sitting")
-        return {}, problems
+        return {}, {}, problems
     sitting = sittings[0]
-    need = ["game:ordinal", "event:seq"] + event_fields(batch)
-    events = {}
+    events, nets = {}, {}
     for step, group in sorted(groups.items()):
         fields = Counter(o["field"] for o in group if "field" in o)
+        if fields["event:seq"] and fields[NET_SEQ]:
+            problems.append(f"step {step}: carries both event:seq and {NET_SEQ}; an exchange or a net, never both")
+            continue
+        net = bool(fields[NET_SEQ])
+        seq_field = NET_SEQ if net else "event:seq"
+        kind = "net observation" if net else "event"
+        need = ["game:ordinal", seq_field] + event_fields(batch)
         refs = [o.get("ref", "") for o in group if "ref" in o]
         missing = [f for f in need if fields[f] == 0]
         doubled = sorted(f for f, n in fields.items() if n > 1)
         if missing or doubled:
-            problems.append(f"step {step}: not one complete event (missing {missing or 'none'}, "
+            problems.append(f"step {step}: not one complete {kind} (missing {missing or 'none'}, "
                             f"repeated {doubled or 'none'})")
             continue
         shas = [m.group(1) for r in refs if (m := SHA.fullmatch(r))]
@@ -181,31 +199,49 @@ def events_of(doc, name, batch):
             problems.append(f"step {step}: an event cites at least two distinct frames the record's outputs hold")
             continue
         values = {o["field"]: o["value"] for o in group if "field" in o}
-        key = (sitting, int(values["game:ordinal"]), int(values["event:seq"]))
-        if key in events:
-            problems.append(f"step {step}: event {key} appears twice in one record")
+        key = (sitting, int(values["game:ordinal"]), int(values[seq_field]))
+        into = nets if net else events
+        if key in into:
+            problems.append(f"step {step}: {kind} {key} appears twice in one record")
             continue
-        events[key] = values
+        into[key] = values
+    return events, nets, problems
+
+
+def events_of(doc, name, batch):
+    """({identity: values}, problems) for one record: its complete events, each once (never its
+    net observations)."""
+    events, _nets, problems = observations_of(doc, name, batch)
     return events, problems
 
 
-def batch_events(name, batch, records_root=RECORDS):
-    """({identity: values}, problems) over every record of the batch, each event counted once."""
-    merged, problems = {}, []
+def batch_observations(name, batch, records_root=RECORDS):
+    """({identity: values} of events, {identity: values} of net observations, problems) over every
+    record of the batch, each counted once."""
+    merged = {"event": {}, "net observation": {}}
+    problems = []
     for path, doc in records_of(name, records_root):
         if isinstance(doc, Exception):
             problems.append(f"{path.name}: not JSON ({doc})")
             continue
-        events, record_problems = events_of(doc, name, batch)
+        events, nets, record_problems = observations_of(doc, name, batch)
         problems += [f"{path.name}: {p}" for p in record_problems]
-        for key, values in events.items():
-            if key in merged and merged[key] != values:
-                problems.append(f"{path.name}: event {key} disagrees with an earlier record of the same "
-                                "sitting; a re-read that changes a reading names the record it supersedes "
-                                "in the finding, and the counts stop until it is resolved")
-                continue
-            merged[key] = values
-    return merged, problems
+        for kind, found in (("event", events), ("net observation", nets)):
+            for key, values in found.items():
+                if key in merged[kind] and merged[kind][key] != values:
+                    problems.append(f"{path.name}: {kind} {key} disagrees with an earlier record of the same "
+                                    "sitting; a re-read that changes a reading names the record it supersedes "
+                                    "in the finding, and the counts stop until it is resolved")
+                    continue
+                merged[kind][key] = values
+    return merged["event"], merged["net observation"], problems
+
+
+def batch_events(name, batch, records_root=RECORDS):
+    """({identity: values}, problems) over every record of the batch, each event counted once
+    (net observations are never among them)."""
+    events, _nets, problems = batch_observations(name, batch, records_root)
+    return events, problems
 
 
 # --- per-claim rules (R9) ------------------------------------------------------------------------
@@ -273,11 +309,29 @@ def rule_batch_floor(events, batch):
     return ok_e and ok_g, lines + more
 
 
-CLAIM_RULES = {
+def exchanges_only(rule):
+    """The claim rule, refusing any input that holds a net observation (R1). Every claim of the
+    batch list is about single events (one exchange, one bomb play): a net of several exchanges can
+    never stand for one, so a rule given a value set with `net:seq`, or without `event:seq`, is not
+    met, whatever its floors. Q-CMB-06's loss share is counted per exchange like the rest; nets are
+    not summed into it (a net hides the exchanges inside it, and the captures are never nets)."""
+    def guarded(events, batch):
+        foreign = sum(1 for v in events.values() if NET_SEQ in v or "event:seq" not in v)
+        met, lines = rule(events, batch)
+        if foreign:
+            return False, lines + [f"    {foreign} net observation(s) among the events: refused, a net is never "
+                                   "an exchange or a play"]
+        return met, lines
+    guarded.__name__ = rule.__name__
+    guarded.__doc__ = rule.__doc__
+    return guarded
+
+
+CLAIM_RULES = {claim: exchanges_only(rule) for claim, rule in {
     "Q-CMB-04": rule_cmb_04, "Q-CMB-05": rule_cmb_05, "Q-CMB-06": rule_cmb_06,
     "Q-CMB-07": rule_cmb_07, "Q-CMB-11": rule_cmb_11,
     "C-CRD-06": rule_batch_floor, "Q-BON-08": rule_batch_floor,
-}
+}.items()}
 
 
 def declared_outcomes(scenarios):
@@ -304,13 +358,15 @@ def declared_outcomes(scenarios):
 def check_batch(name, batch, outcomes=None, records_root=RECORDS):
     """(problems, lines) for one batch."""
     outcomes = outcomes or {}
-    events, problems = batch_events(name, batch, records_root)
+    events, nets, problems = batch_observations(name, batch, records_root)
     noun = "exchanges" if batch.get("event") == "exchange" else f"{batch.get('event', 'event')} plays"
     games = {(s, g) for s, g, _ in events}
     floor, games_floor = int(batch.get("events_min", 0)), int(batch.get("games_min", 0))
     lines = [f"batch {name}: {batch.get('questions', '')}",
              f"  {noun} (complete, uniquely identified): target >= {floor}, observed {len(events)}",
-             f"  games (distinct sitting and game): target >= {games_floor}, observed {len(games)}"]
+             f"  games (distinct sitting and game): target >= {games_floor}, observed {len(games)}",
+             f"  net observations (two frames' net of one or more {noun}; descriptive, never counted "
+             f"as {noun}): {len(nets)}"]
     if not batch.get("event") or not event_fields(batch):
         problems.append(f"{name}: the batch names no event and no event fields")
     if len(events) < floor:

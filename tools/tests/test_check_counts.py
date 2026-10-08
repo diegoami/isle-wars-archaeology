@@ -258,6 +258,68 @@ class CorroborationTest(CountsWorld):
         self.assertTrue(any("the outcome is one of" in p for p in problems), problems)
 
 
+class NetTest(CountsWorld):
+    """T40 round 2, R1: a net of one or more exchanges between two frames is never an exchange. Sol's
+    round-1 case: 550 net-valued events passed Q-CMB-06's and Q-CMB-11's rules."""
+
+    def satisfying(self):
+        """{claim: (batch, events as (game, seq, values))}, each set meeting the claim's own rule."""
+        cmb04 = []
+        for size in (2, 3, 4, 5, 10):
+            cmb04 += [dict(EXCHANGE, **{"counter:attacker-before": str(size), "counter:attacker-after": str(size - 1)})] * 110
+        cmb05 = [dict(EXCHANGE, **{"counter:attacker-before": "12", "counter:attacker-after": "11",
+                                   "counter:defender-before": str(d), "counter:defender-after": str(d)})
+                 for d in (1, 2, 3, 4, 10) for _ in range(110)]
+        split = [dict(EXCHANGE, **{"country:attacker": "1"})] * 275 + [dict(EXCHANGE)] * 275
+        bombs = [(g, s, dict(BOMB)) for g in (1, 2, 3) for s in (1, 2, 3)]
+        as_events = lambda values: [(1, i + 1, v) for i, v in enumerate(values)]   # noqa: E731
+        return {"Q-CMB-04": ("cmb-accumulation", as_events(cmb04)), "Q-CMB-05": ("cmb-accumulation", as_events(cmb05)),
+                "Q-CMB-06": ("cmb-accumulation", as_events(split)), "Q-CMB-07": ("cmb-accumulation", as_events(split)),
+                "Q-CMB-11": ("cmb-accumulation", as_events(split)),
+                "C-CRD-06": ("bomb-sampling", bombs), "Q-BON-08": ("bomb-sampling", bombs)}
+
+    def test_every_claim_rule_refuses_net_valued_input_whatever_the_floors(self):
+        """In memory, as Sol passed them: the same values meet each rule as exchanges and fail it as nets."""
+        self.assertEqual(sorted(self.satisfying()), sorted(check_counts.CLAIM_RULES))
+        for claim, (batch, events) in self.satisfying().items():
+            with self.subTest(claim=claim):
+                rule, conf = check_counts.CLAIM_RULES[claim], self.batches[batch]
+                as_exchanges = {("s", g, s): dict(v, **{"game:ordinal": str(g), "event:seq": str(s)}) for g, s, v in events}
+                as_nets = {("s", g, s): dict(v, **{"game:ordinal": str(g), "net:seq": str(s)}) for g, s, v in events}
+                self.assertTrue(rule(as_exchanges, conf)[0])
+                met, lines = rule(as_nets, conf)
+                self.assertFalse(met)
+                self.assertIn("net observation(s) among the events: refused", "\n".join(lines))
+                one_net = dict(as_exchanges)                    # one net among enough exchanges still refuses
+                one_net[("s", 9, 9)] = dict(next(iter(as_nets.values())), **{"game:ordinal": "9"})
+                self.assertFalse(rule(one_net, conf)[0])
+
+    def test_nets_in_a_record_are_counted_apart_and_corroborate_nothing(self):
+        for claim, (batch, events) in self.satisfying().items():
+            with self.subTest(claim=claim):
+                fields = BOMB_FIELDS if batch == "bomb-sampling" else EXCHANGE_FIELDS
+                folder = self.runs / batch
+                for old in folder.glob("*.json") if folder.is_dir() else ():
+                    old.unlink()
+                self.write(batch, "E020-r0001.json", record(batch, "E020-r0001", 1, events, fields, seq_field="net:seq"))
+                self.declare(**{claim.replace("-", "_"): "corroborated"})
+                problems, lines = self.check(batch)
+                self.assertTrue(any(f"{claim} is declared corroborated" in p for p in problems), problems)
+                self.assertIn("observed 0", lines[1])
+                self.assertIn(f"never counted as {'bomb plays' if batch == 'bomb-sampling' else 'exchanges'}): "
+                              f"{len(events)}", lines[3])
+                events_, nets, record_problems = check_counts.observations_of(
+                    record(batch, "E020-r0001", 1, events, fields, seq_field="net:seq"), batch, self.batches[batch])
+                self.assertEqual((len(events_), len(nets), record_problems), (0, len(events), []))
+
+    def test_a_group_that_is_both_an_event_and_a_net_is_a_problem(self):
+        doc = record("cmb-accumulation", "E020-r0001", 1, self.exchanges(1), EXCHANGE_FIELDS)
+        doc["observations"].append({"step": 1, "source": "screen", "field": "net:seq", "value": "1"})
+        events, nets, problems = check_counts.observations_of(doc, "cmb-accumulation", self.batches["cmb-accumulation"])
+        self.assertEqual((events, nets), ({}, {}))
+        self.assertTrue(any("both event:seq and net:seq" in p for p in problems), problems)
+
+
 class ValueRuleTest(unittest.TestCase):
     def test_role_values(self):
         ok = [("counter:attacker-before", "0"), ("counter:x", "999"), ("owner:victim", "blue"),

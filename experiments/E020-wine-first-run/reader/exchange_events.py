@@ -1,6 +1,6 @@
 """Exchange events from two readings of the board (T40). Pure functions, no pixels.
 
-An event is a pair of consecutive frames of one computer's turn in which exactly two adjacent
+A net observation is a pair of consecutive frames of one computer's turn in which exactly two adjacent
 countries change, and nothing else is ambiguous. What it records: the attacker's and the defender's
 counters before and after, their country numbers, and the owners before. The attacker is the
 country of the seat whose turn it is (the boxed row of the score panel, in both frames).
@@ -15,7 +15,9 @@ What is NOT an event (each counted, never guessed, in the summary):
 
 One limit is built into the sampling and stated in the finding, not hidden here: the watcher takes
 a frame about every 1.4 s, while the computer's passes follow each other faster, so two changed
-counters between two frames are the net of two or more exchanges, never one.
+counters between two frames are the net of one or more exchanges, never known to be one. The
+classification is therefore `net`, never `exchange` (T40 round 2, R1): readpass writes it with kind
+`net`, the export as `net:seq`, and tools/check_counts.py never counts it as an exchange.
 """
 import json
 from pathlib import Path
@@ -28,7 +30,7 @@ ADJACENCY_FILE = (Path(__file__).resolve().parents[2] / "E015-pro-board-reading"
 # windows): the changes of such a pair belong to the computers, and which one is not known.
 HUMAN_SEAT = "blue"
 
-REASONS = ("exchange", "unread", "no-change", "one-change", "many-changes", "not-adjacent", "seat-unknown",
+REASONS = ("net", "unread", "no-change", "one-change", "many-changes", "not-adjacent", "seat-unknown",
            "human-seat", "same-owner", "no-attacker", "ownership-change", "counter-rise")
 
 
@@ -49,7 +51,7 @@ def complete(board):
 
 def classify(before, after, seat_before, seat_after, adjacency):
     """(reason, values): the reason is one of REASONS; `values` is the event's field dict when the
-    reason is 'exchange', else None."""
+    reason is 'net', else None."""
     if not complete(before) or not complete(after):
         return "unread", None
     changed = [c for c in sorted(before) if (before[c]["army"], before[c]["owner"]) != (after[c]["army"], after[c]["owner"])]
@@ -77,7 +79,7 @@ def classify(before, after, seat_before, seat_after, adjacency):
         return "ownership-change", None
     if any(after[c]["army"] > before[c]["army"] for c in (a, b)):
         return "counter-rise", None
-    return "exchange", {
+    return "net", {
         "counter:attacker-before": str(before[attacker]["army"]), "counter:attacker-after": str(after[attacker]["army"]),
         "counter:defender-before": str(before[defender]["army"]), "counter:defender-after": str(after[defender]["army"]),
         "country:attacker": str(attacker), "country:defender": str(defender),

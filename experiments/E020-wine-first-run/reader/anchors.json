@@ -1,6 +1,8 @@
 {
  "what": "centres of the army numbers of the 46 countries, measured over every frame of the sittings",
  "frames": 2267,
+ "measured_only": [11, 15],
+ "measured_only_note": "countries with no click point in walkthroughs/coordinates.md (#120): their anchors are measured from the frames alone; score.py requires at least 5 labelled readings of each from at least 3 frames (T40, the task's R3 amendment of 2026-10-09)",
  "anchors": {
   "1": {
    "x": 51.5,

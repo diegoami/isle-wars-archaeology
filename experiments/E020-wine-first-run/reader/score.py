@@ -14,7 +14,11 @@ Prints the sample size and the reader's accuracy. Exits 0 only when:
     and the owner's colour on at least 98% of those it does not mark unread;
   * at most 10% of the visible readings are marked unread (an army or an owner not read);
   * every reading whose numeral is not visible is marked unread (the reader never reads what is not
-    there).
+    there);
+  * no (sitting, frame, country) is labelled twice (R2: a repeat is refused before scoring);
+  * each country whose anchor was measured from the frames alone (no click point in
+    walkthroughs/coordinates.md, #120: 11 and 15; `measured_only` in anchors.json) has at least 5
+    visible labelled readings from at least 3 frames (the task's R3 amendment), scored like the rest.
 """
 import json
 import sys
@@ -31,6 +35,7 @@ SITTING_ROOT = Path("/mnt/c/Temp/iwp-shots/wine")
 TEMPLATES = SITTING_ROOT / "reader-templates.json"
 MIN_READINGS, MIN_FRAMES, MIN_SITTINGS = 200, 30, 3
 MIN_ACCURACY, MAX_UNREAD = 0.98, 0.10
+MIN_ANCHOR_READINGS, MIN_ANCHOR_FRAMES = 5, 3     # per measured-only anchor (the task's R3 amendment, 2026-10-09)
 
 
 def frame_path(root, sitting, sha):
@@ -42,10 +47,26 @@ def frame_path(root, sitting, sha):
     raise SystemExit(f"frame {sha} is not in the index of sitting {sitting}")
 
 
-def score(labels, root=SITTING_ROOT, templates=None, out=print):
-    """(exit code, report lines) for a labels document."""
-    templates = templates or glyphs.Templates.load(TEMPLATES)
+def duplicates(entries):
+    """The (sitting, frame, country) keys labelled more than once (R2): one reading is one country
+    of one frame, so a repeat would count one validated reading several times."""
+    counts = Counter((e["sitting"], e["frame"], e["country"]) for e in entries)
+    return sorted(k for k, n in counts.items() if n > 1)
+
+
+def score(labels, root=SITTING_ROOT, templates=None, out=print, measured_only=None):
+    """(exit code, report lines) for a labels document. `measured_only` is the countries whose
+    anchor was measured from the frames with no click point to check it against (anchors.json;
+    by default boardreader.measured_only_anchors())."""
     entries = labels["readings"]
+    repeated = duplicates(entries)
+    if repeated:
+        shown = ", ".join(f"{s} {f[:12]} country {c}" for s, f, c in repeated[:5])
+        return 1, [f"score FAILED: {len(repeated)} (sitting, frame, country) label(s) appear more than once "
+                   f"({shown}{', ...' if len(repeated) > 5 else ''}); a repeated label is one reading, "
+                   "never several, and the sample is not scored"]
+    measured_only = boardreader.measured_only_anchors() if measured_only is None else measured_only
+    templates = templates or glyphs.Templates.load(TEMPLATES)
     by_frame = defaultdict(list)
     for entry in entries:
         by_frame[(entry["sitting"], entry["frame"])].append(entry)
@@ -86,13 +107,23 @@ def score(labels, root=SITTING_ROOT, templates=None, out=print):
         f"owner colour right: {owners_read - len(owner_wrong)} of {owners_read} read = {owner_acc:.1%}",
         f"hidden numerals read as numbers: {len(hidden_read)} of {len(hidden)}",
     ]
+    anchor_problems = []
+    for c in sorted(measured_only):
+        own = [e for e in visible if e["country"] == c]
+        own_frames = {(e["sitting"], e["frame"]) for e in own}
+        right = sum(1 for e in own if boards[(e["sitting"], e["frame"])][c]["army"] == e["army"])
+        lines.append(f"measured-only anchor, country {c}: {len(own)} visible readings from {len(own_frames)} frames, "
+                     f"army right on {right}")
+        if len(own) < MIN_ANCHOR_READINGS or len(own_frames) < MIN_ANCHOR_FRAMES:
+            anchor_problems.append(f"country {c}'s measured anchor has fewer than {MIN_ANCHOR_READINGS} visible "
+                                   f"readings from {MIN_ANCHOR_FRAMES} frames")
     for e, r in army_wrong:
         lines.append(f"  army wrong: sitting {e['sitting']} frame {e['frame'][:12]} country {e['country']}: "
                      f"labelled {e['army']}, read {r['army']}")
     for e, r in owner_wrong:
         lines.append(f"  owner wrong: sitting {e['sitting']} frame {e['frame'][:12]} country {e['country']}: "
                      f"labelled {e['owner']}, read {r['owner']}")
-    problems = []
+    problems = list(anchor_problems)
     if n < MIN_READINGS:
         problems.append(f"fewer than {MIN_READINGS} visible readings")
     if len(frames) < MIN_FRAMES:
