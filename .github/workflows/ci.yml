@@ -26,5 +26,7 @@ jobs:
       # explicit, not findings/F*.md: F001 and F004 are purely static and F010+ are out of
       # scope at the pinned 1bcdb70 tool, so a glob over all findings could never be green.
       - run: for f in findings/F002-iwp-runtime-wine-xvfb.md findings/F003-iwp-observable-state-inventory.md findings/F005-iw-dos-runtime-dosbox-x.md findings/F006-iwp-driver-cycle.md findings/F007-iw-dos-observable-state-inventory.md findings/F009-iw-dos-save-format.md; do python3 tools/check_citations.py "$f" || exit 1; done
+      # The E020 reader (T40) and its tests use numpy: the version on the user's machine.
+      - run: python3 -m pip install numpy==1.26.4
       # Registration, the format rules and the guards (T02).
       - run: python3 -m unittest discover -s tests
