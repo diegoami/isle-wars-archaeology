@@ -10,7 +10,9 @@ What it pins, each a round-1 finding:
   origin), and the watcher gets the session's environment and game window, whatever the caller's
   DISPLAY is;
 - R10: a `click!` the screen did not answer aborts the sitting through the session (step-failed),
-  with the step's line logged as failed first (R12).
+  with the step's line logged as failed first (R12);
+- round 3, R1: a board that never goes quiet, or a `settle` that never settles inside a block,
+  sends no further input and ends the sitting `aborted: not-ready: <reason>`, with no normal summary.
 """
 import json
 import os
@@ -59,6 +61,8 @@ class E020SessionTest(base.DriverWorld):
         super().setUp()
         self.sent = []                       # (op, args, DISPLAY of the engine's environment)
         self.unchanged = set()               # click! points the screen does not answer
+        self.unsettled = set()               # settle argument tuples whose area never settles
+        self.unsettled_after = None          # a click! point after which a bare `settle` never settles
         world_start = self.start_game
 
         def start_game(engine):
@@ -81,7 +85,8 @@ class E020SessionTest(base.DriverWorld):
         self.sent.append((step.op, step.args, engine.env["DISPLAY"]))
         op = step.op
         if op == "settle":
-            engine.note("screen", f"settle: watched area unchanged for {step.args[0] if step.args else 0} s (s)", 4.2)
+            engine.note("screen", f"settle: watched area unchanged for {step.args[0] if step.args else 0} s (s)",
+                        "not within the time allowed" if self.never_settles(step) else 4.2)
         elif op == "click-until?":
             engine.note("screen", "click-until: candidate that worked", "55,193 (number 1 of 44)")
         elif op == "click-any?":
@@ -91,6 +96,12 @@ class E020SessionTest(base.DriverWorld):
                 engine.fail(f"step on line {step.line}: the screen did not change after the click at "
                             f"{step.args[0]},{step.args[1]}")
             engine.note("screen", f"click at {step.args[0]},{step.args[1]}: screen changed after the click (s)", 0.02)
+
+    def never_settles(self, step):
+        if tuple(step.args) in self.unsettled:
+            return True
+        clicked = [tuple(a) for o, a, _ in self.sent if o == "click!"]
+        return not step.args and self.unsettled_after is not None and clicked[-1:] == [self.unsettled_after]
 
     def sitting(self):
         made = self.session()
@@ -128,6 +139,31 @@ class E020SessionTest(base.DriverWorld):
         last = self.actions()[-1]
         self.assertEqual((last["op"], last["args"], last["status"], last["error"]),
                          ("click!", [565, 532], "failed", "step-failed"))
+
+    def test_a_board_that_never_goes_quiet_sends_no_placement_or_commit(self):
+        """Round 3, R1: the `quiet` blocks spent, nothing more is sent, and the session records why."""
+        self.unsettled.add((4,))
+        made, summary = self.sitting()
+        self.assertTrue(made.status.startswith("aborted: not-ready: the board was not quiet after 6 quiet blocks"),
+                        made.status)
+        ops = [o for o, _, _ in self.sent]
+        self.assertNotIn("click-until?", ops)                       # no placement
+        self.assertNotIn((307, 543), [tuple(a) for o, a, _ in self.sent if o == "click!"])   # no ALL (commit)
+        self.assertEqual(ops.count("settle"), 1 + 6)                # new-game's own, then the quiet blocks
+        self.assertEqual(ops[-1], "settle")                         # nothing after the last wait
+        self.assertTrue(summary["ended"].startswith("aborted: not-ready: "), summary)
+
+    def test_a_wait_inside_the_commit_that_never_settles_stops_before_pass(self):
+        """Round 3, R1: the commit block's own `settle` (no argument) is not ignored either: PASS is
+        never clicked when the screen did not settle after PLACE."""
+        self.unsettled_after = (497, 543)                           # PLACE
+        made, summary = self.sitting()
+        self.assertTrue(made.status.startswith("aborted: not-ready: "), made.status)
+        clicked = [tuple(a) for o, a, _ in self.sent if o == "click!"]
+        self.assertIn((497, 543), clicked)                          # the commit was reached
+        self.assertNotIn((417, 530), clicked)                       # PASS never clicked
+        self.assertEqual((self.actions()[-1]["op"], self.actions()[-1]["error"]), ("settle", "not-ready"))
+        self.assertNotEqual(summary.get("ended"), "games-max")
 
     def test_the_actions_log_names_the_game_and_its_end(self):
         self.sitting()

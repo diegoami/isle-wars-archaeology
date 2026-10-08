@@ -146,6 +146,9 @@ def build(paths, name, batch, doc, run_id, rep, table):
     observations = [{"step": 0, "source": "process", "field": "sitting:epoch", "value": str(epoch)}]
     observations += events(paths, batch, frames, games_started(paths))
     files = bundle_files(paths, frames)
+    # `store: release:E020` and `asset` are the evidence-manifest/1 schema's required fields: they name
+    # the experiment and the file. The bundle stays on the user's machine; nothing is uploaded, and no
+    # release asset is made (constraint A; T38 round 3, R3).
     listed = []
     for path in files:
         digest = sitting.sha256_of(path)

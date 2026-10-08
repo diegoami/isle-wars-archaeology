@@ -228,12 +228,17 @@ def rule_cmb_04(events, batch):
 
 
 def rule_cmb_05(events, batch):
+    """100+ exchanges per defender size in {1, 2, 3, 4, 10}, all against one fixed attacker size
+    (walkthroughs/f011-questions.md). Every arm is counted for the same attacker size; the size
+    reported is the one whose weakest arm is largest (T38 round 3, R2: never one size per arm)."""
     pairs = Counter(_ints(events, "counter:attacker-before", "counter:defender-before"))
-    rows = []
-    for d in (1, 2, 3, 4, 10):
-        best = max((n for (a, dd), n in pairs.items() if dd == d), default=0)
-        rows.append((d, best))
-    return _arms(rows, 100, "defender size (one attacker size):")
+    defenders = (1, 2, 3, 4, 10)
+    attackers = sorted({a for a, _ in pairs})
+    if not attackers:
+        return _arms([(d, 0) for d in defenders], 100, "defender size (no attacker size observed):")
+    fixed = max(attackers, key=lambda a: (min(pairs[(a, d)] for d in defenders),
+                                          sum(pairs[(a, d)] for d in defenders), -a))
+    return _arms([(d, pairs[(fixed, d)]) for d in defenders], 100, f"defender size (attacker size {fixed} fixed):")
 
 
 def rule_cmb_06(events, batch):

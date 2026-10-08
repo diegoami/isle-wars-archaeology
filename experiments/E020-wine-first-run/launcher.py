@@ -239,7 +239,11 @@ def make_body(paths, batch, blocks_text, summary, watcher_factory=None, loop_fac
         thread, stop = watcher.start()
         try:
             active.observe_screenshot("before.png")
-            summary.update(loop_factory(clicks, batch).run())
+            loop = loop_factory(clicks, batch)
+            try:
+                loop.run()
+            finally:
+                summary.update(loop.summary)     # an aborted loop's summary says why (round 3, R1)
             active.observe_screenshot("after.png")
         finally:
             stop.set()

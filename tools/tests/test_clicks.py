@@ -27,7 +27,12 @@ click! 100 585
 settle 4
 # --- block pick
 click-until? 168 168 168 24 1000 55 193 49 261
+# --- block wait-then-click
+settle 4
+click! 100 585
 """
+SETTLED = {"settle": [{"field": "settle: watched area unchanged for 4 s (s)", "value": 4.2}]}
+UNSETTLED = {"settle": [{"field": "settle: watched area unchanged for 4 s (s)", "value": "not within the time allowed"}]}
 
 
 class FakeSession:
@@ -35,7 +40,7 @@ class FakeSession:
 
     def __init__(self, notes=None, fail_on=None):
         self.sent, self.obs = [], []
-        self.notes = notes or {}
+        self.notes = SETTLED if notes is None else notes
         self.fail_on = fail_on
 
     def perform(self, text):
@@ -111,6 +116,20 @@ class ClickDriverTest(unittest.TestCase):
                                     [{"field": "settle: watched area unchanged for 4 s (s)",
                                       "value": "not within the time allowed"}]),
                          {"quiet": False})
+
+    def test_a_wait_that_did_not_settle_stops_the_block_before_its_next_input(self):
+        """Round 3, R1: a `settle` whose area never settled is NotReady (logged failed, `not-ready`),
+        and the click after it is never sent."""
+        session = FakeSession(notes=UNSETTLED)
+        with self.assertRaises(clicks.NotReady) as raised:
+            self.driver(session).run_block("wait-then-click")
+        self.assertEqual(raised.exception.kind, "not-ready")
+        self.assertEqual(session.sent, ["settle 4"])
+        self.assertEqual([(l["op"], l["status"], l.get("error")) for l in self.lines()],
+                         [("settle", "failed", "not-ready")])
+        session = FakeSession()
+        self.driver(session).run_block("wait-then-click")
+        self.assertEqual(session.sent, ["settle 4", "click! 100 585"])
 
     def test_context_is_copied_into_every_line(self):
         driver = self.driver(FakeSession())

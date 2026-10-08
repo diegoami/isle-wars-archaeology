@@ -11,6 +11,11 @@ still fails, the game is over for the human, and the next game starts. The loop 
 batch's `games_max`, or its `sitting_seconds`; a step that fails (a `click!` the screen did not
 answer, a dead game) ends the sitting through the session's error, after its line is logged.
 
+Readiness is never assumed (T38 round 3, R1): when `QUIET_ATTEMPTS` `quiet` blocks pass without a
+quiet board, the loop sends nothing more. It marks its summary `ended: aborted: not-ready: ...` and
+raises the click-driver's `NotReady`, which ends the session with the status `aborted: not-ready:
+<reason>` (Session.execute keeps the reason); the summary is never a normal one.
+
 Every game start and end is a line of `actions.jsonl` (`event: game-start` / `game-end`, with
 the game ordinal and the reason), which is how the export knows the sitting's real games.
 
@@ -19,6 +24,8 @@ stop on a live count: a sitting that ends short is recorded as it is, and tools/
 prints the shortfall.
 """
 import time
+
+from driver.clicks import NotReady
 
 QUIET_ATTEMPTS = 6        # `quiet` blocks before a turn is given up: 6 x (4 s + the spike's bound of 38 s);
                           # F003 measured 15 to 33 s for the computers' turns
@@ -82,8 +89,15 @@ class BatchLoop:
         return False
 
     def wait_quiet(self):
-        """`quiet` until the board was unchanged for its time, at most QUIET_ATTEMPTS times."""
+        """`quiet` until the board was unchanged for its time, at most QUIET_ATTEMPTS times. NotReady,
+        after the summary says so, when it never was: no further input is sent (R1)."""
         for _ in range(QUIET_ATTEMPTS):
-            if self.driver.run_block("quiet").get("quiet"):
-                return True
-        return False
+            try:
+                if self.driver.run_block("quiet").get("quiet"):
+                    return
+            except NotReady:
+                continue
+        where = ", ".join(f"{k} {v}" for k, v in sorted(self.driver.context.items()))
+        reason = f"the board was not quiet after {QUIET_ATTEMPTS} quiet blocks ({where})"
+        self.summary["ended"] = f"aborted: {NotReady.kind}: {reason}"
+        raise NotReady(reason)

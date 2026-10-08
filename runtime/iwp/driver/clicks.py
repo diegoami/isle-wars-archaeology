@@ -19,6 +19,12 @@ The steps a sitting may send are an allow-list (`ALLOWED`): pointer and key inpu
 `attack-picked` is refused by name (the human never attacks: the driver never clicks inside a
 battle), and so are the steps that write bundle files or read the game copy.
 
+A wait is never ignored (T38 round 3, R1): a `settle` whose watched area did not settle within its
+bound is a failed step of its own kind, `NotReady` (`not-ready`), in every block, so no input of the
+block after it is sent. The loop may retry a `quiet` block that raised it, within its bound; past
+that bound it ends the sitting with it (e020_loop.py), and the session records it as the sitting's
+status (Session.execute).
+
 Each line of `actions.jsonl` is written whether the step succeeded or not (R12): `status` is `ok` or
 `failed`, a failed step carries the driver error's kind, and the line is on disk before the failure
 propagates. A line carries structural values only (constraint D): the block, the step's line in
@@ -44,6 +50,12 @@ ALLOWED = frozenset({"move", "click", "click!", "clicks", "click-any", "click-an
                      "click-until?", "key", "settle", "watch"})
 BLOCK = re.compile(r"^#\s*---\s*block\s+([a-z][a-z0-9-]*)\s*$")
 PICKED = re.compile(r"^(\d+),(\d+) \(number (\d+) of (\d+)\)$")
+
+
+class NotReady(StepFailed):
+    """A wait did not establish the state the next input needs (a `settle` that did not settle, or the
+    loop's `quiet` blocks spent): nothing more is sent (T38 round 3, R1)."""
+    kind = "not-ready"
 
 
 def parse_blocks(text):
@@ -152,6 +164,11 @@ class ClickDriver:
             self.log(line)
             raise
         outcome = outcome_of(step, list(self.observations())[before:])
+        if step.op == "settle" and not outcome.get("quiet"):
+            line.update(status="failed", error=NotReady.kind, ms=int((self.clock() - started) * 1000),
+                        outcome=outcome)
+            self.log(line)
+            raise NotReady(f"block {block}, line {step.line}: the watched area did not settle within its time")
         line.update(status="ok", ms=int((self.clock() - started) * 1000), outcome=outcome)
         self.log(line)
         return outcome

@@ -41,6 +41,9 @@ mistake-rich record.
     `commit` (ALL, PLACE, PASS, CONTINUE) and `dismiss`. No block attacks.
   - `e020_loop.py` plays games of place-all and pass from those blocks until the human cannot
     place, `turns_max`, `games_max` or `sitting_seconds`, and logs each game's start and end.
+    A wait is never ignored: a `settle` that does not settle stops its block (`not-ready`), and
+    when six `quiet` blocks pass without a quiet board the loop sends nothing more and the sitting
+    ends `aborted: not-ready: <reason>` (round 3, R1).
     The click-driver (`runtime/iwp/driver/clicks.py`) sends every step through `Session.perform`
     and logs every attempted step, failed ones included, to `actions.jsonl`; the watcher
     (`runtime/iwp/driver/watcher.py`) captures the game window on the session's display.

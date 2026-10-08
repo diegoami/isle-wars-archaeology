@@ -936,8 +936,10 @@ class Session:
             self.start()
             body(self)
             self.complete()
-        except DriverError:
-            pass                                   # fail() recorded why
+        except DriverError as exc:
+            # fail() recorded why. An error the body raised itself, without fail() (the E020 loop's
+            # NotReady, T38 round 3, R1), is recorded with its own kind and reason; a first reason stays.
+            engine._set_aborted(str(exc), type(exc))
         except BaseException as exc:               # a crash or an interruption: cleaned up, recorded, never completed
             engine.abort_later(f"{type(exc).__name__}: {exc}")
         self.finish()

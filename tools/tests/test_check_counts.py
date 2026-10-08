@@ -178,6 +178,41 @@ class CorroborationTest(CountsWorld):
         problems, _ = self.check("cmb-accumulation")
         self.assertEqual(problems, [])
 
+    def pairs(self, pairs, n=100):
+        events, seq = [], 1
+        for a, d in pairs:
+            for _ in range(n):
+                events.append((1, seq, dict(EXCHANGE, **{
+                    "counter:attacker-before": str(a), "counter:attacker-after": str(a - 1),
+                    "counter:defender-before": str(d), "counter:defender-after": str(d)})))
+                seq += 1
+        return events
+
+    def test_q_cmb_05_is_not_corroborated_by_a_different_attacker_size_per_defender_arm(self):
+        """Round 3, R2 (Sol's case): 100 exchanges each of (2,1), (3,2), (4,3), (5,4), (10,10). Every
+        defender arm has 100, but no attacker size is common to them: not the fixed-attacker
+        comparison f011-questions.md asks for."""
+        events = self.pairs([(2, 1), (3, 2), (4, 3), (5, 4), (10, 10)])
+        self.assertTrue(check_counts.events_of(record("cmb-accumulation", "E020-r0001", 1, events, EXCHANGE_FIELDS),
+                                               "cmb-accumulation", self.batches["cmb-accumulation"])[0])
+        self.write("cmb-accumulation", "E020-r0001.json", record("cmb-accumulation", "E020-r0001", 1, events, EXCHANGE_FIELDS))
+        self.declare(Q_CMB_05="corroborated")
+        problems, _ = self.check("cmb-accumulation")
+        self.assertTrue(any("Q-CMB-05 is declared corroborated" in p for p in problems), problems)
+        met, _ = check_counts.rule_cmb_05(
+            check_counts.batch_events("cmb-accumulation", self.batches["cmb-accumulation"], self.runs)[0], {})
+        self.assertFalse(met)
+
+    def test_q_cmb_05_corroborates_with_one_attacker_size_across_every_defender_arm(self):
+        """Round 3, R2: 100 exchanges of attacker 12 against each defender size, plus noise at other
+        attacker sizes, corroborate; the arm lines name the fixed size."""
+        events = self.pairs([(12, d) for d in (1, 2, 3, 4, 10)] + [(2, 1), (3, 2)])
+        self.write("cmb-accumulation", "E020-r0001.json", record("cmb-accumulation", "E020-r0001", 1, events, EXCHANGE_FIELDS))
+        self.declare(Q_CMB_05="corroborated")
+        problems, lines = self.check("cmb-accumulation")
+        self.assertEqual(problems, [])
+        self.assertIn("attacker size 12 fixed", "\n".join(lines))
+
     def test_q_cmb_07_is_not_corroborated_by_an_exchange_with_another_outcome(self):
         events = self.exchanges(199) + [(1, 200, dict(EXCHANGE, **{"counter:attacker-after": "3"}))]
         self.write("cmb-accumulation", "E020-r0001.json", record("cmb-accumulation", "E020-r0001", 1, events, EXCHANGE_FIELDS))

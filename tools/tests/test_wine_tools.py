@@ -349,9 +349,11 @@ class FakeDriver:
     """Plays a scripted game: `place_results` are the picked outcomes of successive `place` blocks;
     `quiet` is quiet after `noisy` attempts."""
 
-    def __init__(self, place_results, noisy=0):
+    def __init__(self, place_results, noisy=0, raises=False, quiet_script=None):
         self.place_results = list(place_results)
         self.noisy = noisy
+        self.raises = raises                 # a noisy board raises NotReady, as the click-driver's settle does
+        self.quiet_script = quiet_script     # successive quiet results; noisy once it is spent
         self.blocks, self.notes, self.context = [], [], {}
 
     def run_block(self, name):
@@ -359,8 +361,14 @@ class FakeDriver:
         if name == "place":
             return {"picked": self.place_results.pop(0) if self.place_results else None}
         if name == "quiet":
-            self.noisy -= 1
-            return {"quiet": self.noisy < 0}
+            if self.quiet_script is not None:
+                quiet = self.quiet_script.pop(0) if self.quiet_script else False
+            else:
+                self.noisy -= 1
+                quiet = self.noisy < 0
+            if not quiet and self.raises:
+                raise e020_loop.NotReady("the watched area did not settle within its time")
+            return {"quiet": quiet}
         return {}
 
     def note(self, **fields):
@@ -390,9 +398,32 @@ class LoopTest(unittest.TestCase):
         e020_loop.BatchLoop(driver, dict(self.batch, games_max="1"), clock=lambda: 0).run()
         names = [n for n, _ in driver.blocks]
         self.assertEqual(names[1:4], ["quiet", "quiet", "quiet"])
-        driver = FakeDriver([None, None], noisy=100)
-        e020_loop.BatchLoop(driver, dict(self.batch, games_max="1"), clock=lambda: 0).run()
-        self.assertEqual(sum(1 for n, _ in driver.blocks if n == "quiet"), 2 * e020_loop.QUIET_ATTEMPTS)
+
+    def test_an_exhausted_wait_sends_no_placement_or_commit(self):
+        """Round 3, R1: when the board never goes quiet, the loop sends nothing more (no place, no
+        commit), raises NotReady, and its summary is not a normal one; whether the driver answers a
+        noisy board with `quiet: False` or with the click-driver's NotReady."""
+        for raises in (False, True):
+            with self.subTest(raises=raises):
+                driver = FakeDriver([1, 1, 1], noisy=100, raises=raises)
+                loop = e020_loop.BatchLoop(driver, dict(self.batch, games_max="1"), clock=lambda: 0)
+                with self.assertRaises(e020_loop.NotReady):
+                    loop.run()
+                self.assertEqual([n for n, _ in driver.blocks], ["new-game"] + ["quiet"] * e020_loop.QUIET_ATTEMPTS)
+                self.assertTrue(loop.summary["ended"].startswith("aborted: not-ready: the board was not quiet"),
+                                loop.summary)
+                self.assertNotIn("game-end", [n.get("event") for n in driver.notes])
+
+    def test_an_exhausted_wait_after_a_turn_stops_the_game_too(self):
+        """Round 3, R1: the wait after a commit, and the one after a dismiss, are not ignored either."""
+        for places, stop_after in (([1, 1, 1], ["new-game", "quiet", "place", "commit"]),
+                                   ([None, 1, 1], ["new-game", "quiet", "place", "dismiss"])):
+            with self.subTest(places=places):
+                driver = FakeDriver(places, quiet_script=[True])
+                with self.assertRaises(e020_loop.NotReady):
+                    e020_loop.BatchLoop(driver, dict(self.batch, games_max="1"), clock=lambda: 0).run()
+                names = [n for n, _ in driver.blocks]
+                self.assertEqual(names, stop_after + ["quiet"] * e020_loop.QUIET_ATTEMPTS)
 
     def test_the_sitting_stops_at_its_seconds_and_says_so(self):
         times = iter([0, 0, 0, 2000, 2000, 2000, 2000])
