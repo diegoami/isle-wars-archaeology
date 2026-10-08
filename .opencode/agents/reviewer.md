@@ -7,7 +7,6 @@ permission:
     "/tmp/opencode/*": deny
     "~/.local/share/isle-wars-archaeology/static/*": allow
     "/tmp/iwa-review-*": allow
-    "/mnt/c/Temp/iwp-shots/wine/*": allow
   task:
     "*": deny
   bash:
@@ -22,19 +21,6 @@ permission:
     "gh pr edit *": deny
     "gh issue edit *": deny
     "gh issue comment *": deny
-    "rm *iwp-shots*": deny
-    "rmdir *iwp-shots*": deny
-    "unlink *iwp-shots*": deny
-    "mv *iwp-shots*": deny
-    "cp *iwp-shots*": deny
-    "touch *iwp-shots*": deny
-    "mkdir *iwp-shots*": deny
-    "chmod *iwp-shots*": deny
-    "chown *iwp-shots*": deny
-    "truncate *iwp-shots*": deny
-    "tee *iwp-shots*": deny
-    "sed -i* *iwp-shots*": deny
-    "ln *iwp-shots*": deny
     "rm *isle-wars-archaeology/static*": deny
     "rm *IWA_STATIC*": deny
     "rmdir *isle-wars-archaeology/static*": deny
