@@ -167,6 +167,50 @@ class WatcherTest(unittest.TestCase):
         for line in self.index_lines():
             self.assertEqual(sha256_file(self.frames / line["name"]), line["sha256"])
 
+    # ---- T42 round 3 (Sol's round-2 R1 and R2): every index line names a file holding its sha256
+
+    def test_a_duplicate_of_a_changed_stored_frame_is_stored_afresh(self):
+        """Sol's R1: capture A, the stored file becomes B, capture A again. The new line must not name the
+        changed file; the capture is stored under a new name and the old file is left as it is."""
+        w = self.watcher(payload=lambda: b"A", stage_dir=self.dir / "stage")
+        first = w.capture_once()
+        (self.frames / first["name"]).write_bytes(b"B")
+        second = w.capture_once()
+        self.assertNotIn("duplicate", second)
+        self.assertNotEqual(second["name"], first["name"])
+        self.assertEqual(sha256_file(self.frames / second["name"]), second["sha256"])
+        self.assertEqual((self.frames / first["name"]).read_bytes(), b"B")     # never written over
+        self.assertEqual(w.stored, 2)
+        self.assertIn("missing or changed", (self.dir / "watcher.log").read_text())
+
+    def test_a_duplicate_of_a_missing_stored_frame_is_stored_afresh(self):
+        w = self.watcher(payload=lambda: b"A", stage_dir=self.dir / "stage")
+        first = w.capture_once()
+        (self.frames / first["name"]).unlink()
+        second = w.capture_once()
+        self.assertNotIn("duplicate", second)
+        self.assertEqual(sha256_file(self.frames / second["name"]), second["sha256"])
+        third = w.capture_once()                       # an intact stored frame is a duplicate again
+        self.assertTrue(third["duplicate"])
+        self.assertEqual(third["name"], second["name"])
+
+    def test_a_frame_changed_on_its_way_into_the_sitting_is_removed_and_not_indexed(self):
+        """Sol's R2: the move delivers other bytes. WatcherError, no file left at the destination, no index line."""
+        import shutil
+        from unittest import mock
+        real_move = shutil.move
+        def corrupting_move(src, dst):
+            real_move(src, dst)
+            Path(dst).write_bytes(b"other bytes")
+            return dst
+        w = self.watcher()
+        with mock.patch.object(watcher_module.shutil, "move", corrupting_move):
+            with self.assertRaises(WatcherError):
+                w.capture_once()
+        self.assertEqual(list(self.frames.iterdir()), [])
+        self.assertFalse((self.dir / "frames-index.jsonl").exists())
+        self.assertEqual((w.count, w.stored), (0, 0))
+
     def test_a_frame_lands_in_the_staging_directory_first_and_leaves_none_behind(self):
         w = self.watcher()
         w.capture_once()

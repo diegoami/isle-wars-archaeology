@@ -179,12 +179,24 @@ class Watcher:
         self._geometry = (now, geometry) if geometry else None
         return geometry
 
+    def _retained_is_intact(self):
+        """True only when the frame stored last still exists with the sha256 recorded for it (T42 round 3,
+        R1): a duplicate's index line names that file, so it must hold those bytes."""
+        path = self.frames_dir / self._last[0]
+        try:
+            return path.is_file() and sha256_file(path) == self._last[1]
+        except OSError:
+            return False
+
     def capture_once(self):
         """Capture one frame and append its index line. Returns the line (a dict).
 
         The frame lands in the staging directory and is hashed there. When it equals the frame stored
         last it is dropped and the line names that stored frame (`duplicate`); otherwise it moves into
-        frames_dir under `<step>-<epochms>.png`, and its sha256 is checked again at the destination."""
+        frames_dir under `<step>-<epochms>.png`, and its sha256 is checked again at the destination.
+        A duplicate is dropped only while the stored frame it would name still exists with its sha256;
+        when that file is missing or changed, the capture is stored afresh under a new name (never over
+        the old file), so the new index line names a file that holds its bytes."""
         step = int(self.step_source())
         epoch_ms = int(self.clock() * 1000)
         if self.stage_dir is None:
@@ -206,6 +218,9 @@ class Watcher:
             "window": str(self.window_id),
             "geometry": self.window_geometry(),
         }
+        if self._last is not None and self._last[1] == digest and not self._retained_is_intact():
+            self.log(f"stored frame {self._last[0]} is missing or changed; this capture is stored afresh")
+            self._last = None
         if self._last is not None and self._last[1] == digest:
             staged.unlink(missing_ok=True)
             line["name"] = self._last[0]
