@@ -1,0 +1,54 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0002",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "blue-cards-after-capture.png",
+      "bytes": 1446072,
+      "sha256": "f5e382695a765b6684a4200137af929d079b930f227046a1b6eb46f247647667",
+      "asset": "f5e382695a765b66-blue-cards-after-capture.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "blue-placement-cards2.png",
+      "bytes": 1450950,
+      "sha256": "de79fab17bbf0207665a5b413cafd752fe85466733fd8d279a7dbbe222294256",
+      "asset": "de79fab17bbf0207-blue-placement-cards2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "blue-turn-action-cards1.png",
+      "bytes": 1410864,
+      "sha256": "2235904d6fe6ba34fa0b7c53d5a1f737f7079c67728bed2fd9bf722e66252ad3",
+      "asset": "2235904d6fe6ba34-blue-turn-action-cards1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "blue-turn-action-cards2.png",
+      "bytes": 1447982,
+      "sha256": "f3321edd6dbf2743ed8e16b000830ea51cd41f3194a0ea16e7cd1d4ea3a441fe",
+      "asset": "f3321edd6dbf2743-blue-turn-action-cards2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-screen-cards.png",
+      "bytes": 1091616,
+      "sha256": "371484c4d3f94048e649dd4eea9cd70bf9835da69d3576c6826e2e87b203e773",
+      "asset": "371484c4d3f94048-help-screen-cards.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "title-screen.png",
+      "bytes": 941449,
+      "sha256": "59b54a485c2e412c8fb9548deb3b4cdaf78b4690d372df13737d8f221e066cac",
+      "asset": "59b54a485c2e412c-title-screen.png",
+      "class": "screenshot"
+    }
+  ]
+}

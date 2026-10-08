@@ -1,0 +1,170 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0001",
+  "experiment": "E018",
+  "arm": "video-only-bandidcam-short",
+  "rep": 1,
+  "code_commit": "d46c799",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@d46c799",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "full version, no watermark, no time cap",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "30 CFR",
+      "audio": "system sounds, 48 kHz stereo"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game of Pro for the full recording. The video file is the only output. No scripted clicks, no per-case discipline."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build (V0 set, four-seat default, seat 1 human). Pro has no save file (C-SET-05), so no state was restored. Recording starts at the title splash; first in-game frame is the opening deal."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "8f7e0655ee251660cdd99ed031454fefdd186f9e6be0374c9ca430d0e15d2e26",
+    "args": [
+      "owner played one game of Pro (unregistered, four-seat default) for 6:25 of recorded time",
+      "owner gave up after ~2 minutes of personal play; the recorder kept running to capture the rest of the match",
+      "video file: /mnt/c/Temp/iwp-shots/video/IP1 025.mp4",
+      "video sha256: 8f7e0655ee251660cdd99ed031454fefdd186f9e6be0374c9ca430d0e15d2e26",
+      "duration: 385.30 s, 7258 video frames at 30 fps, 1920x1080 H.264, AAC 48 kHz stereo"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "title-screen at video offset 0.5s",
+      "ref": "sha256:59b54a485c2e412c8fb9548deb3b4cdaf78b4690d372df13737d8f221e066cac"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "first in-game frame at video offset 9.5s",
+      "ref": "sha256:9671680e6c18a8730dbe341da957d870b70285cb04b3f17fef94ab4d5ab0d4c9"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "Blue turn start with Cards: 0 at video offset 29.5s",
+      "ref": "sha256:75a99d29a89820a15db9e9923eaf559154beb8600a523ca05941eecc93249e7d"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "Blue card screen after capture at video offset 115.5s",
+      "ref": "sha256:f5e382695a765b6684a4200137af929d079b930f227046a1b6eb46f247647667"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "Blue turn start action bar Cards: 1 at video offset 208.0s",
+      "ref": "sha256:2235904d6fe6ba34fa0b7c53d5a1f737f7079c67728bed2fd9bf722e66252ad3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "help screen card rules at video offset 239.0s",
+      "ref": "sha256:371484c4d3f94048e649dd4eea9cd70bf9835da69d3576c6826e2e87b203e773"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "Blue turn start Cards: 2 at video offset 299.5s",
+      "ref": "sha256:f3321edd6dbf2743ed8e16b000830ea51cd41f3194a0ea16e7cd1d4ea3a441fe"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "Blue placement phase Cards: 2 at video offset 328.5s",
+      "ref": "sha256:de79fab17bbf0207665a5b413cafd752fe85466733fd8d279a7dbbe222294256"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "Blue defeated at video offset 359.0s",
+      "ref": "sha256:154f1999fcf8b47857bd8c7e52dbe28661a6e43dec4c595f738ada271ed22c30"
+    },
+    {
+      "step": 0,
+      "source": "ui-text",
+      "field": "help-screen text at video offset 239.0s: SITUATIONS / DISASTERS / PRODUCTION CENTERS, first two lines on cards",
+      "value": "Once you have selected the three cards click on the green [Trade in Cards] button. You can only hold 5 cards in your hand at once. If you have more then 5, the computer will ask which card you want to discard. Click on the card to eliminate, to make room for you new card."
+    },
+    {
+      "step": 0,
+      "source": "ui-text",
+      "field": "screen label at video offset 115.5s: bottom strip",
+      "value": "Blue's Cards | CONTINUE | 5 ARMIES (slot 1 of 5)"
+    },
+    {
+      "step": 0,
+      "source": "ui-text",
+      "field": "screen label at video offset 328.5s: bottom strip",
+      "value": "Country 6 Selected | How Many? ALL / + / - / PLACE / 0 | 3 Armies To Place"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "title-screen.png",
+      "sha256": "59b54a485c2e412c8fb9548deb3b4cdaf78b4690d372df13737d8f221e066cac",
+      "store": "release:E018"
+    },
+    {
+      "name": "in-game-empty-hands.png",
+      "sha256": "9671680e6c18a8730dbe341da957d870b70285cb04b3f17fef94ab4d5ab0d4c9",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-turn-start-empty.png",
+      "sha256": "75a99d29a89820a15db9e9923eaf559154beb8600a523ca05941eecc93249e7d",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-cards-after-capture.png",
+      "sha256": "f5e382695a765b6684a4200137af929d079b930f227046a1b6eb46f247647667",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-turn-action-cards1.png",
+      "sha256": "2235904d6fe6ba34fa0b7c53d5a1f737f7079c67728bed2fd9bf722e66252ad3",
+      "store": "release:E018"
+    },
+    {
+      "name": "help-screen-cards.png",
+      "sha256": "371484c4d3f94048e649dd4eea9cd70bf9835da69d3576c6826e2e87b203e773",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-turn-action-cards2.png",
+      "sha256": "f3321edd6dbf2743ed8e16b000830ea51cd41f3194a0ea16e7cd1d4ea3a441fe",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-placement-cards2.png",
+      "sha256": "de79fab17bbf0207665a5b413cafd752fe85466733fd8d279a7dbbe222294256",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-defeated.png",
+      "sha256": "154f1999fcf8b47857bd8c7e52dbe28661a6e43dec4c595f738ada271ed22c30",
+      "store": "release:E018"
+    }
+  ],
+  "started": "2026-10-08T11:47:23Z",
+  "ended": "2026-10-08T11:53:39Z",
+  "status": "completed"
+}
