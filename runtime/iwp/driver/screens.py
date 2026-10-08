@@ -7,6 +7,8 @@
   bar (the left one gives up, the right one lets the computers play on);
 * `game-over`: the winner notice (T38 round 6), the same dark panel over the board with one grey
   CONTINUE button in the middle of the bottom bar, and neither of the elimination notice's buttons;
+* `scoreboard` (T41): the Scoreboard the game shows after it credits a loss, with its one grey CONTINUE
+  button in the bottom bar, higher than the winner notice's, and no board behind it;
 * `board-menu`: the board with the menu row lit (the human's turn: New Game is on the screen);
 * `board`: the board without the menu row (the computers' turns, or a prompt over the board);
 * `title`: the title screen;
@@ -25,6 +27,13 @@ Round 6 added `game-over` and the winner's seat (`winner_of`), measured from the
 (182-1791490010546.png, sha256 14ae2f71...), and every other frame of both sittings (1143) as the
 population it must not match. The round 6 numbers are over all 1179 frames of the two sittings; over
 them every round 4 name is unchanged.
+
+T41 added `scoreboard`, measured from the frames of sitting 20261008T204817Z (batch 3): the Scoreboard
+in its 7 frames, steps 367 and 368 (368-1791494104472.png, sha256 in walkthroughs/coordinates.md),
+which the game showed after New Game was sent from the board of a live game with the human holding
+fewer than 10 countries (F003). The numbers measured over all 2267 frames of the three sittings are
+beside each threshold; over them every earlier name is unchanged, which
+experiments/E020-wine-first-run/check_screens.py re-checks from the frames.
 """
 from collections import namedtuple
 
@@ -57,6 +66,20 @@ SUBTITLE = (180, 335, 440, 25)
 # with no notice panel: its frames count at most 3901 navy on NOTICE_PANEL).
 CONTINUE_BOX = (327, 522, 149, 25)
 CONTINUE_CLICK = (401, 534)
+
+
+# The Scoreboard's CONTINUE button (T41), light grey like the winner notice's, but higher: x 327-474,
+# y 514-538, centre 401,526 (E002's "Continue (after loss)" is 400,526). Its top rows only, which the
+# winner notice's button (y 522-546) and a card award's CONTINUE (near y 531) never fill:
+# Scoreboard frames: 1079 of 1192 pixels; every other frame: at most 368.
+SCOREBOARD_BUTTON_TOP = (327, 514, 149, 8)
+SCOREBOARD_CONTINUE_CLICK = (401, 526)
+# The Scoreboard's three percentage boxes, black grounds under cyan text, one per level (Easy, Normal,
+# Hard): x 538-621, y 230-257, 302-329 and 376-403 (the tests take x 537-621, 85 wide, 28 high).
+# Scoreboard frames: 1969 of 2380 pixels in each; every other frame: at most 1 (Easy), 130 (Normal), 59 (Hard).
+SCOREBOARD_PERCENT_EASY = (537, 230, 85, 28)
+SCOREBOARD_PERCENT_NORMAL = (537, 302, 85, 28)
+SCOREBOARD_PERCENT_HARD = (537, 376, 85, 28)
 
 
 def red(r, g, b):
@@ -95,8 +118,13 @@ TESTS = {
     "menu": Test(MENU_LABEL, menu_cyan, 200),
     "subtitle": Test(SUBTITLE, title_cyan, 1500),
     "continue": Test(CONTINUE_BOX, light_grey, 2200),
+    "scoreboard-button": Test(SCOREBOARD_BUTTON_TOP, light_grey, 720),
+    "scoreboard-easy": Test(SCOREBOARD_PERCENT_EASY, black, 1500),
+    "scoreboard-normal": Test(SCOREBOARD_PERCENT_NORMAL, black, 1500),
+    "scoreboard-hard": Test(SCOREBOARD_PERCENT_HARD, black, 1500),
 }
-NAMES = ("eliminated", "game-over", "board-menu", "board", "title", "unknown")
+SCOREBOARD_TESTS = ("scoreboard-button", "scoreboard-easy", "scoreboard-normal", "scoreboard-hard")
+NAMES = ("eliminated", "game-over", "scoreboard", "board-menu", "board", "title", "unknown")
 
 
 # The score panel's seat rows (round 6): the number after each seat's name, in the seat's own colour,
@@ -154,9 +182,9 @@ def signals(frame):
     return {name: count(frame, t.rect, t.predicate) >= t.minimum for name, t in TESTS.items()}
 
 
-def name_of(frame):
-    """The screen's name (one of NAMES) from one stage capture."""
-    s = signals(frame)
+def name_from(s, scoreboard=True):
+    """The name of the screen the `signals` show. `scoreboard=False` is T38's classifier (round 6),
+    without the Scoreboard: check_screens.py compares the two over every frame."""
     board = s["score-panel"]
     if board and s["keep-playing"] and s["accept-loss"] and s["notice-panel"]:
         return "eliminated"
@@ -166,7 +194,14 @@ def name_of(frame):
         return "board-menu" if s["menu"] else "board"
     if s["subtitle"] and s["menu"]:
         return "title"
+    if scoreboard and all(s[name] for name in SCOREBOARD_TESTS):      # T41: no board behind it
+        return "scoreboard"
     return "unknown"
+
+
+def name_of(frame):
+    """The screen's name (one of NAMES) from one stage capture."""
+    return name_from(signals(frame))
 
 
 def winner_of(frame):
