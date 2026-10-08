@@ -371,6 +371,12 @@ class CheckCatalogueTest(unittest.TestCase):
     def _one_record(self, tmp):
         return next((Path(tmp) / "runs" / "E019" / "play").glob("*.json"))
 
+    def _record_for(self, tmp, batch, arm):
+        for path in sorted((Path(tmp) / "runs" / "E019" / batch).glob("E019-*.json")):
+            if json.loads(path.read_text(encoding="utf-8")).get("arm") == arm:
+                return path
+        raise AssertionError(f"no {arm} record in the fixture")
+
     def test_a_record_of_the_wrong_artifact_set_is_refused(self):
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
@@ -387,7 +393,7 @@ class CheckCatalogueTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             build_tmp_tree(tmp)
             # Q-UI-04 may write xtras/Islepro.skr (may_write_saved_files): its base set must fail
-            path = next((Path(tmp) / "runs" / "E019" / "title-options").glob("E019-*.json"))
+            path = self._record_for(tmp, "title-options", "q-ui-04")
             record = json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual(record["artifact"]["set"], e019_records.ARTIFACT_SET_SAVED_FILES)
             record["artifact"]["set"] = e019_records.ARTIFACT_SET
@@ -452,10 +458,7 @@ class CheckCatalogueTest(unittest.TestCase):
     # --- R4: a proxied count uses its measured field and says so --------------------------------
 
     def _q_ui_07_record(self, tmp):
-        for path in sorted((Path(tmp) / "runs" / "E019" / "events-end").glob("E019-*.json")):
-            if json.loads(path.read_text(encoding="utf-8")).get("arm") == "q-ui-07":
-                return path
-        raise AssertionError("no Q-UI-07 record in the fixture")
+        return self._record_for(tmp, "events-end", "q-ui-07")
 
     def test_a_proxied_count_must_use_its_measured_field(self):
         import tempfile
