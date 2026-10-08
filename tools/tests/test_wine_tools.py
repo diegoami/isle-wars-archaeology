@@ -409,10 +409,13 @@ class FakeDriver:
         self.raises = raises                 # a noisy board raises NotReady, as the click-driver's settle does
         self.quiet_script = quiet_script     # successive quiet results; noisy once it is spent
         self.blocks, self.notes, self.context = [], [], {}
+        self.after = {}                      # trail item -> callable run right after it (time passing in a wait)
 
     def run_block(self, name):
         self.blocks.append((name, dict(self.context)))
         self.trail.append(name)
+        if name in self.after:
+            self.after[name](self)
         if name == "place":
             return {"picked": self.place_results.pop(0) if self.place_results else None}
         if name == "quiet":
@@ -435,6 +438,8 @@ class FakeDriver:
         screen = self.screens.pop(0) if self.screens else "board-menu"
         self.readings.append(screen)
         self.trail.append("read:" + screen)
+        if "read:" + screen in self.after:
+            self.after["read:" + screen](self)
         return screen
 
     def final_frame(self, name):
@@ -695,6 +700,103 @@ class ScreenLoopTest(unittest.TestCase):
         _, summary = self.loop(driver)
         self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
         self.assertEqual((summary["ended"], summary["screen"]), ("unknown-screen", "board"))
+
+    # --- T41 round 1: the deadline is rechecked before every input ---------------------------------
+
+    def timed(self, driver, **batch):
+        """A loop whose clock says 0 until `expire()` is called, and whose sleep (the play-out poll) is
+        recorded. Returns (loop, expire): `expire` is also what a driver hook calls, as time passing."""
+        now = [0]
+        loop = e020_loop.BatchLoop(driver, dict(self.batch, **batch), clock=lambda: now[0],
+                                   sleep=lambda s: driver.sleeps.append(s))
+        return loop, lambda *_: now.__setitem__(0, 2000)
+
+    def assert_sent_nothing_after(self, driver, loop, last, ended="sitting-seconds"):
+        """The deadline ran out in a wait: no input block after `last`, no last frame, a clean end."""
+        sent = [n for n, _ in driver.blocks if n != "quiet"]
+        self.assertEqual(sent[-1], last, sent)
+        self.assertEqual(loop.summary["ended"], ended)
+        self.assertEqual(driver.frames, [])
+
+    def test_the_deadline_passing_during_the_play_out_poll_sends_no_continue_after_the_winner_notice(self):
+        """Luna R1: PLAYOUT_POLL sleeps, the time runs out in it, the next reading is the winner notice.
+        The notice ends the game (logged), but CONTINUE is not clicked: no click on timeout."""
+        driver = FakeDriver([1], screens=["title", "board-menu", "eliminated", "board", "game-over", "title"])
+        loop, expire = self.timed(driver)
+        loop.sleep = lambda s: (driver.sleeps.append(s), expire() if len(driver.sleeps) == 2 else None)
+        summary = loop.run()
+        self.assertEqual(driver.sleeps, [e020_loop.PLAYOUT_POLL] * 2)
+        self.assertEqual(driver.trail[-2:], ["read:game-over", "winner"])
+        self.assertNotIn("game-over-continue", [n for n, _ in driver.blocks])
+        self.assert_sent_nothing_after(driver, loop, "eliminated-keep-playing")
+        self.assertEqual([(n["reason"], n.get("ended")) for n in driver.notes if n.get("event") == "game-end"],
+                         [("played-out: game-over", "game-over")])
+        self.assertEqual(summary["games"], 1)
+
+    def test_the_deadline_passing_during_the_play_out_poll_sends_no_continue_after_the_scoreboard(self):
+        driver = FakeDriver([1], screens=["title", "board-menu", "eliminated", "scoreboard", "title"])
+        loop, expire = self.timed(driver)
+        loop.sleep = lambda s: (driver.sleeps.append(s), expire())
+        loop.run()
+        self.assert_sent_nothing_after(driver, loop, "eliminated-keep-playing")
+        self.assertNotIn("scoreboard-continue", [n for n, _ in driver.blocks])
+        self.assertEqual([n["reason"] for n in driver.notes if n.get("event") == "game-end"], ["played-out: scoreboard"])
+
+    def test_the_deadline_passing_during_the_wait_after_a_dismiss_sends_no_second_placement(self):
+        driver = FakeDriver([None, 1], screens=["title", "board-menu", "board-menu"])
+        loop, expire = self.timed(driver)
+        driver.after["quiet"] = lambda d: expire() if d.trail[-2:-1] == ["dismiss"] else None
+        loop.run()
+        self.assert_sent_nothing_after(driver, loop, "dismiss")
+        self.assertEqual([n for n, _ in driver.blocks].count("place"), 1)
+        self.assertEqual([n["reason"] for n in driver.notes if n.get("event") == "game-end"], ["sitting-seconds"])
+
+    def test_the_deadline_passing_in_the_placement_sends_no_commit_and_none_after_a_failed_one_no_dismiss(self):
+        for results, last in (([1], "place"), ([None], "place")):
+            with self.subTest(results=results):
+                driver = FakeDriver(results, screens=["title", "board-menu"])
+                loop, expire = self.timed(driver)
+                driver.after["place"] = expire
+                loop.run()
+                self.assert_sent_nothing_after(driver, loop, last)
+                self.assertNotIn("commit", [n for n, _ in driver.blocks])
+                self.assertNotIn("dismiss", [n for n, _ in driver.blocks])
+
+    def test_the_deadline_passing_in_the_screen_read_sends_no_keep_playing(self):
+        driver = FakeDriver([1], screens=["title", "board-menu", "eliminated", "board"])
+        loop, expire = self.timed(driver)
+        driver.after["read:eliminated"] = expire
+        loop.run()
+        self.assert_sent_nothing_after(driver, loop, "commit")
+        self.assertNotIn("eliminated-keep-playing", [n for n, _ in driver.blocks])
+
+    def test_the_deadline_passing_in_the_read_after_the_winners_continue_sends_no_scoreboard_continue(self):
+        driver = FakeDriver([1], screens=["title", "board-menu", "game-over", "scoreboard", "title"])
+        loop, expire = self.timed(driver)
+        driver.after["read:scoreboard"] = expire
+        loop.run()
+        self.assert_sent_nothing_after(driver, loop, "game-over-continue")
+        self.assertNotIn("scoreboard-continue", [n for n, _ in driver.blocks])
+        self.assertEqual([e for e in (n.get("event") for n in driver.notes) if e == "loss-credited"], ["loss-credited"])
+
+    def test_the_deadline_passing_in_the_read_of_the_title_sends_no_new_game_and_logs_no_game(self):
+        driver = FakeDriver([], screens=["title"])
+        loop, expire = self.timed(driver)
+        driver.after["read:title"] = expire
+        loop.run()
+        self.assertEqual(driver.blocks, [])
+        self.assertEqual(loop.summary["ended"], "sitting-seconds")
+        self.assertNotIn("game-start", [n.get("event") for n in driver.notes])
+        self.assertEqual((loop.summary["games"], driver.frames), (0, []))
+
+    def test_the_deadline_passing_in_the_wait_before_the_next_game_sends_no_new_game(self):
+        driver = FakeDriver([1], screens=["title", "board-menu", "game-over", "title"])
+        loop, expire = self.timed(driver, games_max="2")
+        driver.after["game-over-continue"] = expire
+        loop.run()
+        self.assert_sent_nothing_after(driver, loop, "game-over-continue")
+        self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
+        self.assertEqual([n["game"] for n in driver.notes if n.get("event") == "game-start"], [1])
 
     # --- T41: the Scoreboard ---------------------------------------------------------------------
 

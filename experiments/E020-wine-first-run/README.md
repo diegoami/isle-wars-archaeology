@@ -47,7 +47,9 @@ mistake-rich record.
     2026-10-08): it ends by the human's elimination (KEEP PLAYING, then the winner notice), a
     computer's win or the Scoreboard, and a sitting never quits a live game: New Game is sent only on
     the title, and when `sitting_seconds` runs out in the middle of a game, or the human cannot
-    place on a live board, the sitting ends without a click.
+    place on a live board, the sitting ends without a click. The deadline is rechecked at the one
+    door every input block goes through (`BatchLoop.send`, T41 round 1), after any sleep, wait or
+    screen read, so no click follows the time running out.
     A wait is never ignored: a `settle` that does not settle stops its block (`not-ready`), and
     when six `quiet` blocks pass without a quiet board the loop sends nothing more and the sitting
     ends `aborted: not-ready: <reason>` (round 3, R1).

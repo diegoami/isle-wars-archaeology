@@ -14,6 +14,10 @@ did not answer, a dead game) ends the sitting through the session's error, after
 A sitting never quits a live game (T41, the owner, 2026-10-08): there is no turn limit. A game runs
 until the human is eliminated (KEEP PLAYING, then the winner notice) or a computer wins, and when
 `sitting_seconds` runs out in the middle of one the sitting ends through the session with no click.
+The deadline is rechecked at the one door every input goes through (`send`, T41 round 1): the loop
+sleeps or waits in several places (the play-out poll, the `quiet` waits, a screen read), and the time
+may run out in any of them, so no block that sends input starts after the deadline, whatever
+came before it. `quiet` sends nothing and is the only block not sent through `send`.
 T38's third sitting (20261008T204817Z) sent New Game from the board of a live game at its 30-turn
 cap with the human holding fewer than 10 countries: the game credited a loss, wrote its scoreboard
 file (F003) and showed the Scoreboard, and the blind setup clicks after it missed. So New Game is
@@ -77,6 +81,10 @@ PLAYOUT_POLL = 5          # s between screen readings while the computers play o
 FINAL_FRAME = "unknown-screen.png"
 
 
+class TimeUp(Exception):
+    """`sitting_seconds` ran out before an input block: caught by `run`, which ends the sitting cleanly."""
+
+
 class BatchLoop:
     def __init__(self, driver, batch, clock=time.monotonic, sleep=time.sleep):
         self.driver = driver
@@ -87,13 +95,39 @@ class BatchLoop:
         self.summary = {"games": 0, "turns": 0, "placements": 0, "ended": None}
         self.game_over_seen = None           # {"ended": "game-over", "winner": ...} once the winner notice is read
         self.scoreboard_seen = False         # the Scoreboard was read in the game's own turns or play-out
+        self.game_open = False               # a game-start line was written and its game-end line was not
 
     def out_of_time(self):
         return self.clock() >= self.deadline
 
+    def send(self, name):
+        """Run one block that sends input, unless the time ran out first (T41 round 1): the deadline is
+        rechecked here, at the door of every input, so a sleep or a wait before it cannot let a click
+        through. TimeUp ends the sitting in `run`, with no click."""
+        self.check_time(name)
+        return self.driver.run_block(name)
+
+    def check_time(self, what):
+        if self.out_of_time():
+            raise TimeUp(what)
+
+    def end_game(self, reason, **fields):
+        self.driver.note(event="game-end", reason=reason, **fields)
+        self.game_open = False
+
     def run(self):
-        """Play games until the bounds; the summary (games, turns, placements, why it ended)."""
+        """Play games until the bounds; the summary (games, turns, placements, why it ended). The time
+        running out before an input ends the sitting there, unclicked, and says so (`sitting-seconds`)."""
         self.deadline = self.clock() + self.seconds
+        try:
+            return self.games()
+        except TimeUp:
+            if self.game_open:
+                self.end_game("sitting-seconds")
+            self.summary["ended"] = "sitting-seconds"
+            return self.summary
+
+    def games(self):
         after_notice = None                          # the screen read after a notice's CONTINUE (the title)
         for game in range(1, self.games_max + 1):
             if self.out_of_time():
@@ -105,19 +139,21 @@ class BatchLoop:
             if screen not in NEW_GAME_ON:            # New Game only on the title, never on a board
                 self.unknown_screen(screen)
                 return self.summary
+            self.check_time("game-start")           # no game is logged as started that New Game cannot start
             self.driver.note(event="game-start")
+            self.game_open = True
             self.summary["games"] = game
-            self.driver.run_block("new-game")
+            self.send("new-game")
             self.game_over_seen, self.scoreboard_seen = None, False
             reason = self.play_game()
             if self.game_over_seen is not None:     # the winner notice (round 6)
-                self.driver.note(event="game-end", reason=reason, **self.game_over_seen)
+                self.end_game(reason, **self.game_over_seen)
                 after_notice = self.continue_after_game_over()
             elif self.scoreboard_seen:              # the game credited a loss (T41)
-                self.driver.note(event="game-end", reason=reason)
+                self.end_game(reason)
                 after_notice = self.leave_scoreboard()
             else:
-                self.driver.note(event="game-end", reason=reason)
+                self.end_game(reason)
                 if self.summary["ended"] is None:   # never a next game from a game that is not over
                     self.summary["ended"] = reason
                 return self.summary
@@ -136,7 +172,7 @@ class BatchLoop:
         """CONTINUE once (block `game-over-continue`), then the screen: returned when New Game is proven
         on it (the title); the Scoreboard is left as `leave_scoreboard` does; otherwise the sitting ends
         as an unknown screen, unclicked, and None."""
-        self.driver.run_block("game-over-continue")
+        self.send("game-over-continue")
         screen = self.driver.read_screen()
         if screen == "scoreboard":
             return self.leave_scoreboard()
@@ -152,7 +188,7 @@ class BatchLoop:
         ends the sitting as an unknown screen, unclicked, and None."""
         self.summary["loss_credited"] = self.summary.get("loss_credited", 0) + 1
         self.driver.note(event="loss-credited")
-        self.driver.run_block("scoreboard-continue")
+        self.send("scoreboard-continue")
         screen = self.driver.read_screen()
         if screen in NEW_GAME_ON:
             return screen
@@ -187,7 +223,7 @@ class BatchLoop:
             return self.off_board(screen)
         if self.place():
             return None
-        self.driver.run_block("dismiss")
+        self.send("dismiss")
         if not self.wait_quiet():
             return "unknown-screen"
         screen = self.driver.read_screen()
@@ -203,10 +239,10 @@ class BatchLoop:
 
     def place(self):
         """The human selects a country it owns (the placement row lit) and commits; True when one was."""
-        if not self.driver.run_block("place").get("picked"):
+        if not self.send("place").get("picked"):
             return False
         self.summary["placements"] += 1
-        self.driver.run_block("commit")
+        self.send("commit")
         self.summary["turns"] += 1
         return True
 
@@ -232,7 +268,7 @@ class BatchLoop:
         """KEEP PLAYING once; then no input, only screen readings while the board stays up, in the time.
         The winner notice ends the game (round 6), and so does the Scoreboard (T41); any other screen
         ends the sitting, unclicked."""
-        self.driver.run_block("eliminated-keep-playing")
+        self.send("eliminated-keep-playing")
         self.summary["eliminated"] = True
         while True:
             if self.out_of_time():

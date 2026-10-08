@@ -312,6 +312,26 @@ class E020SessionTest(base.DriverWorld):
         self.assertEqual(self.sent[-1][0], "settle")                # the second turn's `quiet` block, then nothing
         self.assertEqual([l["reason"] for l in self.actions() if l.get("event") == "game-end"], ["sitting-seconds"])
 
+    def test_the_deadline_passing_during_the_play_out_poll_sends_no_continue_through_the_session(self):
+        """T41 round 1 (Luna R1): the time runs out in the PLAYOUT_POLL sleep and the next reading is the
+        winner notice: the game's end is logged, CONTINUE (401,534) is not clicked, and the sitting
+        completes through the session's own finish."""
+        self.short_game(passes=1)
+        self.playout_reads = 0                      # the first reading after KEEP PLAYING is the winner notice
+        now = [0]
+        def sleep(seconds):
+            now[0] = 10 ** 6
+        made, summary = self.sitting(dict(BATCH, games_max="2"), loop_factory=lambda clicks, batch: e020_loop.BatchLoop(
+            clicks, batch, clock=lambda: now[0], sleep=sleep))
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertNotIn((401, 534), [tuple(a) for o, a, _ in self.sent if o == "click!"])
+        self.assertEqual([tuple(a) for o, a, _ in self.sent if o == "click!"][-1], (665, 531))   # KEEP PLAYING, then nothing
+        self.assertEqual((summary["ended"], summary["games"]), ("sitting-seconds", 1))
+        self.assertEqual(self.reads[-1], "game-over")
+        self.assertEqual([(l["reason"], l.get("ended")) for l in self.actions() if l.get("event") == "game-end"],
+                         [("played-out: game-over", "game-over")])
+        self.assertNotIn("game-over-continue", [l.get("block") for l in self.actions()])
+
     def test_the_scoreboard_after_the_winner_notice_is_left_by_one_continue_and_the_next_game_starts_on_the_title(self):
         """T41: the winner notice's CONTINUE leads to the Scoreboard (the game credited a loss). `loss-credited`
         is logged before the click, CONTINUE (401,526) once, and the next game starts from the title."""
