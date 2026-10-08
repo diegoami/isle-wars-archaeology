@@ -6,12 +6,14 @@
 # A block starts at a "# --- block NAME" line and runs to the next one.
 
 # --- block new-game
-# From the title screen, or in the middle of a game at EASY: the order and the points are
-# experiments/E002-iwp-state-inventory/scripts/loss-easy.steps (New Game, EASY, Play Game). Mid-game
-# at EASY the New Game click goes straight to the setup screen, with no loss notice: E002-r0018 and
-# E002-r0019 (the click changed the screen; F003, "The loss notice" row). EASY is a plain click:
-# the setup screen of a later game may already show EASY, so a change is not required of it; New
-# Game and Play Game must change the screen. The computers' first turns follow (block quiet).
+# From the title screen only (T41): the order and the points are
+# experiments/E002-iwp-state-inventory/scripts/loss-easy.steps (New Game, EASY, Play Game). The loop
+# never sends this block from a board: New Game in the middle of a live game quits it, and with the
+# human holding fewer than 10 countries the game credits a loss, writes its scoreboard file and shows
+# the Scoreboard (F003; sitting 20261008T204817Z, steps 365 to 368, where the blind clicks below then
+# missed). EASY is a plain click: the setup screen of a later game may already show EASY, so a change
+# is not required of it; New Game and Play Game must change the screen. The computers' first turns
+# follow (block quiet).
 watch all
 click! 100 585
 settle
@@ -66,3 +68,13 @@ click! 665 531
 # screen, never assumed: the next game starts only on the title or the board with its menu row.
 watch all
 click! 401 534
+
+# --- block scoreboard-continue
+# The Scoreboard (runtime/iwp/driver/screens.py `scoreboard`, measured from the frames of sitting
+# 20261008T204817Z, steps 367 and 368): shown after the game credits a loss, with one grey CONTINUE
+# button in the bottom bar, x 327-474, y 514-538, centre 401,526 (walkthroughs/coordinates.md; E002's
+# "Continue (after loss)" is 400,526). Sent once, after the loop has logged `loss-credited`; the screen
+# must change. What follows is read from the screen, never assumed: the next game starts only on the
+# title.
+watch all
+click! 401 526

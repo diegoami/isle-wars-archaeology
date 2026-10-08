@@ -18,6 +18,11 @@ raw and immutable; T38 round 2, R3, R6, R7).
   values are exactly the batch's event fields, each valid for its role (tools/check_counts.py
   value_problem: integers and colour words only, so no text of the original reaches a record).
 
+A sitting whose log has a `loss-credited` line followed by a `game-start` is refused (T41): the game
+wrote the scoreboard file, so the games after it ran on the successor set, which F019 has no row for.
+A record never names the shipped set for a game played after a scoreboard write. A sitting whose
+credit came last (no game started after it) names the shipped set, which every game of it ran on.
+
 Run ids are experiment-wide (R7): the next one is one more than every `E020-rNNNN` under
 `runs/E020/` (all batches) and `evidence/E020/`, and neither file is ever written over.
 """
@@ -44,6 +49,7 @@ EXPERIMENT = sitting.EXPERIMENT
 RUN_ID = re.compile(rf"^{EXPERIMENT}-r(\d{{4,}})(?:\.manifest)?\.json$")
 SHA = re.compile(r"^[0-9a-f]{64}$")
 RESTORE = "fresh prefix sync from the F019 install, no save"
+SUCCESSOR_SET = "iwp-2.0-de5a82a2"    # artifacts/known.json: the shipped set with xtras/Islepro.skr declared a runtime write
 
 
 class ExportRefused(SystemExit):
@@ -97,6 +103,19 @@ def games_started(paths):
     return {line.get("game") for line in jsonl(paths["actions"]) if line.get("event") == "game-start"}
 
 
+def games_after_loss(paths):
+    """The game ordinals the click-driver started after the game credited a loss (T41): a `loss-credited`
+    line, then `game-start` lines, in the file's order. The credit wrote the scoreboard file
+    (xtras/Islepro.skr, F003), so those games ran on the successor artifact set, not the shipped one."""
+    credited, after = False, []
+    for line in jsonl(paths["actions"]):
+        if line.get("event") == "loss-credited":
+            credited = True
+        elif credited and line.get("event") == "game-start":
+            after.append(line.get("game"))
+    return after
+
+
 def events(paths, batch, frames, games):
     """The run/1 observations of the readings, one step per event; ExportRefused on any bad event."""
     fields = check_counts.event_fields(batch)
@@ -141,6 +160,13 @@ def build(paths, name, batch, doc, run_id, rep, table):
     row = next((r for r in table if r.get("set") == sitting.SET_ID and r.get("variant") == sitting.VARIANT), None)
     if row is None or doc["binary"]["sha256"] != row.get("sha256") or doc["binary"]["file"] != row.get("file"):
         raise ExportRefused("the sitting's measured binary is not the F019 row's; nothing was written")
+    after_loss = games_after_loss(paths)
+    if after_loss:
+        raise ExportRefused(
+            f"the game credited a loss (a `loss-credited` line, F003) and the click-driver started game(s) "
+            f"{after_loss} after it, which ran on the successor artifact set {SUCCESSOR_SET}, not the "
+            f"shipped {sitting.SET_ID}; the F019 table has no row for the successor, so a record can name "
+            "neither (never the shipped set for a game played after a scoreboard write); nothing was written")
     frames = read_frames(paths)
     epoch = int(calendar.timegm(time.strptime(doc["sitting_id"], "%Y%m%dT%H%M%SZ")))
     observations = [{"step": 0, "source": "process", "field": "sitting:epoch", "value": str(epoch)}]

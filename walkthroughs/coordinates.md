@@ -15,7 +15,7 @@ Source: `experiments/E002-iwp-state-inventory/scripts/tour.steps`.
 | Play Game (setup screen) | 565, 532 | |
 | Options (title screen) | 320, 585 | |
 | EASY level | 533, 311 | |
-| Continue (after loss) | 400, 526 | |
+| Continue (after loss) | 400, 526 | the Scoreboard's button (T41); the loop clicks 401, 526 |
 | Scores | 620, 585 | |
 | Scores → Return | 388, 516 | |
 | ALL (place all armies) | 307, 543 | |
@@ -102,6 +102,41 @@ Each seat's number after its name, x 107–137, in the seat's own colour (as mea
 The winner is the one seat at 100 pixels or more, read only on the winner notice (`winner_of`; None
 when no seat or more than one reaches it). On all 36 winner frames it reads `red`, as the notice's
 sentence and colour say; on every other frame it answers None.
+
+## The Scoreboard (T41)
+
+Source: the frames of the model-driven sitting 20261008T204817Z (batch 3), measured by pixel colour:
+frame `368-1791494104472.png` (sha256 `f1b58aaf6dd827008cfa07513fa38bab8a7a1e0c3ab12d529a6b6695125df2c6`)
+and the other 6 frames of steps 367 and 368 (`367-1791494095432.png`, sha256
+`33e1dc20b35f6980ca6b137431d2aea3247ff30aebd436e4dbce7eb0c399875e`), 7 in all. The sitting sent New Game
+from the board of a live game at its 30-turn cap, with the human holding fewer than 10 countries: the game
+credited a loss, wrote its scoreboard file (F003) and showed this screen. A framed panel over the ocean
+backdrop with a table of the three levels, a black box with the percentage at the end of each row, and one
+grey CONTINUE button in the bottom bar; no board behind it. The frames stay on the user's machine
+(rule 18, constraint A).
+
+| Action | Stage x, y | Box (x, y ranges) | Comment |
+| --- | --- | --- | --- |
+| CONTINUE (light grey, 181,189,181) | 401, 526 | x 327-474, y 514-538 | clicked once, after the loop logs `loss-credited` (block `scoreboard-continue`); higher than the winner notice's (401, 534) |
+
+E002's "Continue (after loss)" is 400, 526 (above), the same button. The title's Scores screen, which the loop
+never opens, has a Return button near 388, 516 instead and was not measured.
+
+| Test | Region x, y, w, h | Colour | Minimum | On the screen | Elsewhere |
+| --- | --- | --- | --- | --- | --- |
+| button, top rows | 327, 514, 149, 8 | light grey | 720 | 1079 | at most 368 |
+| percentage box, Easy | 537, 230, 85, 28 | black | 1500 | 1969 | at most 1 |
+| percentage box, Normal | 537, 302, 85, 28 | black | 1500 | 1969 | at most 130 |
+| percentage box, Hard | 537, 376, 85, 28 | black | 1500 | 1969 | at most 59 |
+
+`scoreboard` is the screen with all four tests and no board (no score panel), and is not the title; it is
+tried last, so a screen that had a name before keeps it. The top rows of the button (y 514-521) are what the
+winner notice's button (y 522-546) never reaches. Over all 2267 frames of the three sittings (693, 486 and
+1088), `experiments/E020-wine-first-run/check_screens.py` reads the 7 frames of steps 367 and 368 as
+`scoreboard` and every other frame as before: sitting 20261008T184505Z board 332, board-menu 201,
+eliminated 156, unknown 3, title 1; sitting 20261008T195537Z board 315, board-menu 128, game-over 36,
+eliminated 3, unknown 3, title 1; sitting 20261008T204817Z board 685, board-menu 392, scoreboard 7,
+unknown 3, title 1. (The 3 `unknown` frames of each sitting are the options screen of steps 5 to 9, unchanged.)
 
 ## The 46 country positions (for `attack-picked` and the placement `click-until`)
 

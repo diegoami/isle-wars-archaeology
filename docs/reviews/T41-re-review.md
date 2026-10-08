@@ -1,0 +1,130 @@
+T41 review (sol)
+You review PR #124 at 3f4105cd3b4fb0a5590d57b483de7feb5b991562. You did not write it. The task file follows.
+This is round 2, the last before escalation. Round 1 (Luna, rework, one blocking R1: the play-out loop clicked after its poll sleep without rechecking the deadline) is the previous review comment on PR #124. The implementer gated every input block through one deadline check (BatchLoop.send) and swept the loop; the PR body lists the sweep. Check R1 is fixed as a class, with a test per site that fails without its fix, and review the whole PR.
+0. Prove the tree: HEAD is 3f4105cd3b4fb0a5590d57b483de7feb5b991562 and the diff against origin/main is the PR's; findings name its files.
+1. Re-run every Done-when line yourself, and account for each (L32). The PR's evidence is no proof.
+2. [evidence-driven] Every constant traces to a fixture, report or investigation; a [designed] one says what was searched.
+3. [seeded] No wall clock, unseeded random or order-dependent iteration in rule code.
+4. Every changed file and behaviour is one the task asks for (L44); docs it makes wrong are updated.
+5. Sweep the diff: tests that pass with the behaviour deleted (mutate, rebuild clean, re-take any
+   negative result), branches no input reaches, edge comments without a test, a click on a screen not proven by a read, a game played after a credited loss recorded under the shipped set.
+Prove each finding (run it, or delete the behaviour and name the test that fails) or label it
+unverified. Your final message is the review: the header; the verdict (approve | approve after
+named fixes | rework | user decision); per Done-when line `DW<k>: ran <command> → <result>` or
+`DW<k>: not run — <reason>`; the findings R1..Rn (file:line, blocking or not); the verdict again
+last. Never post it: the script posts it and applies the label.
+
+Done-when 2 runs on the user's machine over sitting frames your sandbox cannot read (#122): the main session re-runs it and posts the output; account for it as 'not run — machine-local, main session runs it'.
+
+# The review brief's own sections
+
+Every review brief carries these two sections, in full, after the numbered block of
+`process.md` §5 (or, in the review profile, after the brief's numbered lines). The reviewer reads
+the brief in another file, so paste them; never point to this one. Write "Blocking means" for the
+task; paste the second section as it is. (L47, L49)
+
+```text
+## Blocking means
+
+Any one is enough; a blocking finding means rework, never approve.
+1. A Done-when line fails, or cannot be run as written.
+2. What this task protects can be got past: <name it: the guard, check, permission, invariant,
+   rule value or file this task exists to protect>. A bypass you proved is blocking, even when it
+   looks like an edge case. Never "follow-up hardening" or "outside the threat model" unless the
+   task says so; if it does, quote the line. (L47)
+3. Behaviour the task forbids, or behaviour nobody asked for, inside a file the task requires. (L44)
+4. <project-specific items: a constant with no evidence, a test that passes with the behaviour
+   deleted, a status written into a document>
+Not blocking: wording, style, and defects in code the PR did not change: file those as follow-ups.
+When unsure, say how likely the problem is. Rate it blocking only if it is likely and would get
+past what the task protects; otherwise it is a follow-up. (L53)
+
+## Report every blocking finding in this one review
+
+This review is your only pass before the author fixes. Do not stop at the first blocking
+finding: finish reading the whole diff and the task file, check every Done-when line and
+every item under "Blocking means", and report all blocking findings together.
+
+- Before you write the verdict, make one last pass over the full diff for anything you have
+  not yet rated, and say "Final pass done" as the last line before the verdict.
+- Number the findings R1, R2, … in order of severity. A finding you held back because an
+  earlier one was already blocking is a review defect: if two problems share a cause, list
+  both and say so.
+- Do not rely on a later round. The author fixes everything you list, and the next review
+  checks those fixes and new code only, not anything you saw but did not report.
+- If you ran out of time or context before covering the whole diff, say which files or
+  sections you did not cover. Do not approve in that case.
+```
+
+## The task file (docs/tasks/T41.md, in full)
+
+# T41 E020 driver: play each game to its end, and the Scoreboard
+
+- **Kind**: correction (of T38, from its third sitting)
+- **Issue**: #123 · **Branch**: `task/T41-play-to-the-end` · **Merge after**: T38 (merged)
+- **Implementer**: claude `task-agent` (Sonnet, effort `high`). Measuring the Scoreboard needs the
+  sitting frames on the user's machine, which OpenCode cannot reach (L26; rule 6's research/install
+  line). Fallback: Opus (`task-agent-heavy`).
+- **Reviewer**: opencode `luna` (GPT-5.6 Luna, effort `high`), another family (rule 6's easy pair).
+  Substitute: GPT-6.1 Sol at `low`.
+- **Easy** (rule 6): one loop rule and one more screen in a classifier T38 built and reviewed, with
+  its pattern (measured regions, thresholds between measured populations, a mutation per change).
+  It is not a guard: T36's hash gate and T38's checkers are untouched.
+- **Why**: T38's third sitting (`20261008T204817Z`, record pending) played game 1 to the 30-turn
+  cap without the human being eliminated. The loop then sent New Game from the board. With the
+  human holding fewer than 10 countries, the game credited a loss, wrote its scoreboard file
+  (`xtras/Islepro.skr`, F003), and showed the Scoreboard screen with one CONTINUE button. The loop's
+  blind setup clicks missed, and the sitting aborted (cleanly). The owner decided on 2026-10-08:
+  **keep playing past the cap**, so a game ends only by the human's elimination (KEEP PLAYING, then
+  the winner screen) or by a computer's win, and a sitting never quits a live game.
+- **Evidence**:
+  - The third sitting's frames, on the user's machine:
+    `/mnt/c/Temp/iwp-shots/wine/20261008T204817Z/frames/`. The Scoreboard is on frames `368-*.png`
+    (for example `368-1791494104472.png`). Rule 18's constraint A, as amended on 2026-10-08, lets
+    model APIs read them; never copy one into the repository.
+  - `runtime/iwp/driver/screens.py` and `walkthroughs/coordinates.md` (T38 rounds 4 and 6): the
+    pattern for a screen test and its measured thresholds.
+  - `experiments/E020-wine-first-run/e020_loop.py`, `scenarios.txt` and `play.steps` (T38).
+  - F003 (the loss notice and the scoreboard file); E019's README (the successor set
+    `iwp-2.0-de5a82a2` for walks that pass through a credited loss).
+- **Owns**: `experiments/E020-wine-first-run/**`, `runtime/iwp/driver/screens.py`,
+  `runtime/iwp/driver/clicks.py`, `walkthroughs/coordinates.md`, `runs/E020/**`, `evidence/E020/**`,
+  and the tests under `tests/` and `tools/tests/` for these.
+- **Scope**:
+  - **No quit of a live game.** `turns_max` no longer ends a game: a game runs until the human is
+    eliminated (then KEEP PLAYING and the winner screen, as T38 built), a computer wins, or
+    `sitting_seconds` runs out. When time runs out mid-game, the sitting ends cleanly through
+    Session without a click. New Game is sent only on `title`, never from a board showing a live
+    game. `scenarios.txt` says so.
+  - **The Scoreboard as a safety net.** `screens.name_of` gains `scoreboard`, measured from frame 368
+    of the third sitting: its panel, and its CONTINUE box, which sits higher than the winner
+    screen's. Check it over every frame of all three sittings, and check that no other name
+    changes. On `scoreboard`, the loop logs `loss-credited` (the game wrote the scoreboard file, so
+    the artifact set is the successor from then on), clicks CONTINUE once, and starts the next game
+    only on `title`. Anything else ends the sitting cleanly.
+  - **Records.** Export the third sitting as `E020-r0003` with its real status. A record of a
+    sitting whose log contains `loss-credited` names the successor set for the games after it, or
+    is refused by the export: never the shipped set for a game played after a scoreboard write.
+  - **Out of scope:** the frame reader and the counts (T40); bomb sampling's own behaviour.
+- **Done when**:
+  1. `python3 -m unittest discover -s tests` passes. It includes tests that fail with the change
+     removed: a game past `turns_max` keeps playing; time running out mid-game ends the sitting
+     with no click; New Game is never sent from a board; `scoreboard` leads to CONTINUE once, then
+     to `title` or a clean stop; a record after `loss-credited` never names the shipped set.
+  2. `python3 experiments/E020-wine-first-run/check_screens.py /mnt/c/Temp/iwp-shots/wine/20261008T184505Z/frames /mnt/c/Temp/iwp-shots/wine/20261008T195537Z/frames /mnt/c/Temp/iwp-shots/wine/20261008T204817Z/frames`
+     (new: prints each screen name's frame count per sitting, and exits 0 only if every frame of
+     step 368 of the third sitting reads `scoreboard`, and no frame of the first two sittings
+     changes name from T38's classifier). Runs on the user's machine; the main session posts its
+     output on the PR.
+  3. `python3 tools/validate_records.py runs/E020/cmb-accumulation/E020-r0003.json` and
+     `python3 tools/validate_wine_manifests.py evidence/E020/E020-r0003.manifest.json` exit 0, and
+     the record's status is the session's own (`aborted: step-failed: …565,532`).
+  4. `python3 tools/check_no_originals.py` and `python3 tools/check_links.py` exit 0; CI is green.
+- **Hazards**:
+  - **A blind click on an unproven screen** is what failed three times. Every input after a game's
+    end goes through a screen read.
+  - **The artifact set after a credited loss** is not the shipped one. Never write the shipped set
+    for a game played after a scoreboard write.
+  - **Quoting the original's text** (constraint D): describe the Scoreboard by its regions and
+    colours; its words appear in no repository file.
+- **Runs on**: no game run in this task. The main session runs the next sitting after the merge.

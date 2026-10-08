@@ -69,7 +69,7 @@ def batch_help(name, batch):
         f"citing two frames",
         f"  floors: at least {batch.get('events_min')} {batch.get('event')} events across at least "
         f"{batch.get('games_min')} game(s); claims {batch.get('claims', '')} checked per arm",
-        f"  loop: at most {batch.get('games_max')} games of {batch.get('turns_max')} turns, "
+        f"  loop: at most {batch.get('games_max')} games, each played to its end, "
         f"{batch.get('sitting_seconds')} s; blocks experiments/{EXPERIMENT}-wine-first-run/{batch.get('blocks', '')}",
         f"  note: {batch.get('note', '')}",
         f"  records land in runs/{EXPERIMENT}/{name}/; manifests in evidence/{EXPERIMENT}/",

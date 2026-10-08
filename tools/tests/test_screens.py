@@ -92,6 +92,53 @@ class ScreenNameTest(unittest.TestCase):
         below = stage_frame("score-panel", "notice-panel", "continue", seats={"green": screens.SEAT_MINIMUM - 1})
         self.assertEqual((screens.winner_of(at), screens.winner_of(below)), ("green", None))
 
+    def test_the_scoreboard_needs_its_button_and_its_three_percentage_boxes_and_no_board(self):
+        """T41 (sitting 20261008T204817Z, steps 367 and 368): the Scoreboard is its CONTINUE button's top
+        rows and the black percentage box of each level, with no board behind it."""
+        parts = screens.SCOREBOARD_TESTS
+        self.assertEqual(screens.name_of(stage_frame(*parts)), "scoreboard")
+        for missing in parts:
+            with self.subTest(missing=missing):
+                self.assertEqual(screens.name_of(stage_frame(*[p for p in parts if p != missing])), "unknown")
+        # a board, a title or a notice over it is never the Scoreboard
+        self.assertEqual(screens.name_of(stage_frame("score-panel", *parts)), "board")
+        self.assertEqual(screens.name_of(stage_frame("score-panel", "menu", *parts)), "board-menu")
+        self.assertEqual(screens.name_of(stage_frame("subtitle", "menu", *parts)), "title")
+        self.assertEqual(screens.name_of(stage_frame("score-panel", "notice-panel", "continue", *parts)), "game-over")
+
+    def test_the_scoreboards_button_sits_above_the_winner_notices(self):
+        """The winner notice's CONTINUE (y 522-546) never fills the Scoreboard button's top rows
+        (y 514-521): its frames count at most 368 there; the Scoreboard's 1079."""
+        x, y, w, h = screens.SCOREBOARD_BUTTON_TOP
+        wx, wy, ww, wh = screens.CONTINUE_BOX
+        self.assertLess(y + h - 1, wy)
+        self.assertEqual(screens.name_of(stage_frame("score-panel", "notice-panel", "continue")), "game-over")
+        self.assertEqual(screens.name_of(stage_frame("continue")), "unknown")
+        self.assertLess(screens.SCOREBOARD_CONTINUE_CLICK[1], screens.CONTINUE_CLICK[1])   # higher than 401,534
+
+    def test_each_scoreboard_minimum_sits_between_the_measured_populations(self):
+        """Over all 2267 frames of the three sittings: the Scoreboard's 1079 (button top) and 1969 (each
+        box); everywhere else at most 368, 1, 130 and 59."""
+        measured = {"scoreboard-button": (368, 1079), "scoreboard-easy": (1, 1969),
+                    "scoreboard-normal": (130, 1969), "scoreboard-hard": (59, 1969)}
+        for name, (elsewhere, on) in measured.items():
+            with self.subTest(test=name):
+                self.assertTrue(elsewhere < screens.TESTS[name].minimum <= on)
+        # one pixel below a minimum, the Scoreboard is not read; at it, it is
+        at = {n: screens.TESTS[n].minimum for n in screens.SCOREBOARD_TESTS}
+        self.assertEqual(screens.name_of(stage_frame(*screens.SCOREBOARD_TESTS, pixels=at)), "scoreboard")
+        for name in screens.SCOREBOARD_TESTS:
+            with self.subTest(below=name):
+                self.assertEqual(screens.name_of(stage_frame(*screens.SCOREBOARD_TESTS,
+                                                             pixels=dict(at, **{name: at[name] - 1}))), "unknown")
+
+    def test_without_the_scoreboard_the_classifier_is_t38s(self):
+        """`name_from(scoreboard=False)` is round 6's classifier: check_screens.py compares the two."""
+        for name in screens.NAMES:
+            frame = screen_frame(name)
+            expected = "unknown" if name == "scoreboard" else name
+            self.assertEqual(screens.name_from(screens.signals(frame), scoreboard=False), expected)
+
     def test_a_capture_that_is_not_the_stage_is_refused(self):
         with self.assertRaises(ValueError):
             screens.name_of(b"\0" * 30)
