@@ -325,7 +325,8 @@ class MeasureRateTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "m"
             with mock.patch.dict(os.environ, {"DISPLAY": ":0"}):        # the caller's desktop: must not be touched
-                doc, _ = watcher_module.measure_rate(2.0, out)
+                doc, _ = watcher_module.measure_rate(2.0, out, frames_dir=Path(tmp) / "test-frames")
+            self.assertFalse((Path(tmp) / "test-frames").exists())     # the synthetic frames are removed
             self.assertNotEqual(doc["display"], ":0")
             self.assertGreaterEqual(doc["captures"], 4)
             self.assertEqual(doc["failures"], 0)
@@ -335,6 +336,9 @@ class MeasureRateTest(unittest.TestCase):
                 self.assertEqual(line["window"], doc["window"])
             with self.assertRaises(FileExistsError):                   # a measurement is never written over
                 watcher_module.measure_rate(1.0, out)
+            (Path(tmp) / "taken").mkdir()
+            with self.assertRaises(FileExistsError):                   # nor are the test frames put in an old folder
+                watcher_module.measure_rate(1.0, Path(tmp) / "m2", frames_dir=Path(tmp) / "taken")
 
 
 if __name__ == "__main__":

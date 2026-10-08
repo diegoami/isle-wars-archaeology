@@ -354,25 +354,31 @@ def _tool_version(cmd):
     return text[0][:120] if ok and text else "unknown"
 
 
-def measure_rate(seconds, out_dir=None):
+def measure_rate(seconds, out_dir=None, frames_dir=None):
     """Capture a test window on an Xvfb of this run's own for `seconds`, with the Watcher exactly as a
     sitting uses it, and write the measurement under `out_dir` (default: a new, time-stamped folder
     of measurements/capture/): rate.json, frames-index.jsonl, watcher.log. Returns (document, passed).
 
     The display is never the caller's: every command here gets an environment built without the
     caller's DISPLAY. The test frames are synthetic pixels; they are kept only in a temporary folder
-    (their sha256 are in the committed index) and removed at the end. Nothing is written over."""
+    (their sha256 are in the committed index) and removed at the end. Nothing is written over.
+
+    `frames_dir` (a folder that does not exist yet) is where the stored test frames go, to measure a
+    slower disk than the temporary folder (a sitting writes to /mnt/c); it is removed at the end too."""
     out_dir = Path(out_dir) if out_dir else MEASUREMENTS / time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    if frames_dir and Path(frames_dir).exists():
+        raise FileExistsError(f"{frames_dir} exists; the test frames go to a new folder")
     out_dir.mkdir(parents=True, exist_ok=False)
     base_env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.environ.get("HOME", "/tmp")}
     workdir = Path(tempfile.mkdtemp(prefix="t42-measure-"))
+    frames_dir = Path(frames_dir) if frames_dir else workdir / "frames"
     xvfb = window_proc = None
     try:
         xvfb, display, env = _start_own_xvfb(base_env)
         if display == os.environ.get("DISPLAY"):
             raise WatcherError("the measurement's display is the caller's; refusing to capture it")
         window_proc, window_id = _start_test_window(env, workdir)
-        watcher = Watcher(window_id, env, workdir / "frames", out_dir / "frames-index.jsonl",
+        watcher = Watcher(window_id, env, frames_dir, out_dir / "frames-index.jsonl",
                           out_dir / "watcher.log", step_source=lambda: 0)
         started = time.monotonic()
         thread, stop = watcher.start()
@@ -393,6 +399,7 @@ def measure_rate(seconds, out_dir=None):
             "geometry": lines[-1]["geometry"] if lines else {},
             "test_window": f"ImageMagick animate, {MEASURE_IMAGES} distinct {MEASURE_IMAGE_SIZE} plasma images, 50 ms each",
             "interval_s": watcher.interval,
+            "frames_dir": "a temporary folder" if frames_dir.parent == workdir else str(frames_dir),
             "seconds_requested": seconds,
             "seconds_elapsed": elapsed,
             "captures": watcher.count,
@@ -415,6 +422,7 @@ def measure_rate(seconds, out_dir=None):
         _stop(window_proc)
         _stop(xvfb)
         shutil.rmtree(workdir, ignore_errors=True)
+        shutil.rmtree(frames_dir, ignore_errors=True)
 
 
 def main(argv=None):
@@ -423,13 +431,14 @@ def main(argv=None):
                         help="start an Xvfb of its own, capture a test window on it, print the sustained "
                              "frames per second; exit 0 only when it is at least %.0f" % REQUIRED_FPS)
     parser.add_argument("--seconds", type=float, default=20.0, help="how long to capture (default 20)")
+    parser.add_argument("--frames-dir", help="a new folder for the stored test frames (default: a temporary one)")
     parser.add_argument("--out", help="the measurement folder (default: a new one under measurements/capture/)")
     args = parser.parse_args(argv)
     if not args.measure_rate:
         parser.error("the only thing to run here is --measure-rate; a sitting starts the watcher itself")
     if args.seconds <= 0:
         parser.error("--seconds must be positive")
-    doc, passed = measure_rate(args.seconds, args.out)
+    doc, passed = measure_rate(args.seconds, args.out, args.frames_dir)
     print(f"sustained {doc['fps']} frames per second over {doc['seconds_elapsed']} s "
           f"({doc['captures']} captures, {doc['stored']} stored, {doc['duplicates']} duplicates, "
           f"{doc['failures']} failures); required {doc['required_fps']}: {'PASS' if passed else 'FAIL'}")

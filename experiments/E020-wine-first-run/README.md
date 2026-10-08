@@ -93,6 +93,23 @@ mistake-rich record.
     `dumps/`, `session/` (the session's before and after screenshots and logs), `watcher.log`, and
     `readings.jsonl`, which the reading pass writes after the sitting: one event per line (game,
     seq, the frames it was read from, and the batch's event fields by pixels, no OCR).
+  - **Capture rate** (T42, `docs/tasks/T42.md`). The first sittings grabbed a frame about every 1.4 s
+    (a 1.0 s pause after each `import`, plus the capture and a geometry read), and the computer plays
+    several exchanges in that time. The watcher now keeps a deadline-driven schedule
+    (`DEFAULT_INTERVAL` 0.125 s, 8 frames per second wanted, 5 required), reads the window geometry
+    once per 5 s, lets each capture land in a local staging folder (`/dev/shm`), and stores a frame
+    identical to the one before it once: the index line of the repeat names the stored frame, has the
+    same `sha256`, and says `"duplicate": true`, so every index line still names a file that exists
+    with the sha256 it records. Every line also carries `epoch_ms` (when the capture started) and
+    `capture_ms` (how long `import` ran). At most `MAX_FRAMES` (20000) frames are stored per sitting;
+    past it the watcher logs `frame cap reached` and stops. The method is unchanged (`import -window
+    <id>`, the game window and never the root window, the session's own environment), so the reader
+    reads the same PNGs. The rate is measured with no game, on an Xvfb the command starts itself:
+    `python3 runtime/iwp/driver/watcher.py --measure-rate --seconds 20` captures an animated test
+    window of synthetic 800x600 images, prints the sustained frames per second, exits 0 only at 5 or
+    more, and writes `rate.json`, `frames-index.jsonl` and `watcher.log` to a new folder under
+    `measurements/capture/` (never over an old one). A game window under Wine may take longer to
+    capture than the test window: the sitting's `capture_ms` values show it.
   - `e020_export.py` (`--records --sitting DIR --batch NAME`) turns one sitting directory into
     `runs/E020/<batch>/<run-id>.json` and `evidence/E020/<run-id>.manifest.json`, or writes
     nothing: it requires `sitting.json` as the proof of the sitting and keeps its status and
