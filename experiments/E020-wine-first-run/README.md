@@ -38,8 +38,9 @@ mistake-rich record.
     order: New Game, EASY, Play Game; mid-game at EASY New Game goes straight to the setup screen,
     E002-r0018), `quiet` (the board unchanged for 4 s, bounded), `place` (E002's `click-until` over
     the proven country points: the placement row lights only for a country the human owns),
-    `commit` (ALL, PLACE, PASS, CONTINUE), `dismiss` and `eliminated-keep-playing` (one click on
-    the elimination notice's KEEP PLAYING, 665,531; round 4). No block attacks.
+    `commit` (ALL, PLACE, PASS, CONTINUE), `dismiss`, `eliminated-keep-playing` (one click on
+    the elimination notice's KEEP PLAYING, 665,531; round 4) and `game-over-continue` (one click on
+    the winner notice's CONTINUE, 401,534; round 6). No block attacks.
   - `e020_loop.py` plays games of place-all and pass from those blocks until the human cannot
     place, `turns_max`, `games_max` or `sitting_seconds`, and logs each game's start and end.
     A wait is never ignored: a `settle` that does not settle stops its block (`not-ready`), and
@@ -48,13 +49,20 @@ mistake-rich record.
     The screen is read by pixels before each placement attempt, before New Game and during a
     play-out (`runtime/iwp/driver/screens.py`, measured from sitting 20261008T184505Z; round 4).
     On the elimination notice the loop clicks KEEP PLAYING once (the owner's decision), then sends
-    nothing and reads the screen while the computers play, within `sitting_seconds`. New Game is
-    sent only on the title or on the board with its menu row lit. Any other screen where the loop
-    would act ends the sitting cleanly: a last screenshot (`session/unknown-screen.png`), an
+    nothing and reads the screen while the computers play, within `sitting_seconds`. The winner
+    notice (`game-over`, measured from sitting 20261008T195537Z; round 6), in the play-out or at a
+    turn's start, ends the game: the `game-end` line says `ended: game-over` and the winner's colour
+    word when the score panel shows it by pixels; then CONTINUE once, and the screen is read again.
+    New Game is sent only on the title or on the board with its menu row lit. Any other screen where
+    the loop would act ends the sitting cleanly: a last screenshot (`session/unknown-screen.png`), an
     `ended: unknown-screen` line with its sha256 in `actions.jsonl`, and no click.
     Sitting 20261008T184505Z (round 3's driver) met the notice at turn 16, tried the placement
     points, clicked New Game where it is not, and ended `aborted: step-failed`; it is exported as
-    `E020-r0001`, with no events (no reading pass yet).
+    `E020-r0001`, with no events (no reading pass yet). Sitting 20261008T195537Z (round 5's driver,
+    d2e8009) played game 1 for 14 turns, answered the elimination notice with KEEP PLAYING, and
+    polled the play-out; about 10 s later the winner notice (red, all 46 countries) came up and was
+    read as the board, so the main session interrupted the sitting (`aborted: driver-bug:
+    KeyboardInterrupt`, clean recovery). It is exported as `E020-r0002`, with no events.
     The click-driver (`runtime/iwp/driver/clicks.py`) sends every step through `Session.perform`
     and logs every attempted step, failed ones included, to `actions.jsonl`; the watcher
     (`runtime/iwp/driver/watcher.py`) captures the game window on the session's display.

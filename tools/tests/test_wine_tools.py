@@ -409,6 +409,12 @@ class FakeDriver:
         self.frames.append(name)
         return "f" * 64
 
+    def read_winner(self):
+        self.trail.append("winner")
+        return self.winner
+
+    winner = "red"
+
 
 class LoopTest(unittest.TestCase):
     batch = {"games_max": "2", "turns_max": "3", "sitting_seconds": "1000"}
@@ -572,6 +578,61 @@ class ScreenLoopTest(unittest.TestCase):
         _, summary = self.loop(driver)
         self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
         self.assertEqual((summary["games"], summary["ended"]), (1, "unknown-screen"))
+
+    def test_the_second_sittings_winner_notice_ends_the_game_and_continue_is_clicked_once(self):
+        """Sitting 20261008T195537Z: after KEEP PLAYING the winner notice came up and was read as the
+        board, so the play-out would have polled to `sitting_seconds`. Now (round 6): the game ends,
+        its game-end line names the winner by colour word, CONTINUE once, then the screen decides."""
+        screens = ["title"] + ["board-menu"] * 14 + ["eliminated", "board", "game-over", "title", "unknown"]
+        driver = FakeDriver([1] * 14, screens=screens)
+        _, summary = self.loop(driver)
+        after = driver.trail[driver.trail.index("eliminated-keep-playing") + 1:]
+        self.assertEqual(after[:6], ["read:board", "read:game-over", "winner", "game-over-continue", "read:title",
+                                     "new-game"])
+        self.assertEqual([n for n, _ in driver.blocks].count("game-over-continue"), 1)
+        ends = [n for n in driver.notes if n.get("event") == "game-end"]
+        self.assertEqual([(n["game"], n["reason"], n.get("ended"), n.get("winner")) for n in ends[:1]],
+                         [(1, "played-out: game-over", "game-over", "red")])
+        self.assertEqual([n["game"] for n in driver.notes if n.get("event") == "game-start"], [1, 2])
+        self.assertEqual(summary["games"], 2)
+        self.assertEqual(driver.readings.count("title"), 2)      # the screen after CONTINUE is the next game's
+
+    def test_the_winner_notice_at_a_turns_start_ends_the_game(self):
+        for winner in ("green", None):
+            with self.subTest(winner=winner):
+                driver = FakeDriver([1, 1], screens=["title", "board-menu", "game-over", "board-menu"])
+                driver.winner = winner
+                _, summary = self.loop(driver, games_max="1")
+                self.assertEqual(driver.trail, ["read:title", "new-game", "quiet", "read:board-menu", "place", "commit",
+                                                "quiet", "read:game-over", "winner", "game-over-continue",
+                                                "read:board-menu"])
+                ends = [n for n in driver.notes if n.get("event") == "game-end"]
+                self.assertEqual([(n["reason"], n["ended"], n["winner"], n["turn"]) for n in ends],
+                                 [("game-over", "game-over", winner, 2)])
+                self.assertEqual(summary["ended"], "games-max")
+                self.assertEqual(driver.frames, [])
+
+    def test_after_continue_only_a_proven_new_game_screen_starts_the_next_game(self):
+        for screen in ("unknown", "board", "eliminated", "game-over"):
+            with self.subTest(screen=screen):
+                driver = FakeDriver([1], screens=["title", "board-menu", "game-over", screen])
+                _, summary = self.loop(driver)
+                self.assertEqual(driver.trail[-3:], ["winner", "game-over-continue", "read:" + screen])
+                self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
+                self.assertEqual((summary["games"], summary["ended"], summary["screen"]), (1, "unknown-screen", screen))
+                self.assertEqual(driver.frames, [e020_loop.FINAL_FRAME])
+                self.assertEqual([n.get("ended") for n in driver.notes if n.get("event") == "game-end"], ["game-over"])
+
+    def test_the_winner_notice_between_quiet_blocks_is_waited_on_not_unknown(self):
+        """A wait that reads the winner notice keeps waiting (round 6); the turn's start then ends the game."""
+        driver = FakeDriver([1], screens=["title", "board-menu", "game-over", "game-over", "title"],
+                            quiet_script=[True, False, True])
+        _, summary = self.loop(driver, games_max="1")
+        self.assertEqual(driver.trail, ["read:title", "new-game", "quiet", "read:board-menu", "place", "commit",
+                                        "quiet", "read:game-over", "quiet", "read:game-over", "winner",
+                                        "game-over-continue", "read:title"])
+        self.assertEqual(summary["ended"], "games-max")
+        self.assertEqual(driver.frames, [])
 
     def test_a_refused_placement_on_a_board_without_its_menu_is_not_a_game_end(self):
         """No menu row: New Game is not on the screen, so the loop stops instead of starting a game."""

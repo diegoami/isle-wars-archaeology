@@ -26,15 +26,20 @@ from the frames of sitting 20261008T184505Z):
 * at the start of every human turn, before the placement (and again before the second placement
   attempt): on the elimination notice the loop sends the `eliminated-keep-playing` block once (the
   owner's decision: the computers play the game out), then sends nothing more. It reads the screen
-  every `PLAYOUT_POLL` seconds while the board stays up, bounded by the batch's `sitting_seconds`,
-  and the sitting ends when the board goes (the game's end, read as an unknown screen) or the time
-  is spent;
+  every `PLAYOUT_POLL` seconds while the board stays up, bounded by the batch's `sitting_seconds`;
+* the winner notice (`game-over`, T38 round 6, measured from sitting 20261008T195537Z), read in the
+  play-out or at a turn's start, ends the game: its `game-end` line says `ended: game-over` and
+  names the winner's colour when the score panel shows it by pixels (`winner`, a colour word or
+  null; never OCR). The loop then clicks CONTINUE once (block `game-over-continue`) and reads the
+  screen: the next game starts only on the title or the board with its menu row (the screens New
+  Game is proven on); anything else ends the sitting as an unknown screen. What follows CONTINUE is
+  not assumed;
 * New Game is sent only on a screen read as the title or as the board with its menu row lit;
 * any screen the loop does not recognise where it would act (not the board at a turn's start, not
   the board with its menu after a placement failed, not the title or that board before New Game,
-  not the board while the computers play out) ends the sitting cleanly: a last screenshot through
-  the session, an `ended: unknown-screen` line with its sha256, no click, and the session's own
-  finish. The game-over screen is one of these until a later round measures it.
+  not the board or the winner notice while the computers play out) ends the sitting cleanly: a last
+  screenshot through the session, an `ended: unknown-screen` line with its sha256, no click, and the
+  session's own finish.
 
 Every game start and end is a line of `actions.jsonl` (`event: game-start` / `game-end`, with
 the game ordinal and the reason), which is how the export knows the sitting's real games; every
@@ -52,7 +57,8 @@ QUIET_ATTEMPTS = 6        # `quiet` blocks before a turn is given up: 6 x (4 s +
                           # F003 measured 15 to 33 s for the computers' turns
 BOARD = ("board", "board-menu")
 NEW_GAME_ON = ("title", "board-menu")   # New Game is on these screens (the menu row lit; E002-r0018/r0019)
-WAIT_ON = BOARD + ("eliminated",)      # screens a readiness wait keeps waiting on (round 5, R1)
+WAIT_ON = BOARD + ("eliminated", "game-over")   # screens a readiness wait keeps waiting on (round 5, R1;
+                                                # the winner notice, round 6: answered at the turn's start)
 PLAYOUT_POLL = 5          # s between screen readings while the computers play out; no input is sent
 FINAL_FRAME = "unknown-screen.png"
 
@@ -66,6 +72,7 @@ class BatchLoop:
         self.clock = clock
         self.sleep = sleep
         self.summary = {"games": 0, "turns": 0, "placements": 0, "ended": None}
+        self.game_over_seen = None           # {"ended": "game-over", "winner": ...} once the winner notice is read
 
     def out_of_time(self):
         return self.clock() >= self.deadline
@@ -73,24 +80,50 @@ class BatchLoop:
     def run(self):
         """Play games until the bounds; the summary (games, turns, placements, why it ended)."""
         self.deadline = self.clock() + self.seconds
+        after_continue = None                        # the screen read after a winner notice's CONTINUE
         for game in range(1, self.games_max + 1):
             if self.out_of_time():
                 self.summary["ended"] = "sitting-seconds"
                 return self.summary
             self.driver.context = {"game": game, "turn": 0}
-            screen = self.driver.read_screen()
+            screen = after_continue if after_continue is not None else self.driver.read_screen()
+            after_continue = None
             if screen not in NEW_GAME_ON:            # New Game only where it is proven on the screen
                 self.unknown_screen(screen)
                 return self.summary
             self.driver.note(event="game-start")
             self.summary["games"] = game
             self.driver.run_block("new-game")
+            self.game_over_seen = None
             reason = self.play_game()
+            if self.game_over_seen is not None:     # the winner notice (round 6)
+                self.driver.note(event="game-end", reason=reason, **self.game_over_seen)
+                after_continue = self.continue_after_game_over()
+                if after_continue is None:
+                    return self.summary
+                continue
             self.driver.note(event="game-end", reason=reason)
             if self.summary["ended"] is not None:    # the time, the play-out or an unknown screen
                 return self.summary
         self.summary["ended"] = "games-max"
         return self.summary
+
+    def game_over(self):
+        """The winner notice is up: the game is over. Its winner is read by pixels (None when the
+        score panel does not show one); the game-end line is written by `run`, then CONTINUE."""
+        self.game_over_seen = {"ended": "game-over", "winner": self.driver.read_winner()}
+        return "game-over"
+
+    def continue_after_game_over(self):
+        """CONTINUE once (block `game-over-continue`), then the screen: returned when New Game is proven
+        on it (the title, or the board with its menu row); otherwise the sitting ends as an unknown
+        screen, unclicked, and None."""
+        self.driver.run_block("game-over-continue")
+        screen = self.driver.read_screen()
+        if screen in NEW_GAME_ON:
+            return screen
+        self.unknown_screen(screen)
+        return None
 
     def play_game(self):
         """Turns until the human cannot place, `turns_max`, the time, the elimination notice (then the
@@ -141,14 +174,17 @@ class BatchLoop:
 
     def off_board(self, screen):
         """Not the screen the turn needs: the elimination notice is answered (keep playing); anything
-        else ends the sitting, unclicked."""
+        else ends the sitting, unclicked. The winner notice ends the game (round 6)."""
         if screen == "eliminated":
             return self.keep_playing()
+        if screen == "game-over":
+            return self.game_over()
         self.unknown_screen(screen)
         return "unknown-screen"
 
     def keep_playing(self):
-        """KEEP PLAYING once; then no input, only screen readings while the board stays up, in the time."""
+        """KEEP PLAYING once; then no input, only screen readings while the board stays up, in the time.
+        The winner notice ends the game (round 6); any other screen ends the sitting, unclicked."""
         self.driver.run_block("eliminated-keep-playing")
         self.summary["eliminated"] = True
         while True:
@@ -157,6 +193,8 @@ class BatchLoop:
                 return "played-out: sitting-seconds"
             self.sleep(PLAYOUT_POLL)
             screen = self.driver.read_screen()
+            if screen == "game-over":
+                return "played-out: " + self.game_over()
             if screen not in BOARD:
                 self.unknown_screen(screen)
                 return "played-out: unknown-screen"

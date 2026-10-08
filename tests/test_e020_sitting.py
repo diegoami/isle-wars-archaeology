@@ -82,6 +82,8 @@ class E020SessionTest(base.DriverWorld):
         self.screen = "title"                # what the synthetic capture shows (round 4)
         self.eliminated_after_passes = None  # the notice comes up after this many PASS clicks
         self.playout_reads = 2               # board readings in the play-out before the screen is unknown
+        self.playout_end = "unknown"         # what the play-out ends on (round 6: the winner notice)
+        self.after_continue = "title"        # what the winner notice's CONTINUE shows (round 6)
         self.reads = []
         patcher = mock.patch.object(base.spike.Screen, "raw", lambda screen, crop=None: self.raw(crop))
         patcher.start()
@@ -124,14 +126,17 @@ class E020SessionTest(base.DriverWorld):
                 self.screen = "eliminated"
         elif point == (665, 531):
             self.screen = "board"
+        elif point == (401, 534):
+            self.screen = self.after_continue
 
     def raw(self, crop):
-        """The session's capture: the whole stage (Session.screen_name reads it) or a crop of it."""
+        """The session's capture: the whole stage (Session.screen_name and screen_winner read it) or a
+        crop of it. The winner notice shows red as the winner (sitting 20261008T195537Z)."""
         if crop == (0, 0, 800, 600):
             self.reads.append(self.screen)
             if self.screen == "board" and self.reads.count("board") > self.playout_reads:
-                self.screen = self.reads[-1] = "unknown"
-        return e020_fixtures.screen_frame(self.screen)
+                self.screen = self.reads[-1] = self.playout_end
+        return e020_fixtures.screen_frame(self.screen, winner="red" if self.screen == "game-over" else None)
 
     def never_settles(self, step):
         if tuple(step.args) in self.unsettled:
@@ -232,6 +237,39 @@ class E020SessionTest(base.DriverWorld):
         self.assertEqual([(l["ended"], l["sha256"]) for l in ended],
                          [("unknown-screen", e020_fixtures.sha(Path(shot).read_bytes()))])
         self.assertEqual(summary["final_frame"], ended[0]["sha256"])
+
+    def test_the_winner_notice_ends_the_game_names_the_winner_and_continue_is_clicked_once(self):
+        """Round 6 (sitting 20261008T195537Z): the play-out ends on the winner notice, read through
+        Session.screen_name and the winner through Session.screen_winner (pixels of the session's own
+        capture). The game-end line says game-over and red; CONTINUE (401,534) once; the screen after it
+        is read, and the sitting completes at games_max."""
+        self.eliminated_after_passes = 1
+        self.playout_end = "game-over"
+        made, summary = self.sitting()
+        self.assertEqual(made.status, "completed", made.status)
+        clicks = [tuple(a) for o, a, _ in self.sent if o in ("click", "click!", "click-until?", "click-any?")]
+        self.assertEqual(clicks[-2:], [(665, 531), (401, 534)])         # KEEP PLAYING, then CONTINUE, nothing after
+        self.assertEqual(self.reads[-2:], ["game-over", "title"])
+        lines = self.actions()
+        ends = [l for l in lines if l.get("event") == "game-end"]
+        self.assertEqual([(l["reason"], l["ended"], l["winner"]) for l in ends],
+                         [("played-out: game-over", "game-over", "red")])
+        cont = [l for l in lines if l.get("block") == "game-over-continue"]
+        self.assertEqual([(l["op"], l["args"], l["status"]) for l in cont],
+                         [("watch", [], "ok"), ("click!", [401, 534], "ok")])
+        self.assertLess(lines.index(ends[0]), lines.index(cont[0]))      # the end is logged before the click
+        self.assertEqual(summary["ended"], "games-max")
+        self.assertNotIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
+
+    def test_an_unknown_screen_after_continue_ends_the_sitting_cleanly(self):
+        self.eliminated_after_passes = 1
+        self.playout_end = "game-over"
+        self.after_continue = "unknown"
+        made, summary = self.sitting()
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertEqual([tuple(a) for o, a, _ in self.sent if o.startswith("click")][-1], (401, 534))
+        self.assertEqual((summary["ended"], summary["screen"]), ("unknown-screen", "unknown"))
+        self.assertIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
 
     def test_an_unknown_screen_ends_the_sitting_cleanly_without_a_click(self):
         """Round 4: Play Game led to a screen the loop does not know: a last screenshot, no click."""

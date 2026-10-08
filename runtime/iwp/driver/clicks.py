@@ -27,8 +27,10 @@ status (Session.execute).
 
 The driver also reads the screen for the loop (T38 round 4): `read_screen` asks the session which
 screen is up (Session.screen_name: pixel counts on measured regions, runtime/iwp/driver/screens.py)
-and logs the answer as an `event: screen` line; `final_frame` takes a last screenshot through the
-session and returns its sha256. Neither sends the game anything.
+and logs the answer as an `event: screen` line; `read_winner` asks it for the winning seat's colour
+word on the winner notice (Session.screen_winner, screens.winner_of; round 6), which the loop logs
+in its `game-end` line; `final_frame` takes a last screenshot through the session and returns its
+sha256. None of them sends the game anything.
 
 Each line of `actions.jsonl` is written whether the step succeeded or not (R12): `status` is `ok` or
 `failed`, a failed step carries the driver error's kind, and the line is on disk before the failure
@@ -131,9 +133,11 @@ class ClickDriver:
     ones each step added to say what the screen showed. `context` (a dict of small integers or
     words: game, turn) is copied into every line."""
 
-    def __init__(self, perform, observations, actions_path, blocks, clock=time.time, screen=None, shot=None):
+    def __init__(self, perform, observations, actions_path, blocks, clock=time.time, screen=None, shot=None,
+                 winner=None):
         self.perform = perform
         self.screen = screen                 # () -> the screen's name (Session.screen_name; T38 round 4)
+        self.winner = winner                 # () -> the winner's colour word or None (Session.screen_winner; round 6)
         self.shot = shot                     # (file name) -> sha256 of the screenshot file it took
         self.observations = observations
         self.actions_path = Path(actions_path)
@@ -187,6 +191,13 @@ class ClickDriver:
         name = self.screen()
         self.note(event="screen", screen=name)
         return name
+
+    def read_winner(self):
+        """The winning seat's colour word on the winner notice, or None (pixels, no input; not logged
+        here: the loop's `game-end` line carries it)."""
+        if self.winner is None:
+            raise StepFailed("the click-driver has no winner reader")
+        return self.winner()
 
     def final_frame(self, name):
         """A last screenshot, taken through the session (no input); the sha256 of its file."""

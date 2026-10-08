@@ -57,3 +57,12 @@ click-any? 402 531
 # the loop sends nothing and only reads the screen while the computers play.
 watch all
 click! 665 531
+
+# --- block game-over-continue
+# The winner notice (runtime/iwp/driver/screens.py `game-over`, measured from the frames of sitting
+# 20261008T195537Z, steps 177 to 186): its one grey CONTINUE button in the middle of the bottom bar,
+# x 327-475, y 522-546, centre 401,534 (walkthroughs/coordinates.md). Sent once, after the loop has
+# logged the game's end; the notice must go (the screen changes). What follows is read from the
+# screen, never assumed: the next game starts only on the title or the board with its menu row.
+watch all
+click! 401 534

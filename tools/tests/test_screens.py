@@ -51,6 +51,47 @@ class ScreenNameTest(unittest.TestCase):
                 self.assertTrue(screens.signals(stage_frame(name, pixels={name: test.minimum}))[name])
                 self.assertFalse(screens.signals(stage_frame(name, pixels={name: test.minimum - 1}))[name])
 
+    def test_the_winner_notice_needs_the_board_its_panel_and_continue(self):
+        """Round 6: `game-over` is the notice panel and the CONTINUE box over the board; without the
+        panel the box is a card award's CONTINUE (at most 1603 grey, 3901 navy on the frames)."""
+        self.assertEqual(screens.name_of(stage_frame("score-panel", "notice-panel", "continue")), "game-over")
+        for missing in ("score-panel", "notice-panel", "continue"):
+            with self.subTest(missing=missing):
+                parts = [p for p in ("score-panel", "notice-panel", "continue") if p != missing]
+                self.assertNotEqual(screens.name_of(stage_frame(*parts)), "game-over")
+        self.assertEqual(screens.name_of(stage_frame("score-panel", "menu", "continue")), "board-menu")
+
+    def test_the_continue_minimum_sits_between_the_measured_populations(self):
+        """Round 6: 2958 grey pixels on the winner notice; at most 1603 on any other frame (a card
+        award's CONTINUE). With the panel up, 1603 is not the winner notice and 2958 is."""
+        parts = ("score-panel", "notice-panel", "continue")
+        self.assertEqual(screens.name_of(stage_frame(*parts, pixels={"continue": 2958})), "game-over")
+        self.assertNotEqual(screens.name_of(stage_frame(*parts, pixels={"continue": 1603})), "game-over")
+        self.assertTrue(1603 < screens.TESTS["continue"].minimum <= 2958)
+
+    def test_the_winner_notice_is_never_read_with_an_elimination_button(self):
+        for button in ("keep-playing", "accept-loss"):
+            with self.subTest(button=button):
+                frame = stage_frame("score-panel", "notice-panel", "continue", button)
+                self.assertNotEqual(screens.name_of(frame), "game-over")
+        frame = stage_frame("score-panel", "notice-panel", "continue", "keep-playing", "accept-loss")
+        self.assertEqual(screens.name_of(frame), "eliminated")
+
+    def test_the_winner_is_the_one_seat_with_two_digits_on_the_winner_notice(self):
+        for seat in screens.SEAT_NUMBERS:
+            with self.subTest(seat=seat):
+                self.assertEqual(screens.winner_of(screen_frame("game-over", winner=seat)), seat)
+        self.assertIsNone(screens.winner_of(screen_frame("game-over")))              # every seat blank
+        self.assertIsNone(screens.winner_of(screen_frame("board", winner="red")))     # a leader, not a winner
+        self.assertIsNone(screens.winner_of(screen_frame("eliminated", winner="red")))
+        two = stage_frame(*("score-panel", "notice-panel", "continue"), seats={"red": 434, "blue": 434})
+        self.assertIsNone(screens.winner_of(two))                                      # never a guess between two
+
+    def test_the_seat_minimum_is_a_bound(self):
+        at = stage_frame("score-panel", "notice-panel", "continue", seats={"green": screens.SEAT_MINIMUM})
+        below = stage_frame("score-panel", "notice-panel", "continue", seats={"green": screens.SEAT_MINIMUM - 1})
+        self.assertEqual((screens.winner_of(at), screens.winner_of(below)), ("green", None))
+
     def test_a_capture_that_is_not_the_stage_is_refused(self):
         with self.assertRaises(ValueError):
             screens.name_of(b"\0" * 30)

@@ -588,9 +588,15 @@ class Engine(spike.Cycle):
 
     def screen_name(self):
         """The screen the game shows, by pixel counts on measured regions (screens.name_of; T38 round 4):
-        eliminated, board-menu, board, title or unknown. Reads the stage; sends nothing."""
+        eliminated, game-over (round 6), board-menu, board, title or unknown. Reads the stage; sends nothing."""
         self.require_alive("reading the screen")
         return screens.name_of(self.screen.raw((0, 0) + spike.STAGE))
+
+    def screen_winner(self):
+        """The winning seat's colour word on the winner notice, by pixels on the score panel
+        (screens.winner_of; T38 round 6), or None. Reads the stage; sends nothing."""
+        self.require_alive("reading the winner")
+        return screens.winner_of(self.screen.raw((0, 0) + spike.STAGE))
 
     def observe_file(self, rel):
         """One file of the game copy, read in place: size, sha256 and whether it equals the install's."""
@@ -982,8 +988,14 @@ class Session:
 
     @guarded("a screen reading")
     def screen_name(self):
-        """The screen the game shows (screens.name_of): eliminated, board-menu, board, title or unknown."""
+        """The screen the game shows (screens.name_of): eliminated, game-over, board-menu, board, title or
+        unknown."""
         return self._engine.screen_name()
+
+    @guarded("a winner reading")
+    def screen_winner(self):
+        """The winning seat's colour word on the winner notice, or None (screens.winner_of; round 6)."""
+        return self._engine.screen_winner()
 
     @guarded("a file observation")
     def observe_file(self, rel):
