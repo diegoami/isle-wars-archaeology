@@ -1,0 +1,37 @@
+{
+  "capture_ms": {
+    "max": 190,
+    "mean": 97.3,
+    "median": 92,
+    "p95": 146
+  },
+  "captures": 127,
+  "display": ":77",
+  "display_owner": "an Xvfb this run started (never the caller's display)",
+  "duplicates": 10,
+  "failures": 0,
+  "fps": 6.32,
+  "frames_dir": "/mnt/c/Temp/t42-measure-frames",
+  "geometry": {
+    "height": 600,
+    "width": 800,
+    "x": 0,
+    "y": 0
+  },
+  "index_sha256": "3ed73c1b97fd7ee5cb27624e6cd16d73418b77737d3af517ddb84c8dd3ed7330",
+  "interval_s": 0.125,
+  "log_sha256": "05bfe99f908c32d76d14fa0c20639ef5baf78556e9b003f30ca5e31d3c8d4c48",
+  "method": "ImageMagick `import -window <id>`, deadline-driven schedule, duplicates stored once",
+  "passed": true,
+  "required_fps": 5.0,
+  "seconds_elapsed": 20.1,
+  "seconds_requested": 20.0,
+  "stored": 117,
+  "task": "T42",
+  "test_window": "ImageMagick animate, 4 distinct 800x600 plasma images, 50 ms each",
+  "tools": {
+    "cpu_count": 32,
+    "import": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org"
+  },
+  "window": "2098142"
+}
