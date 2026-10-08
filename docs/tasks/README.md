@@ -45,3 +45,4 @@ status; this index carries none.
 | T38 | First model-driven run under Wine: the watcher, the click-driver and the E020 sitting | #114 | T20, T21, T22, T23, T27, T30, T37 |
 | T40 | E020 reader and counts: read the sittings' frames by pixels | #119 | T38 |
 | T41 | E020 driver: play each game to its end, and the Scoreboard | #123 | T38 |
+| T42 | E020 watcher: capture fast enough to see single exchanges | #128 | T41 |
