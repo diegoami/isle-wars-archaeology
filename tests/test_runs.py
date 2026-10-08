@@ -1,10 +1,12 @@
 """Every record under runs/ is valid run/1; every manifest under evidence/ is valid evidence-manifest/1.
 
 The checks use the pinned validator (tools/validate_records.py, fetched from game-archaeologist).
-A record must also sit at runs/E<nnn>/<run-id>.json with its own run id and experiment, and its artifact set must be one
-registered in artifacts/known.json.
+A record must also sit at runs/E<nnn>/<run-id>.json or runs/E<nnn>/<batch>/<run-id>.json (E019's
+per-screen batches are the one experiment with batch folders), with its own run id and experiment,
+and its artifact set must be one registered in artifacts/known.json.
 """
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -37,16 +39,36 @@ def schema_errors(path, schema_id):
     return errors, doc
 
 
+def record_experiment(path):
+    """The experiment folder a record path sits under: runs/E<nnn>/, or runs/E<nnn>/<batch>/ for a
+    batched experiment (one batch level at most), or None when the path is neither."""
+    chain = []
+    for parent in Path(path).parents:
+        if parent.name == "runs":
+            break
+        chain.append(parent.name)
+        if len(chain) > 2:
+            return None
+    else:
+        return None
+    if not chain or not re.fullmatch(r"E\d{3,}", chain[-1]):
+        return None
+    return chain[-1]
+
+
 def run_record_errors(path, known_sets=KNOWN_SETS):
-    """All problems with one run record at <...>/runs/E<nnn>/<run-id>.json, [] when valid."""
+    """All problems with one run record at <...>/runs/E<nnn>[/<batch>]/<run-id>.json, [] when valid."""
     path = Path(path)
     errors, doc = schema_errors(path, RUN_SCHEMA)
     if doc is None or not isinstance(doc, dict):
         return errors
     if doc.get("run_id") != path.stem:
         errors.append(f"run_id {doc.get('run_id')!r} is not the file name {path.stem!r}")
-    if doc.get("experiment") != path.parent.name:
-        errors.append(f"experiment {doc.get('experiment')!r} is not the folder {path.parent.name!r}")
+    folder = record_experiment(path)
+    if folder is None:
+        errors.append(f"the record does not sit at runs/E<nnn>[/<batch>]/<run id>.json (here {path})")
+    elif doc.get("experiment") != folder:
+        errors.append(f"experiment {doc.get('experiment')!r} is not the experiment folder {folder!r}")
     if isinstance(doc.get("run_id"), str) and not doc["run_id"].startswith(str(doc.get("experiment")) + "-"):
         errors.append("run_id does not start with the experiment id")
     set_id = (doc.get("artifact") or {}).get("set")
@@ -116,15 +138,15 @@ class RunRecordsTest(unittest.TestCase):
         doc = json.loads(valid.read_text(encoding="utf-8"))
         known = {doc["artifact"]["set"]}
         with tempfile.TemporaryDirectory() as tmp:
-            good = Path(tmp) / "E002" / "E002-r0001.json"
-            good.parent.mkdir()
+            good = Path(tmp) / "runs" / "E002" / "E002-r0001.json"
+            good.parent.mkdir(parents=True)
             shutil.copy(valid, good)
             self.assertEqual(run_record_errors(good, known), [])
-            wrong = Path(tmp) / "E003" / "E002-r0001.json"
-            wrong.parent.mkdir()
+            wrong = Path(tmp) / "runs" / "E003" / "E002-r0001.json"
+            wrong.parent.mkdir(parents=True)
             shutil.copy(valid, wrong)
             self.assertTrue(run_record_errors(wrong, known))
-            renamed = Path(tmp) / "E002" / "E002-r0002.json"
+            renamed = Path(tmp) / "runs" / "E002" / "E002-r0002.json"
             shutil.copy(valid, renamed)
             self.assertTrue(any("file name" in e for e in run_record_errors(renamed, known)),
                             "a record whose run_id is not its file name must fail")
