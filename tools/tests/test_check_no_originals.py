@@ -113,6 +113,36 @@ class WineGateUnitTest(unittest.TestCase):
         record = wine_record(sha256="f" * 64, platform="Wine-On-User-Machine")
         self.assertEqual(cno.check_wine_gate(record, TABLE), ("", ""))
 
+    def test_an_unrecognised_platform_suffix_is_refused(self):
+        """Sol's R1: a platform that *starts with* `wine-on-user-machine` but carries a suffix
+        the task file does not name is refused even when its hash, set and variant match the
+        F019 row, and the refusal names the unexpected suffix. This fails under R1's mutation
+        (`startswith` -> `==` in the gate), because the mutation returns early and passes the
+        record instead of reaching the suffix check — that failure is the proof the test
+        catches the bypass. The legitimate suffix is matched exactly, so
+        `wine-on-user-machine-iwp-2.0-evil-suffix` is refused too, not accepted by prefix."""
+        self.assertIn("-iwp-2.0", cno.RECOGNISED_WINE_SUFFIXES)  # Done-when 5: named constant
+        for platform in (
+            WINE + "-evil-suffix",
+            WINE + "-iwp-2.0-evil-suffix",
+            WINE + "-iwp-2.0x",
+        ):
+            with self.subTest(platform=platform):
+                problem, warning = cno.check_wine_gate(wine_record(platform=platform), TABLE)
+                self.assertNotEqual(problem, "")
+                self.assertTrue(problem.startswith(GATE_CODE), problem)
+                self.assertIn(platform, problem)
+                self.assertIn(platform[len(WINE):], problem)  # names the unexpected suffix
+                self.assertEqual(warning, "")
+
+    def test_a_recognised_platform_suffix_is_accepted(self):
+        """Constraint C names `wine-on-user-machine-iwp-2.0` as a legitimate more specific
+        token, so a record on it, with the F019 row's hash, set and variant, passes. It must
+        pass under R1's `==` mutation too: the mutation returns `("", "")` before the hash
+        check, which is exactly the pass this contract case expects."""
+        platform = WINE + "-iwp-2.0"
+        self.assertEqual(cno.check_wine_gate(wine_record(platform=platform), TABLE), ("", ""))
+
     def test_an_empty_f019_table_refuses_every_wine_record(self):
         """Done-when 2: with no rows, every wine-on-user-machine record is refused. This is
         the fail-closed direction while T35 has not landed."""

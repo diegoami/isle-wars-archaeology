@@ -10,9 +10,11 @@ hash in artifacts/known.json.
 Constraint F of the rule 18 carve-out (CLAUDE.md, 2026-10-08) adds a second check. The carve-out
 lets a model agent run the original Pro binary under Wine on the user's machine, and permits a run
 record that says so only when the binary is the F019-known one: a record whose `runtime.platform`
-starts with `wine-on-user-machine` is allowed iff its `start_state.sha256` is the known-good
-`Islepro.exe` hash for the `artifact.set` and `artifact.variant` the record names, as
-`findings/F019-pro-setup-rules.md` pins them. `--no-wine-gate` skips that check for local
+is `wine-on-user-machine` or one of the recognised `wine-on-user-machine-<suffix>` variants the
+task file names (`RECOGNISED_WINE_SUFFIXES`) is allowed iff its `start_state.sha256` is the
+known-good `Islepro.exe` hash for the `artifact.set` and `artifact.variant` the record names, as
+`findings/F019-pro-setup-rules.md` pins them. A platform that starts with the prefix but carries
+an unrecognised suffix is refused by name. `--no-wine-gate` skips that check for local
 development; CI never sets the flag.
 
 Exit 0 clean, 1 not.
@@ -32,6 +34,14 @@ MAX_BYTES = 1024 * 1024
 # carve-out platform and must not slip past the gate. The same contract is pinned on the row
 # side by experiments/E017-pro-setup-reading/check_known_good_hashes.py (`WINE_PREFIX`).
 WINE_PLATFORM_PREFIX = "wine-on-user-machine"
+# Constraint C of the carve-out allows `wine-on-user-machine` or "a more specific token the task
+# file names". T36 names exactly one, `wine-on-user-machine-iwp-2.0`; every legitimate variant is
+# listed here so no other suffix passes. The list is matched exactly, never by prefix:
+# `wine-on-user-machine-iwp-2.0-evil-suffix` *starts with* a recognised platform but is not one,
+# and is refused (the case that let Sol's `==` mutation through before the suffix was checked).
+# Add a suffix here when a future task file names another legitimate platform; the mutation tests
+# in tools/tests/test_check_no_originals.py pin the contract this list expresses.
+RECOGNISED_WINE_SUFFIXES = ("-iwp-2.0",)
 PLACEHOLDER_SHA256 = "0" * 64
 # The brief's `[E0XX]` placeholder, filled with the task's number (T36 -> E036).
 WINE_GATE_CODE = "[E036]"
@@ -116,6 +126,19 @@ def _rows_text(rows):
     )
 
 
+def recognised_wine_platform(platform):
+    """True only for `wine-on-user-machine` and `wine-on-user-machine<recognised suffix>`.
+
+    The match is exact, not a prefix: a platform that merely starts with a recognised one
+    (`wine-on-user-machine-iwp-2.0-evil-suffix`) is *not* recognised and must be refused. The
+    task file names the more specific tokens (constraint C); `RECOGNISED_WINE_SUFFIXES` holds
+    them, so this is the single place the recognised list is applied.
+    """
+    return platform == WINE_PLATFORM_PREFIX or any(
+        platform == WINE_PLATFORM_PREFIX + suffix for suffix in RECOGNISED_WINE_SUFFIXES
+    )
+
+
 def check_wine_gate(record, f019_table):
     """Constraint F: decide one run record against the F019 known-good table.
 
@@ -124,14 +147,26 @@ def check_wine_gate(record, f019_table):
 
     A record whose `runtime.platform` does not start with `wine-on-user-machine` (case-
     sensitively) always passes, whatever its hash: the existing no-originals checks do the rest.
-    A `wine-on-user-machine` record passes only on an exact `(artifact.set, artifact.variant,
-    start_state.sha256)` row. The all-zero placeholder T28 used for "no save file" is refused by
-    name. The function reads the record and never mutates it (rule 20).
+    A `wine-on-user-machine` record whose suffix is not one the task file names is refused by
+    name, before any hash is considered — `wine-on-user-machine-iwp-2.0` passes this step,
+    `wine-on-user-machine-evil-suffix` does not. A recognised record then passes only on an
+    exact `(artifact.set, artifact.variant, start_state.sha256)` row. The all-zero placeholder
+    T28 used for "no save file" is refused by name. The function reads the record and never
+    mutates it (rule 20).
     """
     runtime = record.get("runtime") or {}
     platform = runtime.get("platform")
     if not isinstance(platform, str) or not platform.startswith(WINE_PLATFORM_PREFIX):
         return "", ""
+    if not recognised_wine_platform(platform):
+        suffix = platform[len(WINE_PLATFORM_PREFIX):]
+        return (
+            f"{WINE_GATE_CODE} wine-on-user-machine record uses the unrecognised platform "
+            f"{platform!r}: suffix {suffix!r} is not one of the recognised suffixes "
+            f"{list(RECOGNISED_WINE_SUFFIXES)!r}; expected {WINE_PLATFORM_PREFIX!r} or "
+            f"{WINE_PLATFORM_PREFIX!r} plus a recognised suffix",
+            "",
+        )
     set_id, variant, sha = _record_key(record)
     got = f"set={set_id!r} variant={variant!r} sha256={sha!r}"
     if sha == PLACEHOLDER_SHA256:
