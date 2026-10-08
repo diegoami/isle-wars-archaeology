@@ -1,0 +1,2949 @@
+{
+  "schema": "run/1",
+  "run_id": "E020-r0005",
+  "experiment": "E020",
+  "arm": "cmb-accumulation",
+  "rep": 5,
+  "code_commit": "d2e8009d5196",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "experiments/E020-wine-first-run/launcher.py@d2e8009d5196",
+    "platform": "wine-on-user-machine-iwp-2.0",
+    "fingerprint": {
+      "imagemagick": "6.9.12-98",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2",
+      "python": "3.12.3",
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xdotool": "3.20160805.1",
+      "xfwm4": "4.18.0-1build3",
+      "xvfb": "2:21.1.12-1ubuntu1.8"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display (the watcher's frames of the Xvfb screen); no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-iwp-prefix-sync",
+    "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+    "restore": "fresh prefix sync from the F019 install, no save"
+  },
+  "seed": null,
+  "actions": {
+    "script": "experiments/E020-wine-first-run/play.steps",
+    "sha256": "fd62f50f17f4b7bb537c57bd76ee52fac51c7b4fb9416be9cd2d568d1e365861",
+    "args": [
+      "--batch",
+      "cmb-accumulation"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "process",
+      "field": "sitting:epoch",
+      "value": "1791489337"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "1"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "16"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "14"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "2"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "1"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "12"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "10"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "yellow"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "ref": "sha256:755bd92d93492f376893130d069ac118e78800fd665381f901392219598cf278"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "ref": "sha256:f9bf7be0b4c4c9a61c630182edcf03f42deb66515add9d85330df494fee03111"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "2"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "16"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "14"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "3"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "2"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "23"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "38"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "yellow"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "red"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "ref": "sha256:67cee674ff710dcff6f473a80407f46d6cda2651d4312426370a89ae153092df"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "ref": "sha256:5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "3"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "21"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "19"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "18"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "13"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "13"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "15"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "green"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "ref": "sha256:8a2a386951b950a863fade41b322b7f0e58e3e11574205b3d7104ac67890847f"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "ref": "sha256:4b7d7cc757c4d1703a343678130056ff5edcf110d526461c285db9762368a232"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "4"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "19"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "13"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "13"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "11"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "13"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "15"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "green"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "ref": "sha256:4b7d7cc757c4d1703a343678130056ff5edcf110d526461c285db9762368a232"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "ref": "sha256:55e9e0f086d11c8dcb2aeb8a87099e04c1287fb27aad324cb2d5314a0a7c2136"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "5"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "13"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "11"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "11"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "5"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "13"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "15"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "green"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "ref": "sha256:55e9e0f086d11c8dcb2aeb8a87099e04c1287fb27aad324cb2d5314a0a7c2136"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "ref": "sha256:f117d96137e645ccbeeacda23ebfbd13cdc71fe417e0ff88ff23bb941056c6eb"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "6"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "11"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "7"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "5"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "2"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "13"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "15"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "green"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "ref": "sha256:f117d96137e645ccbeeacda23ebfbd13cdc71fe417e0ff88ff23bb941056c6eb"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "ref": "sha256:861de1f568068b7aa848793594aecb3fd92da500b0c7574acf07e531c07af2cb"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "7"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "21"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "18"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "7"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "6"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "26"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "24"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "yellow"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "blue"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "ref": "sha256:255c0c29471b6a36fabcde8fdaa7bcf159ef516e09092882c1280d497a30401f"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "ref": "sha256:910d7f6ec26035eab9053c632c62f2f44b2eb973e3ef269b50abb884d1cb9b89"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "8"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "18"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "14"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "6"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "2"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "26"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "24"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "yellow"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "blue"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "ref": "sha256:910d7f6ec26035eab9053c632c62f2f44b2eb973e3ef269b50abb884d1cb9b89"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "ref": "sha256:c2447efe181da8af97c6759e0f66d77d22f5e19fd869e22421c7d5f9f11f62c6"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "9"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "6"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "4"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "5"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "3"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "45"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "23"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "yellow"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "ref": "sha256:fe19460434cf4c180db3aa2e22a1ffc8ada64752760063757d8105cc97dcd7ad"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "ref": "sha256:71e246ae4a28e44ab1e72a2e7f8c76a5c6198f45973ccd50dd033a2179bbcc6f"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "10"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "13"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "7"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "2"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "1"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "39"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "38"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "yellow"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "ref": "sha256:f84c389308e693aa81653dc6826ddad7b541c773185217b156801b6068e5f740"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "ref": "sha256:08f7c49e3194aa0ca62048ff71b40ab2e046e959e5387ccf8d9ec7a59ba98db8"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "11"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "6"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "5"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "5"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "2"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "32"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "34"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "yellow"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "green"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "ref": "sha256:ff93907380a1c5a5b2eb35e723ee591ac6068016a9d9abf9ebb9b0ca11ac10e5"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "ref": "sha256:da57604eba2fa9293469150ef330ab447368c3a3799f74506e1d4fb69ab5541a"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "12"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "5"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "3"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "2"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "1"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "32"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "34"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "yellow"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "green"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "ref": "sha256:da57604eba2fa9293469150ef330ab447368c3a3799f74506e1d4fb69ab5541a"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "ref": "sha256:408f509727fde920679bee73389ef0486c7ddc32e7773ab708e2ca9a953dcb32"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "13"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "32"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "27"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "9"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "7"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "2"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "1"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "blue"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "ref": "sha256:b8b214c83bb062f1e4e2cb4c62d359f402b7307f06ee0981270ac0448384a841"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "ref": "sha256:37f34884dc21443f8f11832c87e75ae58f1ed65f662d72bdf04d5156c02bf7b0"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "14"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "27"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "22"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "7"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "4"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "2"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "1"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "blue"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "ref": "sha256:37f34884dc21443f8f11832c87e75ae58f1ed65f662d72bdf04d5156c02bf7b0"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "ref": "sha256:f5b68d82f51e3cb5f3b3294f8be208e252628592856477eed53ba682e5e0c72e"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "game:ordinal",
+      "value": "1"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "net:seq",
+      "value": "15"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "counter:attacker-before",
+      "value": "22"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "counter:attacker-after",
+      "value": "16"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "counter:defender-before",
+      "value": "4"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "counter:defender-after",
+      "value": "3"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "country:attacker",
+      "value": "2"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "country:defender",
+      "value": "1"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "owner:attacker",
+      "value": "red"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "owner:defender",
+      "value": "blue"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "ref": "sha256:f5b68d82f51e3cb5f3b3294f8be208e252628592856477eed53ba682e5e0c72e"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "ref": "sha256:baff81741303e75a20b8162dc783c2dd6b22d4a641fd7c92022ca3302ba7e4c7"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "sitting.json",
+      "sha256": "b860b993d8126eb4cb7ae00c886defb7f15e4a9094d5c65e5bcfaea40ec9c456",
+      "store": "release:E020"
+    },
+    {
+      "name": "actions.jsonl",
+      "sha256": "f3b844f1afc9a625faecbca06303838a7aa16d193dafa5a0417ef6517a46006e",
+      "store": "release:E020"
+    },
+    {
+      "name": "frames-index.jsonl",
+      "sha256": "1952803437dbf5ecbe143f69238409878942fe2d65b634426d0e8b3adabb8e85",
+      "store": "release:E020"
+    },
+    {
+      "name": "watcher.log",
+      "sha256": "02ce4bfe7e5ef1c168905d096c659b4197c869b728dc74b407cf2a0e1dc82bb5",
+      "store": "release:E020"
+    },
+    {
+      "name": "readings.jsonl",
+      "sha256": "73c1be85186593033b026bb9a5bb3fea0db11b8991a35db9f07c7f24a6dd0135",
+      "store": "release:E020"
+    },
+    {
+      "name": "before.png",
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "store": "release:E020"
+    },
+    {
+      "name": "0-1791489346493.png",
+      "sha256": "6417a75e78fdf5063b5126f8841937339e6629085c04f64813274ca3176d9ee5",
+      "store": "release:E020"
+    },
+    {
+      "name": "100-1791489656482.png",
+      "sha256": "d10feec9533a73cac9093828fc0da6549dd2961bae66bd2af5630de30feca207",
+      "store": "release:E020"
+    },
+    {
+      "name": "104-1791489657907.png",
+      "sha256": "3b9f1636b9b87078f1289d0081afa65eb1f8589dc1e1791c346fc1ae0b8c96dc",
+      "store": "release:E020"
+    },
+    {
+      "name": "106-1791489659296.png",
+      "sha256": "c8575ab1fbf062d2b6e4914ac09577c2d57df4fe5c4bf9e7bfc7056c1a9d5de6",
+      "store": "release:E020"
+    },
+    {
+      "name": "106-1791489660691.png",
+      "sha256": "10ae26d5714dbe684e434f1bc1a0b954b33541298cae248845a30b8e4cf47da8",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489662092.png",
+      "sha256": "9fec9b1f578981fb961d5554fd53764803379c8838c8857f34880edcc960b271",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489663519.png",
+      "sha256": "d2eea80087003d27eb0c6dea7b2fada4efa33c6f25ac10658dfb2b3913e3ef2e",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489664925.png",
+      "sha256": "59b29e005c33e7529c6e2c50d151237a01153c5576413292ae6fe3e6b405ea4e",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489666337.png",
+      "sha256": "ecc1318dba31d37b138a5f1cd953d7c51b10ed47cd4212455354e7175d8341d6",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489667742.png",
+      "sha256": "40c9a1a905bded7c9cd87c0e13ca2d11620326f03d1d3845a2964795c9513e3d",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489669130.png",
+      "sha256": "385af6eca3c7e44bd2e7d9d36c971b3869abc0612fdf0e9543792856ca7bf117",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489670530.png",
+      "sha256": "59937c88de8feec7ca9a73f498a4b2c9852c7495e5db1f4edf2053b7e1e5f419",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489671925.png",
+      "sha256": "eaa1af6f1b010cd555eb25efd6f8cf862b55a513b1dd9be81c1960e79c71fb2f",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489673325.png",
+      "sha256": "d7b08115718eaf3e305c3c4fc30c9afed0b714525452b82935931f4a541692f0",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489674723.png",
+      "sha256": "836449730fbd1ade25d56e30b0a0560d028ce3369a54cd8bc80dca5ab026e208",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489676119.png",
+      "sha256": "ceaf009fabf419ecf17e42a874aef80979e8b67b87999aff926a40eab6a9346e",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489677507.png",
+      "sha256": "0200f74e9fcbe450a59dd82b316901af367aca1482d707c642a02c6d69e74ea8",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489678906.png",
+      "sha256": "15685ce0d10eef8f84f5203714d2ecdf3f77ba916a732e4ea6f0bb1c406ba22f",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489680302.png",
+      "sha256": "8717f298f1e90906a8593a5d0fcf76acb3d03fc4f33df7ba1fb26fbc31708265",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489681686.png",
+      "sha256": "74be10dc5bf9f8e6e5b65f31cbf00e7a6f049588b96db4b37f20d558cf2fccda",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489683083.png",
+      "sha256": "65045cf4cfdedfa8a9eff946fc526aedf8eaafe2b79baaf8f6518e971334ab1c",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489684502.png",
+      "sha256": "ed9b801169a3d7cad2e8070d11efcca7c0ee2aeb93d83008304214dfd7f95c19",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489685903.png",
+      "sha256": "307d772addab2d41f9c2dce98e33b7dd3bad4628698acd7f9985877601daed92",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489687304.png",
+      "sha256": "feee4909eae15f14d2f78d3449b2e05afb4e1e1bf9e227b04b8578f8366e94e1",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489688697.png",
+      "sha256": "858f371105dcff82d08c652a24d2953014f44f7cc139cc3ce3134410b4dfe2d8",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489690094.png",
+      "sha256": "099c436f15a81b2dc60d91ec1adac4616caf087ba92db8f3e4e40676e1d7953f",
+      "store": "release:E020"
+    },
+    {
+      "name": "108-1791489692904.png",
+      "sha256": "fa4f5a32a6bf1042d4be1c3e83cb260d299c2aba47b217cc0c887fdc000dfb1a",
+      "store": "release:E020"
+    },
+    {
+      "name": "111-1791489694298.png",
+      "sha256": "f3996e7194947cfc4399b6646df7894b500e07b4cd14ae51be9c60586b3759e8",
+      "store": "release:E020"
+    },
+    {
+      "name": "116-1791489695697.png",
+      "sha256": "930a7834df68bcc7d37186ed3d9e0fe55f92cf995331cbbb4d3962b756838f39",
+      "store": "release:E020"
+    },
+    {
+      "name": "117-1791489697111.png",
+      "sha256": "f6761b9ce90a10fb5e30965958e3870efb0891722a802cd410ece8e8cc66e16f",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489698510.png",
+      "sha256": "c166eaa3a9a59a70a865fc6fd773dea564f9a2411fe50f9b2b6b98b528a7e795",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489699925.png",
+      "sha256": "67cee674ff710dcff6f473a80407f46d6cda2651d4312426370a89ae153092df",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489701342.png",
+      "sha256": "5c4772e66f1b8efe20b0157c794ebf1e99586ec5014a63e9a4a4bff3bdedb24a",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489702739.png",
+      "sha256": "4c889d26f094d56fbdb74990783ee8735e597f2cf6b4099c31a19b60ae4d0d94",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489704167.png",
+      "sha256": "e4df56174e567df3beecff3fa4f00ee3e887fd447fe671786b000bf6c9ae7db0",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489705564.png",
+      "sha256": "6631b910054a797cfded36ba437065b6c425e5962026d718f827562d9316352a",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489706960.png",
+      "sha256": "ebce54d8a9b0f5e8bd8bddc0ba7d5c78613e058088e222dd5acd0fd6807451ea",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489708360.png",
+      "sha256": "f0b3c161799739b8f5417a198f8861521821983c26e470a45b33f43e4199e988",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489709755.png",
+      "sha256": "0e606fb37ffdebc8328b4000b6d995abc371919046d25bab6936d59e4e3bff43",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489712540.png",
+      "sha256": "c0e299adffabf8deec5b051091aae8135a628257c1ef5ad34a4f84d865dd285f",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489715344.png",
+      "sha256": "2871c9fae930a3ad2c3b6c76a336591bcc06d1d5945ea93c56aa44249fa8276f",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489716750.png",
+      "sha256": "f066c47f5e7e666d14e8e2b59a4a003e18acb7306d18a108462c3fcec752aeb0",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489718157.png",
+      "sha256": "61bca00c645f9db4ffa7808ebdbb5a75f52450a93a7b1a925c6392921875c4bb",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489719572.png",
+      "sha256": "700f71956807717864fd7567803343cf4873b37afc472f64f593fe2f468a7cc0",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489720996.png",
+      "sha256": "268fd2489010e675af215650a9386268d19e1ef4630ca0bf8bac93a53b595c80",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489722418.png",
+      "sha256": "8a2a386951b950a863fade41b322b7f0e58e3e11574205b3d7104ac67890847f",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489723822.png",
+      "sha256": "4b7d7cc757c4d1703a343678130056ff5edcf110d526461c285db9762368a232",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489725275.png",
+      "sha256": "55e9e0f086d11c8dcb2aeb8a87099e04c1287fb27aad324cb2d5314a0a7c2136",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489726675.png",
+      "sha256": "f117d96137e645ccbeeacda23ebfbd13cdc71fe417e0ff88ff23bb941056c6eb",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489728076.png",
+      "sha256": "861de1f568068b7aa848793594aecb3fd92da500b0c7574acf07e531c07af2cb",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489729476.png",
+      "sha256": "c96a0f767c63f65cecd86ca82581b57c576ef9a885b9eb1b751f18443a61ff3c",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489730881.png",
+      "sha256": "a9910e05627912ea787e9b563b69df05d2d422c7e9da213d79ea9eac217c0ad2",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489732281.png",
+      "sha256": "43c2cbcc589f8f2d5d1ae03ca5473e937253f81c589b54c7c476e2b756fb4567",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489733694.png",
+      "sha256": "00859e56dbd476b083268bada45c4deff4a1e62c29dab47895b418beb2ea7350",
+      "store": "release:E020"
+    },
+    {
+      "name": "119-1791489735083.png",
+      "sha256": "e4c6187423046893af0af6983ff59be23d1f807586701e0c85c0bd5e2791cd3d",
+      "store": "release:E020"
+    },
+    {
+      "name": "121-1791489736479.png",
+      "sha256": "ad30435d58cd0a48f8962853c76692d0a3618e93cd4518c6181e708fa7a4386f",
+      "store": "release:E020"
+    },
+    {
+      "name": "121-1791489737901.png",
+      "sha256": "fcef7e677fad087eb9fbd1e2a91f7339da472ea968c01a99709a35d440fa2563",
+      "store": "release:E020"
+    },
+    {
+      "name": "121-1791489739306.png",
+      "sha256": "74635066c70ac225a0964660b3925461ca22366ddb2c0e6e7bed49e234475937",
+      "store": "release:E020"
+    },
+    {
+      "name": "121-1791489740695.png",
+      "sha256": "88ff410c1d4a16411581c521826c885649b19af2dd8422bc5dd13cd23c4e0a45",
+      "store": "release:E020"
+    },
+    {
+      "name": "121-1791489742085.png",
+      "sha256": "9d86570ef18963d57f3faa3b92aa2869e57bb2f28f6ea535510603f4b3e14c47",
+      "store": "release:E020"
+    },
+    {
+      "name": "121-1791489744885.png",
+      "sha256": "a82a13847f2b8c1c8b6cb0fc84159b1b488f5b5f9d056411fc58b99c0910d754",
+      "store": "release:E020"
+    },
+    {
+      "name": "124-1791489746296.png",
+      "sha256": "d4d05dc17a571fe9c138c353304c88d9a7895bb7f3a36dae8f6aa1a9f5b7bb35",
+      "store": "release:E020"
+    },
+    {
+      "name": "129-1791489747694.png",
+      "sha256": "12ba378be72d67b4327d3ede4f3d37141104de8b07c1e6c90f3352b7ce5b1106",
+      "store": "release:E020"
+    },
+    {
+      "name": "130-1791489749151.png",
+      "sha256": "6846f25018d0b5fe9630161f3b891db5ea29b3ea4222297c24be386548581f1b",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489750561.png",
+      "sha256": "92087e4c995a8ace0ae847128c0149da62bde4af2b9d5b3caca57d0496b2fe68",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489753443.png",
+      "sha256": "ab0004a299afc243b1ec9120076b720420a7a3e3f3517b2ba4f96c0ed0602581",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489754866.png",
+      "sha256": "255c0c29471b6a36fabcde8fdaa7bcf159ef516e09092882c1280d497a30401f",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489756290.png",
+      "sha256": "910d7f6ec26035eab9053c632c62f2f44b2eb973e3ef269b50abb884d1cb9b89",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489757721.png",
+      "sha256": "c2447efe181da8af97c6759e0f66d77d22f5e19fd869e22421c7d5f9f11f62c6",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489759149.png",
+      "sha256": "6de07aa295eaaa681e68c97bf9c863d6bef96c2bddb9797aa58baa9fe9c1bef0",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489760560.png",
+      "sha256": "be44c246fcdc3535a1425b4ccf1f8e9aeed16f868329bc9e9c161ca3e60b9dcf",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489761995.png",
+      "sha256": "f5b0c23dda885bc43b6d113d8a938f41367254a2d01ba6d2102989c6543f388a",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489763385.png",
+      "sha256": "12af90a6bdcd9e801e7bda2f9743d925ebcaa2219fdb011896cfaf0b520ed770",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489764794.png",
+      "sha256": "fe19460434cf4c180db3aa2e22a1ffc8ada64752760063757d8105cc97dcd7ad",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489766204.png",
+      "sha256": "71e246ae4a28e44ab1e72a2e7f8c76a5c6198f45973ccd50dd033a2179bbcc6f",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489767628.png",
+      "sha256": "f84c389308e693aa81653dc6826ddad7b541c773185217b156801b6068e5f740",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489769035.png",
+      "sha256": "08f7c49e3194aa0ca62048ff71b40ab2e046e959e5387ccf8d9ec7a59ba98db8",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489770450.png",
+      "sha256": "6b308a796126049b6c6ddd4a1c0f7e431a3ba674be6723b9d6ae9ac558529a83",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489771878.png",
+      "sha256": "7dbfe6ca1c9461984d94ad06a486e158b4ba531d4a3e2b7609849ec2ef7efdb5",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489773284.png",
+      "sha256": "4f5d1fb93de47b71097269553d6b7cbf7127f0792fad3f9b3a01266b0906b1fb",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489774734.png",
+      "sha256": "202c33d6c8c4b648ca50c2d55e73e104e67e3665bd08614fc05a59c5aa5ac148",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489776161.png",
+      "sha256": "bf301153727b344ebe42ff796423ac17ef7a7f93cb78393d2a801437f8273e33",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489777571.png",
+      "sha256": "45e9642246aca2f141af91c301e70b5aa6f9bfae0ef1555a713a095289896ec5",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489778973.png",
+      "sha256": "573f5308d65415cf853e9d68fdeae21a2a7d78c318ab8fb747ce28745f898a95",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489780392.png",
+      "sha256": "0132aeb18975241d8e346b9df51350e63fce391841537b4820144daa9841ec8e",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489781838.png",
+      "sha256": "1854957c27b2e15448b733666395f1a8e29871ab427a4d5768c2567892efc449",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489783249.png",
+      "sha256": "4d559ec1bed4df8e500c2e16841c04824895e475adbf95eda3f48f517f9fe2b4",
+      "store": "release:E020"
+    },
+    {
+      "name": "132-1791489784683.png",
+      "sha256": "576fa333eef75d38053d826f50926c833a82518a9416c8d6f899f375c50aba04",
+      "store": "release:E020"
+    },
+    {
+      "name": "135-1791489786112.png",
+      "sha256": "533ceab7eb8a09b6d5552bd7d3dba7bf3a8f8023ede260118771d53cd49b4a1b",
+      "store": "release:E020"
+    },
+    {
+      "name": "139-1791489787520.png",
+      "sha256": "8f942ce423dd5b2ac2a2abd72264dd338930d8fc9d13c58b844c3449ce5f70ac",
+      "store": "release:E020"
+    },
+    {
+      "name": "14-1791489367976.png",
+      "sha256": "77e298f9ba6cd4d43311277e9702fe8bc13a44fa6dedf39415f52caf2284dfa1",
+      "store": "release:E020"
+    },
+    {
+      "name": "141-1791489788941.png",
+      "sha256": "538b4a0323fd5f2378d0709e2b2da74df2cad23c1cb21d36a109454f6037062a",
+      "store": "release:E020"
+    },
+    {
+      "name": "141-1791489790350.png",
+      "sha256": "f2da405887eefe7602873fded24025f2dd9388bcd1c130d20c77e9a858a3922e",
+      "store": "release:E020"
+    },
+    {
+      "name": "143-1791489791759.png",
+      "sha256": "14b2df8ef7fe980a02c4f13ae1b64f85781aac061fa86f92ffe76d18d8761eba",
+      "store": "release:E020"
+    },
+    {
+      "name": "143-1791489793176.png",
+      "sha256": "6fb96df3a347b05e11a2ec22dd0a319946e5da48eecadea4d3e07d820e9ad610",
+      "store": "release:E020"
+    },
+    {
+      "name": "143-1791489794566.png",
+      "sha256": "ff93907380a1c5a5b2eb35e723ee591ac6068016a9d9abf9ebb9b0ca11ac10e5",
+      "store": "release:E020"
+    },
+    {
+      "name": "143-1791489795965.png",
+      "sha256": "da57604eba2fa9293469150ef330ab447368c3a3799f74506e1d4fb69ab5541a",
+      "store": "release:E020"
+    },
+    {
+      "name": "143-1791489797384.png",
+      "sha256": "408f509727fde920679bee73389ef0486c7ddc32e7773ab708e2ca9a953dcb32",
+      "store": "release:E020"
+    },
+    {
+      "name": "143-1791489798825.png",
+      "sha256": "1f189d3c53d02b9eebfc36cb60daf59f8c92009ff76fe68ec748a4caab88a480",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489803073.png",
+      "sha256": "07f2168c8ec3d4cde0589111641afb573da1dae9b859880afb8c5ee79b2d5496",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489804497.png",
+      "sha256": "e72e310b73725ffc8bcd40f5cfb6d2baa49dcf1ddb23a6074cc5c183a16708b8",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489805897.png",
+      "sha256": "d31cc47aff669fb93b8db006f74cb4eb8941fef3cbe3f12f771d4d94c2e6f679",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489807290.png",
+      "sha256": "0385b111a032e503dc2158b148e8287aa1bc206fb925387847e70c68c0a9a826",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489808704.png",
+      "sha256": "803709928069c41cbc411850988be069cd710fdaf3b1bc388be82f1b59532649",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489810135.png",
+      "sha256": "0acbba32cf0236338a5c5c6236b267fbb4740b8dc5adbd4c57a53ee914d0942a",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489811833.png",
+      "sha256": "5477fd8e9c4c1b3015da87fd5d2071fdb95423a5309867f2017af32c0517a3eb",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489813423.png",
+      "sha256": "9b64e33e596fe571af46eb9725f684442cf8f3b6f1626346be7fd90162c459bb",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489814945.png",
+      "sha256": "5e10451e768cdc9e684d2cd494dfb32345bd8be62339f812d6cba8bf75427add",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489816478.png",
+      "sha256": "256d7fef1c6636e79bc8cca95721ac10b351bdbe0067a4833e24e10a41d4675a",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489817983.png",
+      "sha256": "caa4b9b6fbcacc9958db82d892ae784f66004c2e725a4214b8fe9d70035514e5",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489819505.png",
+      "sha256": "c842a5ec0576cb67480b0b7fe0a9e19889d2186df83fb09afcff5aff47acc8f2",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489820962.png",
+      "sha256": "998bc6659fe1b7a09314a5b80b58c15120ce23fca5247288d132bca7e371323f",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489822410.png",
+      "sha256": "1dafd46696ab0eaa604de4a5c3588d6a84abe76620da78fafdd587fcc585f811",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489823858.png",
+      "sha256": "5f50147b4bd63e13623f7bd0f3b428f113a727fa025844533bfe784548bf6111",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489825321.png",
+      "sha256": "6a1d2fbfcf9f635c4441a7a2734b291b00340cb44d5ef9fd4955d6b639b4c85c",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489826774.png",
+      "sha256": "bb41374b73aade75ce2d06a9646c7c6d9e48ae99a06c84b2788454d70df4f505",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489829651.png",
+      "sha256": "561ddb4e94313171d2cc8d3deeb175b0d0227ec411909a47e7e04d3d0c33757a",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489831075.png",
+      "sha256": "45854489e57dafdca2b8c6652910e38dc74a26249edd9c88a851ebe43ee02284",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489832481.png",
+      "sha256": "85a195c7ddbd9e99af29e548fb55f47103153e7871573b655498a4e5c34dad28",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489872017.png",
+      "sha256": "65f7bfba56ed107a0b1d1f6649c3602d9d9d9a689349f6b423b43682e2b27380",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489874824.png",
+      "sha256": "b3eec58c09eb35f00c81cefd68a7f7b47013697981c9ef0a282f6a1918dc6136",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489888985.png",
+      "sha256": "0fabf98e6ee93b3cf53cee38c45205cbac33407b920eb438c0afd72ce7150877",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489890415.png",
+      "sha256": "3b8cdb38b99765102456bd57ab9e8bbe625e0288481af99995a46c0a71bf7168",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489897414.png",
+      "sha256": "44df500625bc30d97aac79f338630116023c891c21fb8c58f62942a4dccc708a",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489900214.png",
+      "sha256": "d890e3536156190a9ec89264b89d8d1a09fed65aaa0403f5ff225ea828305331",
+      "store": "release:E020"
+    },
+    {
+      "name": "146-1791489901611.png",
+      "sha256": "b9951b40cc1360a475a2d15858d28c9b895112d88048a028708e146d38b1c856",
+      "store": "release:E020"
+    },
+    {
+      "name": "150-1791489908577.png",
+      "sha256": "8ecc8395a3a2027e79bdf72d9fe8c5e7c93a30c78aeb3269e472ddb753ef8a36",
+      "store": "release:E020"
+    },
+    {
+      "name": "156-1791489910024.png",
+      "sha256": "8c8bc0101bb40b8318bc2988496d73a3a6b5c09bbb47b9214cbe262fb47e57ea",
+      "store": "release:E020"
+    },
+    {
+      "name": "159-1791489911429.png",
+      "sha256": "7846be3fe10f1b2171011e6bc23db456b3f62b9aab8283e51ad860a22292f78d",
+      "store": "release:E020"
+    },
+    {
+      "name": "159-1791489912820.png",
+      "sha256": "47a6cda80ecb84f303b48ac5f9e995a29bc1d061d0f0eac77d4bed594e993908",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489914232.png",
+      "sha256": "4af21ae6d9ede0317b8703e3618eff51afbc775a52e6e1c6f02f64f1d97cac5f",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489915630.png",
+      "sha256": "4658a31f7ab1433359eaa9a2ed97ca6d18cdab41f75913389fd88b054affaef6",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489917031.png",
+      "sha256": "77327d4897eabebc07d634673e0838023b3046db1c70279c76e212023ef7e978",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489918440.png",
+      "sha256": "5352761783a4ad59b2ec08b0b3e549938632be3e95528e84313df04be471f70f",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489919839.png",
+      "sha256": "f0c8ec6e539bf8625e48044f021cd39e5fb721a13786e2f3b87b8bb4aeb8fb51",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489921237.png",
+      "sha256": "5a4a6da773629fb59b0cca993a3a0b6f1b941f339390e32d55ea03d45a65ee84",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489922637.png",
+      "sha256": "0faeae35067828344e7130c567a3f0a571c893d35ba541d73041423e07771b6c",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489925447.png",
+      "sha256": "d9ea7edcf9c7bcaf43dc02cb256f0af044e912dadb724569bf3cd8ddd796d69c",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489926845.png",
+      "sha256": "a5149e988762b15545e6aab290fa6c4fac9153117a31d9cdca0ca4965eba5b4d",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489928255.png",
+      "sha256": "b8b214c83bb062f1e4e2cb4c62d359f402b7307f06ee0981270ac0448384a841",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489929644.png",
+      "sha256": "37f34884dc21443f8f11832c87e75ae58f1ed65f662d72bdf04d5156c02bf7b0",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489931048.png",
+      "sha256": "f5b68d82f51e3cb5f3b3294f8be208e252628592856477eed53ba682e5e0c72e",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489932456.png",
+      "sha256": "baff81741303e75a20b8162dc783c2dd6b22d4a641fd7c92022ca3302ba7e4c7",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489933865.png",
+      "sha256": "8b1606ede897709c37292b5fca04fd7ac7dab872493f07779682c64d6a52a30b",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489935293.png",
+      "sha256": "7053111915cb725e056b8215d8a4c79da87f70b8719581d76c06a327771f02e2",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489936709.png",
+      "sha256": "9aee8f05d4f73c4a10080fa5477d1ed1d510eb1ea9aaf1709515852461ba2849",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489938107.png",
+      "sha256": "e0948ed455c0ad7c1c4c2976ce07f8a94f998cf1fd8ab0e585cdc8f1d4178340",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489939523.png",
+      "sha256": "63e5101848465a7e244faae24046402f1b706c9f3a606a063ffee10fac90e5dd",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489940916.png",
+      "sha256": "081eff110ce204f74a88b83ec5dac3204548dd8390657bdbb02c697fde889f24",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489942339.png",
+      "sha256": "9d9f389aa3e5b781e8e026ab3c429e04a92d6d9b821fd1d0ead6ee95b3c71629",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489943745.png",
+      "sha256": "0563c3bd18fab6d2447d959b8a79a583d198f8a2219c4da9810deedcde55a59d",
+      "store": "release:E020"
+    },
+    {
+      "name": "161-1791489946556.png",
+      "sha256": "8c1292cb284a4c0cbbd1e956d6ce42f246e22677bbe76ffa092b7abc8a04e097",
+      "store": "release:E020"
+    },
+    {
+      "name": "164-1791489949334.png",
+      "sha256": "cc6f5b4b057d39edca87daaacce9945748ce2f469b5e81300d9359f49d959733",
+      "store": "release:E020"
+    },
+    {
+      "name": "164-1791489950743.png",
+      "sha256": "6145c6f3f6ef8866b01b89670ddf8864b893c52215b39a19a795fc0364e2bebd",
+      "store": "release:E020"
+    },
+    {
+      "name": "164-1791489952135.png",
+      "sha256": "7a2008dea4abd823a9fc2b90bb0a1c76643a281ef3edc4c0e6c6b2cf3e71954f",
+      "store": "release:E020"
+    },
+    {
+      "name": "164-1791489953541.png",
+      "sha256": "752b4449cee5b7fe57d87f62151f90ff5963da2ff715423ee58cbd3ba397601c",
+      "store": "release:E020"
+    },
+    {
+      "name": "166-1791489954951.png",
+      "sha256": "d4b0338e3606360903e06924af56750c580e2e18b6dd45c724749f7d3b54f6f8",
+      "store": "release:E020"
+    },
+    {
+      "name": "169-1791489956340.png",
+      "sha256": "f781b3169e97a22c6286fdd937591f073e9976eea5b963299b0305df0f70dc5e",
+      "store": "release:E020"
+    },
+    {
+      "name": "17-1791489369392.png",
+      "sha256": "e50fc348d297edf1f95eff8cffb527b79e260e2a7125f235631d9ac678e20d77",
+      "store": "release:E020"
+    },
+    {
+      "name": "170-1791489957740.png",
+      "sha256": "96ef346de81a92ab66974e1cfdee5392db22dedcb0dc0e3ec73b8d223c8b4ad9",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489959129.png",
+      "sha256": "aa013afdba1fdd55f9607ccb7861f9348f4c88ca708c4bfc3e7c2ef5b7cec76b",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489960528.png",
+      "sha256": "effeed201ec7d0a9372bd946e1cce58cf809ca984a31168c38e821e922570d1b",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489961929.png",
+      "sha256": "d23d9aebf0374314783a8bf18724d36d4f27b055cae72cefca085aeecfd45236",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489963323.png",
+      "sha256": "16f57d83cb8f57365a272e8826b65d4c4cbf4ba619aec7bb73ea865d25020e42",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489964733.png",
+      "sha256": "0c92440d4ed62373d5b7972e7c2b4494057baf27c7b53eabec27da1756154a17",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489966155.png",
+      "sha256": "3501de1db9d6912a0df33fc352f0682b97e563cae62682f05c7a9675528d21e5",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489967670.png",
+      "sha256": "f854099699850fde97e2e034366c74961678bff9a8af1eaa4313cc0e9ee43384",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489969083.png",
+      "sha256": "00985f906f0a20a90df46a1cc0ccd8ed7e4d570058ab2fe20a20605b23ccc700",
+      "store": "release:E020"
+    },
+    {
+      "name": "172-1791489973469.png",
+      "sha256": "e5b6d0ad59731cfee55e07f0266145d43cd9a82d81e81bdedbbd673dce11d645",
+      "store": "release:E020"
+    },
+    {
+      "name": "175-1791489974892.png",
+      "sha256": "669235f5bf0aabe8dc01f4f00f8b8643f49b30d82c36538f923171ec22dc7cc3",
+      "store": "release:E020"
+    },
+    {
+      "name": "175-1791489976321.png",
+      "sha256": "3ade701ffc865f1c9952e5b127f3fa99267994ce00adeda9e9b2dadb78417466",
+      "store": "release:E020"
+    },
+    {
+      "name": "175-1791489977732.png",
+      "sha256": "a13ca6e9469ebaa5a9bd69f516305ccef8620fc90c5f66ccd31cbd6e19847b0d",
+      "store": "release:E020"
+    },
+    {
+      "name": "175-1791489979156.png",
+      "sha256": "0bf7205802c3119327eb4c3f15a68fd531cab83da63a3474567c1d0f0a3108f9",
+      "store": "release:E020"
+    },
+    {
+      "name": "176-1791489980569.png",
+      "sha256": "ad4a4bb6e95a1c6a78a9e389ebf8da5736d810b96d047213ba782b0cd677d235",
+      "store": "release:E020"
+    },
+    {
+      "name": "176-1791489981968.png",
+      "sha256": "c344824f0c954884ea014c59ca4143d095e46e8605acdf0616c32628dfd44d2e",
+      "store": "release:E020"
+    },
+    {
+      "name": "176-1791489983379.png",
+      "sha256": "1ecb2941e2d49ca4b587a6ac290c5d7e11b4170dd2e7baa01ae3eb24b25d03de",
+      "store": "release:E020"
+    },
+    {
+      "name": "18-1791489370818.png",
+      "sha256": "72e485a230bf22b1d9fe25681c75c1a137032addfcc15453ac377c107c842cb6",
+      "store": "release:E020"
+    },
+    {
+      "name": "186-1791490034511.png",
+      "sha256": "14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489372289.png",
+      "sha256": "0048f851f473195387000791736292f9336842167a5ffabe80e03c5be8edd075",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489373741.png",
+      "sha256": "1f3f0c83fff7816971e0d26647153df8f24aef237344c316f1d262d625f0731c",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489375197.png",
+      "sha256": "ef0ff348cb5a5e8f5d3fb054811b494ed9e8c5ebcbbf3abd99ec19aa7292f806",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489376655.png",
+      "sha256": "c08e5d0ecdd41f439bf6bbffac369a32371a5966e8a28ac310ae2dcecae9607e",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489378057.png",
+      "sha256": "fb7ddc679387789b81abb60dca685e810c5f5836baf94b5ba400fa74b8ec1931",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489379505.png",
+      "sha256": "d01b3b807d68112187e219a2a34f85649c1dcd561b717c5c268839571b876c06",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489380932.png",
+      "sha256": "b13e38381416931efd3e4eda5f201271f156d2e250a80d768f6577b37844c9d2",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489382367.png",
+      "sha256": "8bc111c17ae44a1fbda0a81356ce878cadbf252d577f2b19ce3fed0cc1089ea9",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489383797.png",
+      "sha256": "9c97c0597eeed52d4749614eeede7c313c7a5f65cf0f5cba76f4ae54a4dc2dfd",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489385238.png",
+      "sha256": "fd1d494d5a0868add171ef94b7ea4fdb22d595d7468dc0f0de50a4b03c8fa9b6",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489386683.png",
+      "sha256": "73e934c405b9fe347df1d6241f759331fcc826c5d356b7db362bb81ffba91e20",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489388108.png",
+      "sha256": "222879a2f93ccd0ab40bb76f24083374bd8b8722da8d2ff8927c9ed8d12fa460",
+      "store": "release:E020"
+    },
+    {
+      "name": "20-1791489389537.png",
+      "sha256": "7f4ac84e8acd70374be53d314b4dd8c4d73564f67cc80fe332a2517be09a2148",
+      "store": "release:E020"
+    },
+    {
+      "name": "23-1791489393841.png",
+      "sha256": "3f8a5e14bb172051b742672f8e7fc84f1ecfe759516d66f76b11e77a70d70665",
+      "store": "release:E020"
+    },
+    {
+      "name": "27-1791489395244.png",
+      "sha256": "6680e6f685a504867a435a803e2c48589da1d5acf4fadd8b6a6f67b0eb475547",
+      "store": "release:E020"
+    },
+    {
+      "name": "29-1791489396644.png",
+      "sha256": "b739f8aa12ee7cde353552591f0bbe3ff6019e4fbf0864cd5d04f63dbb54c6f5",
+      "store": "release:E020"
+    },
+    {
+      "name": "29-1791489398054.png",
+      "sha256": "29b79a8bc5f59b3f7e2c7975ce0f0864fcb6f0523f8da061713c4d2a14bfaece",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489399469.png",
+      "sha256": "fb30c81ebc8e2a717534ccecac89bd9388495e8424374529443572605e117416",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489400866.png",
+      "sha256": "8c291d7339343df149d344f70e587746e63c441fc707f9bec3815cd3e1ddcfb8",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489402264.png",
+      "sha256": "12845ec53dc902e0f857d5e6db477c2c1f486e89efcfe80b3b694072a2a97c7a",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489403667.png",
+      "sha256": "277c424f9650316cf90202bb6394b95b112193967bb7583d8ff5c5c77721523f",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489405074.png",
+      "sha256": "8c2ccc3491e42166e4de96b3375988b1046537c5716bcbd018246da35b4963fd",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489406487.png",
+      "sha256": "18d848d6a6a7b8a9afcb2323717e229ede3cc2b9e26131ea223e38c7f9e484d2",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489407898.png",
+      "sha256": "21dc4625ed188979f3b4aa5e86b70229f86b978bc2fb89150aba00fed40f9c8b",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489409306.png",
+      "sha256": "b696defdb85af2ec996e785dbdd131c0b727364084f0872debb94f3d667dafcb",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489410713.png",
+      "sha256": "74cd44930c001d436994b06b3a696b382818c04eb7354b9076c4d79de16bc73c",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489412147.png",
+      "sha256": "9aee3a7fd0e1a5f6a44329f71d4dbbf8503b2831ffce9b903170c2486d983b38",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489413545.png",
+      "sha256": "fac96a1d29b13ab724441e2a6df8e6807c26c03bb2a94ea7fb938cc09ab45e7b",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489414952.png",
+      "sha256": "a5f6d418ce81a02e5cdeed9357dc1152f8a2ef569358139be7532533b18dc333",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489416464.png",
+      "sha256": "dd6a731d9346956c88b3ac7de5ff191494bdfad254058b3c3707c82910efc0fa",
+      "store": "release:E020"
+    },
+    {
+      "name": "31-1791489419296.png",
+      "sha256": "accf4e88cff8eb4c8c1cdfbd98b20aa20d610ba31e80bc3138bad799482fac7c",
+      "store": "release:E020"
+    },
+    {
+      "name": "38-1791489420696.png",
+      "sha256": "2f7b96020a55ab3e5f96f3b7d1c7029b6f8af15194e4499b6f92be20f34bd0cf",
+      "store": "release:E020"
+    },
+    {
+      "name": "40-1791489422089.png",
+      "sha256": "76123bb7d726bdb1b494189bc1f5035682552eb0afb13867b85d9efa4e797665",
+      "store": "release:E020"
+    },
+    {
+      "name": "40-1791489423516.png",
+      "sha256": "e7938f8ad6b888c101051aae4912dc2ff393e771d9f826c2a9cc262568f3be29",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489424918.png",
+      "sha256": "5f6196a2d8e2bdb10584c5f22cf19abf7dca9df4960233ff037e5c1025eb3973",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489426351.png",
+      "sha256": "2b432090b25738cbe905d79b51a2858696f762c86b43e644d87cd4629d890c66",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489427800.png",
+      "sha256": "1fbc8c886c18a5bf7e48fa1bedc99dd2f2f8894e2a2e4a95a0c40ca7f6b720f3",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489429221.png",
+      "sha256": "cc21f857cf584cf614ed00e889362ec07b2177add36c1d091dddf89c05f67161",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489430690.png",
+      "sha256": "30a1b7e58b01adb1be9fbac0a4e5e0fb69e0543337e51fbbb086be091d59913c",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489432119.png",
+      "sha256": "7bbe431d53c499f6cf8a7a921ef6e1ca07ae5a233e6ebed675b2ed90d23c50f6",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489433564.png",
+      "sha256": "ddb9b20cfb4512ff45370983ec4306fdffc8e55582c25049615dc602537d21df",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489435019.png",
+      "sha256": "e08fa1e3e556b5283a1a52e3be99d334d70798592de023496cca2639e2263c10",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489436483.png",
+      "sha256": "5790c6100bb122f4be93d538d52adfa190ab7347cdd81a021e825c017f5e411e",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489437933.png",
+      "sha256": "5787dccfed671cc272a5ff29958a802deee2e4874fa04cdbe844e63d62127203",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489439399.png",
+      "sha256": "9f50e429bf5e419a4bc7f7fb6e6cca5b9c5cd94e5a5bec1b5585b76b8be6c2f9",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489440841.png",
+      "sha256": "8bffa5e3932594c1214f561904130a52fdc62162aea5d72371b68c47fc5d67e3",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489442287.png",
+      "sha256": "dbf37ca3891f199cef1e809cac5913f47c9b4fd90f60e6600ec8278661c56851",
+      "store": "release:E020"
+    },
+    {
+      "name": "42-1791489445178.png",
+      "sha256": "d54812fe6d468670fe1ff1ddd6332721e04ae4bd1102c1b2a498226051ee0da3",
+      "store": "release:E020"
+    },
+    {
+      "name": "49-1791489446640.png",
+      "sha256": "e2ac36e26a3cdea795bdc4a6249c2b272160570c49f176e9683d05b35d6b6de5",
+      "store": "release:E020"
+    },
+    {
+      "name": "51-1791489448100.png",
+      "sha256": "2ee5918cb12ad4b592d351e8163e5be1a4384326ca483f7d2085caff0cee2932",
+      "store": "release:E020"
+    },
+    {
+      "name": "51-1791489449548.png",
+      "sha256": "d7bc208d47bd07d3a1b876066e0515ac443f99e51002d445fa5579fe496e0878",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489451006.png",
+      "sha256": "00ce0ab76329affc3b32fb27dde83a1ff50d35106f962ebd44b839e0280b7311",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489452448.png",
+      "sha256": "518e90337f1c07e32c38894e73713512ee0cbe8d824429601948add5d4b9f034",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489453882.png",
+      "sha256": "dba623847f660ca1c2e435ecb6fe74dec047a8b6abf4126eb5b64517a1cdfaf1",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489455316.png",
+      "sha256": "c914e28d5f7a1d28911f8dc1d069ccc7cfebed4809eab356f7d2f563bee60a3b",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489456741.png",
+      "sha256": "5910ff9ae9f0b09b03448b3182a76d4109b6fa70911b52f269a3937a79184195",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489458185.png",
+      "sha256": "492c282b1da3a62881e50d30d19556540d62219ebf83226f7585cae312329323",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489459612.png",
+      "sha256": "e36cbdd1253a5f36c5b3a35936dbe74c39fdec1e2af7340288715b94779c6623",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489461025.png",
+      "sha256": "2c62c84906d389323b49cbd2e801c383c8ca9e1bdc2cedd0ddc7fb75ec977bed",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489462438.png",
+      "sha256": "ed098315cbff89e6ca9ee55813d4b5c751be7b47fe1f512c9a7da4a4c30321dc",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489463847.png",
+      "sha256": "7c3309a63bb858d6696acca7af82d8e8ceb9fc4e4eabbe8e1e51b20a21ba54de",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489465255.png",
+      "sha256": "d6d88b3af367a69bc3c308af201cfd2408092dfb9fec7a280131c97b5fd580cf",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489466688.png",
+      "sha256": "3e36cf137e514024dc74fa04aa94e78638d09222e6aa1e6845508bfc07c5385c",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489468110.png",
+      "sha256": "a68a4b447c7556e3cf37dd9e7f0819fd84496bb747459904747798ae1f34842a",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489469517.png",
+      "sha256": "c4d5378ca6ddf657bccef43bf35e9aad7c79b0e2032a749aa9207930de9a882f",
+      "store": "release:E020"
+    },
+    {
+      "name": "53-1791489470925.png",
+      "sha256": "620f2b16ae81890cdfd1773bf4833dda67f18b05303b8df70e837b8d7bce1957",
+      "store": "release:E020"
+    },
+    {
+      "name": "56-1791489473729.png",
+      "sha256": "838ecd83167ccc7bc8bfc1a0100bc8c58d634bcf2033d507b8354dfe2e338cf1",
+      "store": "release:E020"
+    },
+    {
+      "name": "6-1791489349238.png",
+      "sha256": "6d5ba20ed4c4061fab7c404d54e4afd282e2eb168e09e8a25a23135d086e8163",
+      "store": "release:E020"
+    },
+    {
+      "name": "60-1791489475129.png",
+      "sha256": "db536676669f2cd1400860046f4ded8f8a3b0602a5a28829e5e0ec52c74a9c37",
+      "store": "release:E020"
+    },
+    {
+      "name": "62-1791489476536.png",
+      "sha256": "4cea7de64d75ac87011789fde0e6d94039755acdb22056d8158ee45aaa786450",
+      "store": "release:E020"
+    },
+    {
+      "name": "62-1791489477944.png",
+      "sha256": "6dba5364ee1d01e3a0a53c3f53be0c20ff47a32ed02d2748dfa9cd86240c823e",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489479372.png",
+      "sha256": "bb77deceb9cd0df53e769804b9a127b2608ac7bb460af713d79137586723e765",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489480771.png",
+      "sha256": "cf57dd460f01ccb40095957924a59e8517716403952da63d328e76052b45be41",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489482192.png",
+      "sha256": "d73c7d2889398eac56a1eaeab8d3ec492fd9f213b38c8e3834d6b4089cc8f9dc",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489483609.png",
+      "sha256": "2aae034104d34982cd496f98af56aba9430b7d444fcc5966a5ee59b0a49a9614",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489485060.png",
+      "sha256": "2fbb0e1042f7119200e6ba9854204239419f1737bb93884ddd280ba5af65fd3c",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489486497.png",
+      "sha256": "10196698d567901e0ea27f801a9df3c910aa2e214751be68b591453749bc77cc",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489487905.png",
+      "sha256": "80fc08a8289b77db7b264519053312181211309099cd6e463d532c34a492d64c",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489489330.png",
+      "sha256": "6c2a239dc63f1d93b7da7c93311a9749fd1a69ba075ac5eaf6b6be4f7051df33",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489490759.png",
+      "sha256": "5398ca9cbbb335d95919b090da3ba9f7d4713f57d02c139cc5ab59ab513ab3b5",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489492199.png",
+      "sha256": "62393e474e2179301fb303acc64aa5ea00d1d83b471dc77c54577d575ecaa09b",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489493642.png",
+      "sha256": "5940c828b92036b671b609e18d12dcb689d3adc50843bcd407316ba5f28ee71d",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489495057.png",
+      "sha256": "13030167bab523b5f2d6ecfb431baaf089ea58a38a11a2a0b6f41bc8ec9c4d4a",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489496473.png",
+      "sha256": "90c010b78b993ddbe42714ca1a73394f9062e3356b2af9ca10d9f7b501bc1d2f",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489497883.png",
+      "sha256": "b35196c3584a7a88fae24650056705131c647c620f3e3a4a0719fb2f0830d63f",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489499290.png",
+      "sha256": "c0e366d46342953e0e79ceb70c1d08d37637c77dbc63e3e978bf7091a450447b",
+      "store": "release:E020"
+    },
+    {
+      "name": "64-1791489502109.png",
+      "sha256": "a9a6b17df2de0ff8838cdfed35e9b040149338ce4c9a31d8841476686713ecbe",
+      "store": "release:E020"
+    },
+    {
+      "name": "67-1791489503536.png",
+      "sha256": "31409291333180692751e7b26a026bb80ce4f604e3c2598e596069b2b8d929de",
+      "store": "release:E020"
+    },
+    {
+      "name": "73-1791489505385.png",
+      "sha256": "09fc8885da884e9e388d937784393e707d2b95dee73ef12cd3f5838ec872aace",
+      "store": "release:E020"
+    },
+    {
+      "name": "73-1791489506814.png",
+      "sha256": "fa90017db2baa4de43b009b28f9d95c060712d40f407de9d34fc8cbb4e890a82",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489508216.png",
+      "sha256": "d8fedb0ad266dd6204e9b32e3930bc9d06b3b42fdc5954bff30ceeb1c018f099",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489509638.png",
+      "sha256": "5e9c5023f9a433920c4f737dda940121a3309c9422cdb9b6626d736e6135ecd0",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489511026.png",
+      "sha256": "a107367623223852f1cc019dbaa7c9b0a07564688251e4e3660de65f289d85e1",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489512430.png",
+      "sha256": "6d0f22d9159cf557369eafc3007633bdb2743f68e715d02da56f7fb772560399",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489513840.png",
+      "sha256": "c471d2bd98918fe946057c23ea23a3e4ea714a56d1b80637de909907543042c2",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489516651.png",
+      "sha256": "1da5dfc6617ab3f9a99f7b0963a2f77359ed28c8e8a8aa6f8de214e42684c94c",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489518053.png",
+      "sha256": "755bd92d93492f376893130d069ac118e78800fd665381f901392219598cf278",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489519474.png",
+      "sha256": "f9bf7be0b4c4c9a61c630182edcf03f42deb66515add9d85330df494fee03111",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489520868.png",
+      "sha256": "31d135679e6f361181a1ade60e27c55973ded16311d522a2ca9e2e5073b91f92",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489522279.png",
+      "sha256": "2e7b4d68900d9f235289338048b26db0a35f5f7313da346f85a8d31988eb85b7",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489523685.png",
+      "sha256": "1f0784acfb24b92a1f35c524b7dd5709acafb8061b8f2b564faf8ed32a0ab82e",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489525094.png",
+      "sha256": "08191548fb3dfcde8924f53b68bdb22041a3bf209c9d24e62eddbf082042e5a6",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489526511.png",
+      "sha256": "ee4e373bc955d6a374ace2426b8a98b89d65b6ad57f4bd2dfa093894477feac1",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489529365.png",
+      "sha256": "be3c4b407c872dab2d4647659772f9d9948d85cdb627ebd6d2dc540c38a413ae",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489530786.png",
+      "sha256": "ff72be0e54c26a7625ed88e3859c2711ed3cf9fc49892b210f399156b426eb5b",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489532197.png",
+      "sha256": "b6354bb88fe224929cad3ac9fe82cb8f245559872b3197a91e718e6840a08ea8",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489533615.png",
+      "sha256": "e037b8d520abd6de68e7ffee739f8e2d381642752477219b4cb521c1aa160ffe",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489535028.png",
+      "sha256": "491aa47129867af969dd2207f141e46da9841dc5deaa9222c54be74c493ef5a8",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489536425.png",
+      "sha256": "ebb0779f8cac517e7b9ff43cbd093b7932d7a89b856d5b9f6867f1500dc02ba5",
+      "store": "release:E020"
+    },
+    {
+      "name": "75-1791489537864.png",
+      "sha256": "27bcf8eef29452dd015b903a4164f0750c412ca7b8692b2b03d6b1b509385c27",
+      "store": "release:E020"
+    },
+    {
+      "name": "78-1791489539254.png",
+      "sha256": "83a2c7e60da04bc7d88107356a8c821bf9f69e81f431936d0315ef311aede995",
+      "store": "release:E020"
+    },
+    {
+      "name": "82-1791489540659.png",
+      "sha256": "2cad99001d9e81b3331cdc5e3a7844ddbb6cafab7a81060356be51efd6f29836",
+      "store": "release:E020"
+    },
+    {
+      "name": "84-1791489542052.png",
+      "sha256": "0ed93c73aed1a3bd6c3dfdaa40090142bf9f340147d76318b557540265aab83a",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489543441.png",
+      "sha256": "9a4438d05dbca1bcffcbe904c9d396c36b6f8c19fe0f6149b9ffaeef40b293ad",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489546228.png",
+      "sha256": "80c364200b924861f9aa9f54e440b9bfc8a4a6a03d06a1fc90a855385e296111",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489547622.png",
+      "sha256": "4b82c29bd9a192173c899f17a935790ddfa10b3ef8a1ed53a5cf45a4fd87d0a7",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489550404.png",
+      "sha256": "79901be86b5d4d0aab0319af302d46ec027f9c642ab103227cb73212590865ba",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489551813.png",
+      "sha256": "4163a862e221eca8fd4b8af72d6274fd93228eb0135d238c3b85e43ff27c5a97",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489553213.png",
+      "sha256": "ea9c45c444cb568a7040e2a129135fa70e56ebf157873cd582509a0da9716ab1",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489554618.png",
+      "sha256": "67433037061c0e0402de8c8069c7aeebe6bef7b3de84603399f0fb28740456b7",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489556012.png",
+      "sha256": "f230297cc0fe62c7074e5e4bc5a3a8cdc02cd47f0f5ba3c9bf088d882927d532",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489557412.png",
+      "sha256": "e9f687bda5c0764d42443c2b47abdc756af5c300fb48392c40c66e46cd14aceb",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489558819.png",
+      "sha256": "bdfeeabbb74de9347e0897e8d017a9866cb81431e9dd0b21f2ad97a10f5abe9f",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489560220.png",
+      "sha256": "9611484699ab3dba71d4cfcdcfebac9e12705be05088c6235816e45c3ea52660",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489561641.png",
+      "sha256": "1f2b3aa760022004969194ee0447416e4703fe797d7e07604595c3d5c8397e72",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489563036.png",
+      "sha256": "dc169d20dc893f1c974611656322033f290092818a61c155eb6f8a1712f56f16",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489564446.png",
+      "sha256": "a4c0d6c0cd0eeb7117b44e54005c2ace09656f730aff312c140cd9ba019c2286",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489565847.png",
+      "sha256": "6d833ca7245c274eb28f7b4bfa3a39f858da2e8892f872bfdf7bea6cdab86585",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489567253.png",
+      "sha256": "a9986a4461c93926d3565fd5b10999b6d8ac6d648b4a1917aa8587c68c71a118",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489568656.png",
+      "sha256": "13632eff84253396a3d6ba224463111f3796e166c7559bedad565e3a578b7e45",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489570060.png",
+      "sha256": "c494a5cd32fb01f74ea1414062be4fbc1301e82c55bdaebae091a5eaccb60ab8",
+      "store": "release:E020"
+    },
+    {
+      "name": "86-1791489571468.png",
+      "sha256": "79d680a5f3bacf7b6990f733a89b46b105fb388a794c83f5dcf40b63e7a620fc",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489572958.png",
+      "sha256": "20ca087ca630c34e40845b6475f4b03668a766be868db01f6f2251e8a399af79",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489574485.png",
+      "sha256": "e457687f1bc631a08eafcef41b0a3255df2deb5117f453a604ec06b9c66d31e8",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489575887.png",
+      "sha256": "7427440cfe86915b8628d4ecddcdbe3b8e9679412fde5ff5c98efcbfdfd29a51",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489577289.png",
+      "sha256": "e58fd17caa918b360b7056271a61ee89b0f64b4bf66d5947452de4c5a0abd9af",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489578736.png",
+      "sha256": "16acf6a6cd5c9dcd285201e5d53c82c09bdd81aaca92e6fff85f5cd5c395c0ba",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489580182.png",
+      "sha256": "6509e0b897652d2079a1421cc04d1094a65ad4e8e976cbaaf5c4a54c85a3868d",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489581604.png",
+      "sha256": "ebe40c80499128166271360cbd55b4ad7dca0c575177a2eca316d0507487f257",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489583063.png",
+      "sha256": "93c4658d889c06ebdd3db822819d8706d1f49411fc504a3143d0576c66910d49",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489584461.png",
+      "sha256": "158cbcc150a8d2c803b14c155a170d105f570d63ecd42f5ff7e4da41ba55eb96",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489597095.png",
+      "sha256": "29e8f8fe1373caf28906d0618b71e3cab1f44fed126ce51f8f950e5ed67fbd24",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489599920.png",
+      "sha256": "e8c9093a3101dca994b55ab13bd0175b3e3ec754d7e123164345ad9481739da2",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489601326.png",
+      "sha256": "cca198868e55e8a2b03c602b78f5c10195cc924e6d915b6049e5db82fbc50b65",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489602754.png",
+      "sha256": "f7a9a12763005ddd898f77b70870fbb74541dc5bdfc221284e6de31fc1b7d870",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489607338.png",
+      "sha256": "e02d14f3effd8ce2721c7248a39afb0aa112290eb2e033d1ff8514fa9448ca58",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489615753.png",
+      "sha256": "eb453aa7b29086bfe75a55a98f82f28d9982be42c84435224216bd7d7fe13df5",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489617151.png",
+      "sha256": "32f83bcf9a23afb7ffc7c13456a106a7496052cc62ff37c0a2137f99da775754",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489618589.png",
+      "sha256": "8ac286a53b51283305ab5ce43c3b1cec00784e96288dbf8649ca71b98133c71e",
+      "store": "release:E020"
+    },
+    {
+      "name": "89-1791489619989.png",
+      "sha256": "7eb9f944e37690ac0f3db814a658ebcf57c8f292c1da0c7a3c5b6dc701bf071f",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489350813.png",
+      "sha256": "2e88ed9f0d9e10f6fd964b6e56b2f819dc842cf6634fda12ca5b68d7e3aa7a89",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489352289.png",
+      "sha256": "fa52a0ad5598f560701b64128d179e703f2055ee395df2343c8e7537088a0456",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489353678.png",
+      "sha256": "f93182e0708b6f3e7408d47c0a092627f3650182a8d6a20d5c00721a47cad7c4",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489355169.png",
+      "sha256": "3d37c0015a940b2ce749d0a57eb7695afc3f5da439873b8c4aa167139d853604",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489356587.png",
+      "sha256": "fbe910d5f4f3692507a09b16d567f85b9a0b75cb09b8d7d6f7e0f56b1455f6e7",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489358012.png",
+      "sha256": "91e4c83b9466dc018f0a9536296d95f55210d34487b3063588b3f29bea831a51",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489359471.png",
+      "sha256": "50ba46a2e39d8a3bddb3a38c37b0418df0c875a2ce6fde0389cd4b72f96a108a",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489360895.png",
+      "sha256": "2096df30d79c09639acb7d6a32f9870259e6ff0497f2765b03689fc34e808112",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489362303.png",
+      "sha256": "8a6c9897d030b5208ad6715ee6c9af4891d02cc039245dc73e6d6019a1bd8894",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489363742.png",
+      "sha256": "e6273e6745da3a6335f8ace61f9f4cbffd6edc19b3003e45dc3b1f3e57b07beb",
+      "store": "release:E020"
+    },
+    {
+      "name": "9-1791489366573.png",
+      "sha256": "5e31563a76f7dd8de5ab4137edfd622a692915b8e55ba0a5fd5b7906ee6a53ff",
+      "store": "release:E020"
+    },
+    {
+      "name": "91-1791489621387.png",
+      "sha256": "f550ff37e6a0875ebd126386256deb71c7afcd7bbd9572658987f60efde9bd62",
+      "store": "release:E020"
+    },
+    {
+      "name": "94-1791489622795.png",
+      "sha256": "739c3c31c11dfa2110fd748b2cd613387b8ea7b2009cb3a03c7301471fd376ed",
+      "store": "release:E020"
+    },
+    {
+      "name": "95-1791489624194.png",
+      "sha256": "ec6ffc3f0cea8f30b59dca643a8586a831c625e710ecc1eed765c0dadcef88a8",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489625600.png",
+      "sha256": "e647252f938e3d112799398b0f205bc0c6935c55690f80a0c1d8dfb98082631c",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489627018.png",
+      "sha256": "01b56bfc5a1e4e41580f2ecb7d2db4c1d83715f545a3add5c512609efd07dec6",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489628405.png",
+      "sha256": "03c59d64c84b5b56730308c91100e11294837d94d6a847509e5357f6009a89bf",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489629796.png",
+      "sha256": "e567eb497c66597213c4e50c4799ac957216425539aaea55326a3f3fc7059ffe",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489631195.png",
+      "sha256": "e2423ddd2292173dbb0ab45a162ff4fc308a1947a7100c241e669f65c9ec054c",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489632610.png",
+      "sha256": "3b28b0a92abe438aec3c2aee592307b6f2eb246259b74865858eec548e978222",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489634019.png",
+      "sha256": "923c101a6f455f5118e4f63389132a4b83a987a09921a9faecd27b7058a58835",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489635416.png",
+      "sha256": "d2542f7d4b76c744e33962dfc6680039b3a4caf188be9a73a12605db707f6a87",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489636819.png",
+      "sha256": "314fd369a757b1441998056eda4ba792278475204bfc7c2bcae36d1be849248f",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489638205.png",
+      "sha256": "2998bf36cd2f81a0786dbaff731ba3e8819a4bef14445ffbdd37c4d4b740da83",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489639620.png",
+      "sha256": "121767ff7f131ba2c433cc734f399cd52f3dc71e7553b75f57803aeaffc4153b",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489641001.png",
+      "sha256": "9db3f2277a527f9532a56908e26e384a7556f75fae025021e33512330d908694",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489642393.png",
+      "sha256": "c2596709cdf863c0b25cedd1419987f5be982d8aada049c892be780ed69a6eac",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489643789.png",
+      "sha256": "b4c7f917ed31d30c58b3543697c0c521d955cdb899eea1b758a26694b77a3624",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489645193.png",
+      "sha256": "b591ae19859cbb15a0be07b7fd920e9b6808f402ee5715380341927e84bc4253",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489646587.png",
+      "sha256": "f472a49f8bffbd8d5eddd4506c5fca49f757e15b047e4dc602c58be9bf78b394",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489647970.png",
+      "sha256": "72f8ca95ff9332ffc439660b7427db3f1305737b22b14deabbd18dfd04702350",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489649383.png",
+      "sha256": "1071d3be909b7ff133d8ff64429f8f0d1d27f9176916543698dc05f6fa781cc9",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489650804.png",
+      "sha256": "4f818c3c744e5248e45c82441827408170ba326a1556708e33a647b0e8ca2afc",
+      "store": "release:E020"
+    },
+    {
+      "name": "97-1791489652223.png",
+      "sha256": "69822f7514bb8679541da93b18e8b360e873a37ed937418ff8e3fd95d06fa37d",
+      "store": "release:E020"
+    }
+  ],
+  "started": "2026-10-08T19:55:37Z",
+  "ended": "2026-10-08T20:07:16Z",
+  "status": "aborted: driver-bug: KeyboardInterrupt: "
+}

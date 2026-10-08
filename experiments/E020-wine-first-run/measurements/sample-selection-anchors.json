@@ -1,0 +1,65 @@
+{
+ "what": "the measured-anchor stratum of the validation sample: seeded random frames of each sitting, not already in the sample, each labelled for every measured-only country",
+ "seed": 20261011,
+ "frames_per_sitting": 2,
+ "countries": [
+  11,
+  15
+ ],
+ "selection": [
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "45afa17a97db37b1b2c58787239940f10c5365b0b62ab4387f01929bdcef6343",
+   "name": "40-1791485266281.png",
+   "countries": [
+    11,
+    15
+   ]
+  },
+  {
+   "sitting": "20261008T184505Z",
+   "frame": "1da3d497ad0f2b8786f9f05c81cd03bc1bd1e513e5b043397c4f84ee71487db4",
+   "name": "164-1791485856008.png",
+   "countries": [
+    11,
+    15
+   ]
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "b35196c3584a7a88fae24650056705131c647c620f3e3a4a0719fb2f0830d63f",
+   "name": "64-1791489497883.png",
+   "countries": [
+    11,
+    15
+   ]
+  },
+  {
+   "sitting": "20261008T195537Z",
+   "frame": "1f3f0c83fff7816971e0d26647153df8f24aef237344c316f1d262d625f0731c",
+   "name": "20-1791489373741.png",
+   "countries": [
+    11,
+    15
+   ]
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "dad05e9f22036a4dbd25742196975460ad4c434fcc8158f8428518ef64d72931",
+   "name": "207-1791493320908.png",
+   "countries": [
+    11,
+    15
+   ]
+  },
+  {
+   "sitting": "20261008T204817Z",
+   "frame": "24a296dc7d2cbf5df2e677ec6e1c6928742ec1fd4d156dfa79a6d44e0d782e9f",
+   "name": "130-1791492899734.png",
+   "countries": [
+    11,
+    15
+   ]
+  }
+ ]
+}

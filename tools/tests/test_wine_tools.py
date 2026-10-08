@@ -284,6 +284,35 @@ class ExportTest(TmpWorld):
         events, problems = check_counts.events_of(record, "cmb-accumulation", BATCHES["cmb-accumulation"])
         self.assertEqual((len(events), problems), (2, []))
 
+    def test_a_net_reading_is_exported_as_a_net_and_never_counted_as_an_exchange(self):
+        """T40 round 2, R1: the reader's two-frame nets went out as `event:seq` exchanges in round 1."""
+        net = dict(exchange_reading(1, 1), kind="net")
+        sitting, _ = make_sitting(self.wine, readings=[net, exchange_reading(1, 2)])
+        self.export(sitting)
+        record = self.record("cmb-accumulation", "E020-r0001")
+        seqs = {o["field"]: o["step"] for o in record["observations"] if o.get("field") in ("event:seq", "net:seq")}
+        self.assertEqual(seqs, {"net:seq": 1, "event:seq": 2})
+        events, nets, problems = check_counts.observations_of(record, "cmb-accumulation", BATCHES["cmb-accumulation"])
+        self.assertEqual((len(events), len(nets), problems), (1, 1, []))
+
+    def test_a_reading_must_say_whether_it_is_the_batch_event_or_a_net(self):
+        """R1: no default; a reading without its kind, or of another batch's kind, is refused."""
+        for i, reading in enumerate(({"game": 1, "seq": 1, "values": dict(exchange_reading(1, 1)["values"])},
+                                     dict(exchange_reading(1, 1), kind="bomb"),
+                                     dict(exchange_reading(1, 1), kind="exchanges"))):
+            with self.subTest(i=i):
+                sitting, _ = make_sitting(self.wine, sid=f"20261008T16{i:02d}00Z", readings=[reading])
+                with self.assertRaises(e020_export.ExportRefused):
+                    self.export(sitting)
+        self.assertFalse((self.repo / "runs").exists())
+
+    def test_every_record_declares_its_screenshots_as_i1(self):
+        """T40 round 2, R4: the frames are screenshots (vocabulary/interventions.md: I1); round 1 said I0."""
+        sitting, _ = make_sitting(self.wine, readings=[exchange_reading(1, 1)])
+        self.export(sitting)
+        levels = [i["level"] for i in self.record("cmb-accumulation", "E020-r0001")["interventions"]]
+        self.assertEqual(levels, ["I1"])
+
     def test_text_in_a_reading_is_refused_before_a_record_is_written(self):
         """R6: round 1 kept a counter value 'synthetic forbidden screen label' verbatim."""
         for i, values in enumerate(({"counter:attacker-before": "synthetic forbidden screen label"},

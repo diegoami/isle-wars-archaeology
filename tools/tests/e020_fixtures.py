@@ -62,19 +62,20 @@ def make_sitting(root, sid=SID, batch="cmb-accumulation", status="completed", ga
 
 
 def exchange_reading(game, seq, **values):
-    return {"game": game, "seq": seq, "values": dict(EXCHANGE, **values)}
+    return {"kind": "exchange", "game": game, "seq": seq, "values": dict(EXCHANGE, **values)}
 
 
 def bomb_reading(game, seq, **values):
-    return {"game": game, "seq": seq, "values": dict(BOMB, **values)}
+    return {"kind": "bomb", "game": game, "seq": seq, "values": dict(BOMB, **values)}
 
 
-def record(batch, run_id, sitting_epoch, events, fields_of, frames=("a" * 64, "b" * 64)):
-    """A run/1-shaped record of E020 with the events given ([(game, seq, values)])."""
+def record(batch, run_id, sitting_epoch, events, fields_of, frames=("a" * 64, "b" * 64), seq_field="event:seq"):
+    """A run/1-shaped record of E020 with the events given ([(game, seq, values)]); `seq_field`
+    "net:seq" writes them as net observations (T40 round 2, R1)."""
     obs = [{"step": 0, "source": "process", "field": "sitting:epoch", "value": str(sitting_epoch)}]
     for step, (game, seq, values) in enumerate(events, start=1):
         obs += [{"step": step, "source": "screen", "field": "game:ordinal", "value": str(game)},
-                {"step": step, "source": "screen", "field": "event:seq", "value": str(seq)}]
+                {"step": step, "source": "screen", "field": seq_field, "value": str(seq)}]
         obs += [{"step": step, "source": "screen", "field": f, "value": values[f]} for f in fields_of]
         obs += [{"step": step, "source": "screen", "ref": f"sha256:{d}"} for d in frames]
     return {"schema": "run/1", "run_id": run_id, "experiment": "E020", "arm": batch, "observations": obs,
