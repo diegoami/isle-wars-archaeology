@@ -14,13 +14,16 @@ adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness
 adapt .opencode/agents/reviewer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/ and a /tmp/iwa-review-* TMPDIR; bash denies for writes into the static folder; the reading recipe is grep/sed -n/head/ls/sha256sum with quoted ~ paths — never cd or cat, whose checked text mangles quotes (2026-10-06, T23); the owner, 2026-10-05, T29)
 adapt docs/environment.md  (what the OpenCode reviewer (T29) and implementer (T31) may reach outside their worktree; the static-analysis tools section (T26))
 adapt .opencode/agents/implementer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/; edit denied there; bash denies for writes into the static folder; the reading recipe is grep/sed -n/head/ls/sha256sum with quoted ~ paths — never cd or cat, whose checked text mangles quotes (2026-10-06, T23); the owner, 2026-10-05, T31)
-adapt tools/harness/review.mjs  (output rules: the static folder read-only, a /tmp/iwa-review-* TMPDIR, in-place mutations restored, T29)
+adapt tools/harness/review.mjs  (output rules: the static folder read-only, a /tmp/iwa-review-* TMPDIR, in-place mutations restored, T29; L62 carried from 82b81ca (#115))
+adapt tools/harness/lib/chain.mjs  (carried from harness_imperial 82b81ca, L62, #115)
+adapt tools/harness/lib/post.mjs  (carried from harness_imperial 82b81ca, L62, #115)
+adapt tools/harness/lib/review-selftest.mjs  (carried from harness_imperial 82b81ca, L62, #115)
+adapt .claude/skills/delegate/SKILL.md  (rule 18 carve-out propagated, c1ec526)
+adapt .claude/skills/run-task/SKILL.md  (rule 18 carve-out propagated, c1ec526)
 15f1fcb3af4cd07482f39328e2255a71075f4889946901960116f9a3a5b4c16f  .claude/agents/implementer.md
 6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
-23d6c95d33242652d642ba3e51be373eb13a00c1279386467bcabdf35add4ac1  .claude/skills/delegate/SKILL.md
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
-0c9f0d80af3d6605e73ecda14901b6cb3b829f25641dcf5fc90ca7f7ef42474b  .claude/skills/run-task/SKILL.md
 e99fedef64f7850a76794396088568a4046692abfc6ff14aabadf81bc83fe65c  .claude/skills/switch-model/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
@@ -30,16 +33,13 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
 35964958676a12a7aae7493eb162db2249cafbdbf8b12c81643fd69044e3e3b8  tools/harness/implement.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
-41ade10704eb959a79815b38dd4764a95337850058f2f8c81dc3e074dc3e0798  tools/harness/lib/chain.mjs
 0545b589015389325ea5807b00204a3d268110c6f25aebb6d9d759d25d4fcc55  tools/harness/lib/common.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 44cc792f4867614f7995940862256ee719b5db50a335f6ae432e932d6af0eacf  tools/harness/lib/opencode.mjs
-7d0ee40ee7706ba9209747b9335c133e15e6443b8eebba311ebb41c15f5d382d  tools/harness/lib/post.mjs
 b414bb92b06f6b4d48083146c5986fed8c61cb100906a501042a5879d23b0c4d  tools/harness/lib/quota.mjs
-1298334b7b52bcc72b949a576f33ee1aa0fe162c6693938f8e9cab7de4acf4ce  tools/harness/lib/review-selftest.mjs
 7ff1c2e4d238bb3e5e6210ac170d0579a5c3eeada083ea78bb31f4ab4d12c43d  tools/harness/lib/switch.mjs
 4177a849a38ffae17dd460d9c210860d92ef0766dd4d79ca170ee07119c9eae8  tools/harness/lib/unsaved.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
