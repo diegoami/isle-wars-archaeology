@@ -1,8 +1,9 @@
 """Every record under runs/ is valid run/1; every manifest under evidence/ is valid evidence-manifest/1.
 
 The checks use the pinned validator (tools/validate_records.py, fetched from game-archaeologist).
-A record must also sit at runs/E<nnn>/<run-id>.json with its own run id and experiment, and its artifact set must be one
-registered in artifacts/known.json.
+A record must also sit at runs/E<nnn>/<run-id>.json with its own run id and experiment, or at
+runs/E<nnn>/<arm>/<run-id>.json inside its own arm's folder (T38's layout: runs/E020/<batch>/), and its artifact set
+must be one registered in artifacts/known.json.
 """
 import json
 import shutil
@@ -45,8 +46,12 @@ def run_record_errors(path, known_sets=KNOWN_SETS):
         return errors
     if doc.get("run_id") != path.stem:
         errors.append(f"run_id {doc.get('run_id')!r} is not the file name {path.stem!r}")
-    if doc.get("experiment") != path.parent.name:
-        errors.append(f"experiment {doc.get('experiment')!r} is not the folder {path.parent.name!r}")
+    folder = path.parent
+    in_arm_folder = (folder.name == doc.get("arm") and folder.parent.name == doc.get("experiment")
+                     and folder.parent.parent.name == "runs")
+    if doc.get("experiment") != folder.name and not in_arm_folder:
+        errors.append(f"experiment {doc.get('experiment')!r} is not the folder {folder.name!r}"
+                      " (nor is the record in its own arm's folder of runs/<experiment>/)")
     if isinstance(doc.get("run_id"), str) and not doc["run_id"].startswith(str(doc.get("experiment")) + "-"):
         errors.append("run_id does not start with the experiment id")
     set_id = (doc.get("artifact") or {}).get("set")
@@ -129,6 +134,23 @@ class RunRecordsTest(unittest.TestCase):
             self.assertTrue(any("file name" in e for e in run_record_errors(renamed, known)),
                             "a record whose run_id is not its file name must fail")
             self.assertTrue(run_record_errors(good, set()), "an unregistered set must fail")
+
+    def test_a_record_in_its_own_arms_folder_passes_and_in_another_fails(self):
+        """T38: runs/E020/<batch>/<run-id>.json. The folder must be the record's own arm, inside the
+        record's own experiment, inside runs/."""
+        valid = ROOT / "formats" / "examples" / "valid" / "run-1--pure-observation-aborted.json"
+        doc = json.loads(valid.read_text(encoding="utf-8"))
+        known, arm = {doc["artifact"]["set"]}, doc["arm"]
+        with tempfile.TemporaryDirectory() as tmp:
+            def put(*parts):
+                target = Path(tmp, *parts)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(valid, target)
+                return target
+            self.assertEqual(run_record_errors(put("runs", "E002", arm, "E002-r0001.json"), known), [])
+            self.assertTrue(run_record_errors(put("runs", "E002", arm + "-other", "E002-r0001.json"), known))
+            self.assertTrue(run_record_errors(put("runs", "E003", arm, "E002-r0001.json"), known))
+            self.assertTrue(run_record_errors(put("elsewhere", "E002", arm, "E002-r0001.json"), known))
 
     def test_an_invalid_manifest_example_copied_into_evidence_fails(self):
         source = ROOT / "formats" / "examples" / "invalid" / "evidence-manifest-1--bad-asset-name.json"
