@@ -188,7 +188,9 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
   Edit nothing, but for a mutation made in place in your worktree, restored with
   \`git checkout -- <file>\` and never committed. Outside your worktree, only read the static
   folder ~/.local/share/isle-wars-archaeology/static/ (never write there, and never paste its
-  contents into the review), and only write in one TMPDIR made with
+  contents into the review), read the model-driven sittings' frames and logs under
+  /mnt/c/Temp/iwp-shots/wine/ when the brief asks (CLAUDE.md rule 18, constraint A: never write,
+  copy or move anything there), and only write in one TMPDIR made with
   \`mktemp -d /tmp/iwa-review-XXXXXX\` and removed afterwards. Every other path outside it is
   forbidden (T29).
 - Your final message is the review and nothing else. Line 1 is exactly: ${header}
