@@ -1,5 +1,6 @@
 """check_no_originals.py: bytes matching a registered artifact set, and .x32, are failures."""
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -88,6 +89,17 @@ class CheckNoOriginalsTest(unittest.TestCase):
             git_add(repo, "notes.txt")
             result = run_tool(repo)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+# T36's constraint-F mutation tests live beside the tool
+# (tools/tests/test_check_no_originals.py, the path docs/tasks/T36.md names). Load that module
+# here so CI's `python3 -m unittest discover -s tests` runs the same tests, without a second copy.
+_T36_TESTS = ROOT / "tools" / "tests" / "test_check_no_originals.py"
+_spec = importlib.util.spec_from_file_location("t36_tools_tests_check_no_originals", _T36_TESTS)
+_t36 = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_t36)
+WineGateUnitTest = _t36.WineGateUnitTest
+WineGateCliTest = _t36.WineGateCliTest
 
 
 if __name__ == "__main__":
