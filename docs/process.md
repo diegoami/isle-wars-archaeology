@@ -148,6 +148,18 @@ run, or the owner's decision with its basis. Plausible rules without either stay
   document claim it touches. Each finding is a doc fix, a bug, a task-file edit, or a question for the user; research never decides design. (L16)
 - The original files never enter the repository. CI fetches them from a private fixtures
   repository holding the whole corpus; tests find fixtures by name; local tests skip without them. (L17)
+- **The rule 18 carve-out (owner, 2026-10-08; companion changes T35, T36, T37 merged).** A model
+  agent may run the original Pro binary under Wine on the user's machine for run capture and
+  UI observation, under constraints A–G. The binary, the install, the run copy, savestates,
+  memory dumps, screenshots, recordings and any patched build stay on the user's machine —
+  never in the repo, a release, an issue, a cloud session, or any tool input that leaves the
+  user's machine. The T36 gate in `tools/check_no_originals.py` enforces constraint F: a run
+  record whose `runtime.platform` starts with `wine-on-user-machine` is allowed only when
+  `start_state.sha256` matches the F019 hash table (`findings/F019-pro-setup-rules.md`) for
+  the named set+variant. Evidence manifests must use `class: recording`, not `screenshot`.
+  T38 task file at `docs/tasks/T38.md` is the first model-driven Wine run's entry gate;
+  the per-claim wording amendment under constraint G is per-claim, not in bulk. The carve-out
+  is *corroboration*, never replacement, of the owner's Bandicam captures (T28).
 
 ## 12. Delegating decisions to Jev
 

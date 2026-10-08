@@ -73,3 +73,16 @@ project reviews its UI (a person looks at the screen).
 - Name a model id you have not just seen in a live list.
 - Send private repository content or personal data to a provider the user has not cleared for it.
 - Spend on a batch without saying the cost first.
+
+## The rule 18 carve-out (CLAUDE.md, owner 2026-10-08)
+
+A model agent may run the original Pro binary under Wine on the user's machine for run capture
+and UI observation, under constraints A–G. The carve-out is *corroboration*, never
+replacement, of the owner-plays model. Companion changes T35, T36, T37 are merged. When
+delegating a `model-driven` task (TEMPLATE.md's `Kind` enum), the implementer's
+`runtime.platform` must be `wine-on-user-machine-iwp-2.0` (the only recognised token)
+and `start_state.sha256` must match the F019 row's hash for the named set+variant; the T36
+gate enforces this. The binary, the install, the run copy, savestates, memory dumps,
+screenshots, recordings and any patched build stay on the user's machine — never in the
+repo, a release, an issue, a cloud session, or any tool input that leaves the user's
+machine. Per-claim wording amendment is per-claim, not in bulk (constraint G).

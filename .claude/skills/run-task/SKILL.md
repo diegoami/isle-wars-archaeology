@@ -154,4 +154,9 @@ Never:
 - weaken a Done-when;
 - let the implementer's model family review its PR;
 - relay part of a review;
+- dispatch a `model-driven` task without the rule 18 carve-out's preconditions met: the F019
+  hash table (T35) and the `check_no_originals.py` gate (T36) both merged; the T38 task file
+  shape available; the implementer's `runtime.platform` set to `wine-on-user-machine-iwp-2.0`
+  with `start_state.sha256` matching the F019 row's hash. The carve-out is corroboration, never
+  replacement, of the owner-plays model.
 - force-push or rewrite `main`.
