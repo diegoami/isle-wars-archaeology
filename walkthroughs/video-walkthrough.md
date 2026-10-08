@@ -150,4 +150,6 @@ layout, and the integration with `check_no_originals.py` are follow-up work, in 
 order named in the rule 18 commit message: F019 hash table first, then
 `check_no_originals.py` constraint F, then this section gets the concrete paths, then
 the new T-number's task file. Until those are in place, the carve-out is permitted but
-not operational.
+not operational. The entry gate is now written: [T38](../docs/tasks/T38.md) is the first
+dispatch's task file, and it names the watcher, the click-driver, and the per-sitting
+directory layout.
