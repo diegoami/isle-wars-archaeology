@@ -1,0 +1,361 @@
+T38 review (sol)
+You review PR #118 at 1afbb1bc5c0b003a24555e24ddc32461e365384c. You did not write it. The task file follows.
+0. Prove the tree: HEAD is 1afbb1bc5c0b003a24555e24ddc32461e365384c and the diff against origin/main is the PR's; findings name its files.
+1. Re-run every Done-when line yourself, and account for each (L32). The PR's evidence is no proof.
+2. [evidence-driven] Every constant traces to a fixture, report or investigation; a [designed] one says what was searched.
+3. [seeded] No wall clock, unseeded random or order-dependent iteration in rule code.
+4. Every changed file and behaviour is one the task asks for (L44); docs it makes wrong are updated.
+5. Sweep the diff: tests that pass with the behaviour deleted (mutate, rebuild clean, re-take any
+   negative result), branches no input reaches, edge comments without a test, rule 18 carve-out constraints A–G, any path by which a command reaches a display, window or input other than the session's own.
+Prove each finding (run it, or delete the behaviour and name the test that fails) or label it
+unverified. Your final message is the review: the header; the verdict (approve | approve after
+named fixes | rework | user decision); per Done-when line `DW<k>: ran <command> → <result>` or
+`DW<k>: not run — <reason>`; the findings R1..Rn (file:line, blocking or not); the verdict again
+last. Never post it: the script posts it and applies the label.
+
+This is round 2, the last before escalation. Opus took over (L38) after your round-1 review
+(R1–R15, the previous review comment on PR #118). Check every round-1 finding is fixed as a class,
+with a test that fails without it, and review the whole PR.
+
+The contract was amended on main today (see the task file below): the count floors and the
+per-claim outcomes moved to T40 (#119), so DW8's `check_counts.py` line need only run and report
+its shortfall; and the bundles stay on the user's machine, never uploaded (constraint A).
+
+No sitting has run. Account for DW1's find and DW3's platform token as `not run — needs the
+sitting`. If you approve, the main session runs the first sitting headless and commits its raw
+records to this branch; a supplementary review of those lines alone follows before merge.
+
+**Check display isolation with particular care.** On an approval, the main session will run
+sittings without asking the owner, on the premise that every window lookup, capture and input
+stays on the session's own Xvfb display and nothing can reach the owner's desktop (`:0`). Try to
+break that premise: an inherited DISPLAY, a helper that runs a command outside `Session`, a
+fallback to the caller's environment. A path that reaches `:0` is blocking.
+
+# The review brief's own sections
+
+Every review brief carries these two sections, in full, after the numbered block of
+`process.md` §5 (or, in the review profile, after the brief's numbered lines). The reviewer reads
+the brief in another file, so paste them; never point to this one. Write "Blocking means" for the
+task; paste the second section as it is. (L47, L49)
+
+```text
+## Blocking means
+
+Any one is enough; a blocking finding means rework, never approve.
+1. A Done-when line fails, or cannot be run as written.
+2. What this task protects can be got past: <name it: the guard, check, permission, invariant,
+   rule value or file this task exists to protect>. A bypass you proved is blocking, even when it
+   looks like an edge case. Never "follow-up hardening" or "outside the threat model" unless the
+   task says so; if it does, quote the line. (L47)
+3. Behaviour the task forbids, or behaviour nobody asked for, inside a file the task requires. (L44)
+4. <project-specific items: a constant with no evidence, a test that passes with the behaviour
+   deleted, a status written into a document>
+Not blocking: wording, style, and defects in code the PR did not change: file those as follow-ups.
+When unsure, say how likely the problem is. Rate it blocking only if it is likely and would get
+past what the task protects; otherwise it is a follow-up. (L53)
+
+## Report every blocking finding in this one review
+
+This review is your only pass before the author fixes. Do not stop at the first blocking
+finding: finish reading the whole diff and the task file, check every Done-when line and
+every item under "Blocking means", and report all blocking findings together.
+
+- Before you write the verdict, make one last pass over the full diff for anything you have
+  not yet rated, and say "Final pass done" as the last line before the verdict.
+- Number the findings R1, R2, … in order of severity. A finding you held back because an
+  earlier one was already blocking is a review defect: if two problems share a cause, list
+  both and say so.
+- Do not rely on a later round. The author fixes everything you list, and the next review
+  checks those fixes and new code only, not anything you saw but did not report.
+- If you ran out of time or context before covering the whole diff, say which files or
+  sections you did not cover. Do not approve in that case.
+```
+
+## The task file (docs/tasks/T38.md on main, in full)
+
+# T38 First model-driven run under Wine: the watcher, the click-driver and the E020 sitting
+
+- **Kind**: infrastructure (the Wine-driver work the rule 18 carve-out names; its output is the
+  first sitting's records)
+- **Issue**: #114 (this file is the entry gate T37's brief names) · **Branch**: `task/T38-wine-first-run` · **Merge after**:
+  T20, T21, T22, T23, T27, T30, T37
+- **Implementer**: opencode `deepseek-flash` (DeepSeek V4.1 Flash on OpenCode Go, effort
+  `high`), rule 6's hard pair, after the quota check (amended 2026-10-08, see **Hard** below). The
+  run lines are the implementer's, under the carve-out: constraint A keeps every sitting artifact
+  on the user's machine, and the driver machinery (F006, `setup/iwp/`) already runs unattended on
+  it. If the OpenCode sandbox cannot reach the runtime (L26), the implementer hands the exact
+  commands to the main session, which runs them verbatim (after the owner's go-ahead for the first
+  sitting) and posts the output on the PR (the T28 pattern); the records are identical either way.
+  Fallback: Sonnet.
+  **Round 2 (L38):** Opus (`task-agent-heavy`, effort `medium`), one step up: Sol's round-1
+  review asked for rework with twelve blocking findings (R1–R12, PR #118), among them the
+  helpers driving the caller's display, blind fixed clicks and waits, and count guards that
+  accept unproven events. Sol reviews (another family).
+- **Reviewer**: opencode `gpt-6.1-sol` (GPT-6.1 Sol on the direct OpenAI route, effort `low`),
+  another family, after the quota check (rule 6's hard pair). Substitute: Opus. The review is
+  repo-side (the code, the records' shape, the gate result) and never runs the game.
+- **Hard** (rule 6; amended 2026-10-08 by the main session, was easy): a new mechanism across
+  several files (the dispatcher `tools/wine-driver.sh`, the watcher, the click-driver,
+  `tools/check_counts.py`) and a guard: `tools/validate_wine_manifests.py` enforces constraint C,
+  so a defect in it lets a recording pass as a human session's screenshot. T36's hash gate still
+  guards rule 18's binary identity.
+
+- **Why**: The carve-out to rule 18 (CLAUDE.md, 2026-10-08) is permitted but not operational
+  until a task file names the watcher, the click-driver, and the per-sitting directory layout
+  with concrete paths, and dispatches the first run under constraints A–G. T37 produced this
+  file as that entry gate (`docs/tasks/T37.md`); T38 is the first dispatch. The preconditions
+  are merged: the F019 known-good table (T35, `findings/F019-pro-setup-rules.md` "Known-good
+  binary hashes", row-contract test
+  `experiments/E017-pro-setup-reading/check_known_good_hashes.py`) and the constraint-F gate
+  (T36, `tools/check_no_originals.py`, `check_wine_gate`, `RECOGNISED_WINE_SUFFIXES`).
+
+- **Why a run is made (constraint B, static first)**: The static readings below are read, and
+  they name the state and the input each batch probes. A batch not named here never starts
+  wine: the launcher refuses it (Done-when 2). A run is made because the static reading is
+  exhausted or its count target needs play — never because the tool is convenient (rule 24;
+  research review gate G0a).
+  - **Batch 1 — Q-CMB-04/05/06/07/11 (F011, T20's reading; `C-CMB-04`–`C-CMB-07`,
+    `C-CMB-11`).** Both dice handlers are read in full (high confidence), but the claims are
+    distributions: about 58% attacker-loss share (7/12), one army lost per exchange and no
+    other outcome, the five-exchange pass. The per-arm count targets
+    (`walkthroughs/f011-questions.md`: 500/500/500/200/500) are reachable only by play, and
+    computer-vs-computer accumulation is the cheapest source (Session B: place all, pass,
+    repeat — `walkthroughs/video-walkthrough.md`); exchanges accumulate across sittings.
+    **State** the reading names: the attacker's and defender's army counters before and after
+    each exchange, read from screen pixels, no OCR. **Input**: the place-all and pass controls
+    at the proven coordinates (`walkthroughs/coordinates.md`); the driver never clicks inside a
+    battle.
+  - **Batch 2 — `C-CRD-06` / Q-BON-08 (F014, T22's reading).** The static reading is exhausted
+    and says so: the computer's bomb-target comparison indexes the army table with a sampled
+    candidate's army count rather than comparing candidate stacks, so the runtime selection
+    rule is unestablished from the code alone (`spec/cards.md`). Only observing which countries
+    the computer bombs, and the armies before and after, can narrow it. **State**: the victim
+    country's owner and army count before and after the bomb, and the bomber's hand size
+    before. **Input**: normal play until the computer draws and trades the bomb (the bomb comes
+    only from captures, `C-CRD-01`); no forced deal, no patched build.
+- **Evidence**:
+  - CLAUDE.md rule 18 carve-out, constraints A–G: the contract this dispatch runs under.
+  - `findings/F019-pro-setup-rules.md` "Known-good binary hashes" (T35): the one row this
+    task's records cite — set `iwp-2.0-996e86c5`, variant `unregistered`, file `Islepro.exe`,
+    sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`. No other row
+    exists and none may be referenced (see Hazards).
+  - `tools/check_no_originals.py` (T36): the gate every E020 record must pass; recognised
+    platform tokens are `wine-on-user-machine` and `wine-on-user-machine-iwp-2.0`, matched
+    exactly.
+  - `findings/F006-iwp-driver-cycle.md` and `runtime/iwp/driver/`: the cycle, the seal, the
+    waits and bounds, the recovery — reused, not reinvented.
+  - `walkthroughs/video-walkthrough.md` "Model plays under Wine": the playbook this dispatch
+    fills in; corroboration, not replacement (constraint E).
+  - `walkthroughs/f011-questions.md` and `questions/pro-static.md` (Q-CMB-04/05/06/07/11,
+    Q-BON-08): the count targets; `spec/cards.md` `C-CRD-06`: the unestablished reading.
+- **Owns**:
+  - `runtime/iwp/driver/watcher.py` (new): the per-frame watcher. Attaches to the game window
+    id the session already holds, captures the game window (never the desktop) with `import`
+    on a fixed interval, names frames `<step>-<epochms>.png`, sha256s each, appends one line
+    per frame to `frames-index.jsonl` (name, sha256, wall time, window geometry). Log lines
+    carry structural names only (constraint D).
+  - `runtime/iwp/driver/clicks.py` (new): the click-driver. Executes a step list in the E002
+    step language (`click! x y`, waits) through xdotool with F006's exit-status discipline,
+    appending one line per action to `actions.jsonl` (step, coordinates, exit status).
+  - `experiments/E020-wine-first-run/**` (new): the sitting launcher (the role T37's brief
+    sketched for `tools/wine-driver.sh`, checked in beside the driver it drives and the records
+    it produces — one command: launch the session through the E004 machinery, attach the
+    watcher, drive the click-driver, emit the per-sitting directory), the batch list, and
+    `check_records.py` (the batch checker of Done-when 3/4/6).
+  - `runs/E020/**` and `evidence/E020/**` (new, tracked): run records (run/1) at
+    `runs/E020/<batch>/<run-id>.json` and evidence manifests (evidence-manifest-1) at
+    `evidence/E020/<run-id>.manifest.json`; the bundles (frames, dumps, by hash) stay on the
+    user's machine (`E020_BUNDLES`) and are never committed or uploaded: constraint A keeps
+    recordings out of every release (amended 2026-10-08). The schema's required
+    `store: release:E020` names the experiment only; no release asset is made.
+  - The per-sitting directory on the user's machine, never committed (constraint A):
+    `/mnt/c/Temp/iwp-shots/wine/<YYYYMMDDTHHMMSSZ>/` — the same tree the owner-plays path
+    already uses (`/mnt/c/Temp/iwp-shots/`), wine side:
+
+    ```
+    <sitting>/
+    ├── sitting.json        # sitting id, wine/xvfb/xfwm4 versions, driver commit, started/ended
+    ├── frames/             # <step>-<epochms>.png, hashed in frames-index.jsonl
+    ├── frames-index.jsonl  # one line per frame: name, sha256, wall time, window geometry
+    ├── actions.jsonl       # one line per click-driver action: step, coordinates, exit status
+    ├── dumps/              # only when a batch's static reading names a memory state
+    └── watcher.log         # the watcher's lines; no original text in any line (constraint D)
+    ```
+
+    The install stays at the F019 row's path, read-only; the wine prefix stays the confined
+    `IWP_PREFIX` (`setup/iwp/prefix.py`). Run records and manifests reference the sitting only
+    by sha256 (`observations[].ref`, `outputs[].sha256` into `store: release:E020`).
+- **Scope**:
+  - **Protects:** rule 18 (A and D below; the original's bytes and text stay out of the
+    repository, a release, an issue, and every tool input that leaves the user's machine);
+    rule 20 (records and manifests committed as made, never deleted or overwritten; a re-read
+    writes new files beside the old ones); rule 24 (B; a run happens only under "Why a run is
+    made"); rule 7 (CI green, the gate runs in CI).
+  - **The carve-out's constraints, one line each** (each pinned by a Done-when line):
+    - **A locality**: every sitting artifact stays in the sitting directory on the user's
+      machine; nothing from it is ever committed; the records reference by hash (Done-when 1).
+    - **B static-first**: the batch list is exactly "Why a run is made"; the launcher refuses
+      any other batch before wine starts (Done-when 2).
+    - **C per-run tagging**: every record carries `runtime.platform =
+      wine-on-user-machine-iwp-2.0` (the exact token `RECOGNISED_WINE_SUFFIXES` recognises),
+      `artifact.set = iwp-2.0-996e86c5`, `artifact.variant = unregistered`,
+      `start_state.sha256` = the F019 row's hash, and evidence class `recording` — never
+      `screenshot` of a human session (Done-when 3).
+    - **D text handling**: run records' `observations[].field`/`value` and every watcher log
+      line carry structural names and raw counters, paraphrased; the original's text (event
+      names, card names, screen labels, the game's title) is quoted only in the per-claim
+      finding, under `tools/check_quotes.py`'s rules (Done-when 4).
+    - **E corroboration, not replacement**: this task is not T28 and touches none of T28's
+      records; the sitting corroborates and adds per-action timing, while the owner's Bandicam
+      captures stay the play-length, game-sense and mistake-rich record (Done-when 5).
+    - **F tool check**: every record passes `check_wine_gate` against the F019 table, and the
+      pass is proven not accidental by refusing four mutations (Done-when 6).
+    - **G per-claim wording**: the "the human sees X" wording in `spec/` and `findings/` is
+      amended per claim, by the per-claim finding's promotion (F011's and F014's per-claim
+      sections), never in bulk and never by this task — this task's diff touches no `spec/`
+      file (Done-when 7).
+  - **Record shape**: run/1, with `arm` = the batch name, `interventions` = `[{level: I0, what:
+    none}]` (pure observation), `seed: null` (not controlled), `runtime.fingerprint` = the
+    wine/xvfb/xfwm4 versions (strings, no path separators), `machine` = the standing
+    anonymised id, `start_state.restore` = "fresh prefix sync from the F019 install, no save",
+    and `status` = `completed` or `aborted: <reason>` (a failed seal is aborted and still
+    committed — rule 20, raw and immutable).
+  - **Counts (rule 22, be practical):** the first sitting proves the pipeline and banks data;
+    it does not have to hit the f011 targets alone. Batch 1's first sitting records at least
+    100 exchanges with before/after counters for both sides; `corroborated` is claimed only
+    when the `walkthroughs/f011-questions.md` target is met across sittings, and a sitting that
+    ends short records the shortfall and stays `narrowed`. Batch 2 records at least 9 computer
+    bomb plays across at least 3 games.
+  - **What this does not establish:** no new rule claim (outcomes corroborate or narrow
+    existing claims only); nothing about the registered build (rule 19: what registration
+    unlocks is unknown, and the F019 table pins no registered row); no play-quality claim
+    (F016's subject is what the AI does, not whether it plays well); no replacement of the
+    owner's captures (E).
+  - **Not in scope:** the owner-plays path (T28's); the harness copies (`docs/process.md`,
+    `TEMPLATE.md`, the `run-task` and `delegate` skills, `harness_imperial`); any `spec/` edit
+    (amendments go through the per-claim finding's promotion); a second F019 row; any run of a
+    registered build.
+- **Done when**: every numbered line is a command, run from the repository root, that exits 0
+  when its constraint holds and non-zero when it does not; every path and batch name is
+  literal, no placeholder syntax. Line 1 runs where the sitting runs (the user's machine); the
+  rest run in a checkout of this PR. A line marked "new, T38 deliverable" names a tool this
+  dispatch writes: the tool does not exist yet, and the command is the contract it must
+  satisfy — it runs exactly as written once the tool lands. The unmarked commands use tools
+  already on `main` and can be run today.
+  1. **(A) Locality.** After a sitting,
+     `test "$(find /mnt/c/Temp/iwp-shots/wine -type f 2>/dev/null | wc -l)" -gt 0` exits 0:
+     the sitting's artefacts exist on the user's machine, where constraint A keeps them (the
+     check is their existence there — a worktree-side `find` cannot see that path). Paired
+     with it, `test -z "$(git status --porcelain)"` exits 0: nothing from the sitting
+     directory is staged, modified or left untracked in the worktree. And
+     `test -z "$(git grep -n -E '/mnt/c/Users/' -- runs/E020 evidence/E020 experiments/E020-wine-first-run runtime/iwp)"`
+     exits 0: the records carry hashes and the standing anonymised conventions only, never a
+     user path.
+  2. **(B) Batch list.** The batch dispatcher (new, T38 deliverable: `tools/wine-driver.sh`,
+     the launcher role of T37's brief; this command is the contract, so the dispatcher
+     answers at this path) never starts wine to answer `--help`:
+     `bash tools/wine-driver.sh --batch cmb-accumulation --help` exits 0 and prints batch 1's
+     targets (Q-CMB-04/05/06/07/11, Session B computer-vs-computer accumulation: at least 100
+     exchanges in the first sitting; the `walkthroughs/f011-questions.md` counts across
+     sittings). `bash tools/wine-driver.sh --batch bomb-sampling --help` exits 0 and prints
+     batch 2's targets (`C-CRD-06` / Q-BON-08: at least 9 computer bomb plays across at least
+     3 games). `bash tools/wine-driver.sh --batch unknown-x --help` exits non-zero and names
+     `unknown-x`: any batch outside "Why a run is made" is refused by name before wine starts.
+  3. **(C) Record and manifest shape.**
+     `find runs/E020 -name '*.json' -print0 | xargs -0 -r python3 tools/validate_records.py`
+     exits 0: every record is a valid run/1 document.
+     `test "$(git grep -h -o -E '"platform": ?"[^"]*"' -- runs/E020 | sort -u)" = '"platform": "wine-on-user-machine-iwp-2.0"'`
+     exits 0: the platform token is exactly the recognised one, case-sensitively — no bare
+     prefix, no other suffix. `python3 tools/check_no_originals.py` exits 0 with the records
+     present: the T36 gate (`check_wine_gate` with `load_f019_table`) passes every
+     `wine-on-user-machine` record on the F019 row — set `iwp-2.0-996e86c5`, variant
+     `unregistered`, sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`.
+     `find evidence/E020 -name '*.manifest.json' -print0 | xargs -0 -r python3 tools/validate_wine_manifests.py`
+     (new, T38 deliverable: the wine-manifest class checker, a sibling of
+     `tools/validate_records.py`) exits 0: every manifest `files[].class` is `recording` —
+     constraint C — never `screenshot` of a human session.
+  4. **(D) Record-content shape.** The item-3 validate_records run is also the schema-level
+     shape check: every `observations[]` item carries `step` and `source` and then a `field`
+     (non-empty) with a `value`, or an `addr` with a `value`, or a `ref`
+     (`formats/run-1.schema.json`'s anyOf). On top of the schema the structural vocabulary is
+     checkable today:
+     `test -z "$(git grep -h -o -E '"field": ?"[^"]*"' -- runs/E020 | grep -v -E '^"field": ?"[a-z][a-z-]*:[a-z][a-z-]*"$')"`
+     exits 0: every `field` value in a `runs/E020` record is a structural `kind:role` name,
+     lowercase letters and hyphens on both sides of the colon (for example `counter:attacker`,
+     `counter:defender`, `owner:victim`, `hand:bomber`), and the dispatcher's batch list
+     documents each batch's exact vocabulary. This is a contract check, not a
+     content-correctness check: a counter `value` is the plain integer as read, an owner
+     `value` a colour word, and the original's text appears in no record or manifest line —
+     only in the per-claim finding, under `tools/check_quotes.py`'s rules.
+  5. **(E) Corroboration, not replacement.**
+     `test -z "$(git diff --name-only origin/main -- runs/E018 runs/E019 findings/F020-pro-corroboration.md)"`
+     exits 0: this task touches none of T28's owner-play records. Each batch's outcome note
+     names the owner-play record as primary for play-length, game-sense and mistake claims,
+     and the sitting as corroboration and per-action timing.
+  6. **(F) Gate pass, proven not accidental.** `python3 tools/check_no_originals.py` exits 0
+     with the E020 records present (it re-runs the T36 gate over every committed record), and
+     the synthetic five cases prove the pass is not accidental. Run from the repository root:
+
+     ```bash
+     python3 -c "
+     import sys; sys.path.insert(0, 'tools')
+     from pathlib import Path
+     from check_no_originals import check_wine_gate, load_f019_table
+     table = load_f019_table(Path('.'))
+     def rec(platform='wine-on-user-machine-iwp-2.0', set='iwp-2.0-996e86c5', variant='unregistered', sha='c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e'):
+         return {'runtime': {'platform': platform}, 'artifact': {'set': set, 'variant': variant}, 'start_state': {'sha256': sha}}
+     assert check_wine_gate(rec(), table) == ('', ''), 'the F019 row must pass'
+     assert check_wine_gate(rec(sha='ab' + '0' * 62), table)[0], 'a wrong 64-hex hash must be refused'
+     assert check_wine_gate(rec(sha='0' * 64), table)[0], 'the all-zero placeholder must be refused'
+     assert check_wine_gate(rec(platform='wine-on-user-machine-evil'), table)[0], 'an unrecognised suffix must be refused'
+     assert check_wine_gate(rec(set='iw-dos-3.1-30121376'), table)[0], 'the right hash under a wrong set+variant must be refused'
+     print('wine gate: the F019 row passes; the four mutations are refused')
+     "
+     ```
+
+     The matching record passes; each mutation is refused: a wrong 64-hex hash; the all-zero
+     placeholder; the unrecognised suffix `wine-on-user-machine-evil`; the right hash under
+     the wrong set+variant. Preconditions, both merged: the F019 table's one row (T35) and
+     the gate with its mutation tests (T36).
+  7. **(G) Per-claim wording.**
+     `test "$(git diff --name-only origin/main -- spec/ | wc -l)" -eq 0` exits 0: this task's
+     diff touches no `spec/` file. The wording amendments are proposed in F011's and F014's
+     per-claim sections (each naming the claim id and the sitting's run ids) and reach
+     `spec/` only by the main session's promotion, one claim at a time — never in bulk.
+  8. **(H) Counts and the project-wide gates** (amended 2026-10-08 by the owner's decision on
+     Opus's round-2 hand-back: the count floors and the per-claim outcomes move to T40, #119,
+     which builds the frame reader from this sitting's frames).
+     `python3 tools/check_counts.py experiments/E020-wine-first-run/scenarios.txt` runs, and
+     prints, per batch, the targets and the observed counts with the shortfall; it exits
+     non-zero until T40's reader exists, and no outcome in
+     `experiments/E020-wine-first-run/outcomes.json` is `corroborated`. `python3 tools/check_links.py` and
+     `python3 tools/check_no_originals.py` exit 0. `python3 tools/check_pro_question_map.py` exits 0
+     (amended 2026-10-08: fix #106 cleared the T30-referencing failures on `main`, so the gate
+     runs clean and is no longer scoped to this PR's files).
+     CI is green; the PR has an approving review from the named Sol reviewer (rule 7).
+- **Hazards**:
+  - **A sitting artifact committed by mistake**: frames are `.png` and `PATTERN` refuses them,
+    but a `.json` memory dump would not trip the media bar. The layout keeps dumps in the
+    sitting directory only; `outputs[]` entries carry `store: release:E020` (the schema
+    enforces the pattern) and the bundles stay on the user's machine, never uploaded (constraint A; the `store` value
+    is the schema's required name, amended 2026-10-08). Done-when 1 is the check.
+  - **Referencing a future or hypothetical F019 row**: the table has exactly one row
+    (`iwp-2.0-996e86c5`, `unregistered`). Do not reference a registered build, a second row,
+    or another copy (rule 19; T35's own scope says a second row needs its own task and review).
+    The gate fails closed on an empty table, which is the right direction.
+  - **Platform-token drift**: `wine-on-user-machine-iwp-2.0` is the exact recognised token. A
+    new suffix means a T36 change first (`RECOGNISED_WINE_SUFFIXES` and its mutation tests),
+    never a quiet spelling change in the driver; `Wine-On-User-Machine` (any capital) is not
+    the carve-out platform.
+  - **Letting the model "play"**: the click-driver executes the named inputs only. Improvising
+    moves to answer a question outside "Why a run is made" is a constraint-B breach — stop,
+    hand the question to the main session for a task amendment, then run.
+  - **Counting the sitting as the answer**: constraint E. The sitting corroborates; it never
+    replaces the owner's captures and never by itself promotes a claim (rule 20: promotion is
+    the main session's, after review).
+  - **A failed seal carried on**: F006's waits, bounds and seal are reused, not reinvented. A
+    sitting whose seal fails is `aborted: <reason>`, its records are still committed (raw and
+    immutable), and the next sitting starts fresh — a wrong state is never carried on.
+- **Runs on**: artifact: `iwp-2.0-996e86c5` (the unregistered build only) · cloud: C0 (the run
+  is local; a cloud session never touches the install — constraint A) · network: N1 for push,
+  no release upload (constraint A) · GitHub: `gh:push gh:pr`

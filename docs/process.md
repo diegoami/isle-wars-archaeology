@@ -153,7 +153,7 @@ run, or the owner's decision with its basis. Plausible rules without either stay
   UI observation, under constraints A–G. The binary, the install, the run copy, savestates,
   memory dumps, screenshots, recordings and any patched build stay on the user's machine —
   never in the repo, a release, an issue, a cloud session, or any tool input that leaves the
-  user's machine. The T36 gate in `tools/check_no_originals.py` enforces constraint F: a run
+  user's machine. Exception (the owner, 2026-10-08): a model-driven sitting's screenshots and frames may be read by the same model APIs as derived output (Anthropic, OpenAI, Z.ai, Alibaba), never by free OpenRouter models, and are still never committed, uploaded or posted. The T36 gate in `tools/check_no_originals.py` enforces constraint F: a run
   record whose `runtime.platform` starts with `wine-on-user-machine` is allowed only when
   `start_state.sha256` matches the F019 hash table (`findings/F019-pro-setup-rules.md`) for
   the named set+variant. Evidence manifests must use `class: recording`, not `screenshot`.
