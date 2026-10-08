@@ -81,3 +81,73 @@ When the owner says a batch is done:
 
 Confirm to the owner that a video is fully processed (hashes and frames taken) before they
 delete anything.
+
+## Model plays under Wine (corroboration, not replacement)
+
+The carve-out to rule 18 (CLAUDE.md, owner 2026-10-08) permits a model agent to run the
+original Pro binary under Wine on the user's machine, for the purpose of run capture and
+UI observation. This section is the playbook for that path. **It is not a replacement for
+the owner-plays model above.** T28's owner-driven Bandicam captures are the play-length,
+game-sense, and mistake-rich record. Model-driven runs are corroboration and per-action
+timing.
+
+### What the model-driven path produces
+
+- **Per-frame screenshots** taken on a timer, keyed to the wine window. The watcher
+  attaches to the wine process, takes a screenshot of the game window (not the desktop),
+  names each by wall time, hashes it, and files it into a per-sitting index.
+- **Per-action memory state** (optional, behind the static-first gate in constraint B of
+  rule 18). A periodic memory dump of the wine process around specific frames, where the
+  Lingo reading (F014 / F019) names the state that matters.
+- **A click-driver** that issues `mouseDown` events at known coordinates, for the cases
+  where the static reading names the input and the question is what the game does given
+  the input.
+
+### What the model-driven path does not do
+
+- It does not play "naturally." The model is not a player; it is a script. The owner's
+  recordings carry mistakes, hesitations, and tactics; the model-driven path carries
+  neither. Where the question is "what does the computer do given that the human did X",
+  the owner's recording is the only source.
+- It does not move the binary. The install stays at
+  `/mnt/c/Users/<owner>/Downloads/Isle-Wars-Pro_Win_EN_v20-Shareware/` (or wherever
+  F019 pins it), the wine prefix is on the user's machine, and the run copy, savestates,
+  screenshots, recordings, and dumps stay in the same place. None of this enters the
+  repository, a release, an issue, or a cloud session.
+- It does not paraphrase the original's text. Per constraint D of rule 18, the text of
+  the original (event names, card names, screen labels, the title "Isle Wars Pro") is
+  paraphrased or quoted only in the per-claim finding, not in run records' observations
+  or in the watcher's log lines.
+
+### Per-run tagging (constraint C of rule 18)
+
+Every model-driven run record carries:
+
+- `runtime.platform` set to `wine-on-user-machine` (or a more specific token the task
+  file names, e.g. `wine-on-user-machine-iwp-2.0`).
+- `start_state.sha256` set to the F019-known `Islepro.exe` hash for the set+variant
+  named in the run record. The check in `tools/check_no_originals.py` (constraint F)
+  refuses the run otherwise.
+- Evidence bundles with class `recording` in the evidence manifest, not `screenshot`
+  of a human session.
+
+### Bookkeeping
+
+- The watcher, the click-driver, and the wine prefix live in a per-sitting directory on
+  the user's machine, named by wall time. The repo holds only the manifest and the run
+  record, both with sha256 references into that directory.
+- Run records cite the wine process's `start` and `end` wall times, not the watcher's.
+  Re-reads of the same wine session write new records beside the old ones and the
+  finding says which it cites (rule 20).
+- The model-driven run does not, by itself, answer any question. The Lingo reading is
+  read first (rule 24, static first), and the question the run answers is named in the
+  task file's "Why a run is made" section.
+
+### Where to start
+
+This section is a placeholder. The watcher, the click-driver, the per-sitting directory
+layout, and the integration with `check_no_originals.py` are follow-up work, in the
+order named in the rule 18 commit message: F019 hash table first, then
+`check_no_originals.py` constraint F, then this section gets the concrete paths, then
+the new T-number's task file. Until those are in place, the carve-out is permitted but
+not operational.
