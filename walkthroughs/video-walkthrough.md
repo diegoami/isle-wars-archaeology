@@ -94,14 +94,17 @@ timing.
 ### What the model-driven path produces
 
 - **Per-frame screenshots** taken on a timer, keyed to the wine window. The watcher
-  attaches to the wine process, takes a screenshot of the game window (not the desktop),
-  names each by wall time, hashes it, and files it into a per-sitting index.
+  (`runtime/iwp/driver/watcher.py`) attaches to the wine process, takes a screenshot of the
+  game window (not the desktop), names each `<step>-<epochms>.png`, hashes it, and files it
+  into a per-sitting `frames-index.jsonl`.
 - **Per-action memory state** (optional, behind the static-first gate in constraint B of
   rule 18). A periodic memory dump of the wine process around specific frames, where the
   Lingo reading (F014 / F019) names the state that matters.
-- **A click-driver** that issues `mouseDown` events at known coordinates, for the cases
-  where the static reading names the input and the question is what the game does given
-  the input.
+- **A click-driver** (`runtime/iwp/driver/clicks.py`) that sends step blocks in the E002 step
+  language through the session (`Session.perform`: the session's own display, the screen-change
+  checks of `click!`, the bounded waits of `settle`), at known coordinates, for the cases where
+  the static reading names the input and the question is what the game does given the input. It
+  logs every attempted step, failed ones included, to the sitting's `actions.jsonl`.
 
 ### What the model-driven path does not do
 
@@ -145,11 +148,29 @@ Every model-driven run record carries:
 
 ### Where to start
 
-This section is a placeholder. The watcher, the click-driver, the per-sitting directory
-layout, and the integration with `check_no_originals.py` are follow-up work, in the
-order named in the rule 18 commit message: F019 hash table first, then
-`check_no_originals.py` constraint F, then this section gets the concrete paths, then
-the new T-number's task file. Until those are in place, the carve-out is permitted but
-not operational. The entry gate is now written: [T38](../docs/tasks/T38.md) is the first
-dispatch's task file, and it names the watcher, the click-driver, and the per-sitting
-directory layout.
+The machinery is implemented (T38, [T38](../docs/tasks/T38.md), issue #114): the dispatcher
+`tools/wine-driver.sh`, the watcher `runtime/iwp/driver/watcher.py`, the click-driver
+`runtime/iwp/driver/clicks.py`, and the per-sitting layout under
+`/mnt/c/Temp/iwp-shots/wine/<YYYYMMDDTHHMMSSZ>/` (constraint A). The batch list is
+`experiments/E020-wine-first-run/scenarios.txt`.
+
+After the owner's go-ahead, the first dispatch (batch 1, then batch 2) is run from the
+repository root, with the E004 environment (`IWP_DIR`, `IWP_PREFIX` and `E020_BUNDLES`, outside
+every checkout; `IWP_MACHINE`):
+
+```bash
+bash tools/wine-driver.sh --batch cmb-accumulation
+bash tools/wine-driver.sh --batch bomb-sampling
+```
+
+`--batch NAME --help` prints the batch's targets and never starts wine; a batch outside
+"Why a run is made" is refused by name before wine starts (constraint B). Before the launch the
+sitting checks that the install's and the run copy's `Islepro.exe` are the F019 row's binary,
+and refuses otherwise. A sitting's frames and readings (`readings.jsonl`, written by the reading
+pass after the sitting) become the committed records with
+`bash tools/wine-driver.sh --records --sitting <dir> --batch <name>`: records at
+`runs/E020/<batch>/<run-id>.json` and manifests at `evidence/E020/<run-id>.manifest.json`
+(every file class `recording`, constraint C). The record keeps the sitting's own status: an
+aborted sitting is committed aborted (rule 20). The batch checker is
+`python3 experiments/E020-wine-first-run/check_records.py`; the count checker is
+`python3 tools/check_counts.py experiments/E020-wine-first-run/scenarios.txt`.

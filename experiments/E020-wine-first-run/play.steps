@@ -1,0 +1,68 @@
+# E020's step blocks, in the E002 step language (runtime/iwp/spike/steps.py), run one step at a time
+# through the session (Session.perform: the session's own display and stage origin, the hover and
+# screen-change checks, the state-aware settle and watch) by runtime/iwp/driver/clicks.py. The loop
+# (e020_loop.py) composes the blocks; no step outside them is ever sent, and none is inside a battle:
+# the human never attacks. Coordinates are the 800x600 stage's (walkthroughs/coordinates.md).
+# A block starts at a "# --- block NAME" line and runs to the next one.
+
+# --- block new-game
+# From the title screen, or in the middle of a game at EASY: the order and the points are
+# experiments/E002-iwp-state-inventory/scripts/loss-easy.steps (New Game, EASY, Play Game). Mid-game
+# at EASY the New Game click goes straight to the setup screen, with no loss notice: E002-r0018 and
+# E002-r0019 (the click changed the screen; F003, "The loss notice" row). EASY is a plain click:
+# the setup screen of a later game may already show EASY, so a change is not required of it; New
+# Game and Play Game must change the screen. The computers' first turns follow (block quiet).
+watch all
+click! 100 585
+settle
+click 533 311
+click! 565 532
+
+# --- block quiet
+# The computers' turns: the board unchanged for 4 s (a poll on the screen, bounded by the spike:
+# 30 + 2 x 4 s). F003: 15 to 33 s before the first human turn, 23 to 24 s after a pass. The loop
+# repeats this block until the board is quiet or its attempts are spent.
+watch 0 0 800 495
+settle 4
+
+# --- block place
+# The human's placement: click the country points of walkthroughs/coordinates.md (the 44 points
+# E002's tour proved; the file says 46, F017's board has 46) in order until the placement row turns grey,
+# which the game shows only for a country the human owns (E002 tour.steps, place-selected in
+# E002-r0001 and E002-r0020; F013: an opponent's country cannot complete a placement). Read from
+# the screen on every placement turn; the candidate that worked is logged (actions.jsonl `picked`).
+watch 265 530 270 26
+click-until? 168 168 168 24 1000 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+
+# --- block commit
+# ALL, PLACE, then PASS, then CONTINUE when a card was awarded (E002 tour.steps, the same watch).
+watch 262 502 276 70
+click! 307 543
+click! 497 543
+settle
+click! 417 530
+click-any? 402 531
+
+# --- block dismiss
+# A prompt between turns (a card or an event message) that keeps the placement row from showing:
+# CONTINUE when it is there; the loop then waits for a quiet board and tries the placement again.
+watch 262 502 276 70
+click-any? 402 531
+
+# --- block eliminated-keep-playing
+# The elimination notice (runtime/iwp/driver/screens.py `eliminated`, measured from the frames of
+# sitting 20261008T184505Z, steps 164 to 176): of its two buttons in the bottom bar, the one that lets
+# the computers play the game out, red, centre 665,531 (walkthroughs/coordinates.md). The owner's
+# decision (T38 round 4): keep playing. Sent once; the notice must go (the screen changes). After it
+# the loop sends nothing and only reads the screen while the computers play.
+watch all
+click! 665 531
+
+# --- block game-over-continue
+# The winner notice (runtime/iwp/driver/screens.py `game-over`, measured from the frames of sitting
+# 20261008T195537Z, steps 177 to 186): its one grey CONTINUE button in the middle of the bottom bar,
+# x 327-475, y 522-546, centre 401,534 (walkthroughs/coordinates.md). Sent once, after the loop has
+# logged the game's end; the notice must go (the screen changes). What follows is read from the
+# screen, never assumed: the next game starts only on the title or the board with its menu row.
+watch all
+click! 401 534

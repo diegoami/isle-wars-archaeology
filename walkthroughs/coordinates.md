@@ -25,6 +25,84 @@ Source: `experiments/E002-iwp-state-inventory/scripts/tour.steps`.
 | PASS (end turn) | 417, 530 | |
 | CONTINUE (after card awarded) | 402, 531 (`click-any?`) | |
 
+## The elimination notice (T38 round 4)
+
+Source: the frames of the model-driven sitting 20261008T184505Z (batch 1), measured by pixel colour:
+frame `176-1791486093693.png` (sha256
+`ad5970b63f864a7c7e2ef8a958c7e4619a587833dcdf763b68eaa44b1140adf0`) and the notice frames of steps
+164 to 176. The frames stay on the user's machine (rule 18, constraint A).
+
+| Action | Stage x, y | Box (x, y ranges) | Comment |
+| --- | --- | --- | --- |
+| KEEP PLAYING (red) | 665, 531 | x 572–759, y 512–550 | the computers play the game out (the owner's choice, block `eliminated-keep-playing`) |
+| ACCEPT LOSS? (yellow-olive) | 130, 531 | x 37–224, y 513–550 | never clicked |
+
+New Game (100, 585) is not on this screen: the menu row is hidden while the notice is up, and during
+the computers' turns.
+
+## Screen tests (pixel counts, never OCR)
+
+`runtime/iwp/driver/screens.py` names the screen from one stage capture, by counting the pixels of
+a colour in each region and comparing the count with a minimum. Measured over all 693 frames of the
+same sitting; each minimum sits between the counts on the screen and the counts everywhere else.
+
+| Test | Region x, y, w, h | Colour | Minimum | On the screen | Elsewhere |
+| --- | --- | --- | --- | --- | --- |
+| notice, right button | 572, 512, 188, 39 | red | 2900 | 3897 | at most 1878 |
+| notice, left button | 37, 513, 188, 38 | yellow-olive | 2500 | 4036 | at most 966 |
+| notice panel | 180, 165, 410, 220 | dark navy | 18000 | 26798 | at most 10204 |
+| board (score panel) | 20, 20, 195, 85 | black | 6000 | at least 11545 | 0 (title, options) |
+| menu row lit | 50, 576, 100, 20 | cyan label | 200 | 382 | 0 |
+| title subtitle | 180, 335, 440, 25 | cyan | 1500 | 3220 | at most 413 (board) |
+
+`eliminated` is the board with all three notice tests; `board-menu` the board with the menu row lit
+(the human's turn: New Game is on the screen); `board` the board without it; `title` the subtitle and
+the menu row without the board; anything else is `unknown` (the options screen). Round 6 added
+`game-over`, below.
+
+## The winner notice (T38 round 6)
+
+Source: the frames of the model-driven sitting 20261008T195537Z (batch 2), measured by pixel colour:
+frame `182-1791490010546.png` (sha256
+`14ae2f71ee90f1578a5eeaeacef626cac3167bbeebe5fcfad27708db03994761`) and the 36 winner-notice frames
+of steps 177 to 186 (the first `177-1791489984799.png`). The same dark panel as the elimination
+notice, the winner's sentence in the winner's colour, and one grey button in the middle of the
+bottom bar. The frames stay on the user's machine (rule 18, constraint A).
+
+| Action | Stage x, y | Box (x, y ranges) | Comment |
+| --- | --- | --- | --- |
+| CONTINUE (light grey, 181,189,181) | 401, 534 | x 327–475, y 522–546 | clicked once after the game's end is logged (block `game-over-continue`) |
+
+The CONTINUE of a card award (402, 531 above) is a smaller grey button in the same place, shown
+without the notice panel.
+
+| Test | Region x, y, w, h | Colour | Minimum | On the screen | Elsewhere |
+| --- | --- | --- | --- | --- | --- |
+| winner notice, CONTINUE | 327, 522, 149, 25 | light grey | 2200 | 2958 | at most 1603 (a card award's CONTINUE) |
+| notice panel (as above) | 180, 165, 410, 220 | dark navy | 18000 | 27935 | at most 3901 where a card award's CONTINUE shows |
+
+`game-over` is the board with the notice panel and CONTINUE, and neither the KEEP PLAYING nor the
+ACCEPT LOSS? test. Over all 1179 frames of the two sittings (693 and 486), it matches the 36 winner
+frames and nothing else, and every other frame keeps its round 4 name: sitting 20261008T184505Z
+board 332, board-menu 201, eliminated 156, unknown 3, title 1; sitting 20261008T195537Z board 315,
+board-menu 128, game-over 36, eliminated 3, unknown 3, title 1 (the 36 were read `board` before).
+
+### The winner's seat (score panel, pixels, never OCR)
+
+Each seat's number after its name, x 107–137, in the seat's own colour (as measured: blue
+49,156,255, yellow 255,255,0, red 255,49,49, green 0,206,49).
+
+| Seat | Region x, y, w, h | Winner frames |
+| --- | --- | --- |
+| blue | 107, 24, 31, 14 | 61 (its 0) |
+| yellow | 107, 45, 31, 14 | 58 (its 0) |
+| red | 107, 66, 31, 14 | 130 (its 46) |
+| green | 107, 86, 31, 14 | 67 (its 0) |
+
+The winner is the one seat at 100 pixels or more, read only on the winner notice (`winner_of`; None
+when no seat or more than one reaches it). On all 36 winner frames it reads `red`, as the notice's
+sentence and colour say; on every other frame it answers None.
+
 ## The 46 country positions (for `attack-picked` and the placement `click-until`)
 
 These are the center-of-country pixel coordinates, extracted from the E002

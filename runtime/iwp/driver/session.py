@@ -80,6 +80,7 @@ import safeio  # noqa: E402
 import steps as stepslib  # noqa: E402
 
 from . import errors  # noqa: E402
+from . import screens  # noqa: E402
 from .errors import (DriverError, DisplayError, GameDied, LaunchError, ResetError, RecordError,  # noqa: E402
                      ScreenNotReached, SealError, StepFailed, TerminateError)
 
@@ -585,6 +586,18 @@ class Engine(spike.Cycle):
         self.observe(self.step_no, "screen", f"region {label} {','.join(map(str, rect))} raw RGB8 sha256", digest)
         return digest
 
+    def screen_name(self):
+        """The screen the game shows, by pixel counts on measured regions (screens.name_of; T38 round 4):
+        eliminated, game-over (round 6), board-menu, board, title or unknown. Reads the stage; sends nothing."""
+        self.require_alive("reading the screen")
+        return screens.name_of(self.screen.raw((0, 0) + spike.STAGE))
+
+    def screen_winner(self):
+        """The winning seat's colour word on the winner notice, by pixels on the score panel
+        (screens.winner_of; T38 round 6), or None. Reads the stage; sends nothing."""
+        self.require_alive("reading the winner")
+        return screens.winner_of(self.screen.raw((0, 0) + spike.STAGE))
+
     def observe_file(self, rel):
         """One file of the game copy, read in place: size, sha256 and whether it equals the install's."""
         self.step_no += 1
@@ -909,6 +922,8 @@ class Session:
     reached = _view("reached", "the known screens reached so far (established by wait_for_screen only)")
     step_no = _view("step_no", "the run/1 step of the last observation")
     snap_before = _view("snap_before", "the snapshot of the prefix before the launch (absent until it is taken)")
+    window = _view("window", "the game window's id on this session's display, as start_game found it (absent "
+                             "before the launch); the E020 watcher captures it (T38 round 2, R1)")
 
     # ---- the lifecycle
 
@@ -934,8 +949,10 @@ class Session:
             self.start()
             body(self)
             self.complete()
-        except DriverError:
-            pass                                   # fail() recorded why
+        except DriverError as exc:
+            # fail() recorded why. An error the body raised itself, without fail() (the E020 loop's
+            # NotReady, T38 round 3, R1), is recorded with its own kind and reason; a first reason stays.
+            engine._set_aborted(str(exc), type(exc))
         except BaseException as exc:               # a crash or an interruption: cleaned up, recorded, never completed
             engine.abort_later(f"{type(exc).__name__}: {exc}")
         self.finish()
@@ -968,6 +985,17 @@ class Session:
     def observe_region(self, rect, label):
         """sha256 of the raw pixels of x, y, w, h, as an observation."""
         return self._engine.observe_region(rect, label)
+
+    @guarded("a screen reading")
+    def screen_name(self):
+        """The screen the game shows (screens.name_of): eliminated, game-over, board-menu, board, title or
+        unknown."""
+        return self._engine.screen_name()
+
+    @guarded("a winner reading")
+    def screen_winner(self):
+        """The winning seat's colour word on the winner notice, or None (screens.winner_of; round 6)."""
+        return self._engine.screen_winner()
 
     @guarded("a file observation")
     def observe_file(self, rel):
