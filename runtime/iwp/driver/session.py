@@ -909,6 +909,8 @@ class Session:
     reached = _view("reached", "the known screens reached so far (established by wait_for_screen only)")
     step_no = _view("step_no", "the run/1 step of the last observation")
     snap_before = _view("snap_before", "the snapshot of the prefix before the launch (absent until it is taken)")
+    window = _view("window", "the game window's id on this session's display, as start_game found it (absent "
+                             "before the launch); the E020 watcher captures it (T38 round 2, R1)")
 
     # ---- the lifecycle
 

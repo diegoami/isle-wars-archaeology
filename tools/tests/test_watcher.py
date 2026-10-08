@@ -4,7 +4,8 @@ The watcher is the per-frame capture of a model-driven sitting (rule 18 carve-ou
 use fakes only: no wine, no display, no `import`. They pin the contract the task names — the game
 window is captured (never the desktop), frames are named `<step>-<epochms>.png`, each is sha256'd
 into `frames-index.jsonl` with its geometry, and no original text reaches `watcher.log`
-(constraint D).
+(constraint D). T38 round 2, R1: every command gets the session's environment, so it acts on the
+session's own display, never the caller's.
 """
 import json
 import sys
@@ -17,6 +18,7 @@ sys.path.insert(0, str(ROOT / "runtime" / "iwp"))
 from driver.watcher import Watcher, WatcherError, frame_name, sha256_file  # noqa: E402
 
 EPOCH = 1_700_000_000_000
+SESSION_ENV = {"DISPLAY": ":88", "WINEPREFIX": "/synthetic/prefix"}
 
 
 class WatcherTest(unittest.TestCase):
@@ -26,20 +28,27 @@ class WatcherTest(unittest.TestCase):
         self.dir = Path(self._tmp.name)
         self.frames = self.dir / "frames"
         self.calls = []
+        self.envs = []
+        self.geometry_envs = []
 
     def watcher(self, step=3, epoch_ms=EPOCH, run=None, geometry=None):
-        def capture(cmd):
+        def capture(cmd, env):
             self.calls.append(list(cmd))
+            self.envs.append(env)
             Path(cmd[-1]).parent.mkdir(parents=True, exist_ok=True)
             Path(cmd[-1]).write_bytes(b"synthetic frame bytes, never a real capture")
+        def read_geometry(wid, env):
+            self.geometry_envs.append(env)
+            return {"x": 1, "y": 2, "width": 800, "height": 600}
         return Watcher(
             "0x2a",
+            SESSION_ENV,
             self.frames,
             self.dir / "frames-index.jsonl",
             self.dir / "watcher.log",
             step_source=lambda: step,
             run=run or capture,
-            geometry=geometry or (lambda wid: {"x": 1, "y": 2, "width": 800, "height": 600}),
+            geometry=geometry or read_geometry,
             clock=lambda: epoch_ms / 1000.0,
         )
 
@@ -68,7 +77,7 @@ class WatcherTest(unittest.TestCase):
         self.assertEqual(len((self.dir / "frames-index.jsonl").read_text().splitlines()), 2)
 
     def test_a_failed_capture_is_not_indexed(self):
-        def failing(cmd):
+        def failing(cmd, env):
             raise WatcherError("capture failed")
         w = self.watcher(run=failing)
         with self.assertRaises(WatcherError):
@@ -79,7 +88,35 @@ class WatcherTest(unittest.TestCase):
         for bad in ("", "   ", "root"):
             with self.subTest(window=bad):
                 with self.assertRaises(WatcherError):
-                    Watcher(bad, self.frames, self.dir / "i.jsonl", self.dir / "w.log",
+                    Watcher(bad, SESSION_ENV, self.frames, self.dir / "i.jsonl", self.dir / "w.log",
+                            step_source=lambda: 0)
+
+    def test_every_command_runs_on_the_sessions_display(self):
+        """R1: the capture and the geometry read get the session's environment, whatever the caller's
+        DISPLAY is; without it they would act on the caller's display."""
+        import os
+        from unittest import mock
+        with mock.patch.dict(os.environ, {"DISPLAY": ":wrong"}):
+            self.watcher().capture_once()
+        self.assertEqual([e["DISPLAY"] for e in self.envs], [":88"])
+        self.assertEqual([e["DISPLAY"] for e in self.geometry_envs], [":88"])
+
+    def test_the_default_helpers_pass_the_sessions_environment_to_the_checked_helper(self):
+        """R1 at the real helpers: spike.must receives env= with the session's DISPLAY."""
+        from unittest import mock
+        import driver.watcher as watcher
+        with mock.patch.object(watcher.spike, "must") as must:
+            must.return_value = mock.MagicMock(stdout=b"X=1\nY=2\nWIDTH=800\nHEIGHT=600\n")
+            watcher._default_run(["import", "-window", "0x2a", "f.png"], SESSION_ENV)
+            watcher._default_geometry("0x2a", SESSION_ENV)
+        for call in must.call_args_list:
+            self.assertEqual(call.kwargs.get("env"), SESSION_ENV)
+
+    def test_a_watcher_without_the_sessions_display_is_refused(self):
+        for env in (None, {}, {"DISPLAY": ""}):
+            with self.subTest(env=env):
+                with self.assertRaises(WatcherError):
+                    Watcher("0x2a", env, self.frames, self.dir / "i.jsonl", self.dir / "w.log",
                             step_source=lambda: 0)
 
     def test_log_lines_carry_structural_names_only(self):

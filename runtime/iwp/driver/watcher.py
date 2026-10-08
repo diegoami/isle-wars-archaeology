@@ -1,14 +1,16 @@
 """The per-frame watcher of a model-driven sitting (T38, rule 18 carve-out).
 
-It attaches to the game window id the session already holds, captures *that* window on a fixed
-interval (ImageMagick `import -window <id>`, never `-window root`: the desktop is never captured),
+It attaches to the game window id the session already holds (Session.window), on the session's
+own display: every command it runs gets the session's environment (Session.env, whose DISPLAY is
+the session's private Xvfb), never the caller's (T38 round 2, R1). It captures *that* window on a
+fixed interval (ImageMagick `import -window <id>`, never `-window root`: the desktop is never captured),
 names each frame `<step>-<epochms>.png`, sha256s it, and appends one line per frame to
 `frames-index.jsonl` (name, sha256, wall time, window geometry). `watcher.log` carries the same
 structural names only: constraint D of the carve-out keeps the original's text (event names, card
 names, screen labels, the title) out of the watcher's lines.
 
 The command runner, clock and geometry reader are injected so this module is testable against
-fakes, with no wine and no display. A failed capture is logged and skipped, never written as a
+fakes, with no wine and no display; each is called with the session's environment. A failed capture is logged and skipped, never written as a
 frame: a frame in the index is a file that exists and whose sha256 is the one recorded.
 """
 import hashlib
@@ -51,22 +53,24 @@ def wall_time():
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
-def _default_run(cmd):
-    """The capture command through the spike's checked helper, bounded; WatcherError unless it exits 0."""
+def _default_run(cmd, env):
+    """The capture command through the spike's checked helper, bounded, on the session's display;
+    WatcherError unless it exits 0."""
     try:
-        spike.must(cmd, require_output=False, timeout=CAPTURE_TIMEOUT)
+        spike.must(cmd, require_output=False, timeout=CAPTURE_TIMEOUT, env=env)
     except (spike.CommandFailed, spike.Unreaped, subprocess.TimeoutExpired, OSError) as exc:
         raise WatcherError(f"{' '.join(map(str, cmd[:2]))} failed: {exc}") from None
     return None
 
 
-def _default_geometry(window_id):
-    """The window's x, y, width and height, read with xdotool; {} when it cannot be read.
+def _default_geometry(window_id, env):
+    """The window's x, y, width and height, read with xdotool on the session's display; {} when it
+    cannot be read.
 
     The geometry is a structural fact of the frame, kept in the index beside its sha256."""
     try:
         done = spike.must(["xdotool", "getwindowgeometry", "--shell", str(window_id)],
-                          timeout=CAPTURE_TIMEOUT)
+                          timeout=CAPTURE_TIMEOUT, env=env)
     except (spike.CommandFailed, spike.Unreaped, subprocess.TimeoutExpired, OSError):
         return {}
     geometry = {}
@@ -80,16 +84,20 @@ def _default_geometry(window_id):
 class Watcher:
     """One sitting's frame capture. `step_source()` returns the click-driver's current step.
 
-    `run(cmd)` raises when the capture fails; `geometry(window_id)` returns a dict. Both default
-    to the real tools and are replaced by fakes in the tests.
+    `env` is the session's environment (its DISPLAY is the session's own); `run(cmd, env)` raises
+    when the capture fails; `geometry(window_id, env)` returns a dict. Both default to the real
+    tools and are replaced by fakes in the tests.
     """
 
-    def __init__(self, window_id, frames_dir, index_path, log_path, step_source,
+    def __init__(self, window_id, env, frames_dir, index_path, log_path, step_source,
                  run=None, geometry=None, clock=time.time, sleep=time.sleep,
                  interval=DEFAULT_INTERVAL):
         if not isinstance(window_id, str) or not window_id.strip() or window_id.strip() == "root":
             raise WatcherError("the watcher captures the game window id, never the desktop")
+        if not env or not str(env.get("DISPLAY", "")).startswith(":"):
+            raise WatcherError("the watcher needs the session's environment, with the session's DISPLAY")
         self.window_id = window_id
+        self.env = dict(env)
         self.frames_dir = Path(frames_dir)
         self.index_path = Path(index_path)
         self.log_path = Path(log_path)
@@ -116,7 +124,7 @@ class Watcher:
             epoch_ms += 1                      # two frames in the same millisecond never collide
         name = frame_name(step, epoch_ms)
         path = self.frames_dir / name
-        self.run(["import", "-window", str(self.window_id), str(path)])
+        self.run(["import", "-window", str(self.window_id), str(path)], self.env)
         if not path.is_file():
             raise WatcherError(f"the capture command exited 0 but wrote no frame at step {step}")
         digest = sha256_file(path)
@@ -125,7 +133,7 @@ class Watcher:
             "sha256": digest,
             "wall_time": wall_time(),
             "window": str(self.window_id),
-            "geometry": dict(self.geometry(self.window_id) or {}),
+            "geometry": dict(self.geometry(self.window_id, self.env) or {}),
         }
         with self.index_path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(line, sort_keys=True) + "\n")

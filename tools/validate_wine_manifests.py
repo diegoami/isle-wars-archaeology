@@ -22,15 +22,26 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from validate_records import load_file, validate_document  # noqa: E402
 
 WINE_CLASS = "recording"
+MANIFEST_SCHEMA = "evidence-manifest/1"
 
 
 def errors_for(doc):
-    """Errors for one parsed manifest; [] when it is a valid wine manifest (constraint C)."""
+    """Errors for one parsed manifest; [] when it is a valid wine manifest (constraint C).
+
+    The manifest schema is required explicitly (T38 round 2, R5): `validate_document` validates a
+    document against the schema the document itself declares, so a valid `run/1` (or any other
+    format) under a `*.manifest.json` name would pass it. A document that does not declare
+    `evidence-manifest/1` is refused before anything else, and `files` must be present."""
+    if not isinstance(doc, dict) or doc.get("schema") != MANIFEST_SCHEMA:
+        declared = doc.get("schema") if isinstance(doc, dict) else type(doc).__name__
+        return [f"$.schema: {declared!r} is not {MANIFEST_SCHEMA!r}; only an evidence manifest is a wine manifest"]
     errors = validate_document(doc)
     if errors:
         return errors
+    if not isinstance(doc.get("files"), list) or not doc["files"]:
+        return ["$.files: an evidence manifest lists at least one file"]
     out = []
-    for i, entry in enumerate(doc.get("files", [])):
+    for i, entry in enumerate(doc["files"]):
         if entry.get("class") != WINE_CLASS:
             out.append(f"$.files[{i}].class: {entry.get('class')!r} is not {WINE_CLASS!r}; a "
                        f"model-driven frame is a recording, never a screenshot of a human session "

@@ -4,29 +4,53 @@
 # this file; the dispatcher refuses any batch that is not one of these, by name, before wine
 # starts (constraint B of the rule 18 carve-out, CLAUDE.md 2026-10-08).
 #
-# Format: one INI block per batch. `steps` names the E002-language step file beside this one.
-# `vocabulary` is the exact structural field vocabulary the batch's records carry (Done-when 4:
-# every `field` is a `kind:role` name of lowercase letters and hyphens). `*_min` keys are the
-# Scope Counts line; `corroborate_min` is the walkthroughs/f011-questions.md target at which an
-# outcome may be called `corroborated`.
+# Format: one INI block per batch.
+# - `blocks` names the E002-language block file beside this one (play.steps); the launcher runs its
+#   blocks in a loop (e020_loop.py) and never sends a step outside them.
+# - `event` and `event_fields`: what one counted event is, and every field it carries besides
+#   game:ordinal and event:seq (tools/check_counts.py: an event missing any of them is not counted).
+#   Values by role: counter, hand, country, game, event, sitting are plain integers; owner is a
+#   colour word (tools/check_counts.py value_problem).
+# - `events_min` and `games_min`: Scope's Counts line (the first sitting's floors).
+# - `games_max`, `turns_max`, `sitting_seconds`: the loop's bounds. The loop plays a game until
+#   the human can no longer place (the game is over for the human) or `turns_max` turns, then starts
+#   the next game, until `games_max` games or `sitting_seconds`. The events are read from the
+#   frames after the sitting, so the loop cannot stop on a live count; a sitting that ends short
+#   is recorded as it is, and tools/check_counts.py prints the shortfall per arm.
+# - `claims`: the claim ids whose outcome tools/check_counts.py checks against their own per-arm
+#   rule before `corroborated` is allowed (experiments/E020-wine-first-run/outcomes.json).
+# - `vipc_countries`: Q-CMB-11's split, the fixed VIPC list as the board's country numbers (F017,
+#   1 to 46): the 23 entries of the `VIPC` table in
+#   experiments/E015-pro-board-reading/measurements/board-tabulation-r1e.json (T21's tabulation).
+#   Empty, Q-CMB-11 can never be corroborated.
 
 [batch cmb-accumulation]
 questions = Q-CMB-04 Q-CMB-05 Q-CMB-06 Q-CMB-07 Q-CMB-11
 source = Session B computer-vs-computer accumulation: place all armies, pass, repeat
-steps = batch-cmb-accumulation.steps
-exchanges_field = counter:attacker-before
-exchanges_sides = counter:attacker-before counter:attacker-after counter:defender-before counter:defender-after
-exchanges_min = 100
-corroborate_min = 500
-vocabulary = counter:attacker-before counter:attacker-after counter:defender-before counter:defender-after
-note = Batch 1: at least 100 exchanges with before/after counters for both sides in the first sitting; the walkthroughs/f011-questions.md counts accumulate across sittings
+target = at least 100 exchanges with before/after counters for both sides in the first sitting; the walkthroughs/f011-questions.md counts (500/500/500/200/500) across sittings
+blocks = play.steps
+event = exchange
+event_fields = counter:attacker-before counter:attacker-after counter:defender-before counter:defender-after country:attacker country:defender owner:attacker owner:defender
+events_min = 100
+games_min = 1
+games_max = 4
+turns_max = 30
+sitting_seconds = 5400
+claims = Q-CMB-04 Q-CMB-05 Q-CMB-06 Q-CMB-07 Q-CMB-11
+vipc_countries = 1 3 5 7 8 9 13 14 15 23 24 26 27 32 33 34 36 37 38 43 44 45 46
+note = Batch 1 (F011): computer-vs-computer exchanges, read from the frames; the owner-play record (T28) is primary for play-length, game-sense and mistake claims, this sitting is corroboration and per-action timing
 
 [batch bomb-sampling]
 questions = C-CRD-06 Q-BON-08
 source = normal play until the computer draws and trades the bomb (the bomb comes only from captures, C-CRD-01); no forced deal, no patched build
-steps = batch-bomb-sampling.steps
-bomb_plays_field = owner:victim
-bomb_plays_min = 9
+target = at least 9 computer bomb plays across at least 3 games
+blocks = play.steps
+event = bomb
+event_fields = owner:bomber owner:victim country:victim counter:victim-before counter:victim-after hand:bomber
+events_min = 9
 games_min = 3
-vocabulary = owner:victim counter:victim-before counter:victim-after hand:bomber
-note = Batch 2: at least 9 computer bomb plays across at least 3 games
+games_max = 8
+turns_max = 40
+sitting_seconds = 10800
+claims = C-CRD-06 Q-BON-08
+note = Batch 2 (F014): the computer's bomb targets, read from the frames; the owner-play record (T28) is primary for play-length, game-sense and mistake claims, this sitting is corroboration and per-action timing

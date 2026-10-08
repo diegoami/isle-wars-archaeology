@@ -9,26 +9,27 @@ It checks the committed records (`runs/E020/**/*.json`) and manifests
   * every record passes constraint F's gate against the F019 known-good table
     (tools/check_no_originals.check_wine_gate);
   * every observation `field` is a structural `kind:role` name of lowercase letters and hyphens
-    (Done-when 4), and every observation carries `step` and `source` and then a `field`+`value`,
-    `addr`+`value` or `ref` (formats/run-1.schema.json's anyOf);
+    (Done-when 4) and its value is valid for the field's role (tools/check_counts.py value_problem:
+    a plain integer for a counter, hand, country, game, event or sitting; a colour word for an
+    owner; nothing else, so no text of the original), and every observation carries `step` and
+    `source` and then a `field`+`value`, `addr`+`value` or `ref` (formats/run-1.schema.json's anyOf);
   * every manifest is valid and every `files[].class` is `recording` (Done-when 3).
 
 Usage: `python3 experiments/E020-wine-first-run/check_records.py [runs-dir] [evidence-dir]`,
 defaulting to runs/E020 and evidence/E020. Exit 0 when every check holds.
 """
 import json
-import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
+import check_counts  # noqa: E402
 import check_no_originals  # noqa: E402
 import validate_records  # noqa: E402
 import validate_wine_manifests  # noqa: E402
 
 PLATFORM = "wine-on-user-machine-iwp-2.0"
-FIELD = re.compile(r"^[a-z][a-z-]*:[a-z][a-z-]*$")
 
 
 def check_record(path, table):
@@ -46,9 +47,10 @@ def check_record(path, table):
         problems.append(f"{path}: runtime.platform is {doc.get('runtime', {}).get('platform')!r}, "
                         f"not {PLATFORM!r} (constraint C)")
     for i, obs in enumerate(doc.get("observations", [])):
-        field = obs.get("field") if isinstance(obs, dict) else None
-        if field is not None and not FIELD.fullmatch(str(field)):
-            problems.append(f"{path}: observations[{i}].field {field!r} is not a structural kind:role name")
+        if isinstance(obs, dict) and "field" in obs:
+            problem = check_counts.value_problem(obs["field"], obs.get("value"))
+            if problem:
+                problems.append(f"{path}: observations[{i}]: {problem}")
     problem, _warning = check_no_originals.check_wine_gate(doc, table)
     if problem:
         problems.append(f"{path}: {problem}")
@@ -72,8 +74,6 @@ def main(argv=None):
     records = sorted(p for p in runs.rglob("*.json") if p.is_file())
     manifests = sorted(evidence.glob("*.manifest.json")) if evidence.is_dir() else []
     for path in records:
-        if path.name == "outcome.json":
-            continue
         problems += check_record(path, table)
     for path in manifests:
         problems += check_manifest(path)

@@ -1,20 +1,33 @@
 """The click-driver of a model-driven sitting (T38, rule 18 carve-out).
 
-It executes a step list in the E002 step language (runtime/iwp/spike/steps.py) through xdotool,
-with F006's exit-status discipline: every helper command's exit status is checked, and a failed
-input is a failed step. Each action appends one line to `actions.jsonl` (step, coordinates, exit
-status), so the sitting directory alone says which inputs were sent and what came back.
+It executes step blocks in the E002 step language (runtime/iwp/spike/steps.py) and appends one line
+per attempted step to `actions.jsonl`. It sends nothing itself: every step goes through the
+session's own `perform` (runtime/iwp/driver/session.py), one step at a time, so that each one runs
+exactly as the E002/E004 machinery runs it (T38 round 2, R1, R2, R10):
 
-`click! x y` additionally aborts when a `changed` callback (the watcher's screen-change check,
-when the launcher wires one) says the screen did not move: the E002 meaning of the trailing `!`.
-Without a callback the exit status of xdotool is the whole check, which is what a fake-based test
-exercises.
+* on the session's own private display, with the session's environment, and at stage coordinates
+  translated to the game window's stage origin (the spike's `click_at`);
+* with F006's exit-status discipline: every xdotool command is the spike's checked helper, and a
+  failed command is a failed step;
+* with the step language's meaning: `click!` aborts when the screen did not change, `watch` narrows
+  what `settle` and the change checks look at, and `settle` is a bounded poll on the screen, never a
+  fixed sleep; `click-until` reads the screen after each candidate;
+* inside Session's accounting: each input step that succeeded is one of Session's actions, so
+  `Session.complete()` sees the inputs and the screenshots around them.
 
-The command runner and the sleep are injected so this module is testable with no display; the
-default runner is bounded, as every helper command in F006 is.
+The steps a sitting may send are an allow-list (`ALLOWED`): pointer and key inputs and the waits.
+`attack-picked` is refused by name (the human never attacks: the driver never clicks inside a
+battle), and so are the steps that write bundle files or read the game copy.
+
+Each line of `actions.jsonl` is written whether the step succeeded or not (R12): `status` is `ok` or
+`failed`, a failed step carries the driver error's kind, and the line is on disk before the failure
+propagates. A line carries structural values only (constraint D): the block, the step's line in
+it, its op and numeric arguments, the context the caller names (game, turn), the wall time in
+milliseconds, the duration, and for an `ok` step what the screen showed (`outcome`).
 """
 import json
-import subprocess
+import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -23,97 +36,133 @@ ROOT = Path(__file__).resolve().parents[3]
 _SPIKE = str(ROOT / "runtime" / "iwp" / "spike")
 if _SPIKE not in sys.path:
     sys.path.insert(0, _SPIKE)
-import cycle as spike  # noqa: E402  (the driver's checked command helpers, reused)
 import steps as stepslib  # noqa: E402  (the E002 step language, reused)
 
 from .errors import StepFailed  # noqa: E402
 
-RUN_TIMEOUT = 30       # s, one xdotool command (F006: every helper command has a bound)
-DEFAULT_SETTLE = 2.0   # s, a bare `settle` (the spike polls the screen; here it is a bounded wait)
-SUPPORTED = ("move", "click", "click!", "clicks", "key", "settle", "watch")
+ALLOWED = frozenset({"move", "click", "click!", "clicks", "click-any", "click-any?", "click-until",
+                     "click-until?", "key", "settle", "watch"})
+BLOCK = re.compile(r"^#\s*---\s*block\s+([a-z][a-z0-9-]*)\s*$")
+PICKED = re.compile(r"^(\d+),(\d+) \(number (\d+) of (\d+)\)$")
 
 
-def _default_run(cmd):
-    """Run one xdotool command through the spike's checked helper, bounded; return 0 or raise."""
-    try:
-        spike.must(cmd, require_output=False, timeout=RUN_TIMEOUT)
-    except (spike.CommandFailed, spike.Unreaped, subprocess.TimeoutExpired, OSError) as exc:
-        raise StepFailed(f"{' '.join(map(str, cmd[:2]))} failed: {exc}") from None
-    return 0
+def parse_blocks(text):
+    """{block name: [Step, ...]} from a block file; StepFailed on a bad block or a refused step.
+    Line numbers are the file's, so an action names the line it came from."""
+    blocks, name, lines = {}, None, {}
+    for number, line in enumerate(text.splitlines(), start=1):
+        match = BLOCK.match(line.strip())
+        if match:
+            name = match.group(1)
+            if name in lines:
+                raise StepFailed(f"line {number}: the block {name!r} is defined twice")
+            lines[name] = []
+            continue
+        if name is None:
+            if line.split("#", 1)[0].strip():
+                raise StepFailed(f"line {number}: a step outside every block")
+            continue
+        lines[name].append((number, line))
+    for name, numbered in lines.items():
+        steps = []
+        for number, line in numbered:
+            try:
+                step = stepslib.parse_line(line, number)
+            except stepslib.StepError as exc:
+                raise StepFailed(f"line {number}: {exc}") from None
+            if step is None:
+                continue
+            if step.op not in ALLOWED:
+                raise StepFailed(f"line {number}: {step.op} is not a click-driver step; the driver sends "
+                                 f"only {', '.join(sorted(ALLOWED))}")
+            steps.append(step)
+        if not steps:
+            raise StepFailed(f"the block {name!r} has no step")
+        blocks[name] = steps
+    return blocks
+
+
+def step_text(step):
+    """The one-line E002 text of a parsed step, for Session.perform (`watch all` parses to no
+    arguments and is written back as `watch all`)."""
+    if step.op == "watch" and not step.args:
+        return "watch all"
+    return " ".join([step.op] + [str(a) for a in step.args])
+
+
+def outcome_of(step, new):
+    """What the screen showed for a step, from the observations the session added for it."""
+    op = step.op.rstrip("?")
+    fields = {o.get("field"): o.get("value") for o in new}
+    if op in ("click-until", "click-any"):
+        value = fields.get(f"{op}: candidate that worked")
+        match = PICKED.match(value or "")
+        return {"picked": int(match.group(3)) if match else None}
+    if op == "settle":
+        value = next((v for f, v in fields.items() if str(f).startswith("settle:")), None)
+        return {"quiet": value is not None and value != "not within the time allowed"}
+    if op in ("click", "click!"):
+        value = next((v for f, v in fields.items() if str(f).endswith("screen changed after the click (s)")), None)
+        return {"changed": value is not None and not str(value).startswith("no change")}
+    return {}
 
 
 class ClickDriver:
-    """Executes E002 step lines; `run(cmd)` returns an exit status, `sleep(s)` waits."""
+    """Sends step blocks through `perform` (Session.perform) and logs one line per attempted step.
 
-    def __init__(self, run=None, actions_path=None, sleep=time.sleep, changed=None, xdotool="xdotool",
-                 on_action=None):
-        self.run = run or _default_run
-        self.actions_path = Path(actions_path) if actions_path else None
-        self.sleep = sleep
-        self.changed = changed
-        self.xdotool = xdotool
-        self.on_action = on_action
-        self.step = 0
+    `observations()` returns the session's observations so far (Session.obs); the driver reads the
+    ones each step added to say what the screen showed. `context` (a dict of small integers or
+    words: game, turn) is copied into every line."""
 
-    def execute(self, text=None, steps=None):
-        """Run a step list (text or parsed steps), one action per line; StepFailed on the first."""
-        if steps is None:
-            try:
-                steps = stepslib.parse(text)
-            except stepslib.StepError as exc:
-                raise StepFailed(f"the steps are not usable: {exc}") from None
-        for step in steps:
-            self.perform(step)
-            if self.on_action is not None:
-                self.on_action(step)
-        return steps
+    def __init__(self, perform, observations, actions_path, blocks, clock=time.time):
+        self.perform = perform
+        self.observations = observations
+        self.actions_path = Path(actions_path)
+        self.blocks = blocks
+        self.clock = clock
+        self.context = {}
+        self.seq = 0
 
-    def perform(self, step):
-        if step.op not in SUPPORTED:
-            raise StepFailed(f"step on line {step.line}: {step.op} is not a click-driver step; "
-                             f"the driver knows {', '.join(SUPPORTED)}")
-        self.step = step.line
-        if step.op == "watch":
-            return                              # screen regions matter to the spike's settle, not here
-        if step.op == "settle":
-            seconds = step.args[0] if step.args else DEFAULT_SETTLE
-            self.sleep(seconds)
-            self._log(step, None, 0)
-            return
-        if step.op == "key":
-            status = self._checked([self.xdotool, "key", step.args[0]], step)
-            self._log(step, None, status)
-            return
-        if step.op == "clicks":
-            count, x, y = step.args[0], step.args[1], step.args[2]
-            status = self._checked([self.xdotool, "mousemove", str(x), str(y)], step)
-            for _ in range(count):
-                status = self._checked([self.xdotool, "click", "1"], step)
-            self._log(step, {"x": x, "y": y}, status)
-            return
-        # move, click and click! all name one point
-        x, y = step.args
-        coordinates = {"x": x, "y": y}
-        if step.op != "move":
-            self._checked([self.xdotool, "mousemove", str(x), str(y)], step)
-            status = self._checked([self.xdotool, "click", "1"], step)
-        else:
-            status = self._checked([self.xdotool, "mousemove", str(x), str(y)], step)
-        self._log(step, coordinates, status)
-        if step.op == "click!" and self.changed is not None and not self.changed():
-            raise StepFailed(f"step on line {step.line}: the screen did not change after the click")
+    def run_block(self, name):
+        """Run one block; the outcome of its last step that has one ({} when none). StepFailed (or the
+        session's own error) on the first step that fails, after its line is written."""
+        if name not in self.blocks:
+            raise StepFailed(f"no block {name!r} in the block file")
+        last = {}
+        for step in self.blocks[name]:
+            result = self.run_step(name, step)
+            if result:
+                last = result
+        return last
 
-    def _checked(self, cmd, step):
-        """Run a command the step relies on; StepFailed unless it exits 0 (F006, class B)."""
-        status = self.run(cmd)
-        if status != 0:
-            raise StepFailed(f"step on line {step.line}: {' '.join(map(str, cmd[:2]))} exited {status}")
-        return status
+    def run_step(self, block, step):
+        if step.op not in ALLOWED:
+            raise StepFailed(f"{step.op} is not a click-driver step")
+        self.seq += 1
+        line = {"seq": self.seq, "block": block, "line": step.line, "op": step.op,
+                "args": [a for a in step.args if isinstance(a, int)], **self.context}
+        before = len(self.observations())
+        started = self.clock()
+        line["t_ms"] = int(started * 1000)
+        try:
+            self.perform(step_text(step))
+        except BaseException as exc:
+            line.update(status="failed", error=getattr(exc, "kind", type(exc).__name__),
+                        ms=int((self.clock() - started) * 1000))
+            self.log(line)
+            raise
+        outcome = outcome_of(step, list(self.observations())[before:])
+        line.update(status="ok", ms=int((self.clock() - started) * 1000), outcome=outcome)
+        self.log(line)
+        return outcome
 
-    def _log(self, step, coordinates, status):
-        if self.actions_path is None:
-            return
-        self.actions_path.parent.mkdir(parents=True, exist_ok=True)
-        line = {"step": step.line, "op": step.op, "coordinates": coordinates, "exit_status": status}
-        with self.actions_path.open("a", encoding="utf-8") as fh:
+    def note(self, **fields):
+        """A line of the loop's own (a game started or ended, and why), in the same file."""
+        self.seq += 1
+        self.log({"seq": self.seq, **self.context, **fields, "t_ms": int(self.clock() * 1000)})
+
+    def log(self, line):
+        """Append one line; never through a link (the sitting directory is the launcher's own)."""
+        fd = os.open(self.actions_path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NOFOLLOW, 0o644)
+        with os.fdopen(fd, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(line, sort_keys=True) + "\n")
