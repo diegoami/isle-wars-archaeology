@@ -109,3 +109,31 @@ mistake-rich record.
 - `python3 experiments/E020-wine-first-run/check_records.py` — the batch record/manifest checker.
 
 After the first run this file is append-only. A changed design is a new experiment, or `v2/`.
+
+## T40: the reading pass (appended; `docs/tasks/T40.md`, issue #119)
+
+The reading pass that the "Not yet built" note above says was missing is `reader/`. It turns a
+sitting's frames into per-frame readings and exchange events, by pixels only (no OCR, no text):
+
+- `pngdecode.py` reads the frames (8-bit RGB, every PNG filter). `glyphs.py` finds the blobs of the
+  two numeral colours and matches them against bitmap templates. `boardreader.py` reads the 46
+  countries (army number, owner's colour word, or why unread) at the anchors of `reader/anchors.json`,
+  and the seat in turn from the score panel's box. `exchange_events.py` classifies a pair of frames.
+  `readpass.py` runs a sitting; `score.py` scores the reader against `measurements/labels.json`;
+  `measure.py` and `sample.py` made the census, the templates, the anchors and the sample.
+- The digit bitmaps are the original's pixels and stay on the user's machine
+  (`/mnt/c/Temp/iwp-shots/wine/reader-templates.json`, rebuilt by `measure.py templates`); the
+  repository holds their hashes and labels (`measurements/digit-census-r1.json`,
+  `digit-labels.json`). Anchors: the 46 numeral centres measured over all 2,267 frames
+  (`measurements/anchor-labels.json` says which country each is); 44 lie within 34 pixels of a click
+  point of `walkthroughs/coordinates.md`, countries 11 and 15 (which that list lacks, #120) are
+  measured from the same frames.
+- An event is two consecutive frames of one computer's turn in which exactly two bordering countries
+  changed and nothing else is ambiguous (`exchange_events.py` lists what is not an event). The
+  sampling limit is built in: frames are about 1.4 s apart and the computer plays several exchanges in
+  that time, so an event is the net of two or more exchanges. `outcomes.json` and
+  `measurements/events-tabulation-r1.json` say what that means for each claim.
+- Outputs, per sitting: `measurements/frame-readings-<id>.jsonl` and `readings-summary-<id>.json`
+  (numbers and colour words only), `<sitting>/readings.jsonl` (the events, the form `e020_export.py`
+  reads); the records `E020-r0003` to `E020-r0005` are their exports. `E020-r0001` and `E020-r0002`
+  stay as they were, with no events.

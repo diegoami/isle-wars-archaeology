@@ -1,0 +1,44 @@
+{
+  "what": "Per-claim outcomes of the E020 model-driven sittings, as read by T40 (tools/check_counts.py refuses `corroborated` unless the claim's own per-arm rule holds).",
+  "cites": {
+    "records": ["E020-r0003", "E020-r0004", "E020-r0005"],
+    "sittings": ["20261008T184505Z", "20261008T195537Z", "20261008T204817Z"],
+    "measurements": [
+      "experiments/E020-wine-first-run/measurements/events-tabulation-r1.json",
+      "experiments/E020-wine-first-run/measurements/readings-summary-<sitting>.json",
+      "experiments/E020-wine-first-run/measurements/labels.json"
+    ],
+    "superseded_without_events": ["E020-r0001", "E020-r0002"]
+  },
+  "limit": "The watcher takes a frame about every 1.4 s and the computer plays several exchanges in that time, so two frames hold the net of two or more exchanges. All 55 events are such nets: in none was one army lost in all, and a defender of one army never appears as an event, because its loss is a capture. Counts of events are therefore not counts of exchanges, and no per-exchange claim can be corroborated from them. A faster capture, or reading the status line's numbers, would be a new task.",
+  "claims": {
+    "Q-CMB-04": {
+      "outcome": "unestablished",
+      "note": "No arm is met: 0 events for any attacker size against a defender of 1 (2, 3, 4, 5, 10), of 100 each; an event needs both sides to have lost armies, and a defender of 1 that loses its army is a capture, which is not an event. What the events show is the net of several exchanges, which neither shows nor refutes one army lost per exchange."
+    },
+    "Q-CMB-05": {
+      "outcome": "unestablished",
+      "note": "Against the best-covered attacker size (5): 0 events with a defender of 1, 3 of 2, 2 of 3, 1 of 4, 0 of 10, of 100 each. The events are nets of several exchanges, so even met they would not count exchanges."
+    },
+    "Q-CMB-06": {
+      "outcome": "unestablished",
+      "note": "55 events, not 500 exchanges. Descriptive only: the attacker lost 176 of the 293 armies lost in the 55 events (60.1%), against 58% (7/12) expected; that reads the armies lost as exchanges lost, which is Q-CMB-07's claim, and it is biased because an event needs both sides to have lost armies (a battle won or lost without a loss on the other side is one change, not an event)."
+    },
+    "Q-CMB-07": {
+      "outcome": "unestablished",
+      "note": "55 events, short of 200 by 145, and every one is a net of two or more exchanges (armies lost: attacker 1 to 7, defender 1 to 6), so none can show the single exchange the claim is about. The count of events with another outcome than one army lost on one side is 55 by construction, not a refutation."
+    },
+    "Q-CMB-11": {
+      "outcome": "unestablished",
+      "note": "55 events, short of 500 by 445: attacker inside the VIPC list in 46, outside in 9. The claim is an absence (nothing beyond army counts and chance), which events of this kind cannot test."
+    },
+    "C-CRD-06": {
+      "outcome": "unestablished",
+      "note": "No bomb-sampling sitting has been run: 0 bomb plays of 9, 0 games of 3. This task reads the cmb-accumulation sittings only, and the bomb's play is not among the events the reader finds."
+    },
+    "Q-BON-08": {
+      "outcome": "unestablished",
+      "note": "As C-CRD-06: no bomb-sampling sitting, 0 bomb plays."
+    }
+  }
+}

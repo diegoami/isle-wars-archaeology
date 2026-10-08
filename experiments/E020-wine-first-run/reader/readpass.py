@@ -10,7 +10,8 @@ Reads `frames-index.jsonl`, `actions.jsonl` and every frame under the sitting di
                                              game, whether it lies in a computer's turn, the seat
                                              in turn, and per country the army number and the owner's
                                              colour word, or null with the reason (numbers and colour
-                                             words only: constraint D)
+                                             words only: constraint D); `cyan` lists the countries
+                                             whose numeral is drawn in cyan
   <measurements>/readings-summary-<id>.json  the counts: frames, countries read and unread by reason,
                                              pairs by classification
   <sitting>/readings.jsonl                   the events, one per line, in the form
@@ -105,7 +106,7 @@ def frame_line(row, reading, seat, game, in_turn):
             "computer_turn": in_turn, "seat": seat,
             "armies": [board_[c]["army"] for c in sorted(board_)],
             "owners": [board_[c]["owner"] for c in sorted(board_)],
-            "marks": [board_[c]["mark"] for c in sorted(board_)],
+            "cyan": [c for c in sorted(board_) if board_[c]["mark"] == "cyan"],
             "unread": {str(c): board_[c]["why"] for c in sorted(board_) if board_[c]["army"] is None or board_[c]["owner"] is None}}
 
 

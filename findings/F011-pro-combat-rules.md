@@ -79,6 +79,7 @@ Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a24864645
 - **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
 - **What would change it.** A different dice rule in a script that no cast member points at (61 scripts were not written by the tool, F010).
 - **T28.** Count exchanges and losses at attacker sizes 2, 3, 4, 5 and 10 against a fixed defender, at least 100 exchanges per size (the board shows both counts after each click). Expect exactly one army lost per exchange at every size.
+- **E020 (T40; `experiments/E020-wine-first-run/outcomes.json`): unestablished.** The three model-driven sittings (records E020-r0003 to E020-r0005) give 55 computer battle outcomes, read from the frames by pixels, and none for an attacker of 2, 3, 4, 5 or 10 against a defender of 1 (a defender of 1 that loses its army is a capture, which is not an outcome counted): 0 of the 100 each arm needs. The frames are about 1.4 s apart and each outcome is the net of two or more exchanges, so they neither show nor refute one army lost per exchange.
 
 #### Q-CMB-05 How many dice does the defender use, and is there a cap?
 
@@ -87,6 +88,7 @@ Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a24864645
 - **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
 - **What would change it.** As Q-CMB-04.
 - **T28.** As Q-CMB-04 with the defender at 1, 2, 3, 4 and 10 against a fixed attacker, at least 100 exchanges per size.
+- **E020 (T40; `experiments/E020-wine-first-run/outcomes.json`): unestablished.** Against the best-covered attacker size (5), the events number 0, 3, 2, 1 and 0 for defenders of 1, 2, 3, 4 and 10, of the 100 each arm needs; each event is the net of two or more exchanges (Q-CMB-04's note).
 
 #### Q-CMB-06 When the two sides' results are equal, who loses?
 
@@ -95,6 +97,7 @@ Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a24864645
 - **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`. The bytecode listings of both show a "greater than" for the attacker and a "greater than or equal to" for the defender.
 - **What would change it.** A non-uniform generator (T18) changes the percentages, not the rule.
 - **T28.** Over at least 500 exchanges, the share of exchanges in which the attacker loses an army: 58% (7/12) fits the reading with uniform dice; 50% would mean ties were split; with 500 exchanges the standard error is about 2.2 points.
+- **E020 (T40; `experiments/E020-wine-first-run/outcomes.json`): unestablished.** 55 net outcomes, not 500 exchanges. Descriptively the attacker lost 176 of the 293 armies lost in them (60%), reading one army lost as one exchange lost (Q-CMB-07's claim), and biased because an outcome needs both sides to have lost armies.
 
 #### Q-CMB-07 How are the results compared and how many armies are lost per exchange?
 
@@ -103,6 +106,7 @@ Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a24864645
 - **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`.
 - **What would change it.** As Q-CMB-04.
 - **T28.** Record the change in both counts after each click (human), at least 200 exchanges at several sizes: each should be (attacker -1, defender 0) or (0, defender -1) and no other. Computer: the same from the counts shown during its battles.
+- **E020 (T40; `experiments/E020-wine-first-run/outcomes.json`): unestablished.** All 55 outcomes are nets of two or more exchanges (armies lost: the attacker 1 to 7, the defender 1 to 6), so none is a single exchange and the claim is neither shown nor refuted; the interval between frames is the limit.
 
 #### Q-CMB-08 Is one attack order one exchange, or does it repeat; can the attacker withdraw?
 
@@ -140,6 +144,7 @@ Every source below is `static:decompile` of `Islepro.exe`, sha256 `c4d7a24864645
 - **Sources:** `static:decompile` `Islepro.exe` sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`; `MovieScript 50 Rolldice` / `RollDice()`; `MovieScript 337 computerrolldice` / `ComputerRollDice()`; `MovieScript 363 addtoproductioncenter` / `addtoproductioncenter()` (the centre event, to show where armies change outside a battle).
 - **What would change it.** An absence claim is only as strong as the scripts searched: 61 scripts with no cast member were not written by the tool and not read (F010); a modifier applied before the battle (a card played, a bomb) would show as different army counts, not as a different rule.
 - **T28.** Static-only in practice: a 500-exchange split by any condition can only reveal a shift of about 4 points. Record, over at least 500 exchanges, the attacker-loss share split by whether the attacker is in the VIPC list's countries, to look for a gross effect.
+- **E020 (T40; `experiments/E020-wine-first-run/outcomes.json`): unestablished.** 55 outcomes (the attacker inside the VIPC list in 46, outside in 9) against 500; the split of the attacker-loss share needs single exchanges, which these frames do not give.
 
 #### Q-CMB-12 Does attacking pay?
 
