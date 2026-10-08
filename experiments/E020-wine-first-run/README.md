@@ -108,14 +108,14 @@ mistake-rich record.
     `python3 runtime/iwp/driver/watcher.py --measure-rate --seconds 20` captures an animated test
     window of synthetic 800x600 images, prints the sustained frames per second, exits 0 only at 5 or
     more, and writes `rate.json`, `frames-index.jsonl` and `watcher.log` to a new folder under
-    `measurements/capture/` (never over an old one). The rate is every indexed capture (stored or
-    duplicate; a failed capture is not counted and fails the run) divided by the measurement's
+    `measurements/capture/` (never over an old one). A game window under Wine may take longer to
+    capture than the test window: the sitting's `capture_ms` values show it.
+  - **Rate gate** (T42 round 2, PR #129 review R1 to R3). The rate is every indexed capture (stored
+    or duplicate; a failed capture is not counted and fails the run) divided by the measurement's
     interval, from its start to the end of the last capture or to the deadline, whichever is later;
     it is compared with 5 unrounded, and `rate.json` keeps it unrounded (only the printed line
     rounds). The Xvfb counts as the measurement's own only while the process it started holds the
-    display's listening socket, and a display equal to the caller's `DISPLAY` is refused. A game
-    window under Wine may take longer to capture than the test window: the sitting's `capture_ms`
-    values show it.
+    display's listening socket, and a display equal to the caller's `DISPLAY` is refused.
   - **Rate measurements.** `20261008T222520Z` (temporary folder) and `20261008T222628Z` (frames on
     `/mnt/c`) were made with T42's first gate, which divided the captures after the first by the time
     between the first and the last capture start and rounded the rate before comparing it (PR #129
