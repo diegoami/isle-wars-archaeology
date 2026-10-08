@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "runtime" / "iwp"))
 import driver.watcher as watcher_module  # noqa: E402
 from driver.watcher import (Watcher, WatcherError, FrameCapReached, frame_name, sha256_file,  # noqa: E402
-                            capture_command, rate_summary, GEOMETRY_REFRESH)
+                            capture_command, capture_ms_summary, timed_capture, sustained_fps,
+                            rate_passes, REQUIRED_FPS, GEOMETRY_REFRESH)
 
 EPOCH = 1_700_000_000_000
 SESSION_ENV = {"DISPLAY": ":88", "WINEPREFIX": "/synthetic/prefix"}
@@ -297,18 +298,273 @@ class WatcherTest(unittest.TestCase):
         self.assertNotIn("root", text)
         self.assertNotIn(":wrong", text)
 
-    def test_rate_summary_counts_captures_after_the_first_over_the_time_between(self):
-        lines = [{"epoch_ms": 1000 + i * 125, "capture_ms": 80} for i in range(9)]    # 8 intervals, 1 s
-        self.assertEqual(rate_summary(lines)["fps"], 8.0)
-        self.assertEqual(rate_summary(lines)["capture_ms"]["median"], 80)
-        self.assertEqual(rate_summary(lines[:1]), {})
-        self.assertEqual(rate_summary([]), {})
+    def test_capture_ms_summary_reports_the_capture_times(self):
+        lines = [{"epoch_ms": 1000 + i * 125, "capture_ms": 80 + i} for i in range(9)]
+        self.assertEqual(capture_ms_summary(lines)["median"], 84)
+        self.assertEqual(capture_ms_summary(lines)["max"], 88)
+        self.assertEqual(capture_ms_summary([]), {})
+
+    # ---- T42 round 2, R1 and R2: the gate measures captures over the real interval, unrounded
+
+    def timed(self, durations_us, seconds, interval):
+        """Run the real Watcher loop through timed_capture on a fake clock counted in whole microseconds
+        (so the arithmetic of the test is exact): the n-th capture takes durations_us(n) us."""
+        clock = [0]
+        n = [0]
+        def capture(cmd, env):
+            clock[0] += durations_us(n[0])
+            n[0] += 1
+            Path(cmd[-1]).write_bytes(str(n[0]).encode())
+        def sleep(t):
+            clock[0] += round(t * 1_000_000)
+        w = self.watcher(run=capture, interval=interval, monotonic=lambda: clock[0] / 1e6, sleep=sleep)
+        captures, interval_s = timed_capture(w, seconds)
+        return w, captures, interval_s
+
+    def test_r1_a_capture_running_past_the_deadline_counts_with_its_time(self):
+        """Sol's R1: three captures, the last taking 19,750 ms. The old gate divided by the 250 ms between
+        the capture starts (8 fps, passed); over the real interval it is 3 / 20 s."""
+        durations = [10_000, 10_000, 19_750_000]
+        w, captures, interval_s = self.timed(lambda n: durations[n], 20.0, 0.125)
+        self.assertEqual(captures, 3)
+        self.assertGreaterEqual(interval_s, 20.0)
+        fps = sustained_fps(captures, interval_s)
+        self.assertLess(fps, 0.2)
+        self.assertFalse(rate_passes(fps, w.failures))
+
+    def test_r1_the_interval_reaches_the_end_of_a_capture_past_the_deadline(self):
+        durations = [10_000, 10_000, 20_000_000]               # the third ends at 20.25 s
+        _, captures, interval_s = self.timed(lambda n: durations[n], 20.0, 0.125)
+        self.assertEqual(captures, 3)
+        self.assertAlmostEqual(interval_s, 20.25, places=6)
+
+    def test_r1_a_tail_with_no_capture_counts_as_time(self):
+        """A loop that stops early (the frame cap) still measures to the deadline."""
+        frames = iter(str(i).encode() for i in range(100))
+        clock = [0]
+        def capture(cmd, env):
+            clock[0] += 10_000
+            Path(cmd[-1]).write_bytes(next(frames))
+        w = self.watcher(run=capture, interval=0.125, monotonic=lambda: clock[0] / 1e6,
+                         sleep=lambda t: clock.__setitem__(0, clock[0] + round(t * 1e6)), max_frames=2)
+        captures, interval_s = timed_capture(w, 20.0)
+        self.assertEqual(captures, 2)
+        self.assertEqual(interval_s, 20.0)
+
+    def test_r2_just_below_the_threshold_fails(self):
+        """Sol's R2: 100 captures over 20.001 s is 4.99975 fps; the old gate rounded it to 5.0 and passed."""
+        durations = lambda n: 201_000 if n == 99 else 10_000          # the 100th ends at 19.8 + 0.201 s
+        w, captures, interval_s = self.timed(durations, 20.0, 0.2)
+        self.assertEqual(captures, 100)
+        self.assertAlmostEqual(interval_s, 20.001, places=6)
+        fps = sustained_fps(captures, interval_s)
+        self.assertLess(fps, REQUIRED_FPS)
+        self.assertFalse(rate_passes(fps, w.failures))
+        self.assertFalse(rate_passes(100 / 20.001, 0))
+
+    def test_r2_exactly_at_the_threshold_passes(self):
+        durations = lambda n: 200_000 if n == 99 else 10_000          # the 100th ends at 20.0 s
+        w, captures, interval_s = self.timed(durations, 20.0, 0.2)
+        self.assertEqual(captures, 100)
+        self.assertEqual(interval_s, 20.0)
+        self.assertEqual(sustained_fps(captures, interval_s), REQUIRED_FPS)
+        self.assertTrue(rate_passes(sustained_fps(captures, interval_s), w.failures))
+
+    def test_a_failed_capture_fails_the_gate_and_is_not_counted(self):
+        self.assertFalse(rate_passes(8.0, 1))
+        n = [0]
+        clock = [0]
+        def capture(cmd, env):
+            clock[0] += 10_000
+            n[0] += 1
+            if n[0] == 2:
+                raise WatcherError("capture failed")
+            Path(cmd[-1]).write_bytes(str(n[0]).encode())
+        w = self.watcher(run=capture, interval=0.125, monotonic=lambda: clock[0] / 1e6,
+                         sleep=lambda t: clock.__setitem__(0, clock[0] + round(t * 1e6)))
+        captures, _ = timed_capture(w, 1.0)
+        self.assertEqual((captures, w.failures), (7, 1))
 
     def test_the_cli_runs_nothing_without_measure_rate(self):
         import contextlib, io
         with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
             watcher_module.main([])
         self.assertEqual(caught.exception.code, 2)
+
+
+class _Reached(Exception):
+    """The measurement reached its test window on a display of its own (the guard tests stop there)."""
+
+
+class _FakeProc:
+    """A spawned process that stays alive until it is stopped."""
+    pids = iter(range(40000, 41000))
+
+    def __init__(self):
+        self.pid = next(self.pids)
+        self.stopped = False
+
+    def poll(self):
+        return 0 if self.stopped else None
+
+    def terminate(self):
+        self.stopped = True
+
+    kill = terminate
+
+    def wait(self, timeout=None):
+        return 0
+
+
+class OwnDisplayGuardTest(unittest.TestCase):
+    """T42 round 2, R3: the measurement's display is accepted only when the Xvfb this run spawned holds
+    the display's listening socket. These fakes make the spawned Xvfb alive and xdpyinfo answer, while
+    the socket that answers belongs to `owner(display)`; nothing real is started."""
+
+    def run_measurement(self, owner, caller_display=":0"):
+        import os
+        from unittest import mock
+        import driver.session as sessionlib
+        calls = []
+        procs = {}
+        displays = iter([":71", ":72", ":73", ":74"])
+
+        def spawn(cmd, **kw):
+            calls.append(("spawn", list(cmd), dict(kw.get("env") or {})))
+            proc = _FakeProc()
+            procs[cmd[1]] = proc
+            return proc
+
+        def probe(cmd, **kw):
+            calls.append(("probe", list(cmd), dict(kw.get("env") or {})))
+            return True, b"", b""
+
+        def must(cmd, **kw):
+            calls.append(("must", list(cmd), dict(kw.get("env") or {})))
+            return mock.MagicMock(stdout=b"")
+
+        def listening(path):
+            display = ":" + path.rsplit("X", 1)[1]
+            return {1000 + int(display[1:])} if display in procs else set()
+
+        def held_by(pid):
+            return {1000 + int(d[1:]) for d, p in procs.items() if owner(d) == "ours" and p.pid == pid}
+
+        def start_window(env, workdir):
+            display = env.get("DISPLAY")
+            if owner(display) != "ours" or procs[display].stopped:
+                raise AssertionError(f"a test window on {display}, a display not this run's")
+            raise _Reached(display)                    # the window would start here; the test ends
+        window = mock.MagicMock(side_effect=start_window)
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.dict(os.environ, {"DISPLAY": caller_display}), \
+                mock.patch.object(watcher_module, "START_TIMEOUT", 0.1), \
+                mock.patch.object(watcher_module.spike, "spawn", spawn), \
+                mock.patch.object(watcher_module.spike, "probe", probe), \
+                mock.patch.object(watcher_module.spike, "must", must), \
+                mock.patch.object(sessionlib, "free_display", lambda exclude=(): next(displays)), \
+                mock.patch.object(sessionlib, "listening_socket_inodes", listening), \
+                mock.patch.object(sessionlib, "socket_inodes_of", held_by), \
+                mock.patch.object(watcher_module, "_start_test_window", window), \
+                mock.patch.object(watcher_module, "timed_capture",
+                                  mock.MagicMock(side_effect=AssertionError("a capture on a display not this run's"))):
+            try:
+                watcher_module.measure_rate(1.0, Path(tmp) / "m")
+                error = None
+            except (WatcherError, _Reached) as exc:
+                error = exc
+        return error, calls, procs, window
+
+    def test_a_display_whose_socket_another_process_holds_is_rejected(self):
+        """Sol's R3: Xvfb alive and xdpyinfo answering, but the socket is another process's: every
+        display is rejected, each spawned Xvfb is stopped, and no test window or capture runs."""
+        error, calls, procs, window = self.run_measurement(owner=lambda d: "other")
+        self.assertIsInstance(error, WatcherError)
+        self.assertEqual(sorted(procs), [":71", ":72", ":73"])
+        self.assertTrue(all(p.stopped for p in procs.values()))
+        window.assert_not_called()
+        self.assertLessEqual({c[1][0] for c in calls}, {"Xvfb", "xdpyinfo"})   # nothing else ran on them
+
+    def test_a_taken_display_is_retried_and_the_next_one_of_its_own_is_used(self):
+        """The first display's socket is another's; the second is this run's Xvfb's and is the one used."""
+        error, calls, procs, window = self.run_measurement(owner=lambda d: "ours" if d == ":72" else "other")
+        self.assertIsInstance(error, _Reached)
+        window.assert_called_once()
+        self.assertEqual(window.call_args.args[0]["DISPLAY"], ":72")
+        self.assertTrue(procs[":71"].stopped)
+        self.assertEqual({c[2].get("DISPLAY") for c in calls if c[1][0] == "xdpyinfo"} - {":71", ":72"}, set())
+
+    def test_the_callers_display_is_never_used_even_when_it_looks_like_ours(self):
+        """Sweep: if the display this run holds is the caller's DISPLAY, the measurement refuses it."""
+        error, calls, procs, window = self.run_measurement(owner=lambda d: "ours", caller_display=":71")
+        self.assertIsInstance(error, WatcherError)
+        self.assertIn("caller", str(error))
+        window.assert_not_called()
+
+    def test_the_xvfb_and_its_probe_never_inherit_the_callers_display(self):
+        """Sweep: the Xvfb is spawned without the caller's DISPLAY, and the readiness probe asks the new one."""
+        error, calls, procs, window = self.run_measurement(owner=lambda d: "ours")
+        self.assertIsInstance(error, _Reached)
+        spawned = [c for c in calls if c[0] == "spawn"]
+        self.assertEqual(len(spawned), 1)
+        self.assertNotIn("DISPLAY", spawned[0][2])
+        self.assertEqual({c[2]["DISPLAY"] for c in calls if c[1][0] == "xdpyinfo"}, {":71"})
+        self.assertEqual(window.call_args.args[0]["DISPLAY"], ":71")
+
+
+class MeasureRateGateTest(unittest.TestCase):
+    """R1 and R2 swept to what the command reports and exits with: main() --measure-rate on fakes (no
+    display, no tool), the real Watcher loop on a clock counted in whole microseconds. rate.json's fps,
+    seconds_elapsed, captures and passed, and the exit code, must all follow the real interval, unrounded."""
+
+    def measure(self, durations_us, interval):
+        import contextlib, io
+        from unittest import mock
+        clock = [0]
+        n = [0]
+
+        def capture(cmd, env):
+            clock[0] += durations_us(n[0])
+            n[0] += 1
+            Path(cmd[-1]).write_bytes(str(n[0]).encode())
+
+        def make_watcher(*args, **kw):
+            return Watcher(*args, run=capture, geometry=lambda wid, env: {"width": 800, "height": 600},
+                           monotonic=lambda: clock[0] / 1e6, clock=lambda: 1_700_000_000 + clock[0] / 1e6,
+                           sleep=lambda t: clock.__setitem__(0, clock[0] + round(t * 1e6)),
+                           interval=interval, **kw)
+
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.object(watcher_module, "_start_own_xvfb",
+                                  lambda env: (_FakeProc(), ":71", dict(env, DISPLAY=":71"))), \
+                mock.patch.object(watcher_module, "_start_test_window", lambda env, wd: (_FakeProc(), "0x2a")), \
+                mock.patch.object(watcher_module, "_tool_version", lambda cmd: "fake"), \
+                mock.patch.object(watcher_module, "Watcher", make_watcher), \
+                contextlib.redirect_stdout(io.StringIO()) as out:
+            code = watcher_module.main(["--measure-rate", "--seconds", "20", "--out", str(Path(tmp) / "m")])
+            doc = json.loads((Path(tmp) / "m" / "rate.json").read_text())
+        return code, doc, out.getvalue()
+
+    def test_sols_r1_case_fails_the_command(self):
+        durations = [10_000, 10_000, 19_750_000]
+        code, doc, text = self.measure(lambda n: durations[n], 0.125)
+        self.assertEqual((code, doc["passed"], doc["captures"]), (1, False, 3))
+        self.assertGreaterEqual(doc["seconds_elapsed"], 20.0)
+        self.assertAlmostEqual(doc["fps"], 3 / doc["seconds_elapsed"])
+        self.assertIn("FAIL", text)
+
+    def test_sols_r2_case_fails_the_command_and_reports_the_unrounded_rate(self):
+        code, doc, text = self.measure(lambda n: 201_000 if n == 99 else 10_000, 0.2)
+        self.assertEqual((code, doc["passed"], doc["captures"]), (1, False, 100))
+        self.assertAlmostEqual(doc["seconds_elapsed"], 20.001, places=6)
+        self.assertAlmostEqual(doc["fps"], 100 / 20.001, places=9)
+        self.assertLess(doc["fps"], REQUIRED_FPS)
+        self.assertIn("FAIL", text)
+
+    def test_exactly_at_the_threshold_the_command_passes(self):
+        code, doc, text = self.measure(lambda n: 200_000 if n == 99 else 10_000, 0.2)
+        self.assertEqual((code, doc["passed"], doc["captures"], doc["fps"]), (0, True, 100, 5.0))
+        self.assertIn("PASS", text)
 
 
 def _have(*tools):

@@ -154,6 +154,7 @@ class Watcher:
         self.stored = 0             # frames written to frames_dir
         self.failures = 0
         self._last = None           # (name, sha256) of the frame stored last
+        self.last_end = None        # monotonic time the last indexed capture finished (the rate's interval)
         self._geometry = None       # (read at, dict) of the last successful read
 
     def log(self, message):
@@ -228,6 +229,7 @@ class Watcher:
         with self.index_path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(line, sort_keys=True) + "\n")
         self.count += 1
+        self.last_end = self.monotonic()
         self.log(f"frame step={step} name={line['name']} sha256={digest}"
                  + (" duplicate" if line.get("duplicate") else ""))
         return line
@@ -266,22 +268,58 @@ class Watcher:
 
 # ---- the rate measurement (T42): its own Xvfb, a test window, no game
 
-def rate_summary(lines):
-    """The sustained rate of the index lines `lines` (dicts with epoch_ms): captures after the first
-    divided by the time from the first to the last, so the first capture does not count for free.
-    {} when fewer than two captures. Also the capture times' mean, median, 95th percentile and max."""
-    stamps = sorted(int(line["epoch_ms"]) for line in lines)
-    if len(stamps) < 2 or stamps[-1] == stamps[0]:
-        return {}
+class _Deadline:
+    """The stop of a timed run: set once the monotonic clock reaches `deadline`; a wait never runs past it.
+    It stands in for the threading.Event of a sitting, so the measurement runs on the caller's thread with
+    the watcher's own clock and sleep (and the tests can drive both)."""
+
+    def __init__(self, deadline, monotonic, sleep):
+        self.deadline, self.monotonic, self.sleep = deadline, monotonic, sleep
+
+    def is_set(self):
+        return self.monotonic() >= self.deadline
+
+    def wait(self, seconds):
+        remaining = min(seconds, self.deadline - self.monotonic())
+        if remaining > 0:
+            self.sleep(remaining)
+
+
+def timed_capture(watcher, seconds):
+    """Run `watcher`'s loop for `seconds` on its own clock; returns (captures, interval_s).
+
+    The interval runs from the start to the end of the last indexed capture or to the deadline,
+    whichever is later (T42 round 2, R1): a capture that runs past the deadline counts, and so does
+    its time, and a tail with no capture counts as time with no frame. Every indexed capture counts,
+    stored or duplicate; a failed one does not."""
+    started = watcher.monotonic()
+    deadline = started + seconds
+    watcher.run_loop(_Deadline(deadline, watcher.monotonic, watcher.sleep))
+    finished = max(deadline, watcher.last_end if watcher.last_end is not None else deadline)
+    return watcher.count, finished - started
+
+
+def sustained_fps(captures, interval_s):
+    """Captures per second over the measurement's interval, unrounded (R2: rounding is for display)."""
+    return captures / interval_s if interval_s > 0 else 0.0
+
+
+def rate_passes(fps, failures):
+    """The gate of Done-when 2: the unrounded rate at least REQUIRED_FPS, and no failed capture."""
+    return fps >= REQUIRED_FPS and failures == 0
+
+
+def capture_ms_summary(lines):
+    """Mean, median, 95th percentile and max of the index lines' capture_ms; {} when there are none.
+    Reported, never gated on."""
     spans = sorted(int(line["capture_ms"]) for line in lines)
+    if not spans:
+        return {}
     return {
-        "fps": round((len(stamps) - 1) / ((stamps[-1] - stamps[0]) / 1000.0), 2),
-        "capture_ms": {
-            "mean": round(sum(spans) / len(spans), 1),
-            "median": spans[len(spans) // 2],
-            "p95": spans[min(len(spans) - 1, int(len(spans) * 0.95))],
-            "max": spans[-1],
-        },
+        "mean": round(sum(spans) / len(spans), 1),
+        "median": spans[len(spans) // 2],
+        "p95": spans[min(len(spans) - 1, int(len(spans) * 0.95))],
+        "max": spans[-1],
     }
 
 
@@ -380,16 +418,10 @@ def measure_rate(seconds, out_dir=None, frames_dir=None):
         window_proc, window_id = _start_test_window(env, workdir)
         watcher = Watcher(window_id, env, frames_dir, out_dir / "frames-index.jsonl",
                           out_dir / "watcher.log", step_source=lambda: 0)
-        started = time.monotonic()
-        thread, stop = watcher.start()
-        time.sleep(seconds)
-        stop.set()
-        thread.join(timeout=CAPTURE_TIMEOUT + 5)
-        elapsed = round(time.monotonic() - started, 2)
+        captures, interval_s = timed_capture(watcher, seconds)
+        fps = sustained_fps(captures, interval_s)
         index = out_dir / "frames-index.jsonl"
         lines = [json.loads(text) for text in index.read_text().splitlines()] if index.is_file() else []
-        summary = rate_summary(lines)
-        fps = summary.get("fps", 0.0)
         doc = {
             "task": "T42",
             "method": "ImageMagick `import -window <id>`, deadline-driven schedule, duplicates stored once",
@@ -401,15 +433,16 @@ def measure_rate(seconds, out_dir=None, frames_dir=None):
             "interval_s": watcher.interval,
             "frames_dir": "a temporary folder" if frames_dir.parent == workdir else str(frames_dir),
             "seconds_requested": seconds,
-            "seconds_elapsed": elapsed,
-            "captures": watcher.count,
+            "rate_interval": "from the start to the end of the last capture or the deadline, whichever is later",
+            "seconds_elapsed": interval_s,
+            "captures": captures,
             "stored": watcher.stored,
             "duplicates": watcher.count - watcher.stored,
             "failures": watcher.failures,
             "fps": fps,
             "required_fps": REQUIRED_FPS,
-            "passed": fps >= REQUIRED_FPS and watcher.failures == 0,
-            "capture_ms": summary.get("capture_ms", {}),
+            "passed": rate_passes(fps, watcher.failures),
+            "capture_ms": capture_ms_summary(lines),
             "tools": {"import": _tool_version(["import", "-version"]),
                       "cpu_count": os.cpu_count()},
             "index_sha256": sha256_file(index) if index.is_file() else None,
@@ -439,7 +472,7 @@ def main(argv=None):
     if args.seconds <= 0:
         parser.error("--seconds must be positive")
     doc, passed = measure_rate(args.seconds, args.out, args.frames_dir)
-    print(f"sustained {doc['fps']} frames per second over {doc['seconds_elapsed']} s "
+    print(f"sustained {doc['fps']:.3f} frames per second over {doc['seconds_elapsed']:.3f} s "
           f"({doc['captures']} captures, {doc['stored']} stored, {doc['duplicates']} duplicates, "
           f"{doc['failures']} failures); required {doc['required_fps']}: {'PASS' if passed else 'FAIL'}")
     print(f"capture time (ms): {doc['capture_ms']}")
