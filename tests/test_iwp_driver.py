@@ -1487,6 +1487,10 @@ class CommandHelperSweepTest(unittest.TestCase):
         ("runtime/iwp/driver/session.py", "Engine.display_is_ours"): (1, "whether the display answers: a state"),
         ("runtime/iwp/driver/session.py", "Engine.terminate"): (2, "wineserver -k's exit status, recorded and never relied on"),
         ("runtime/iwp/driver/runner.py", "kill_game"): (1, "the outsider's fault: wineserver -k's exit status, recorded and never relied on"),
+        # T42, the watcher's --measure-rate (a test window on a display of its own, no game):
+        ("runtime/iwp/driver/watcher.py", "_start_own_xvfb"): (1, "the readiness poll of the measurement's display: a state"),
+        ("runtime/iwp/driver/watcher.py", "_start_test_window.window"): (1, "the poll for the test window: a state"),
+        ("runtime/iwp/driver/watcher.py", "_tool_version"): (1, "a version probe: a state, unknown when it fails"),
     }
     OFF_PATH = {
         ("runtime/iwp/spike/cycle.py", "Cycle.protect_install"): "the spike's bind; the driver binds the install "
