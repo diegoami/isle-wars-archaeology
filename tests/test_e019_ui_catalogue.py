@@ -865,8 +865,9 @@ def edit_section(path, qid, change):
 
 
 def _find_section(text, qid):
-    """The `#### <qid> ...` match of one question's section of a written F020."""
-    match = re.search(rf"^#### {re.escape(qid)} .*?(?=^#### |\Z)", text, re.S | re.M)
+    """The `#### <qid> ...` match of one question's section of a written F020, bounded as the
+    check bounds it (#140 round 2): the next heading of level 2-4, or the end of the file."""
+    match = re.search(r"^#### " + re.escape(qid) + r" .*?(?=^#{2,4} |\Z)", text, re.S | re.M)
     assert match, f"F020 has no section for {qid}"
     return match
 
@@ -987,12 +988,13 @@ class F020CitationRuleRoundTwoTest(unittest.TestCase):
     backticked token holding a record name is one of the two forms the rule allows (R2), and the
     section stops at the next heading of level 2-4 instead of running to the end of the file.
 
-    Each test writes the catalogue the recorder's tree needs (write_f020) and keeps its own record
-    and screenshot citations valid, so the rule's other errors — a missing path, a section with no
-    record sha — stay out and cannot mask the gap (Sol's R2 note). A test that expects an error
-    fails on main's check, which has no citation rule at all; where a test expects none — the
-    genuine-prefix one and the section bound — a second section carries the one error only this
-    rule produces, so it fails there too, as tests (e) and (f) already do."""
+    Each test writes the catalogue the recorder's tree needs (write_f020) and keeps a valid record
+    citation in the section beside the mutation — a path that exists and, unless the sha is what
+    it mutates, its real sha256 and a real screenshot hash — so errors 1 and 3 stay out and cannot
+    mask the gap (Sol's R2 note). A test that expects an error fails on main's check, which has no
+    citation rule at all; where a test expects none — the genuine-prefix one and the section bound
+    — a second section carries the one error only this rule produces, so it fails there too, as
+    tests (e) and (f) already do."""
 
     def test_r1a_a_cited_record_prefix_with_an_invented_suffix_fails(self):
         """R1: the cited record prefix extended by an invented suffix is not a prefix of the
@@ -1011,30 +1013,36 @@ class F020CitationRuleRoundTwoTest(unittest.TestCase):
 
     def test_r1b_a_shorter_hash_prefixing_the_cited_sha_but_not_the_file_fails(self):
         """R1: a hash shorter than the cited sha text, prefixing that text but not the file's
-        digest. The cited text is itself a hash citation and is not a prefix of anything the
-        section backs either, so it draws error 4 beside the shorter one, and a record sha that is
-        no prefix of its file's sha256 is error 2: three lines, every one of them this mutation's
-        own, none of them the section's record path or screenshot (no error 1, no error 3). That
-        the cited text must fail too is not an accident: if a prefix of it passed, the text would
-        pass with it."""
+        digest. Round 1 exempts it with `sha.startswith(h)`; the digest rule refuses it. The
+        section's record path keeps its own citation, so error 2 is the one companion line it
+        draws: a sha cited beside a record path that is no prefix of that file's sha256 is error 2
+        whatever else the text is, and a shorter hash prefixing such a text cannot be a prefix of
+        the file either. The screenshot citation stays valid, so no error 1 and no error 3.
+
+        The Run line is rewritten into the shape F020 really uses — `(sha256 `hex…`, driver
+        `…`, display …)` — so the sha field is read out of the repository's own text and not only
+        out of write_f020's shorter one; were it not read, the section would cite no record sha and
+        error 3 would appear instead of error 2."""
         with Copy() as tmp:
             path = write_f020(tmp)
             record_path = records_of(tmp, "Q-UI-04")[0][0]
             digest = hashlib.sha256(record_path.read_bytes()).hexdigest()
             wrong, short = "5" * 16, "5" * 8
             self.assertFalse(digest.startswith(wrong))
+            real_shape = (f"(sha256 `{wrong}\u2026`, driver `e257bb1b395a`, "
+                          "display 800x600x24, 42.56 s)")
             edit_section(path, "Q-UI-04",
-                         lambda body: body.replace(f"`{digest[:16]}\u2026`", f"`{wrong}\u2026`", 1))
+                         lambda body: body.replace(f"(sha256 `{digest[:16]}\u2026`)", real_shape, 1))
+            self.assertIn(real_shape, section(path, "Q-UI-04"))
             edit_section(path, "Q-UI-04", lambda body: body.rstrip("\n")
                          + f"\n- **Screenshot**: `shorter.png` (sha256 `{short}\u2026`)\n")
             errors = check(tmp, f020=True)
-            self.assertEqual(len(errors), 3, errors)
+            self.assertEqual(len(errors), 2, errors)
             self.assertTrue(any("which is not a prefix of the file's sha256" in e for e in errors),
-                            errors)                            # error 2
+                            errors)                            # error 2, the cited sha text
             hashes = [e for e in errors if "cites the hash" in e]
-            self.assertEqual(len(hashes), 2, errors)           # error 4 for both hash citations
-            self.assertTrue(any(f"cites the hash {short}\u2026" in e for e in hashes), errors)
-            self.assertTrue(any(f"cites the hash {wrong}\u2026" in e for e in hashes), errors)
+            self.assertEqual(len(hashes), 1, errors)           # error 4, the shorter hash alone
+            self.assertIn(f"cites the hash {short}\u2026", hashes[0])
 
     def test_r1c_a_genuine_longer_prefix_of_a_cited_record_file_passes(self):
         """R1: a hash that really is a longer prefix of a record file's sha256. The record is

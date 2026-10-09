@@ -27,11 +27,17 @@ Exits 0 when every piece holds:
   inventory does not have (kind, number, name, handler — the same rule
   tools/check_pro_question_map.py enforces for the questions map);
 - an F020 section whose status is observed or narrowed cites its evidence (#140, T39 DW2): every
-  cited runs/E019/<batch>/E019-r<nnnn>.json exists under the root being checked, the sha256
-  prefix cited beside a record is a prefix of that file's sha256, the section cites at least one
+  backticked token holding a record name is one of the two forms F020 uses — the strict full path
+  runs/E019/<batch>/E019-r<digits>.json (one path segment, no `..`), which must exist under the
+  root being checked and whose sha256 prefix must be a prefix of that file's sha256, or the bare
+  file name, which is not checked; anything else is refused — the section cites at least one
   record with its sha, and every hash it cites (backticked lowercase hex immediately followed by
-  an ellipsis) is either one of those record shas or a prefix of an output of a record it cites
-  by full path. A bare file name and backticked hex without the ellipsis are not citations.
+  an ellipsis) is a prefix of the sha256 computed from a record it cites by full path, or of an
+  output of such a record. The cited sha text itself is never trusted for that (#140 round 2): a
+  hash is matched against the file, not against another citation, so neither an invented extension
+  of a cited prefix nor a shorter hash passing as one gets through. A record's own sha field is the
+  subject of the two rules above, which compare it with that same file, and error 4 does not repeat
+  their line for it. A bare file name and backticked hex without the ellipsis are not citations.
 
 The check reads recorded files; it does not run the game.
 """
@@ -59,15 +65,26 @@ HANDLER = re.compile(r"\b([A-Za-z][A-Za-z0-9_]*)\(\)")
 AT_LEAST = re.compile(r"at least (\d+) ([a-z ]+)")
 SIZE = re.compile(r"(\d+)x(\d+)(?:x\d+)?")
 HEX64 = re.compile(r"[0-9a-f]{64}")
-# F020's two citation formats (#140): a record is a backticked full path
-# `runs/E019/<batch>/E019-r<nnnn>.json` — one path segment for the batch, so a citation names a
-# file of a batch folder and nothing else — optionally followed by ` (sha256 `<prefix>…`)`;
-# a hash is any other backticked lowercase hex prefix of 8-64 chars immediately followed by `…`
-# (U+2026). A bare file name (`E019-r0005.json`, as Q-UI-19 cites its two aborted attempts) is
-# not a record citation, and backticked hex without the ellipsis (a driver id like
-# `e257bb1b395a`) is not a hash citation.
-RECORD_CITE = re.compile(r"`(runs/E019/[A-Za-z0-9][A-Za-z0-9._-]*/E019-r\d+\.json)`"
-                         r"(?:\s*\(sha256 `([0-9a-f]{8,64})…`)?")
+# F020's citation formats (#140, round 2): a record citation is a backticked token that holds a
+# record name (`E019-r<digits>.json`) in one of exactly two forms — the strict full path
+# `runs/E019/<batch>/E019-r<digits>.json` (one path segment for the batch, no `..`, so a citation
+# names a file of a batch folder and nothing else), which then goes through errors 1 and 2, or the
+# bare file name `E019-r0005.json` (as Q-UI-19 cites its two aborted attempts), which is allowed
+# and not checked. Any other token holding a record name is error 5. A manifest path
+# (`E019-r<digits>.manifest.json`) holds no record name, so it is not a record citation. A record
+# path may be followed directly by ` (sha256 `<prefix>…`)`, its sha citation. A hash is any
+# backticked lowercase hex prefix of 8-64 chars immediately followed by `…` (U+2026), e.g.
+# `ae6e98d28d379bb4…`; backticked hex without the ellipsis (a driver id like `e257bb1b395a`) is
+# not a hash citation, and is ignored. Round 2 (R1): a hash citation is matched against the sha256
+# computed from a cited record's file, never against the cited sha text — a citation must not be
+# able to vouch for itself, nor for an invented extension of itself.
+RECORD_NAME = re.compile(r"E019-r\d+\.json")
+BARE_NAME = re.compile(r"E019-r\d+\.json\Z")
+STRICT_PATH = re.compile(r"runs/E019/[A-Za-z0-9][A-Za-z0-9._-]*/E019-r\d+\.json")
+CITED_TOKEN = re.compile(r"`([^`\n]+)`")
+# the sha field after a record path: F020 writes `(sha256 `<prefix>…`, driver `…`, display …)`,
+# so the field ends at its closing backtick, not at the parenthesis
+SHA_AFTER_PATH = re.compile(r"\s*\(sha256 `([0-9a-f]{8,64})…`")
 HASH_CITE = re.compile(r"`([0-9a-f]{8,64})…`")
 
 
@@ -103,26 +120,44 @@ def citation_errors(text, scripts, where):
 
 def f020_citation_errors(body, root, where):
     """Errors for the record and hash citations of one F020 section whose status is observed or
-    narrowed (#140): the section's evidence must be checkable — a cited record exists under
-    `root`, the sha256 prefix cited beside it is a prefix of that file's sha256, at least one
-    cited record carries its sha (T39 DW2), and every hash cited is either one of those record
-    shas or a prefix of an output of a record cited by full path in the section. One line per
-    error, numbered 1-4 in the issue (#140)."""
+    narrowed (#140): the section's evidence must be checkable. A record citation is one of the two
+    forms above (error 5 otherwise), exists under `root` (error 1), and carries a sha256 prefix
+    that is a prefix of that file's sha256 (error 2); the section cites at least one record with
+    its sha (T39 DW2, error 3); and every hash cited is a prefix of the sha256 computed from a
+    record cited by full path in the section, or of an output of such a record (error 4) — the
+    cited sha text is never trusted for that (round 2, R1). One line per error, numbered 1-5 in
+    the issue (#140)."""
     errors = []
     cited = []                              # (path, sha prefix or None), in text order
-    for m in RECORD_CITE.finditer(body):
-        rel, sha = m.group(1), m.group(2)
-        path = Path(root) / rel
+    digests = []                            # the sha256 of every cited record's file, from the file
+    fields = set()                          # the (start, end) of each record's own sha field
+    for token in CITED_TOKEN.finditer(body):
+        text = token.group(1)
+        if not RECORD_NAME.search(text):
+            continue                          # not a record citation (a manifest path holds none)
+        if BARE_NAME.fullmatch(text):
+            continue                          # a bare file name: allowed, not checked
+        if not STRICT_PATH.fullmatch(text) or ".." in text:
+            errors.append(f"{where} cites a record path outside runs/E019/<batch>/ or malformed: "
+                          f"{text}")                                                     # 5
+            continue
+        after = SHA_AFTER_PATH.match(body, token.end())
+        sha = after.group(1) if after else None
+        if after:
+            fields.add((after.start(1), after.end(1)))
+        path = Path(root) / text
         cited.append((path, sha))
         if not path.is_file():
-            errors.append(f"{where} cites {rel}, which does not exist")                    # 1
-        elif sha and not hashlib.sha256(path.read_bytes()).hexdigest().startswith(sha):
-            errors.append(f"{where} cites {rel} with sha256 {sha}…, "
-                          "which is not a prefix of the file's sha256")                     # 2
+            errors.append(f"{where} cites {text}, which does not exist")                 # 1
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        digests.append(digest)
+        if sha and not digest.startswith(sha):
+            errors.append(f"{where} cites {text} with sha256 {sha}…, "
+                          "which is not a prefix of the file's sha256")                  # 2
     if not any(sha for _, sha in cited):
         errors.append(f"{where} cites no record with its sha256 "
-                      "(T39's DW2 requires the record's sha)")                              # 3
-    shas = [sha for _, sha in cited if sha]
+                      "(T39's DW2 requires the record's sha)")                           # 3
     outputs = []
     for path, _ in cited:
         if not path.is_file():
@@ -137,12 +172,21 @@ def f020_citation_errors(body, root, where):
                     outputs.append(out["sha256"])
     for m in HASH_CITE.finditer(body):
         h = m.group(1)
-        if any(h.startswith(sha) or sha.startswith(h) for sha in shas):
-            continue                          # a record sha cited in this section
-        if any(o.startswith(h) for o in outputs):
-            continue                          # an output of a record cited in this section
-        errors.append(f"{where} cites the hash {h}…, which is neither a record sha cited here "
-                      "nor a prefix of an output of a record cited here")                   # 4
+        if (m.start(1), m.end(1)) in fields:
+            continue                          # a record's own sha field: errors 1 and 2 compare
+                                              # it with that same file's sha256, and error 4 could
+                                              # only repeat their line — a text that prefixes no
+                                              # cited record's digest prefixes this record's
+                                              # neither, so it never catches what they missed and a
+                                              # wrong record sha draws error 2 alone (the error-2
+                                              # test visits that edge)
+        if any(digest.startswith(h) for digest in digests):   # a cited record's own sha256
+            continue
+        if any(o.startswith(h) for o in outputs):             # an output of a cited record
+            continue
+        errors.append(f"{where} cites the hash {h}…, which is neither a record sha256 "
+                      "computed from a cited file nor a prefix of an output of a record cited "
+                      "here")                                                        # 4
     return errors
 
 
@@ -418,8 +462,11 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
         errors.append(f"F020: {f020_path} does not exist")
     else:
         text = f020_path.read_text(encoding="utf-8")
+        # a section runs to the next heading of level 2-4 (`^#{2,4} `) or the end of the file, so
+        # the last question's section does not take in the `##` sections after it (#140 round 2)
         sections = dict((m.group(1), m.group(2)) for m in
-                        re.finditer(r"^#### (Q-[A-Z]+-\d+).*?\n(.*?)(?=^#### |\Z)", text, re.S | re.M))
+                        re.finditer(r"^#### (Q-[A-Z]+-\d+).*?\n(.*?)(?=^#{2,4} |\Z)",
+                                    text, re.S | re.M))
         for qid in ids:
             body = sections.get(qid)
             if body is None:
