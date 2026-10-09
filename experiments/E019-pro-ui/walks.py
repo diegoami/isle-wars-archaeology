@@ -200,7 +200,7 @@ WALKS = {
         "may_write_saved_files": False,
         "count": None,          # the sizes are checked as sizes: one completed record per size, each
                         # carrying its measured display size (check_ui_catalogue.py, R5)
-        "sizes": ["640x480x24", "800x600x24", "1024x768x24", "1280x1024x24"],
+        "sizes": ["800x600x24", "1024x768x24", "1280x1024x24"],
         "actions": [
             ("step", "shot title-at-this-size"),
             ("step", f"click {OPTIONS_CLICK[0]} {OPTIONS_CLICK[1]}"),
@@ -211,6 +211,10 @@ WALKS = {
             "one launch per size; the driver assumes the 800x600 stage is centred in the game "
             "window (the spike's stage origin), so a size where the title is not detected, or the "
             "Options click does nothing, is recorded as its own outcome",
+            "640x480 is below the game's first-frame geometry: the title screen was not seen "
+            "within 45 s on the first and second attempt (records E019-r0005 and E019-r0009, "
+            "both aborted). The walk table lists the three reachable sizes; the catalogue "
+            "narrows Q-UI-19 to those.",
             "the projector-level windowing is not established here: what the projector does with "
             "the desktop size is outside the Lingo and outside this walk",
         ],

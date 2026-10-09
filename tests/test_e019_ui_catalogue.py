@@ -614,7 +614,7 @@ class RoundTwoRegressionTest(unittest.TestCase):
                             o["value"] = json.dumps({"requested": "800x600x24", "display pixels": 480000})
                 rewrite(path, one_size)
             errors = check(tmp)
-            self.assertTrue(any(e.startswith("Q-UI-19: no completed record shows the display size 640x480x24")
+            self.assertTrue(any(e.startswith("Q-UI-19: no completed record shows the display size 1024x768x24")
                                 for e in errors), errors)
 
     def test_r5_a_size_not_measured_as_asked_is_refused(self):
