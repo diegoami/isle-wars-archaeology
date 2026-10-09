@@ -1,0 +1,40 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0009",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "title-screen-timeout.png",
+      "bytes": 184618,
+      "sha256": "6a12be55d5d250352d8d52bd3fe4be814ccb75635a2f44354125ca29dfdedd7a",
+      "asset": "6a12be55d5d25035-title-screen-timeout.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2929,
+      "sha256": "77130308164c2628e2b6a87044100a06ccdad27fda66fcacb8e8b72aa4712fdb",
+      "asset": "77130308164c2628-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 867,
+      "sha256": "fab66cbbb8ae9ed09dac6ebb3f6cfd888e473a19751b0c0f6082d02b4f14b834",
+      "asset": "fab66cbbb8ae9ed0-run.log",
+      "class": "log"
+    }
+  ]
+}
