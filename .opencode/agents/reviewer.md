@@ -117,6 +117,10 @@ how the run works.
   on a later round: it checks the fixes and new code only. Before the verdict, make one last pass
   over the full diff and write "Final pass done" as the last line before it. If you did not cover
   the whole diff, name what you left out, and do not approve.
+- When the brief carries the implementer's `RUN-NOTES.md` (`docs/running-notes.md`), read it
+  before the diff. It gives the design rationale and what was deferred, so grade against the
+  design as well as the final state. It is the implementer's account, not evidence: verify what it
+  claims.
 - Your **final message is the review** and nothing else: line 1 is exactly the header the brief
   gives; line 2 the verdict alone (`approve`, `approve after named fixes`, `rework`,
   `user decision`); then any where-I-worked lines (worktree, HEAD, diff, commands run); then one
