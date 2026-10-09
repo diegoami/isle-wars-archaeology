@@ -32,12 +32,14 @@ HOME = "/home/someone"  # a synthetic home: no machine path is assumed
 STATIC = f"{HOME}/.local/share/isle-wars-archaeology/static"
 
 EXPECTED_EXTERNAL = {
-    "/tmp/opencode/*": "deny",
+    # allowed since harness_imperial fix #144 (bump to 610f979): a deny made OpenCode reject the agent's
+    # own spilled tool output, and the run was discarded
+    "/tmp/opencode/*": "allow",
     "~/.local/share/isle-wars-archaeology/static/*": "allow",
     "/tmp/iwa-review-*": "allow",
 }
 # What OpenCode puts before an agent's own rules (as `opencode debug agent` lists them): allow all,
-# ask for any outside directory, and its own /tmp/opencode allowance, which the agent denies (L43).
+# ask for any outside directory, and its own /tmp/opencode allowance, which the agent also allows (fix #144).
 DEFAULTS = [("*", "*", "allow"), ("external_directory", "*", "ask"),
             ("external_directory", "/tmp/opencode/*", "allow")]
 
@@ -131,7 +133,7 @@ class ReviewerPermissions(unittest.TestCase):
                   f"{HOME}/.local/share/isle-wars-archaeology/static-other",
                   f"{HOME}/.local/share/isle-wars-archaeology/iwp.wineprefix/drive_c",
                   f"{HOME}/.local/share", HOME, f"{HOME}/.ssh", f"{HOME}/projects/isle-wars-archaeology",
-                  "/tmp", "/tmp/iwa-other", "/tmp/opencode", "/tmp/harness-opencode", "/mnt/c/Users", "/"):
+                  "/tmp", "/tmp/iwa-other", "/tmp/harness-opencode", "/mnt/c/Users", "/"):
             self.assertNotEqual(self.outside(d), "allow", d)
 
     def test_edit_tool_is_denied_everywhere(self):

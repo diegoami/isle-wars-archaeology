@@ -20,7 +20,7 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 | Role | Who | Does |
 | --- | --- | --- |
 | Main session | Claude, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
-| Implementer | OpenCode GLM-5.3 Flash, then DeepSeek V4.1 Flash, via `tools/harness/implement.mjs`, then a Claude Sonnet agent (L42); a heavier model only with the reason in the task file (L46) | One task, one branch, one PR, in its own worktree |
+| Implementer | OpenCode GLM-5.3 Flash, then MiMo V2.6 Flash, via `tools/harness/implement.mjs`, then a Claude Sonnet agent (L42); a heavier model only with the reason in the task file (L46) | One task, one branch, one PR, in its own worktree |
 | Reviewer | OpenCode GPT-5.6 Luna (direct OpenAI, L51) via `tools/harness/review.mjs`, then a Claude Opus agent; never the implementer's family (L27). Exit 3: Opus reviews; exit 4: the main session reads the flagged review and decides (L28) | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
@@ -35,7 +35,7 @@ It watches each background job (start, end, no output for 10 min), never with `p
 `docs/tasks/T<nn>.md`, 150–400 words, from `docs/tasks/TEMPLATE.md`: Kind, Evidence, Owns,
 Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
 - **Owns** names directories or files. Go finer only when two tasks run at once in one file: function-level Owns made one project open 27 PRs that only widened a list. (L5)
-- **Done when**: each line is one check a command can run. The main session runs each line before dispatch: it fails on `main` and passes on a mock fix. (L45)
+- **Done when**: each line is one check a command can run. The main session runs each line before dispatch: it fails on `main` and passes on a mock fix. (L45) For a guard (a gate, check or tool whose failure lets a protected rule be bypassed), each constraint it enforces is its own numbered line, and the main session pushes the guard's tests to the task branch before dispatch, one mutation test per bypass class the design predicts, failing until the guard lands. (L64)
 - **Milestones**: a task likely to outlast one implementer run (about an hour), or whose Done-when is
   all or nothing (an exact match, a whole model), is split into tasks that each merge on their own:
   the static reading, any tool that produces ground truth, then the deliverable piece by piece. A
@@ -138,7 +138,7 @@ the rework rate with the baseline in `docs/lessons.md` before changing models. (
 ## 10. Adding a rule
 
 A rule enters `CLAUDE.md` or this file only with a lesson in `docs/lessons.md`: a failure in a real
-run, or the owner's decision with its basis. Plausible rules without either stay out. (L14)
+run, or the owner's decision with its basis. Plausible rules without either stay out. (L14) A rule may carry a **carve-out**: an addendum that loosens it under named conditions, its wording unchanged, with lettered preconditions (A, B, …) a reviewer checks one by one, a gate in `tools/` that enforces them, and what stays forbidden; a project's `CLAUDE.md` holds the instance. (L63)
 
 ## 11. For a reverse-engineering project
 
@@ -147,19 +147,8 @@ run, or the owner's decision with its basis. Plausible rules without either stay
 - New evidence runs in two stages: findings to the research repository, then a check of every
   document claim it touches. Each finding is a doc fix, a bug, a task-file edit, or a question for the user; research never decides design. (L16)
 - The original files never enter the repository. CI fetches them from a private fixtures
-  repository holding the whole corpus; tests find fixtures by name; local tests skip without them. (L17)
-- **The rule 18 carve-out (owner, 2026-10-08; companion changes T35, T36, T37 merged).** A model
-  agent may run the original Pro binary under Wine on the user's machine for run capture and
-  UI observation, under constraints A–G. The binary, the install, the run copy, savestates,
-  memory dumps, screenshots, recordings and any patched build stay on the user's machine —
-  never in the repo, a release, an issue, a cloud session, or any tool input that leaves the
-  user's machine. Exception (the owner, 2026-10-08): a model-driven sitting's screenshots and frames may be read by the same model APIs as derived output (Anthropic, OpenAI, Z.ai, Alibaba), never by free OpenRouter models, and are still never committed, uploaded or posted. The T36 gate in `tools/check_no_originals.py` enforces constraint F: a run
-  record whose `runtime.platform` starts with `wine-on-user-machine` is allowed only when
-  `start_state.sha256` matches the F019 hash table (`findings/F019-pro-setup-rules.md`) for
-  the named set+variant. Evidence manifests must use `class: recording`, not `screenshot`.
-  T38 task file at `docs/tasks/T38.md` is the first model-driven Wine run's entry gate;
-  the per-claim wording amendment under constraint G is per-claim, not in bulk. The carve-out
-  is *corroboration*, never replacement, of the owner's Bandicam captures (T28).
+  repository holding the whole corpus; tests find fixtures by name; local tests skip without them. (L17) A *model-driven run* of the original is a carve-out of this (§10): a known-good hash table in a finding, a gate that refuses any run record off that table, then a `model-driven` task (`docs/tasks/TEMPLATE.md`); it corroborates the owner's runs, never replaces them, and what it shows amends `spec/` and `findings/` one claim at a time, never in bulk. (L63)
+  Here: CLAUDE.md rule 18's carve-out (the owner, 2026-10-08; table F019, gate T36, platform `wine-on-user-machine-iwp-2.0`, evidence `class: recording`). Since 2026-10-09, constraint E counts model sittings on their own, beside the owner's videos.
 
 ## 12. Delegating decisions to Jev
 

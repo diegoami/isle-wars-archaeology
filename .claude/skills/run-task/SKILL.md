@@ -123,7 +123,7 @@ For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the
         the same kind of defect again, in new or unchanged code (a sibling the last round missed
         counts). Then the next round goes one step up the ladder: a light OpenCode model → a
         heavy one → a Claude Opus agent (where the owner pairs by difficulty: GLM-5.3 Flash →
-        DeepSeek V4.1 Flash → Opus), and Sonnet → Opus; never down within a task. At the top
+        MiMo V2.6 Flash → Opus), and Sonnet → Opus; never down within a task. At the top
         there is no stronger model: the round fixes the class as below, and changes the approach
         when the class needs it (as golden screenshots did in malpaco T02), saying so on the task file.
         - The round count does not reset, and the reviewer stays of another family: with Opus
@@ -154,9 +154,10 @@ Never:
 - weaken a Done-when;
 - let the implementer's model family review its PR;
 - relay part of a review;
-- dispatch a `model-driven` task without the rule 18 carve-out's preconditions met: the F019
-  hash table (T35) and the `check_no_originals.py` gate (T36) both merged; the T38 task file
-  shape available; the implementer's `runtime.platform` set to `wine-on-user-machine-iwp-2.0`
-  with `start_state.sha256` matching the F019 row's hash. The carve-out is corroboration, never
-  replacement, of the owner-plays model.
+- dispatch a `model-driven` task before its carve-out's table and gate are merged (process.md §10, L63).
+  Here, that is the rule 18 carve-out's preconditions: the F019 hash table (T35) and the
+  `check_no_originals.py` gate (T36) both merged; the T38 task file shape available; the
+  implementer's `runtime.platform` set to `wine-on-user-machine-iwp-2.0` with
+  `start_state.sha256` matching the F019 row's hash. Since 2026-10-09 (constraint E) model
+  sittings count on their own, beside the owner's videos;
 - force-push or rewrite `main`.

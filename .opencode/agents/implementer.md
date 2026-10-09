@@ -6,19 +6,19 @@ permission:
     "*": allow
     "*.local/share/isle-wars-archaeology/static/*": deny
   external_directory:
-    "/tmp/opencode/*": deny
+    "/tmp/opencode/*": allow
     "~/.local/share/isle-wars-archaeology/static/*": allow
-  task:
-    "*": deny
   bash:
     "*": allow
-    "git push --force*": deny
+    "git push --force *": deny
     "git push -f *": deny
-    "git stash*": deny
+    "git stash": deny
+    "git stash push *": deny
     "git worktree *": deny
-    "git -C * push --force*": deny
-    "git -C * push -f*": deny
-    "git -C * stash*": deny
+    "git -C * push --force *": deny
+    "git -C * push -f *": deny
+    "git -C * stash": deny
+    "git -C * stash push *": deny
     "git -C * worktree *": deny
     "gh pr merge *": deny
     "gh pr review *": deny
