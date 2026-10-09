@@ -2,7 +2,7 @@ T43 review (Luna)
 
 Review PR #137: https://github.com/diegoami/isle-wars-archaeology/pull/137
 Branch: task/T43-de5a82a2-row
-Head: b736b6889b9e7c39e5e75b34c4d2c1afb73a5481
+Head: efb16c625d52786ce2573a28ebd3673296449298
 Base: main
 Issue: #125
 
