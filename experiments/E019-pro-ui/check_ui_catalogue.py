@@ -29,6 +29,7 @@ Exits 0 when every piece holds:
 
 The check reads recorded files; it does not run the game.
 """
+import argparse
 import json
 import re
 import sys
@@ -144,22 +145,36 @@ def size_pixels(size):
     return int(m.group(1)) * int(m.group(2)) if m else None
 
 
-def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None, f020=True):
+def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None, f020=True,
+                batch=None):
     """Every failure of the catalogue as a line; [] when the catalogue is complete. With f020=False
-    only the records are checked (the end-to-end test of the recorder's own output)."""
+    only the records are checked (the end-to-end test of the recorder's own output).
+
+    `batch` (a name in walks.BATCHES, e.g. `title-options`) limits the per-row checks to the
+    questions that batch contains, while the global checks (count targets, walk-table coverage)
+    still span every question. The per-batch exit is the per-walk Done-when 3 gate for a
+    one-batch PR; the no-batch exit is the roll-up the per-batch Done-when calls informational.
+    """
     root = Path(root)
     f020_path = Path(f020_path) if f020_path else root / "findings" / "F020-pro-ui-observations.md"
     errors = []
 
     rows = walks.question_rows(questions_path)
-    ids = catalogue_ids(rows)
+    all_ids = catalogue_ids(rows)
+    if batch is not None:
+        if batch not in walks.BATCHES:
+            errors.append(f"--batch {batch!r} is not one of {list(walks.BATCHES)}")
+            return errors
+        ids = [qid for qid in all_ids if qid in walks.BATCHES[batch]]
+    else:
+        ids = all_ids
     scripts = {(s["kind"], s["number"]): s
                for s in json.loads(Path(inventory_path).read_text(encoding="utf-8"))["movies"][0]["scripts"]}
 
     # the walk table covers every question, and its count targets do not drift from the rows
-    if set(walks.WALKS) != set(ids):
-        errors.append(f"walk table covers {sorted(set(walks.WALKS) ^ set(ids))} wrong")
-    for qid in ids:
+    if set(walks.WALKS) != set(all_ids):
+        errors.append(f"walk table covers {sorted(set(walks.WALKS) ^ set(all_ids))} wrong")
+    for qid in all_ids:
         spec = walks.WALKS.get(qid)
         if not spec:
             continue
@@ -362,14 +377,29 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
 
 
 def main():
-    errors = run_checks(ROOT)
+    parser = argparse.ArgumentParser(description=__doc__.split("\n")[1] if __doc__ else None)
+    parser.add_argument("--batch", default=None,
+                        help="limit the per-row checks to one batch's questions "
+                             "(one of walks.BATCHES); the global checks still span every question")
+    parser.add_argument("--no-f020", action="store_true",
+                        help="check only the records (the recorder's own output), not F020")
+    args = parser.parse_args()
+
+    errors = run_checks(ROOT, f020=not args.no_f020, batch=args.batch)
     for error in errors:
         print("FAIL", error)
     if errors:
-        print(f"{len(errors)} failure(s); the catalogue is not complete")
+        if args.batch is not None:
+            print(f"{len(errors)} failure(s); the {args.batch!r} batch is not complete")
+        else:
+            print(f"{len(errors)} failure(s); the catalogue is not complete")
         return 1
-    print("ok: every catalogue question has a completed record, an observation, its targets met, "
-          "and an F020 section; every citation is in the E008 inventory")
+    if args.batch is not None:
+        print(f"ok: every {args.batch!r} question has a completed record, an observation, "
+              "its targets met, and an F020 section; every citation is in the E008 inventory")
+    else:
+        print("ok: every catalogue question has a completed record, an observation, its targets met, "
+              "and an F020 section; every citation is in the E008 inventory")
     return 0
 
 

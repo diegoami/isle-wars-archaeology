@@ -1,0 +1,388 @@
+{
+  "schema": "run/1",
+  "run_id": "E019-r0007",
+  "experiment": "E019",
+  "arm": "q-ui-19",
+  "rep": 3,
+  "code_commit": "db6375203ad6",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "runtime": {
+    "driver": "experiments/E019-pro-ui/run_walk.py@db6375203ad6",
+    "platform": "linux-wsl2/wine-xvfb-xfwm4",
+    "fingerprint": {
+      "wine": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "xvfb": "2:21.1.12-1ubuntu1.8",
+      "xfwm4": "4.18.0-1build3",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "6.9.12-98",
+      "python": "3.12.3",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "b1df17775116d1482d9fb8efdd62780ab8bd47af510e00e1a2eade9c5c320695",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only once for the command and checked at the start of every walk; the prefix sealed and its registry files equal to their baseline before anything starts and again immediately before the launch; start_state.sha256 lists every entry of the prefix; the prefix is reset to that state after every walk"
+  },
+  "seed": null,
+  "actions": {
+    "script": "experiments/E019-pro-ui/run_walk.py",
+    "sha256": "1c0a8fbf82211a901c9915bd79cb59c73454e21ef417a61c5e261dd45520b4ed",
+    "args": [
+      "--question",
+      "Q-UI-19"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "walk question",
+      "value": "Q-UI-19"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "walk batch",
+      "value": "title-options"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "speed setting",
+      "value": "normal (the unlocked default; every timing is a wall-clock reading at it)"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "DBUS_SESSION_BUS_ADDRESS in the driver's environment",
+      "value": "set: unset for the run"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install read-only inside the run (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "registry files equal their baseline (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.05"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "1024x768x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "X display held by this run's Xvfb (attempt)",
+      "value": "1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.12"
+    },
+    {
+      "step": 3,
+      "source": "process",
+      "field": "snapshot of the prefix before the launch took (s)",
+      "value": "0.34"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "install read-only inside the run (immediately before launch)",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "prefix seal immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "registry files equal their baseline (immediately before launch)",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces the game sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "112,84"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.43"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 1024x768"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached, seconds waited",
+      "value": "5.08"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached and stable, seconds after launch",
+      "value": "6.38"
+    },
+    {
+      "step": 50,
+      "source": "screen",
+      "field": "display size",
+      "value": "{\"requested\": \"1024x768x24\", \"display pixels\": 786432}"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "dd5f26425fc1d4301f4312fbc17723c036d0d8d55560d6bd443e89f3f28d58e6"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "title-at-this-size.png raw RGB8 pixels sha256",
+      "value": "dd5f26425fc1d4301f4312fbc17723c036d0d8d55560d6bd443e89f3f28d58e6"
+    },
+    {
+      "step": 6,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "0"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "click at 320,585: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "click at 320,585: screen changed after the click (s)",
+      "value": "0.03"
+    },
+    {
+      "step": 7,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "1"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "options screen reached, seconds waited",
+      "value": "0.01"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "options-at-this-size.png raw RGB8 pixels sha256",
+      "value": "ad9eb7167201781d00259c4796fa05acf5ca6ab172537c8e673df33d2b16b7e2"
+    },
+    {
+      "step": 8,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "1"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "after.png raw RGB8 pixels sha256",
+      "value": "ad9eb7167201781d00259c4796fa05acf5ca6ab172537c8e673df33d2b16b7e2"
+    },
+    {
+      "step": 51,
+      "source": "screen",
+      "field": "observation",
+      "value": "{\"question\": \"Q-UI-19\", \"display size requested\": \"1024x768x24\", \"screenshots\": [\"title-at-this-size.png\", \"options-at-this-size.png\"], \"counts\": {}, \"reads\": {}, \"timing observations\": 0, \"reading\": \"none by the recorder: the catalogue (F020) reads the screenshots and values named here\"}"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wineserver -k exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game side gone after terminate (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'terminate' took (s)",
+      "value": "0.51"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "display side gone after the display was stopped (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'stopping the display' took (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "30/0/2"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/8"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'snapshot and reset' took (s)",
+      "value": "0.86"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'keeping the logs' took (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "reset and restoration of the prefix performed",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "clean-up: every stage succeeded and the prefix was reset (the next session may start)",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "session seconds, from the first seal to the end of the reset",
+      "value": "9.74"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "84cbd7fc7b03a96d21d678fadac2d039ba00b69009e81fc3a423a7e25fa10f1f",
+      "store": "release:E019"
+    },
+    {
+      "name": "title-at-this-size.png",
+      "sha256": "84cbd7fc7b03a96d21d678fadac2d039ba00b69009e81fc3a423a7e25fa10f1f",
+      "store": "release:E019"
+    },
+    {
+      "name": "options-at-this-size.png",
+      "sha256": "9a753549fc73e463f271cac49f2d9cd045fda85a1e77b0eae02ec90c411baa50",
+      "store": "release:E019"
+    },
+    {
+      "name": "after.png",
+      "sha256": "9a753549fc73e463f271cac49f2d9cd045fda85a1e77b0eae02ec90c411baa50",
+      "store": "release:E019"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "77130308164c2628e2b6a87044100a06ccdad27fda66fcacb8e8b72aa4712fdb",
+      "store": "release:E019"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "store": "release:E019"
+    },
+    {
+      "name": "run.log",
+      "sha256": "a8cb81aab18fa2bad20fc361656f5ebaf60fd75e476411b5ac5632b3f591e5dc",
+      "store": "release:E019"
+    }
+  ],
+  "started": "2026-10-09T10:46:45Z",
+  "ended": "2026-10-09T10:46:55Z",
+  "status": "completed"
+}

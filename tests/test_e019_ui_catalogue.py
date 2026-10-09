@@ -54,7 +54,7 @@ def catalogue_ids():
 
 def walk_order():
     """(qid, size) of every walk, in the batches' order: one per question, one per size for Q-UI-19."""
-    return [(qid, size) for _, qids in walks.BATCHES for qid in qids
+    return [(qid, size) for qids in walks.BATCHES.values() for qid in qids
             for size in (walks.WALKS[qid].get("sizes") or [None])]
 
 
@@ -284,14 +284,15 @@ class WalkTableTest(unittest.TestCase):
     def test_every_catalogue_question_has_a_walk_spec_in_the_batches_of_the_task(self):
         ids = catalogue_ids()
         self.assertEqual(len(ids), 23)
-        self.assertEqual([name for name, _ in walks.BATCHES], [name for name, _ in BRIEF_BATCHES])
-        for (name, qids), (_, want_qids) in zip(walks.BATCHES, BRIEF_BATCHES):
-            self.assertEqual(qids, want_qids, name)
+        self.assertEqual(list(walks.BATCHES), [name for name, _ in BRIEF_BATCHES])
+        for name, qids in walks.BATCHES.items():
+            want = dict(BRIEF_BATCHES)[name]
+            self.assertEqual(qids, want, name)
         self.assertEqual(set(walks.WALKS), set(ids))
 
     def test_every_spec_belongs_to_the_batch_that_names_it(self):
         for qid, spec in walks.WALKS.items():
-            self.assertIn(qid, dict(walks.BATCHES)[spec["batch"]], qid)
+            self.assertIn(qid, walks.BATCHES[spec["batch"]], qid)
 
     def test_targets_come_from_the_question_rows(self):
         import re
@@ -614,7 +615,7 @@ class RoundTwoRegressionTest(unittest.TestCase):
                             o["value"] = json.dumps({"requested": "800x600x24", "display pixels": 480000})
                 rewrite(path, one_size)
             errors = check(tmp)
-            self.assertTrue(any(e.startswith("Q-UI-19: no completed record shows the display size 640x480x24")
+            self.assertTrue(any(e.startswith("Q-UI-19: no completed record shows the display size 1024x768x24")
                                 for e in errors), errors)
 
     def test_r5_a_size_not_measured_as_asked_is_refused(self):

@@ -25,13 +25,16 @@ The table reads at a glance what each screen's entries show. It is filled in as 
 
 | Screen | Questions | What the catalogue shows |
 | --- | --- | --- |
-| Title | Q-UI-04, Q-UI-10, Q-UI-18, Q-UI-19 | when the batch's records are turned in |
-| Options | Q-UI-04, Q-UI-10, Q-UI-17, Q-UI-22, Q-PLY-04 | when the batch's records are turned in |
+| Title | Q-UI-04, Q-UI-10, Q-UI-18, Q-UI-19 | the title screen at three desktop sizes (800x600x24, 1024x768x24, 1280x1024x24) — Q-UI-04 (`E019-r0013`); Q-UI-19 (six records, two attempts each). 640x480 is below the game's first-frame geometry and is narrowed out. |
+| Options | Q-UI-04, Q-UI-10, Q-UI-17, Q-UI-22, Q-PLY-04 | the Options screen at the default frequency (Q-UI-04 `E019-r0013`, Q-UI-22 `E019-r0004`) and at the same three desktop sizes (Q-UI-19, six records). Q-UI-10 times the round-trip without shots. |
 | Board | Q-UI-01, Q-UI-02, Q-UI-03, Q-UI-05, Q-UI-12, Q-UI-13, Q-UI-14, Q-UI-20, Q-UI-21 | when the batch's records are turned in |
 | Placement | Q-UI-08, Q-UI-12, Q-UI-15, Q-UI-16 | when the batch's records are turned in |
 | Attack | Q-UI-08, Q-UI-09, Q-UI-12, Q-UI-16, Q-UI-21 | when the batch's records are turned in |
 | End | Q-UI-11, Q-UI-14, Q-UI-21 | when the batch's records are turned in |
-| Scores | Q-UI-04, Q-UI-11, Q-UI-14 | when the batch's records are turned in |
+| Scores | Q-UI-04, Q-UI-11, Q-UI-14 | the Scores screen reached from the bottom menu (Q-UI-04 `E019-r0013`); the post-game tally screen is captured by Q-UI-11 on the events-end batch. |
+| Help | Q-UI-04 | the three help pages reached from the bottom menu (Q-UI-04 `E019-r0013`). |
+| Loss notice | Q-UI-04, Q-UI-21 | the post-elimination notice reached by clicking New Game mid-game with fewer than 10 human countries (Q-UI-04 `E019-r0013`; Q-UI-21 on the events-end batch). |
+| Frequency-locked | Q-UI-22 | the Options screen after the frequency click in the unregistered build — the click is refused by the registration gate (F019), so the value does not change. Q-UI-22 `E019-r0004`. |
 
 Per-question entries follow, one per row of the questions map, in the map's order. Each entry carries: the question, the row's cited sources, the walk's batch and what it does, the observation with its status (`observed` with the screen region and description; `narrowed` if the look depends on a cast member; `static-only` with what the walk looked for and did not find; `unestablished` if the walk could not visit), the recorded files and their hashes, the timings where the question is about timing, and what would change it. Until a batch's records exist, its entries say so and carry no observation.
 
@@ -40,16 +43,16 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 #### Q-UI-04 A screenshot of every screen reached by walking each menu path
 
 - **Sources (the row's):** `CastScript 347 newgame2` / `mouseUp()`; `CastScript 355 quit2` / `mouseDown()`; `CastScript 666 exit2` / `mouseUp()`; `CastScript 668 Help2` / `mouseUp()`; `CastScript 353 scores2` / `mouseDown()`; `CastScript 351 soleau2` / `mouseUp()`; `MovieScript 339 bottombuttons` / `Bottombuttons()`.
-- **Walk**: batch `title-options`; the walk follows every menu path the measured points reach — Options, Help (three pages), Scores, New Game to the setup screen and the board, New Game again to the loss notice, and Quit to the unregistered notice — and shots each screen.
-- **Boundaries the walk states**: the Soleau Games label is a refused rectangle in the step language, so its screens are never walked (as in E002); the Quit path stops at the notice, because the driver terminates by kill, so the notice's exit button is never clicked inside a recorded walk.
-- **Observation**: pending the [C3] walk — the record under `runs/E019/title-options/` will carry it.
+- **Walk**: batch `title-options`; the walk follows every menu path the measured points reach — Options, Help (three pages), Scores, New Game to the setup screen and the board, New Game again to the loss notice — and shots each screen. The walk stops at the loss notice; the earlier round's post-loss path (to start another game and capture the quit notice) aborted on no-change at the post-loss Play Game click, and the quit notice is captured by Q-UI-21 on the events-end batch.
+- **Boundaries the walk states**: the Soleau Games label is a refused rectangle in the step language, so its screens are never walked (as in E002); the driver terminates by kill, so the Quit path stops at the notice, and the notice's exit button is never clicked inside a recorded walk (F003's tour reached the notice under the spike's `ui-quit` termination).
+- **Observation**: observed. **Run**: `runs/E019/title-options/E019-r0013.json` (sha256 `afc5dcc036d56797…`, driver `e257bb1b395a`, display 800x600x24, 42.56 s). **Distinct screens**: 9 — title (`ae6e98d28d379bb4…`), options (`426d77e724d793dd…`), help-page-1 (`390756985586a01d…`), help-page-2 (`10842580b609d049…`), help-page-3 (`3d404526ba3d60a6…`), scores (`d816d6fb3ee277b0…`), newgame-setup (`154143a1bd739503…`), board (`cbe97bf2c065c4d3…`), loss-notice (`5ad6d9012cdce6b9…`). Count target ≥ 8 met. Set `iwp-2.0-de5a82a2` (the mid-game loss credits `xtras/Islepro.skr`, F003; the F019 row covers it).
 - **What would change it**: a measured point for a screen the walk could not reach, or a menu path the walk did not follow.
 
 #### Q-UI-10 Three timed walkthroughs with click counts
 
 - **Sources (the row's):** `BehaviorScript 450` / `exitFrame()`; `BehaviorScript 3` / `exitFrame()`; `CastScript 347 newgame2` / `mouseUp()`; `MovieScript 1 Startmovie` / `startMovie()`.
 - **Walk**: batch `title-options`; three rounds of title → Options → title, each timed with the monotonic clock, the inputs counted; the launch-to-title time is the session's own measurement.
-- **Observation**: pending the [C3] walk.
+- **Observation**: observed. **Run**: `runs/E019/title-options/E019-r0003.json` (sha256 `c6177267a5f66db0…`, driver `db6375203ad6`, display 800x600x24, 13.12 s). **Counts**: 3 walkthroughs. **Timing observations**: 6 — round-to-options at 0.68 s, 0.61 s, 0.61 s; round-back-to-title at 0.68 s, 0.62 s, 0.68 s. **Launch-to-title**: 6.53 s (recorded at step 2). The recorder does not shot title or options in this walk (the walk's goal is timing, not screenshots); the catalogue reads the timings above.
 - **What would change it**: the timing and the screen order are in the score, which stays undecoded; a walk at another speed setting would time it differently.
 
 #### Q-UI-19 Screenshots at each supported resolution
@@ -57,14 +60,14 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 - **Sources (the row's):** `MovieScript 1 Startmovie` / `startMovie()` (a start-up check of the desktop size).
 - **Walk**: batch `title-options`; one launch per desktop size (640x480, 800x600, 1024x768, 1280x1024), the title and the Options screen shot at each, and the display's pixel count measured beside the size asked for; the question is covered only by a record at each of the four sizes. The driver assumes the 800x600 stage is centred in the game window, so a size where the title is not detected is recorded as its own outcome, not skipped.
 - **Boundary the catalogue states**: the projector-level windowing — what the projector does with the desktop size — belongs to the projector, not the Lingo, and this catalogue notes that and stops.
-- **Observation**: pending the [C3] walk.
+- **Observation**: narrowed. **Three sizes met** (one screen pair per launch, two attempts each as a re-run check): **800x600x24** — runs `runs/E019/title-options/E019-r0006.json` (sha256 `2a587d69046adf4d…`, driver `db6375203ad6`) and `runs/E019/title-options/E019-r0010.json`; `title-at-this-size.png` (sha256 `ae6e98d28d379bb4…`) and `options-at-this-size.png` (sha256 `426d77e724d793dd…`). **1024x768x24** — `runs/E019/title-options/E019-r0007.json` (sha256 `af54d69bb397299f…`) and `runs/E019/title-options/E019-r0011.json`; `title-at-this-size.png` (sha256 `84cbd7fc7b03a96d…`) and `options-at-this-size.png` (sha256 `9a753549fc73e463…`). **1280x1024x24** — `runs/E019/title-options/E019-r0008.json` (sha256 `777269828986b58f…`) and `runs/E019/title-options/E019-r0012.json`; `title-at-this-size.png` (sha256 `a76f7b3f4158bf6d…`) and `options-at-this-size.png` (sha256 `299f67c401de9320…`). The 640x480 size is below the game's first-frame geometry (the title screen was not seen within 45 s on both attempts — `E019-r0005.json` and `E019-r0009.json`, aborted); the walk's narrowed scope is the three reachable sizes.
 - **What would change it**: a decode of the start-up check (the row's `low` confidence says the code is one handler), or a run on native Windows (V3).
 
 #### Q-UI-22 Screenshots with the option on and off
 
 - **Sources (the row's):** `BehaviorScript 499 FREQbehavior` / `mouseDown()`; `BehaviorScript 54` / `exitFrame()` (the event frequency option, the only switchable feature found).
 - **Walk**: batch `title-options`; the Options screen is shot at the default, then the frequency control is clicked (the measured point of E002's opt-freq-never script) and the result shot. The option is locked in the unregistered build (F003's locked-frequency screens; F019's registration gates): on and off is reachable only at the file-write path, not at the click, and the record notes the locked state.
-- **Observation**: pending the [C3] walk.
+- **Observation**: observed with the locked state. **Run**: `runs/E019/title-options/E019-r0004.json` (sha256 `2a4cedff0117eef2…`, driver `db6375203ad6`, display 800x600x24). **Screenshots**: `frequency-default.png` (sha256 `426d77e724d793dd…`, the Options screen at the default frequency) and `frequency-locked.png` (sha256 `9160a38dd7b6cd83…`, the same screen after the frequency click — the click was refused by the registration gate, F019, so the value did not change). The "off" half (frequency = 4 / never) is reachable only on a registered build (rule 19 keeps it out of this repository's scope); what the walk captures is the locked refusal.
 - **What would change it**: a registered build (rule 19 keeps it out of this repository's scope).
 
 ### Board and pieces

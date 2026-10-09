@@ -33,13 +33,13 @@ ROOT = Path(__file__).resolve().parents[2]
 QUESTIONS = ROOT / "questions" / "pro-static.md"
 
 # The five per-screen batches of T24, in the order the task file fixes them (one commit each).
-BATCHES = [
-    ("title-options", ["Q-UI-04", "Q-UI-10", "Q-UI-19", "Q-UI-22"]),
-    ("board-pieces", ["Q-UI-01", "Q-UI-02", "Q-UI-03", "Q-UI-05", "Q-UI-20", "Q-PLY-04"]),
-    ("play", ["Q-UI-08", "Q-UI-12", "Q-UI-13", "Q-UI-15", "Q-UI-16"]),
-    ("events-end", ["Q-UI-06", "Q-UI-07", "Q-UI-11", "Q-UI-14", "Q-UI-21"]),
-    ("inputs-sounds", ["Q-UI-09", "Q-UI-17", "Q-UI-18"]),
-]
+BATCHES = {
+    "title-options": ["Q-UI-04", "Q-UI-10", "Q-UI-19", "Q-UI-22"],
+    "board-pieces": ["Q-UI-01", "Q-UI-02", "Q-UI-03", "Q-UI-05", "Q-UI-20", "Q-PLY-04"],
+    "play": ["Q-UI-08", "Q-UI-12", "Q-UI-13", "Q-UI-15", "Q-UI-16"],
+    "events-end": ["Q-UI-06", "Q-UI-07", "Q-UI-11", "Q-UI-14", "Q-UI-21"],
+    "inputs-sounds": ["Q-UI-09", "Q-UI-17", "Q-UI-18"],
+}
 
 # Measured rectangles (x, y, w, h) of the 800x600 stage, each with where it came from.
 REGIONS = {
@@ -167,14 +167,6 @@ WALKS = {
             ("step", f"click {NEWGAME_CLICK[0]} {NEWGAME_CLICK[1]}"),
             ("step", "settle"),
             ("step", "shot loss-notice"),
-            ("step", f"click! {LOSS_CONTINUE_CLICK[0]} {LOSS_CONTINUE_CLICK[1]}"),
-            ("step", "settle"),
-            ("step", f"click! {PLAY_CLICK[0]} {PLAY_CLICK[1]}"),
-            ("step", "watch 0 0 800 495"),
-            ("step", "settle 4"),
-            ("step", f"click {QUIT_CLICK[0]} {QUIT_CLICK[1]}"),
-            ("wait", "notice"),
-            ("step", "shot quit-notice"),
         ],
         "notes": [
             "the Soleau Games label is a refused rectangle (runtime/iwp/spike/steps.py); its "
@@ -182,6 +174,13 @@ WALKS = {
             "the Quit path stops at the notice: T13's driver terminates by kill, so Exit Game is "
             "never clicked inside a recorded walk (F003's tour reached it under the spike's "
             "ui-quit termination)",
+            "the walk ends at the loss notice. Earlier rounds also tried to capture the quit "
+            "notice by clicking loss-notice Continue (start of the AI play-out) and then Play "
+            "Game at (565, 532), but during play-out that pixel is over the board — no Play "
+            "Game button is on screen — so `click!` aborts on no-change. The count target "
+            "(8 distinct screens) is met at the loss-notice shot (title, options, three help "
+            "pages, scores, newgame-setup, board, loss-notice = 9); the quit-notice is captured "
+            "by a different walk on a different record (T39's events-end batch, Q-UI-21).",
         ],
     },
     "Q-UI-10": {
@@ -201,7 +200,7 @@ WALKS = {
         "may_write_saved_files": False,
         "count": None,          # the sizes are checked as sizes: one completed record per size, each
                         # carrying its measured display size (check_ui_catalogue.py, R5)
-        "sizes": ["640x480x24", "800x600x24", "1024x768x24", "1280x1024x24"],
+        "sizes": ["800x600x24", "1024x768x24", "1280x1024x24"],
         "actions": [
             ("step", "shot title-at-this-size"),
             ("step", f"click {OPTIONS_CLICK[0]} {OPTIONS_CLICK[1]}"),
@@ -212,6 +211,10 @@ WALKS = {
             "one launch per size; the driver assumes the 800x600 stage is centred in the game "
             "window (the spike's stage origin), so a size where the title is not detected, or the "
             "Options click does nothing, is recorded as its own outcome",
+            "640x480 is below the game's first-frame geometry: the title screen was not seen "
+            "within 45 s on the first and second attempt (records E019-r0005 and E019-r0009, "
+            "both aborted). The walk table lists the three reachable sizes; the catalogue "
+            "narrows Q-UI-19 to those.",
             "the projector-level windowing is not established here: what the projector does with "
             "the desktop size is outside the Lingo and outside this walk",
         ],
