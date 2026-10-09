@@ -130,7 +130,11 @@ never opens, has a Return button near 388, 516 instead and was not measured.
 | percentage box, Hard | 537, 376, 85, 28 | black | 1500 | 1969 | at most 59 |
 
 `scoreboard` is the screen with all four tests and no board (no score panel), and is not the title; it is
-tried last, so a screen that had a name before keeps it. The top rows of the button (y 514-521) are what the
+named before the title (#141): over these frames no other reaches even half of any of the four minima, so a
+frame that trips all four is the Scoreboard whatever the subtitle and menu rows show, and a real title,
+which never trips them, keeps its name. (Before #141 it was tried after the title, and a frame with the four
+signals and the title's subtitle and menu then read `title` — the name New Game is sent on.) The top rows of
+the button (y 514-521) are what the
 winner notice's button (y 522-546) never reaches. Over all 2267 frames of the three sittings (693, 486 and
 1088), `experiments/E020-wine-first-run/check_screens.py` reads the 7 frames of steps 367 and 368 as
 `scoreboard` and every other frame as before: sitting 20261008T184505Z board 332, board-menu 201,

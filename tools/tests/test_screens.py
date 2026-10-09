@@ -100,10 +100,11 @@ class ScreenNameTest(unittest.TestCase):
         for missing in parts:
             with self.subTest(missing=missing):
                 self.assertEqual(screens.name_of(stage_frame(*[p for p in parts if p != missing])), "unknown")
-        # a board, a title or a notice over it is never the Scoreboard
+        # a board or a notice over it is never the Scoreboard; the title never demotes it (#141):
+        # four measured scoreboard signals are the Scoreboard, whatever the subtitle and menu show
         self.assertEqual(screens.name_of(stage_frame("score-panel", *parts)), "board")
         self.assertEqual(screens.name_of(stage_frame("score-panel", "menu", *parts)), "board-menu")
-        self.assertEqual(screens.name_of(stage_frame("subtitle", "menu", *parts)), "title")
+        self.assertEqual(screens.name_of(stage_frame("subtitle", "menu", *parts)), "scoreboard")
         self.assertEqual(screens.name_of(stage_frame("score-panel", "notice-panel", "continue", *parts)), "game-over")
 
     def test_the_scoreboards_button_sits_above_the_winner_notices(self):
@@ -131,6 +132,19 @@ class ScreenNameTest(unittest.TestCase):
             with self.subTest(below=name):
                 self.assertEqual(screens.name_of(stage_frame(*screens.SCOREBOARD_TESTS,
                                                              pixels=dict(at, **{name: at[name] - 1}))), "unknown")
+
+    def test_the_scoreboard_is_named_before_the_title(self):
+        """#141 (cause 2): the title branch ran first, so a frame carrying the Scoreboard's four
+        measured signals and the title's subtitle and menu rows read `title` -- the one name the loop
+        acts on blind, by sending New Game. Over all 2267 frames of the three sittings no frame but
+        the Scoreboard's reaches even half of any scoreboard minimum (elsewhere at most 368, 1, 130,
+        59 against minima 720, 1500, 1500, 1500), so a frame that trips all four is the Scoreboard,
+        never the title; a real title never trips them, so no real title changes name."""
+        frame = stage_frame("subtitle", "menu", *screens.SCOREBOARD_TESTS)
+        self.assertEqual(screens.name_of(frame), "scoreboard")
+        self.assertEqual(screens.name_of(stage_frame("subtitle", "menu")), "title")   # no scoreboard signals
+        # T38's classifier (check_screens.py's comparator) still names it from the subtitle and menu
+        self.assertEqual(screens.name_from(screens.signals(frame), scoreboard=False), "title")
 
     def test_without_the_scoreboard_the_classifier_is_t38s(self):
         """`name_from(scoreboard=False)` is round 6's classifier: check_screens.py compares the two."""

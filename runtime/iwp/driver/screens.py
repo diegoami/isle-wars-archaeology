@@ -192,10 +192,16 @@ def name_from(s, scoreboard=True):
         return "game-over"
     if board:
         return "board-menu" if s["menu"] else "board"
+    if scoreboard and all(s[name] for name in SCOREBOARD_TESTS):
+        # #141: named before the title. Over all 2267 frames of the three sittings no frame but the
+        # Scoreboard's reaches even half of any of the four minima (elsewhere at most 368, 1, 130,
+        # 59), so a frame that trips all four is the Scoreboard whatever else it shows; a real title
+        # never trips them, so no real title changes name. While the title branch ran first, a frame
+        # with the four signals and the title's subtitle and menu read "title", the one name the
+        # loop acts on blind: New Game was sent on a screen that was not the title.
+        return "scoreboard"                                # T41: no board behind it
     if s["subtitle"] and s["menu"]:
         return "title"
-    if scoreboard and all(s[name] for name in SCOREBOARD_TESTS):      # T41: no board behind it
-        return "scoreboard"
     return "unknown"
 
 
