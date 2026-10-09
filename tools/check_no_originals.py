@@ -46,6 +46,24 @@ Wine record is refused, since the legacy listing names whole files. The walk is 
 bounded (`MAX_JSON_DEPTH`), and a document nested past the bound or past the parser's recursion
 limit is refused, never skipped.
 
+T49 (#154, the owner's decision of 2026-10-09) narrows the surface that round left open. T48's gate
+looked for `run/1` objects in any tracked JSON, at any depth, under any name, and five review rounds
+found ever-rarer shapes that slipped past or crashed it (an explicit `null` skipping the shape
+checks, `wi\\u0000ne` hiding behind the escape `json.dumps` writes, a lone surrogate in a diagnostic
+raising `UnicodeEncodeError` at `print`). None of those is a record that claims a Wine platform:
+they exist because the gate interprets malformed JSON wherever it finds it. So records may live in
+one place, and `tests/test_runs.py` already validates that place in CI. A `run/1` object is allowed
+at the top level of a lowercase-`.json` file under `runs/`, or at the top level of a file under
+`formats/examples/` — and nowhere else. Any other `run/1` object is refused, Wine or not, naming its
+path and where it sits, whether it is nested (even inside an allowed file), in a `runs/` file with
+another name, or in any other tracked file. Discovery is unchanged — by content, every JSON
+encoding, a repeated key refused, the depth bound — it only finds such objects now, to refuse them.
+The gate on an allowed record is T48's, unchanged (the F019 row, the legacy listing, a plain-ASCII
+platform, no symlink under `runs/`), and it never raises on any shape: an odd shape at an allowed
+place is the run validator's to refuse, so the gate either refuses it (when it names `wine`) or
+leaves it. Every value a document holds that reaches a diagnostic goes through `esc`, so no input
+can make the check crash while printing.
+
 Exit 0 clean, 1 not.
 """
 import argparse
@@ -79,6 +97,14 @@ PLACEHOLDER_SHA256 = "0" * 64
 MAX_JSON_DEPTH = 64
 # The brief's `[E0XX]` placeholder, filled with the task's number (T36 -> E036).
 WINE_GATE_CODE = "[E036]"
+
+# T49 (#154): the two places a `run/1` object may live, both compared on the path exactly as `git
+# ls-files` lists it. `RECORDS_DIR` and `EXAMPLES_DIR` are prefixes of the path, so `runs.json`,
+# `runsx/a.json`, `docs/runs/a.json` and `formats/examples-x/a.json` are not them; `RECORD_SUFFIX`
+# is matched case-sensitively, which is what `tests/test_runs.py`'s `rglob("*.json")` reads.
+RECORDS_DIR = "runs/"
+RECORD_SUFFIX = ".json"
+EXAMPLES_DIR = "formats/examples/"
 
 # T48 (#149): the records that named `linux-wsl2/wine-xvfb-xfwm4` before the carve-out's token was
 # written into their emitters. They are immutable (rule 20), so they are listed here, one line each,
@@ -124,6 +150,18 @@ def sha256_file(path):
     return digest.hexdigest()
 
 
+def esc(value):
+    """A value taken from a document, rendered so printing it can never raise.
+
+    `ascii()` is `repr()` followed by an ASCII encode with backslash escapes: a lone surrogate, a
+    NUL, a fullwidth or dotted letter becomes a `\\uXXXX` (or `\\xNN`) escape, so no record can reach
+    `print` with a character the stream's encoding refuses (Sol's micro-round R3 on PR #151, which
+    raised `UnicodeEncodeError` while printing a diagnostic). An ASCII value is unchanged, so the
+    paths and hashes the tests look for still appear verbatim.
+    """
+    return ascii(value)
+
+
 def load_f019_table(root):
     """The rows of F019's "Known-good binary hashes" table, as dicts, [] when absent.
 
@@ -164,26 +202,55 @@ def _record_key(record):
     return artifact.get("set"), artifact.get("variant"), start_state.get("sha256")
 
 
+def _document_strings(value):
+    """Every string in a parsed JSON value, its object keys included, in document order.
+
+    The walk is iterative and reads the strings a reader sees, never a re-serialisation of them:
+    `json.dumps` escapes a control character as `\\u0000` even with `ensure_ascii=False`, so a check
+    on the serialised text cannot see what an escape hides (Sol's micro-round R2, PR #151).
+    """
+    found = []
+    stack = [value]
+    while stack:
+        node = stack.pop()
+        if isinstance(node, str):
+            found.append(node)
+        elif isinstance(node, dict):
+            for key, child in node.items():
+                stack.append(key)
+                stack.append(child)
+        elif isinstance(node, list):
+            stack.extend(node)
+    return found
+
+
 def _odd_shape_problem(record, odd):
     """The refusal for a run/1 record whose fields `odd` are not the shapes the gate reads, or "".
 
     `odd` names fields present with the wrong type (`runtime` not an object, `runtime.platform` not
-    a string, ...). The record is refused when its serialised form names `wine` in any case, or when
-    an odd field's serialised form is not plain printable ASCII (a look-alike could hide `wine`);
+    a string, ...). The record is refused when its own characters name `wine` in any case, or when an
+    odd field's characters are not plain printable ASCII (a look-alike could hide `wine`);
     otherwise it is left to the run validator, which owns malformed records.
+
+    Both tests read the parsed strings (_document_strings), not the fields' JSON text, and every
+    value the message shows goes through `esc` (T49, #154): a record sitting where a record may
+    live is still this gate's to refuse when it names wine, and no shape can crash the check while
+    its refusal is printed.
     """
-    whole = json.dumps(record, ensure_ascii=False, default=str)
+    names_wine = any("wine" in text.lower() for text in _document_strings(record))
     fields = {}
+    not_ascii = []
     for name in odd:
         node = record
         for part in name.split("."):
             node = node.get(part) if isinstance(node, dict) else None
-        fields[name] = json.dumps(node, ensure_ascii=False, default=str)
-    names_wine = "wine" in whole.lower()
-    not_ascii = [name for name, text in fields.items() if not plain_ascii(text)]
+        text = "\n".join(_document_strings(node))
+        fields[name] = text
+        if not plain_ascii(text):
+            not_ascii.append(name)
     if not (names_wine or not_ascii):
         return ""
-    shown = ", ".join(f"{name}={text[:80]}" for name, text in fields.items())
+    shown = ", ".join(f"{name}={esc(text[:80])}" for name, text in fields.items())
     why = ("the record names wine" if names_wine
            else f"{', '.join(not_ascii)} is not plain printable ASCII")
     return (
@@ -294,6 +361,11 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
     fail closed, never guess what a reader would make of it. Otherwise the record is left to the run
     validator, as before (formats/examples/invalid/ holds such documents on purpose).
 
+    Since T49 (#154) the caller reaches this function only for a record at one of the two places a
+    record may live; a `run/1` object anywhere else is refused by the allowlist before its content
+    is read. Nothing here raises on any shape, and every value from the record that reaches a
+    diagnostic goes through `esc`.
+
     The function reads the record and never mutates it (rule 20).
     """
     odd = [name for name in ("runtime", "artifact", "start_state")
@@ -310,9 +382,9 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
         return "", ""
     if not plain_ascii(platform):
         return (
-            f"{WINE_GATE_CODE} record carries the platform {platform!r}, which is not plain printable "
-            f"ASCII, so the gate cannot tell whether it names wine (a Unicode look-alike, a "
-            f"fullwidth or dotted letter, an invisible or control character); a run record's "
+            f"{WINE_GATE_CODE} record carries the platform {esc(platform)}, which is not plain "
+            f"printable ASCII, so the gate cannot tell whether it names wine (a Unicode look-alike, "
+            f"a fullwidth or dotted letter, an invisible or control character); a run record's "
             f"platform is plain ASCII (T48, #149)",
             "",
         )
@@ -324,7 +396,7 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
         reason = legacy_reason or (f"its path is not listed in {LEGACY_LIST_TEXT} with the file's "
                                    f"sha256")
         return (
-            f"{WINE_GATE_CODE} record carries the legacy Wine platform {platform!r}, which is not "
+            f"{WINE_GATE_CODE} record carries the legacy Wine platform {esc(platform)}, which is not "
             f"the carve-out platform: {reason}; {LEGACY_LIST_TEXT} never grows (#149), so a new "
             f"Wine record uses {WINE_PLATFORM_PREFIX!r} and is checked against F019 instead",
             "",
@@ -333,13 +405,13 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
         suffix = platform[len(WINE_PLATFORM_PREFIX):]
         return (
             f"{WINE_GATE_CODE} wine-on-user-machine record uses the unrecognised platform "
-            f"{platform!r}: suffix {suffix!r} is not one of the recognised suffixes "
+            f"{esc(platform)}: suffix {esc(suffix)} is not one of the recognised suffixes "
             f"{list(RECOGNISED_WINE_SUFFIXES)!r}; expected {WINE_PLATFORM_PREFIX!r} or "
             f"{WINE_PLATFORM_PREFIX!r} plus a recognised suffix",
             "",
         )
     set_id, variant, sha = _record_key(record)
-    got = f"set={set_id!r} variant={variant!r} sha256={sha!r}"
+    got = f"set={esc(set_id)} variant={esc(variant)} sha256={esc(sha)}"
     if sha == PLACEHOLDER_SHA256:
         return (
             f"{WINE_GATE_CODE} wine-on-user-machine record carries the all-zero placeholder "
@@ -428,6 +500,9 @@ def run_objects(value):
     (`$` for the top level, `$[0]`, `$["data"][0]`). The walk is iterative and bounded by
     `MAX_JSON_DEPTH`: past it, `too_deep` is True and the caller refuses the document, so nesting can
     neither crash the gate nor hide a record below the bound.
+
+    T49 (#154) turns that walk into the allowlist's discovery: the caller gates an object found here
+    only when it sits at the top level of a file `record_place` allows, and refuses every other one.
     """
     found = []
     stack = [(value, "$", 1)]
@@ -451,9 +526,9 @@ def gate_candidates(root, tracked):
     """Every file the gate reads, sorted: each file under `runs/` (tracked or not, links included so
     they can be refused) and every tracked path outside it.
 
-    The gate must not depend on where a record lives (Sol's R2, PR #151), on what it is called
-    (Sol's round-2 R1), nor on the shape of the JSON around it (round 3), so discovery is by content:
-    each candidate is parsed and walked, and every run/1 object found is gated.
+    Discovery stays by content (Sol's R2 and round-2 R1, PR #151): each candidate is parsed and
+    walked, and every run/1 object found is decided — gated at a place a record may live, refused
+    anywhere else (T49, #154) — whatever the JSON around it looks like.
     """
     paths = set()
     runs = root / "runs"
@@ -487,6 +562,42 @@ def runs_symlinks(root):
     return sorted(links)
 
 
+def record_place(rel):
+    """Whether `rel` (repo-relative, as git lists it) is a file a record may live in (T49, #154).
+
+    Two places only, both compared on the path exactly, never on a basename: the top level of a
+    lowercase-`.json` file under `runs/` — the files `tests/test_runs.py` validates — or the top
+    level of a file under `formats/examples/`. `RECORDS_DIR` and `EXAMPLES_DIR` are prefixes of the
+    path, so `runs.json`, `runsx/a.json`, `docs/runs/a.json` and `formats/examples-x/a.json` are not
+    them, and the `.json` test is case-sensitive, as `rglob("*.json")` is.
+    """
+    return ((rel.startswith(RECORDS_DIR) and rel.endswith(RECORD_SUFFIX))
+            or rel.startswith(EXAMPLES_DIR))
+
+
+def allowlist_refusal(rel, where):
+    """The refusal for a `run/1` object that does not sit at one of the two allowed places.
+
+    `where` is the object's location in its file's JSON value (`$` for the top level). The message
+    names the path and where the object sits, and no value the document holds: a place outside the
+    allowlist is refused whatever the object says, Wine or not (the brief, T49, #154).
+    """
+    place = rel if where == "$" else f"{rel} at {where}"
+    if where == "$":
+        return (
+            f"{place}: {WINE_GATE_CODE} the top level of this JSON document is gated like a run "
+            f"record (T48, #149), and this file is not a place a record may live: a record is the "
+            f"top level of a lowercase-.json file under {RECORDS_DIR} (what tests/test_runs.py "
+            f"validates), or the top level of a file under {EXAMPLES_DIR} (T49, #154)"
+        )
+    return (
+        f"{place}: {WINE_GATE_CODE} a run/1 object nested inside a JSON value; a record lives only "
+        f"at the top level of a lowercase-.json file under {RECORDS_DIR}, or the top level of a "
+        f"file under {EXAMPLES_DIR}, so a nested object is refused wherever it sits and whatever "
+        f"the file is named (T49, #154)"
+    )
+
+
 def check_files(root, tracked):
     """The original no-originals file checks, in their original order and wording."""
     registered = known_hashes(root)
@@ -503,12 +614,19 @@ def check_files(root, tracked):
 
 
 def wine_gate_problems(root, tracked=None):
-    """One problem line per committed run record that constraint F refuses.
+    """One problem line per committed run record that constraint F, and T49's allowlist, refuse.
 
-    Each record is decided with the listing in hand: `legacy_ok` is True only for a record whose
-    path and file sha256 are the ones tools/legacy_wine_records.txt holds, so a legacy record is
-    refused (naming its path and the reason) unless it is listed unchanged. Carve-out records are
-    decided against F019's table, as T36 wrote it, and are never rescued by the listing.
+    The allowlist decides first (T49, #154): a `run/1` object may sit only at the top level of a
+    file `record_place` allows, and any other one is refused, Wine or not, naming its path and
+    where it sits. Discovery is T48's — by content, every JSON encoding, a repeated key refused, the
+    depth bound — and now only finds such objects, to refuse them.
+
+    A record at an allowed place is then decided with the listing in hand: `legacy_ok` is True only
+    for a record whose path and file sha256 are the ones tools/legacy_wine_records.txt holds, so a
+    legacy record is refused (naming its path and the reason) unless it is listed unchanged.
+    Carve-out records are decided against F019's table, as T36 wrote it, and are never rescued by
+    the listing. No input raises: every value a document holds that reaches a diagnostic goes
+    through `esc`.
     """
     table = load_f019_table(root)
     entries = legacy_wine_entries(root)
@@ -522,7 +640,8 @@ def wine_gate_problems(root, tracked=None):
         tracked = tracked_files(root)
     for path in gate_candidates(root, tracked):
         rel = path.relative_to(root).as_posix()
-        under_runs = rel.startswith("runs/")
+        under_runs = rel.startswith(RECORDS_DIR)
+        place = record_place(rel)
         if path.is_symlink() or any(parent in linked for parent in path.parents):
             if path not in linked:
                 problems.append(f"{rel}: {WINE_GATE_CODE} a run/1 document that is a symlink; the gate "
@@ -537,7 +656,7 @@ def wine_gate_problems(root, tracked=None):
             continue   # not JSON: nothing can read a run record from it
         value, duplicates, too_deep = scan
         if duplicates:
-            keys = ", ".join(repr(k) for k in dict.fromkeys(duplicates))
+            keys = ", ".join(esc(k) for k in dict.fromkeys(duplicates))
             problems.append(f"{rel}: {WINE_GATE_CODE} a JSON document that repeats the key(s) {keys}; "
                             f"a JSON reader keeps one value of a repeated key and drops the other, so "
                             f"the gate refuses the document rather than guess which value a reader sees "
@@ -548,7 +667,7 @@ def wine_gate_problems(root, tracked=None):
             # A `*.json` object under runs/ is a run record whatever its `schema` says, as before.
             found.insert(0, ("$", value))
         if isinstance(too_deep, str):
-            problems.append(f"{rel}: {WINE_GATE_CODE} a document the gate cannot parse: {too_deep}; "
+            problems.append(f"{rel}: {WINE_GATE_CODE} a document the gate cannot parse: {esc(too_deep)}; "
                             f"it cannot be walked for run/1 records, so it is refused rather than "
                             f"skipped as not JSON (T48, #149)")
         elif too_deep or walk_too_deep:
@@ -556,17 +675,13 @@ def wine_gate_problems(root, tracked=None):
                             f"{MAX_JSON_DEPTH} levels; the gate cannot walk it for run/1 records, so "
                             f"it is refused (T48, #149)")
         for where, record in found:
-            if where == "$":
-                listed, why_not = legacy_listing(root, path, rel, entries)
-                label = rel
-            else:
-                listed, why_not = False, (f"the run/1 object at {where} is nested inside the file's "
-                                          f"JSON value, and {LEGACY_LIST_TEXT} lists whole files, so no "
-                                          f"listing names it")
-                label = f"{rel} at {where}"
+            if where != "$" or not place:
+                problems.append(allowlist_refusal(rel, where))
+                continue
+            listed, why_not = legacy_listing(root, path, rel, entries)
             problem, _warning = check_wine_gate(record, table, legacy_ok=listed, legacy_reason=why_not)
             if problem:
-                problems.append(f"{label}: {problem}")
+                problems.append(f"{rel}: {problem}")
     return problems
 
 
