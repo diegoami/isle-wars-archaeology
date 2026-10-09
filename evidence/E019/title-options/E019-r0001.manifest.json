@@ -1,0 +1,89 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0001",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-de5a82a2",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "title.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-title.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "options.png",
+      "bytes": 175314,
+      "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "asset": "426d77e724d793dd-options.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-page-1.png",
+      "bytes": 504046,
+      "sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+      "asset": "390756985586a01d-help-page-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-page-2.png",
+      "bytes": 505274,
+      "sha256": "10842580b609d049b7290bc3b9e016bb938d5d7728e2d2a044d2a74031a121bd",
+      "asset": "10842580b609d049-help-page-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "help-page-3.png",
+      "bytes": 503547,
+      "sha256": "3d404526ba3d60a66af0f7ab9c71e76f9a8a13fae436b09790a678a83340c9c3",
+      "asset": "3d404526ba3d60a6-help-page-3.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scores.png",
+      "bytes": 312098,
+      "sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+      "asset": "d816d6fb3ee277b0-scores.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "newgame-setup.png",
+      "bytes": 176005,
+      "sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "asset": "154143a1bd739503-newgame-setup.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2635,
+      "sha256": "296de00d18bbd386dbbbad8981619233cccf97c6b451216d266053bf4c3e5b4e",
+      "asset": "296de00d18bbd386-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 4183,
+      "sha256": "8ce85818fb4bc8617b8fbae7689a18096f8d72f30af7ef565bb30896a31c26d7",
+      "asset": "8ce85818fb4bc861-run.log",
+      "class": "log"
+    }
+  ]
+}
