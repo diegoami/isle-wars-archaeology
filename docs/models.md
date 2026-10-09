@@ -26,7 +26,7 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | --- | --- | --- | --- |
 | `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash` | GLM | **easy implementer**, the `harness.json` default |
 | `deepseek-flash` | DeepSeek V4.1 Flash, `opencode-go/deepseek-v4.1-flash` | DeepSeek | **hard implementer** (`--model deepseek-flash`) |
-| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, the direct OpenAI route, on its own weekly pool (`gpt-5.6-luna:7d`) | OpenAI | **easy reviewer**, the `harness.json` default (L51, 2026-10-05) |
+| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, the direct OpenAI route; the `gpt-5.6-luna:7d` window of its own is gone (2026-10-09) — Luna now shares OpenAI's main quota with Sol | OpenAI | **easy reviewer**, the `harness.json` default (L51, 2026-10-05) |
 | `luna-6` | GPT-6 Luna, `openai/gpt-6-luna`, which draws on OpenAI's main pool with Sol | OpenAI | registered only, outside every chain, never the reviewer (L51); the easy reviewer until 2026-10-05 |
 | `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | **hard reviewer** (`--reviewer gpt-6.1-sol`), used sparingly; probed 2026-10-03 at `high`, PONG in 5 s |
 | `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
@@ -177,9 +177,10 @@ the owner says to wait.
 
 - **Diagnose first.** Read the run's `/tmp/harness-opencode/<session>.err.txt`, and probe
   `openai/gpt-6.1-sol` with `switch-model.mjs --probe --dry-run`.
-  - `The usage limit has been reached` means OpenAI's main pool is out of quota. GPT-5.6 Luna has
-    its own weekly pool: check `gpt-5.6-luna:7d` in quota-tracker's `/quota/openai` (L50, L51), and
-    confirm with a probe of `openai/gpt-5.6-luna`.
+  - `The usage limit has been reached` means OpenAI's main pool is out of quota. Since 2026-10-09
+    Luna has no pool of its own; check `/quota/openai`'s `when_exhausted.usable_models` for
+    whether `gpt-5.6-luna` is named there (L50, L51, harness L65); confirm with a probe of
+    `openai/gpt-5.6-luna`.
   - If only Sol fails (the model is unavailable, or its cost is to be avoided), Luna is still an
     option.
 - **Substitutes, in order,** skipping the implementer's family:
@@ -326,7 +327,7 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 | The `[C3]` lines (the install, the Wine prefix, the display) are run by the main session and posted on the PR | an OpenCode reviewer cannot reach outside its worktree, and a rejected tool call fails the run | L26; T03 |
 | When the implementer is Claude, keep a probed heavy reviewer from a third family ready (DeepSeek V4 Pro, GLM-5.3) | both OpenAI reviewers share one account quota: on T08's final round `The usage limit has been reached` stopped GPT-6.1 Sol mid-review and failed the probe of Luna too, and a Claude fallback was not allowed | T08, 2026-10-03 |
 | Check quota-tracker before choosing, recommending or delegating to a model; an `exhausted` provider is skipped for the next model of the chain, passed explicitly, and the skip is said in the report or PR body | a provider out of quota stopped runs mid-review (T08); the owner made the quota check the only limit on which models are used | harness_imperial L50; the owner, 2026-10-05 |
-| The easy reviewer `luna` is GPT-5.6 Luna (`openai/gpt-5.6-luna`, high), on its own weekly pool; GPT-6 Luna is `luna-6`, outside the chains; never a Luna on OpenCode Go | GPT-6 Luna and Sol shared one OpenAI pool, so one exhausted quota blocked both reviewers (T08) | harness_imperial L51, 2026-10-05 |
+| The easy reviewer `luna` is GPT-5.6 Luna (`openai/gpt-5.6-luna`, high); since 2026-10-09 Luna shares OpenAI's main quota with Sol, no own window; GPT-6 Luna is `luna-6`, outside the chains; never a Luna on OpenCode Go | GPT-6 Luna and Sol shared one OpenAI pool, so one exhausted quota blocked both reviewers (T08) | harness_imperial L51, 2026-10-05 |
 | Heavy models at effort `medium` at most, `low` when medium is not needed (Opus as `task-agent-heavy`; GLM-5.3 `low`, offering no medium; DeepSeek V4 Pro stays `high`, its lowest); light models at `high` | the owner's decision | the owner, 2026-10-05 |
 | One OpenCode model per role, then Claude: no long chains of cheap models | chains multiplied wasted attempts; one failure stopped the chain before the next model ran | L27 |
 | A review brief's first line is exactly `<title> review (<model>)` — no "round 2" in the header; rounds are said in the body | `review.mjs`'s header parser refuses anything else, exit 2 before any model runs | T21 round 2, 2026-10-06 |
