@@ -586,5 +586,49 @@ class LegacyWineJsonShapeTest(unittest.TestCase):
         self.check_refused("nested.json", '{"data": [{"schema": "run/1", ' + self.BODY + '}]}')
 
 
+
+class LegacyWineStructuralRoundTest(unittest.TestCase):
+    """T48 structural round (the owner's choice, 2026-10-09): neighbouring JSON shapes the round
+    closes with the same mechanism. Each refused case fails on d4a41a6's gate: the duplicate wrapper
+    key drops the record before discovery, and the gate there neither walked below the top level nor
+    survived a `RecursionError`."""
+
+    BODY = LegacyWineJsonShapeTest.BODY
+
+    def run_on(self, rel, text):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            path = repo / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+            subprocess.run(["git", "add", rel], cwd=repo, check=True)
+            return run_tool(repo)
+
+    def check_refused(self, rel, text):
+        result = self.run_on(rel, text)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn(rel, result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_a_duplicate_wrapper_key_cannot_drop_a_nested_wine_record(self):
+        self.check_refused("wrapper.json",
+                           '{"data": {"schema": "run/1", ' + self.BODY + '}, "data": {}}')
+
+    def test_a_wine_record_below_the_walk_bound_is_refused(self):
+        depth = cno.MAX_JSON_DEPTH + 36
+        self.check_refused("deep.json", "[" * depth + '{"schema": "run/1", ' + self.BODY + "}" + "]" * depth)
+
+    def test_a_document_nested_100000_levels_is_refused_without_crashing(self):
+        depth = 100_000
+        self.check_refused("very-deep.json",
+                           "[" * depth + '{"schema": "run/1", ' + self.BODY + "}" + "]" * depth)
+
+    def test_a_nested_non_wine_run_record_still_passes(self):
+        body = self.BODY.replace("linux-wsl2/wine-xvfb-xfwm4", "windows-native-bandicam")
+        result = self.run_on("nested-ok.json", '{"data": [{"schema": "run/1", ' + body + '}]}')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

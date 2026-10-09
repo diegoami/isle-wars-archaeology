@@ -35,6 +35,17 @@ JSON document with top-level `schema` `run/1`, wherever it lives and whatever it
 record cannot leave the gate's walk by moving or by being renamed. And a symlink under `runs/` (file or directory), or `runs/`
 itself being one, is refused by name instead of being silently skipped or followed.
 
+T48's structural round (Sol's round-3 R1 and R2, PR #151; the owner's choice, 2026-10-09) closes the
+JSON-shape bypasses as a class. Every candidate (each file under `runs/`, each tracked file) is
+parsed with `object_pairs_hook`, and a JSON document that repeats a key anywhere is refused, naming
+the file and the key, because a reader keeps only one of the values and the gate cannot know which
+one another reader sees; the repository's own tracked JSON repeats none (measured 2026-10-09), so
+the rule covers every tracked JSON document, not only run/1 candidates. And every JSON object,
+anywhere in a parsed value, whose `schema` is `run/1` is gated like a top-level record; a nested
+Wine record is refused, since the legacy listing names whole files. The walk is iterative and
+bounded (`MAX_JSON_DEPTH`), and a document nested past the bound or past the parser's recursion
+limit is refused, never skipped.
+
 Exit 0 clean, 1 not.
 """
 import argparse
@@ -62,6 +73,10 @@ WINE_PLATFORM_PREFIX = "wine-on-user-machine"
 # in tools/tests/test_check_no_originals.py pin the contract this list expresses.
 RECOGNISED_WINE_SUFFIXES = ("-iwp-2.0",)
 PLACEHOLDER_SHA256 = "0" * 64
+# T48 structural round: how deep the gate walks a JSON value for run/1 objects. The repository's
+# tracked JSON nests at most 8 levels (measured 2026-10-09); a document past this bound is refused,
+# never skipped, so depth cannot hide a record.
+MAX_JSON_DEPTH = 64
 # The brief's `[E0XX]` placeholder, filled with the task's number (T36 -> E036).
 WINE_GATE_CODE = "[E036]"
 
@@ -306,39 +321,93 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
     )
 
 
-def load_json_document(path):
-    """The JSON value in `path`, or None where its bytes are not JSON.
+def scan_json_document(path):
+    """`(value, duplicate_keys, too_deep)` for the JSON document in `path`, or None where it is not JSON.
 
     The bytes go to `json.loads` as they are, so a UTF-8 file with a byte-order mark and a UTF-16 or
     UTF-32 file are read as JSON readers read them, not skipped as undecodable (T48 round 3). A file
     that is not JSON in any of those encodings cannot be read as a run record by anything, so it hides
     nothing from the gate.
+
+    T48 structural round (Sol's round-3 R1, PR #151): every object is parsed through
+    `object_pairs_hook`, so a key the document repeats is seen instead of being silently replaced by
+    its last value; `duplicate_keys` lists each repeated key, in document order. `too_deep` is True
+    when the parser gave up on the nesting (`RecursionError`: a document nested past Python's
+    recursion limit); `value` is then None. Such a document cannot be walked for run records, so the
+    caller refuses it rather than skip it.
     """
+    duplicates = []
+
+    def pairs_hook(pairs):
+        seen = set()
+        for key, _value in pairs:
+            if key in seen:
+                duplicates.append(key)
+            seen.add(key)
+        return dict(pairs)
+
     try:
-        return json.loads(path.read_bytes())
-    except (ValueError, OSError):
+        data = path.read_bytes()
+    except OSError:
+        return None
+    try:
+        return json.loads(data, object_pairs_hook=pairs_hook), duplicates, False
+    except RecursionError:
+        return None, duplicates, True
+    except ValueError:
         return None
 
 
-def is_run_document(path):
-    """True when `path` is a regular file within MAX_BYTES whose top-level `schema` is `run/1`."""
-    if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_BYTES:
-        return False   # a link is refused by name; an oversized file is check_files' finding
-    doc = load_json_document(path)
-    return isinstance(doc, dict) and doc.get("schema") == "run/1"
+def load_json_document(path):
+    """The JSON value in `path`, or None where its bytes are not JSON (or nest too deep to parse)."""
+    scan = scan_json_document(path)
+    return None if scan is None else scan[0]
 
 
-def run_records(root):
-    """Every committed run record under `runs/`, sorted: each `*.json` in any casing of the suffix,
-    and every other file there whose content is a run/1 document (T48 round 3: discovery depends on
-    content, not on the name)."""
+def run_objects(value):
+    """`(found, too_deep)`: every JSON object in `value` whose `schema` is `run/1`, wherever it sits.
+
+    T48 structural round (Sol's round-3 R2, PR #151): a run record wrapped in an array or nested in
+    another object is a run record all the same, so the gate walks the whole value, not only its top
+    level. `found` holds `(where, record)` pairs in document order, `where` a JSONPath-like location
+    (`$` for the top level, `$[0]`, `$["data"][0]`). The walk is iterative and bounded by
+    `MAX_JSON_DEPTH`: past it, `too_deep` is True and the caller refuses the document, so nesting can
+    neither crash the gate nor hide a record below the bound.
+    """
+    found = []
+    stack = [(value, "$", 1)]
+    while stack:
+        node, where, depth = stack.pop()
+        if depth > MAX_JSON_DEPTH:
+            return found, True
+        if isinstance(node, dict):
+            if node.get("schema") == "run/1":
+                found.append((where, node))
+            children = [(child, f"{where}[{json.dumps(key)}]") for key, child in node.items()]
+        elif isinstance(node, list):
+            children = [(child, f"{where}[{i}]") for i, child in enumerate(node)]
+        else:
+            continue
+        stack.extend((child, at, depth + 1) for child, at in reversed(children))
+    return found, False
+
+
+def gate_candidates(root, tracked):
+    """Every file the gate reads, sorted: each file under `runs/` (tracked or not, links included so
+    they can be refused) and every tracked path outside it.
+
+    The gate must not depend on where a record lives (Sol's R2, PR #151), on what it is called
+    (Sol's round-2 R1), nor on the shape of the JSON around it (round 3), so discovery is by content:
+    each candidate is parsed and walked, and every run/1 object found is gated.
+    """
+    paths = set()
     runs = root / "runs"
-    if not runs.is_dir():
-        return []
-    return sorted(
-        p for p in runs.rglob("*")
-        if p.is_file() and (p.suffix.lower() == ".json" or is_run_document(p))
-    )
+    if runs.is_dir() and not runs.is_symlink():
+        paths.update(p for p in runs.rglob("*") if p.is_file() or p.is_symlink())
+    for name in filter(None, tracked):
+        if not name.startswith("runs/"):
+            paths.add(root / name)
+    return sorted(paths)
 
 
 def runs_symlinks(root):
@@ -361,28 +430,6 @@ def runs_symlinks(root):
             if path.is_symlink():
                 links.append(path)
     return sorted(links)
-
-
-def tracked_run_documents(root, tracked):
-    """Every tracked file outside `runs/` whose content is a run/1 document, whatever its name, sorted.
-
-    The gate must not depend on where a record lives (Sol's R2, PR #151) nor on what it is called
-    (Sol's round-2 R1): a run/1 document moved out of `runs/`, or named without a `.json` suffix, is
-    gated exactly like one inside it. A tracked symlink is not read here; it is returned so the gate
-    refuses it (a link could point at a record outside the repository). The format examples under
-    `formats/examples/` are run/1 documents too; they name no `wine`, so the gate passes them, as it
-    would anywhere.
-    """
-    docs = []
-    for name in filter(None, tracked):
-        if name.startswith("runs/"):
-            continue   # run_records walks runs/, tracked or not
-        path = root / name
-        if path.is_symlink():
-            docs.append(path)
-        elif is_run_document(path):
-            docs.append(path)
-    return sorted(docs)
 
 
 def check_files(root, tracked):
@@ -418,22 +465,49 @@ def wine_gate_problems(root, tracked=None):
     linked = set(runs_symlinks(root))
     if tracked is None:
         tracked = tracked_files(root)
-    others = tracked_run_documents(root, tracked)
-    for path in sorted(set(run_records(root)) | set(others)):
+    for path in gate_candidates(root, tracked):
+        rel = path.relative_to(root).as_posix()
+        under_runs = rel.startswith("runs/")
         if path.is_symlink() or any(parent in linked for parent in path.parents):
             if path not in linked:
-                rel = path.relative_to(root).as_posix()
                 problems.append(f"{rel}: {WINE_GATE_CODE} a run/1 document that is a symlink; the gate "
                                 f"neither follows nor skips a link")
             continue
-        record = load_json_document(path)
-        if not isinstance(record, dict):  # a malformed record is the run validator's finding
+        if not path.is_file():
             continue
-        rel = path.relative_to(root).as_posix()
-        listed, why_not = legacy_listing(root, path, rel, entries)
-        problem, _warning = check_wine_gate(record, table, legacy_ok=listed, legacy_reason=why_not)
-        if problem:
-            problems.append(f"{rel}: {problem}")
+        if path.stat().st_size > MAX_BYTES and not (under_runs and path.suffix.lower() == ".json"):
+            continue   # an oversized tracked file is check_files' finding
+        scan = scan_json_document(path)
+        if scan is None:
+            continue   # not JSON: nothing can read a run record from it
+        value, duplicates, too_deep = scan
+        if duplicates:
+            keys = ", ".join(repr(k) for k in dict.fromkeys(duplicates))
+            problems.append(f"{rel}: {WINE_GATE_CODE} a JSON document that repeats the key(s) {keys}; "
+                            f"a JSON reader keeps one value of a repeated key and drops the other, so "
+                            f"the gate refuses the document rather than guess which value a reader sees "
+                            f"(T48, #149)")
+        found, walk_too_deep = ([], False) if too_deep else run_objects(value)
+        if (under_runs and path.suffix.lower() == ".json" and isinstance(value, dict)
+                and not any(where == "$" for where, _record in found)):
+            # A `*.json` object under runs/ is a run record whatever its `schema` says, as before.
+            found.insert(0, ("$", value))
+        if too_deep or walk_too_deep:
+            problems.append(f"{rel}: {WINE_GATE_CODE} a JSON document nested deeper than "
+                            f"{MAX_JSON_DEPTH} levels; the gate cannot walk it for run/1 records, so "
+                            f"it is refused (T48, #149)")
+        for where, record in found:
+            if where == "$":
+                listed, why_not = legacy_listing(root, path, rel, entries)
+                label = rel
+            else:
+                listed, why_not = False, (f"the run/1 object at {where} is nested inside the file's "
+                                          f"JSON value, and {LEGACY_LIST_TEXT} lists whole files, so no "
+                                          f"listing names it")
+                label = f"{rel} at {where}"
+            problem, _warning = check_wine_gate(record, table, legacy_ok=listed, legacy_reason=why_not)
+            if problem:
+                problems.append(f"{label}: {problem}")
     return problems
 
 
