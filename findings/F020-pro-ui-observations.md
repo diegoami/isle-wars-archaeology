@@ -52,7 +52,7 @@ Per-question entries follow, one per row of the questions map, in the map's orde
 
 - **Sources (the row's):** `BehaviorScript 450` / `exitFrame()`; `BehaviorScript 3` / `exitFrame()`; `CastScript 347 newgame2` / `mouseUp()`; `MovieScript 1 Startmovie` / `startMovie()`.
 - **Walk**: batch `title-options`; three rounds of title → Options → title, each timed with the monotonic clock, the inputs counted; the launch-to-title time is the session's own measurement.
-- **Observation**: observed. **Run**: `runs/E019/title-options/E019-r0003.json` (sha256 `c6177267a5f66db0…`, driver `db6375203ad6`, display 800x600x24, 13.12 s). **Counts**: 3 walkthroughs. **Timing observations**: 6 — round-to-options at 0.68 s, 0.61 s, 0.61 s; round-back-to-title at 0.68 s, 0.62 s, 0.62 s. **Launch-to-title**: 6.53 s (recorded at step 2). The recorder does not shot title or options in this walk (the walk's goal is timing, not screenshots); the catalogue reads the timings above.
+- **Observation**: observed. **Run**: `runs/E019/title-options/E019-r0003.json` (sha256 `c6177267a5f66db0…`, driver `db6375203ad6`, display 800x600x24, 13.12 s). **Counts**: 3 walkthroughs. **Timing observations**: 6 — round-to-options at 0.68 s, 0.61 s, 0.61 s; round-back-to-title at 0.68 s, 0.62 s, 0.68 s. **Launch-to-title**: 6.53 s (recorded at step 2). The recorder does not shot title or options in this walk (the walk's goal is timing, not screenshots); the catalogue reads the timings above.
 - **What would change it**: the timing and the screen order are in the score, which stays undecoded; a walk at another speed setting would time it differently.
 
 #### Q-UI-19 Screenshots at each supported resolution

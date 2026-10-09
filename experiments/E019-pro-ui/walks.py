@@ -33,13 +33,13 @@ ROOT = Path(__file__).resolve().parents[2]
 QUESTIONS = ROOT / "questions" / "pro-static.md"
 
 # The five per-screen batches of T24, in the order the task file fixes them (one commit each).
-BATCHES = [
-    ("title-options", ["Q-UI-04", "Q-UI-10", "Q-UI-19", "Q-UI-22"]),
-    ("board-pieces", ["Q-UI-01", "Q-UI-02", "Q-UI-03", "Q-UI-05", "Q-UI-20", "Q-PLY-04"]),
-    ("play", ["Q-UI-08", "Q-UI-12", "Q-UI-13", "Q-UI-15", "Q-UI-16"]),
-    ("events-end", ["Q-UI-06", "Q-UI-07", "Q-UI-11", "Q-UI-14", "Q-UI-21"]),
-    ("inputs-sounds", ["Q-UI-09", "Q-UI-17", "Q-UI-18"]),
-]
+BATCHES = {
+    "title-options": ["Q-UI-04", "Q-UI-10", "Q-UI-19", "Q-UI-22"],
+    "board-pieces": ["Q-UI-01", "Q-UI-02", "Q-UI-03", "Q-UI-05", "Q-UI-20", "Q-PLY-04"],
+    "play": ["Q-UI-08", "Q-UI-12", "Q-UI-13", "Q-UI-15", "Q-UI-16"],
+    "events-end": ["Q-UI-06", "Q-UI-07", "Q-UI-11", "Q-UI-14", "Q-UI-21"],
+    "inputs-sounds": ["Q-UI-09", "Q-UI-17", "Q-UI-18"],
+}
 
 # Measured rectangles (x, y, w, h) of the 800x600 stage, each with where it came from.
 REGIONS = {
