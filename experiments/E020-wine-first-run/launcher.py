@@ -17,11 +17,14 @@ an unsafe prefix and uncommitted driver code, and gives the command its own invo
 inner process runs as PID 1 of private user, mount and PID namespaces, with a private /tmp and the
 install bound read-only. There, before the launch, the binary's identity is measured (e020_sitting:
 the install's and the run copy's Islepro.exe equal the F019 row) and the sitting directory is
-created in its one confined root (constraint A, R4). Then one Session (session.py: the seal, its
-own Xvfb, the game in its own network namespace) executes the body: the title screen, `before.png`,
-the watcher on the session's own display and game window, the batch loop (e020_loop.py) sending
-every step through Session.perform by the click-driver, `after.png`. Session.complete() and
-finish() decide the status; `sitting.json` keeps it, with the session's times, whatever happened.
+created in its one confined root (constraint A, R4). The shipped scoreboard file's sha256 is read
+from `artifacts/known.json` (rule 17) and the loop is given the restore that puts that file back
+into the run copy before each New Game after the first (fix #152). Then one Session (session.py: the
+seal, its own Xvfb, the game in its own network namespace) executes the body: the title screen,
+`before.png`, the watcher on the session's own display and game window, the batch loop
+(e020_loop.py) sending every step through Session.perform by the click-driver, `after.png`.
+Session.complete() and finish() decide the status; `sitting.json` keeps it, with the session's
+times, whatever happened.
 
 Machine-local values come from the environment, as for E004, and never reach a record:
 IWP_PREFIX, IWP_DIR, E020_BUNDLES (confined by setup/iwp/locations.py), and IWP_MACHINE.
@@ -186,6 +189,15 @@ def inner(name, batch, argv):
     sessionlib.bind_install_readonly(locs["IWP_DIR"])
     row = f019_row()
     binary = sitting.binary_identity(locs["IWP_DIR"], locs["IWP_PREFIX"], row)
+    # #152: before each New Game after the first the shipped scoreboard file goes back into the run
+    # copy, copied from the install (read-only) and measured there; the shipped sha256 is read from
+    # artifacts/known.json here, once, before anything is started.
+    shipped_skr = sitting.shipped_skr_sha256()
+
+    def restore():
+        """The shipped scoreboard file copied back into the run copy: the sha256 measured there."""
+        return sitting.restore_skr(locs["IWP_DIR"], locs["IWP_PREFIX"], shipped_skr)
+
     others = [(k, Path(v)) for k, v in locs.items()]
     root = sitting.confine_root(sitting.SITTING_ROOT, others=others)
     sid = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
@@ -199,7 +211,8 @@ def inner(name, batch, argv):
                                  locs["IWP_DIR"], os.environ.get(DISPLAY) or sessionlib.free_display(), arm=name)
     summary = {}
     try:
-        session.execute(make_body(paths, batch, blocks_path.read_text(encoding="utf-8"), summary))
+        session.execute(make_body(paths, batch, blocks_path.read_text(encoding="utf-8"), summary,
+                                  restore=restore, shipped_skr=shipped_skr))
     finally:
         keep_session_outputs(session, paths)
         doc.update(status=session.status, recovered=session.recovered, started=session.started or spike.now(),
@@ -219,9 +232,12 @@ def f019_row():
                                  "nothing was started")
 
 
-def make_body(paths, batch, blocks_text, summary, watcher_factory=None, loop_factory=None):
+def make_body(paths, batch, blocks_text, summary, watcher_factory=None, loop_factory=None,
+              restore=None, shipped_skr=None):
     """The session's body: the title, before.png, the watcher on the session's display and window,
-    the loop through Session.perform, after.png. The factories are for the tests."""
+    the loop through Session.perform, after.png. The factories are for the tests. `restore` and
+    `shipped_skr` (#152) are the loop's scoreboard restore: what puts the shipped `xtras/Islepro.skr`
+    back into the run copy before each New Game after the first, and that file's sha256."""
     from driver.clicks import ClickDriver, parse_blocks
     from driver.watcher import Watcher
     import e020_loop
@@ -242,7 +258,7 @@ def make_body(paths, batch, blocks_text, summary, watcher_factory=None, loop_fac
         thread, stop = watcher.start()
         try:
             active.observe_screenshot("before.png")
-            loop = loop_factory(clicks, batch)
+            loop = loop_factory(clicks, batch, restore=restore, shipped_skr=shipped_skr)
             try:
                 loop.run()
             finally:

@@ -413,7 +413,8 @@ class E020SessionTest(base.DriverWorld):
         sent = [(i, l["block"]) for i, l in enumerate(lines) if l.get("block")]
         game2 = [i for i, b in sent if b == "new-game" and lines[i]["game"] == 2]
         self.assertTrue(game2 and game2[0] > restored, "New Game follows the restore")
-        self.assertEqual([i for i, b in sent if credit < i < restored], [])   # nothing between them
+        # between the credit and the restore only the Scoreboard's CONTINUE is sent, never New Game
+        self.assertEqual({b for i, b in sent if credit < i < restored}, {"scoreboard-continue"})
         self.assertEqual((summary["games"], summary["loss_credited"]), (2, 2))
 
     def test_a_restore_that_fails_ends_the_sitting_cleanly_with_no_second_new_game(self):

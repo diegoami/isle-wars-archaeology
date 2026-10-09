@@ -485,6 +485,9 @@ class SkrRestoreTest(unittest.TestCase):
 
     def test_after_a_credited_game_the_shipped_file_is_restored_and_logged_before_the_next_game(self):
         driver = self.credited()
+        source_mtime = os.stat(self.source).st_mtime_ns
+        (self.install / "xtras").chmod(0o555)            # a write into the install would fail here
+        self.addCleanup(lambda: (self.install / "xtras").chmod(0o755))
         summary = self.loop(driver).run()
         trail = driver.trail
         credit = trail.index("note:loss-credited")
@@ -501,8 +504,22 @@ class SkrRestoreTest(unittest.TestCase):
         self.assertEqual(self.target.read_bytes(), self.SHIPPED)
         self.assertEqual(e020_sitting.sha256_of(self.target), self.shipped)
         self.assertEqual(self.source.read_bytes(), self.SHIPPED)
+        self.assertEqual(os.stat(self.source).st_mtime_ns, source_mtime)     # the install is never written
         self.assertEqual(self.copies, 1)                 # not before game 1, which starts shipped
         self.assertEqual((summary["ended"], summary["games"]), ("unknown-screen", 2))
+
+    def test_the_sha256_the_restore_reports_is_measured_on_the_run_copy_after_the_copy(self):
+        """A copy that claims to have succeeded but leaves other bytes in the run copy is caught by
+        the measurement, so the line's sha256 can be neither the shipped constant nor the source's."""
+        def lying_copy(directory, name, data=None, source=None, exist=None, **kw):
+            Path(directory, name).write_bytes(self.CREDITED)
+
+        with mock.patch.object(e020_sitting.safeio, "write_file", side_effect=lying_copy):
+            with self.assertRaises(e020_sitting.RestoreFailed) as caught:
+                self.restore()
+        self.assertIn("measures", str(caught.exception))
+        self.assertIn(self.shipped, str(caught.exception))
+        self.assertEqual(self.target.read_bytes(), self.CREDITED)
 
     def test_the_export_takes_the_restore_the_loop_logged_and_refuses_it_without_one(self):
         driver = self.credited()
