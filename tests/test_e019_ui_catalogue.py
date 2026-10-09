@@ -482,10 +482,19 @@ class RecorderEndToEndTest(unittest.TestCase):
             self.assertTrue(any("(Q-UI-01)" in e and "start_state" in e for e in errors), errors)
 
     def test_the_real_tree_fails_while_the_walks_have_not_run(self):
-        """The honest state of this PR: no E019 records exist (the walks are T39's), so the
-        repository's own check fails, naming the questions still missing."""
+        """While T39's batches are still being walked, the repository's own check fails, naming
+        every question with no completed record yet."""
         errors = check_ui_catalogue.run_checks(ROOT, questions_path=QUESTIONS, inventory_path=INVENTORY)
-        self.assertTrue(any("Q-UI-01" in e and "has not run" in e for e in errors), errors)
+        walked = set()
+        for path in (ROOT / "runs" / "E019").glob("*/*.json"):
+            record = json.loads(path.read_text())
+            if record.get("status") == "completed":
+                walked |= {o["value"] for o in record["observations"] if o["field"] == "walk question"}
+        pending = [qid for qid in catalogue_ids() if qid not in walked]
+        if not pending:
+            self.skipTest("every walk has a completed record")
+        for qid in pending:
+            self.assertTrue(any(qid in e and "has not run" in e for e in errors), (qid, errors))
 
 
 def walk_order_first(qid):
