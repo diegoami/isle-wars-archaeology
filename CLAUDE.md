@@ -62,8 +62,10 @@ indexed in `docs/tasks/README.md`.
      (its lowest). Opus runs as `task-agent-heavy` (effort `medium`). A light model (Sonnet, GPT-5.6
      Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) stays at `high`.
    - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
-     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`), on its own weekly
-     pool. GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
+     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`). As of 2026-10-09, Luna
+     shares OpenAI's main quota with Sol — the `gpt-5.6-luna:7d` window of its own is gone; its own
+     limit surfaces only as `when_exhausted.usable_models` in `/quota/openai` (harness's L65).
+     GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
      every chain, never the reviewer. Never a Luna on OpenCode Go (`opencode-go/…`).
    - **Quota first** (harness_imperial L50; the owner, 2026-10-05, superseding every earlier limit
      on which models may be used): before choosing, recommending or delegating to a model, check
