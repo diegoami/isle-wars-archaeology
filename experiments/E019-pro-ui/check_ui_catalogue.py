@@ -25,11 +25,18 @@ Exits 0 when every piece holds:
   status is one of observed, narrowed, static-only, unestablished (a pending section fails);
 - no record's observations, and no F020 section, cites a script or handler that the E008
   inventory does not have (kind, number, name, handler — the same rule
-  tools/check_pro_question_map.py enforces for the questions map).
+  tools/check_pro_question_map.py enforces for the questions map);
+- an F020 section whose status is observed or narrowed cites its evidence (#140, T39 DW2): every
+  cited runs/E019/<batch>/E019-r<nnnn>.json exists under the root being checked, the sha256
+  prefix cited beside a record is a prefix of that file's sha256, the section cites at least one
+  record with its sha, and every hash it cites (backticked lowercase hex immediately followed by
+  an ellipsis) is either one of those record shas or a prefix of an output of a record it cites
+  by full path. A bare file name and backticked hex without the ellipsis are not citations.
 
 The check reads recorded files; it does not run the game.
 """
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -44,11 +51,22 @@ QUESTIONS = ROOT / "questions" / "pro-static.md"
 INVENTORY = ROOT / "experiments" / "E008-static-triage" / "measurements" / "iwp-extract-pro-r1.json"
 F020 = ROOT / "findings" / "F020-pro-ui-observations.md"
 STATUSES = ("observed", "narrowed", "static-only", "unestablished")
+# the statuses whose sections the citation rule checks (#140); pending, static-only and
+# unestablished sections cite nothing the rule reads
+CITED_STATUSES = ("observed", "narrowed")
 SCRIPT = re.compile(r"(MovieScript|BehaviorScript|CastScript) (\d+)(?: ([A-Za-z][A-Za-z0-9_]*))?")
 HANDLER = re.compile(r"\b([A-Za-z][A-Za-z0-9_]*)\(\)")
 AT_LEAST = re.compile(r"at least (\d+) ([a-z ]+)")
 SIZE = re.compile(r"(\d+)x(\d+)(?:x\d+)?")
 HEX64 = re.compile(r"[0-9a-f]{64}")
+# F020's two citation formats (#140): a record is a backticked full path under runs/E019/,
+# optionally followed by ` (sha256 `<prefix>…`)`; a hash is any other backticked lowercase hex
+# prefix of 8-64 chars immediately followed by `…` (U+2026). A bare file name
+# (`E019-r0005.json`, as Q-UI-19 cites its two aborted attempts) is not a record citation, and
+# backticked hex without the ellipsis (a driver id like `e257bb1b395a`) is not a hash citation.
+RECORD_CITE = re.compile(r"`(runs/E019/[^`\s]+/E019-r\d+\.json)`"
+                         r"(?:\s*\(sha256 `([0-9a-f]{8,64})…`)?")
+HASH_CITE = re.compile(r"`([0-9a-f]{8,64})…`")
 
 
 def catalogue_ids(rows):
@@ -78,6 +96,51 @@ def citation_errors(text, scripts, where):
             handler = m.group(1)
             if current is None or handler not in current["handlers"]:
                 errors.append(f"{where}: handler {handler}() is not in the script cited before it")
+    return errors
+
+
+def f020_citation_errors(body, root, where):
+    """Errors for the record and hash citations of one F020 section whose status is observed or
+    narrowed (#140): the section's evidence must be checkable — a cited record exists under
+    `root`, the sha256 prefix cited beside it is a prefix of that file's sha256, at least one
+    cited record carries its sha (T39 DW2), and every hash cited is either one of those record
+    shas or a prefix of an output of a record cited by full path in the section. One line per
+    error, numbered 1-4 in the issue (#140)."""
+    errors = []
+    cited = []                              # (path, sha prefix or None), in text order
+    for m in RECORD_CITE.finditer(body):
+        rel, sha = m.group(1), m.group(2)
+        path = Path(root) / rel
+        cited.append((path, sha))
+        if not path.is_file():
+            errors.append(f"{where}: cites {rel}, which does not exist")                    # 1
+        elif sha and not hashlib.sha256(path.read_bytes()).hexdigest().startswith(sha):
+            errors.append(f"{where}: cites {rel} with sha256 {sha}…, "
+                          "which is not a prefix of the file's sha256")                     # 2
+    if not any(sha for _, sha in cited):
+        errors.append(f"{where}: cites no record with its sha256 "
+                      "(T39's DW2 requires the record's sha)")                              # 3
+    shas = [sha for _, sha in cited if sha]
+    outputs = []
+    for path, _ in cited:
+        if not path.is_file():
+            continue                          # the missing path is reported above
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+        except ValueError:
+            continue                          # the record loop reports it
+        if isinstance(record, dict):
+            for out in record.get("outputs") or []:
+                if isinstance(out, dict) and isinstance(out.get("sha256"), str):
+                    outputs.append(out["sha256"])
+    for m in HASH_CITE.finditer(body):
+        h = m.group(1)
+        if any(h.startswith(sha) or sha.startswith(h) for sha in shas):
+            continue                          # a record sha cited in this section
+        if any(o.startswith(h) for o in outputs):
+            continue                          # an output of a record cited in this section
+        errors.append(f"{where}: cites the hash {h}…, which is neither a record sha cited here "
+                      "nor a prefix of an output of a record cited here")                   # 4
     return errors
 
 
@@ -366,6 +429,8 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                               "(the walk's record may be missing, or the section is still pending)")
                 continue
             errors.extend(citation_errors(body, scripts, f"F020 {qid}"))
+            if m.group(1) in CITED_STATUSES:
+                errors.extend(f020_citation_errors(body, root, f"{qid}: F020"))
             declared = (walks.WALKS.get(qid) or {}).get("count") or {}
             if (declared.get("measured") and declared["measured"] != declared.get("word")
                     and m.group(1) == "observed"):
