@@ -496,5 +496,26 @@ class LegacyWineRoundTwoTest(unittest.TestCase):
             self.assertIn("symlink", result.stdout)
 
 
+class LegacyWineRoundThreeTest(unittest.TestCase):
+    """T48 round 2, Sol's R1 (PR #151): discovery still depended on a `.json` name. Pushed before
+    the narrow third round (L64, the owner's choice of 2026-10-09). A tracked run/1 document with a
+    Wine platform, an unknown binary hash and no listing must be refused, whatever its name."""
+
+    def test_tracked_wine_run_document_without_json_extension_is_refused(self):
+        for rel in ("wine-record.txt", "wine-record", "runs/E002/E002-r0002.JSON", "docs/E002-r0003.Json"):
+            with self.subTest(rel=rel), tempfile.TemporaryDirectory() as tmp:
+                repo = make_repo(tmp)
+                write_f019(repo)
+                list_records(repo)
+                record = dict(wine_record(sha256="a" * 64, platform=LEGACY), schema="run/1")
+                path = repo / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(record), encoding="utf-8")
+                subprocess.run(["git", "add", rel], cwd=repo, check=True)
+                result = run_tool(repo)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn(rel, result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
