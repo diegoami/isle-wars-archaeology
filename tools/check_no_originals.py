@@ -29,9 +29,10 @@ carve-out platform and is checked against F019 instead. A platform that names no
 T48 round 2 (Sol's R1 and R2 on PR #151) closes three ways around that classification. A platform
 the gate cannot classify in plain ASCII (fullwidth `ＷＩＮＥ`, the dotted capital `İ`, a Cyrillic
 look-alike, a zero-width space, an ASCII control character) is refused outright, before any
-classification: fail closed, never "no wine". The gate reads every tracked JSON document whose
-top-level `schema` is `run/1`, wherever it lives, as well as every `runs/**/*.json`, so a record
-cannot leave the gate's walk by moving. And a symlink under `runs/` (file or directory), or `runs/`
+classification: fail closed, never "no wine". The gate reads every tracked file whose content is a
+JSON document with top-level `schema` `run/1`, wherever it lives and whatever its name or encoding
+(round 3: not only `*.json`), as well as every file under `runs/` named `.json` in any casing, so a
+record cannot leave the gate's walk by moving or by being renamed. And a symlink under `runs/` (file or directory), or `runs/`
 itself being one, is refused by name instead of being silently skipped or followed.
 
 Exit 0 clean, 1 not.
@@ -305,12 +306,39 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
     )
 
 
+def load_json_document(path):
+    """The JSON value in `path`, or None where its bytes are not JSON.
+
+    The bytes go to `json.loads` as they are, so a UTF-8 file with a byte-order mark and a UTF-16 or
+    UTF-32 file are read as JSON readers read them, not skipped as undecodable (T48 round 3). A file
+    that is not JSON in any of those encodings cannot be read as a run record by anything, so it hides
+    nothing from the gate.
+    """
+    try:
+        return json.loads(path.read_bytes())
+    except (ValueError, OSError):
+        return None
+
+
+def is_run_document(path):
+    """True when `path` is a regular file within MAX_BYTES whose top-level `schema` is `run/1`."""
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_BYTES:
+        return False   # a link is refused by name; an oversized file is check_files' finding
+    doc = load_json_document(path)
+    return isinstance(doc, dict) and doc.get("schema") == "run/1"
+
+
 def run_records(root):
-    """Every committed run record, `runs/**/*.json`, sorted."""
+    """Every committed run record under `runs/`, sorted: each `*.json` in any casing of the suffix,
+    and every other file there whose content is a run/1 document (T48 round 3: discovery depends on
+    content, not on the name)."""
     runs = root / "runs"
     if not runs.is_dir():
         return []
-    return sorted(p for p in runs.rglob("*.json") if p.is_file())
+    return sorted(
+        p for p in runs.rglob("*")
+        if p.is_file() and (p.suffix.lower() == ".json" or is_run_document(p))
+    )
 
 
 def runs_symlinks(root):
@@ -336,29 +364,23 @@ def runs_symlinks(root):
 
 
 def tracked_run_documents(root, tracked):
-    """Every tracked `*.json` outside `runs/` whose top-level `schema` is `run/1`, sorted.
+    """Every tracked file outside `runs/` whose content is a run/1 document, whatever its name, sorted.
 
-    The gate must not depend on where a record lives (Sol's R2, PR #151): a run/1 document moved out
-    of `runs/` is gated exactly like one inside it. A tracked symlink is not read here; it is
-    returned so the gate refuses it (a link could point at a record outside the repository). The
-    format examples under `formats/examples/` are run/1 documents too; they name no `wine`, so the
-    gate passes them, as it would anywhere.
+    The gate must not depend on where a record lives (Sol's R2, PR #151) nor on what it is called
+    (Sol's round-2 R1): a run/1 document moved out of `runs/`, or named without a `.json` suffix, is
+    gated exactly like one inside it. A tracked symlink is not read here; it is returned so the gate
+    refuses it (a link could point at a record outside the repository). The format examples under
+    `formats/examples/` are run/1 documents too; they name no `wine`, so the gate passes them, as it
+    would anywhere.
     """
     docs = []
     for name in filter(None, tracked):
-        if name.startswith("runs/") or not name.lower().endswith(".json"):
-            continue
+        if name.startswith("runs/"):
+            continue   # run_records walks runs/, tracked or not
         path = root / name
         if path.is_symlink():
             docs.append(path)
-            continue
-        if not path.is_file() or path.stat().st_size > MAX_BYTES:
-            continue   # an oversized file is check_files' finding
-        try:
-            doc = json.loads(path.read_text(encoding="utf-8"))
-        except (ValueError, UnicodeDecodeError):
-            continue
-        if isinstance(doc, dict) and doc.get("schema") == "run/1":
+        elif is_run_document(path):
             docs.append(path)
     return sorted(docs)
 
@@ -404,11 +426,8 @@ def wine_gate_problems(root, tracked=None):
                 problems.append(f"{rel}: {WINE_GATE_CODE} a run/1 document that is a symlink; the gate "
                                 f"neither follows nor skips a link")
             continue
-        try:
-            record = json.loads(path.read_text(encoding="utf-8"))
-        except ValueError:
-            continue  # a malformed record is the run validator's finding, not this gate's
-        if not isinstance(record, dict):
+        record = load_json_document(path)
+        if not isinstance(record, dict):  # a malformed record is the run validator's finding
             continue
         rel = path.relative_to(root).as_posix()
         listed, why_not = legacy_listing(root, path, rel, entries)

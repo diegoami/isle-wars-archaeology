@@ -517,5 +517,28 @@ class LegacyWineRoundThreeTest(unittest.TestCase):
                 self.assertIn(rel, result.stdout)
 
 
+class LegacyWineRoundThreeEncodingTest(unittest.TestCase):
+    """T48 round 3, a neighbouring class: a run/1 Wine document whose bytes are JSON but not plain
+    UTF-8 (a UTF-8 byte-order mark, UTF-16, UTF-32) was skipped as undecodable, inside `runs/` and
+    out. JSON readers accept those encodings, so the gate reads them too."""
+
+    def test_a_wine_run_document_in_another_json_encoding_is_refused(self):
+        cases = (("runs/E002/E002-r0002.json", "utf-16"), ("docs/wine-record.json", "utf-8-sig"),
+                 ("wine-record.txt", "utf-32"))
+        for rel, encoding in cases:
+            with self.subTest(rel=rel, encoding=encoding), tempfile.TemporaryDirectory() as tmp:
+                repo = make_repo(tmp)
+                write_f019(repo)
+                list_records(repo)
+                record = dict(wine_record(sha256="a" * 64, platform=LEGACY), schema="run/1")
+                path = repo / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(json.dumps(record).encode(encoding))
+                subprocess.run(["git", "add", rel], cwd=repo, check=True)
+                result = run_tool(repo)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn(rel, result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
