@@ -26,11 +26,20 @@ only when its own repo-relative path and its own file sha256 are the ones
 carve-out platform and is checked against F019 instead. A platform that names no `wine`
 (for example `windows-native-bandicam`) is not this gate's business, as before.
 
+T48 round 2 (Sol's R1 and R2 on PR #151) closes three ways around that classification. A platform
+the gate cannot classify in plain ASCII (fullwidth `ＷＩＮＥ`, the dotted capital `İ`, a Cyrillic
+look-alike, a zero-width space, an ASCII control character) is refused outright, before any
+classification: fail closed, never "no wine". The gate reads every tracked JSON document whose
+top-level `schema` is `run/1`, wherever it lives, as well as every `runs/**/*.json`, so a record
+cannot leave the gate's walk by moving. And a symlink under `runs/` (file or directory), or `runs/`
+itself being one, is refused by name instead of being silently skipped or followed.
+
 Exit 0 clean, 1 not.
 """
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -71,6 +80,11 @@ F019_COLUMNS = ("set", "variant", "file", "sha256", "install_path", "signed_on")
 def repo_root():
     """The git top level, as this script has always found it."""
     return Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
+
+
+def tracked_files(root):
+    """Every path git tracks under `root`, as `git ls-files -z` lists it (empty names included)."""
+    return subprocess.check_output(["git", "ls-files", "-z"], cwd=root, text=True).split("\0")
 
 
 def known_hashes(root):
@@ -194,6 +208,17 @@ def legacy_listing(root, path, rel, entries):
     return True, ""
 
 
+def plain_ascii(platform):
+    """True only for a platform made of printable ASCII (space to `~`).
+
+    `.lower()` and a substring test cannot see `wine` in `ＷＩＮＥ`, `WİNE`, `wіne` (Cyrillic i)
+    or `wi\u200bne`, and no normalisation is trusted to catch every look-alike, so anything outside
+    printable ASCII is refused before the gate classifies the platform (Sol's R1, PR #151). Every
+    platform the repository's records carry is plain ASCII.
+    """
+    return all(" " <= ch <= "~" for ch in platform)
+
+
 def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
     """Constraint F: decide one run record against the F019 known-good table.
 
@@ -223,6 +248,14 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
     platform = runtime.get("platform")
     if not isinstance(platform, str):
         return "", ""
+    if not plain_ascii(platform):
+        return (
+            f"{WINE_GATE_CODE} record carries the platform {platform!r}, which is not plain printable "
+            f"ASCII, so the gate cannot tell whether it names wine (a Unicode look-alike, a "
+            f"fullwidth or dotted letter, an invisible or control character); a run record's "
+            f"platform is plain ASCII (T48, #149)",
+            "",
+        )
     if not platform.startswith(WINE_PLATFORM_PREFIX):
         if "wine" not in platform.lower():          # in any case: `WINE`, `x-Wine-y`, never a prefix
             return "", ""
@@ -280,6 +313,56 @@ def run_records(root):
     return sorted(p for p in runs.rglob("*.json") if p.is_file())
 
 
+def runs_symlinks(root):
+    """Every symlink under `runs/` (file or directory, `runs/` itself included), sorted, as paths.
+
+    `rglob` does not descend into a symlinked directory and `is_file()` follows a symlinked file, so
+    a link could hide a record from the gate or point it at bytes outside the repository (Sol's R2,
+    PR #151). Run records are regular files under real directories, so every link is refused by
+    name; none is followed. The walk never follows a link, so it cannot loop.
+    """
+    runs = root / "runs"
+    if runs.is_symlink():
+        return [runs]
+    if not runs.is_dir():
+        return []
+    links = []
+    for dirpath, dirnames, filenames in os.walk(runs, followlinks=False):
+        for name in dirnames + filenames:
+            path = Path(dirpath) / name
+            if path.is_symlink():
+                links.append(path)
+    return sorted(links)
+
+
+def tracked_run_documents(root, tracked):
+    """Every tracked `*.json` outside `runs/` whose top-level `schema` is `run/1`, sorted.
+
+    The gate must not depend on where a record lives (Sol's R2, PR #151): a run/1 document moved out
+    of `runs/` is gated exactly like one inside it. A tracked symlink is not read here; it is
+    returned so the gate refuses it (a link could point at a record outside the repository). The
+    format examples under `formats/examples/` are run/1 documents too; they name no `wine`, so the
+    gate passes them, as it would anywhere.
+    """
+    docs = []
+    for name in filter(None, tracked):
+        if name.startswith("runs/") or not name.lower().endswith(".json"):
+            continue
+        path = root / name
+        if path.is_symlink():
+            docs.append(path)
+            continue
+        if not path.is_file() or path.stat().st_size > MAX_BYTES:
+            continue   # an oversized file is check_files' finding
+        try:
+            doc = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, UnicodeDecodeError):
+            continue
+        if isinstance(doc, dict) and doc.get("schema") == "run/1":
+            docs.append(path)
+    return sorted(docs)
+
+
 def check_files(root, tracked):
     """The original no-originals file checks, in their original order and wording."""
     registered = known_hashes(root)
@@ -295,7 +378,7 @@ def check_files(root, tracked):
     return problems
 
 
-def wine_gate_problems(root):
+def wine_gate_problems(root, tracked=None):
     """One problem line per committed run record that constraint F refuses.
 
     Each record is decided with the listing in hand: `legacy_ok` is True only for a record whose
@@ -306,7 +389,21 @@ def wine_gate_problems(root):
     table = load_f019_table(root)
     entries = legacy_wine_entries(root)
     problems = []
-    for path in run_records(root):
+    for link in runs_symlinks(root):
+        rel = link.relative_to(root).as_posix()
+        problems.append(f"{rel}: {WINE_GATE_CODE} a symlink under runs/; run records are regular files "
+                        f"under real directories, and the gate neither follows nor skips a link")
+    linked = set(runs_symlinks(root))
+    if tracked is None:
+        tracked = tracked_files(root)
+    others = tracked_run_documents(root, tracked)
+    for path in sorted(set(run_records(root)) | set(others)):
+        if path.is_symlink() or any(parent in linked for parent in path.parents):
+            if path not in linked:
+                rel = path.relative_to(root).as_posix()
+                problems.append(f"{rel}: {WINE_GATE_CODE} a run/1 document that is a symlink; the gate "
+                                f"neither follows nor skips a link")
+            continue
         try:
             record = json.loads(path.read_text(encoding="utf-8"))
         except ValueError:
@@ -330,10 +427,10 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     root = repo_root()
-    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=root, text=True).split("\0")
+    tracked = tracked_files(root)
     problems = check_files(root, tracked)
     if not args.no_wine_gate:
-        problems.extend(wine_gate_problems(root))
+        problems.extend(wine_gate_problems(root, tracked))
     print("\n".join(problems) if problems else f"no original files tracked ({len(tracked) - 1} files checked)")
     return 1 if problems else 0
 

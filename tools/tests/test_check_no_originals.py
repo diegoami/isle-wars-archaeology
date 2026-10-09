@@ -438,5 +438,63 @@ class LegacyWineReviewBypassTest(unittest.TestCase):
             self.assertIn("runs/E003", result.stdout)
 
 
+class LegacyWineRoundTwoTest(unittest.TestCase):
+    """T48 round 2's own edges, beside the main session's three (L64): what the R1 and R2 fixes also
+    refuse, and what they must still let through."""
+
+    def test_an_ascii_control_character_in_the_platform_is_refused(self):
+        """R1's rule is printable ASCII, not merely ASCII: `wi\\x00ne` would also hide `wine` from a
+        substring test."""
+        record = wine_record(sha256="a" * 64, platform="linux-wsl2/wi\x00ne-xvfb")
+        problem, _ = cno.check_wine_gate(record, TABLE, legacy_ok=True)
+        self.assertIn(GATE_CODE, problem)
+        self.assertIn("plain printable ASCII", problem)
+
+    def test_a_non_wine_run_document_outside_runs_still_passes(self):
+        """R2 gates run/1 documents outside runs/, it does not refuse them: the format examples under
+        formats/examples/ are run/1 documents with a platform naming no wine, and they pass."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            (repo / "formats").mkdir()
+            record = dict(wine_record(sha256="a" * 64, platform="python-3.12/ubuntu-24.04"), schema="run/1")
+            (repo / "formats" / "example.json").write_text(json.dumps(record), encoding="utf-8")
+            subprocess.run(["git", "add", "formats/example.json"], cwd=repo, check=True)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_a_tracked_json_symlink_outside_runs_is_refused(self):
+        """A tracked `*.json` symlink outside runs/ could point at a run record outside the
+        repository; the gate refuses it by name instead of following it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            outside = Path(tmp) / "elsewhere.json"
+            outside.write_text(json.dumps(dict(wine_record(sha256="a" * 64, platform=LEGACY),
+                                               schema="run/1")), encoding="utf-8")
+            (repo / "linked.json").symlink_to(outside)
+            subprocess.run(["git", "add", "linked.json"], cwd=repo, check=True)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("linked.json", result.stdout)
+
+    def test_a_symlinked_record_file_under_runs_is_refused_even_when_its_target_is_listed(self):
+        """A symlinked record under runs/ is refused as a link, whatever it points at: here at a
+        listed record with its listed bytes, which would pass if the link were followed."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(sha256="a" * 64, platform=LEGACY))
+            (repo / "runs" / "E002" / "E002-r0002.json").symlink_to("E002-r0001.json")
+            subprocess.run(["git", "add", "runs/E002/E002-r0002.json"], cwd=repo, check=True)
+            list_records(repo, RECORD, "runs/E002/E002-r0002.json")
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("runs/E002/E002-r0002.json", result.stdout)
+            self.assertIn("symlink", result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
