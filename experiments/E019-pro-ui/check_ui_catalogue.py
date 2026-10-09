@@ -59,12 +59,14 @@ HANDLER = re.compile(r"\b([A-Za-z][A-Za-z0-9_]*)\(\)")
 AT_LEAST = re.compile(r"at least (\d+) ([a-z ]+)")
 SIZE = re.compile(r"(\d+)x(\d+)(?:x\d+)?")
 HEX64 = re.compile(r"[0-9a-f]{64}")
-# F020's two citation formats (#140): a record is a backticked full path under runs/E019/,
-# optionally followed by ` (sha256 `<prefix>…`)`; a hash is any other backticked lowercase hex
-# prefix of 8-64 chars immediately followed by `…` (U+2026). A bare file name
-# (`E019-r0005.json`, as Q-UI-19 cites its two aborted attempts) is not a record citation, and
-# backticked hex without the ellipsis (a driver id like `e257bb1b395a`) is not a hash citation.
-RECORD_CITE = re.compile(r"`(runs/E019/[^`\s]+/E019-r\d+\.json)`"
+# F020's two citation formats (#140): a record is a backticked full path
+# `runs/E019/<batch>/E019-r<nnnn>.json` — one path segment for the batch, so a citation names a
+# file of a batch folder and nothing else — optionally followed by ` (sha256 `<prefix>…`)`;
+# a hash is any other backticked lowercase hex prefix of 8-64 chars immediately followed by `…`
+# (U+2026). A bare file name (`E019-r0005.json`, as Q-UI-19 cites its two aborted attempts) is
+# not a record citation, and backticked hex without the ellipsis (a driver id like
+# `e257bb1b395a`) is not a hash citation.
+RECORD_CITE = re.compile(r"`(runs/E019/[A-Za-z0-9][A-Za-z0-9._-]*/E019-r\d+\.json)`"
                          r"(?:\s*\(sha256 `([0-9a-f]{8,64})…`)?")
 HASH_CITE = re.compile(r"`([0-9a-f]{8,64})…`")
 
@@ -113,12 +115,12 @@ def f020_citation_errors(body, root, where):
         path = Path(root) / rel
         cited.append((path, sha))
         if not path.is_file():
-            errors.append(f"{where}: cites {rel}, which does not exist")                    # 1
+            errors.append(f"{where} cites {rel}, which does not exist")                    # 1
         elif sha and not hashlib.sha256(path.read_bytes()).hexdigest().startswith(sha):
-            errors.append(f"{where}: cites {rel} with sha256 {sha}…, "
+            errors.append(f"{where} cites {rel} with sha256 {sha}…, "
                           "which is not a prefix of the file's sha256")                     # 2
     if not any(sha for _, sha in cited):
-        errors.append(f"{where}: cites no record with its sha256 "
+        errors.append(f"{where} cites no record with its sha256 "
                       "(T39's DW2 requires the record's sha)")                              # 3
     shas = [sha for _, sha in cited if sha]
     outputs = []
@@ -139,7 +141,7 @@ def f020_citation_errors(body, root, where):
             continue                          # a record sha cited in this section
         if any(o.startswith(h) for o in outputs):
             continue                          # an output of a record cited in this section
-        errors.append(f"{where}: cites the hash {h}…, which is neither a record sha cited here "
+        errors.append(f"{where} cites the hash {h}…, which is neither a record sha cited here "
                       "nor a prefix of an output of a record cited here")                   # 4
     return errors
 

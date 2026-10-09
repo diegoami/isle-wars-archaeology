@@ -46,6 +46,10 @@ HIT_AREAS = {"Q-UI-18"}
 STATIC_ONLY = {"Q-UI-14", "Q-UI-21"}
 # the rows whose target needs an identification the pixels cannot make: proxied, F020 narrowed
 PROXIED = {"Q-UI-06", "Q-UI-07", "Q-UI-13"}
+# the F020 statuses whose sections the citation rule reads (#140); write_f020 cites exactly the
+# sections the rule applies to. The tuple lives here, not in the check, so these tests run
+# against main's check too (Done-when 2: every one of them fails there).
+CITED_STATUSES = ("observed", "narrowed")
 
 
 def catalogue_ids():
@@ -226,7 +230,7 @@ def write_f020(root, status_of=None):
             status = "observed"
         lines += [f"#### {qid} question text",
                   f"- **Observation**: {status}: described from the records."]
-        if status in check_ui_catalogue.CITED_STATUSES:
+        if status in CITED_STATUSES:
             found = records_of(root, qid)
             if found:
                 record_path, record = found[0]
