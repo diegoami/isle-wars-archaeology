@@ -29,6 +29,7 @@ import records as e019_records  # noqa: E402
 import check_ui_catalogue  # noqa: E402
 import run_walk  # noqa: E402
 import test_runs  # noqa: E402  (the amended record-layout rule, and the pinned run/1 validator)
+import check_no_originals as cno  # noqa: E402  (T48: the recorder's platform is pinned to the gate's)
 
 QUESTIONS = ROOT / "questions" / "pro-static.md"
 INVENTORY = ROOT / "experiments" / "E008-static-triage" / "measurements" / "iwp-extract-pro-r1.json"
@@ -188,13 +189,27 @@ class FakeSession:
         self._engine.obs.append({"step": step, "source": source, "field": field, "value": str(value)})
 
 
-def drive(root, qids=None, **fake_options):
-    """Run the recorder (run_walk.run_walk) for the walks named (every walk by default) into `root`,
-    with a fake session; returns [(qid, size, status, recovered)]."""
+FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"
+
+
+def fake_locs(root):
+    """The three confined locations of a fake walk: the prefix, the install and the bundles, with a
+    fake `Islepro.exe` in the fake install. `run_walk.run_walk` hashes it at the walk's start
+    (`records.binary_sha256`) and records it as `start_state.sha256` (T48, #149), so a fake walk
+    needs one; two different byte strings give two different hashes, which the record tests use."""
     root = Path(root).resolve()
     locs = {"IWP_PREFIX": root / "prefix", "IWP_DIR": root / "install", "E019_BUNDLES": root / "bundles"}
     for path in locs.values():
         path.mkdir(exist_ok=True)
+    (locs["IWP_DIR"] / e019_records.BINARY).write_bytes(FAKE_BINARY)
+    return locs
+
+
+def drive(root, qids=None, **fake_options):
+    """Run the recorder (run_walk.run_walk) for the walks named (every walk by default) into `root`,
+    with a fake session; returns [(qid, size, status, recovered)]."""
+    locs = fake_locs(root)
+    root = Path(root).resolve()
     clock = FakeClock()
 
     def factory(*args):
@@ -497,9 +512,18 @@ class RecorderEndToEndTest(unittest.TestCase):
                     errors = [e for e in check(tmp) if f"({qid})" in e]
                     self.assertTrue(any(name in e for e in errors), errors)
 
-    def test_a_record_without_the_seal_fails_the_check(self):
+    def test_a_record_whose_start_state_measures_nothing_fails_the_check(self):
+        """T48 (#149) adapted the old `..._without_the_seal_...`: `start_state.sha256` is the install
+        binary's hash since T48, not the prefix listing's, so a walk that stopped before its snapshot
+        still records a measured hash (asserted here first, and it fails on main) and the recorder no
+        longer writes zeros of its own. What the check still refuses — what this test still pins — is
+        a record whose start_state measures nothing: all zeros, named as before."""
         with tempfile.TemporaryDirectory() as tmp:
             drive_one(tmp, "Q-UI-01", None, snapshot=False)
+            (path, record), = records_of(Path(tmp), "Q-UI-01")
+            self.assertEqual(record["start_state"]["sha256"], hashlib.sha256(FAKE_BINARY).hexdigest(),
+                             "T48: the binary's hash, whatever the session did")
+            rewrite(path, lambda r: r["start_state"].update(sha256="0" * 64))
             errors = check(tmp)
             self.assertTrue(any("(Q-UI-01)" in e and "start_state" in e for e in errors), errors)
 
@@ -526,10 +550,8 @@ def walk_order_first(qid):
 
 def drive_one(root, qid, size, **fake_options):
     """One walk, at one size, through run_walk into root."""
+    locs = fake_locs(root)
     root = Path(root).resolve()
-    locs = {"IWP_PREFIX": root / "prefix", "IWP_DIR": root / "install", "E019_BUNDLES": root / "bundles"}
-    for path in locs.values():
-        path.mkdir(exist_ok=True)
     clock = FakeClock()
 
     def factory(*args):
@@ -1158,6 +1180,66 @@ class RecorderUnitTest(unittest.TestCase):
                        {"field": "b.png raw RGB8 pixels sha256", "value": "1" * 64},
                        {"field": "c.png raw RGB8 pixels sha256", "value": "2" * 64}]
         self.assertEqual(run_walk.measured_count(session, ctx), 2)
+
+
+# --- T48 (#149): the carve-out platform, the binary's hash and the schema -------------------------
+
+class WineRecordTest(unittest.TestCase):
+    """T48 (#149): what a walk's record says about the Wine run (Done-when 3).
+
+    Three things, each with the mutation it kills: the carve-out's platform (a legacy token would
+    sail past constraint F unverified), `start_state.sha256` equal to the *fake install's* fake
+    binary hashed (a constant, the prefix listing or the run copy would not match), and the whole
+    document accepted by the pinned run/1 schema. Two different byte strings are fed in turn, so
+    neither the record nor the hasher can be a constant. The recorder-driven half — run_walk passing
+    that hash into this builder — is pinned by the start-state test above, which reads the record
+    a fake walk wrote.
+    """
+
+    def build(self, install, blob, prefix_sha="0" * 64):
+        """(binary_sha, record) of one fake install whose `Islepro.exe` is `blob`."""
+        install = Path(install)
+        install.mkdir(parents=True, exist_ok=True)
+        (install / e019_records.BINARY).write_bytes(blob)
+        binary_sha = e019_records.binary_sha256(install)
+        spec = {"qid": "Q-UI-01", "batch": "title-options"}
+        record = e019_records.build_record(
+            "E019-r9901", spec, ["--test"], "0123456789ab", "local", prefix_sha, binary_sha,
+            {"wine": "wine-9.0"},
+            [{"step": 0, "source": "static", "field": "walk question", "value": "Q-UI-01"}],
+            [], "2026-10-08T00:00:00Z", "2026-10-08T00:01:00Z", "completed", 60.0,
+            e019_records.ARTIFACT_SET, root=install.parent)
+        return binary_sha, record
+
+    def test_the_record_names_the_carve_out_platform_the_binarys_hash_and_validates(self):
+        hashes = []
+        for blob in (b"fake binary A", b"fake binary B"):
+            with self.subTest(blob=blob), tempfile.TemporaryDirectory() as tmp:
+                binary_sha, record = self.build(Path(tmp) / "install", blob)
+                hashes.append(record["start_state"]["sha256"])
+                self.assertEqual(record["runtime"]["platform"], "wine-on-user-machine-iwp-2.0")
+                self.assertEqual(record["artifact"]["variant"], "unregistered")
+                self.assertEqual(record["start_state"]["sha256"], hashlib.sha256(blob).hexdigest())
+                self.assertEqual(record["start_state"]["sha256"], binary_sha)
+                self.assertEqual(test_runs.validate_records.validate_document(record), [])
+        self.assertNotEqual(hashes[0], hashes[1], "the hash is measured, never a constant")
+
+    def test_the_platform_is_one_the_wine_gate_recognises(self):
+        """The recorder and the gate may not drift apart (#149): a token the gate does not recognise
+        would make every record this recorder writes a refusal, and a token it no longer recognises
+        would let them through unchecked."""
+        self.assertTrue(cno.recognised_wine_platform(e019_records.PLATFORM), e019_records.PLATFORM)
+        self.assertEqual(e019_records.PLATFORM, "wine-on-user-machine-iwp-2.0")
+
+    def test_the_prefix_listings_hash_is_named_in_restore_not_dropped(self):
+        """T48 moved what `start_state.sha256` held until now (the prefix listing's hash) where the
+        schema allows it: named in `start_state.restore`. Rule 20: nothing measured is dropped."""
+        prefix_sha = "c" * 64
+        with tempfile.TemporaryDirectory() as tmp:
+            _, record = self.build(Path(tmp) / "install", FAKE_BINARY, prefix_sha=prefix_sha)
+        self.assertIn(prefix_sha, record["start_state"]["restore"])
+        self.assertNotEqual(record["start_state"]["sha256"], prefix_sha)
+        self.assertEqual(test_runs.validate_records.validate_document(record), [])
 
 
 if __name__ == "__main__":

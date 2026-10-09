@@ -341,8 +341,12 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             artifact = record.get("artifact") if isinstance(record.get("artifact"), dict) else {}
             if artifact.get("set") != want_set:
                 errors.append(f"{where}: artifact set {artifact.get('set')!r} is not the walk's {want_set!r}")
-            if artifact.get("variant") is not None:
-                errors.append(f"{where}: artifact variant {artifact.get('variant')!r} is not None")
+            # T48 (#149): since T48 the recorder writes F019's row variant (`unregistered`) — the
+            # spelling tools/check_no_originals.py's constraint-F gate matches on — where it wrote
+            # null until then. Both name the unmodified set a walk ran; any other variant names a
+            # modified build, which no walk may record (the wrong-variant refusal is unchanged).
+            if artifact.get("variant") not in (None, e019_records.VARIANT):
+                errors.append(f"{where}: artifact variant {artifact.get('variant')!r} is not the unmodified set's")
             observations = record.get("observations")
             if not isinstance(observations, list) or not all(isinstance(o, dict) for o in observations):
                 errors.append(f"{where}: observations is not a list of objects")
