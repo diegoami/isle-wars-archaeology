@@ -32,12 +32,15 @@ Exits 0 when every piece holds:
   root being checked and whose sha256 prefix must be a prefix of that file's sha256, or the bare
   file name, which is not checked; anything else is refused — the section cites at least one
   record with its sha, and every hash it cites (backticked lowercase hex immediately followed by
-  an ellipsis) is a prefix of the sha256 computed from a record it cites by full path, or of an
-  output of such a record. The cited sha text itself is never trusted for that (#140 round 2): a
-  hash is matched against the file, not against another citation, so neither an invented extension
-  of a cited prefix nor a shorter hash passing as one gets through. A record's own sha field is the
-  subject of the two rules above, which compare it with that same file, and error 4 does not repeat
-  their line for it. A bare file name and backticked hex without the ellipsis are not citations.
+  an ellipsis) is a prefix of the sha256 computed from a record it cites by full path with a sha
+  that is that file's own, or of an output of a record it cites by full path. A record cited
+  without a sha lends its outputs only, never its own digest (#140 round 3): its digest is vouched
+  for by nothing, so it cannot be cited as a screenshot hash. The cited sha text itself is never
+  trusted for that (#140 round 2): a hash is matched against the file, not against another
+  citation, so neither an invented extension of a cited prefix nor a shorter hash passing as one
+  gets through. A record's own sha field is the subject of the two rules above, which compare it
+  with that same file, and error 4 does not repeat their line for it. A bare file name and
+  backticked hex without the ellipsis are not citations.
 
 The check reads recorded files; it does not run the game.
 """
@@ -124,12 +127,16 @@ def f020_citation_errors(body, root, where):
     forms above (error 5 otherwise), exists under `root` (error 1), and carries a sha256 prefix
     that is a prefix of that file's sha256 (error 2); the section cites at least one record with
     its sha (T39 DW2, error 3); and every hash cited is a prefix of the sha256 computed from a
-    record cited by full path in the section, or of an output of such a record (error 4) — the
-    cited sha text is never trusted for that (round 2, R1). One line per error, numbered 1-5 in
-    the issue (#140)."""
+    record cited by full path with a sha that passed error 2, or of an output of a record
+    cited by full path (error 4) — the cited sha text is never trusted for that (round 2, R1), and
+    a record cited without a sha lends its outputs only, never its own digest (round 3, R1): its
+    digest is vouched for by nothing, so it must not pass as a screenshot hash. One line per error,
+    numbered 1-5 in the issue (#140)."""
     errors = []
     cited = []                              # (path, sha prefix or None), in text order
-    digests = []                            # the sha256 of every cited record's file, from the file
+    digests = []                            # the sha256 of a cited record's file, from the file —
+                                            # only when the record was cited with a sha that is its
+                                            # own, so its digest is vouched for (round 3, R1)
     fields = set()                          # the (start, end) of each record's own sha field
     for token in CITED_TOKEN.finditer(body):
         text = token.group(1)
@@ -151,10 +158,15 @@ def f020_citation_errors(body, root, where):
             errors.append(f"{where} cites {text}, which does not exist")                 # 1
             continue
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        digests.append(digest)
         if sha and not digest.startswith(sha):
             errors.append(f"{where} cites {text} with sha256 {sha}…, "
                           "which is not a prefix of the file's sha256")                  # 2
+        elif sha:
+            # cited with a sha that is this file's own: the digest is vouched for, and only such a
+            # record's digest may be cited as a hash. A record cited without a sha (Q-UI-19 cites
+            # some) lends its outputs below, never its digest (round 3, R1): a digest nothing vouches
+            # for must not pass as a screenshot hash.
+            digests.append(digest)
     if not any(sha for _, sha in cited):
         errors.append(f"{where} cites no record with its sha256 "
                       "(T39's DW2 requires the record's sha)")                           # 3
@@ -180,7 +192,8 @@ def f020_citation_errors(body, root, where):
                                               # neither, so it never catches what they missed and a
                                               # wrong record sha draws error 2 alone (the error-2
                                               # test visits that edge)
-        if any(digest.startswith(h) for digest in digests):   # a cited record's own sha256
+        if any(digest.startswith(h) for digest in digests):   # a cited record's own sha256, cited
+                                              # with a sha that is its own (round 3, R1)
             continue
         if any(o.startswith(h) for o in outputs):             # an output of a cited record
             continue

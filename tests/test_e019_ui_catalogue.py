@@ -980,21 +980,24 @@ class F020CitationRuleTest(unittest.TestCase):
                                 for e in errors), errors)         # the pre-existing status rule
 
 
-# --- #140 rework round 2: the two blocking findings, and the section bound --------------------------
+# --- #140 rework rounds 2 and 3: the blocking findings, and the section bound -----------------------
 
 class F020CitationRuleRoundTwoTest(unittest.TestCase):
     """#140's rework round 2 (Sol's R1 and R2): a hash citation is checked against the sha256
     computed from a cited record's file, never against the cited sha text (R1), and every
     backticked token holding a record name is one of the two forms the rule allows (R2), and the
     section stops at the next heading of level 2-4 instead of running to the end of the file.
+    Round 3's R1 (the finding of round 2's review) is r1c and r1d: a record cited without a sha
+    lends its outputs to error 4's pool, never its own digest, and the digest is exempted only for
+    a record cited with a sha that passed error 2.
 
     Each test writes the catalogue the recorder's tree needs (write_f020) and keeps a valid record
     citation in the section beside the mutation — a path that exists and, unless the sha is what
     it mutates, its real sha256 and a real screenshot hash — so errors 1 and 3 stay out and cannot
     mask the gap (Sol's R2 note). A test that expects an error fails on main's check, which has no
-    citation rule at all; where a test expects none — the genuine-prefix one and the section bound
-    — a second section carries the one error only this rule produces, so it fails there too, as
-    tests (e) and (f) already do."""
+    citation rule at all; where a test expects none — r1d and the section bound — a second section
+    carries the one error only this rule produces, so it fails there too, as tests (e) and (f)
+    already do."""
 
     def test_r1a_a_cited_record_prefix_with_an_invented_suffix_fails(self):
         """R1: the cited record prefix extended by an invented suffix is not a prefix of the
@@ -1044,12 +1047,14 @@ class F020CitationRuleRoundTwoTest(unittest.TestCase):
             self.assertEqual(len(hashes), 1, errors)           # error 4, the shorter hash alone
             self.assertIn(f"cites the hash {short}\u2026", hashes[0])
 
-    def test_r1c_a_genuine_longer_prefix_of_a_cited_record_file_passes(self):
-        """R1: a hash that really is a longer prefix of a record file's sha256. The record is
-        cited by full path without its sha (as Q-UI-19 cites records), so the prefix cannot be
-        related to any *cited* sha text — only round 2's digests accept it. The control section
-        carries a hash no record backs: it is the error only this rule produces, which makes the
-        test fail on main's check, while the Q-UI-04 assertion makes it fail on round 1's."""
+    def test_r1c_a_genuine_longer_prefix_of_a_record_cited_without_its_sha_fails_with_error_4(self):
+        """R1, round 3 (the finding of round 2's review): a hash that really is a longer prefix of
+        a record file's sha256, where the record is cited by full path *without* its sha (as
+        Q-UI-19 cites records). Nothing in the section vouches for that digest — the record's sha
+        was never cited — so it must not pass as a screenshot hash: error 4 draws the line. Round 2
+        exempts it (every cited file's digest was in the pool), so this test fails on c519370 with
+        no error at all; main's check has no citation rule, so it fails there for the same reason.
+        The same hash on the same record passes when the record cites its sha — r1d, right below."""
         with Copy() as tmp:
             path = write_f020(tmp)
             cited_path = records_of(tmp, "Q-UI-04")[0][0]
@@ -1059,6 +1064,31 @@ class F020CitationRuleRoundTwoTest(unittest.TestCase):
             self.assertFalse(hashlib.sha256(cited_path.read_bytes()).hexdigest().startswith(longer))
             edit_section(path, "Q-UI-04", lambda body: body.rstrip("\n")
                          + f"\n- **Also**: `{other.relative_to(Path(tmp)).as_posix()}`"
+                         + f"\n- **Screenshot**: `second.png` (sha256 `{longer}\u2026`)\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)          # error 4, and nothing else
+            self.assertTrue(errors[0].startswith("Q-UI-04:"), errors)
+            self.assertIn(f"cites the hash {longer}\u2026, which is neither a record sha", errors[0])
+
+    def test_r1d_a_genuine_longer_prefix_of_a_record_cited_with_its_sha_passes(self):
+        """R1, round 3: the same hash on the same record passes when the record is cited with its
+        (valid) sha — error 4 exempts a record's digest only when the record was cited with a sha
+        that is that file's own (error 2 passed), which is the vouching r1c says is missing above.
+        Removing the lending entirely fails this test (error 4 would then draw a line for a hash
+        the signed citation vouches for). The control section carries a hash no record backs: the
+        error only this rule produces, which makes the test fail on main's check."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            cited_path = records_of(tmp, "Q-UI-04")[0][0]
+            other = [p for p in sorted((Path(tmp) / "runs" / "E019").glob("*/E019-r*.json"))
+                     if p != cited_path][0]
+            digest = hashlib.sha256(other.read_bytes()).hexdigest()
+            longer = digest[:32]
+            self.assertFalse(hashlib.sha256(cited_path.read_bytes()).hexdigest().startswith(longer))
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.rstrip("\n")
+                         + f"\n- **Also**: `{other.relative_to(Path(tmp)).as_posix()}` "
+                           f"(sha256 `{digest[:16]}\u2026`)"
                          + f"\n- **Screenshot**: `second.png` (sha256 `{longer}\u2026`)\n")
             edit_section(path, "Q-UI-10", lambda body: body.rstrip("\n")
                          + f"\n- **Screenshot**: `invented.png` (sha256 `{'f' * 16}\u2026`)\n")
