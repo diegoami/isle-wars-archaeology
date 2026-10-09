@@ -222,20 +222,27 @@ class BatchLoop:
 
     def turn(self):
         """One human turn, the screen read before each placement attempt; None when the turn was
-        played, else why the game ended for the loop."""
+        played, else why the game ended for the loop. A placement whose re-read (fix #141 round 2)
+        found the board gone returns the reason `off_board` answered with, and the game ends there."""
         screen = self.driver.read_screen()
         if screen not in BOARD:
             return self.off_board(screen)
-        if self.place():
+        placed = self.place()
+        if placed is True:
             return None
+        if placed is not False:         # the game ended while the placement block ran (fix #141 r2)
+            return placed
         self.send("dismiss")
         if not self.wait_quiet():
             return "unknown-screen"
         screen = self.driver.read_screen()
         if screen not in BOARD:
             return self.off_board(screen)
-        if self.place():
+        placed = self.place()
+        if placed is True:
             return None
+        if placed is not False:         # as above, at the second attempt
+            return placed
         screen = self.driver.read_screen()
         if screen == "board-menu":                  # a live game the human cannot place in: stop, never New Game
             self.unknown_screen(screen, ended="placement-refused")
@@ -244,11 +251,12 @@ class BatchLoop:
 
     def place(self):
         """The human selects a country it owns (the placement row lit) and commits; True when one
-        was. After the block reports `picked` the screen is read again before the commit (fix #141,
-        round 2, defence in depth): sitting 20261009T160556Z (E020-r0008) had the winner notice up
-        while the block ran -- its green phase read as the board, its grey phase lit the block's own
-        test -- and the ALL click changed nothing, aborting the sitting. A screen that is not the
-        board here is answered by `off_board` instead: no commit is sent."""
+        was, False when the block picked nothing, else the reason the game ended: after the block
+        reports `picked` the screen is read again before the commit (fix #141, round 2, defence in
+        depth): sitting 20261009T160556Z (E020-r0008) had the winner notice up while the block ran
+        -- its green phase read as the board, its grey phase lit the block's own test -- and the ALL
+        click changed nothing, aborting the sitting. A screen that is not the board here is answered
+        by `off_board` instead: no commit is sent, and its reason goes back to `turn`."""
         if not self.send("place").get("picked"):
             return False
         screen = self.driver.read_screen()

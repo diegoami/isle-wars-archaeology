@@ -226,8 +226,11 @@ class E020SessionTest(base.DriverWorld):
         events = [(l.get("event"), l.get("game"), l.get("reason")) for l in self.actions()
                   if l.get("event") in ("game-start", "game-end")]
         self.assertEqual(events, [("game-start", 1, None), ("game-end", 1, "played-out: game-over")])
+        # two reads a turn now (the turn's start and the read after `picked`, fix #141 round 2),
+        # so the two turns read four board-menu screens before the notice
         self.assertEqual([l["screen"] for l in self.actions() if l.get("event") == "screen"],
-                         ["title", "board-menu", "board-menu", "eliminated", "board", "board", "game-over", "title"])
+                         ["title", "board-menu", "board-menu", "board-menu", "board-menu", "eliminated",
+                          "board", "board", "game-over", "title"])
 
     def test_the_elimination_notice_is_answered_with_keep_playing_once_then_no_input(self):
         """Round 4: turn 2 starts on the notice (sitting 20261008T184505Z's turn 16). One click on

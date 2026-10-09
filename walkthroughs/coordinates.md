@@ -71,14 +71,15 @@ bottom bar. The frames stay on the user's machine (rule 18, constraint A).
 
 | Action | Stage x, y | Box (x, y ranges) | Comment |
 | --- | --- | --- | --- |
-| CONTINUE (light grey, 181,189,181) | 401, 534 | x 327–475, y 522–546 | clicked once after the game's end is logged (block `game-over-continue`) |
+| CONTINUE (blinks: light grey 181,189,181 and green, about 144,208,128) | 401, 534 | x 327–475, y 522–546 | clicked once after the game's end is logged (block `game-over-continue`); the blink is measured on sitting 20261009T160556Z (fix #141 round 2) |
 
 The CONTINUE of a card award (402, 531 above) is a smaller grey button in the same place, shown
 without the notice panel.
 
 | Test | Region x, y, w, h | Colour | Minimum | On the screen | Elsewhere |
 | --- | --- | --- | --- | --- | --- |
-| winner notice, CONTINUE | 327, 522, 149, 25 | light grey | 2200 | 2958 | at most 1603 (a card award's CONTINUE) |
+| winner notice, CONTINUE (grey phase) | 327, 522, 149, 25 | light grey | 2200 | 2958 | at most 1603 (a card award's CONTINUE) |
+| winner notice, CONTINUE (green phase, `continue-green`) | 327, 522, 149, 25 | green (about 144,208,128; g − r > 24 and g − b > 24) | 1300 | about 1760 (census bins 1209 + 302 + 249, sitting 20261009T160556Z, fix #141 round 2) | 0 for the grey phase (its green spread is at most 15) |
 | notice panel (as above) | 180, 165, 410, 220 | dark navy | 18000 | 27935 | at most 3901 where a card award's CONTINUE shows |
 
 `game-over` is the board with the notice panel and CONTINUE, and neither the KEEP PLAYING nor the

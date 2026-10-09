@@ -502,7 +502,8 @@ class LoopTest(unittest.TestCase):
         """T41: `turns_max` (a batch of the earlier design may still carry it) no longer ends a game. Sitting
         20261008T204817Z stopped game 1 at turn 30 and sent New Game from the board, which credited a loss;
         now the game is played past it, to its end (here the winner notice, at the 8th turn)."""
-        driver = FakeDriver([1] * 7, screens=["title"] + ["board-menu"] * 7 + ["game-over", "title"])
+        # two screen reads a turn now: the turn's start and the read after `picked` (fix #141 round 2)
+        driver = FakeDriver([1] * 7, screens=["title"] + ["board-menu"] * 14 + ["game-over", "title"])
         loop = e020_loop.BatchLoop(driver, dict(self.batch, games_max="1", turns_max="3"), clock=lambda: 0)
         summary = loop.run()
         names = [n for n, _ in driver.blocks]
@@ -597,7 +598,8 @@ class ScreenLoopTest(unittest.TestCase):
     def test_the_first_sittings_turn_16_is_answered_with_keep_playing(self):
         """Sitting 20261008T184505Z: the notice was up at turn 16's start; the loop tried 44 placement
         points and then clicked New Game where it is not. Now: KEEP PLAYING once, then only readings."""
-        screens = ["title"] + ["board-menu"] * 15 + ["eliminated", "board", "board", "unknown"]
+        # 15 turns of two reads each (the turn's start and the read after `picked`, fix #141 round 2)
+        screens = ["title"] + ["board-menu"] * 30 + ["eliminated", "board", "board", "unknown"]
         driver = FakeDriver([1] * 15, screens=screens)
         _, summary = self.loop(driver)
         after = driver.trail[driver.trail.index("read:eliminated") + 1:]
@@ -702,10 +704,11 @@ class ScreenLoopTest(unittest.TestCase):
     def test_the_winner_notice_at_a_turns_start_ends_the_game(self):
         for winner in ("green", None):
             with self.subTest(winner=winner):
-                driver = FakeDriver([1, 1], screens=["title", "board-menu", "game-over", "title"])
+                # two reads before the commit (fix #141 round 2): the second board-menu is the read after `picked`
+                driver = FakeDriver([1, 1], screens=["title", "board-menu", "board-menu", "game-over", "title"])
                 driver.winner = winner
                 _, summary = self.loop(driver, games_max="1")
-                # the read after `picked` (fix #141 round 2) re-reads the spent pool: board-menu, then commit
+                # the read after `picked` (fix #141 round 2) reads the second board-menu, then commit
                 self.assertEqual(driver.trail, ["read:title", "new-game", "quiet", "read:board-menu", "place",
                                                 "read:board-menu", "commit",
                                                 "quiet", "read:game-over", "winner", "game-over-continue",
@@ -907,9 +910,9 @@ class ScreenLoopTest(unittest.TestCase):
                             quiet_script=[True, False, True])
         _, summary = self.loop(driver, games_max="1")
         # one more board-menu in the pool for the read after `picked` (fix #141 round 2)
-        self.assertEqual(driver.trail[:9], ["read:title", "new-game", "quiet", "read:board-menu", "place",
-                                            "read:board-menu", "commit",
-                                            "quiet", "read:scoreboard", "quiet"])
+        self.assertEqual(driver.trail[:10], ["read:title", "new-game", "quiet", "read:board-menu", "place",
+                                             "read:board-menu", "commit",
+                                             "quiet", "read:scoreboard", "quiet"])
         self.assertEqual(driver.frames, [])
         self.assertEqual(summary["ended"], "games-max")
 
