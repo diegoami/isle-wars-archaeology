@@ -85,6 +85,21 @@ the run works.
   Give the read, edit and write tools paths relative to the worktree root too (`src/a.cs`), never
   an absolute path: OpenCode resolves a relative path there, although the tools' descriptions ask
   for an absolute one, and a guessed absolute path is rejected and ends the run (L36).
+- Track your progress in `RUN-NOTES.md` at the worktree root (`docs/running-notes.md`):
+  1. **Read it first.** A previous round may have left it: read it in full before anything else.
+     If there is none, create it with its **Plan** from the brief's steps, and empty **Progress**
+     and **Notes**.
+  2. **Append, never rewrite.** After every commit (or every meaningful cluster of tool calls),
+     append one timestamped line to **Progress**, and to **Notes** anything the next round needs:
+     an approach you abandoned and why, a decision, a surprise, a blocker. A line that turns out
+     wrong gets a new line saying so; never edit an earlier one.
+  3. **End block.** Before `git -C <worktree> checkout --detach`, or before you stop, append
+     `## END` with the last commit's sha, the PR's state, and what you deferred.
+
+  Never `git add` or `git commit` it, and never put it in the PR body. It is ignored for every
+  worktree through the repository's shared exclude: check with `git check-ignore -q RUN-NOTES.md`.
+  If that fails, stop and report. Never write `.git/info/exclude` yourself: in a worktree `.git` is
+  a file, and the shared exclude is outside your worktree.
 - The Done-when lines are binding as written. One you cannot satisfy means you **stop and report
   why**: never weaken an assertion, skip a test, or edit the task file. A defect in code outside
   your task is reported, never patched.
