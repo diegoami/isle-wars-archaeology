@@ -211,10 +211,12 @@ class WineGateCliTest(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_the_cli_passes_a_non_wine_record_with_an_unlisted_hash(self):
+        # T48: `linux-wsl2/wine-xvfb-xfwm4` was this test's non-wine platform until the legacy
+        # Wine records were found to slip past constraint F (#149); a platform without `wine` now.
         with tempfile.TemporaryDirectory() as tmp:
             repo = make_repo(tmp)
             write_f019(repo)
-            place_record(repo, wine_record(sha256="a" * 64, platform="linux-wsl2/wine-xvfb-xfwm4"))
+            place_record(repo, wine_record(sha256="a" * 64, platform="windows-native-bandicam"))
             result = run_tool(repo)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
@@ -249,6 +251,126 @@ class WineGateCliTest(unittest.TestCase):
             place_record(repo, wine_record(sha256="a" * 64))
             result = run_tool(repo, "--no-wine-gate")
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+# T48 (#149): the legacy Wine platform. Two emitters wrote `linux-wsl2/wine-xvfb-xfwm4` instead of
+# the carve-out's token, so constraint F never saw their 274 records, and their
+# `start_state.sha256` is a prefix listing's hash, not the binary's. Records are immutable (rule
+# 20): they are listed by repo-relative path and file sha256 in tools/legacy_wine_records.txt, and
+# any other record whose platform contains `wine` (any case) and is not a recognised carve-out
+# platform is refused. These tests were pushed before dispatch (L64): one per bypass class; they
+# fail until the gate lands.
+LEGACY = "linux-wsl2/wine-xvfb-xfwm4"
+LEGACY_LIST = Path("tools") / "legacy_wine_records.txt"
+RECORD = "runs/E002/E002-r0001.json"
+
+
+def list_records(repo, *paths, spelled=None):
+    """Write the legacy list naming each path with its file's current sha256 (or `spelled`)."""
+    lines = []
+    for rel in paths:
+        digest = cno.sha256_file(repo / rel)
+        lines.append(f"{digest}  {spelled or rel}")
+    (repo / LEGACY_LIST).parent.mkdir(parents=True, exist_ok=True)
+    (repo / LEGACY_LIST).write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+class LegacyWinePlatformTest(unittest.TestCase):
+    """T48: a `wine` platform that is not the carve-out's passes only as a listed legacy record."""
+
+    def refused(self, result, path=RECORD):
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn(path, result.stdout)
+
+    def test_an_unlisted_legacy_record_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(sha256="a" * 64, platform=LEGACY))
+            list_records(repo)
+            self.refused(run_tool(repo))
+
+    def test_a_listed_legacy_record_with_its_listed_bytes_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(sha256="a" * 64, platform=LEGACY))
+            list_records(repo, RECORD)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_a_listed_legacy_record_whose_bytes_changed_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            path = place_record(repo, wine_record(sha256="a" * 64, platform=LEGACY))
+            list_records(repo, RECORD)
+            record = json.loads(path.read_text(encoding="utf-8"))
+            record["start_state"]["sha256"] = "b" * 64
+            path.write_text(json.dumps(record), encoding="utf-8")
+            self.refused(run_tool(repo))
+
+    def test_a_copy_of_a_listed_record_at_a_new_path_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            path = place_record(repo, wine_record(sha256="a" * 64, platform=LEGACY))
+            list_records(repo, RECORD)
+            copy_rel = "runs/E002/E002-r0002.json"
+            (repo / copy_rel).write_bytes(path.read_bytes())
+            subprocess.run(["git", "add", copy_rel], cwd=repo, check=True)
+            self.refused(run_tool(repo), copy_rel)
+
+    def test_a_listed_path_spelled_another_way_does_not_list_the_record(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(sha256="a" * 64, platform=LEGACY))
+            for spelled in ("./" + RECORD, "runs/E002/../E002/E002-r0001.json", RECORD.upper()):
+                with self.subTest(spelled=spelled):
+                    list_records(repo, RECORD, spelled=spelled)
+                    self.refused(run_tool(repo))
+
+    def test_wine_in_any_case_or_place_is_refused_when_unlisted(self):
+        for platform in ("Linux-WSL2/WINE-xvfb-xfwm4", "LINUX-WSL2/WINE", "wine", "x-Wine-y",
+                         "Wine-On-User-Machine", "wine-on-user-machine-iwp-2.0-evil-suffix"):
+            with self.subTest(platform=platform), tempfile.TemporaryDirectory() as tmp:
+                repo = make_repo(tmp)
+                write_f019(repo)
+                place_record(repo, wine_record(sha256="a" * 64, platform=platform))
+                list_records(repo)
+                self.refused(run_tool(repo))
+
+    def test_the_list_never_admits_a_carve_out_record_off_the_f019_table(self):
+        """The list is for legacy platforms only: a record with the carve-out's token and an
+        unknown binary hash stays refused even when it is listed."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(sha256="a" * 64, platform=WINE + "-iwp-2.0"))
+            list_records(repo, RECORD)
+            self.refused(run_tool(repo))
+
+    def test_a_platform_without_wine_is_not_this_gates_business(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            place_record(repo, wine_record(sha256="a" * 64, platform="windows-native-bandicam"))
+            list_records(repo)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_the_repositorys_list_holds_the_274_legacy_records_unchanged(self):
+        """Done-when 2: the list on this branch names exactly the legacy records main held when T48
+        was written (afb5353's census), each with its file's sha256."""
+        lines = (ROOT / LEGACY_LIST).read_text(encoding="utf-8").splitlines()
+        entries = [line.split("  ", 1) for line in lines if line.strip()]
+        self.assertEqual(len(entries), 274)
+        self.assertEqual(len({rel for _, rel in entries}), 274)
+        for digest, rel in entries:
+            with self.subTest(rel=rel):
+                self.assertTrue(rel.startswith("runs/") and rel.endswith(".json"), rel)
+                self.assertEqual(cno.sha256_file(ROOT / rel), digest)
 
 
 if __name__ == "__main__":
