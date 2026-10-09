@@ -26,6 +26,15 @@ Machine-local values come from the environment, as for the spike, and are never 
 Everything but the records happens in a private user, mount and PID namespace (`unshare -rmpf`): the
 install is bound read-only once for the command, /tmp is private, nothing outlives the command, and the
 game itself is always in a network namespace of its own (N0).
+
+T48 (#149; rule 18's carve-out, constraints C and F): a repeat's record is a Wine record of the
+carve-out's own making. It carries `runtime.platform = PLATFORM` (the token
+`tools/check_no_originals.py` recognises, the one E020 writes too), `artifact.variant = VARIANT`
+(F019's row variant, which constraint F matches on) and `start_state.sha256 = binary_sha256(install)`,
+the sha256 of the `Islepro.exe` that ran, hashed from the bound install when the repeat starts.
+Where that field's old value went: the prefix listing's sha256 is **not dropped — it is named in
+`start_state.restore`** (`restore_text`), which the schema allows and this docstring is asked to say
+(the schema's `start_state` takes no other key).
 """
 import argparse
 import contextlib
@@ -54,9 +63,32 @@ REAP_BOUND = 10        # s, for the killed command to be reaped
 RESTORE = ("fresh private user, mount and PID namespaces, the install bound read-only once for the command and "
            "checked at the start of every repeat; the prefix sealed (drive mapping, links, second names, mounts, "
            "the registered game copy) and its registry files equal to their baseline before anything starts, and "
-           "the prefix sealed again immediately before each launch; start_state.sha256 lists every entry of the "
-           "prefix with the size and sha256 of each file and the target of each link, the registry files "
-           "included; the prefix is reset to that state after every repeat, completed or aborted")
+           "the prefix sealed again immediately before each launch; the prefix is reset to that state after every "
+           "repeat, completed or aborted")
+
+# T48 (#149): the carve-out's platform (constraint C; E020 writes the same token) and the variant of
+# the F019 known-good row whose sha256 constraint F checks against start_state.sha256. Both are the
+# exact spellings tools/check_no_originals.py matches; a test pins the platform to the gate's own
+# constants so a token the gate does not recognise cannot be written here unnoticed.
+PLATFORM = "wine-on-user-machine-iwp-2.0"
+VARIANT = "unregistered"
+BINARY = "Islepro.exe"
+
+
+def restore_text(prefix_sha):
+    """One repeat's `start_state.restore`: how the prefix was restored, plus where the prefix
+    listing's sha256 went when T48 (#149) made `start_state.sha256` the binary's hash.
+
+    The schema's `start_state` takes only `id`, `sha256` and `restore` (additionalProperties false),
+    so the listing that `start_state.sha256` described until T48 is named here: nothing measured is
+    dropped (rule 20), and this docstring is where the README-level answer to "where did it go?"
+    is. `prefix_sha` is `spike.start_state_sha()`'s value, or the all-zero placeholder when the
+    session stopped before its snapshot, exactly as the field itself used to carry it.
+    """
+    return (f"{RESTORE}; T48: start_state.sha256 is the sha256 of the install's {BINARY}, the binary "
+            f"that ran, and the prefix listing it held until T48 - every entry of the prefix with "
+            f"the size and sha256 of each file and the target of each link, the registry files "
+            f"included - is here at sha256 {prefix_sha}")
 
 
 # --- the repeat's body and the faults --------------------------------------------------------
@@ -128,7 +160,25 @@ def rep_of(arm):
     return 1 + sum(1 for p in folder.glob("*.json") if json.loads(p.read_text()).get("arm") == arm)
 
 
-def build_record(engine, commit, machine, rep, state_sha, argv, fingerprint):
+def binary_sha256(install):
+    """The `Islepro.exe` of the bound install, hashed in place: the binary that ran (T48, constraint C).
+
+    `install` is `locs["IWP_DIR"]`, the install bound read-only for this command — never the prefix
+    and never the run copy in it (E020 hashes both only to check they agree with F019; the record
+    names the install's), and never a constant: the record test feeds this two different fake
+    binaries. OSError propagates, so a repeat whose binary cannot be hashed writes no record.
+    """
+    return spike.sha256_file(Path(install) / BINARY)
+
+
+def build_record(engine, commit, machine, rep, state_sha, binary_sha, argv, fingerprint):
+    """One repeat's run/1 record.
+
+    `state_sha` is the prefix listing's sha256 (`spike.start_state_sha`), which this field held
+    until T48 (#149) and which `restore_text` names now; `binary_sha` is `binary_sha256(install)`,
+    the sha256 of the `Islepro.exe` that ran, which `start_state.sha256` is since T48 — the value
+    `tools/check_no_originals.py`'s wine gate verifies against F019's row (set + VARIANT + sha256).
+    """
     return {
         "schema": "run/1",
         "run_id": engine.run_id,
@@ -137,15 +187,15 @@ def build_record(engine, commit, machine, rep, state_sha, argv, fingerprint):
         "rep": rep,
         "code_commit": commit,
         "machine": machine,
-        "artifact": {"set": spike.SET_ID, "variant": None},
+        "artifact": {"set": spike.SET_ID, "variant": VARIANT},
         "runtime": {
             "driver": f"runtime/iwp/driver/run_cycle.py@{commit}",
-            "platform": "linux-wsl2/wine-xvfb-xfwm4",
+            "platform": PLATFORM,
             "fingerprint": fingerprint,
         },
         "interventions": [{"level": "I1", "what": "screenshots of the display and read-only reads of /proc and of "
                                                   "the game copy; no memory read, no modified file"}],
-        "start_state": {"id": "S-cold-prefix-title", "sha256": state_sha, "restore": RESTORE},
+        "start_state": {"id": "S-cold-prefix-title", "sha256": binary_sha, "restore": restore_text(state_sha)},
         "seed": None,
         "actions": {"script": "runtime/iwp/driver/run_cycle.py", "sha256": spike.sha256_file(LAUNCHER), "args": argv},
         "observations": engine.obs,
@@ -157,7 +207,7 @@ def build_record(engine, commit, machine, rep, state_sha, argv, fingerprint):
     }
 
 
-def write_records(session, bundles, commit, machine, state_sha, argv, fingerprint):
+def write_records(session, bundles, commit, machine, state_sha, binary_sha, argv, fingerprint):
     """Store the bundles and write the manifest and the record, once each. RecordError says what was not
     written; a record is never overwritten and never names an output the store does not hold."""
     names = {"runs": f"{session.run_id}.json", "evidence": f"{session.run_id}.manifest.json"}
@@ -174,7 +224,7 @@ def write_records(session, bundles, commit, machine, state_sha, argv, fingerprin
     engine._error = RecordError
     engine.outputs = spike.store_outputs(engine, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
     manifest = spike.build_manifest(engine)
-    record = build_record(engine, commit, machine, rep_of(engine.args.arm), state_sha, argv, fingerprint)
+    record = build_record(engine, commit, machine, rep_of(engine.args.arm), state_sha, binary_sha, argv, fingerprint)
     try:
         safeio.write_file(ROOT / "evidence" / EXPERIMENT, names["evidence"],
                           data=(json.dumps(manifest, indent=2) + "\n").encode(), exist="new", create_below=ROOT)
@@ -227,6 +277,13 @@ def as_expected(session, faulted):
 def run_repeat(index, args, locs, display, commit, machine, argv, fingerprint):
     """One repeat: a session, its record. (status, seconds, as expected?)"""
     run_id = next_run_id()
+    # T48 (#149, constraint C): the binary that ran, hashed from the install bound read-only for this
+    # command, before the repeat starts anything. It is start_state.sha256, which the wine gate
+    # verifies against F019's row; a binary that cannot be hashed means no launch and no record.
+    try:
+        binary_sha = binary_sha256(locs["IWP_DIR"])
+    except OSError as exc:
+        sys.exit(f"the repeat was not started: the install's {BINARY} could not be hashed ({exc})")
     session = Session(run_id, locs["IWP_PREFIX"], locs[f"{EXPERIMENT}_BUNDLES"], locs["IWP_DIR"], display, args.arm)
     faulted = bool(args.fault) and index == args.fault_repeat
     if faulted:
@@ -237,7 +294,7 @@ def run_repeat(index, args, locs, display, commit, machine, argv, fingerprint):
     session.execute(options_cycle)
     state_sha = spike.start_state_sha(session.snap_before[1]) if hasattr(session, "snap_before") else "0" * 64
     try:
-        write_records(session, locs[f"{EXPERIMENT}_BUNDLES"], commit, machine, state_sha, argv, fingerprint)
+        write_records(session, locs[f"{EXPERIMENT}_BUNDLES"], commit, machine, state_sha, binary_sha, argv, fingerprint)
     except RecordError as exc:
         print(str(exc), file=sys.stderr)
         return session.status, session.elapsed, False

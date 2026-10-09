@@ -45,6 +45,7 @@ information not handles, the completion provisional until finish):
 """
 import ast
 import contextlib
+import hashlib
 import inspect
 import json
 import os
@@ -56,6 +57,7 @@ import sys
 import tempfile
 import threading
 import time
+import types
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -66,11 +68,23 @@ from iwp_fixtures import InnerHarness, World, prefix, tree, validate_records  # 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "runtime" / "iwp"))
 from driver import errors, runner, session as sessionlib  # noqa: E402
+import check_no_originals as cno  # noqa: E402  (T48: the emitter's platform is pinned to the gate's)
 
 spike = sessionlib.spike
 REAL_RUN = spike.run                                # the bounded helper, before any test replaces it
 ORIGINAL_START_X = sessionlib.Engine.start_x        # the real one, before DriverWorld replaces it
 SAMPLE = b"\x10" * (800 * 600 * 3)
+# T48 (#149): the driver hashes the install's Islepro.exe at each repeat's start and records it as
+# start_state.sha256, so the synthetic install needs a fake one; two byte strings give two hashes.
+FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"
+
+
+def fake_binary_sha(install):
+    """The synthetic install's fake `Islepro.exe`, hashed the way the driver hashes the real one."""
+    install = Path(install)
+    install.mkdir(parents=True, exist_ok=True)
+    (install / runner.BINARY).write_bytes(FAKE_BINARY)
+    return runner.binary_sha256(install)
 
 
 class DriverWorld(World):
@@ -419,7 +433,8 @@ class RecordTest(DriverWorld):
         stack.enter_context(mock.patch.object(spike, "ROOT", self.repo))
 
     def store(self, made):
-        runner.write_records(made, self.bundles, "abcdef123456", "local", "0" * 64, ["--arm", "control"], {"wine": "x"})
+        runner.write_records(made, self.bundles, "abcdef123456", "local", "0" * 64, fake_binary_sha(self.install),
+                             ["--arm", "control"], {"wine": "x"})
 
     def test_a_completed_and_an_aborted_repeat_are_both_recorded_and_valid_run_1(self):
         for hooks in ({}, {"after-title": runner.kill_game}):
@@ -445,6 +460,74 @@ class RecordTest(DriverWorld):
         self.store(made)
         with self.assertRaises(errors.RecordError):
             self.store(made)
+
+
+class WineRecordTest(unittest.TestCase):
+    """T48 (#149): what a repeat's record says about the Wine run (Done-when 3).
+
+    Three things, each with the mutation it kills: the carve-out's platform (a legacy token would
+    sail past constraint F unverified), `start_state.sha256` equal to the *fake install's* fake
+    binary hashed (a constant, the prefix listing or the run copy would not match), and the whole
+    document accepted by the pinned run/1 schema. Two different byte strings are fed in turn, so
+    neither the record nor the hasher can be a constant.
+    """
+
+    def build(self, install, blob):
+        """(binary_sha, record) of one fake install whose `Islepro.exe` is `blob`."""
+        install = Path(install)
+        install.mkdir(parents=True, exist_ok=True)
+        (install / runner.BINARY).write_bytes(blob)
+        engine = types.SimpleNamespace(
+            run_id="E004-r9901",
+            args=types.SimpleNamespace(arm="control"),
+            obs=[{"step": 0, "source": "static", "field": "driver sources sha256", "value": "a" * 64}],
+            outputs=[],
+            started="2026-10-08T00:00:00Z",
+            ended="2026-10-08T00:01:00Z",
+            status="completed",
+        )
+        binary_sha = runner.binary_sha256(install)
+        record = runner.build_record(engine, "abcdef123456", "local", 1, "0" * 64, binary_sha,
+                                     ["--arm", "control"], {"wine": "wine-9.0"})
+        return binary_sha, record
+
+    def test_the_record_names_the_carve_out_platform_the_binarys_hash_and_validates(self):
+        hashes = []
+        for blob in (b"fake binary A", b"fake binary B"):
+            with self.subTest(blob=blob), tempfile.TemporaryDirectory() as tmp:
+                binary_sha, record = self.build(Path(tmp) / "install", blob)
+                hashes.append(record["start_state"]["sha256"])
+                self.assertEqual(record["runtime"]["platform"], "wine-on-user-machine-iwp-2.0")
+                self.assertEqual(record["artifact"]["variant"], "unregistered")
+                self.assertEqual(record["start_state"]["sha256"], hashlib.sha256(blob).hexdigest())
+                self.assertEqual(record["start_state"]["sha256"], binary_sha)
+                self.assertEqual(validate_records.validate_document(record), [])
+        self.assertNotEqual(hashes[0], hashes[1], "the hash is measured, never a constant")
+
+    def test_the_platform_is_one_the_wine_gate_recognises(self):
+        """The emitter and the gate may not drift apart (#149): a token the gate does not recognise
+        would make every record this driver writes a refusal, and a token it no longer recognises
+        would let them through unchecked."""
+        self.assertTrue(cno.recognised_wine_platform(runner.PLATFORM), runner.PLATFORM)
+        self.assertEqual(runner.PLATFORM, "wine-on-user-machine-iwp-2.0")
+
+    def test_the_prefix_listings_hash_is_named_in_restore_not_dropped(self):
+        """T48 moved what `start_state.sha256` held until now (the prefix listing's hash) where the
+        schema allows it: named in `start_state.restore`. Rule 20: nothing measured is dropped."""
+        prefix_sha = "b" * 64
+        with tempfile.TemporaryDirectory() as tmp:
+            install = Path(tmp) / "install"
+            install.mkdir(parents=True, exist_ok=True)
+            (install / runner.BINARY).write_bytes(FAKE_BINARY)
+            engine = types.SimpleNamespace(
+                run_id="E004-r9902", args=types.SimpleNamespace(arm="control"),
+                obs=[{"step": 0, "source": "static", "field": "driver sources sha256", "value": "a" * 64}],
+                outputs=[], started="2026-10-08T00:00:00Z", ended="2026-10-08T00:01:00Z", status="completed")
+            record = runner.build_record(engine, "abcdef123456", "local", 1, prefix_sha,
+                                         runner.binary_sha256(install), ["--arm", "control"], {"wine": "x"})
+        self.assertIn(prefix_sha, record["start_state"]["restore"])
+        self.assertNotEqual(record["start_state"]["sha256"], prefix_sha)
+        self.assertEqual(validate_records.validate_document(record), [])
 
 
 class ActionTest(DriverWorld):
@@ -522,6 +605,7 @@ class RecoveryTest(DriverWorld):
 
     def run_repeat(self, args):
         locs = {"IWP_PREFIX": self.prefix, "E004_BUNDLES": self.bundles, "IWP_DIR": self.install}
+        fake_binary_sha(self.install)               # T48: the repeat hashes it before anything starts
         with mock.patch.object(runner, "next_run_id", lambda: self.run_id), \
                 mock.patch.object(runner, "write_records", lambda *a, **k: None):
             return runner.run_repeat(1, args, locs, ":99", "abcdef123456", "local", [], {})

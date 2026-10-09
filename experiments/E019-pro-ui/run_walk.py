@@ -563,7 +563,7 @@ def next_run_id(root=ROOT):
     return f"{EXPERIMENT}-r{max(numbers, default=0) + 1:04d}"
 
 
-def write_records(session, spec, bundles, commit, machine, state_sha, argv, fingerprint, set_id, root=ROOT):
+def write_records(session, spec, bundles, commit, machine, state_sha, binary_sha, argv, fingerprint, set_id, root=ROOT):
     """Store the bundle and write the manifest and the record, once each, under the batch's
     folders. RecordError says what was not written; a record is never overwritten and never names
     an output the store does not hold (the E004 writer's rule)."""
@@ -582,7 +582,7 @@ def write_records(session, spec, bundles, commit, machine, state_sha, argv, fing
     engine._error = RecordError
     engine.outputs = spike.store_outputs(engine, bundles, lambda name, digest: f"{digest[:16]}-{name}", "same")
     manifest = records.build_manifest(session.run_id, engine.outputs, set_id)
-    record = records.build_record(session.run_id, spec, argv, commit, machine, state_sha, fingerprint,
+    record = records.build_record(session.run_id, spec, argv, commit, machine, state_sha, binary_sha, fingerprint,
                                   engine.obs, engine.outputs, engine.started, engine.ended,
                                   engine.status, session.elapsed, set_id, root=root)
     try:
@@ -629,6 +629,13 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=
     spec["qid"] = qid
     run_id = next_run_id(root)
     set_id = records.artifact_set_for(spec)
+    # T48 (#149, constraint C): the binary that ran, hashed from the install bound read-only for this
+    # command, before the walk starts anything. It is start_state.sha256, and the wine gate verifies
+    # it against F019's row. A binary that cannot be hashed means no launch and no record.
+    try:
+        binary_sha = records.binary_sha256(locs["IWP_DIR"])
+    except OSError as exc:
+        sys.exit(f"the walk was not started: the install's {records.BINARY} could not be hashed ({exc})")
     size = size or DEFAULT_SIZE
     session = session_factory(run_id, locs["IWP_PREFIX"], locs[f"{EXPERIMENT}_BUNDLES"], locs["IWP_DIR"],
                               display, records.arm_of_question(qid), size)
@@ -638,12 +645,14 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=
     session.observe(0, "static", "speed setting",
                     "normal (the unlocked default; every timing is a wall-clock reading at it)")
     session.execute(walk_body(spec, ctx))
-    # no snapshot (the session stopped before the seal): the record carries zeros, which the check
-    # refuses on a completed record (a completed session always has its snapshot)
+    # no snapshot (the session stopped before the seal): the prefix listing's hash is zeros, which
+    # start_state.restore names, as the field itself did before T48 (#149). start_state.sha256 is
+    # the binary's hash now — measured above, whatever the session did — and the catalogue's seal
+    # check reads it: a walk that sealed and one that did not both name a measured binary.
     snap = getattr(session, "snap_before", None)
     state_sha = spike.start_state_sha(snap[1]) if snap else "0" * 64
     try:
-        write_records(session, spec, locs[f"{EXPERIMENT}_BUNDLES"], commit, machine, state_sha,
+        write_records(session, spec, locs[f"{EXPERIMENT}_BUNDLES"], commit, machine, state_sha, binary_sha,
                       argv, fingerprint, set_id, root=root)
     except RecordError as exc:
         print(str(exc), file=sys.stderr)
