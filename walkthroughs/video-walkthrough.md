@@ -82,14 +82,17 @@ When the owner says a batch is done:
 Confirm to the owner that a video is fully processed (hashes and frames taken) before they
 delete anything.
 
-## Model plays under Wine (corroboration, not replacement)
+## Model plays under Wine (two sources, both counted)
 
 The carve-out to rule 18 (CLAUDE.md, owner 2026-10-08) permits a model agent to run the
-original Pro binary under Wine on the user's machine, for the purpose of run capture and
-UI observation. This section is the playbook for that path. **It is not a replacement for
-the owner-plays model above.** T28's owner-driven Bandicam captures are the play-length,
-game-sense, and mistake-rich record. Model-driven runs are corroboration and per-action
-timing.
+original Pro binary under Wine on the user's machine, for run capture and UI observation.
+This section is the playbook for that path. **Since 2026-10-09 (the owner's amendment of
+constraint E), model-driven sittings may carry T28's per-claim counts on their own, and may be
+scheduled to run unattended.** The owner's videos stay open as a source at any time: a video
+the owner provides is processed by the WSL steps above, and its counts add to the same
+per-claim totals. Each record names its source in `runtime.platform`, and a finding says
+which records it cites. What only a human sitting shows (mistakes, hesitation, tactics, and
+the computer's answer to them) still rests on the owner's videos.
 
 ### What the model-driven path produces
 

@@ -185,10 +185,15 @@ indexed in `docs/tasks/README.md`.
       records' `observations[].field` or `observations[].value`. The rule's "their ... text and
       name are never reused" wording holds in the run record; the per-claim finding is where the
       original's text is cited, with the same rules as a static reading's quote.
-    - **E. Corroboration, not replacement.** The model-driven run does not replace the owner's
-      Bandicam captures. T28's owner-plays model stays. Model-driven runs are corroboration and
-      per-action timing; owner's recordings are the play-length, game-sense, and mistake-rich
-      record. The playbook (`walkthroughs/video-walkthrough.md`) is updated to say so.
+    - **E. Two sources, both counted** (amended by the owner, 2026-10-09; it was "corroboration,
+      not replacement"). Model-driven sittings may carry T28's per-claim counts on their own, and
+      may be scheduled to run unattended. The owner's Bandicam videos stay open as a source at
+      any time: a video the owner provides is processed by the playbook, and its counts add to
+      the same per-claim totals. Each record names its source in `runtime.platform`
+      (`wine-on-user-machine…` or `windows-native-bandicam`), and a finding says which records
+      it cites. What only a human sitting shows (mistakes, hesitation, tactics, and the
+      computer's answer to them) still rests on the owner's videos. The playbook
+      (`walkthroughs/video-walkthrough.md`) says so.
     - **F. Tool check.** `tools/check_no_originals.py` gains a check: a model run with
       `runtime.platform` starting with `wine-on-user-machine` is allowed iff the run record's
       `start_state.sha256` matches the F019-known `Islepro.exe` hash for the set+variant the run
