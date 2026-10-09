@@ -383,5 +383,60 @@ class LegacyWinePlatformTest(unittest.TestCase):
                 self.assertEqual(cno.sha256_file(ROOT / rel), digest)
 
 
+class LegacyWineReviewBypassTest(unittest.TestCase):
+    """T48 round 1, Sol's R1 and R2 (PR #151): three more bypass classes, each its own test, pushed
+    before round 2 (L64). Each places a complete legacy-Wine record with an unknown binary hash and
+    no listing, and expects the check to refuse it."""
+
+    def test_unicode_wine_platform_cannot_bypass_the_gate(self):
+        """R1: `.lower()` and a substring test miss Unicode spellings of `wine`: fullwidth letters,
+        the dotted capital I, a Cyrillic look-alike. A platform the gate cannot classify in plain
+        ASCII is refused, never passed as "no wine"."""
+        for platform in ("linux/\uff37\uff29\uff2e\uff25-x",      # fullwidth WINE
+                         "linux/W\u0130NE-x",                        # dotted capital I
+                         "linux-wsl2/w\u0456ne-xvfb",                # Cyrillic i
+                         "w\u0456ne-on-user-machine-iwp-2.0",        # the carve-out token, one look-alike
+                         "linux-wsl2/wi\u200bne-xvfb"):              # a zero-width space inside
+            with self.subTest(platform=platform), tempfile.TemporaryDirectory() as tmp:
+                repo = make_repo(tmp)
+                write_f019(repo)
+                place_record(repo, wine_record(sha256="a" * 64, platform=platform))
+                list_records(repo)
+                result = run_tool(repo)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn(RECORD, result.stdout)
+
+    def test_wine_record_outside_runs_is_refused(self):
+        """R2a: run records live under runs/ only. A tracked run/1 document anywhere else is refused,
+        so a record cannot leave the gate's walk by moving."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            record = dict(wine_record(sha256="a" * 64, platform=LEGACY), schema="run/1")
+            (repo / "wine-record.json").write_text(json.dumps(record), encoding="utf-8")
+            subprocess.run(["git", "add", "wine-record.json"], cwd=repo, check=True)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("wine-record.json", result.stdout)
+
+    def test_symlinked_run_directory_cannot_hide_a_wine_record(self):
+        """R2b: a symlinked directory under runs/ (pointing outside the repository) must not hide
+        the records behind it: the check refuses the link, or follows it and gates the record."""
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            outside = Path(tmp) / "elsewhere" / "E003"
+            outside.mkdir(parents=True)
+            (outside / "E003-r0001.json").write_text(
+                json.dumps(wine_record(sha256="a" * 64, platform=LEGACY)), encoding="utf-8")
+            (repo / "runs" / "E003").symlink_to(outside, target_is_directory=True)
+            subprocess.run(["git", "add", "runs/E003"], cwd=repo, check=True)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("runs/E003", result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
