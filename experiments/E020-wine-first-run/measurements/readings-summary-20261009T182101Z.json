@@ -1,0 +1,33 @@
+{
+ "what": "the reading pass over one sitting's frames (numbers, colour words and counts only)",
+ "sitting": "20261009T182101Z",
+ "frames": 12353,
+ "frames_in_computer_turns": 7218,
+ "country_readings": 568238,
+ "country_readings_read": 560765,
+ "country_readings_unread": 7473,
+ "unread_by_reason": {
+  "army:no-glyph": 7143,
+  "army:off-anchor": 25,
+  "army:stray-blob": 199,
+  "army:unmatched-glyph": 55,
+  "owner:owner-mixed": 51
+ },
+ "pairs": {
+  "counter-rise": 6,
+  "many-changes": 30,
+  "net": 291,
+  "no-attacker": 94,
+  "no-change": 4432,
+  "not-adjacent": 115,
+  "one-change": 1377,
+  "outside-a-computer-turn": 5248,
+  "ownership-change": 399,
+  "same-owner": 168,
+  "seat-unknown": 8,
+  "unread": 184
+ },
+ "nets": 291,
+ "computer_windows": 114,
+ "templates": "reader-templates.json"
+}
