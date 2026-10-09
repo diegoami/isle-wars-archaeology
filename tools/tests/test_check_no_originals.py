@@ -630,5 +630,55 @@ class LegacyWineStructuralRoundTest(unittest.TestCase):
         result = self.run_on("nested-ok.json", '{"data": [{"schema": "run/1", ' + body + '}]}')
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+class LegacyWineParserLimitTest(unittest.TestCase):
+    """T48 structural round, Sol's R1 and R2 (PR #151), pushed before the micro-round the owner chose
+    on 2026-10-09 (L64). R1: a valid JSON document the default parser gives up on (an integer past
+    Python's digit limit) was skipped as "not JSON", hiding the Wine record in it. R2: a nested run/1
+    object whose fields are not the shapes the gate reads crashed the check with a traceback."""
+
+    BODY = ('"runtime": {"platform": "linux-wsl2/wine-xvfb-xfwm4"}, '
+            '"artifact": {"set": "iwp-2.0-996e86c5", "variant": "unregistered"}, '
+            '"start_state": {"sha256": "' + "a" * 64 + '"}')
+
+    def run_on(self, rel, text):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            path = repo / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+            subprocess.run(["git", "add", rel], cwd=repo, check=True)
+            return run_tool(repo)
+
+    def test_a_huge_integer_cannot_hide_a_wine_record(self):
+        for big in ("9" * 5000, "-" + "1" * 5000, "1" + "0" * 5000 + "e1"):
+            with self.subTest(digits=len(big)):
+                result = self.run_on("large-number.txt",
+                                     '{"n": ' + big + ', "data": {"schema": "run/1", ' + self.BODY + '}}')
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn("large-number.txt", result.stdout)
+
+    def test_odd_field_shapes_in_a_nested_record_never_crash_the_check(self):
+        """No shape crashes the check. Malformed shapes without `wine` are the run validator's
+        business (formats/examples/invalid/ holds such documents on purpose), so only no traceback."""
+        for shape in ('"runtime": NaN', '"runtime": [1]', '"runtime": null', '"runtime": 5',
+                      '"artifact": "x", "start_state": 5'):
+            with self.subTest(shape=shape):
+                result = self.run_on("nested.json", '{"data": {"schema": "run/1", ' + shape + '}}')
+                self.assertNotIn("Traceback", result.stdout + result.stderr)
+
+    def test_a_wine_bearing_malformed_nested_record_is_refused(self):
+        """A run/1 object that names Wine in a shape the gate cannot read is refused (fail closed), with
+        its path, and without a traceback."""
+        for shape in ('"runtime": "wine"', '"runtime": ["linux-wsl2/wine-xvfb-xfwm4"]',
+                      '"runtime": {"platform": "wine"}, "artifact": "x", "start_state": 5',
+                      '"runtime": {"platform": "wine"}, "artifact": [], "start_state": {"sha256": 7}'):
+            with self.subTest(shape=shape):
+                result = self.run_on("nested.json", '{"data": {"schema": "run/1", ' + shape + '}}')
+                self.assertNotIn("Traceback", result.stdout + result.stderr)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn("nested.json", result.stdout)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
