@@ -1,0 +1,54 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0016",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-armies.png",
+      "bytes": 280670,
+      "sha256": "c882697dd8881214728f450cfdc4600f209121a352c746e1766017bddd44e024",
+      "asset": "c882697dd8881214-board-armies.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "after.png",
+      "bytes": 280991,
+      "sha256": "c8c8f1f7745f0943175267d5398721c78975888d9b88e2c1b823d619f62ffd28",
+      "asset": "c8c8f1f7745f0943-after.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2635,
+      "sha256": "296de00d18bbd386dbbbad8981619233cccf97c6b451216d266053bf4c3e5b4e",
+      "asset": "296de00d18bbd386-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 1606,
+      "sha256": "67ceca5c3edf96b68f5aec06c3a46c8699a98728aaab93fa51a97d7ef0c4a14a",
+      "asset": "67ceca5c3edf96b6-run.log",
+      "class": "log"
+    }
+  ]
+}
