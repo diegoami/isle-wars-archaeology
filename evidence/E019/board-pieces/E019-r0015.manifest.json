@@ -1,0 +1,61 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0015",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286892,
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-with-centres-1.png",
+      "bytes": 282858,
+      "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+      "asset": "34775bc4d7595235-board-with-centres-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "board-with-centres-2.png",
+      "bytes": 282644,
+      "sha256": "15e194a5c6c9b0bb8ec77f118f77b44bd1b84057610a4503b9df780f47669c7b",
+      "asset": "15e194a5c6c9b0bb-board-with-centres-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "after.png",
+      "bytes": 282959,
+      "sha256": "e4c4617fc0469f89a275c959bd4a5648b59db1c4daeacd06306b4662b2836689",
+      "asset": "e4c4617fc0469f89-after.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2635,
+      "sha256": "296de00d18bbd386dbbbad8981619233cccf97c6b451216d266053bf4c3e5b4e",
+      "asset": "296de00d18bbd386-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 111,
+      "sha256": "b77bb45d1e1d776bb4ffbe0897d4061169761668fe2725dceee444bec560b5dc",
+      "asset": "b77bb45d1e1d776b-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 1747,
+      "sha256": "021d844231da1630fa5c2f784101e31fc82792933bf4282e83a5a8b2f621ca94",
+      "asset": "021d844231da1630-run.log",
+      "class": "log"
+    }
+  ]
+}
