@@ -194,7 +194,7 @@ def build_record(engine, commit, machine, rep, state_sha, binary_sha, argv, fing
             "fingerprint": fingerprint,
         },
         "interventions": [{"level": "I1", "what": "screenshots of the display and read-only reads of /proc and of "
-                                                   "the game copy; no memory read, no modified file"}],
+                                                  "the game copy; no memory read, no modified file"}],
         "start_state": {"id": "S-cold-prefix-title", "sha256": binary_sha, "restore": restore_text(state_sha)},
         "seed": None,
         "actions": {"script": "runtime/iwp/driver/run_cycle.py", "sha256": spike.sha256_file(LAUNCHER), "args": argv},
