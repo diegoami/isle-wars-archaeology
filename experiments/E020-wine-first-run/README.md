@@ -53,11 +53,16 @@ mistake-rich record.
     A wait is never ignored: a `settle` that does not settle stops its block (`not-ready`), and
     when six `quiet` blocks pass without a quiet board the loop sends nothing more and the sitting
     ends `aborted: not-ready: <reason>` (round 3, R1).
-    The screen is read by pixels before each placement attempt, before New Game and during a
-    play-out (`runtime/iwp/driver/screens.py`, measured from sitting 20261008T184505Z; round 4).
+    The screen is read by pixels before each placement attempt, after a placement block reports
+    `picked` and before its commit (fix #141: the winner notice can come up under the block, and
+    then no commit is sent), before New Game and during a play-out (`runtime/iwp/driver/screens.py`,
+    measured from sitting 20261008T184505Z; round 4).
     On the elimination notice the loop clicks KEEP PLAYING once (the owner's decision), then sends
     nothing and reads the screen while the computers play, within `sitting_seconds`. The winner
-    notice (`game-over`, measured from sitting 20261008T195537Z; round 6), in the play-out or at a
+    notice (`game-over`, measured from sitting 20261008T195537Z; round 6; its CONTINUE blinks
+    between a light grey and a green phase, and either phase names it -- fix #141 round 2, measured
+    on sitting 20261009T160556Z, where the green phase read as the board and the placement blocks
+    ran on the notice), in the play-out or at a
     turn's start, ends the game: the `game-end` line says `ended: game-over` and the winner's colour
     word when the score panel shows it by pixels; then CONTINUE once, and the screen is read again.
     The Scoreboard (`scoreboard`, T41, measured from sitting 20261008T204817Z) is what the game shows

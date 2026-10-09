@@ -1,0 +1,59 @@
+{
+ "what": "fix #141 Done-when 4 sitting: the driver's own completion line, and each game's New Game time, end and credit, from its actions log (derived; no frame, no original text)",
+ "sitting": "20261009T182101Z",
+ "driver_commit": "2f3d4d1",
+ "batch": "cmb-accumulation",
+ "status": "completed",
+ "loop": {
+  "games": 4,
+  "turns": 114,
+  "placements": 114,
+  "ended": "games-max",
+  "loss_credited": 4
+ },
+ "actions_sha256": "e5f8a1849469745f5347d598035a00f6ca3c0ac822e0f5acabfcd443eadc3ffb",
+ "games": {
+  "1": {
+   "new_game_at_min": 0.0,
+   "ended": "game-over",
+   "reason": "game-over",
+   "turn": 18,
+   "winner": "red",
+   "loss_credited": true
+  },
+  "2": {
+   "new_game_at_min": 12.8,
+   "ended": "game-over",
+   "reason": "game-over",
+   "turn": 27,
+   "winner": "green",
+   "loss_credited": true
+  },
+  "3": {
+   "new_game_at_min": 28.0,
+   "ended": "game-over",
+   "reason": "game-over",
+   "turn": 17,
+   "winner": "green",
+   "loss_credited": true
+  },
+  "4": {
+   "new_game_at_min": 37.4,
+   "ended": "game-over",
+   "reason": "game-over",
+   "turn": 56,
+   "winner": "red",
+   "loss_credited": true
+  }
+ },
+ "blocks_not_ok": [
+  {
+   "block": "quiet",
+   "game": 4,
+   "turn": 11,
+   "status": "failed"
+  }
+ ],
+ "step_failed_aborts": 0,
+ "record": "not exported: e020_export.py refuses a sitting with games after a credited loss (they ran on the successor set iwp-2.0-de5a82a2); see the PR"
+}
