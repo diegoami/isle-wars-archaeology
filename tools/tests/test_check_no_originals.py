@@ -101,17 +101,27 @@ class WineGateUnitTest(unittest.TestCase):
         self.assertEqual(cno.check_wine_gate(wine_record(), TABLE), ("", ""))
 
     def test_removing_the_wine_platform_leaves_the_record_passing(self):
-        """Done-when 2: a non-wine record passes even with a hash no F019 row names. The
-        check reads only `wine-on-user-machine` records; the existing checks do the rest."""
-        record = wine_record(sha256="f" * 64, platform="linux-wsl2/wine-xvfb-xfwm4")
+        """Done-when 2: a non-wine record passes even with a hash no F019 row names. The check reads
+        only records whose platform names `wine`; the existing checks do the rest. T48 (#149)
+        adapted the platform: `linux-wsl2/wine-xvfb-xfwm4` *names* wine and is now the legacy
+        branch's business, so the platform here carries no `wine` at all."""
+        record = wine_record(sha256="f" * 64, platform="windows-native-bandicam")
         self.assertEqual(cno.check_wine_gate(record, TABLE), ("", ""))
 
     def test_the_platform_prefix_is_case_sensitive(self):
-        """The chosen contract: `Wine-On-User-Machine` is NOT the carve-out platform, so a
-        record carrying that spelling (and an unlisted hash) is not this gate's business. A
-        case-insensitive comparison here would be the mutation this test kills."""
+        """The chosen contract: the carve-out's prefix is matched case-sensitively, so
+        `Wine-On-User-Machine` is not the carve-out platform; a case-insensitive comparison here
+        would be the mutation this test kills. T48 (#149) adapted what follows from that: not the
+        carve-out platform used to mean *not this gate's business*, and a record carrying this
+        spelling with an unlisted hash passed. Any platform that names `wine` in any case now
+        reaches the legacy branch, so such a record is refused unless tools/legacy_wine_records.txt
+        lists its path with the file's sha256 — refused here, with the reason named."""
         record = wine_record(sha256="f" * 64, platform="Wine-On-User-Machine")
-        self.assertEqual(cno.check_wine_gate(record, TABLE), ("", ""))
+        problem, warning = cno.check_wine_gate(record, TABLE)
+        self.assertNotEqual(problem, "")
+        self.assertTrue(problem.startswith(GATE_CODE), problem)
+        self.assertIn("Wine-On-User-Machine", problem)
+        self.assertEqual(warning, "")
 
     def test_an_unrecognised_platform_suffix_is_refused(self):
         """Sol's R1: a platform that *starts with* `wine-on-user-machine` but carries a suffix

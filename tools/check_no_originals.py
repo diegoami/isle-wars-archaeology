@@ -17,6 +17,15 @@ known-good `Islepro.exe` hash for the `artifact.set` and `artifact.variant` the 
 an unrecognised suffix is refused by name. `--no-wine-gate` skips that check for local
 development; CI never sets the flag.
 
+T48 (#149) widens it: two emitters wrote `linux-wsl2/wine-xvfb-xfwm4` instead of the carve-out's
+token, so constraint F never saw their records and their `start_state.sha256` is a prefix listing's
+hash, not the binary's. Records are immutable (rule 20), so those records are listed, not rewritten:
+any record whose platform names `wine` in any case and is not a recognised carve-out platform passes
+only when its own repo-relative path and its own file sha256 are the ones
+`tools/legacy_wine_records.txt` holds. The list never grows; a new Wine record uses a recognised
+carve-out platform and is checked against F019 instead. A platform that names no `wine`
+(for example `windows-native-bandicam`) is not this gate's business, as before.
+
 Exit 0 clean, 1 not.
 """
 import argparse
@@ -45,6 +54,14 @@ RECOGNISED_WINE_SUFFIXES = ("-iwp-2.0",)
 PLACEHOLDER_SHA256 = "0" * 64
 # The brief's `[E0XX]` placeholder, filled with the task's number (T36 -> E036).
 WINE_GATE_CODE = "[E036]"
+
+# T48 (#149): the records that named `linux-wsl2/wine-xvfb-xfwm4` before the carve-out's token was
+# written into their emitters. They are immutable (rule 20), so they are listed here, one line each,
+# as `<file sha256>  <repo-relative path>`, and a legacy record passes only on its exact path *and*
+# its exact bytes. The list never grows: a new Wine record uses a recognised carve-out platform.
+LEGACY_LIST = Path("tools") / "legacy_wine_records.txt"
+LEGACY_LIST_TEXT = LEGACY_LIST.as_posix()
+SHA256_LINE = re.compile(r"^([0-9a-f]{64})  (\S.*)$")
 
 F019_FINDING = ("findings", "F019-pro-setup-rules.md")
 F019_SECTION = re.compile(r"^## Known-good binary hashes\s*$", re.M)
@@ -139,25 +156,86 @@ def recognised_wine_platform(platform):
     )
 
 
-def check_wine_gate(record, f019_table):
+def legacy_wine_entries(root):
+    """{repo-relative path: file sha256} from tools/legacy_wine_records.txt; {} when it is absent.
+
+    The list holds one `<file sha256>  <repo-relative path>` line per legacy record (#149). A line
+    that is not of that shape lists nothing, so an absent or malformed list refuses every legacy
+    record: fail closed, never pass one because the list could not be read. A path listed twice
+    keeps its first line; this repository's list is asserted to hold 274 distinct paths, each with
+    its file's sha256, by tools/tests/test_check_no_originals.py.
+    """
+    path = root / LEGACY_LIST
+    if not path.is_file():
+        return {}
+    entries = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = SHA256_LINE.fullmatch(line)
+        if match:
+            entries.setdefault(match.group(2), match.group(1))
+    return entries
+
+
+def legacy_listing(root, path, rel, entries):
+    """Whether tools/legacy_wine_records.txt lists this record with these bytes, and why not.
+
+    `(listed, reason)`: `listed` is True only for an exact path match whose file sha256 is the one
+    listed. Never a prefix, never a name alone: a copy of a listed record at another path is not
+    listed, and a listed record whose bytes changed is not the record that was listed (Sol's R1 in
+    T36). Only a listed path is hashed, so an unlisted record costs a dict lookup.
+    """
+    listed = entries.get(rel)
+    if listed is None:
+        return False, f"its path {rel} is not listed in {LEGACY_LIST_TEXT}"
+    got = sha256_file(path)
+    if got != listed:
+        return False, (f"{LEGACY_LIST_TEXT} lists sha256 {listed} for {rel} but the file's sha256 "
+                       f"is {got}, so it is not the record that was listed")
+    return True, ""
+
+
+def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
     """Constraint F: decide one run record against the F019 known-good table.
 
     Returns `(problem, warning)`. `problem` is `""` when the record passes and `warning` is
     always `""` today: the signature leaves room for a non-fatal note without changing callers.
 
-    A record whose `runtime.platform` does not start with `wine-on-user-machine` (case-
-    sensitively) always passes, whatever its hash: the existing no-originals checks do the rest.
-    A `wine-on-user-machine` record whose suffix is not one the task file names is refused by
-    name, before any hash is considered — `wine-on-user-machine-iwp-2.0` passes this step,
-    `wine-on-user-machine-evil-suffix` does not. A recognised record then passes only on an
-    exact `(artifact.set, artifact.variant, start_state.sha256)` row. The all-zero placeholder
-    T28 used for "no save file" is refused by name. The function reads the record and never
-    mutates it (rule 20).
+    Three kinds of record, decided in this order.
+
+    1. A `runtime.platform` that is not a string, or that names no `wine` in any case
+       (`windows-native-bandicam`), always passes, whatever its hash: the existing no-originals
+       checks do the rest.
+    2. A platform that starts with `wine-on-user-machine` (case-sensitively) is the carve-out's.
+       A suffix the task file does not name is refused by name before any hash is considered —
+       `wine-on-user-machine-iwp-2.0` passes this step, `wine-on-user-machine-evil-suffix` does
+       not — and a recognised one passes only on an exact
+       `(artifact.set, artifact.variant, start_state.sha256)` row, with the all-zero placeholder
+       T28 used for "no save file" refused by name.
+    3. Any other platform that names `wine` in any case (`linux-wsl2/wine-xvfb-xfwm4`, `WINE`,
+       `Wine-On-User-Machine`) is a legacy record (#149): it passes only when `legacy_ok` says its
+       own path and its own bytes are the ones tools/legacy_wine_records.txt lists, and
+       `legacy_reason` then names why it does not when it does not. `legacy_ok` defaults to False,
+       so a caller that supplies no listing refuses such a record.
+
+    The function reads the record and never mutates it (rule 20).
     """
     runtime = record.get("runtime") or {}
     platform = runtime.get("platform")
-    if not isinstance(platform, str) or not platform.startswith(WINE_PLATFORM_PREFIX):
+    if not isinstance(platform, str):
         return "", ""
+    if not platform.startswith(WINE_PLATFORM_PREFIX):
+        if "wine" not in platform.lower():          # in any case: `WINE`, `x-Wine-y`, never a prefix
+            return "", ""
+        if legacy_ok:
+            return "", ""
+        reason = legacy_reason or (f"its path is not listed in {LEGACY_LIST_TEXT} with the file's "
+                                   f"sha256")
+        return (
+            f"{WINE_GATE_CODE} record carries the legacy Wine platform {platform!r}, which is not "
+            f"the carve-out platform: {reason}; {LEGACY_LIST_TEXT} never grows (#149), so a new "
+            f"Wine record uses {WINE_PLATFORM_PREFIX!r} and is checked against F019 instead",
+            "",
+        )
     if not recognised_wine_platform(platform):
         suffix = platform[len(WINE_PLATFORM_PREFIX):]
         return (
@@ -218,8 +296,15 @@ def check_files(root, tracked):
 
 
 def wine_gate_problems(root):
-    """One problem line per committed run record that constraint F refuses."""
+    """One problem line per committed run record that constraint F refuses.
+
+    Each record is decided with the listing in hand: `legacy_ok` is True only for a record whose
+    path and file sha256 are the ones tools/legacy_wine_records.txt holds, so a legacy record is
+    refused (naming its path and the reason) unless it is listed unchanged. Carve-out records are
+    decided against F019's table, as T36 wrote it, and are never rescued by the listing.
+    """
     table = load_f019_table(root)
+    entries = legacy_wine_entries(root)
     problems = []
     for path in run_records(root):
         try:
@@ -228,9 +313,11 @@ def wine_gate_problems(root):
             continue  # a malformed record is the run validator's finding, not this gate's
         if not isinstance(record, dict):
             continue
-        problem, _warning = check_wine_gate(record, table)
+        rel = path.relative_to(root).as_posix()
+        listed, why_not = legacy_listing(root, path, rel, entries)
+        problem, _warning = check_wine_gate(record, table, legacy_ok=listed, legacy_reason=why_not)
         if problem:
-            problems.append(f"{path.relative_to(root).as_posix()}: {problem}")
+            problems.append(f"{rel}: {problem}")
     return problems
 
 
