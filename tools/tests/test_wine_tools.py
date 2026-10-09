@@ -369,6 +369,52 @@ class ExportTest(TmpWorld):
         record = self.record("cmb-accumulation", self.export(last)[1].split("/")[-1][:-5])
         self.assertEqual(record["artifact"], {"set": "iwp-2.0-996e86c5", "variant": "unregistered"})
 
+    # #152 (the owner, 2026-10-09): the driver restores the shipped xtras/Islepro.skr before each New Game
+    # after a credit, and logs it; a game after a credit is exported on the shipped set only when a
+    # `skr-restored` line naming that game, with the shipped file's sha256 (artifacts/known.json's
+    # iwp-2.0-996e86c5), comes after the latest credit and before that game's `game-start`. Pushed before
+    # dispatch (L64): one test per way the label could be wrong.
+    SHIPPED_SKR = "50d86c5cdd758f4c65f21e2a2be78da433b39c96e4fefd1549820a68abb25b95"
+
+    def skr_sitting(self, sid, *lines):
+        sitting, _ = make_sitting(self.wine, sid=sid)
+        path = sitting / "actions.jsonl"
+        path.write_text(path.read_text() + "".join(json.dumps(l) + "\n" for l in lines))
+        return sitting
+
+    def test_a_game_after_a_credit_with_a_shipped_restore_is_exported_on_the_shipped_set(self):
+        sitting = self.skr_sitting(
+            "20261009T200000Z",
+            {"seq": 5, "game": 1, "turn": 3, "event": "loss-credited"},
+            {"seq": 6, "game": 2, "turn": 0, "event": "skr-restored", "sha256": self.SHIPPED_SKR},
+            {"seq": 7, "game": 2, "turn": 0, "event": "game-start"})
+        record = self.record("cmb-accumulation", self.export(sitting)[1].split("/")[-1][:-5])
+        self.assertEqual(record["artifact"], {"set": "iwp-2.0-996e86c5", "variant": "unregistered"})
+
+    def test_a_restore_that_does_not_prove_the_shipped_file_is_refused(self):
+        credit = {"seq": 5, "game": 1, "turn": 3, "event": "loss-credited"}
+        start = {"seq": 7, "game": 2, "turn": 0, "event": "game-start"}
+        cases = {
+            "wrong hash": [credit, {"seq": 6, "game": 2, "turn": 0, "event": "skr-restored", "sha256": "e" * 64}, start],
+            "no hash": [credit, {"seq": 6, "game": 2, "turn": 0, "event": "skr-restored"}, start],
+            "after the game-start": [credit, start,
+                                     {"seq": 8, "game": 2, "turn": 0, "event": "skr-restored", "sha256": self.SHIPPED_SKR}],
+            "before the credit": [{"seq": 4, "game": 2, "turn": 0, "event": "skr-restored", "sha256": self.SHIPPED_SKR},
+                                  credit, start],
+            "for another game": [credit, {"seq": 6, "game": 3, "turn": 0, "event": "skr-restored",
+                                          "sha256": self.SHIPPED_SKR}, start],
+            "second credit not restored": [
+                credit, {"seq": 6, "game": 2, "turn": 0, "event": "skr-restored", "sha256": self.SHIPPED_SKR}, start,
+                {"seq": 8, "game": 2, "turn": 9, "event": "loss-credited"},
+                {"seq": 9, "game": 3, "turn": 0, "event": "game-start"}],
+        }
+        for n, (name, lines) in enumerate(cases.items()):
+            with self.subTest(case=name):
+                sitting = self.skr_sitting(f"20261009T21{n:02d}00Z", *lines)
+                with self.assertRaises(e020_export.ExportRefused):
+                    self.export(sitting)
+                self.assertFalse((self.repo / "runs").exists() and any((self.repo / "runs").rglob("*.json")))
+
     def test_a_record_is_never_written_over(self):
         sitting, _ = make_sitting(self.wine)
         with mock.patch.object(e020_export, "next_run_id", return_value="E020-r0001"):
