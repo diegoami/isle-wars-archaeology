@@ -167,14 +167,6 @@ WALKS = {
             ("step", f"click {NEWGAME_CLICK[0]} {NEWGAME_CLICK[1]}"),
             ("step", "settle"),
             ("step", "shot loss-notice"),
-            ("step", f"click! {LOSS_CONTINUE_CLICK[0]} {LOSS_CONTINUE_CLICK[1]}"),
-            ("step", "settle"),
-            ("step", f"click! {PLAY_CLICK[0]} {PLAY_CLICK[1]}"),
-            ("step", "watch 0 0 800 495"),
-            ("step", "settle 4"),
-            ("step", f"click {QUIT_CLICK[0]} {QUIT_CLICK[1]}"),
-            ("wait", "notice"),
-            ("step", "shot quit-notice"),
         ],
         "notes": [
             "the Soleau Games label is a refused rectangle (runtime/iwp/spike/steps.py); its "
@@ -182,6 +174,13 @@ WALKS = {
             "the Quit path stops at the notice: T13's driver terminates by kill, so Exit Game is "
             "never clicked inside a recorded walk (F003's tour reached it under the spike's "
             "ui-quit termination)",
+            "the walk ends at the loss notice. Earlier rounds also tried to capture the quit "
+            "notice by clicking loss-notice Continue (start of the AI play-out) and then Play "
+            "Game at (565, 532), but during play-out that pixel is over the board — no Play "
+            "Game button is on screen — so `click!` aborts on no-change. The count target "
+            "(8 distinct screens) is met at the loss-notice shot (title, options, three help "
+            "pages, scores, newgame-setup, board, loss-notice = 9); the quit-notice is captured "
+            "by a different walk on a different record (T39's events-end batch, Q-UI-21).",
         ],
     },
     "Q-UI-10": {
