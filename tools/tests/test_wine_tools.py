@@ -440,7 +440,19 @@ class FakeDriver:
         self.blocks, self.notes, self.context = [], [], {}
         self.after = {}                      # trail item -> callable run right after it (time passing in a wait)
 
+    # The tests' clock is frozen and a spent pool reads `board-menu` forever, so a loop that waits for
+    # the clock or for a non-board screen (the play-out) never ends: on 2026-10-09 a pool one reading
+    # short grew the trail to ~13 GB and took WSL down (#141 round 2). Past this many blocks and
+    # readings the fake fails the test instead.
+    MAX_STEPS = 1000
+
+    def step(self):
+        if len(self.trail) >= self.MAX_STEPS:
+            raise AssertionError(f"FakeDriver: over {self.MAX_STEPS} blocks and readings; a loop that "
+                                 f"never ends? last: {self.trail[-5:]}")
+
     def run_block(self, name):
+        self.step()
         self.blocks.append((name, dict(self.context)))
         self.trail.append(name)
         if name in self.after:
@@ -464,6 +476,7 @@ class FakeDriver:
             self.trail.append("note:loss-credited")
 
     def read_screen(self):
+        self.step()
         screen = self.screens.pop(0) if self.screens else "board-menu"
         self.readings.append(screen)
         self.trail.append("read:" + screen)
