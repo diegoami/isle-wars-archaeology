@@ -540,5 +540,51 @@ class LegacyWineRoundThreeEncodingTest(unittest.TestCase):
                 self.assertIn(rel, result.stdout)
 
 
+class LegacyWineJsonShapeTest(unittest.TestCase):
+    """T48 round 3, Sol's R1 and R2 (PR #151): JSON shapes that hid a record from content discovery.
+    Pushed before the structural round the owner chose on 2026-10-09 (L64): every run/1 object in a
+    tracked JSON value is gated, wherever it sits, and a candidate with a duplicate key is refused
+    rather than read as its last value. Each case is a Wine record with an unknown binary hash and
+    no listing, so each must be refused."""
+
+    BODY = ('"runtime": {"platform": "linux-wsl2/wine-xvfb-xfwm4"}, '
+            '"artifact": {"set": "iwp-2.0-996e86c5", "variant": "unregistered"}, '
+            '"start_state": {"sha256": "' + "a" * 64 + '"}')
+
+    def check_refused(self, rel, text):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            path = repo / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
+            subprocess.run(["git", "add", rel], cwd=repo, check=True)
+            result = run_tool(repo)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn(rel, result.stdout)
+
+    def test_a_duplicate_schema_key_cannot_hide_a_wine_record(self):
+        for order in (('"schema": "run/1", ', '"schema": "other", '),
+                      ('"schema": "other", ', '"schema": "run/1", ')):
+            with self.subTest(order=order):
+                self.check_refused("duplicate.txt", "{" + order[0] + order[1] + self.BODY + "}")
+
+    def test_a_duplicate_platform_key_cannot_hide_a_wine_record(self):
+        text = ('{"schema": "run/1", "runtime": {"platform": "linux-wsl2/wine-xvfb-xfwm4", '
+                '"platform": "windows-native-bandicam"}, '
+                '"artifact": {"set": "iwp-2.0-996e86c5", "variant": "unregistered"}, '
+                '"start_state": {"sha256": "' + "a" * 64 + '"}}')
+        for rel in ("runs/E002/E002-r0002.json", "elsewhere.json"):
+            with self.subTest(rel=rel):
+                self.check_refused(rel, text)
+
+    def test_an_array_wrapped_wine_record_is_refused(self):
+        self.check_refused("array.txt", '[{"schema": "run/1", ' + self.BODY + '}]')
+
+    def test_a_wine_record_nested_in_another_object_is_refused(self):
+        self.check_refused("nested.json", '{"data": [{"schema": "run/1", ' + self.BODY + '}]}')
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
