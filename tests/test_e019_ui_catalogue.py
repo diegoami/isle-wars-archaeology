@@ -11,6 +11,7 @@ import contextlib
 import hashlib
 import io
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -45,6 +46,10 @@ HIT_AREAS = {"Q-UI-18"}
 STATIC_ONLY = {"Q-UI-14", "Q-UI-21"}
 # the rows whose target needs an identification the pixels cannot make: proxied, F020 narrowed
 PROXIED = {"Q-UI-06", "Q-UI-07", "Q-UI-13"}
+# the F020 statuses whose sections the citation rule reads (#140); write_f020 cites exactly the
+# sections the rule applies to. The tuple lives here, not in the check, so these tests run
+# against main's check too (Done-when 2: every one of them fails there).
+CITED_STATUSES = ("observed", "narrowed")
 
 
 def catalogue_ids():
@@ -209,7 +214,10 @@ def drive(root, qids=None, **fake_options):
 
 def write_f020(root, status_of=None):
     """A minimal F020 (the catalogue is T39's; this is the shape check_ui_catalogue reads): one
-    section per question, the proxied ones narrowed, the none-found ones static-only."""
+    section per question, the proxied ones narrowed, the none-found ones static-only. Every
+    section the citation rule reads (observed or narrowed, #140) cites its question's first
+    record by full path with that file's sha256, and one of that record's outputs by hash, so
+    the catalogue the check passes on carries the evidence T39's DW2 asks for."""
     lines = ["# F020 UI observations catalogue (structure)", "", "## Observations", ""]
     for qid in catalogue_ids():
         if status_of and qid in status_of:
@@ -220,7 +228,21 @@ def write_f020(root, status_of=None):
             status = "static-only"
         else:
             status = "observed"
-        lines += [f"#### {qid} question text", f"- **Observation**: {status}: described from the records.", ""]
+        lines += [f"#### {qid} question text",
+                  f"- **Observation**: {status}: described from the records."]
+        if status in CITED_STATUSES:
+            found = records_of(root, qid)
+            if found:
+                record_path, record = found[0]
+                rel = record_path.relative_to(Path(root)).as_posix()
+                sha = hashlib.sha256(record_path.read_bytes()).hexdigest()
+                line = f"- **Run**: `{rel}` (sha256 `{sha[:16]}\u2026`)"
+                shots = [o for o in record.get("outputs") or [] if o.get("sha256")]
+                if shots:
+                    line += (f" **Screenshot**: `{shots[0]['name']}` "
+                             f"(sha256 `{shots[0]['sha256'][:16]}\u2026`)")
+                lines.append(line)
+        lines.append("")
     path = Path(root) / "findings" / "F020-pro-ui-observations.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
@@ -823,6 +845,297 @@ class CheckCatalogueTest(unittest.TestCase):
             other = Path(tmp) / "runs" / "E019" / "events-end"
             shutil.move(str(path), str(other / path.name))
             self.assertTrue(any("sits in events-end" in e for e in check(tmp)))
+
+
+# --- #140: F020's cited records, record sha256s and screenshot hashes ------------------------------
+
+def section(path, qid):
+    """One question's section of a written F020."""
+    return _find_section(Path(path).read_text(encoding="utf-8"), qid).group(0)
+
+
+def edit_section(path, qid, change):
+    """Rewrite one question's section of a written F020 with `change` (the mutations of #140's
+    tests); returns what change returned."""
+    text = Path(path).read_text(encoding="utf-8")
+    match = _find_section(text, qid)
+    result = change(match.group(0))
+    Path(path).write_text(text[:match.start()] + result + text[match.end():], encoding="utf-8")
+    return result
+
+
+def _find_section(text, qid):
+    """The `#### <qid> ...` match of one question's section of a written F020, bounded as the
+    check bounds it (#140 round 2): the next heading of level 2-4, or the end of the file."""
+    match = re.search(r"^#### " + re.escape(qid) + r" .*?(?=^#{2,4} |\Z)", text, re.S | re.M)
+    assert match, f"F020 has no section for {qid}"
+    return match
+
+
+class F020CitationRuleTest(unittest.TestCase):
+    """#140: an observed or narrowed F020 section has to cite records that exist under the root
+    being checked, with sha256 prefixes that are theirs, and hashes that belong to them. Each
+    test writes the catalogue the recorder's own tree needs (write_f020) and mutates one section
+    of it, as the issue's mutations do; (e) and (f) pin the citations the rule must not touch,
+    and carry a second section with the one error only this rule can produce, because a rule that
+    only adds errors has no test that fails on main's check without one."""
+
+    def test_a_wrong_record_sha_prefix_fails_with_error_2(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            good = hashlib.sha256(record_path.read_bytes()).hexdigest()[:16]
+            self.assertIn(f"`{good}\u2026`", section(path, "Q-UI-04"))
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace(f"`{good}\u2026`", f"`{'0' * 16}\u2026`"))
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)              # error 2, and nothing else
+            self.assertIn(f"cites runs/E019/title-options/{record_path.stem}.json with sha256 "
+                          f"{'0' * 16}\u2026, which is not a prefix of the file's sha256", errors[0])
+
+    def test_a_screenshot_hash_of_no_cited_record_fails_with_error_4(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+
+            def replace_shot_sha(body):
+                text, n = re.subn(r"(\*\*Screenshot\*\*: `[^`]+` \(sha256 `)[0-9a-f]{8,64}(\u2026`)",
+                                  lambda m: m.group(1) + "f" * 16 + m.group(2), body, count=1)
+                self.assertEqual(n, 1, body)
+                return text
+            edit_section(path, "Q-UI-04", replace_shot_sha)
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)              # error 4, and nothing else
+            self.assertIn(f"cites the hash {'f' * 16}\u2026, which is neither a record sha", errors[0])
+
+    def test_a_cited_record_path_that_does_not_exist_fails_with_error_1(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            fake = record_path.with_name("E019-r9999.json").relative_to(Path(tmp)).as_posix()
+            self.assertFalse((Path(tmp) / fake).exists())
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace("**Run**:", f"**Run**: `{fake}` and", 1))
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)              # error 1, and nothing else
+            self.assertIn(f"cites {fake}, which does not exist", errors[0])
+
+    def test_an_observed_section_citing_a_record_without_any_sha_fails_with_error_3(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            good = hashlib.sha256(record_path.read_bytes()).hexdigest()[:16]
+
+            def drop_record_sha(body):
+                text, n = re.subn(r" \(sha256 `[0-9a-f]{8,64}\u2026`\)", "", body, count=1)
+                self.assertEqual(n, 1, body)
+                return text
+            edit_section(path, "Q-UI-04", drop_record_sha)
+            self.assertNotIn(good, section(path, "Q-UI-04"))   # the record's sha is no longer cited
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)              # error 3, and nothing else
+            self.assertIn("cites no record with its sha256 (T39's DW2 requires the record's sha)",
+                          errors[0])
+
+    def test_a_bare_name_citation_and_a_driver_id_are_not_citations(self):
+        """(e) Q-UI-19 cites its two aborted attempts by bare file name and every run's driver
+        beside its sha: neither is a record citation (a bare name is not a path under the root)
+        nor a hash citation (the driver id has no ellipsis), so neither draws an error. The rule
+        only adds errors, so the second section — those same two citations and no record path —
+        is the control that makes this fail on main's check: the whole check's output is that
+        one error 3, with no error 1 or 4 among it, and none of it on Q-UI-04."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            for bare in ("E019-r0005.json", "E019-r0009.json"):
+                self.assertFalse((Path(tmp) / bare).exists())
+            citations = ("Aborted attempts: `E019-r0005.json`, `E019-r0009.json`; "
+                         "driver `e257bb1b395a`.")
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace("described from the records.",
+                                                   "described from the records. " + citations, 1))
+            edit_section(path, "Q-UI-10",
+                         lambda body: re.sub(r"^- \*\*Run\*\*:.*$", citations, body,
+                                             count=1, flags=re.M))
+            errors = check(tmp, f020=True)
+            self.assertEqual([e for e in errors if e.startswith("Q-UI-04:")], [], errors)
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("Q-UI-10: F020 cites no record with its sha256", errors[0])
+
+    def test_a_pending_section_with_no_citations_is_not_checked(self):
+        """(f) The rule reads observed and narrowed sections only: a pending section with no
+        citations draws no citation error of its own (the pre-existing status rule still refuses
+        it, which test_a_pending_f020_section_fails pins). The second section is the same
+        citation-less shape on an observed question — error 3, the control that makes this fail
+        on main's check."""
+        with Copy() as tmp:
+            path = write_f020(tmp, status_of={"Q-UI-08": "pending the walk",
+                                              "Q-UI-12": "observed"})
+            edit_section(path, "Q-UI-12",
+                         lambda body: re.sub(r"^- \*\*Run\*\*:.*\n", "", body, count=1, flags=re.M))
+            errors = check(tmp, f020=True)
+            cited = [e for e in errors if ": F020 cites" in e]
+            self.assertEqual([e for e in cited if e.startswith("Q-UI-08:")], [], errors)
+            self.assertEqual(len(cited), 1, errors)               # the control, on Q-UI-12
+            self.assertIn("Q-UI-12: F020 cites no record with its sha256", cited[0])
+            self.assertTrue(any(e.startswith("Q-UI-08: F020's Observation line has no status")
+                                for e in errors), errors)         # the pre-existing status rule
+
+
+# --- #140 rework rounds 2 and 3: the blocking findings, and the section bound -----------------------
+
+class F020CitationRuleRoundTwoTest(unittest.TestCase):
+    """#140's rework round 2 (Sol's R1 and R2): a hash citation is checked against the sha256
+    computed from a cited record's file, never against the cited sha text (R1), and every
+    backticked token holding a record name is one of the two forms the rule allows (R2), and the
+    section stops at the next heading of level 2-4 instead of running to the end of the file.
+    Round 3's R1 (the finding of round 2's review) is r1c and r1d: a record cited without a sha
+    lends its outputs to error 4's pool, never its own digest, and the digest is exempted only for
+    a record cited with a sha that passed error 2.
+
+    Each test writes the catalogue the recorder's tree needs (write_f020) and keeps a valid record
+    citation in the section beside the mutation — a path that exists and, unless the sha is what
+    it mutates, its real sha256 and a real screenshot hash — so errors 1 and 3 stay out and cannot
+    mask the gap (Sol's R2 note). A test that expects an error fails on main's check, which has no
+    citation rule at all; where a test expects none — r1d and the section bound — a second section
+    carries the one error only this rule produces, so it fails there too, as tests (e) and (f)
+    already do."""
+
+    def test_r1a_a_cited_record_prefix_with_an_invented_suffix_fails(self):
+        """R1: the cited record prefix extended by an invented suffix is not a prefix of the
+        record file's sha256, so it is no record's sha and no output's."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            digest = hashlib.sha256(record_path.read_bytes()).hexdigest()
+            fabricated = digest[:16] + "deadbeef"
+            edit_section(path, "Q-UI-04", lambda body: body.rstrip("\n")
+                         + f"\n- **Screenshot**: `invented.png` (sha256 `{fabricated}\u2026`)\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)          # error 4, and nothing else
+            self.assertIn(f"cites the hash {fabricated}\u2026, which is neither a record sha",
+                          errors[0])
+
+    def test_r1b_a_shorter_hash_prefixing_the_cited_sha_but_not_the_file_fails(self):
+        """R1: a hash shorter than the cited sha text, prefixing that text but not the file's
+        digest. Round 1 exempts it with `sha.startswith(h)`; the digest rule refuses it. The
+        section's record path keeps its own citation, so error 2 is the one companion line it
+        draws: a sha cited beside a record path that is no prefix of that file's sha256 is error 2
+        whatever else the text is, and a shorter hash prefixing such a text cannot be a prefix of
+        the file either. The screenshot citation stays valid, so no error 1 and no error 3.
+
+        The Run line is rewritten into the shape F020 really uses — `(sha256 `hex…`, driver
+        `…`, display …)` — so the sha field is read out of the repository's own text and not only
+        out of write_f020's shorter one; were it not read, the section would cite no record sha and
+        error 3 would appear instead of error 2."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            digest = hashlib.sha256(record_path.read_bytes()).hexdigest()
+            wrong, short = "5" * 16, "5" * 8
+            self.assertFalse(digest.startswith(wrong))
+            real_shape = (f"(sha256 `{wrong}\u2026`, driver `e257bb1b395a`, "
+                          "display 800x600x24, 42.56 s)")
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace(f"(sha256 `{digest[:16]}\u2026`)", real_shape, 1))
+            self.assertIn(real_shape, section(path, "Q-UI-04"))
+            edit_section(path, "Q-UI-04", lambda body: body.rstrip("\n")
+                         + f"\n- **Screenshot**: `shorter.png` (sha256 `{short}\u2026`)\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 2, errors)
+            self.assertTrue(any("which is not a prefix of the file's sha256" in e for e in errors),
+                            errors)                            # error 2, the cited sha text
+            hashes = [e for e in errors if "cites the hash" in e]
+            self.assertEqual(len(hashes), 1, errors)           # error 4, the shorter hash alone
+            self.assertIn(f"cites the hash {short}\u2026", hashes[0])
+
+    def test_r1c_a_genuine_longer_prefix_of_a_record_cited_without_its_sha_fails_with_error_4(self):
+        """R1, round 3 (the finding of round 2's review): a hash that really is a longer prefix of
+        a record file's sha256, where the record is cited by full path *without* its sha (as
+        Q-UI-19 cites records). Nothing in the section vouches for that digest — the record's sha
+        was never cited — so it must not pass as a screenshot hash: error 4 draws the line. Round 2
+        exempts it (every cited file's digest was in the pool), so this test fails on c519370 with
+        no error at all; main's check has no citation rule at all, so it fails there with no error
+        either. The same hash on the same record passes when the record cites its sha — r1d below."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            cited_path = records_of(tmp, "Q-UI-04")[0][0]
+            other = [p for p in sorted((Path(tmp) / "runs" / "E019").glob("*/E019-r*.json"))
+                     if p != cited_path][0]
+            longer = hashlib.sha256(other.read_bytes()).hexdigest()[:32]
+            self.assertFalse(hashlib.sha256(cited_path.read_bytes()).hexdigest().startswith(longer))
+            edit_section(path, "Q-UI-04", lambda body: body.rstrip("\n")
+                         + f"\n- **Also**: `{other.relative_to(Path(tmp)).as_posix()}`"
+                         + f"\n- **Screenshot**: `second.png` (sha256 `{longer}\u2026`)\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)          # error 4, and nothing else
+            self.assertTrue(errors[0].startswith("Q-UI-04:"), errors)
+            self.assertIn(f"cites the hash {longer}\u2026, which is neither a record sha", errors[0])
+
+    def test_r1d_a_genuine_longer_prefix_of_a_record_cited_with_its_sha_passes(self):
+        """R1, round 3: the same hash on the same record passes when the record is cited with its
+        (valid) sha — error 4 exempts a record's digest only when the record was cited with a sha
+        that is that file's own (error 2 passed), which is the vouching r1c says is missing above.
+        Removing the lending entirely fails this test (error 4 would then draw a line for a hash
+        the signed citation vouches for). The control section carries a hash no record backs: the
+        error only this rule produces, which makes the test fail on main's check."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            cited_path = records_of(tmp, "Q-UI-04")[0][0]
+            other = [p for p in sorted((Path(tmp) / "runs" / "E019").glob("*/E019-r*.json"))
+                     if p != cited_path][0]
+            digest = hashlib.sha256(other.read_bytes()).hexdigest()
+            longer = digest[:32]
+            self.assertFalse(hashlib.sha256(cited_path.read_bytes()).hexdigest().startswith(longer))
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.rstrip("\n")
+                         + f"\n- **Also**: `{other.relative_to(Path(tmp)).as_posix()}` "
+                           f"(sha256 `{digest[:16]}\u2026`)"
+                         + f"\n- **Screenshot**: `second.png` (sha256 `{longer}\u2026`)\n")
+            edit_section(path, "Q-UI-10", lambda body: body.rstrip("\n")
+                         + f"\n- **Screenshot**: `invented.png` (sha256 `{'f' * 16}\u2026`)\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual([e for e in errors if e.startswith("Q-UI-04:")], [], errors)
+            self.assertEqual(len(errors), 1, errors)          # the control, on Q-UI-10
+            self.assertTrue(errors[0].startswith("Q-UI-10:"), errors)
+
+    def test_r2a_a_record_path_with_a_traversal_component_fails_with_error_5(self):
+        """R2: `../` is neither the strict full path nor the bare name."""
+        self._assert_error_5("runs/E019/../E019-r9999.json")
+
+    def test_r2b_a_record_path_outside_runs_e019_fails_with_error_5(self):
+        """R2: a full path outside runs/E019 is not a record citation of this rule."""
+        self._assert_error_5("runs/E004/E019-r9999.json")
+
+    def test_r2c_a_record_path_with_a_two_segment_batch_fails_with_error_5(self):
+        """R2: the batch is exactly one path segment, so a deeper path is refused."""
+        self._assert_error_5("runs/E019/title-options/extra/E019-r9999.json")
+
+    def _assert_error_5(self, bad):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.rstrip("\n") + f"\n- **Also**: `{bad}`\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual(len(errors), 1, errors)          # error 5, and nothing else
+            self.assertIn("cites a record path outside runs/E019/<batch>/ or malformed",
+                          errors[0])
+            self.assertIn(bad, errors[0])
+
+    def test_a_section_ends_at_the_next_heading_of_level_two_to_four(self):
+        """The section bound: a section ran to the next `#### ` heading or the end of the file,
+        so the last one (Q-PLY-04 in a written catalogue, Q-UI-18 in F020) also took in the `##`
+        sections after it. The hash under `## Evidence` belongs to no question section now; the
+        control on Q-UI-10 is the error only this rule produces, which makes the test fail on
+        main's check, while the Q-PLY-04 assertion makes it fail on round 1's."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            with Path(path).open("a", encoding="utf-8") as fh:
+                fh.write(f"\n## Evidence\n- a hash no record backs: `{'f' * 16}\u2026`\n")
+            edit_section(path, "Q-UI-10", lambda body: body.rstrip("\n")
+                         + f"\n- **Screenshot**: `invented.png` (sha256 `{'f' * 16}\u2026`)\n")
+            errors = check(tmp, f020=True)
+            self.assertEqual([e for e in errors if e.startswith("Q-PLY-04:")], [], errors)
+            self.assertEqual(len(errors), 1, errors)          # the control, on Q-UI-10
+            self.assertTrue(errors[0].startswith("Q-UI-10:"), errors)
 
 
 class RecorderUnitTest(unittest.TestCase):
