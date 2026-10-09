@@ -27,7 +27,9 @@ ROOT = Path(__file__).resolve().parents[1]
 AGENT = ROOT / ".opencode" / "agents" / "implementer.md"
 
 EXPECTED_EXTERNAL = {
-    "/tmp/opencode/*": "deny",
+    # allowed since harness_imperial fix #144 (bump to 610f979): a deny made OpenCode reject the agent's
+    # own spilled tool output, and the run was discarded
+    "/tmp/opencode/*": "allow",
     "~/.local/share/isle-wars-archaeology/static/*": "allow",
 }
 EXPECTED_EDIT = [("*", "allow"), ("*.local/share/isle-wars-archaeology/static/*", "deny")]
@@ -67,7 +69,7 @@ class ImplementerPermissions(unittest.TestCase):
                   f"{HOME}/.local/share/isle-wars-archaeology/static-other",
                   f"{HOME}/.local/share/isle-wars-archaeology/iwp.wineprefix/drive_c",
                   f"{HOME}/.local/share", HOME, f"{HOME}/.ssh", f"{HOME}/projects/isle-wars-archaeology",
-                  "/tmp", "/tmp/iwa-review-a1B2c3", "/tmp/iwa-other", "/tmp/opencode", "/tmp/harness-opencode",
+                  "/tmp", "/tmp/iwa-review-a1B2c3", "/tmp/iwa-other", "/tmp/harness-opencode",
                   "/mnt/c/Users", "/"):
             self.assertNotEqual(self.outside(d), "allow", d)
 
@@ -103,10 +105,11 @@ class ImplementerPermissions(unittest.TestCase):
 
     def test_earlier_denies_are_kept(self):
         for cmd in ("git push --force origin x", "git push -f origin x", "git stash", "git worktree add x",
-                    "git -C . push --force origin x", "git -C . stash", "git -C . worktree list",
+                    "git -C . push --force origin x", "git -C . stash", "git -C . stash push -m x", "git -C . worktree list",
                     "gh pr merge 1", "gh pr review 1", "gh issue edit 1"):
             self.assertEqual(self.shell(cmd), "deny", cmd)
-        self.assertEqual(evaluate("task", "general", self.rules), "deny")
+        # the task deny was dropped upstream (harness_imperial fix #145, bump to 610f979): no chain model
+        # uses the Task tool. `git -C * stash` stays denied here (rule 2), though upstream dropped it.
 
     def test_no_machine_path_in_the_agent_file(self):
         self.assertIsNone(re.search(r"/home/|/mnt/|/Users/", self.text))

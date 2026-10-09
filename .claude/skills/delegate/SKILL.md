@@ -12,7 +12,7 @@ yourself, check whether a delegate below does it better or cheaper.
 
 | Work | Delegate | How | Key |
 | --- | --- | --- | --- |
-| Code: implement a task or a fix | OpenCode GLM-5.3 Flash, then DeepSeek V4.1 Flash, then a Claude Sonnet agent | `/run-task` → `tools/harness/implement.mjs` | Z.AI's login (`opencode auth login`) and OpenCode Go's (`opencode console login`) to implement; OpenAI's (`opencode auth login`) to review |
+| Code: implement a task or a fix | OpenCode GLM-5.3 Flash, then MiMo V2.6 Flash, then a Claude Sonnet agent | `/run-task` → `tools/harness/implement.mjs` | Z.AI's login (`opencode auth login`) and OpenCode Go's (`opencode console login`) to implement; OpenAI's (`opencode auth login`) to review |
 | Review a PR | GPT-5.6 Luna on OpenAI, through OpenCode (default), then a Claude Opus agent; never the implementer's family | `/run-task` → `tools/harness/review.mjs`, or Agent | as above |
 | Repeated decisions with known answers (triage, routing, gating, labelling) | Jev | `/jev` → `tools/harness/jev.mjs` | `OPENROUTER_API_KEY` |
 | Images: sprites, icons, maps, mockups, illustrations | An image model on OpenRouter | pick one with `models.mjs openrouter --output image` | `OPENROUTER_API_KEY` |
@@ -45,7 +45,7 @@ another way, or tell the user what is missing (`docs/environment.md`).
    editing `harness.json` for quota.
    When a task needs both an implementer and a reviewer, use `/recommend`'s `pair` field
    (`curl -s 'localhost:8765/recommend?tier=heavy' | jq .pair`): `pair.implementer` and
-   `pair.reviewer`, the reviewer from another family (claude, openai, glm, deepseek, minimax;
+   `pair.reviewer`, the reviewer from another family (claude, openai, glm, mimo, minimax;
    each free model its own). Add `review_tier=light` for a lighter reviewer; `private=0` is for
    code that is not private (the free OpenRouter models may then be in the pair). With
    `tier=heavy`, the same response also offers `free_reviewer` — a free second opinion on the
@@ -89,12 +89,23 @@ project reviews its UI (a person looks at the screen).
 - Send private repository content or personal data to a provider the user has not cleared for it.
 - Spend on a batch without saying the cost first.
 
-## The rule 18 carve-out (CLAUDE.md, owner 2026-10-08)
+## A rule's carve-out (process.md §10)
+
+When a project's `CLAUDE.md` loosens a rule by carve-out, three changes merge before the first
+task that uses it: the known-good table in a finding, the gate in `tools/` that checks every
+record against it, and the task file for the first run, which names the carve-out's lettered
+preconditions as Done-when lines. Delegate a `model-driven` task only once the gate accepts the
+implementer's run records; such a run corroborates the owner's runs, never replaces them, and its
+results amend the wording one claim at a time, never in bulk. (L63)
+
+### This project: the rule 18 carve-out (CLAUDE.md, owner 2026-10-08; constraint E amended 2026-10-09)
 
 A model agent may run the original Pro binary under Wine on the user's machine for run capture
-and UI observation, under constraints A–G. The carve-out is *corroboration*, never
-replacement, of the owner-plays model. Companion changes T35, T36, T37 are merged. When
-delegating a `model-driven` task (TEMPLATE.md's `Kind` enum), the implementer's
+and UI observation, under constraints A–G. Since the owner's amendment of 2026-10-09 (constraint
+E), model sittings and the owner's Bandicam videos both count toward T28's per-claim totals, and
+sittings may be scheduled to run unattended; what only a human sitting shows (mistakes,
+hesitation, tactics) still rests on the owner's videos. Companion changes T35, T36, T37 are merged.
+When delegating a `model-driven` task (TEMPLATE.md's `Kind` enum), the implementer's
 `runtime.platform` must be `wine-on-user-machine-iwp-2.0` (the only recognised token)
 and `start_state.sha256` must match the F019 row's hash for the named set+variant; the T36
 gate enforces this. The binary, the install, the run copy, savestates, memory dumps,

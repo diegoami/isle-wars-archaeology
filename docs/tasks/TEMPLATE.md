@@ -1,11 +1,11 @@
 # T<nn> <Title>
 
 - **Kind**: feature | correction (of T<nn>, bug #<n>) | slice | infrastructure | model-driven
-  (a task that runs the original Pro binary under Wine on the user's machine, under
-  CLAUDE.md rule 18's carve-out; preconditions: T35, T36, T37 merged; per-claim wording
-  amendment per constraint G; corroboration, never replacement, of the owner-plays model)
+  (runs the original under a gated carve-out, process.md §10; its lettered preconditions are
+  Done-when lines, its table and gate named in Scope; here CLAUDE.md rule 18's carve-out:
+  T35, T36, T37 merged, per-claim wording per constraint G)
 - **Issue**: #<n> · **Branch**: `task/T<nn>-<slug>` · **Merge after**: T<nn>, …
-- **Implementer**: opencode (the default, `zai-glm-5.3-flash`; for a hard task `deepseek-flash`; or `<model>` from harness.json, after the quota check, CLAUDE.md rule 6) · **Claude fallback**: sonnet | opus. A model heavier than the default: the reason here (L46)
+- **Implementer**: opencode (the default, `zai-glm-5.3-flash`; for a hard task `mimo-flash`; or `<model>` from harness.json, after the quota check (`tools/harness/choose.mjs`), CLAUDE.md rule 6) · **Claude fallback**: sonnet | opus. A model heavier than the default: the reason here (L46)
 - **Reviewer**: opencode (the default, `luna`: GPT-5.6 Luna on OpenAI), then claude opus | claude (opus | sonnet); never the implementer's family
 - **Evidence**: the reports, fixtures or investigations this task rests on, with links.
 - **Owns**: directories or files, e.g. `src/Calendar/**`, `tests/Calendar/**`. A task that measures

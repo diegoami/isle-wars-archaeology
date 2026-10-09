@@ -124,6 +124,29 @@
     ],
     "sol": "gpt-6.1-sol"
   },
+  "chooser": {
+    "watch": "Rule 6's pairs (the owner, 2026-10-03; MiMo for DeepSeek, 2026-10-09), best first; choose.mjs drops the implementer's family and any provider out of quota. No Alibaba model (the owner: only when asked).",
+    "implementer": {
+      "easy": [
+        "zai-glm-5.3-flash",
+        "mimo-flash"
+      ],
+      "hard": [
+        "mimo-flash",
+        "zai-glm-5.3-flash"
+      ]
+    },
+    "reviewer": {
+      "easy": [
+        "luna"
+      ],
+      "hard": [
+        "gpt-6.1-sol",
+        "zai-glm-5.3",
+        "luna"
+      ]
+    }
+  },
   "jev": {
     "model": "jev-1.13",
     "baseUrl": "https://openrouter.ai/api",
