@@ -46,5 +46,5 @@ status; this index carries none.
 | T40 | E020 reader and counts: read the sittings' frames by pixels | #119 | T38 |
 | T41 | E020 driver: play each game to its end, and the Scoreboard | #123 | T38 |
 | T42 | E020 watcher: capture fast enough to see single exchanges | #128 | T41 |
-| T45 | Model-played Session A, attacks: the human boundary cases | #143 | #141, the harness bump |
+| T45 | Model-played Session A, attacks: the human boundary cases | #143 | #141, the harness bump, #152 |
 | T48 | Wine run records name the carve-out platform, and constraint F sees the older ones | #149 | #141 |
