@@ -87,7 +87,10 @@ def record(batch, run_id, sitting_epoch, events, fields_of, frames=("a" * 64, "b
 GROUND = (128, 128, 128)
 PAINT = {"score-panel": (0, 0, 0), "menu": (140, 239, 247), "subtitle": (0, 200, 255),
          "keep-playing": (189, 8, 66), "accept-loss": (180, 170, 30), "notice-panel": (0, 0, 100),
-         "continue": (181, 189, 181), "scoreboard-button": (181, 189, 181), "scoreboard-easy": (0, 0, 0),
+         "continue": (181, 189, 181),
+         # the CONTINUE's green phase (fix #141, round 2): the measured census's largest bin
+         "continue-green": (144, 208, 128),
+         "scoreboard-button": (181, 189, 181), "scoreboard-easy": (0, 0, 0),
          "scoreboard-normal": (0, 0, 0), "scoreboard-hard": (0, 0, 0)}
 SCREEN_PARTS = {"unknown": (), "board": ("score-panel",), "board-menu": ("score-panel", "menu"),
                 "title": ("subtitle", "menu"),

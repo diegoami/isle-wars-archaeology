@@ -38,8 +38,13 @@ from the frames of sitting 20261008T184505Z):
   attempt): on the elimination notice the loop sends the `eliminated-keep-playing` block once (the
   owner's decision: the computers play the game out), then sends nothing more. It reads the screen
   every `PLAYOUT_POLL` seconds while the board stays up, bounded by the batch's `sitting_seconds`;
-* the winner notice (`game-over`, T38 round 6, measured from sitting 20261008T195537Z), read in the
-  play-out or at a turn's start, ends the game: its `game-end` line says `ended: game-over` and
+* after a placement block reports `picked`, before its commit (fix #141, round 2): the winner
+  notice may have come up under the block -- its CONTINUE blinks between a green and a grey phase,
+  and the block's own grey test can fire on the phase the reader's grey test misses -- then no
+  commit is sent, and `off_board` answers the screen;
+* the winner notice (`game-over`, T38 round 6, measured from sitting 20261008T195537Z; its CONTINUE
+  blinks green and grey, and either phase names it, fix #141 round 2), read in the play-out or at a
+  turn's start, ends the game: its `game-end` line says `ended: game-over` and
   names the winner's colour when the score panel shows it by pixels (`winner`, a colour word or
   null; never OCR). The loop then clicks CONTINUE once (block `game-over-continue`) and reads the
   screen: the next game starts only on the title or the board with its menu row (the screens New
@@ -238,9 +243,17 @@ class BatchLoop:
         return self.off_board(screen)
 
     def place(self):
-        """The human selects a country it owns (the placement row lit) and commits; True when one was."""
+        """The human selects a country it owns (the placement row lit) and commits; True when one
+        was. After the block reports `picked` the screen is read again before the commit (fix #141,
+        round 2, defence in depth): sitting 20261009T160556Z (E020-r0008) had the winner notice up
+        while the block ran -- its green phase read as the board, its grey phase lit the block's own
+        test -- and the ALL click changed nothing, aborting the sitting. A screen that is not the
+        board here is answered by `off_board` instead: no commit is sent."""
         if not self.send("place").get("picked"):
             return False
+        screen = self.driver.read_screen()
+        if screen not in BOARD:
+            return self.off_board(screen)
         self.summary["placements"] += 1
         self.send("commit")
         self.summary["turns"] += 1

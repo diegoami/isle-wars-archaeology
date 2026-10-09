@@ -5,8 +5,10 @@
 
 * `eliminated`: the elimination notice, a modal panel over the board with two buttons in the bottom
   bar (the left one gives up, the right one lets the computers play on);
-* `game-over`: the winner notice (T38 round 6), the same dark panel over the board with one grey
-  CONTINUE button in the middle of the bottom bar, and neither of the elimination notice's buttons;
+* `game-over`: the winner notice (T38 round 6), the same dark panel over the board with one
+  CONTINUE button in the middle of the bottom bar -- it blinks between a light grey and a green
+  phase (fix #141, round 2, measured on sitting 20261009T160556Z), and either phase names it --
+  and neither of the elimination notice's buttons;
 * `scoreboard` (T41): the Scoreboard the game shows after it credits a loss, with its one grey CONTINUE
   button in the bottom bar, higher than the winner notice's, and no board behind it;
 * `board-menu`: the board with the menu row lit (the human's turn: New Game is on the screen);
@@ -60,10 +62,13 @@ MENU_LABEL = (50, 576, 100, 20)
 # The title's cyan subtitle (the spike's SUBTITLE). Title: 3220 of 11000; board frames: at most 413,
 # so this test alone (the spike's `title_up` counts more than 300) does not tell the title from the board.
 SUBTITLE = (180, 335, 440, 25)
-# The winner notice's CONTINUE button, light grey, in the middle of the bottom bar: x 327-475,
-# y 522-546, centre 401,534 (round 6). Winner frames: 2958 of 3725; every other frame of both
-# sittings: at most 1603 (the CONTINUE of a card award, a smaller button near 402,531, which shows
-# with no notice panel: its frames count at most 3901 navy on NOTICE_PANEL).
+# The winner notice's CONTINUE button, in the middle of the bottom bar: x 327-475, y 522-546,
+# centre 401,534 (round 6). It blinks between two phases (fix #141, round 2): light grey, 2958 of
+# 3725 pixels on the round 6 frames and at most 1603 on every other frame of both sittings (the
+# CONTINUE of a card award, a smaller button near 402,531, which shows with no notice panel: its
+# frames count at most 3901 navy on NOTICE_PANEL); and green, which the grey test does not match,
+# so a green-phase notice read as the board and the loop played its placement blocks on it (the
+# r0008 abort). Either phase names the notice, below.
 CONTINUE_BOX = (327, 522, 149, 25)
 CONTINUE_CLICK = (401, 534)
 
@@ -110,6 +115,19 @@ def light_grey(r, g, b):
     return r > 140 and g > 140 and b > 140 and max(r, g, b) - min(r, g, b) < 20
 
 
+def continue_green(r, g, b):
+    """The CONTINUE button's green phase (fix #141, round 2): the button blinks between this green
+    and the light grey `light_grey` matches, and the grey test saw only the grey phase, so a
+    green-phase winner notice read as the board and the loop played placement blocks on it (sitting
+    20261009T160556Z, E020-r0008: aborted at the ALL click of turn 21 on the notice). The census is
+    the main session's over CONTINUE_BOX in 16-level bins (PR #146): green (144,208,128) 1209 px,
+    (160,208,160) 302, (112,192,112) 249 -- about 1760 px, against 2200 for the grey test on the
+    grey phase -- and the grey phase (176,176,176) 1409, (160,160,160) 427, (240,240,240) 387,
+    (192,192,192) 351 counts 0 here, its green spread at most 15 against the more than 24 asked
+    below. The bounds hold every measured bin: red and blue inside 111..175, green inside 192..223."""
+    return 100 < r < 190 and 180 < g < 240 and 100 < b < 190 and g - r > 24 and g - b > 24
+
+
 TESTS = {
     "keep-playing": Test(KEEP_PLAYING_BOX, red, 2900),
     "accept-loss": Test(ACCEPT_LOSS_BOX, olive, 2500),
@@ -118,6 +136,12 @@ TESTS = {
     "menu": Test(MENU_LABEL, menu_cyan, 200),
     "subtitle": Test(SUBTITLE, title_cyan, 1500),
     "continue": Test(CONTINUE_BOX, light_grey, 2200),
+    # The green phase of the same button. Minimum 1300: the measured green phase is about 1760, and
+    # the minimum keeps the grey test's own margin (2200 of its measured 2958, 74%): 74% of 1760.
+    # The grey phase counts 0 here; no other frame of the three sittings was censused for green in
+    # this box, so the name still needs the notice panel and the score panel and neither elimination
+    # button (name_from below), which no board, card award or title shows together.
+    "continue-green": Test(CONTINUE_BOX, continue_green, 1300),
     "scoreboard-button": Test(SCOREBOARD_BUTTON_TOP, light_grey, 720),
     "scoreboard-easy": Test(SCOREBOARD_PERCENT_EASY, black, 1500),
     "scoreboard-normal": Test(SCOREBOARD_PERCENT_NORMAL, black, 1500),
@@ -188,7 +212,10 @@ def name_from(s, scoreboard=True):
     board = s["score-panel"]
     if board and s["keep-playing"] and s["accept-loss"] and s["notice-panel"]:
         return "eliminated"
-    if board and s["notice-panel"] and s["continue"] and not s["keep-playing"] and not s["accept-loss"]:
+    if board and s["notice-panel"] and (s["continue"] or s["continue-green"]) \
+            and not s["keep-playing"] and not s["accept-loss"]:
+        # Either phase of the blinking CONTINUE (fix #141, round 2): the grey test alone left the
+        # green phase unnamed, and the loop then played placement blocks on the winner notice.
         return "game-over"
     if board:
         return "board-menu" if s["menu"] else "board"

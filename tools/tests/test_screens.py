@@ -69,6 +69,38 @@ class ScreenNameTest(unittest.TestCase):
         self.assertNotEqual(screens.name_of(stage_frame(*parts, pixels={"continue": 1603})), "game-over")
         self.assertTrue(1603 < screens.TESTS["continue"].minimum <= 2958)
 
+    def test_the_continue_buttons_green_phase_is_read_as_game_over(self):
+        """#141 round 2: the winner notice's CONTINUE blinks between a grey phase (the `continue`
+        test) and a green phase, which the grey test does not match (the green phase counts 385
+        light-grey pixels, below 2200), so a green-phase notice read as the board and the loop
+        played its placement blocks on it (sitting 20261009T160556Z, E020-r0008). The `continue-green`
+        test matches the green phase: with the notice panel and the score panel up, either phase
+        names `game-over`, and the winner is read from it either way."""
+        parts = ("score-panel", "notice-panel", "continue-green")
+        self.assertEqual(screens.name_of(stage_frame(*parts)), "game-over")
+        self.assertEqual(screens.winner_of(stage_frame(*parts, seats={"red": 31 * 14})), "red")
+
+    def test_each_continue_phase_trips_only_its_own_test(self):
+        """The two phases never blur: a frame of one phase misses the other's test, and both name
+        `game-over` over the notice panel and the score panel."""
+        for phase, other in (("continue", "continue-green"), ("continue-green", "continue")):
+            with self.subTest(phase=phase):
+                frame = stage_frame("score-panel", "notice-panel", phase)
+                signals = screens.signals(frame)
+                self.assertTrue(signals[phase])
+                self.assertFalse(signals[other])
+                self.assertEqual(screens.name_of(frame), "game-over")
+
+    def test_the_continue_green_minimum_sits_between_the_measured_populations(self):
+        """#141 round 2: about 1760 green pixels on the green-phase frame (bins 1209 + 302 + 249,
+        the main session's census on PR #146); the grey phase counts 0 here, its green spread at
+        most 15 against the more than 24 the predicate asks. The minimum keeps the grey test's own
+        margin (2200 of its measured 2958, 74%): 74% of 1760."""
+        parts = ("score-panel", "notice-panel", "continue-green")
+        self.assertEqual(screens.name_of(stage_frame(*parts, pixels={"continue-green": 1760})), "game-over")
+        self.assertTrue(0 < screens.TESTS["continue-green"].minimum <= 1760)
+        self.assertFalse(screens.signals(stage_frame("score-panel", "notice-panel", "continue"))["continue-green"])
+
     def test_the_winner_notice_is_never_read_with_an_elimination_button(self):
         for button in ("keep-playing", "accept-loss"):
             with self.subTest(button=button):
