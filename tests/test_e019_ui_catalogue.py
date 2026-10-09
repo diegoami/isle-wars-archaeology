@@ -11,6 +11,7 @@ import contextlib
 import hashlib
 import io
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -209,7 +210,10 @@ def drive(root, qids=None, **fake_options):
 
 def write_f020(root, status_of=None):
     """A minimal F020 (the catalogue is T39's; this is the shape check_ui_catalogue reads): one
-    section per question, the proxied ones narrowed, the none-found ones static-only."""
+    section per question, the proxied ones narrowed, the none-found ones static-only. Every
+    section the citation rule reads (observed or narrowed, #140) cites its question's first
+    record by full path with that file's sha256, and one of that record's outputs by hash, so
+    the catalogue the check passes on carries the evidence T39's DW2 asks for."""
     lines = ["# F020 UI observations catalogue (structure)", "", "## Observations", ""]
     for qid in catalogue_ids():
         if status_of and qid in status_of:
@@ -220,7 +224,21 @@ def write_f020(root, status_of=None):
             status = "static-only"
         else:
             status = "observed"
-        lines += [f"#### {qid} question text", f"- **Observation**: {status}: described from the records.", ""]
+        lines += [f"#### {qid} question text",
+                  f"- **Observation**: {status}: described from the records."]
+        if status in check_ui_catalogue.CITED_STATUSES:
+            found = records_of(root, qid)
+            if found:
+                record_path, record = found[0]
+                rel = record_path.relative_to(Path(root)).as_posix()
+                sha = hashlib.sha256(record_path.read_bytes()).hexdigest()
+                line = f"- **Run**: `{rel}` (sha256 `{sha[:16]}\u2026`)"
+                shots = [o for o in record.get("outputs") or [] if o.get("sha256")]
+                if shots:
+                    line += (f" **Screenshot**: `{shots[0]['name']}` "
+                             f"(sha256 `{shots[0]['sha256'][:16]}\u2026`)")
+                lines.append(line)
+        lines.append("")
     path = Path(root) / "findings" / "F020-pro-ui-observations.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
@@ -823,6 +841,142 @@ class CheckCatalogueTest(unittest.TestCase):
             other = Path(tmp) / "runs" / "E019" / "events-end"
             shutil.move(str(path), str(other / path.name))
             self.assertTrue(any("sits in events-end" in e for e in check(tmp)))
+
+
+# --- #140: F020's cited records, record sha256s and screenshot hashes ------------------------------
+
+def section(path, qid):
+    """One question's section of a written F020."""
+    return _find_section(Path(path).read_text(encoding="utf-8"), qid).group(0)
+
+
+def edit_section(path, qid, change):
+    """Rewrite one question's section of a written F020 with `change` (the mutations of #140's
+    tests); returns what change returned."""
+    text = Path(path).read_text(encoding="utf-8")
+    match = _find_section(text, qid)
+    result = change(match.group(0))
+    Path(path).write_text(text[:match.start()] + result + text[match.end():], encoding="utf-8")
+    return result
+
+
+def _find_section(text, qid):
+    """The `#### <qid> ...` match of one question's section of a written F020."""
+    match = re.search(rf"^#### {re.escape(qid)} .*?(?=^#### |\Z)", text, re.S | re.M)
+    assert match, f"F020 has no section for {qid}"
+    return match
+
+
+class F020CitationRuleTest(unittest.TestCase):
+    """#140: an observed or narrowed F020 section has to cite records that exist under the root
+    being checked, with sha256 prefixes that are theirs, and hashes that belong to them. Each
+    test writes the catalogue the recorder's own tree needs (write_f020) and mutates one section
+    of it, as the issue's mutations do; (e) and (f) pin the citations the rule must not touch,
+    and carry a second section with the one error only this rule can produce, because a rule that
+    only adds errors has no test that fails on main's check without one."""
+
+    def errors_for(self, tmp, qid):
+        """Every line the check reports for one question, F020's citations included."""
+        return [e for e in check(tmp, f020=True) if e.startswith(f"{qid}:")]
+
+    def test_a_wrong_record_sha_prefix_fails_with_error_2(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            good = hashlib.sha256(record_path.read_bytes()).hexdigest()[:16]
+            self.assertIn(f"`{good}\u2026`", section(path, "Q-UI-04"))
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace(f"`{good}\u2026`", f"`{'0' * 16}\u2026`"))
+            errors = self.errors_for(tmp, "Q-UI-04")
+            self.assertEqual(len(errors), 1, errors)              # error 2, and nothing else
+            self.assertIn(f"cites runs/E019/title-options/{record_path.stem}.json with sha256 "
+                          f"{'0' * 16}\u2026, which is not a prefix of the file's sha256", errors[0])
+
+    def test_a_screenshot_hash_of_no_cited_record_fails_with_error_4(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+
+            def replace_shot_sha(body):
+                text, n = re.subn(r"(\*\*Screenshot\*\*: `[^`]+` \(sha256 `)[0-9a-f]{8,64}(\u2026`)",
+                                  lambda m: m.group(1) + "f" * 16 + m.group(2), body, count=1)
+                self.assertEqual(n, 1, body)
+                return text
+            edit_section(path, "Q-UI-04", replace_shot_sha)
+            errors = self.errors_for(tmp, "Q-UI-04")
+            self.assertEqual(len(errors), 1, errors)              # error 4, and nothing else
+            self.assertIn(f"cites the hash {'f' * 16}\u2026, which is neither a record sha", errors[0])
+
+    def test_a_cited_record_path_that_does_not_exist_fails_with_error_1(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            fake = record_path.with_name("E019-r9999.json").relative_to(Path(tmp)).as_posix()
+            self.assertFalse((Path(tmp) / fake).exists())
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace("**Run**:", f"**Run**: `{fake}` and", 1))
+            errors = self.errors_for(tmp, "Q-UI-04")
+            self.assertEqual(len(errors), 1, errors)              # error 1, and nothing else
+            self.assertIn(f"cites {fake}, which does not exist", errors[0])
+
+    def test_an_observed_section_citing_a_record_without_any_sha_fails_with_error_3(self):
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            record_path = records_of(tmp, "Q-UI-04")[0][0]
+            good = hashlib.sha256(record_path.read_bytes()).hexdigest()[:16]
+
+            def drop_record_sha(body):
+                text, n = re.subn(r" \(sha256 `[0-9a-f]{8,64}\u2026`\)", "", body, count=1)
+                self.assertEqual(n, 1, body)
+                return text
+            edit_section(path, "Q-UI-04", drop_record_sha)
+            self.assertNotIn(good, section(path, "Q-UI-04"))   # the record's sha is no longer cited
+            errors = self.errors_for(tmp, "Q-UI-04")
+            self.assertEqual(len(errors), 1, errors)              # error 3, and nothing else
+            self.assertIn("cites no record with its sha256 (T39's DW2 requires the record's sha)",
+                          errors[0])
+
+    def test_a_bare_name_citation_and_a_driver_id_are_not_citations(self):
+        """(e) Q-UI-19 cites its two aborted attempts by bare file name and every run's driver
+        beside its sha: neither is a record citation (a bare name is not a path under the root)
+        nor a hash citation (the driver id has no ellipsis), so neither draws an error. The rule
+        only adds errors, so the second section — those same two citations and no record path —
+        is the control that makes this fail on main's check: its one error is error 3, and no
+        error 1 or 4 is among it."""
+        with Copy() as tmp:
+            path = write_f020(tmp)
+            for bare in ("E019-r0005.json", "E019-r0009.json"):
+                self.assertFalse((Path(tmp) / bare).exists())
+            citations = ("Aborted attempts: `E019-r0005.json`, `E019-r0009.json`; "
+                         "driver `e257bb1b395a`.")
+            edit_section(path, "Q-UI-04",
+                         lambda body: body.replace("described from the records.",
+                                                   "described from the records. " + citations, 1))
+            edit_section(path, "Q-UI-10",
+                         lambda body: re.sub(r"^- \*\*Run\*\*:.*$", citations, body,
+                                             count=1, flags=re.M))
+            errors = check(tmp, f020=True)
+            self.assertEqual([e for e in errors if e.startswith("Q-UI-04:")], [], errors)
+            control = [e for e in errors if e.startswith("Q-UI-10:")]
+            self.assertEqual(len(control), 1, errors)
+            self.assertIn("Q-UI-10: F020 cites no record with its sha256", control[0])
+
+    def test_a_pending_section_with_no_citations_is_not_checked(self):
+        """(f) The rule reads observed and narrowed sections only: a pending section with no
+        citations draws no citation error of its own (the pre-existing status rule still refuses
+        it, which test_a_pending_f020_section_fails pins). The second section is the same
+        citation-less shape on an observed question — error 3, the control that makes this fail
+        on main's check."""
+        with Copy() as tmp:
+            path = write_f020(tmp, status_of={"Q-UI-08": "pending the walk",
+                                              "Q-UI-12": "observed"})
+            edit_section(path, "Q-UI-12",
+                         lambda body: re.sub(r"^- \*\*Run\*\*:.*\n", "", body, count=1, flags=re.M))
+            errors = check(tmp, f020=True)
+            self.assertEqual([e for e in errors
+                              if e.startswith("Q-UI-08:") and ": F020 cites" in e], [], errors)
+            control = [e for e in errors if e.startswith("Q-UI-12:")]
+            self.assertEqual(len(control), 1, errors)
+            self.assertIn("Q-UI-12: F020 cites no record with its sha256", control[0])
 
 
 class RecorderUnitTest(unittest.TestCase):
