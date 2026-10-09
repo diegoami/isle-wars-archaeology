@@ -17,6 +17,7 @@ value went: the prefix listing's sha256 is **not dropped — it is named in `sta
 """
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,6 +69,25 @@ def restore_text(prefix_sha):
     """
     return (f"{RESTORE}; T48: start_state.sha256 is the sha256 of the install's {BINARY}, the binary "
             f"that ran, and the prefix listing it held until T48 is here at sha256 {prefix_sha}")
+
+
+PREFIX_SEAL = re.compile(r"; T48: start_state\.sha256 is the sha256 of the install's \S+, the binary that "
+                         r"ran, and the prefix listing it held until T48 is here at sha256 ([0-9a-f]{64})\Z")
+
+
+def prefix_seal(restore):
+    """The prefix listing's sha256 that `restore_text` named in a `start_state.restore`, else None.
+
+    T48 round 2 (Sol's R3, PR #151): the seal moved out of `start_state.sha256`, so the catalogue
+    check reads it back from here, on its own, independently of the binary's hash. The text must end
+    with `restore_text`'s sentence; anything else (no sentence, a short or upper-case hash) is None.
+    The all-zero placeholder of a walk that stopped before its snapshot is returned as it is, and the
+    check refuses it, as it refused the same zeros in `start_state.sha256` before T48.
+    """
+    if not isinstance(restore, str):
+        return None
+    match = PREFIX_SEAL.search(restore)
+    return match.group(1) if match else None
 
 
 def arm_of_question(qid):

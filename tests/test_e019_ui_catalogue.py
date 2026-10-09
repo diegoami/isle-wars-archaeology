@@ -512,20 +512,48 @@ class RecorderEndToEndTest(unittest.TestCase):
                     errors = [e for e in check(tmp) if f"({qid})" in e]
                     self.assertTrue(any(name in e for e in errors), errors)
 
-    def test_a_record_whose_start_state_measures_nothing_fails_the_check(self):
-        """T48 (#149) adapted the old `..._without_the_seal_...`: `start_state.sha256` is the install
-        binary's hash since T48, not the prefix listing's, so a walk that stopped before its snapshot
-        still records a measured hash (asserted here first, and it fails on main) and the recorder no
-        longer writes zeros of its own. What the check still refuses — what this test still pins — is
-        a record whose start_state measures nothing: all zeros, named as before."""
+    def test_a_record_without_the_seal_fails_the_check(self):
         with tempfile.TemporaryDirectory() as tmp:
             drive_one(tmp, "Q-UI-01", None, snapshot=False)
-            (path, record), = records_of(Path(tmp), "Q-UI-01")
-            self.assertEqual(record["start_state"]["sha256"], hashlib.sha256(FAKE_BINARY).hexdigest(),
-                             "T48: the binary's hash, whatever the session did")
-            rewrite(path, lambda r: r["start_state"].update(sha256="0" * 64))
             errors = check(tmp)
             self.assertTrue(any("(Q-UI-01)" in e and "start_state" in e for e in errors), errors)
+
+    def test_a_record_without_the_prefix_seal_is_refused_by_the_seal_not_the_binary(self):
+        """T48 round 2 (Sol's R3, PR #151): the test above, as it was before T48, unchanged. Since T48
+        `start_state.sha256` holds the binary's hash, which a walk measures whatever the session did,
+        so the refusal must come from the prefix seal `start_state.restore` names now. This pins the
+        cause: the record as the walk wrote it (no field rewritten) has a measured binary hash, and
+        the error names the missing prefix seal."""
+        with tempfile.TemporaryDirectory() as tmp:
+            drive_one(tmp, "Q-UI-01", None, snapshot=False)
+            (_path, record), = records_of(Path(tmp), "Q-UI-01")
+            self.assertEqual(record["start_state"]["sha256"], hashlib.sha256(FAKE_BINARY).hexdigest(),
+                             "T48: the binary's hash, whatever the session did")
+            self.assertEqual(e019_records.prefix_seal(record["start_state"]["restore"]), "0" * 64)
+            errors = [e for e in check(tmp) if "(Q-UI-01)" in e]
+            self.assertTrue(any("no prefix seal" in e for e in errors), errors)
+
+    def test_a_sealed_record_carries_its_prefix_seal_and_passes_the_seal_check(self):
+        """The other side of the seal check: a walk that took its snapshot names a measured prefix
+        listing in `start_state.restore`, and the check raises no seal error for it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            drive_one(tmp, "Q-UI-01", None)
+            (_path, record), = records_of(Path(tmp), "Q-UI-01")
+            prefix = e019_records.prefix_seal(record["start_state"]["restore"])
+            self.assertRegex(prefix or "", r"\A[0-9a-f]{64}\Z")
+            self.assertNotEqual(prefix, "0" * 64)
+            errors = [e for e in check(tmp) if "(Q-UI-01)" in e and "seal" in e]
+            self.assertEqual(errors, [])
+
+    def test_a_record_whose_binary_hash_measures_nothing_fails_the_check(self):
+        """T48 (#149): the binary's hash in `start_state.sha256` is checked on its own too. A sealed
+        walk whose binary hash is the all-zero placeholder is refused, by the start_state check."""
+        with tempfile.TemporaryDirectory() as tmp:
+            drive_one(tmp, "Q-UI-01", None)
+            (path, _record), = records_of(Path(tmp), "Q-UI-01")
+            rewrite(path, lambda r: r["start_state"].update(sha256="0" * 64))
+            errors = check(tmp)
+            self.assertTrue(any("(Q-UI-01)" in e and "no start_state sha256" in e for e in errors), errors)
 
     def test_the_real_tree_fails_while_the_walks_have_not_run(self):
         """While T39's batches are still being walked, the repository's own check fails, naming

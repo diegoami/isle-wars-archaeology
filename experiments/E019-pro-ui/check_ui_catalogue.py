@@ -12,7 +12,8 @@ Exits 0 when every piece holds:
   names every output by hash, and cites no script or handler outside the E008 inventory;
 - every `Q-UI-*` row of questions/pro-static.md and Q-PLY-04 has at least one completed record,
   whose arm names the question;
-- every completed record carries the seal (a start_state sha256), every field of
+- every completed record carries the seal (a start_state sha256; for a record of the carve-out
+  platform, since T48, also the prefix listing's sha256 named in start_state.restore), every field of
   required_fields() (the walk question, the speed setting, the measured display size, the
   per-question observation, the declared count and, for a proxy, its count note, timings when the
   walk is frame-timed, hit areas for Q-UI-18, the reads its spec names) and the outputs of
@@ -393,6 +394,18 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             seal = str(start_state.get("sha256", ""))
             if not HEX64.fullmatch(seal) or seal == "0" * 64:
                 errors.append(f"{where}: no start_state sha256 (the seal)")
+            # T48 round 2 (Sol's R3, PR #151): a record of the carve-out platform holds the binary's
+            # hash in start_state.sha256, and the prefix seal moved into start_state.restore
+            # (records.restore_text). It is checked there on its own, so a walk that stopped before
+            # its snapshot is refused as it was before T48, whatever the binary's hash. A record of
+            # any other platform (the T24 records, before T48) keeps the seal in start_state.sha256,
+            # checked just above.
+            runtime = record.get("runtime") if isinstance(record.get("runtime"), dict) else {}
+            if runtime.get("platform") == e019_records.PLATFORM:
+                prefix = e019_records.prefix_seal(start_state.get("restore"))
+                if prefix is None or prefix == "0" * 64:
+                    errors.append(f"{where}: no prefix seal in start_state restore (the seal), got "
+                                  f"{prefix!r}")
             fields = [str(o.get("field", "")) for o in observations]
             by_field = {}
             for o in observations:
