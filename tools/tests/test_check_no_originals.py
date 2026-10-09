@@ -452,15 +452,17 @@ class LegacyWineRoundTwoTest(unittest.TestCase):
 
     def test_a_non_wine_run_document_outside_runs_still_passes(self):
         """R2 gates run/1 documents outside runs/, it does not refuse them: the format examples under
-        formats/examples/ are run/1 documents with a platform naming no wine, and they pass."""
+        formats/examples/ are run/1 documents with a platform naming no wine, and they pass.
+        T49 (#154, the main session, rule 5): only formats/examples/ keeps that; the document moved
+        there from formats/example.json, which the allowlist now refuses."""
         with tempfile.TemporaryDirectory() as tmp:
             repo = make_repo(tmp)
             write_f019(repo)
             list_records(repo)
-            (repo / "formats").mkdir()
+            (repo / "formats" / "examples" / "valid").mkdir(parents=True)
             record = dict(wine_record(sha256="a" * 64, platform="python-3.12/ubuntu-24.04"), schema="run/1")
-            (repo / "formats" / "example.json").write_text(json.dumps(record), encoding="utf-8")
-            subprocess.run(["git", "add", "formats/example.json"], cwd=repo, check=True)
+            (repo / "formats" / "examples" / "valid" / "example.json").write_text(json.dumps(record), encoding="utf-8")
+            subprocess.run(["git", "add", "formats/examples/valid/example.json"], cwd=repo, check=True)
             result = run_tool(repo)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
@@ -626,9 +628,10 @@ class LegacyWineStructuralRoundTest(unittest.TestCase):
                            "[" * depth + '{"schema": "run/1", ' + self.BODY + "}" + "]" * depth)
 
     def test_a_nested_non_wine_run_record_still_passes(self):
+        """T49 (#154, the main session, rule 5): a nested run/1 object is outside the allowlist, Wine
+        or not, so this one is now refused (the name is kept so the diff removes no line of T48's)."""
         body = self.BODY.replace("linux-wsl2/wine-xvfb-xfwm4", "windows-native-bandicam")
-        result = self.run_on("nested-ok.json", '{"data": [{"schema": "run/1", ' + body + '}]}')
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.check_refused("nested-ok.json", '{"data": [{"schema": "run/1", ' + body + '}]}')
 
 class LegacyWineParserLimitTest(unittest.TestCase):
     """T48 structural round, Sol's R1 and R2 (PR #151), pushed before the micro-round the owner chose
@@ -679,6 +682,74 @@ class LegacyWineParserLimitTest(unittest.TestCase):
                 self.assertNotIn("Traceback", result.stdout + result.stderr)
                 self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
                 self.assertIn("nested.json", result.stdout)
+
+class RunObjectAllowlistTest(unittest.TestCase):
+    """T49 (#154, the owner's decision of 2026-10-09): a run/1 object is allowed only at the top
+    level of a lowercase-.json file under runs/ (what tests/test_runs.py validates) or of a file under
+    formats/examples/. Pushed before dispatch (L64). Sol's micro-round R1-R3 on PR #151 are here too."""
+
+    PLAIN = ('"runtime": {"platform": "windows-native-bandicam"}, '
+             '"artifact": {"set": "iwp-2.0-996e86c5", "variant": "unregistered"}, '
+             '"start_state": {"sha256": "' + "a" * 64 + '"}')
+
+    def run_on(self, files):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            for rel, text in files.items():
+                path = repo / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+                subprocess.run(["git", "add", rel], cwd=repo, check=True)
+            return run_tool(repo)
+
+    def refused(self, rel, text):
+        result = self.run_on({rel: text})
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn(rel, result.stdout)
+
+    def test_a_non_wine_run_object_outside_the_two_places_is_refused(self):
+        doc = '{"schema": "run/1", ' + self.PLAIN + '}'
+        for rel in ("docs/example.json", "formats/example.json", "formats/examples-x/a.json",
+                    "runs.json", "runsx/E002/a.json", "docs/runs/E002/a.json",
+                    "runs/E002/E002-r0002.JSON", "runs/E002/E002-r0002.txt", "runs/E002/E002-r0002"):
+            with self.subTest(rel=rel):
+                self.refused(rel, doc)
+
+    def test_a_run_object_nested_inside_an_allowed_file_is_refused(self):
+        inner = '{"schema": "run/1", ' + self.PLAIN + '}'
+        for rel, text in (("runs/E002/E002-r0002.json", '{"schema": "run/1", ' + self.PLAIN + ', "extra": ' + inner + '}'),
+                          ("runs/E002/E002-r0003.json", '[' + inner + ']'),
+                          ("formats/examples/valid/a.json", '{"wrap": ' + inner + '}')):
+            with self.subTest(rel=rel):
+                self.refused(rel, text)
+
+    def test_a_run_document_under_formats_examples_passes(self):
+        result = self.run_on({"formats/examples/invalid/bad.json": '{"schema": "run/1", "runtime": null}',
+                              "formats/examples/valid/ok.json": '{"schema": "run/1", ' + self.PLAIN + '}'})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_sols_micro_round_cases_are_refused_without_a_traceback(self):
+        """PR #151, Sol's micro-round R1-R3, nested and at a path no record may live."""
+        cases = {
+            "r1-null-runtime.json": '{"data": {"schema": "run/1", "runtime": null, "note": "wine"}}',
+            "r1-null-platform.json": '{"data": {"schema": "run/1", "runtime": {"platform": null}, "note": "wine"}}',
+            "r2-escaped-nul.json": '{"data": {"schema": "run/1", "runtime": ["wi\\u0000ne"]}}',
+            "r3-surrogate.json": '{"data": {"schema": "run/1", "runtime": ["\\ud800wine"]}}',
+            "docs/r3-top.json": '{"schema": "run/1", "runtime": {"platform": "\\ud800wine"}}',
+        }
+        for rel, text in cases.items():
+            with self.subTest(rel=rel):
+                self.refused(rel, text)
+
+    def test_a_lone_surrogate_in_an_allowed_record_never_crashes_the_check(self):
+        result = self.run_on({"runs/E002/E002-r0002.json":
+                              '{"schema": "run/1", "runtime": {"platform": "linux-wsl2/\\ud800wine"}}'})
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
