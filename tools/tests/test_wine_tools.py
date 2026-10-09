@@ -16,7 +16,7 @@ from pathlib import Path
 from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from e020_fixtures import BOMB, F019_SHA, ROOT, SID, TABLE, bomb_reading, exchange_reading, make_sitting  # noqa: E402
+from e020_fixtures import BOMB, F019_SHA, ROOT, SID, TABLE, bomb_reading, exchange_reading, make_sitting, sha  # noqa: E402
 
 import check_counts  # noqa: E402
 import check_no_originals  # noqa: E402
@@ -423,6 +423,126 @@ class ExportTest(TmpWorld):
                 self.export(sitting)
 
 
+# --- #152: the shipped xtras/Islepro.skr restored before each New Game (the owner, 2026-10-09) -----
+
+class SkrRestoreTest(unittest.TestCase):
+    """The driver's half of #152 (Done-when 2), on synthetic files only (rule 18): after a credited
+    game the shipped scoreboard file is put back into the run copy before New Game, the sha256
+    measured on the run copy *after* the copy is logged before the next `game-start`, and the
+    install is only ever read. A restore that cannot be made, or that does not measure the shipped
+    file, ends the sitting there: no New Game for that game, a final frame, its reason, no click."""
+
+    batch = {"games_max": "2", "sitting_seconds": "1000"}
+    SHIPPED = b"synthetic shipped scoreboard file"        # our own bytes, never an original's (rule 18)
+    CREDITED = b"synthetic scoreboard file after a credited loss"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.tmp = Path(os.path.realpath(self._tmp.name))
+        self.install = self.tmp / "install"
+        (self.install / "xtras").mkdir(parents=True)
+        self.source = self.install / "xtras" / "Islepro.skr"
+        self.source.write_bytes(self.SHIPPED)
+        self.prefix = self.tmp / "prefix"
+        (self.prefix / "drive_c" / "iwp" / "xtras").mkdir(parents=True)
+        self.target = self.prefix / "drive_c" / "iwp" / "xtras" / "Islepro.skr"
+        self.target.write_bytes(self.CREDITED)
+        self.shipped = sha(self.SHIPPED)
+        self.copies = 0
+
+    def restore(self):
+        """The launcher's own restore: the real copy, on the synthetic install and run copy."""
+        self.copies += 1
+        return e020_sitting.restore_skr(self.install, self.prefix, self.shipped)
+
+    def loop(self, driver, restore=None, **batch):
+        restore = self.restore if restore is None else restore
+        return e020_loop.BatchLoop(driver, dict(self.batch, **batch), clock=lambda: 0,
+                                   restore=restore, shipped_skr=self.shipped)
+
+    def credited(self):
+        """A driver that plays game 1 to the winner notice, leaves the Scoreboard (the game credited
+        a loss) and reaches the title; game 2 then starts, its first turn reads an unknown screen and
+        the sitting ends there, so nothing runs after the restore but `new-game`."""
+        return FakeDriver([1], screens=["title", "board-menu", "board-menu", "game-over", "scoreboard",
+                                        "title", "unknown"])
+
+    def ended_notes(self, driver):
+        return [n for n in driver.notes if n.get("event") == "ended"]
+
+    def assert_sitting_ended_before_new_game(self, driver, summary):
+        """The restore failed: game 1's New Game only, no restore line, the final frame and why."""
+        self.assertEqual([n for n, _ in driver.blocks].count("new-game"), 1)
+        self.assertEqual([n.get("event") for n in driver.notes if n.get("game") == 2], ["ended"])
+        self.assertNotIn("skr-restored", [n.get("event") for n in driver.notes])
+        self.assertEqual([n["game"] for n in driver.notes if n.get("event") == "game-start"], [1])
+        self.assertTrue(summary["ended"].startswith("skr-restore-failed"), summary)
+        self.assertEqual(driver.frames, [e020_loop.FINAL_FRAME])
+        ended = self.ended_notes(driver)
+        self.assertEqual([(n["ended"], n["sha256"], n["screen"]) for n in ended],
+                         [(summary["ended"], "f" * 64, "title")])
+
+    def test_after_a_credited_game_the_shipped_file_is_restored_and_logged_before_the_next_game(self):
+        driver = self.credited()
+        summary = self.loop(driver).run()
+        trail = driver.trail
+        credit = trail.index("note:loss-credited")
+        self.assertEqual(trail[credit:], ["note:loss-credited", "scoreboard-continue", "read:title",
+                                          "note:skr-restored", "new-game", "quiet", "read:unknown"])
+        events = [n.get("event") for n in driver.notes]
+        starts = [i for i, n in enumerate(driver.notes) if n.get("event") == "game-start"]
+        self.assertEqual([driver.notes[i]["game"] for i in starts], [1, 2])
+        self.assertEqual(events[events.index("loss-credited"):][:3], ["loss-credited", "skr-restored", "game-start"])
+        restored = driver.notes[events.index("skr-restored")]
+        self.assertEqual((restored["game"], restored["turn"], restored["sha256"]), (2, 0, self.shipped))
+        self.assertLess(events.index("skr-restored"), starts[1])
+        # the run copy measures the shipped file after the copy, and the install was only read
+        self.assertEqual(self.target.read_bytes(), self.SHIPPED)
+        self.assertEqual(e020_sitting.sha256_of(self.target), self.shipped)
+        self.assertEqual(self.source.read_bytes(), self.SHIPPED)
+        self.assertEqual(self.copies, 1)                 # not before game 1, which starts shipped
+        self.assertEqual((summary["ended"], summary["games"]), ("unknown-screen", 2))
+
+    def test_the_export_takes_the_restore_the_loop_logged_and_refuses_it_without_one(self):
+        driver = self.credited()
+        self.loop(driver).run()
+        actions = self.tmp / "actions.jsonl"
+        actions.write_text("".join(json.dumps(n) + "\n" for n in driver.notes))
+        paths = {"actions": actions}
+        self.assertEqual(e020_export.games_after_loss(paths, self.shipped), [])
+        self.assertEqual(e020_export.games_after_loss(paths, "e" * 64), [2])       # not the shipped file
+        actions.write_text("".join(json.dumps(n) + "\n" for n in driver.notes
+                                   if n.get("event") != "skr-restored"))
+        self.assertEqual(e020_export.games_after_loss(paths, self.shipped), [2])   # no restore line
+
+    def test_a_restore_that_cannot_be_copied_ends_the_sitting_with_its_reason(self):
+        self.source.unlink()                             # the install has no such file: the copy fails
+        driver = self.credited()
+        summary = self.loop(driver).run()
+        self.assert_sitting_ended_before_new_game(driver, summary)
+        self.assertIn("Islepro.skr", summary["ended"])
+        self.assertEqual(self.target.read_bytes(), self.CREDITED)      # nothing was written
+
+    def test_a_restore_that_would_write_other_than_the_shipped_file_ends_the_sitting(self):
+        self.source.write_bytes(self.CREDITED)           # the install's file is not the shipped one
+        before = (os.stat(self.source).st_mtime_ns, os.stat(self.target).st_mtime_ns)
+        driver = self.credited()
+        summary = self.loop(driver).run()
+        self.assert_sitting_ended_before_new_game(driver, summary)
+        self.assertIn("Islepro.skr", summary["ended"])
+        self.assertEqual(self.target.read_bytes(), self.CREDITED)      # the refused copy left it as it was
+        self.assertEqual((os.stat(self.source).st_mtime_ns, os.stat(self.target).st_mtime_ns), before)
+        self.assertEqual((self.source.read_bytes(), self.target.read_bytes()), (self.CREDITED, self.CREDITED))
+
+    def test_a_restore_that_measures_other_than_the_shipped_file_ends_the_sitting(self):
+        driver = self.credited()
+        summary = self.loop(driver, restore=lambda: "e" * 64).run()
+        self.assert_sitting_ended_before_new_game(driver, summary)
+        self.assertIn("not the shipped", summary["ended"])
+        self.assertEqual(self.target.read_bytes(), self.CREDITED)      # the loop measured nothing into the log
+
+
 # --- R11, R13, R14: the blocks and the loop ----------------------------------------------------
 
 class BlocksTest(unittest.TestCase):
@@ -518,8 +638,8 @@ class FakeDriver:
 
     def note(self, **fields):
         self.notes.append(dict(self.context, **fields))
-        if fields.get("event") == "loss-credited":
-            self.trail.append("note:loss-credited")
+        if fields.get("event") in ("loss-credited", "skr-restored"):
+            self.trail.append("note:" + fields["event"])
 
     def read_screen(self):
         self.step()

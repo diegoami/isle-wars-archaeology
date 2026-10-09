@@ -155,12 +155,14 @@ class E020SessionTest(base.DriverWorld):
         self.eliminated_after_passes = passes
         self.playout_end = "game-over"
 
-    def sitting(self, batch=BATCH, loop_factory=None):
+    def sitting(self, batch=BATCH, loop_factory=None, **body):
+        """Run the body on the session; `body` is what the launcher's wiring passes to it (#152's
+        restore and the sha256 it must log, for the tests that need them)."""
         made = self.session()
         summary = {}
         with mock.patch.dict(os.environ, {"DISPLAY": ":wrong"}):
             made.execute(launcher.make_body(self.paths, batch, BLOCKS, summary, watcher_factory=FakeWatcher,
-                                            loop_factory=loop_factory))
+                                            loop_factory=loop_factory, **body))
         self.addCleanup(lambda: made._engine.procs.get("game") and made._engine.procs["game"].poll() is None
                         and made._engine.procs["game"].kill())
         return made, summary
@@ -308,7 +310,8 @@ class E020SessionTest(base.DriverWorld):
         def clock():
             return 10 ** 6 if [a for o, a, _ in self.sent if o == "click!" and tuple(a) == (417, 530)][1:] else 0
         made, summary = self.sitting(dict(BATCH, games_max="4"),
-                                     loop_factory=lambda clicks, batch: e020_loop.BatchLoop(clicks, batch, clock=clock))
+                                     loop_factory=lambda clicks, batch, **kw: e020_loop.BatchLoop(
+                                         clicks, batch, clock=clock, **kw))
         self.assertEqual(made.status, "completed", made.status)
         self.assertEqual((summary["ended"], summary["turns"], summary["games"]), ("sitting-seconds", 2, 1))
         self.assertEqual([a for o, a, _ in self.sent if o == "click!" and tuple(a) == (100, 585)], [(100, 585)])
@@ -324,8 +327,9 @@ class E020SessionTest(base.DriverWorld):
         now = [0]
         def sleep(seconds):
             now[0] = 10 ** 6
-        made, summary = self.sitting(dict(BATCH, games_max="2"), loop_factory=lambda clicks, batch: e020_loop.BatchLoop(
-            clicks, batch, clock=lambda: now[0], sleep=sleep))
+        made, summary = self.sitting(dict(BATCH, games_max="2"),
+                                     loop_factory=lambda clicks, batch, **kw: e020_loop.BatchLoop(
+                                         clicks, batch, clock=lambda: now[0], sleep=sleep, **kw))
         self.assertEqual(made.status, "completed", made.status)
         self.assertNotIn((401, 534), [tuple(a) for o, a, _ in self.sent if o == "click!"])
         self.assertEqual([tuple(a) for o, a, _ in self.sent if o == "click!"][-1], (665, 531))   # KEEP PLAYING, then nothing
@@ -374,6 +378,64 @@ class E020SessionTest(base.DriverWorld):
         self.assertEqual((summary["ended"], summary["screen"], summary["turns"]), ("unknown-screen", "title", 0))
         self.assertEqual([tuple(a) for o, a, _ in self.sent if o.startswith("click")][-1], (565, 532))
         self.assertNotIn("click-until?", [o for o, _, _ in self.sent])
+        self.assertIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
+
+    # --- #152: the shipped scoreboard restored before each New Game (the owner, 2026-10-09) ---------
+
+    def test_the_shipped_scoreboard_is_restored_and_logged_before_the_second_game(self):
+        """The body hands the restore to the loop (the launcher's wiring), and the click-driver writes
+        its line with its seq, the game about to start and turn 0, between the credit and that game's
+        `game-start`, with the `new-game` block after it. The copy itself is tested on synthetic
+        files in tools/tests/test_wine_tools.py (rule 18: nothing original is read here either)."""
+        self.short_game(passes=1)
+        self.after_continue = "scoreboard"
+        shipped = "5" * 64
+        calls = []
+
+        def restore():
+            calls.append(1)
+            return shipped
+
+        made, summary = self.sitting(dict(BATCH, games_max="2"), restore=restore, shipped_skr=shipped)
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertEqual(calls, [1])                       # once: before game 2, not before game 1
+        lines = self.actions()
+        events = [l.get("event") for l in lines]
+        credit, restored = events.index("loss-credited"), events.index("skr-restored")
+        starts = [i for i, e in enumerate(events) if e == "game-start"]
+        self.assertEqual([lines[i]["game"] for i in starts], [1, 2])
+        self.assertTrue(credit < restored < starts[1], events)
+        line = lines[restored]
+        self.assertEqual((line["game"], line["turn"], line["sha256"]), (2, 0, shipped))
+        self.assertIsInstance(line["seq"], int)
+        self.assertLess(lines[credit]["seq"], line["seq"])
+        self.assertLess(line["seq"], lines[starts[1]]["seq"])
+        sent = [(i, l["block"]) for i, l in enumerate(lines) if l.get("block")]
+        game2 = [i for i, b in sent if b == "new-game" and lines[i]["game"] == 2]
+        self.assertTrue(game2 and game2[0] > restored, "New Game follows the restore")
+        self.assertEqual([i for i, b in sent if credit < i < restored], [])   # nothing between them
+        self.assertEqual((summary["games"], summary["loss_credited"]), (2, 2))
+
+    def test_a_restore_that_fails_ends_the_sitting_cleanly_with_no_second_new_game(self):
+        """The restore raises before New Game: the session still completes (nothing was sent, the
+        final frame was taken), the `ended` line says why, and game 2 never starts."""
+        self.short_game(passes=1)
+        self.after_continue = "scoreboard"
+
+        def restore():
+            raise RuntimeError("the synthetic restore failed")
+
+        made, summary = self.sitting(dict(BATCH, games_max="2"), restore=restore, shipped_skr="5" * 64)
+        self.assertEqual(made.status, "completed", made.status)
+        self.assertTrue(summary["ended"].startswith("skr-restore-failed"), summary)
+        self.assertIn("the synthetic restore failed", summary["ended"])
+        lines = self.actions()
+        self.assertEqual([l.get("event") for l in lines if l.get("event") in ("game-start", "skr-restored")],
+                         ["game-start"])
+        self.assertEqual([l.get("block") for l in lines if l.get("game") == 2 and l.get("block")], [])
+        ended = [l for l in lines if l.get("event") == "ended"]
+        self.assertEqual([(l["ended"].split(":")[0], l["game"]) for l in ended], [("skr-restore-failed", 2)])
+        self.assertTrue(ended[0]["sha256"])               # its final frame, as for an unknown screen
         self.assertIn(e020_loop.FINAL_FRAME, [name for name, _, _ in made.outputs])
 
 
