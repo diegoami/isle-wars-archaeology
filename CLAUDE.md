@@ -319,3 +319,30 @@ indexed in `docs/tasks/README.md`.
       escalate. Post the report on the task's issue so it is kept.
     - Any earlier "model X ends runs early" verdict is unconfirmed until its runs' final messages
       have been read.
+
+26. **Split a task when its parts can merge on their own** (the owner, 2026-10-09; widens L58).
+    When a task is planned, and again whenever its scope grows, the main session splits it into
+    separate tasks or fixes if the parts can each merge on their own and each part's Done-when
+    passes without the others. Split when any of these holds:
+    - **Different difficulty or pair:** one part is a guard, gate or new mechanism (hard) and the
+      rest is not (easy). Each part gets its own pair, so an easy part is not held to a hard review,
+      and a hard part is not reviewed as easy. (T39's catalogue and the check's hash verification,
+      #140, 2026-10-09.)
+    - **Different hands:** one part reads the user's install (Sonnet or the main session, L26), and
+      another is repository-only work OpenCode can do.
+    - **One part can be blocked** (on the owner, on quota, on another task) while the others are
+      ready.
+    - **L58's case:** the task is likely to outlast one implementer run (about an hour), or its
+      Done-when is all or nothing. Then split it into milestones, as L58 says.
+
+    Limits:
+    - Every part is a task issue or a `fix` with its own Done-when (rule 23). The order between
+      parts goes in Merge-after, and every merge leaves `main` green and consistent.
+    - Never split below a part a reviewer can judge alone, nor by function within one file (L5: 27
+      PRs that only widened a list). Each extra part costs a review round, so a part that has none
+      of the reasons above stays in its task.
+    - A defect found mid-task is a separate fix, unless rule 12 lets it ride along.
+    - The implementer never splits its own task. It stops and reports (rule 5), and the main
+      session decides.
+    - Not yet carried to `docs/process.md`, `TEMPLATE.md` or harness_imperial and malpaco: that
+      happens in one pass with the MiMo switch (the owner, 2026-10-09).
