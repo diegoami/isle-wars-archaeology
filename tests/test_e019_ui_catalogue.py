@@ -1053,8 +1053,8 @@ class F020CitationRuleRoundTwoTest(unittest.TestCase):
         Q-UI-19 cites records). Nothing in the section vouches for that digest — the record's sha
         was never cited — so it must not pass as a screenshot hash: error 4 draws the line. Round 2
         exempts it (every cited file's digest was in the pool), so this test fails on c519370 with
-        no error at all; main's check has no citation rule, so it fails there for the same reason.
-        The same hash on the same record passes when the record cites its sha — r1d, right below."""
+        no error at all; main's check has no citation rule at all, so it fails there with no error
+        either. The same hash on the same record passes when the record cites its sha — r1d below."""
         with Copy() as tmp:
             path = write_f020(tmp)
             cited_path = records_of(tmp, "Q-UI-04")[0][0]
