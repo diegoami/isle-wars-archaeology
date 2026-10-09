@@ -623,11 +623,15 @@ class ScreenLoopTest(unittest.TestCase):
 
     def test_the_play_out_sends_nothing_and_ends_at_the_sitting_seconds(self):
         times = iter([0] + [0] * 6 + list(range(1, 10000)))
-        driver = FakeDriver([1], screens=["title", "board-menu", "eliminated"] + ["board"] * 10000)
+        # two reads for the one turn (the turn's start and the read after `picked`): round 3, R1, the
+        # pool was one read per turn short, so the placement never committed and the notice was read
+        # at the re-read instead of the next turn's start
+        driver = FakeDriver([1], screens=["title", "board-menu", "board-menu", "eliminated"] + ["board"] * 10000)
         _, summary = self.loop(driver, clock=lambda: next(times), sitting_seconds="50")
         after = driver.trail[driver.trail.index("eliminated-keep-playing") + 1:]
         self.assertTrue(after and set(after) == {"read:board"}, after)
         self.assertEqual(summary["ended"], "sitting-seconds")
+        self.assertEqual((summary["turns"], summary["placements"]), (1, 1))
         self.assertEqual(driver.frames, [])
         self.assertEqual([n["reason"] for n in driver.notes if n.get("event") == "game-end"],
                          ["played-out: sitting-seconds"])
@@ -687,7 +691,9 @@ class ScreenLoopTest(unittest.TestCase):
         """Sitting 20261008T195537Z: after KEEP PLAYING the winner notice came up and was read as the
         board, so the play-out would have polled to `sitting_seconds`. Now (round 6): the game ends,
         its game-end line names the winner by colour word, CONTINUE once, then the screen decides."""
-        screens = ["title"] + ["board-menu"] * 14 + ["eliminated", "board", "game-over", "title", "unknown"]
+        # 14 turns of two reads each (the turn's start and the read after `picked`, fix #141 round 2);
+        # round 3, R1: 14 readings played only 7 placements
+        screens = ["title"] + ["board-menu"] * 28 + ["eliminated", "board", "game-over", "title", "unknown"]
         driver = FakeDriver([1] * 14, screens=screens)
         _, summary = self.loop(driver)
         after = driver.trail[driver.trail.index("eliminated-keep-playing") + 1:]
@@ -699,6 +705,7 @@ class ScreenLoopTest(unittest.TestCase):
                          [(1, "played-out: game-over", "game-over", "red")])
         self.assertEqual([n["game"] for n in driver.notes if n.get("event") == "game-start"], [1, 2])
         self.assertEqual(summary["games"], 2)
+        self.assertEqual((summary["turns"], summary["placements"]), (14, 14))   # game 1's 14 turns
         self.assertEqual(driver.readings.count("title"), 2)      # the screen after CONTINUE is the next game's
 
     def test_the_winner_notice_at_a_turns_start_ends_the_game(self):
@@ -785,7 +792,9 @@ class ScreenLoopTest(unittest.TestCase):
     def test_the_deadline_passing_during_the_play_out_poll_sends_no_continue_after_the_winner_notice(self):
         """Luna R1: PLAYOUT_POLL sleeps, the time runs out in it, the next reading is the winner notice.
         The notice ends the game (logged), but CONTINUE is not clicked: no click on timeout."""
-        driver = FakeDriver([1], screens=["title", "board-menu", "eliminated", "board", "game-over", "title"])
+        # two reads for the one turn (round 3, R1, as in the play-out test above)
+        screens = ["title", "board-menu", "board-menu", "eliminated", "board", "game-over", "title"]
+        driver = FakeDriver([1], screens=screens)
         loop, expire = self.timed(driver)
         loop.sleep = lambda s: (driver.sleeps.append(s), expire() if len(driver.sleeps) == 2 else None)
         summary = loop.run()
@@ -796,15 +805,19 @@ class ScreenLoopTest(unittest.TestCase):
         self.assertEqual([(n["reason"], n.get("ended")) for n in driver.notes if n.get("event") == "game-end"],
                          [("played-out: game-over", "game-over")])
         self.assertEqual(summary["games"], 1)
+        self.assertEqual((summary["turns"], summary["placements"]), (1, 1))
 
     def test_the_deadline_passing_during_the_play_out_poll_sends_no_continue_after_the_scoreboard(self):
-        driver = FakeDriver([1], screens=["title", "board-menu", "eliminated", "scoreboard", "title"])
+        # two reads for the one turn (round 3, R1, as in the play-out test above)
+        screens = ["title", "board-menu", "board-menu", "eliminated", "scoreboard", "title"]
+        driver = FakeDriver([1], screens=screens)
         loop, expire = self.timed(driver)
         loop.sleep = lambda s: (driver.sleeps.append(s), expire())
-        loop.run()
+        summary = loop.run()
         self.assert_sent_nothing_after(driver, loop, "eliminated-keep-playing")
         self.assertNotIn("scoreboard-continue", [n for n, _ in driver.blocks])
         self.assertEqual([n["reason"] for n in driver.notes if n.get("event") == "game-end"], ["played-out: scoreboard"])
+        self.assertEqual((summary["turns"], summary["placements"]), (1, 1))
 
     def test_the_deadline_passing_during_the_wait_after_a_dismiss_sends_no_second_placement(self):
         driver = FakeDriver([None, 1], screens=["title", "board-menu", "board-menu"])
