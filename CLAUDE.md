@@ -34,7 +34,7 @@ indexed in `docs/tasks/README.md`.
    | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
    | --- | --- | --- | --- | --- |
    | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-5.6 Luna (direct OpenAI) | Sonnet |
-   | Hard | DeepSeek V4.1 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
+   | Hard | MiMo v2.6 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
 
    - **Hard** is any of:
      - a guard, a gate, or a tool whose failure would let an original or a copy through (in T06
@@ -51,16 +51,21 @@ indexed in `docs/tasks/README.md`.
      The main session runs the lines that read the install, and posts their output on the PR. If
      no OpenCode reviewer is available, the Claude fallback would be the implementer's family:
      escalate.
-   - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): DeepSeek V4
-     Pro, GLM-5.3 and GPT-6 Sol, and on the Alibaba Token Plan (2026-10-05; its key is an environment
-     variable, `docs/models.md`) DeepSeek V4 Pro and V4.1 Flash, Qwen 3.8 Max and Flash, and GLM-5.3; Opus and Fable implement only when a task file says why.
+   - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): MiMo v2.6
+     Pro (Go), GLM-5.3 and GPT-6 Sol, and on the Alibaba Token Plan (2026-10-05; its key is an
+     environment variable, `docs/models.md`) Qwen 3.8 Max and Flash, and GLM-5.3; Opus and Fable
+     implement only when a task file says why.
+   - **MiMo replaces DeepSeek** (the owner, 2026-10-09). OpenCode Go's heavy model is
+     `opencode-go/mimo-v2.6-pro`, its light one `opencode-go/mimo-v2.6-flash`; MiMo is a family of
+     its own for the family rule. DeepSeek (V4 Pro, V4.1 Flash, on any route, Alibaba included) is
+     blacklisted: never used, and removed from `harness.json`.
    - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
      `medium` only when the task file says why; never `high`.
-   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro)
+   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro)
      runs at `medium` at most, and at `low` when medium is not needed. A model that offers no
-     medium takes its lowest variant at or below `high`: GLM-5.3 `low`, DeepSeek V4 Pro `high`
-     (its lowest). Opus runs as `task-agent-heavy` (effort `medium`). A light model (Sonnet, GPT-5.6
-     Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) stays at `high`.
+     medium takes its lowest variant at or below `high`: GLM-5.3 `low`. MiMo offers no variant on
+     Go, so it runs without one. Opus runs as `task-agent-heavy` (effort `medium`). A light model
+     (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) stays at `high`.
    - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
      Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`). As of 2026-10-09, Luna
      shares OpenAI's main quota with Sol — the `gpt-5.6-luna:7d` window of its own is gone; its own
@@ -89,7 +94,7 @@ indexed in `docs/tasks/README.md`.
      - a review asks for rework with three or more blocking findings;
      - a rework round brings new blocking findings of the class the last round raised.
 
-     The steps are GLM-5.3 Flash → DeepSeek V4.1 Flash → Opus, and Sonnet → Opus. The round count
+     The steps are GLM-5.3 Flash → MiMo v2.6 Flash → Opus, and Sonnet → Opus. The round count
      does not reset (rule 7). The new implementer gets the task file, every review so far, and the
      previous implementer's unpushed work as a patch to weigh, never to apply blindly.
    - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same

@@ -25,22 +25,18 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | Name in `harness.json` | Model and route | Family | Used for |
 | --- | --- | --- | --- |
 | `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash` | GLM | **easy implementer**, the `harness.json` default |
-| `deepseek-flash` | DeepSeek V4.1 Flash, `opencode-go/deepseek-v4.1-flash` | DeepSeek | **hard implementer** (`--model deepseek-flash`) |
+| `mimo-flash` | MiMo v2.6 Flash, `opencode-go/mimo-v2.6-flash`, no variant (it offers none) | MiMo | **hard implementer** (`--model mimo-flash`); the owner's switch, 2026-10-09; probed 2026-10-09 (9 s) |
 | `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, the direct OpenAI route; the `gpt-5.6-luna:7d` window of its own is gone (2026-10-09) — Luna now shares OpenAI's main quota with Sol | OpenAI | **easy reviewer**, the `harness.json` default (L51, 2026-10-05) |
 | `luna-6` | GPT-6 Luna, `openai/gpt-6-luna`, which draws on OpenAI's main pool with Sol | OpenAI | registered only, outside every chain, never the reviewer (L51); the easy reviewer until 2026-10-05 |
 | `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | **hard reviewer** (`--reviewer gpt-6.1-sol`), used sparingly; probed 2026-10-03 at `high`, PONG in 5 s |
 | `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
-| `deepseek-pro` | DeepSeek V4 Pro, `opencode-go/deepseek-v4-pro` | DeepSeek | probed, not in a pair |
+| `mimo-pro` | MiMo v2.6 Pro, `opencode-go/mimo-v2.6-pro`, no variant (it offers none) | MiMo | probed 2026-10-09 (11 s); **heavy**; OpenCode Go's heavy model; reviewer.hard's fourth seat, where DeepSeek V4 Pro was |
 | `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (it offers no medium; the owner, 2026-10-05) | GLM | probed; implemented T06, and was tried as a calibration reviewer |
-| `alibaba-deepseek-pro` | DeepSeek V4 Pro, `alibaba-token-plan/deepseek-v4-pro`, Alibaba Token Plan | DeepSeek | probed 2026-10-05 (6 s), not in a pair |
-| `alibaba-deepseek-flash` | DeepSeek V4.1 Flash, `alibaba-token-plan/deepseek-v4.1-flash` | DeepSeek | probed 2026-10-05 (7 s), not in a pair |
 | `alibaba-qwen-max` | Qwen 3.8 Max, `alibaba-token-plan/qwen3.8-max`, effort `medium` | Qwen | probed 2026-10-05 (7 s), not in a pair; a new family |
 | `alibaba-qwen-flash` | Qwen 3.8 Flash, `alibaba-token-plan/qwen3.8-flash` | Qwen | probed 2026-10-05 (7 s), not in a pair |
 | `alibaba-glm-5.3` | GLM-5.3, `alibaba-token-plan/glm-5.3`, effort `low` | GLM | probed 2026-10-05 (6 s), not in a pair |
 | `mm-m3` | MiniMax-M3, `minimax/MiniMax-M3`, variant `thinking` (offers only none and thinking, live 2026-10-06) | MiniMax | probed 2026-10-06 (~19:30 CEST, 6 s); **heavy**; **placed 2026-10-06**: the L38 heavy escalation rung before Opus, and the alternate for the Sol seat when openai is exhausted (both by explicit `--model`, never a chain member) |
 | `mm-m2.7` | MiniMax-M2.7, `minimax/MiniMax-M2.7`, no variant (it offers none, live 2026-10-06; registered without the field, so no `--variant` flag is passed) | MiniMax | probed 2026-10-06 (~19:30 CEST, 6 s); **light**; **placed 2026-10-06: implementer chain, second** after the light default |
-| `ali-deepseek-pro` | DeepSeek V4 Pro, `alibaba-token-plan/deepseek-v4-pro-0813`, effort `high` (offers high and max, live 2026-10-06) | DeepSeek | probed 2026-10-06 (~19:30 CEST, 6 s); **heavy**; **placed 2026-10-06**: the Go-overflow relief for DeepSeek V4 Pro work, by explicit `--model` when opencode_go has no quota. Only the dated `-0813` id gets the night discount |
-| `ali-deepseek-flash` | DeepSeek V4.1 Flash, `alibaba-token-plan/deepseek-v4.1-flash`, effort `high` (offers low/high/max) | DeepSeek | probed 2026-10-06 (~19:30 CEST, 6 s); **light**; same id as `alibaba-deepseek-flash`. **Placed 2026-10-06**: the hard implementer's alternate when opencode_go is out, by explicit `--model` |
 | `ali-qwen-max` | Qwen 3.8 Max, `alibaba-token-plan/qwen3.8-max`, effort `low` (offers low/medium/xhigh, live 2026-10-06; low per the heavy-model effort rule) | Qwen | probed 2026-10-06 (~19:30 CEST, 8 s); **heavy**; **placed 2026-10-06: reviewer.hard, third seat** - a family with no implementer anywhere in this repo |
 | `ali-qwen-flash` | Qwen 3.8 Flash, `alibaba-token-plan/qwen3.8-flash`, effort `medium` (offers low/medium/xhigh) | Qwen | probed 2026-10-06 (~19:30 CEST, 7 s); **light**; **placed 2026-10-06: implementer chain, third** |
 | `ali-glm` | GLM-5.3, `alibaba-token-plan/glm-5.3`, effort `low` (offers low/high/max; low is its medium-equivalent) | GLM | probed 2026-10-06 (~19:30 CEST, 6 s); **heavy**; same id as `alibaba-glm-5.3`. **Placed 2026-10-06: reviewer.hard, second seat** - zai 3x-peak relief from 8 Oct 2026 |
@@ -48,27 +44,31 @@ change. The main session never routes by budget. Its job is to keep a switch che
 | (Claude) Opus | `task-agent-heavy`, `model: opus`, effort `medium` | Claude | the hard fallback reviewer; the cloud reviewer |
 | (Claude) Fable | `task-agent-heavy`, `model: fable`, effort `medium` | Claude | allowed, not used yet |
 
-The five `alibaba-*` entries share one monthly credit pool (quota-tracker `alibaba`, window `month`;
+**DeepSeek is blacklisted** (the owner, 2026-10-09): DeepSeek V4 Pro and V4.1 Flash, on any route
+(OpenCode Go, Alibaba), are never used. Their six entries (`deepseek-flash`, `deepseek-pro`,
+`alibaba-deepseek-*`, `ali-deepseek-*`) were removed from `harness.json`; MiMo replaces them on Go
+(the owner tested it on implement, fix and review tasks, all passed). MiMo is a family of its own.
+What DeepSeek showed before then stays below as history.
+
+The three `alibaba-*` entries share one monthly credit pool (quota-tracker `alibaba`, window `month`;
 the Personal edition, so Kimi and MiniMax are not available). Their key is the environment variable
 `ALIBABA_TOKEN_PLAN_API_KEY`; in WSL it comes from `~/.config/ai-keys.env`, which `~/.bashrc` and
 `~/.profile` load. On "Provider not found" the variable is missing: restart the session or shell, and
 tell the owner if it is still missing. Never store the key with `opencode auth login` (an `auth.json`
 entry overrides the variable). A night discount applies from 22:00 to 08:00 UTC+8, read from `/quota/alibaba`'s `pricing.discount_now`
-(qwen3.8 60% off, `deepseek-v4-pro-0813` and `deepseek-v4.1-flash` 50% off, `glm-5.3` none); prefer long
-alibaba runs while `discount_now` is true, and note that only the dated `-0813` DeepSeek Pro id is
-discounted - the undated `alibaba-deepseek-pro` is not.
+(qwen3.8 60% off, `glm-5.3` none); prefer long alibaba runs while `discount_now` is true.
 
 The two `mm-*` entries (registered 2026-10-06, the owner's work order) are MiniMax, a new family on its
 own quota (`/quota/minimax`, 5-hour and weekly windows; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`
 the same way). A family nothing else shares, so an `mm-*` reviewer is a genuine third family for work by
-GLM, DeepSeek, Qwen, OpenAI or Claude models. Alibaba's Kimi and the MiniMax models behind the Alibaba
+GLM, MiMo, Qwen, OpenAI or Claude models. Alibaba's Kimi and the MiniMax models behind the Alibaba
 plan stay out (Team-edition only, they fail). Also noted (the owner, 2026-10-06): zai's GLM-5.3 costs
 3x in weekday peak from 8 Oct 2026 - prefer other providers then.
 
-A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash, DeepSeek V4.1 Flash) runs at effort `high`; a
-heavy model (Opus, GPT-6.1 Sol, GLM-5.3, DeepSeek V4 Pro) at `medium` at most, and at `low` when
-medium is not needed (the owner, 2026-10-05). GLM-5.3 offers no medium and runs at `low`; DeepSeek
-V4 Pro's lowest variant is `high`; Opus runs as `task-agent-heavy` (effort `medium`). A heavy model
+A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) runs at effort `high`; a heavy model (Opus,
+GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro) at `medium` at most, and at `low` when medium is not needed
+(the owner, 2026-10-05). GLM-5.3 offers no medium and runs at `low`; the MiMo models offer no variant
+on Go and run without one; Opus runs as `task-agent-heavy` (effort `medium`). A heavy model
 switched with `switch-model.mjs` takes `--variant medium` or `--variant low`. Never `max`: it was
 slower, with no gain (L27). **GPT-6.1 Sol** (the owner, 2026-10-03) is also used sparingly:
 - only for hard reviews;
@@ -101,7 +101,7 @@ The owner decided on 2026-10-03 that the pair follows the task's difficulty:
 | Difficulty | Implementer | If it is unavailable | Reviewer | If it is unavailable |
 | --- | --- | --- | --- | --- |
 | Easy, the default | GLM-5.3 Flash | Sonnet | GPT-5.6 Luna | Sonnet |
-| Hard | DeepSeek V4.1 Flash | Sonnet | GPT-6.1 Sol | Opus |
+| Hard | MiMo v2.6 Flash | Sonnet | GPT-6.1 Sol | Opus |
 
 **When a task is hard.** A task is hard if any of these holds:
 - it is a guard, a gate, or a tool whose failure would let an original or a copy through (in
@@ -112,7 +112,7 @@ The owner decided on 2026-10-03 that the pair follows the task's difficulty:
 Everything else is easy: doc and config fixes, exact-line contracts, and single-mechanism code
 with clear tests. The main session decides, and the task file's Implementer and Reviewer lines say
 `easy` or `hard` with the reason. `harness.json` holds the easy pair as the default; a hard task
-passes `--model deepseek-flash` and `--reviewer gpt-6.1-sol`, and names Opus as its Claude
+passes `--model mimo-flash` and `--reviewer gpt-6.1-sol`, and names Opus as its Claude
 fallback.
 
 **The family rule.** The reviewer always comes from another family than the implementer.
@@ -135,7 +135,7 @@ spend its last round on the same model.
 - **When.** Either of these:
   - a review asks for rework with three or more blocking findings;
   - a rework round brings new blocking findings of the same class as the last round's.
-- **The steps.** GLM-5.3 Flash → DeepSeek V4.1 Flash → Opus, and Sonnet → Opus. An escalated
+- **The steps.** GLM-5.3 Flash → MiMo v2.6 Flash → Opus, and Sonnet → Opus. An escalated
   implementer is always Claude Opus at the top, so the reviewer stays OpenAI. If that reviewer is
   unavailable, the Claude fallback would be the implementer's family: escalate to the owner.
 - **The rounds.** The count does not reset: two rework rounds, then the owner (rule 7).
@@ -187,10 +187,10 @@ the owner says to wait.
 
   | Situation | Hard review | Easy review |
   | --- | --- | --- |
-  | Only Sol is unavailable | GLM-5.3 (`zai-glm-5.3`), then DeepSeek V4 Pro (`deepseek-pro`), then Luna, with the reason stated | Luna, as usual |
-  | The OpenAI account is out of quota | GLM-5.3, then DeepSeek V4 Pro | GLM-5.3, then DeepSeek V4 Pro |
-  | The implementer is GLM | DeepSeek V4 Pro | DeepSeek V4 Pro |
-  | The implementer is DeepSeek | GLM-5.3 | GLM-5.3 |
+  | Only Sol is unavailable | GLM-5.3 (`zai-glm-5.3`), then MiMo v2.6 Pro (`mimo-pro`), then Luna, with the reason stated | Luna, as usual |
+  | The OpenAI account is out of quota | GLM-5.3, then MiMo v2.6 Pro | GLM-5.3, then MiMo v2.6 Pro |
+  | The implementer is GLM | MiMo v2.6 Pro | MiMo v2.6 Pro |
+  | The implementer is MiMo | GLM-5.3 | GLM-5.3 |
 
   Luna stands in for Sol on a hard task only when no heavy third-family reviewer can run, and the
   review's header says so. Never fall back to a Claude reviewer when Claude implemented the task:
@@ -204,7 +204,7 @@ the owner says to wait.
      - one sentence says it reviews in Sol's place, and why;
      - Sol's earlier reviews are linked, so it re-takes their attacks.
   3. Run `review.mjs --pr <n> --reviewer zai-glm-5.3 --issue <n> --apply-label --brief <file>`.
-     On exit 3, run it again with `--reviewer deepseek-pro`.
+     On exit 3, run it again with `--reviewer mimo-pro`.
   4. Record the change on the task file's Reviewer line, with the date and reason.
   5. Log it on the trials issue.
 - **First use: T08, round 2.** On the owner's decision of 2026-10-03, after the OpenAI quota
@@ -325,10 +325,10 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 | `isolation: "remote"` may run locally without saying so: a cloud brief checks where it runs before doing anything | T05's "remote" agents ran on this machine | 2026-10-03 |
 | Node 24 on PATH for non-interactive shells | the harness needs Node 20 or later; the nvm default did not reach non-interactive shells | 2026-10-03 |
 | The `[C3]` lines (the install, the Wine prefix, the display) are run by the main session and posted on the PR | an OpenCode reviewer cannot reach outside its worktree, and a rejected tool call fails the run | L26; T03 |
-| When the implementer is Claude, keep a probed heavy reviewer from a third family ready (DeepSeek V4 Pro, GLM-5.3) | both OpenAI reviewers share one account quota: on T08's final round `The usage limit has been reached` stopped GPT-6.1 Sol mid-review and failed the probe of Luna too, and a Claude fallback was not allowed | T08, 2026-10-03 |
+| When the implementer is Claude, keep a probed heavy reviewer from a third family ready (MiMo v2.6 Pro, GLM-5.3) | both OpenAI reviewers share one account quota: on T08's final round `The usage limit has been reached` stopped GPT-6.1 Sol mid-review and failed the probe of Luna too, and a Claude fallback was not allowed | T08, 2026-10-03 |
 | Check quota-tracker before choosing, recommending or delegating to a model; an `exhausted` provider is skipped for the next model of the chain, passed explicitly, and the skip is said in the report or PR body | a provider out of quota stopped runs mid-review (T08); the owner made the quota check the only limit on which models are used | harness_imperial L50; the owner, 2026-10-05 |
 | The easy reviewer `luna` is GPT-5.6 Luna (`openai/gpt-5.6-luna`, high); since 2026-10-09 Luna shares OpenAI's main quota with Sol, no own window; GPT-6 Luna is `luna-6`, outside the chains; never a Luna on OpenCode Go | GPT-6 Luna and Sol shared one OpenAI pool, so one exhausted quota blocked both reviewers (T08) | harness_imperial L51, 2026-10-05 |
-| Heavy models at effort `medium` at most, `low` when medium is not needed (Opus as `task-agent-heavy`; GLM-5.3 `low`, offering no medium; DeepSeek V4 Pro stays `high`, its lowest); light models at `high` | the owner's decision | the owner, 2026-10-05 |
+| Heavy models at effort `medium` at most, `low` when medium is not needed (Opus as `task-agent-heavy`; GLM-5.3 `low`, offering no medium; MiMo with no variant, offering none); light models at `high` | the owner's decision | the owner, 2026-10-05 |
 | One OpenCode model per role, then Claude: no long chains of cheap models | chains multiplied wasted attempts; one failure stopped the chain before the next model ran | L27 |
 | A review brief's first line is exactly `<title> review (<model>)` — no "round 2" in the header; rounds are said in the body | `review.mjs`'s header parser refuses anything else, exit 2 before any model runs | T21 round 2, 2026-10-06 |
 | Tests that need a TMPDIR outside every checkout cannot be run by an OpenCode implementer (its sandbox refuses every outside write, L57); the main session's external-TMPDIR suite run is part of such a task's contract, never optional | T13 round 5: 49 of 602 tests were skips in the implementer's run and failed at the main session's verification; CI was red on a pushed head | T13, 2026-10-06 |

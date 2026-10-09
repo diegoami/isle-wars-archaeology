@@ -5,15 +5,15 @@
     "watch": "Off, the owner 2026-10-05: HARNESS_BWRAP's path is missing on this machine (#98 made it opt-in)."
   },
   "models": {
-    "deepseek-flash": {
-      "id": "opencode-go/deepseek-v4.1-flash",
-      "variant": "high",
-      "family": "deepseek"
+    "mimo-flash": {
+      "id": "opencode-go/mimo-v2.6-flash",
+      "family": "mimo",
+      "watch": "MiMo (Xiaomi) on OpenCode Go, its own family for the reviewer-family rule. The owner's switch, 2026-10-09: replaces DeepSeek on Go (DeepSeek is blacklisted on every route); the owner tested it on implement, fix and review tasks, all passed. Probed 2026-10-09: PONG in 9 s. OpenCode offers no effort variant. Quota: /quota/opencode_go."
     },
-    "deepseek-pro": {
-      "id": "opencode-go/deepseek-v4-pro",
-      "variant": "high",
-      "family": "deepseek"
+    "mimo-pro": {
+      "id": "opencode-go/mimo-v2.6-pro",
+      "family": "mimo",
+      "watch": "MiMo (Xiaomi) on OpenCode Go, its own family for the reviewer-family rule. The owner's switch, 2026-10-09: replaces DeepSeek on Go (DeepSeek is blacklisted on every route); the owner tested it on implement, fix and review tasks, all passed. Probed 2026-10-09: PONG in 11 s. OpenCode offers no effort variant. Quota: /quota/opencode_go."
     },
     "zai-glm-5.3": {
       "id": "zai-coding-plan/glm-5.3",
@@ -46,18 +46,6 @@
       "variant": "low",
       "family": "openai"
     },
-    "alibaba-deepseek-pro": {
-      "id": "alibaba-token-plan/deepseek-v4-pro",
-      "variant": "high",
-      "family": "deepseek",
-      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
-    },
-    "alibaba-deepseek-flash": {
-      "id": "alibaba-token-plan/deepseek-v4.1-flash",
-      "variant": "high",
-      "family": "deepseek",
-      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
-    },
     "alibaba-qwen-max": {
       "id": "alibaba-token-plan/qwen3.8-max",
       "variant": "medium",
@@ -86,18 +74,6 @@
       "id": "minimax/MiniMax-M2.7",
       "family": "minimax",
       "watch": "MiniMax (new family, 2026-10-06): an independent reviewer family for work by GLM, DeepSeek, Qwen, OpenAI or Claude models. Quota: 5h + weekly windows (/quota/minimax). Key: the env var MINIMAX_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6 s). Variants offered (live): none - registered without a variant, so no --variant flag is passed. Light. Placed (the owner, 2026-10-06): implementer chain, second after the light default."
-    },
-    "ali-deepseek-pro": {
-      "id": "alibaba-token-plan/deepseek-v4-pro-0813",
-      "variant": "high",
-      "family": "deepseek",
-      "watch": "Alibaba Token Plan, one monthly pool shared by all its models (/quota/alibaba; resets monthly). Night discount 22:00-08:00 UTC+8 (pricing.discount_now): qwen3.8 60% off, deepseek-v4-pro-0813 and v4.1-flash 50% off, glm-5.3 none - prefer long ali runs while discount_now is true. Key: the env var ALIBABA_TOKEN_PLAN_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it: restart or source, then tell the owner). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6-8 s). Variants offered (live): high, max (high registered; max never used, L27). The dated -0813 id is the one that gets the night discount - the undated alibaba-deepseek-pro does not. Heavy. Placed (the owner, 2026-10-06): the Go-overflow relief for DeepSeek V4 Pro work, by explicit --model when opencode_go has no quota - never a chain member."
-    },
-    "ali-deepseek-flash": {
-      "id": "alibaba-token-plan/deepseek-v4.1-flash",
-      "variant": "high",
-      "family": "deepseek",
-      "watch": "Alibaba Token Plan, one monthly pool shared by all its models (/quota/alibaba; resets monthly). Night discount 22:00-08:00 UTC+8 (pricing.discount_now): qwen3.8 60% off, deepseek-v4-pro-0813 and v4.1-flash 50% off, glm-5.3 none - prefer long ali runs while discount_now is true. Key: the env var ALIBABA_TOKEN_PLAN_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it: restart or source, then tell the owner). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6-8 s). Variants offered (live): low, high, max. Same id and variant as the existing alibaba-deepseek-flash entry (2026-10-05): either name reaches it; this is the owner's ali-* name for chains. Light. Placed (the owner, 2026-10-06): the hard implementer's alternate when opencode_go is out, by explicit --model - never a chain member."
     },
     "ali-qwen-max": {
       "id": "alibaba-token-plan/qwen3.8-max",
@@ -143,7 +119,7 @@
       "zai-glm-5.3",
       "ali-glm",
       "ali-qwen-max",
-      "deepseek-pro",
+      "mimo-pro",
       "luna"
     ],
     "sol": "gpt-6.1-sol"
