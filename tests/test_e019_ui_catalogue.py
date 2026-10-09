@@ -879,10 +879,6 @@ class F020CitationRuleTest(unittest.TestCase):
     and carry a second section with the one error only this rule can produce, because a rule that
     only adds errors has no test that fails on main's check without one."""
 
-    def errors_for(self, tmp, qid):
-        """Every line the check reports for one question, F020's citations included."""
-        return [e for e in check(tmp, f020=True) if e.startswith(f"{qid}:")]
-
     def test_a_wrong_record_sha_prefix_fails_with_error_2(self):
         with Copy() as tmp:
             path = write_f020(tmp)
@@ -891,7 +887,7 @@ class F020CitationRuleTest(unittest.TestCase):
             self.assertIn(f"`{good}\u2026`", section(path, "Q-UI-04"))
             edit_section(path, "Q-UI-04",
                          lambda body: body.replace(f"`{good}\u2026`", f"`{'0' * 16}\u2026`"))
-            errors = self.errors_for(tmp, "Q-UI-04")
+            errors = check(tmp, f020=True)
             self.assertEqual(len(errors), 1, errors)              # error 2, and nothing else
             self.assertIn(f"cites runs/E019/title-options/{record_path.stem}.json with sha256 "
                           f"{'0' * 16}\u2026, which is not a prefix of the file's sha256", errors[0])
@@ -906,7 +902,7 @@ class F020CitationRuleTest(unittest.TestCase):
                 self.assertEqual(n, 1, body)
                 return text
             edit_section(path, "Q-UI-04", replace_shot_sha)
-            errors = self.errors_for(tmp, "Q-UI-04")
+            errors = check(tmp, f020=True)
             self.assertEqual(len(errors), 1, errors)              # error 4, and nothing else
             self.assertIn(f"cites the hash {'f' * 16}\u2026, which is neither a record sha", errors[0])
 
@@ -918,7 +914,7 @@ class F020CitationRuleTest(unittest.TestCase):
             self.assertFalse((Path(tmp) / fake).exists())
             edit_section(path, "Q-UI-04",
                          lambda body: body.replace("**Run**:", f"**Run**: `{fake}` and", 1))
-            errors = self.errors_for(tmp, "Q-UI-04")
+            errors = check(tmp, f020=True)
             self.assertEqual(len(errors), 1, errors)              # error 1, and nothing else
             self.assertIn(f"cites {fake}, which does not exist", errors[0])
 
@@ -934,7 +930,7 @@ class F020CitationRuleTest(unittest.TestCase):
                 return text
             edit_section(path, "Q-UI-04", drop_record_sha)
             self.assertNotIn(good, section(path, "Q-UI-04"))   # the record's sha is no longer cited
-            errors = self.errors_for(tmp, "Q-UI-04")
+            errors = check(tmp, f020=True)
             self.assertEqual(len(errors), 1, errors)              # error 3, and nothing else
             self.assertIn("cites no record with its sha256 (T39's DW2 requires the record's sha)",
                           errors[0])
@@ -944,8 +940,8 @@ class F020CitationRuleTest(unittest.TestCase):
         beside its sha: neither is a record citation (a bare name is not a path under the root)
         nor a hash citation (the driver id has no ellipsis), so neither draws an error. The rule
         only adds errors, so the second section — those same two citations and no record path —
-        is the control that makes this fail on main's check: its one error is error 3, and no
-        error 1 or 4 is among it."""
+        is the control that makes this fail on main's check: the whole check's output is that
+        one error 3, with no error 1 or 4 among it, and none of it on Q-UI-04."""
         with Copy() as tmp:
             path = write_f020(tmp)
             for bare in ("E019-r0005.json", "E019-r0009.json"):
@@ -960,9 +956,8 @@ class F020CitationRuleTest(unittest.TestCase):
                                              count=1, flags=re.M))
             errors = check(tmp, f020=True)
             self.assertEqual([e for e in errors if e.startswith("Q-UI-04:")], [], errors)
-            control = [e for e in errors if e.startswith("Q-UI-10:")]
-            self.assertEqual(len(control), 1, errors)
-            self.assertIn("Q-UI-10: F020 cites no record with its sha256", control[0])
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("Q-UI-10: F020 cites no record with its sha256", errors[0])
 
     def test_a_pending_section_with_no_citations_is_not_checked(self):
         """(f) The rule reads observed and narrowed sections only: a pending section with no
@@ -976,11 +971,12 @@ class F020CitationRuleTest(unittest.TestCase):
             edit_section(path, "Q-UI-12",
                          lambda body: re.sub(r"^- \*\*Run\*\*:.*\n", "", body, count=1, flags=re.M))
             errors = check(tmp, f020=True)
-            self.assertEqual([e for e in errors
-                              if e.startswith("Q-UI-08:") and ": F020 cites" in e], [], errors)
-            control = [e for e in errors if e.startswith("Q-UI-12:")]
-            self.assertEqual(len(control), 1, errors)
-            self.assertIn("Q-UI-12: F020 cites no record with its sha256", control[0])
+            cited = [e for e in errors if ": F020 cites" in e]
+            self.assertEqual([e for e in cited if e.startswith("Q-UI-08:")], [], errors)
+            self.assertEqual(len(cited), 1, errors)               # the control, on Q-UI-12
+            self.assertIn("Q-UI-12: F020 cites no record with its sha256", cited[0])
+            self.assertTrue(any(e.startswith("Q-UI-08: F020's Observation line has no status")
+                                for e in errors), errors)         # the pre-existing status rule
 
 
 class RecorderUnitTest(unittest.TestCase):
