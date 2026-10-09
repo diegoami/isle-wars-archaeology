@@ -159,9 +159,38 @@ def load_f019_table(root):
 
 def _record_key(record):
     """(set, variant, sha256) as the run/1 record holds them; None where a field is absent."""
-    artifact = record.get("artifact") or {}
-    start_state = record.get("start_state") or {}
+    artifact = record.get("artifact") if isinstance(record.get("artifact"), dict) else {}
+    start_state = record.get("start_state") if isinstance(record.get("start_state"), dict) else {}
     return artifact.get("set"), artifact.get("variant"), start_state.get("sha256")
+
+
+def _odd_shape_problem(record, odd):
+    """The refusal for a run/1 record whose fields `odd` are not the shapes the gate reads, or "".
+
+    `odd` names fields present with the wrong type (`runtime` not an object, `runtime.platform` not
+    a string, ...). The record is refused when its serialised form names `wine` in any case, or when
+    an odd field's serialised form is not plain printable ASCII (a look-alike could hide `wine`);
+    otherwise it is left to the run validator, which owns malformed records.
+    """
+    whole = json.dumps(record, ensure_ascii=False, default=str)
+    fields = {}
+    for name in odd:
+        node = record
+        for part in name.split("."):
+            node = node.get(part) if isinstance(node, dict) else None
+        fields[name] = json.dumps(node, ensure_ascii=False, default=str)
+    names_wine = "wine" in whole.lower()
+    not_ascii = [name for name, text in fields.items() if not plain_ascii(text)]
+    if not (names_wine or not_ascii):
+        return ""
+    shown = ", ".join(f"{name}={text[:80]}" for name, text in fields.items())
+    why = ("the record names wine" if names_wine
+           else f"{', '.join(not_ascii)} is not plain printable ASCII")
+    return (
+        f"{WINE_GATE_CODE} run/1 record has field(s) in a shape the gate cannot read ({shown}): "
+        f"runtime, artifact and start_state must be objects and runtime.platform a string; {why}, "
+        f"so the gate refuses it rather than guess (T48, #149)"
+    )
 
 
 def _rows_text(rows):
@@ -258,9 +287,24 @@ def check_wine_gate(record, f019_table, legacy_ok=False, legacy_reason=""):
        `legacy_reason` then names why it does not when it does not. `legacy_ok` defaults to False,
        so a caller that supplies no listing refuses such a record.
 
+    Before any of that, the shapes are checked (T48 micro-round, Sol's structural-round R2): the gate
+    walks every nested run/1 object, so `runtime`, `artifact` and `start_state` may be anything. One
+    that is present but not an object, or a `runtime.platform` that is present but not a string, is
+    refused when the record names `wine` anywhere (any case) or the odd field is not plain ASCII:
+    fail closed, never guess what a reader would make of it. Otherwise the record is left to the run
+    validator, as before (formats/examples/invalid/ holds such documents on purpose).
+
     The function reads the record and never mutates it (rule 20).
     """
-    runtime = record.get("runtime") or {}
+    odd = [name for name in ("runtime", "artifact", "start_state")
+           if record.get(name) is not None and not isinstance(record.get(name), dict)]
+    runtime = record.get("runtime") if isinstance(record.get("runtime"), dict) else {}
+    if runtime.get("platform") is not None and not isinstance(runtime.get("platform"), str):
+        odd.append("runtime.platform")
+    if odd:
+        problem = _odd_shape_problem(record, odd)
+        if problem:
+            return problem, ""
     platform = runtime.get("platform")
     if not isinstance(platform, str):
         return "", ""
@@ -335,6 +379,13 @@ def scan_json_document(path):
     when the parser gave up on the nesting (`RecursionError`: a document nested past Python's
     recursion limit); `value` is then None. Such a document cannot be walked for run records, so the
     caller refuses it rather than skip it.
+
+    T48 micro-round (Sol's structural-round R1, PR #151): numbers are kept as their source text
+    (`parse_int`, `parse_float`, `parse_constant` all `str`), so a valid document holding an integer
+    past Python's digit limit is still parsed and walked; nothing downstream does arithmetic on a
+    number. Only a syntax error (`JSONDecodeError`) or bytes in no JSON encoding (`UnicodeDecodeError`)
+    mean "not JSON". Any other `ValueError` is a parser limit, not a verdict on the document: `too_deep`
+    is then a string naming it, and the caller refuses the document rather than skip it.
     """
     duplicates = []
 
@@ -351,11 +402,15 @@ def scan_json_document(path):
     except OSError:
         return None
     try:
-        return json.loads(data, object_pairs_hook=pairs_hook), duplicates, False
+        value = json.loads(data, object_pairs_hook=pairs_hook, parse_int=str, parse_float=str,
+                           parse_constant=str)
+        return value, duplicates, False
     except RecursionError:
         return None, duplicates, True
-    except ValueError:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         return None
+    except ValueError as exc:
+        return None, duplicates, f"the JSON parser gave up on it ({type(exc).__name__}: {str(exc)[:120]})"
 
 
 def load_json_document(path):
@@ -492,7 +547,11 @@ def wine_gate_problems(root, tracked=None):
                 and not any(where == "$" for where, _record in found)):
             # A `*.json` object under runs/ is a run record whatever its `schema` says, as before.
             found.insert(0, ("$", value))
-        if too_deep or walk_too_deep:
+        if isinstance(too_deep, str):
+            problems.append(f"{rel}: {WINE_GATE_CODE} a document the gate cannot parse: {too_deep}; "
+                            f"it cannot be walked for run/1 records, so it is refused rather than "
+                            f"skipped as not JSON (T48, #149)")
+        elif too_deep or walk_too_deep:
             problems.append(f"{rel}: {WINE_GATE_CODE} a JSON document nested deeper than "
                             f"{MAX_JSON_DEPTH} levels; the gate cannot walk it for run/1 records, so "
                             f"it is refused (T48, #149)")
