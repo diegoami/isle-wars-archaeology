@@ -96,6 +96,14 @@ Credit is not the reason, and is not a reason to raise it.
 
 ## Routing: easy or hard
 
+**Since 2026-10-10, quota-tracker's `/recommend` picks the pair** (the owner, effective at once;
+CLAUDE.md rule 6). The difficulty chooses the tier, `light` for easy and `heavy` for hard. Take
+`pair.implementer` and `pair.reviewer`, which come from different families, or the rows in `rank`
+order when the pair's model cannot run. Name the rank in the brief. The family rule, the effort caps,
+the blacklist and L26 still hold. On 2026-10-10 the light pair was Luna implementing and MiniMax-M2.7
+reviewing, and the heavy pair was Sol implementing and MiniMax-M3 reviewing. The table below is the
+fallback when the service is down.
+
 The owner decided on 2026-10-03 that the pair follows the task's difficulty:
 
 | Difficulty | Implementer | If it is unavailable | Reviewer | If it is unavailable |

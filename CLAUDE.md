@@ -29,7 +29,20 @@ indexed in `docs/tasks/README.md`.
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
 6. Each task file names its implementer and its reviewer, at the effort below, and says
-   whether the task is `easy` or `hard`, and why. The pairs (the owner's decision, 2026-10-03):
+   whether the task is `easy` or `hard`, and why.
+   - **`/recommend` decides** (the owner, 2026-10-10, effective at once; it supersedes the fixed
+     pairs below). Before each implement or review run, ask quota-tracker
+     `curl -s 'localhost:8765/recommend?tier=<light|heavy>'`: `light` for an easy task, `heavy`
+     for a hard one. Take its `pair` (`implementer`, then `reviewer` from another family), or the
+     rows in `rank` order when the pair's model cannot run. Pass the model explicitly (`--model`,
+     `--reviewer`, the Agent's model), and write the rank used in the brief and the run's report.
+     Its `skipped` rows are never used. The rules below still hold: the family rule, the effort
+     caps, the blacklist, the exclusions, Sonnet's tripwire, the escalation ladder, and L26
+     (work on the user's install goes to Claude, the ranking's best Claude row). The table stays
+     as the fallback when the service is down.
+
+   The pairs (the owner's decision, 2026-10-03; since 2026-10-10 the fallback when `/recommend`
+   cannot be reached):
 
    | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
    | --- | --- | --- | --- | --- |
