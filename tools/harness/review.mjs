@@ -63,7 +63,7 @@ import { planPost, publish, postComment, applyLabel, withdrawApproval, combinePl
 import { selfTest, SAMPLES } from './lib/review-selftest.mjs';
 import { choiceSelfTest } from './lib/choice-selftest.mjs';
 import {
-  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel, familyOf,
+  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel, familyOf, implementerFamilies,
 } from './lib/common.mjs';
 
 const say = (s) => console.log(s);
@@ -103,9 +103,9 @@ const implementedBy = a.exclude ? a.exclude.split(',').map((s) => s.trim()).filt
     .filter((l) => l.startsWith('model:')).map((l) => l.slice(6));
 a.reviewer = namedModel(config, a.reviewer, { family: a.family, variant: a.variant, alibaba: a.alibaba }, die);
 // Every implementer name resolves to a family, or the review is refused (Sol's R2 on PR 164).
-const unknownFamily = implementedBy.filter((n) => !familyOf(config.models, n));
-if (unknownFamily.length) die(1, `Refused: the implementer's family cannot be established for ${unknownFamily.join(', ')}; pass --exclude <family>. Nothing posted.`);
-const implementedFamilies = [...new Set(implementedBy.map((n) => familyOf(config.models, n)))];
+const fams = implementerFamilies(config.models, implementedBy);
+if (fams.refuse) die(1, `Refused: ${fams.refuse}. Nothing posted.`);
+const implementedFamilies = fams.families;
 // --hard (L39): reviewer.hard, a heavy reviewer first, then reviewers on other providers and
 // families, so that one account's quota cannot block a hard review; the implementer's family is
 // skipped as in any chain. --sol (L41) puts reviewer.sol first, Sol being used sparingly.

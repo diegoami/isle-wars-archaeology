@@ -173,3 +173,14 @@ export function namedModel(config, name, { family, variant, alibaba } = {}, die)
   config.models[name] = { id, family: fam, ...(variant ? { variant } : {}) };
   return name;
 }
+
+// The implementer's families, for the reviewer-family rule: every name must resolve to a family,
+// and at least one must be given. An empty list (no `model:` label, or `--exclude ","`) is refused,
+// never read as "nobody to exclude" (Sol's round-3 R1 on PR 164). Returns { families } or { refuse }.
+export function implementerFamilies(models, names) {
+  const given = names.map((n) => String(n).trim()).filter(Boolean);
+  if (!given.length) return { refuse: 'no implementer is named (no model: label on the PR or issue, and no usable --exclude); pass --exclude <model or family>' };
+  const unknown = given.filter((n) => !familyOf(models, n));
+  if (unknown.length) return { refuse: `the implementer's family cannot be established for ${unknown.join(', ')}; pass --exclude <family>` };
+  return { families: [...new Set(given.map((n) => familyOf(models, n)))] };
+}

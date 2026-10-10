@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { namedModel, familyOf } from './common.mjs';
+import { namedModel, familyOf, implementerFamilies } from './common.mjs';
 import { runOpenCodeWatched } from './opencode.mjs';
 
 const MODELS = () => ({
@@ -40,7 +40,22 @@ const IMPLEMENTERS = [
   ['claude', 'claude'], ['openrouter/acme/zeta-1', null], ['nonsense', null],
 ];
 
+// [label, names as review.mjs reads them, expected families or 'refused'] (round-3 R1 on PR 164)
+const GUARD = [
+  ['no model: label', [], 'refused'],
+  ['--exclude ","', ','.split(',').map((x) => x.trim()).filter(Boolean), 'refused'],
+  ['blank names', ['', ' '], 'refused'],
+  ['an unknown name', ['nonsense'], 'refused'],
+  ['a registered id', ['openai/gpt-6.1-sol'], 'openai'],
+  ['two names, one family', ['luna', 'openai'], 'openai'],
+];
+
 function checkNamed(failures) {
+  for (const [label, names, want] of GUARD) {
+    const r = implementerFamilies(MODELS(), names);
+    const got = r.refuse ? 'refused' : r.families.join(',');
+    if (got !== want) failures.push(`implementerFamilies: ${label}: ${got}, expected ${want}`);
+  }
   for (const [label, name, opts, want] of NAMED) {
     const config = { models: MODELS() };
     let got;
@@ -113,5 +128,5 @@ export async function choiceSelfTest() {
   const failures = [];
   checkNamed(failures);
   await checkResume(failures);
-  return { failures, count: NAMED.length + IMPLEMENTERS.length + 3 };
+  return { failures, count: GUARD.length + NAMED.length + IMPLEMENTERS.length + 3 };
 }

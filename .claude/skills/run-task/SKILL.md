@@ -112,7 +112,8 @@ For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the
      **returns** its review: save its final message to a file, then post it with
      `node tools/harness/post-review.mjs --pr <pr> --brief <brief> --review <file>
      --by "claude (<model>)" --issue <n> --apply-label`. Its exits are review.mjs's, but 1 means no
-     review was in the message: re-run the reviewer once, then escalate.
+     review was in the message: diagnose why, then ask the user (this step's question) before any
+     other review runs.
    - A further review (`/code-review <pr>` on an architecture task, a second opinion) only when the
      user asks for it and names the model; then always with the PR number.
 
