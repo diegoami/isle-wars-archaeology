@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 // Hands one pull request to OpenCode for a review, and posts the result as one PR comment.
 //
-//   node tools/harness/review.mjs --pr 42 --brief brief.md [--reviewer NAME] [--exclude NAME,...]
-//     [--issue 12 --apply-label] [--done-when K] [--hard [--sol]] [--second-opinion] [--dry-run] [--env KEY=VALUE]...
+//   node tools/harness/review.mjs --pr 42 --brief brief.md --reviewer NAME [--family F --variant V]
+//     [--exclude NAME,...] [--issue 12 --apply-label] [--done-when K] [--dry-run] [--env KEY=VALUE]...
+//
+// The reviewer is the one the user names at each review (CLAUDE.md rule 6, the owner, 2026-10-11):
+// --reviewer is required, a harness.json key or an OpenCode id provider/model (with --family). It is
+// never replaced by another; the implementer's family is still refused. --hard, --sol and
+// --second-opinion chose models from harness.json's chains, and are refused since 2026-10-11: a
+// second review is the user's choice, run as a second call. The chain text below is history.
 //   node tools/harness/review.mjs --self-test   (the reader's samples; no model is called)
 //
 // The brief's first line is the review header the model prints, e.g. "T07 review (Luna)"; with the
@@ -56,13 +62,14 @@ import { runChain, excludeImplementers, readReview, doneWhenCount, briefTargets 
 import { planPost, publish, postComment, applyLabel, withdrawApproval, combinePlans } from './lib/post.mjs';
 import { selfTest, SAMPLES } from './lib/review-selftest.mjs';
 import {
-  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine,
+  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel,
 } from './lib/common.mjs';
 
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
 const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test', 'second-opinion', 'hard', 'sol'], repeatable: ['env'] });
+const supersededFlag = ['hard', 'sol', 'second-opinion'].find((f) => a[f]);
 if (a['self-test']) {
   const failures = selfTest();
   for (const f of failures) console.error(`FAIL ${f}`);
@@ -70,6 +77,7 @@ if (a['self-test']) {
   process.exit(failures.length ? 1 : 0);
 }
 if (!a.pr || !a.brief) die(2, '--pr and --brief are required.');
+if (supersededFlag) die(2, `--${supersededFlag} chose reviewers from harness.json; since 2026-10-11 the user names each reviewer (CLAUDE.md rule 6): pass --reviewer.`);
 if (a['apply-label'] && !a.issue) die(2, '--apply-label needs --issue.');
 const brief = fs.readFileSync(a.brief, 'utf8').split(/\r?\n/);
 const briefHeader = brief[0].trim();
@@ -89,7 +97,7 @@ const labelsOf = (kind, n) => sh('gh', [kind, 'view', String(n), '--json', 'labe
 const implementedBy = a.exclude ? a.exclude.split(',').map((s) => s.trim()).filter(Boolean)
   : [...labelsOf('pr', a.pr), ...(a.issue ? labelsOf('issue', a.issue) : [])]
     .filter((l) => l.startsWith('model:')).map((l) => l.slice(6));
-if (a.reviewer && !config.models[a.reviewer]) die(2, `Unknown reviewer ${a.reviewer}.`);
+namedModel(config, a.reviewer, { family: a.family, variant: a.variant }, die);
 // --hard (L39): reviewer.hard, a heavy reviewer first, then reviewers on other providers and
 // families, so that one account's quota cannot block a hard review; the implementer's family is
 // skipped as in any chain. --sol (L41) puts reviewer.sol first, Sol being used sparingly.
@@ -106,9 +114,7 @@ if (implementedBy.length) say(`implemented by: ${implementedBy.join(', ')}`);
 if (a.reviewer && !chain.length) die(1, `Refused: ${a.reviewer} is the implementer's model family. Nothing posted.`);
 // harness.json's claudeFallback: null means no Claude reviewer, so a failure goes to the owner (#39).
 // So does a PR Claude implemented: a Claude reviewer would be its own family.
-const fallback = rev.claudeFallback === null ? 'Nothing posted; escalate to the owner (harness.json names no Claude reviewer).'
-  : implementedBy.includes('claude') ? 'Nothing posted; escalate to the owner: Claude implemented this PR, so no Claude reviewer may review it.'
-    : `Nothing posted; use a Claude reviewer (${rev.claudeFallback ?? 'opus'}).`;
+const fallback = 'Nothing posted. Diagnose and fix it; another reviewer only when the provider does not answer and the user names it (CLAUDE.md rule 6).';
 // OpenCode is looked for only now, so that its absence is reported with the same fallback (Sol's R1 on PR 41).
 let opencode;
 try { opencode = resolveOpenCode(); } catch (e) {

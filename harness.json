@@ -1,4 +1,5 @@
 {
+  "modelChoice": "The user's choice (CLAUDE.md rule 6, the owner, 2026-10-11): implement.mjs and review.mjs require --model / --reviewer, and no longer read implementer.chain, reviewer.chain, reviewer.hard, reviewer.sol, reviewer.secondOpinion, claudeFallback or the chooser block. Those keys are kept as history.",
   "worktreeRoot": "../{repo}-work",
   "jail": {
     "enabled": false,

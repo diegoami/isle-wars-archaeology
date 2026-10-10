@@ -113,12 +113,25 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
       problems.push(`${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
       return false;
     }
+    // The user named this model (CLAUDE.md rule 6, 2026-10-11): a quota warning is reported, never
+    // a reason to skip it or pick another.
     const block = quota.off ? null : quotaBlock(models[m].id, quota);
-    if (block) problems.push(`${m}: skipped, out of quota: ${block} (quota-tracker, L50)`);
-    return !block;
+    if (block) log(`quota warning: ${m}: ${block} (quota-tracker); running it, as the user chose`);
+    return true;
   });
   return { env: oc.env, usable, problems, version };
 }
 
 export const ocArgs = (worktree, agent, model) =>
   ['run', '--dir', worktree, '--agent', agent, '--model', model.id, ...(model.variant ? ['--variant', model.variant] : [])];
+
+// The model the user named (CLAUDE.md rule 6, 2026-10-11): a harness.json key, or any OpenCode id
+// `provider/model` with its family (for the reviewer-family rule) and an optional variant.
+export function namedModel(config, name, { family, variant } = {}, die) {
+  if (!name) die(2, 'Name the model: the user chooses it (CLAUDE.md rule 6, 2026-10-11). Pass --model/--reviewer with a harness.json key or an OpenCode id provider/model.');
+  if (config.models[name]) return name;
+  if (!name.includes('/')) die(2, `Unknown model ${name}: not a harness.json key, and not an OpenCode id provider/model.`);
+  if (!family) die(2, `${name} is not in harness.json: pass --family <family> for the reviewer-family rule.`);
+  config.models[name] = { id: name, family, ...(variant ? { variant } : {}) };
+  return name;
+}

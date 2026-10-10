@@ -307,7 +307,7 @@ function sameDir(a, b) {
 // This run's session: its unique title, in its directory, created after it started. `session list`
 // is scoped to the project of its working directory, so it runs in workDir. A miss says why, the
 // listing or the match, so that "exited without a session" can be diagnosed (#45).
-export async function lookupSession(cmd, { workDir, title, startedMs, timeoutMs, env }) {
+export async function lookupSession(cmd, { workDir, title, startedMs, timeoutMs, env, resumeSessionId = null }) {
   const miss = (why) => ({ session: null, miss: why });
   if (timeoutMs <= 0) return miss('no time left to list sessions');
   const res = await execBounded(cmd, ['session', 'list', '--format', 'json', '-n', '20'], { cwd: workDir, timeoutMs, env });
@@ -317,6 +317,14 @@ export async function lookupSession(cmd, { workDir, title, startedMs, timeoutMs,
   let sessions;
   try { sessions = JSON.parse(res.stdout); } catch { return miss(`\`session list\` printed no JSON (exit ${res.code}): ${res.stdout.trim().slice(0, 200)}`); }
   if (!Array.isArray(sessions)) sessions = [sessions];
+  if (resumeSessionId) {
+    // A resumed session keeps its id and its first title; it counts as started once it is updated.
+    const own = sessions.find((s) => s && s.id === resumeSessionId);
+    if (!own) return miss(`session ${resumeSessionId} is not among the ${sessions.length} listed`);
+    if (!own.directory || !sameDir(own.directory, workDir)) return miss(`session ${resumeSessionId} is in ${own.directory}, not ${workDir}`);
+    if (Number(own.updated) < startedMs - 1000) return miss(`session ${resumeSessionId} not updated since the run started at ${startedMs}`);
+    return { session: own, miss: null };
+  }
   const titled = sessions.filter((s) => s && s.title === title);
   if (!titled.length) return miss(`no session titled ${title} among the ${sessions.length} listed`);
   const here = titled.filter((s) => s.directory && sameDir(s.directory, workDir));
@@ -370,7 +378,7 @@ export function briefFileName(title) {
  * A non-zero exit is returned, not thrown: the caller decides.
  */
 export async function runOpenCodeWatched({
-  args, prompt, workDir, title,
+  args, prompt, workDir, title, resumeSessionId = null,
   startupTimeoutMs = 180_000, totalTimeoutMs = 3_600_000, idleTimeoutMs = 600_000, pollMs = 10_000,
   logDir = path.join(os.tmpdir(), 'harness-opencode'), opencode, env = process.env, log = () => {},
 }) {
@@ -386,7 +394,8 @@ export async function runOpenCodeWatched({
   const files = [outFile, errFile, briefFile];
   const pointer = `Your complete brief for this run is the file ${briefFileName(title)} at the root of this worktree.`
     + ' Read that file first and follow it exactly; never edit, commit or delete it.';
-  const all = [...args, '--title', title, pointer];
+  // A resumed run (rule 13, 2026-10-11) continues its own session: `--session <id>`, no new title.
+  const all = resumeSessionId ? [...args, '--session', resumeSessionId, pointer] : [...args, '--title', title, pointer];
   // The brief leaves the worktree when the run is not clean (L60): kept for diagnosis with the
   // log files, but never left as untracked work a reset would save as the implementer's (#87).
   // A cross-device logDir makes rename fail (EXDEV), so a failed rename falls back to copy+delete;
@@ -439,7 +448,7 @@ export async function runOpenCodeWatched({
     let session = null;
     let lastMiss = 'no lookup ran';
     const lookup = async (timeoutMs) => {
-      const r = await lookupSession(cmd, { workDir, title, startedMs, env, timeoutMs });
+      const r = await lookupSession(cmd, { workDir, title, startedMs, env, timeoutMs, resumeSessionId });
       if (r.miss) lastMiss = r.miss;
       return r.session;
     };
