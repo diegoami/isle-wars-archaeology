@@ -1187,6 +1187,19 @@ class Cycle:
 
 # --- records ---------------------------------------------------------------------------------
 
+def fonts_line(text):
+    """One string from `dpkg-query -W -f='${db:Status-Abbrev} ${Package}=${Version}\\n' 'fonts-*'`: the
+    installed (`ii`) packages with their versions, sorted. Wine draws with the installed fonts, so a
+    record names them. No installed font is recorded unknown (R6); a path separator can not occur in a
+    package name or version, and is dropped if one ever does (a fingerprint value holds none)."""
+    found = []
+    for line in text.splitlines():
+        status, _, package = line.partition(" ")
+        if status.strip() == "ii" and package.strip():
+            found.append(package.strip().replace("/", "").replace("\\", ""))
+    return ", ".join(sorted(found)) if found else "unknown"
+
+
 def versions():
     def first(cmd, pattern):
         ok, out, err = probe(cmd)
@@ -1195,8 +1208,11 @@ def versions():
         text = (out + err).decode(errors="replace")
         match = re.search(pattern, text)
         return match.group(1) if match else "unknown"
+    listed = first(["dpkg-query", "-W", "-f=${db:Status-Abbrev} ${Package}=${Version}\\n", "fonts-*"], r"([\s\S]+)")
+    fonts = "unknown" if listed == "unknown" else fonts_line(listed)    # a failed probe: unknown, never parsed
     return {
         "wine": first([WINE, "--version"], r"(wine-[^\n]+)"),
+        "fonts": fonts,
         "xvfb": first(["dpkg-query", "-W", "-f=${Version}", "xvfb"], r"(.+)"),
         "xfwm4": first(["dpkg-query", "-W", "-f=${Version}", "xfwm4"], r"(.+)"),
         "xdotool": first(["xdotool", "--version"], r"(\d+\.\d+\.\d+)"),

@@ -417,6 +417,13 @@ class TokenChecksTest(World):
         path.chmod(path.stat().st_mode | stat.S_IXUSR)
         return path
 
+    def fake_display(self, directory):
+        """A fake Xvfb (records its display argument, then waits) and a fake xdpyinfo (answers once the
+        Xvfb has recorded it), so start_xvfb works here without a real X server."""
+        log = self.tmp / "xvfb-display"
+        self.fake("Xvfb", f'echo "$1" > "{log}"; exec sleep 30', directory)
+        self.fake("xdpyinfo", f'[ -s "{log}" ]', directory)
+
     def test_wine_accepts_exactly_a_9_0_build(self):
         good = self.fake("wine-good", 'echo "wine-9.0 (Ubuntu 9.0~repack-4build3)"')
         with mock.patch.object(token_check, "WINE", str(good)):
@@ -444,9 +451,11 @@ class TokenChecksTest(World):
         bin_ok = self.tmp / "ok"
         self.fake("xfwm4", "exit 0", bin_ok)
         self.fake("xdotool", "exit 0", bin_ok)
+        self.fake_display(bin_ok)
         bin_bad = self.tmp / "bad"
         self.fake("xfwm4", "exit 1", bin_bad)
         self.fake("xdotool", "exit 1", bin_bad)
+        self.fake_display(bin_bad)
         with mock.patch.dict(os.environ, {"PATH": f"{bin_ok}{os.pathsep}/usr/bin{os.pathsep}/bin"}):
             self.assertIsNone(token_check.xfwm4())
             self.assertIsNone(token_check.xdotool())
@@ -482,7 +491,7 @@ class ReadyGatingTest(World):
     """R6: `ready` is printed, and 0 returned, only when every token passes."""
 
     # the Pro lane's tokens, the ones T09's "Runs on" names (facility:iwp-prefix included)
-    PRO_TOKENS = ["tool:python@>=3.11", "tool:wine@9.0", "tool:xvfb", "tool:xfwm4", "tool:xdotool",
+    PRO_TOKENS = ["tool:python@>=3.11", "tool:wine@10.0", "tool:xvfb", "tool:xfwm4", "tool:xdotool",
                   "facility:display", "artifact:iwp-2.0-996e86c5", "facility:iwp-prefix"]
 
     def test_all_tokens_passing_is_ready(self):
