@@ -37,7 +37,9 @@ indexed in `docs/tasks/README.md`.
      rows in `rank` order when the pair's model cannot run. Pass the model explicitly (`--model`,
      `--reviewer`, the Agent's model), and write the rank used in the brief and the run's report.
      Its `skipped` rows are never used. The rules below still hold: the family rule, the effort
-     caps, the blacklist, the exclusions, Sonnet's tripwire, the escalation ladder, and L26
+     caps, GPT-6.1 Sol only for hard reviews (never implementing: when the ranking names Sol as the
+     implementer, take the next row; the owner, 2026-10-10), the blacklist, the exclusions, Sonnet's
+     tripwire, the escalation ladder, and L26
      (work on the user's install goes to Claude, the ranking's best Claude row). The table stays
      as the fallback when the service is down.
 
