@@ -78,12 +78,15 @@ slower, with no gain (L27). **GPT-6.1 Sol** (the owner, 2026-10-03) is also used
 
 Credit is not the reason, and is not a reason to raise it.
 
-**Never used:**
+*Superseded on 2026-10-11 (the user decides; the only fixed rules are: never the implementer's
+family, never DeepSeek, Alibaba only when the user asks). Kept as history, they are no longer rules:*
+
+**Never used** (history):
 - Haiku;
 - Gemini, because of its cost;
 - Kimi and Grok.
 
-**Routes that matter:**
+**Routes that matter** (history; a route the user names is the one that runs):
 - GLM runs only through the Z.AI Coding Plan, never through Go or pay-per-token Z.AI.
 - Luna runs only on the direct OpenAI route. Go's Luna went through a proxy that returned
   `400 Bad Request` in long agent loops (L27).
@@ -101,7 +104,7 @@ main session asks who implements (itself in its own worktree, a Claude agent, or
 which model; at every review it asks which external model reviews. `/recommend` is shown with the
 question as a suggestion only (`tier=heavy` for hard work, `tier=light` for easy). Everything below in
 this section, the roster's "placed" roles, and every chain, substitute order, tier or escalation ladder
-that names a model on this page are **superseded**, kept as history; read "the user's choice" in their place.
+that names a model on this page, and every list that excludes a model or a route ("Never used", "Routes that matter", the GLM-only-via-Z.AI and Luna-only-direct rules), are **superseded**, kept as history; read "the user's choice" in their place. The only fixed rules are CLAUDE.md rule 6.4's.
 
 *Superseded on 2026-10-11:* **Since 2026-10-10, quota-tracker's `/recommend` picks the pair** (the owner, effective at once;
 CLAUDE.md rule 6). The difficulty chooses the tier, `light` for easy and `heavy` for hard. Take

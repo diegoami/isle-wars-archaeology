@@ -62,13 +62,13 @@ import { runChain, excludeImplementers, readReview, doneWhenCount, briefTargets 
 import { planPost, publish, postComment, applyLabel, withdrawApproval, combinePlans } from './lib/post.mjs';
 import { selfTest, SAMPLES } from './lib/review-selftest.mjs';
 import {
-  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel,
+  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel, familyOf,
 } from './lib/common.mjs';
 
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test', 'second-opinion', 'hard', 'sol'], repeatable: ['env'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test', 'second-opinion', 'hard', 'sol', 'alibaba'], repeatable: ['env'] });
 const supersededFlag = ['hard', 'sol', 'second-opinion'].find((f) => a[f]);
 if (a['self-test']) {
   const failures = selfTest();
@@ -97,7 +97,11 @@ const labelsOf = (kind, n) => sh('gh', [kind, 'view', String(n), '--json', 'labe
 const implementedBy = a.exclude ? a.exclude.split(',').map((s) => s.trim()).filter(Boolean)
   : [...labelsOf('pr', a.pr), ...(a.issue ? labelsOf('issue', a.issue) : [])]
     .filter((l) => l.startsWith('model:')).map((l) => l.slice(6));
-namedModel(config, a.reviewer, { family: a.family, variant: a.variant }, die);
+a.reviewer = namedModel(config, a.reviewer, { family: a.family, variant: a.variant, alibaba: a.alibaba }, die);
+// Every implementer name resolves to a family, or the review is refused (Sol's R2 on PR 164).
+const unknownFamily = implementedBy.filter((n) => !familyOf(config.models, n));
+if (unknownFamily.length) die(1, `Refused: the implementer's family cannot be established for ${unknownFamily.join(', ')}; pass --exclude <family>. Nothing posted.`);
+const implementedFamilies = [...new Set(implementedBy.map((n) => familyOf(config.models, n)))];
 // --hard (L39): reviewer.hard, a heavy reviewer first, then reviewers on other providers and
 // families, so that one account's quota cannot block a hard review; the implementer's family is
 // skipped as in any chain. --sol (L41) puts reviewer.sol first, Sol being used sparingly.
@@ -109,7 +113,7 @@ if (a.sol && !config.models[rev.sol]) die(2, `Unknown reviewer ${rev.sol} in rev
 for (const m of a.hard ? rev.hard : []) if (!config.models[m]) die(2, `Unknown reviewer ${m} in reviewer.hard.`);
 const base = !a.hard ? rev.chain : a.sol ? [...new Set([rev.sol, ...rev.hard])] : rev.hard;
 const wanted = a.reviewer ? [a.reviewer] : base;
-const chain = excludeImplementers(wanted, config.models, implementedBy);
+const chain = wanted.filter((m) => !implementedFamilies.includes(familyOf(config.models, m)));
 if (implementedBy.length) say(`implemented by: ${implementedBy.join(', ')}`);
 if (a.reviewer && !chain.length) die(1, `Refused: ${a.reviewer} is the implementer's model family. Nothing posted.`);
 // harness.json's claudeFallback: null means no Claude reviewer, so a failure goes to the owner (#39).

@@ -2,7 +2,7 @@
 // Runs one task's (or one fix's) implementer on OpenCode, in a worktree this script creates.
 //
 //   node tools/harness/implement.mjs --task T07 --slug calendar --issue 12 --brief brief.md --model NAME
-//     [--family FAMILY] [--variant V]   for a model the user names that harness.json does not list
+//     [--family FAMILY] [--variant V] [--alibaba]   for a model harness.json does not list; --alibaba when the user asked for Alibaba
 //   node tools/harness/implement.mjs --fix 34 --slug save-path --brief brief.md --model NAME
 //   node tools/harness/implement.mjs --task T07 --slug calendar --model NAME --session ses_...
 //     [--brief answer.md] [--idle-min N] [--total-min N]   resume a run's own session (rule 13)
@@ -37,7 +37,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
+import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem, sessionOwner } from './lib/opencode.mjs';
 import { runChain } from './lib/chain.mjs';
 import { resetWorktree, selfTest as unsavedSelfTest } from './lib/unsaved.mjs';
 import {
@@ -47,7 +47,7 @@ import {
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['self-test'], repeatable: ['copy', 'env'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['self-test', 'alibaba'], repeatable: ['copy', 'env'] });
 // --self-test: the reset's save on a throwaway repository (lib/unsaved.mjs), with no OpenCode or gh.
 if (a['self-test']) {
   const failures = unsavedSelfTest();
@@ -73,7 +73,7 @@ const top0 = sh('git', ['rev-parse', '--show-toplevel']);
 const config = loadConfig(top0);
 const { top, commonDir, mainRoot, workRoot } = repoPaths(config);
 const impl = config.implementer;
-const chain = [namedModel(config, a.model, { family: a.family, variant: a.variant }, die)];
+const chain = [namedModel(config, a.model, { family: a.family, variant: a.variant, alibaba: a.alibaba }, die)];
 const fallback = 'Diagnose and fix it; use another model only when the provider does not answer and the user names it (CLAUDE.md rule 6).';
 const pre = await prepareOpenCode({ opencode, chain, models: config.models, env: envWith(a.env), cwd: top, log: say });
 for (const p of pre.problems) say(p);
@@ -142,6 +142,11 @@ for (const f of a.copy) {
   fs.copyFileSync(realF, dest);
 }
 ensureAgent({ top, commonDir, worktree, agent: impl.agent });
+// A resumed session must exist and belong to this worktree before anything is sent to it (Sol's R3 on PR 164).
+if (a.session) {
+  const own = await sessionOwner(opencode, { workDir: worktree, sessionId: a.session, env: pre.env });
+  if (own.miss) die(2, `--session ${a.session} refused before the run: ${own.miss}`);
+}
 say(`worktree: ${worktree} on ${branch}`);
 
 // 2. The run.
@@ -230,7 +235,7 @@ if (!result.ok) {
 }
 if (reasons) say(`fell back: ${reasons}`);
 // The reviewer must not be this model's family: pass it to review.mjs as --exclude.
-say(`implemented by: ${result.name} (${config.models[result.name].id})`);
+say(`implemented by: ${result.name} (${config.models[result.name].id}), family ${config.models[result.name].family}`);
 
 // 3. The handover: a PR, and a clean, pushed, detached worktree.
 sh('git', ['-C', top, 'fetch', '-q', 'origin']);

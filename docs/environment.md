@@ -47,7 +47,7 @@ directory, another machine, WSL beside Windows, or a new cloud session each need
 
 ## OpenAI, for the reviewer
 
-The reviewer is GPT-5.6 Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, L51), never a Luna
+*History (superseded 2026-10-11: the user chooses the reviewer and its route, CLAUDE.md rule 6):* the reviewer was GPT-5.6 Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, L51), never a Luna
 on Go (`opencode-go/…`): a third-party proxy behind Go's returned `Bad Request` in long agent loops
 (L27). OpenAI is an ordinary OpenCode provider: log in once with `opencode auth login`, choose
 OpenAI (a ChatGPT login or an API key), and check with `opencode models openai`. The login is kept in

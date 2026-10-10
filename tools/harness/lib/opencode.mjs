@@ -307,6 +307,13 @@ function sameDir(a, b) {
 // This run's session: its unique title, in its directory, created after it started. `session list`
 // is scoped to the project of its working directory, so it runs in workDir. A miss says why, the
 // listing or the match, so that "exited without a session" can be diagnosed (#45).
+// Whether session `sessionId` exists and was made in workDir, checked before a resumed run sends it
+// anything (Sol's R3 on PR 164). { miss: null } when it is ours.
+export async function sessionOwner(cmd, { workDir, sessionId, env, timeoutMs = 30_000 }) {
+  const r = await lookupSession(cmd, { workDir: fs.realpathSync(workDir), title: null, startedMs: 0, timeoutMs, env, resumeSessionId: sessionId });
+  return { miss: r.miss };
+}
+
 export async function lookupSession(cmd, { workDir, title, startedMs, timeoutMs, env, resumeSessionId = null }) {
   const miss = (why) => ({ session: null, miss: why });
   if (timeoutMs <= 0) return miss('no time left to list sessions');
@@ -427,6 +434,10 @@ export async function runOpenCodeWatched({
       throw new Error('The opencode command line exceeds what Windows allows (32767 characters). Shorten the brief.');
     }
 
+    if (resumeSessionId) {
+      const own = await sessionOwner(cmd, { workDir, sessionId: resumeSessionId, env });
+      if (own.miss) throw new OpenCodeInfraError('session not ours', `--session ${resumeSessionId} refused before the run: ${own.miss}`);
+    }
     const outFd = fs.openSync(outFile, 'w');
     const errFd = fs.openSync(errFile, 'w');
     const startedMs = Date.now();
