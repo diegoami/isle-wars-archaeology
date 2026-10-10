@@ -25,7 +25,9 @@ def e020_place_points():
     text = E020_STEPS.read_text(encoding="utf-8")
     block = text.split("# --- block place", 1)[1].split("# --- block", 1)[0]
     numbers = [int(n) for n in re.findall(r"click-until\?((?:\s+\d+)+)", block)[0].split()]
-    return list(zip(numbers[::2], numbers[1::2]))
+    # Five watch parameters precede the candidate x/y pairs in click-until?.
+    candidates = numbers[5:]
+    return list(zip(candidates[::2], candidates[1::2]))
 
 
 def coordinates_points():

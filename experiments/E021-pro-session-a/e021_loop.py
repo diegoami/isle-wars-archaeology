@@ -177,6 +177,8 @@ class SessionALoop(e020_loop.BatchLoop):
         if board is None:
             return "board-unreadable"
         ended = self.attack_phase(board)
+        if ended == "forfeit":
+            return None
         if ended is not None:
             return ended
         self.send("pass")
@@ -204,7 +206,7 @@ class SessionALoop(e020_loop.BatchLoop):
         if screen not in e020_loop.BOARD:              # fix #141 round 2, as E020's place()
             return self.off_board(screen)
         self.summary["placements"] += 1
-        self.send_block("place-commit")
+        self.send("place-commit")
         self.summary["turns"] += 1
         return True
 
@@ -215,14 +217,17 @@ class SessionALoop(e020_loop.BatchLoop):
         "forfeit" when a failure ended the turn (the loop then sends nothing more), and
         "board-unreadable" when a read inside an attack was unusable; else None (PASS follows)."""
         attacks = 0
-        while attacks < MAX_ATTACKS_PER_TURN:
+        attempts = 0
+        while attempts < MAX_ATTACKS_PER_TURN:
             choice = cases.pick(board, self.needed(), self.adjacency, points=self.points,
                                 exclude=self.refused)
             if choice is None:
                 break
             case, cell, attacker, defender = choice
             outcome, board = self.attack_once(board, case, cell, attacker, defender)
-            attacks += 1
+            attempts += 1
+            if outcome in ("quit", "capture", "exchange", "forfeit"):
+                attacks += 1
             self.summary["attack_attempts"] += 1
             if outcome == "forfeit":
                 self.note_turn(attacks, ended="forfeit")
@@ -280,6 +285,8 @@ class SessionALoop(e020_loop.BatchLoop):
             self.refused.add((attacker, defender))
             board, _digest = self.read_board(strict=False)
             self.note_attempt(case, cell, attacker, defender, before, before, "refused", None, ready_sha)
+            if case in cases.SIZE_CASES and board is not None:
+                self.note_case(case, cell, outcome="refused")
             return "refused", board
         if case == "quit":
             self.leave_battle()
@@ -315,7 +322,7 @@ class SessionALoop(e020_loop.BatchLoop):
             outcome = "exchange"
         else:
             outcome = "no-change"
-        if outcome in ("capture", "exchange", "forfeit") and self.aim_met(case, outcome):
+        if outcome in ("capture", "exchange", "forfeit") and case in cases.SIZE_CASES:
             self.note_case(case, cell, **{"country:attacker": attacker, "country:defender": defender})
         else:
             # The attempt did not meet its cell (a `lost` aim whose attack did not fail, or a click

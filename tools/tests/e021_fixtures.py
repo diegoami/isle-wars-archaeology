@@ -8,7 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 for _sub in ("tools", "runtime/iwp", "runtime/iwp/spike", "setup/iwp",
-             "experiments/E020-wine-first-run", "experiments/E021-pro-session-a"):
+              "experiments/E020-wine-first-run", "experiments/E020-wine-first-run/reader",
+              "experiments/E021-pro-session-a"):
     if str(ROOT / _sub) not in sys.path:
         sys.path.insert(0, str(ROOT / _sub))
 

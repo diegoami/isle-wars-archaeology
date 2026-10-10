@@ -105,6 +105,8 @@ def collect(paths):
     run_ids = []
     for path in paths:
         doc = load_json(path)
+        if doc.get("schema") != "run/1" or doc.get("experiment") != "E021":
+            raise ProgressRefused(f"{path} is not an E021 run/1 record")
         run_id = doc.get("run_id")
         if not isinstance(run_id, str) or not run_id:
             raise ProgressRefused(f"{path} carries no run id")
