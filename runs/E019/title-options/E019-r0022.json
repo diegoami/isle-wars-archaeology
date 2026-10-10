@@ -1,0 +1,607 @@
+{
+  "schema": "run/1",
+  "run_id": "E019-r0022",
+  "experiment": "E019",
+  "arm": "q-ui-10",
+  "rep": 4,
+  "code_commit": "0a87aefb8254",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "experiments/E019-pro-ui/run_walk.py@0a87aefb8254",
+    "platform": "wine-on-user-machine-iwp-2.0",
+    "fingerprint": {
+      "wine": "wine-10.0 (Ubuntu 10.0~repack-12ubuntu1)",
+      "fonts": "fonts-dejavu-core=2.37-8build1, fonts-dejavu-mono=2.37-8build1, fonts-droid-fallback=1:8.1.0r7-1~1.gbp36536bbuild1, fonts-noto-mono=20201225-2build1, fonts-ubuntu=0.869+git20240321-0ubuntu2, fonts-urw-base35=20200910-8build1, fonts-wine=10.0~repack-12ubuntu1",
+      "xvfb": "2:21.1.22-1ubuntu1.2",
+      "xfwm4": "4.20.0-1build1",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "7.1.2-18",
+      "python": "3.14.4",
+      "kernel": "6.18.40.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only once for the command and checked at the start of every walk; the prefix sealed and its registry files equal to their baseline before anything starts and again immediately before the launch; the prefix is reset to that state after every walk; T48: start_state.sha256 is the sha256 of the install's Islepro.exe, the binary that ran, and the prefix listing it held until T48 is here at sha256 69fba79d3791ffcc65dd9d4bc5c99fd502ceb260f78c432f317f36a7a3696f88"
+  },
+  "seed": null,
+  "actions": {
+    "script": "experiments/E019-pro-ui/run_walk.py",
+    "sha256": "02871e6898f80fa08a79d227bdae1ce6095763cc6de9aa7b3a299419a60eeb57",
+    "args": [
+      "--question",
+      "Q-UI-10"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "walk question",
+      "value": "Q-UI-10"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "walk batch",
+      "value": "title-options"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "speed setting",
+      "value": "normal (the unlocked default; every timing is a wall-clock reading at it)"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "DBUS_SESSION_BUS_ADDRESS in the driver's environment",
+      "value": "set: unset for the run"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install read-only inside the run (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "registry files equal their baseline (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.05"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "800x600x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "X display held by this run's Xvfb (attempt)",
+      "value": "1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.22"
+    },
+    {
+      "step": 3,
+      "source": "process",
+      "field": "snapshot of the prefix before the launch took (s)",
+      "value": "0.61"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "install read-only inside the run (immediately before launch)",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "prefix seal immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "registry files equal their baseline (immediately before launch)",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "game in its own network namespace",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "network interfaces the game sees",
+      "value": "lo"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "stage origin assumed from a centered 800x600 stage",
+      "value": "0,0"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window after launch (s)",
+      "value": "0.85"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "Islepro window position and size",
+      "value": "0,0 800x600"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached, seconds waited",
+      "value": "5.14"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached and stable, seconds after launch",
+      "value": "6.97"
+    },
+    {
+      "step": 50,
+      "source": "screen",
+      "field": "display size",
+      "value": "{\"requested\": \"800x600x24\", \"display pixels\": 480000}"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "before.png raw RGB8 pixels sha256",
+      "value": "2f5835dc826acc748d856c253f92ce785f6c93407eb48b5cb9d8f6ed12661fd4"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "click at 320,585: label changed under the pointer (s)",
+      "value": "0.12"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "click at 320,585: screen changed after the click (s)",
+      "value": "0.04"
+    },
+    {
+      "step": 6,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "1"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "options screen reached, seconds waited",
+      "value": "0.04"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 180,335,440,25"
+    },
+    {
+      "step": 7,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "1"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "click-until: candidate that worked",
+      "value": "565,532 (number 1 of 3)"
+    },
+    {
+      "step": 8,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "2"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "watched area",
+      "value": "whole screen"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "2"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "2"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached, seconds waited",
+      "value": "0.02"
+    },
+    {
+      "step": 51,
+      "source": "screen",
+      "field": "timing: round to options",
+      "value": "{\"round\": 1, \"at_s\": 0.95}"
+    },
+    {
+      "step": 52,
+      "source": "screen",
+      "field": "timing: round back to title",
+      "value": "{\"round\": 1, \"at_s\": 0.73}"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "click at 320,585: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "click at 320,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "3"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "options screen reached, seconds waited",
+      "value": "0.02"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 180,335,440,25"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "3"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "click-until: candidate that worked",
+      "value": "565,532 (number 1 of 3)"
+    },
+    {
+      "step": 13,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "4"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "watched area",
+      "value": "whole screen"
+    },
+    {
+      "step": 14,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "4"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.45"
+    },
+    {
+      "step": 15,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "4"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached, seconds waited",
+      "value": "0.02"
+    },
+    {
+      "step": 53,
+      "source": "screen",
+      "field": "timing: round to options",
+      "value": "{\"round\": 2, \"at_s\": 0.75}"
+    },
+    {
+      "step": 54,
+      "source": "screen",
+      "field": "timing: round back to title",
+      "value": "{\"round\": 2, \"at_s\": 0.78}"
+    },
+    {
+      "step": 16,
+      "source": "screen",
+      "field": "click at 320,585: label changed under the pointer (s)",
+      "value": "0.08"
+    },
+    {
+      "step": 16,
+      "source": "screen",
+      "field": "click at 320,585: screen changed after the click (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 16,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "5"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "options screen reached, seconds waited",
+      "value": "0.01"
+    },
+    {
+      "step": 17,
+      "source": "screen",
+      "field": "watched area",
+      "value": "x,y,w,h 180,335,440,25"
+    },
+    {
+      "step": 17,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "5"
+    },
+    {
+      "step": 18,
+      "source": "screen",
+      "field": "click-until: candidate that worked",
+      "value": "565,532 (number 1 of 3)"
+    },
+    {
+      "step": 18,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "6"
+    },
+    {
+      "step": 19,
+      "source": "screen",
+      "field": "watched area",
+      "value": "whole screen"
+    },
+    {
+      "step": 19,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "6"
+    },
+    {
+      "step": 20,
+      "source": "screen",
+      "field": "settle: screen unchanged between two captures (s)",
+      "value": "0.44"
+    },
+    {
+      "step": 20,
+      "source": "process",
+      "field": "input steps that succeeded so far",
+      "value": "6"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "title screen reached, seconds waited",
+      "value": "0.02"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "timing: round to options",
+      "value": "{\"round\": 3, \"at_s\": 0.72}"
+    },
+    {
+      "step": 56,
+      "source": "screen",
+      "field": "timing: round back to title",
+      "value": "{\"round\": 3, \"at_s\": 0.71}"
+    },
+    {
+      "step": 21,
+      "source": "screen",
+      "field": "after.png raw RGB8 pixels sha256",
+      "value": "2f5835dc826acc748d856c253f92ce785f6c93407eb48b5cb9d8f6ed12661fd4"
+    },
+    {
+      "step": 57,
+      "source": "screen",
+      "field": "count: walkthroughs",
+      "value": "3"
+    },
+    {
+      "step": 58,
+      "source": "screen",
+      "field": "observation",
+      "value": "{\"question\": \"Q-UI-10\", \"display size requested\": \"800x600x24\", \"screenshots\": [], \"counts\": {\"walkthroughs\": 3}, \"reads\": {}, \"timing observations\": 6, \"reading\": \"none by the recorder: the catalogue (F020) reads the screenshots and values named here\"}"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wineserver -k exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "0"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game side gone after terminate (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'terminate' took (s)",
+      "value": "0.75"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "display side gone after the display was stopped (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'stopping the display' took (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "31/0/2"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/1/4"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'snapshot and reset' took (s)",
+      "value": "2.0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'keeping the logs' took (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "reset and restoration of the prefix performed",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "clean-up: every stage succeeded and the prefix was reset (the next session may start)",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "session seconds, from the first seal to the end of the reset",
+      "value": "16.21"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "before.png",
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "store": "release:E019"
+    },
+    {
+      "name": "after.png",
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "store": "release:E019"
+    },
+    {
+      "name": "changes.log",
+      "sha256": "80d7128df9f2789c50aecd43ca66831a9e253e5da97b05a5048d779000f5a116",
+      "store": "release:E019"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "7cff3f4878969a322c077080c34660a6cf8916a94e3e3e7c1cc9624955353166",
+      "store": "release:E019"
+    },
+    {
+      "name": "run.log",
+      "sha256": "e2f79ecbb2996673aef0ad989f79604b0b73039e5da3f390e0e37d0dbfa7e94c",
+      "store": "release:E019"
+    }
+  ],
+  "started": "2026-10-10T19:19:30Z",
+  "ended": "2026-10-10T19:19:46Z",
+  "status": "completed"
+}

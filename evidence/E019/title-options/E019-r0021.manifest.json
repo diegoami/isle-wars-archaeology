@@ -1,0 +1,47 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0021",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286896,
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "asset": "f4897d8caa5a22ee-before.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "after.png",
+      "bytes": 286896,
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "asset": "f4897d8caa5a22ee-after.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 96151,
+      "sha256": "b1ea6e800f28f6578431c0a27709534bef6dbe001c0d9c367210832be4f7b849",
+      "asset": "b1ea6e800f28f657-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 901,
+      "sha256": "5f5da90c93e80969926f19684ae5d55fc3f66d3055bd3215987f28673f945bbb",
+      "asset": "5f5da90c93e80969-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 3290,
+      "sha256": "547aee7c49154da5b43c0f384f21994410f14ab93a57198dd27def2fbff4c6ac",
+      "asset": "547aee7c49154da5-run.log",
+      "class": "log"
+    }
+  ]
+}
