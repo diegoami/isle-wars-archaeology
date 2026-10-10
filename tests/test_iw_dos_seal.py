@@ -524,7 +524,7 @@ class TokenTest(World):
         self.assertIn("artifact:iw-dos-3.1-30121376", selected)
         self.assertIn("tool:dosbox-x@2024.03.01", selected)
         self.assertIn("facility:iw-dos-run", selected)
-        for token in ("tool:wine@9.0", "tool:xfwm4", "facility:iwp-prefix", "artifact:iwp-2.0-996e86c5"):
+        for token in ("tool:wine@9.0", "tool:wine@10.0", "tool:xfwm4", "facility:iwp-prefix", "artifact:iwp-2.0-996e86c5"):
             self.assertNotIn(token, selected)
 
     def test_ready_only_when_every_lane_token_passes(self):
