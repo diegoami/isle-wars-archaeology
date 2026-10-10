@@ -64,6 +64,14 @@ place is the run validator's to refuse, so the gate either refuses it (when it n
 leaves it. Every value a document holds that reaches a diagnostic goes through `esc`, so no input
 can make the check crash while printing.
 
+#158 (the owner's decision, 2026-10-10) raises the size limit for two path classes and nothing
+else. A run record is one immutable JSON document (rule 20) and cannot be split, and E020's
+multi-game sitting E020-r0009 holds a 1,334,538-byte record and a 1,474,068-byte evidence
+manifest, so `runs/**/*.json` and `evidence/**/*.manifest.json` may be up to `MAX_RECORD_BYTES`
+(8 MB), and every other tracked file keeps `MAX_BYTES`. The gate's size skip applies the same
+limit (`size_limit`): a manifest of 1-8 MB now passes check_files, so it is still scanned, and
+raising a limit never makes a file skip the wine gate.
+
 Exit 0 clean, 1 not.
 """
 import argparse
@@ -77,6 +85,12 @@ from pathlib import Path
 
 PATTERN = re.compile(r"\.(exe|com|dll|ovl|hlp|cnt|zip|iso|img|vhd|x32|sav|png|mp4|wav)$", re.IGNORECASE)
 MAX_BYTES = 1024 * 1024
+# #158 (the owner's decision, 2026-10-10): `runs/**/*.json` and `evidence/**/*.manifest.json` —
+# and exactly those two path classes — may be up to 8 MB, because a run record is one immutable
+# JSON document (rule 20) that cannot be split and E020-r0009's record was 1,334,538 bytes with a
+# 1,474,068-byte evidence manifest. Every other tracked file keeps MAX_BYTES; the other checks
+# (the originals' extension pattern, artifacts/known.json hashes, the wine gate) are unchanged.
+MAX_RECORD_BYTES = 8 * 1024 * 1024
 
 # Constraint F. The prefix is matched case-sensitively: `Wine-On-User-Machine` is not the
 # carve-out platform and must not slip past the gate. The same contract is pinned on the row
@@ -105,6 +119,11 @@ WINE_GATE_CODE = "[E036]"
 RECORDS_DIR = "runs/"
 RECORD_SUFFIX = ".json"
 EXAMPLES_DIR = "formats/examples/"
+# #158: the second path class that reaches MAX_RECORD_BYTES, compared on the path exactly as git
+# lists it: the first path component must be `evidence/` and the suffix exactly `.manifest.json`
+# (lowercase), so `evidence-x/`, `evidence/…/x.json` and `x.manifest.json.bak` are not it.
+EVIDENCE_DIR = "evidence/"
+MANIFEST_SUFFIX = ".manifest.json"
 
 # T48 (#149): the records that named `linux-wsl2/wine-xvfb-xfwm4` before the carve-out's token was
 # written into their emitters. They are immutable (rule 20), so they are listed here, one line each,
@@ -598,16 +617,35 @@ def allowlist_refusal(rel, where):
     )
 
 
+def size_limit(name):
+    """The byte limit check_files applies to the tracked path `name`, as git lists it.
+
+    #158 (the owner's decision, 2026-10-10): exactly two path classes reach MAX_RECORD_BYTES — a
+    lowercase-`.json` file whose first path component is `runs/`, and a `.manifest.json` file
+    whose first path component is `evidence/`. Both are compared on the path exactly, never on a
+    basename: `runsx/`, `docs/runs/` and `evidence-x/` are not them (a `RECORDS_DIR` or
+    `EVIDENCE_DIR` prefix pins the first path component), `.JSON` is not `.json` (the case
+    `tests/test_runs.py`'s `rglob("*.json")` reads), and `evidence/…/x.json` is a file, not a
+    manifest. Every other tracked file keeps MAX_BYTES.
+    """
+    if name.startswith(RECORDS_DIR) and name.endswith(RECORD_SUFFIX):
+        return MAX_RECORD_BYTES
+    if name.startswith(EVIDENCE_DIR) and name.endswith(MANIFEST_SUFFIX):
+        return MAX_RECORD_BYTES
+    return MAX_BYTES
+
+
 def check_files(root, tracked):
     """The original no-originals file checks, in their original order and wording."""
     registered = known_hashes(root)
     problems = []
     for name in filter(None, tracked):
         path = root / name
+        limit = size_limit(name)
         if PATTERN.search(name) or name.startswith("originals/"):
             problems.append(f"{name}: an original-file or evidence-media type; it belongs on the user's machine or in a release")
-        elif path.is_file() and path.stat().st_size > MAX_BYTES:
-            problems.append(f"{name}: {path.stat().st_size} bytes, over {MAX_BYTES}; nothing here should be that large")
+        elif path.is_file() and path.stat().st_size > limit:
+            problems.append(f"{name}: {path.stat().st_size} bytes, over {limit}; nothing here should be that large")
         elif registered and path.is_file() and sha256_file(path) in registered:
             problems.append(f"{name}: sha256 is in artifacts/known.json; the bytes of a registered artifact never enter this repository")
     return problems
@@ -649,7 +687,12 @@ def wine_gate_problems(root, tracked=None):
             continue
         if not path.is_file():
             continue
-        if path.stat().st_size > MAX_BYTES and not (under_runs and path.suffix.lower() == ".json"):
+        # #158: the gate skips a file only when it is over the limit `size_limit` gives its path,
+        # so check_files refuses it; every file that passes the size check — an evidence manifest
+        # of 1-8 MB, now legal — is scanned, and raising a limit never hides a file from the gate.
+        # A `runs/` `.json` (any casing, T48 round 3) is scanned whatever its size, as before.
+        if (path.stat().st_size > size_limit(rel)
+                and not (under_runs and path.suffix.lower() == ".json")):
             continue   # an oversized tracked file is check_files' finding
         scan = scan_json_document(path)
         if scan is None:

@@ -826,5 +826,66 @@ class RecordSizeLimitTest(unittest.TestCase):
         self.assertIn("runs/E002/E002-r0002.json", result.stdout)
 
 
+class RecordSizePathExactnessTest(unittest.TestCase):
+    """#158 (the owner's decision, 2026-10-10): exactly `runs/**/*.json` and
+    `evidence/**/*.manifest.json` reach 8 MB; every looser spelling keeps 1 MB; and a file that
+    passes the size check is still scanned by the wine gate. Added on top of the main session's
+    `RecordSizeLimitTest` (L64), which this class never edits."""
+
+    MB = 1024 * 1024
+
+    def padded(self, size, head='{"schema": "run/1", "runtime": {"platform": "windows-native-bandicam"}, '):
+        """A JSON object of exactly `size` bytes."""
+        tail = '"pad": "'
+        filler = size - len(head) - len(tail) - 2
+        return head + tail + "x" * filler + '"}'
+
+    def run_on(self, files):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            for rel, text in files.items():
+                path = repo / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+                subprocess.run(["git", "add", rel], cwd=repo, check=True)
+            return run_tool(repo)
+
+    def test_docs_runs_keeps_the_1_mb_limit(self):
+        """`docs/runs/` is not `runs/` as the first path component, so the refusal names 1 MB."""
+        result = self.run_on({"docs/runs/a.json": self.padded(self.MB + 1)})
+        self.assertEqual(result.returncode, 1, result.stdout[-600:])
+        self.assertIn(f"over {1 * self.MB}", result.stdout)
+
+    def test_a_manifest_at_the_evidence_root_may_be_8_mb(self):
+        """`evidence/a.manifest.json` is a manifest however shallow it sits."""
+        text = self.padded(8 * self.MB, '{"schema": "evidence-manifest/1", ')
+        self.assertEqual(len(text.encode()), 8 * self.MB)
+        result = self.run_on({"evidence/a.manifest.json": text})
+        self.assertEqual(result.returncode, 0, result.stdout[-600:] + result.stderr[-600:])
+
+    def test_an_oversize_record_names_the_record_limit(self):
+        """A tracked record past 8 MB is refused, and the message names 8 MB, not 1 MB."""
+        result = self.run_on({"runs/E002/E002-r0002.json": self.padded(8 * self.MB + 1)})
+        self.assertEqual(result.returncode, 1, result.stdout[-600:])
+        self.assertIn(f"over {8 * self.MB}", result.stdout)
+
+    def test_a_large_manifest_hiding_a_nested_wine_record_is_refused_by_the_gate(self):
+        """The size check passes this 2 MB manifest, so only a scan of it can refuse it: the
+        refusal must carry the wine gate's code, not a size line."""
+        inner = ('{"schema": "run/1", '
+                 '"runtime": {"platform": "linux-wsl2/wine-xvfb-xfwm4"}, '
+                 '"artifact": {"set": "iwp-2.0-996e86c5", "variant": "unregistered"}, '
+                 '"start_state": {"sha256": "' + "a" * 64 + '"}}')
+        text = ('{"schema": "evidence-manifest/1", "hidden": ' + inner +
+                ', "pad": "' + "x" * (2 * self.MB) + '"}')
+        result = self.run_on({"evidence/E002/E002-r0002.manifest.json": text})
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
+        self.assertEqual(result.returncode, 1, result.stdout[-600:])
+        self.assertIn("[E036]", result.stdout)
+        self.assertIn("evidence/E002/E002-r0002.manifest.json", result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
