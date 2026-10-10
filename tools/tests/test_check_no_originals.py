@@ -751,5 +751,80 @@ class RunObjectAllowlistTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
 
 
+class RecordSizeLimitTest(unittest.TestCase):
+    """#158 (the owner's decision, 2026-10-10): run records (runs/**/*.json) and evidence manifests
+    (evidence/**/*.manifest.json) may be up to 8 MB; every other tracked file keeps the 1 MB limit.
+    Pushed before dispatch (L64). A multi-game E020 sitting's record was 1.33 MB and its manifest
+    1.47 MB (E020-r0009)."""
+
+    MB = 1024 * 1024
+    WINE_BODY = ('"runtime": {"platform": "linux-wsl2/wine-xvfb-xfwm4"}, '
+                 '"artifact": {"set": "iwp-2.0-996e86c5", "variant": "unregistered"}, '
+                 '"start_state": {"sha256": "' + "a" * 64 + '"}')
+
+    def padded(self, size, head='{"schema": "run/1", "runtime": {"platform": "windows-native-bandicam"}, '):
+        """A JSON object of exactly `size` bytes."""
+        tail = '"pad": "'
+        filler = size - len(head) - len(tail) - 2
+        return head + tail + "x" * filler + '"}'
+
+    def run_on(self, files):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = make_repo(tmp)
+            write_f019(repo)
+            list_records(repo)
+            for rel, text in files.items():
+                path = repo / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+                subprocess.run(["git", "add", rel], cwd=repo, check=True)
+            return run_tool(repo)
+
+    def test_a_record_or_manifest_between_1_and_8_mb_passes(self):
+        for rel, size in (("runs/E002/E002-r0002.json", 1 * self.MB + 1),
+                          ("runs/E002/E002-r0003.json", 8 * self.MB),
+                          ("evidence/E002/E002-r0002.manifest.json", 2 * self.MB)):
+            with self.subTest(rel=rel, size=size):
+                head = '{"schema": "evidence-manifest/1", ' if rel.startswith("evidence/") else None
+                text = self.padded(size, head) if head else self.padded(size)
+                self.assertEqual(len(text.encode()), size)
+                result = self.run_on({rel: text})
+                self.assertEqual(result.returncode, 0, result.stdout[-600:] + result.stderr[-600:])
+
+    def test_a_record_or_manifest_over_8_mb_is_refused(self):
+        for rel in ("runs/E002/E002-r0002.json", "evidence/E002/E002-r0002.manifest.json"):
+            with self.subTest(rel=rel):
+                head = '{"schema": "evidence-manifest/1", ' if rel.startswith("evidence/") else None
+                text = self.padded(8 * self.MB + 1, head) if head else self.padded(8 * self.MB + 1)
+                result = self.run_on({rel: text})
+                self.assertEqual(result.returncode, 1, result.stdout[-600:])
+                self.assertIn(rel, result.stdout)
+
+    def test_every_other_path_keeps_the_1_mb_limit(self):
+        for rel in ("docs/big.json", "runs/E002/E002-r0002.txt", "runs/E002/E002-r0002.JSON",
+                    "evidence/E002/E002-r0002.json", "evidence/E002/E002-r0002.manifest.json.bak",
+                    "runsx/E002/a.json", "evidence-x/E002/a.manifest.json", "findings/big.md"):
+            with self.subTest(rel=rel):
+                result = self.run_on({rel: '{"pad": "' + "x" * (1 * self.MB) + '"}'})
+                self.assertEqual(result.returncode, 1, result.stdout[-600:])
+                self.assertIn(rel, result.stdout)
+
+    def test_a_large_manifest_cannot_hide_a_wine_record(self):
+        """Over 1 MB the gate skipped scanning anything outside runs/*.json, trusting the size check to
+        refuse it. A manifest of 1-8 MB now passes the size check, so it must still be scanned."""
+        inner = '{"schema": "run/1", ' + self.WINE_BODY + '}'
+        text = '{"schema": "evidence-manifest/1", "hidden": ' + inner + ', "pad": "' + "x" * (2 * self.MB) + '"}'
+        result = self.run_on({"evidence/E002/E002-r0002.manifest.json": text})
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
+        self.assertEqual(result.returncode, 1, result.stdout[-600:])
+        self.assertIn("evidence/E002/E002-r0002.manifest.json", result.stdout)
+
+    def test_a_large_record_is_still_gated(self):
+        text = '{"schema": "run/1", ' + self.WINE_BODY + ', "pad": "' + "x" * (2 * self.MB) + '"}'
+        result = self.run_on({"runs/E002/E002-r0002.json": text})
+        self.assertEqual(result.returncode, 1, result.stdout[-600:])
+        self.assertIn("runs/E002/E002-r0002.json", result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
