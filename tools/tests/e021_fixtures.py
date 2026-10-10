@@ -21,7 +21,7 @@ BLUE = "blue"
 RED = "red"
 
 
-def board(cells=None, owner="red", army=1):
+def board(cells=None, owner="blue", army=1):
     """A 46-country board of `owner`/`army`, with `cells` ({country: (owner, army)}) over it."""
     out = {c: {"army": army, "owner": owner} for c in range(1, COUNTRIES + 1)}
     for country, (own, count) in (cells or {}).items():

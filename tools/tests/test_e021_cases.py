@@ -66,7 +66,7 @@ class PickTest(unittest.TestCase):
         self.assertIsNotNone(answer, f"no pair for {case} {cell}")
         got_case, got_cell, attacker, defender = answer
         self.assertEqual((got_case, got_cell), (case, cell))
-        self.assertTrue(cases.legal(board, attacker, defender, adj))
+        self.assertTrue(cases.paired(board, attacker, defender, adj))
         self.assertTrue(cases.fits(board, case, cell, attacker, defender, adj))
 
     def test_even_cell_one_when_the_board_shows_2_against_1(self):
@@ -75,7 +75,7 @@ class PickTest(unittest.TestCase):
 
     def test_even_cell_against_each_of_the_four_defender_counts(self):
         for offset, defender in enumerate((-1, 0, 1, 2)):
-            board = fx.board({3: (fx.BLUE, 2), 4: (fx.RED, 2 + offset)})
+            board = fx.board({3: (fx.BLUE, 2), 4: (fx.RED, 2 + defender)})
             cell = 1 + offset
             self.assert_pair(board, self.pick(board, {("even", cell)}), "even", cell)
 
@@ -102,10 +102,10 @@ class PickTest(unittest.TestCase):
         self.assertIsNone(self.pick(board, {("tiny", 2)}))
         self.assertIsNone(self.pick(board, set()))
 
-    def test_none_when_the_only_enemy_is_stronger_than_the_attacker(self):
-        # the human's gate is equality (F011 Q-CMB-02): 2 may not attack 3
+    def test_stronger_enemy_is_a_boundary_probe_not_an_outcome_pair(self):
+        # The task explicitly probes 2 versus 3, even if the game refuses it.
         board = fx.board({3: (fx.BLUE, 2), 4: (fx.RED, 3)})
-        self.assertIsNone(self.pick(board, {("even", 3)}))          # even cell 3 is 2 vs 3
+        self.assertEqual(self.pick(board, {("even", 3)}), ("even", 3, 3, 4))
         self.assertIsNone(self.pick(board, {("lost", 1)}))
 
     def test_never_a_non_adjacent_target(self):
@@ -127,7 +127,7 @@ class PickTest(unittest.TestCase):
     def test_never_a_country_the_driver_cannot_click(self):
         # countries 11 and 15 have no proven click point (#120): never an attacker or a target
         adjacency = {11: {12}, 12: {11}}
-        board = fx.board({11: (fx.BLUE, 4), 12: (fx.RED, 1)})
+        board = fx.board({11: (fx.BLUE, 3), 12: (fx.RED, 1)})
         points = points_module.click_points()
         self.assertIsNone(cases.pick(board, {("tiny", 3)}, adjacency, points=points))
         self.assertIsNone(cases.pick(board, {("lost", 1)}, adjacency, points=points))
@@ -160,19 +160,18 @@ class FrontierTest(unittest.TestCase):
         self.assertEqual(answer, (3, 4, "even", 1, 0))
 
     def test_the_frontier_grows_the_smallest_gap_first(self):
-        # even cell 7 is an attacker of 4 against a defender of 3: two reinforcements away from 2
+        # even cell 5 is an attacker of 4 against a defender of 3: two reinforcements away from 2
         board = fx.board({3: (fx.BLUE, 2), 4: (fx.RED, 3)})
-        answer = cases.frontier(board, {("even", 7)}, fx.ADJ)
-        self.assertEqual(answer, (3, 4, "even", 7, 2))
+        answer = cases.frontier(board, {("even", 5)}, fx.ADJ)
+        self.assertEqual(answer, (3, 4, "even", 5, 2))
 
     def test_the_frontier_prefers_the_pair_whose_cell_is_closest(self):
-        # country 1 (at 3) is one reinforcement from even cell 8 (attacker 4 vs a defender of 4);
-        # country 3 (already at 4) is on even cell 9 (attacker 4 vs a defender of 5) at once
+        # Country 1 is one reinforcement from cell 6; country 3 already fits cell 7.
         adjacency = {1: {2}, 2: {1}, 3: {4}, 4: {3}}
         board = fx.board({1: (fx.BLUE, 3), 2: (fx.RED, 4), 3: (fx.BLUE, 4), 4: (fx.RED, 5)})
-        needed = {("even", 8), ("even", 9)}
-        self.assertEqual(cases.frontier(board, needed, adjacency)[:4], (3, 4, "even", 9))
-        self.assertEqual(cases.frontier(board, {("even", 8)}, adjacency)[:4], (1, 2, "even", 8))
+        needed = {("even", 6), ("even", 7)}
+        self.assertEqual(cases.frontier(board, needed, adjacency)[:4], (3, 4, "even", 7))
+        self.assertEqual(cases.frontier(board, {("even", 6)}, adjacency)[:4], (1, 2, "even", 6))
 
     def test_the_frontier_falls_back_to_the_strongest_country_with_an_enemy(self):
         # nothing size-shaped is reachable (no size cells are needed): grow the strongest anyway

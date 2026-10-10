@@ -15,10 +15,10 @@ A board is the shape the reader gives (`boardreader.read_board`): {country: {"ar
 such a board, the adjacency (E015's committed tabulation, via `exchange_events.load_adjacency`)
 and the cells still needed: no pixels, no clicks, no game.
 
-What an attack pair must satisfy before any case is considered (`legal`): the attacker belongs to
+What an attack pair must satisfy before any case is considered (`paired`): the attacker belongs to
 the seat that plays (the driver plays blue, F019 Q-SET-02), the defender is another seat's country
-that borders it, and the attacker holds at least as many armies as the defender -- the human's gate
-is equality of the raw counts (F011 Q-CMB-02, about 90%), not a ratio and not a margin. An
+that borders it. Size cases probe both sides of the expected equality gate (F011 Q-CMB-02,
+about 90%); that gate must not filter out a boundary probe. An
 attacker of 1 may still be refused by the game (the task file): the refusal is the observation, so
 the picker never filters it out.
 
