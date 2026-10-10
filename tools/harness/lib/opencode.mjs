@@ -505,7 +505,7 @@ export async function runOpenCodeWatched({
           throw fail(`no exit in ${secs} s`, `OpenCode did not finish within ${secs} s; killed pid ${child.pid}`);
         }
         if (!session || idleTimeoutMs <= 0) continue;
-        const { session: seen } = await lookupSession(cmd, { workDir, title, startedMs, env, timeoutMs: Math.max(0, Math.min(30_000, totalTimeoutMs - elapsed())) });
+        const { session: seen } = await lookupSession(cmd, { workDir, title, startedMs, env, timeoutMs: Math.max(0, Math.min(30_000, totalTimeoutMs - elapsed())), resumeSessionId });  // a resumed session keeps its first title (Sol's re-review R2 on PR 164)
         if (hasExited()) break;
         if (seen && Number(seen.updated) > lastUpdated) lastUpdated = Number(seen.updated);
         const idleFor = Date.now() - lastUpdated;

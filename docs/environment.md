@@ -1,7 +1,9 @@
 # Environment
 
 What a session needs so the main session can delegate. Everything here is optional: each missing
-piece turns one delegate off, and the main session falls back to Claude (the scripts exit 3).
+piece turns one delegate off. The scripts then exit 3, and the main session diagnoses and fixes it,
+or asks the user for another choice (CLAUDE.md rule 6, 2026-10-11). *Superseded: "the main session
+falls back to Claude".*
 
 ## On your desktop
 
@@ -93,7 +95,8 @@ localhost, with no auth; results are cached 60 s, and `?refresh` bypasses the ca
 - `curl -s localhost:8765/avoid`: the providers out of quota, with when each is usable again.
 
 Each provider has a `status`: `ok` (under 80% used), `low` (80% or more), `exhausted` (95% or
-more: do not use it until `available_at` / `available_in`), `error` (it could not be checked;
+more: usable again at `available_at` / `available_in`; shown with the question, and the user decides,
+CLAUDE.md rule 6; *superseded: "do not use it"*), `error` (it could not be checked;
 `error` says why) or `not_configured`. `headroom_pct` is the percent left on its most-used window;
 `windows[]` lists every limit with `used_pct` and when it resets. OpenRouter is prepaid: its
 windows never reset, and `remaining_usd` is the balance. Every model is judged on its
@@ -102,8 +105,9 @@ provider is `exhausted` can a model still run on a limit of its own, and then th
 `when_exhausted.usable_models` names it (today `gpt-5.6-luna` on OpenAI; L65). Read which pools
 exist from the windows the endpoint returns, not from this page.
 
-Free models on OpenRouter are a supplement, for smaller tasks and additional reviews (a second
-opinion next to a regular model), never the main model for important work (the owner, 2026-10-06):
+Free models on OpenRouter are usable when the user names one (CLAUDE.md rule 6). *Superseded on
+2026-10-11, kept as history: "a supplement, for smaller tasks and additional reviews, never the main
+model for important work" (the owner, 2026-10-06).* Their privacy limit still holds (below):
 
 | Model | Use |
 | --- | --- |
@@ -113,10 +117,11 @@ opinion next to a regular model), never the main model for important work (the o
 | `openrouter/poolside/laguna-s-2.1:free` | usable, often rate-limited |
 
 They share one allowance of 1,000 requests a day and about 20 a minute, and each agent step is one
-request: `free_model_daily_requests` in `/quota/openrouter` gives what remains, and the scripts skip
-a free model when none remain (`lib/quota.mjs`). Free providers may log and train on prompts: never
+request: `free_model_daily_requests` in `/quota/openrouter` gives what remains; since 2026-10-11 the scripts
+only warn when none remain (`lib/quota.mjs`, CLAUDE.md rule 6). Free providers may log and train on prompts: never
 send private or client code, secrets, or anything under NDA. They come and go and get rate-limited:
-on a 429, fall back to the next model instead of retrying. Check their output like any unreviewed
+on a 429, do not retry; tell the user, who names another model or waits (CLAUDE.md rule 6; *superseded:
+"fall back to the next model"*). Check their output like any unreviewed
 contribution; they have been tried only on small tasks.
 
 The models per provider, heavy and light:
@@ -135,8 +140,9 @@ The models per provider, heavy and light:
 
 Alibaba's Token Plan is no longer in quota-tracker: `/quota/alibaba` returns `not_monitored` with
 `pricing` only — there is no `month` window, and Alibaba is absent from `/quota` and
-`/avoid`, and `/recommend` does not rank it. Use Alibaba only as a supplement or an extra reviewer, not as a main or default model,
-and not in long loops. OpenCode's key for it comes only from the environment variable
+`/avoid`, and `/recommend` does not rank it. Use Alibaba only when the user asks for it (CLAUDE.md rule 6.4; the scripts need `--alibaba`).
+*Superseded, kept as history: "only as a supplement or an extra reviewer, not as a main or default
+model, and not in long loops".* OpenCode's key for it comes only from the environment variable
 `ALIBABA_TOKEN_PLAN_API_KEY` (in WSL from `~/.config/ai-keys.env`, which `~/.bashrc` and
 `~/.profile` load, and through WSLENV for commands started from Windows; on Windows a user
 variable), so it works in every OpenCode data directory, the scripts' own included. Never add it
@@ -285,7 +291,9 @@ Contents, Pull requests and Issues.
 
 OpenCode reads both `OPENCODE_API_KEY` and `OPENROUTER_API_KEY` from the environment (checked with
 `opencode auth list` on 1.18.33), so those need no `opencode auth login`. Go is the exception: without
-its console login, `implement.mjs` and `review.mjs` fail over and exit 3, and Claude agents take the work.
+its console login, `implement.mjs` and `review.mjs` exit 3. Log in (`opencode console login`, in both
+data directories) and run again; another model only when the user names it (CLAUDE.md rule 6).
+*Superseded: "and Claude agents take the work".*
 
 ## Network
 

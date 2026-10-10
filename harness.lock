@@ -21,6 +21,8 @@ adapt tools/harness/implement.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the 
 adapt tools/harness/lib/common.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): namedModel(); a quota block is a warning, never a skip
 adapt tools/harness/lib/opencode.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): runOpenCodeWatched/lookupSession take resumeSessionId (rule 13)
 adapt tools/harness/choose.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): marked superseded, no longer called
+adapt tools/harness/lib/choice-selftest.mjs  (new, PR 164: the model-choice and resume self-test, run by review.mjs --self-test)
+adapt docs/lessons.md  (L68 appended: the user decides models, the owner 2026-10-11, PR 164)
 15f1fcb3af4cd07482f39328e2255a71075f4889946901960116f9a3a5b4c16f  .claude/agents/implementer.md
 6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
@@ -29,7 +31,6 @@ dc7d16548bb7ab6e74a9a38d0905fd21bce16c1087efdc67507a3bd2f2681ea8  .claude/skills
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
-cd760bb4bbdf8b6d7e2d15a93fefaa855248e973dd10dc82414016a0304b38f7  docs/lessons.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs

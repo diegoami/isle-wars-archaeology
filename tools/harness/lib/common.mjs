@@ -127,16 +127,24 @@ export const ocArgs = (worktree, agent, model) =>
 
 // The model the user named (CLAUDE.md rule 6, 2026-10-11): a harness.json key, or any OpenCode id
 // `provider/model`. Its family decides the reviewer-family rule, so it is never taken on trust (Sol's
-// R1 on PR 164): a registered id keeps its registered family, a new id's family is read from the
-// model's name, and a declared --family must agree. DeepSeek is refused on every route; Alibaba only
+// R1 and re-review R1 on PR 164): a registered id keeps its registered family; a new id's family
+// comes from a single-family provider or an unambiguous model name, else the id is refused; a
+// declared --family is only a cross-check. DeepSeek is refused on every route; Alibaba only
 // with --alibaba (the user asked for it).
 export const FAMILIES = ['claude', 'openai', 'glm', 'mimo', 'minimax', 'qwen', 'deepseek'];
+// Providers that serve one family only: their prefix alone fixes the family. Every other route
+// (openrouter, opencode-go, alibaba-token-plan, …) serves several, so the model name must say it.
+const PROVIDER_FAMILY = { openai: 'openai', anthropic: 'claude', minimax: 'minimax', 'zai-coding-plan': 'glm', zai: 'glm' };
+const NAME_FAMILY = [[/deepseek/, 'deepseek'], [/claude|opus|sonnet|haiku|fable/, 'claude'], [/gpt|^o\d|codex/, 'openai'],
+  [/glm/, 'glm'], [/mimo/, 'mimo'], [/minimax/, 'minimax'], [/qwen/, 'qwen']];
+// The family an OpenCode id belongs to, established from the id alone, never from a declaration
+// (Sol's re-review R1 on PR 164); null when it cannot be established.
 export function familyFromId(id) {
-  const model = String(id).toLowerCase().split('/').pop();
-  const rules = [[/deepseek/, 'deepseek'], [/claude|opus|sonnet|haiku|fable/, 'claude'], [/^gpt|^o\d|codex/, 'openai'],
-    [/glm/, 'glm'], [/mimo/, 'mimo'], [/minimax/, 'minimax'], [/qwen/, 'qwen']];
-  for (const [re, fam] of rules) if (re.test(model)) return fam;
-  return null;
+  const parts = String(id).toLowerCase().split('/');
+  const byName = NAME_FAMILY.filter(([re]) => re.test(parts[parts.length - 1])).map(([, f]) => f);
+  const byProvider = PROVIDER_FAMILY[parts[0]];
+  if (byProvider) return byName.every((f) => f === byProvider) ? byProvider : null;   // e.g. openai/glm-x: contradictory
+  return new Set(byName).size === 1 ? byName[0] : null;
 }
 // The family a name stands for: a harness.json key, a registered id, a provider/model id, or a
 // family name. Null when it cannot be established (Sol's R2 on PR 164).
@@ -156,9 +164,10 @@ export function namedModel(config, name, { family, variant, alibaba } = {}, die)
   const known = entry ? entry.family : familyFromId(id);
   if (known === 'deepseek' || /deepseek/i.test(id)) die(2, `${name}: DeepSeek is never used (CLAUDE.md rule 6).`);
   if (/^alibaba/i.test(id) && !alibaba) die(2, `${name}: Alibaba runs only when the user asks for it; pass --alibaba (CLAUDE.md rule 6).`);
-  if (family && known && family !== known) die(2, `${name} is of the ${known} family; --family ${family} disagrees.`);
-  const fam = known ?? family;
-  if (!fam) die(2, `${name}: its family cannot be read from its name; pass --family <family>.`);
+  // The family is never taken from --family alone: an unknown one is refused (re-review R1 on PR 164).
+  if (!known) die(2, `${name}: its family cannot be established from its provider or its name. Register it in harness.json with its family (via /switch-model), then name it.`);
+  if (family && family !== known) die(2, `${name} is of the ${known} family; --family ${family} disagrees.`);
+  const fam = known;
   if (config.models[name]) return name;
   if (entry) return Object.keys(config.models).find((k) => config.models[k] === entry);
   config.models[name] = { id, family: fam, ...(variant ? { variant } : {}) };

@@ -61,6 +61,7 @@ import { credentialJail, OFF_WARNING } from './lib/jail.mjs';
 import { runChain, excludeImplementers, readReview, doneWhenCount, briefTargets } from './lib/chain.mjs';
 import { planPost, publish, postComment, applyLabel, withdrawApproval, combinePlans } from './lib/post.mjs';
 import { selfTest, SAMPLES } from './lib/review-selftest.mjs';
+import { choiceSelfTest } from './lib/choice-selftest.mjs';
 import {
   sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel, familyOf,
 } from './lib/common.mjs';
@@ -74,7 +75,10 @@ if (a['self-test']) {
   const failures = selfTest();
   for (const f of failures) console.error(`FAIL ${f}`);
   say(`self-test: ${SAMPLES.length - failures.length} of ${SAMPLES.length} samples read as expected`);
-  process.exit(failures.length ? 1 : 0);
+  const choice = await choiceSelfTest();
+  for (const f of choice.failures) console.error(`FAIL ${f}`);
+  say(`self-test: model choice and resume, ${choice.failures.length ? `${choice.failures.length} failed` : `all ${choice.count} checks passed`}`);
+  process.exit(failures.length || choice.failures.length ? 1 : 0);
 }
 if (!a.pr || !a.brief) die(2, '--pr and --brief are required.');
 if (supersededFlag) die(2, `--${supersededFlag} chose reviewers from harness.json; since 2026-10-11 the user names each reviewer (CLAUDE.md rule 6): pass --reviewer.`);

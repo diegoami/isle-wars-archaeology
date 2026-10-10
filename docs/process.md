@@ -106,8 +106,9 @@ named fixes | rework | user decision); per Done-when line `DW<k>: ran <command> 
 last. Never post it: the script posts it and applies the label.
 ```
 
-For a Claude reviewer, the main session also runs `/code-review <pr>` on architecture tasks,
-always with the PR number: a bare invocation from an agent reviews the wrong tree. (L8)
+A further review, such as `/code-review <pr>` on an architecture task, runs only when the user asks
+for it and names the model (CLAUDE.md rule 6.2: one review unless the user asks for more); then
+always with the PR number, since a bare invocation from an agent reviews the wrong tree. (L8)
 
 ## 6. Bugs, fixes, triage
 
