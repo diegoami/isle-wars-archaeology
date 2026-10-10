@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SUPERSEDED (CLAUDE.md rule 6, the owner, 2026-10-11): the user chooses every model, and
+// `/recommend` is shown only as a suggestion. Nothing in this repository calls this script any more.
 // Which model should run this, right now? Ranks harness.json's models for a role and difficulty
 // by quota-tracker's /recommend over the owner's preference order (the `chooser` block;
 // absent: the chains). Advisory: it prints a ranking, `--pick` names the top one for

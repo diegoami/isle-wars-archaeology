@@ -73,7 +73,7 @@ its DeepSeek models are blacklisted, the owner 2026-10-09; its Kimi and MiniMax 
 from this list: quota-tracker stopped checking it (Alibaba flagged the console checks as unusual
 activity), so `/quota/alibaba` returns `not_monitored` with `pricing` only — see the Alibaba
 Token Plan section below for what this means and how to use those models.
-Check it before choosing, recommending or delegating to a model (L50). It is read-only, on
+Its `/recommend` is shown to the user as a suggestion with each model question (CLAUDE.md rule 6, 2026-10-11); the user chooses. *Superseded: "check it before choosing a model" (L50).* It is read-only, on
 localhost, with no auth; results are cached 60 s, and `?refresh` bypasses the cache:
 - `curl -s localhost:8765/quota`, or `/quota/<provider>` for one (alibaba's still carries a
   `pricing` object, even though the rest of its entry is empty; zai's carries `pricing` too);
@@ -179,11 +179,10 @@ If `curl -sf localhost:8765/health` fails where the service is installed:
 4. To run it without the service: `cd ~/projects/models_quota_tracker && uv run quota-tracker serve`
    in the background (it stops when the session ends).
 
-`implement.mjs` and `review.mjs` ask the service themselves before their chain runs (`lib/quota.mjs`,
-L52): a model is skipped when its provider is `exhausted`, unless the provider's
-`when_exhausted.usable_models` names it (L65). A provider in `error` or
-`not_configured` skips nothing. Each skip is logged with its reason, and with none left the script
-exits 3. `HARNESS_QUOTA_URL` names another
+`implement.mjs` and `review.mjs` ask the service before they run (`lib/quota.mjs`, L52), and since
+2026-10-11 only warn: they run the model the user named even when its provider is `exhausted`, and
+log `quota warning: …` (CLAUDE.md rule 6). *Superseded: skipping an exhausted model, and exit 3 when
+none was left.* `HARNESS_QUOTA_URL` names another
 address. Where the service does not answer, they skip nothing and log `quota: not checked`.
 
 Never read or edit `~/.config/quota-tracker/config.toml`: it holds account tokens. A provider in

@@ -5,7 +5,7 @@
 commit 610f979af099f6d2922d667cd10674ba486b28d1
 profile full
 copied 2026-10-09
-adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6 per the owner, with L50 and L51)
+adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6: the user decides, the owner 2026-10-11)
 adapt docs/tasks/README.md  (this repository's task index)
 adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside every chain (L51); reviewer.hard/sol; zai-glm-5.3 at low; five alibaba-token-plan models; jail off, the owner 2026-10-05 (#98); seven more entries 2026-10-06, placed the same day (the owner): implementer chain + mm-m2.7 + ali-qwen-flash; reviewer.hard + ali-glm + ali-qwen-max; the rest explicit-model roles: mm-m3 (thinking), mm-m2.7 (no variant), ali-deepseek-pro (the dated -0813 id), ali-deepseek-flash, ali-qwen-max (low), ali-qwen-flash (medium), ali-glm; bump to 610f979: a chooser block with rule 6's pairs (no Alibaba model), every model entry and chain kept as ours)
 adapt .claude/agents/reviewer.md  (effort: medium for Opus, the owner 2026-10-05)
@@ -14,9 +14,13 @@ adapt docs/tasks/TEMPLATE.md  (the Implementer line names this project's harness
 adapt .opencode/agents/reviewer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/ and a /tmp/iwa-review-* TMPDIR; bash denies for writes into the static folder; the reading recipe is grep/sed -n/head/ls/sha256sum with quoted ~ paths — never cd or cat, whose checked text mangles quotes (2026-10-06, T23); the owner, 2026-10-05, T29; bump to 610f979: fix #144 (/tmp/opencode/* allow) taken; the T29 places kept beside L61; RUN-NOTES.md rule (read the implementer's notes from the brief), docs/running-notes.md, from goal2-archaeology 007ac3a with the worktree corrections (the owner, 2026-10-10))
 adapt docs/environment.md  (what the OpenCode reviewer (T29) and implementer (T31) may reach outside their worktree; the static-analysis tools section (T26); quota step: /recommend, not /best (harness_imperial f91210b; the owner, 2026-10-08); bump to 610f979: L65 wording taken; MiMo is the hard implementer (rule 6); DeepSeek blacklisted; the OpenRouter row kept as ours (upstream's MiMo id not checked against a live list here))
 adapt .opencode/agents/implementer.md  (external_directory: read ~/.local/share/isle-wars-archaeology/static/; edit denied there; bash denies for writes into the static folder; the reading recipe is grep/sed -n/head/ls/sha256sum with quoted ~ paths — never cd or cat, whose checked text mangles quotes (2026-10-06, T23); the owner, 2026-10-05, T31; bump to 610f979: fix #144 (/tmp/opencode/* allow) and fix #145 (task deny dropped) taken; RUN-NOTES.md rule (read it first, append-only, END block, never staged, check-ignore, never write the exclude), docs/running-notes.md, from goal2-archaeology 007ac3a with the worktree corrections (the owner, 2026-10-10))
-adapt tools/harness/review.mjs  (output rules: the static folder read-only, a /tmp/iwa-review-* TMPDIR, in-place mutations restored, T29; L62 carried from 82b81ca (#115))
+adapt tools/harness/review.mjs  (2026-10-11: --reviewer required, --hard/--sol/--second-opinion refused, rule 6; output rules: the static folder read-only, a /tmp/iwa-review-* TMPDIR, in-place mutations restored, T29; L62 carried from 82b81ca (#115))
 adapt .claude/skills/delegate/SKILL.md  (rule 18 carve-out propagated, c1ec526; quota step: /recommend, not /best (harness_imperial f91210b; the owner, 2026-10-08); bump to 610f979: upstream's carve-out paragraph (§10, L63) kept, with this project's rule 18 note under it, constraint E as amended 2026-10-09)
 adapt .claude/skills/run-task/SKILL.md  (rule 18 carve-out propagated, c1ec526; bump to 610f979: upstream's carve-out line (L63) plus this project's preconditions; constraint E as amended 2026-10-09)
+adapt tools/harness/implement.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): --model required, any OpenCode id with --family, no chain or quota skip, --session resume with --idle-min/--total-min
+adapt tools/harness/lib/common.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): namedModel(); a quota block is a warning, never a skip
+adapt tools/harness/lib/opencode.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): runOpenCodeWatched/lookupSession take resumeSessionId (rule 13)
+adapt tools/harness/choose.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the user names every model): marked superseded, no longer called
 15f1fcb3af4cd07482f39328e2255a71075f4889946901960116f9a3a5b4c16f  .claude/agents/implementer.md
 6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
@@ -27,20 +31,16 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
 cd760bb4bbdf8b6d7e2d15a93fefaa855248e973dd10dc82414016a0304b38f7  docs/lessons.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
-2d74fb9dbdae160ddc6e3aa68879e68c36897d90a74eb4c2bced239f851059c2  tools/harness/choose.mjs
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
-84560c6cea5eb6d38d0f6f0b96db9c6a7411e93ae5ee82d265725243c531d4ea  tools/harness/implement.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
 076fd078b9efac40b9ae72644f672f76fcc016a049556f61579f07fef06d9c55  tools/harness/lib/chain.mjs
 656cf6c7014277b5276f81877da933f378eb4826f196a8b3daadb2a23aeff68a  tools/harness/lib/choose.mjs
 b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/lib/claim.mjs
-0545b589015389325ea5807b00204a3d268110c6f25aebb6d9d759d25d4fcc55  tools/harness/lib/common.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
-44cc792f4867614f7995940862256ee719b5db50a335f6ae432e932d6af0eacf  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 00e299515d581b12747f4159a97dc8c645eeaaa7b784023ef78f96572241a8fc  tools/harness/lib/quota.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
