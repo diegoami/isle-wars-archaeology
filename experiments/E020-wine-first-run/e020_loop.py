@@ -23,6 +23,17 @@ cap with the human holding fewer than 10 countries: the game credited a loss, wr
 file (F003) and showed the Scoreboard, and the blind setup clicks after it missed. So New Game is
 sent only on the title screen, never on a board.
 
+Before each New Game after the first (fix #152, the owner, 2026-10-09) the loop puts the shipped
+scoreboard file `xtras/Islepro.skr` back into the run copy, copied from the install, which is bound
+read-only, and logs `event: skr-restored` with the sha256 it measured on the run copy *after* the
+copy, naming the game about to start (its own ordinal, turn 0). A credited loss writes that file
+(F003), so from then on the run copy is the successor artifact set, which F019 has no row for, and
+the export refuses a game that ran on it: the restore line is what lets the export keep the game on
+the shipped set. When the copy fails, or the run copy then measures anything but the shipped file,
+the loop sends nothing more for that game -- no `new-game` -- and the sitting ends cleanly there,
+before New Game: a last frame, an `ended: skr-restore-failed: <reason>` line with its sha256, and no
+click, as for an unknown screen. The install is never written.
+
 Readiness is never assumed (T38 round 3, R1): when `QUIET_ATTEMPTS` `quiet` blocks pass without a
 quiet board, the loop sends nothing more. It marks its summary `ended: aborted: not-ready: ...` and
 raises the click-driver's `NotReady`, which ends the session with the status `aborted: not-ready:
@@ -91,12 +102,19 @@ class TimeUp(Exception):
 
 
 class BatchLoop:
-    def __init__(self, driver, batch, clock=time.monotonic, sleep=time.sleep):
+    def __init__(self, driver, batch, clock=time.monotonic, sleep=time.sleep, restore=None,
+                 shipped_skr=None):
+        """`restore` puts the shipped `xtras/Islepro.skr` into the run copy and returns the sha256 it
+        then measures there; `shipped_skr` is that file's sha256 (artifacts/known.json, read by the
+        launcher). The loop never restores without both, and takes neither as given (fix #152)."""
+        if (restore is None) != (shipped_skr is None):
+            raise ValueError("the scoreboard restore needs its callable and the shipped sha256 together")
         self.driver = driver
         self.games_max = int(batch["games_max"])
         self.seconds = float(batch["sitting_seconds"])
         self.clock = clock
         self.sleep = sleep
+        self.restore, self.shipped_skr = restore, shipped_skr
         self.summary = {"games": 0, "turns": 0, "placements": 0, "ended": None}
         self.game_over_seen = None           # {"ended": "game-over", "winner": ...} once the winner notice is read
         self.scoreboard_seen = False         # the Scoreboard was read in the game's own turns or play-out
@@ -145,6 +163,9 @@ class BatchLoop:
                 self.unknown_screen(screen)
                 return self.summary
             self.check_time("game-start")           # no game is logged as started that New Game cannot start
+            if self.restore is not None and game > 1:
+                if not self.restore_shipped_skr(screen):    # the sitting ends before New Game (fix #152)
+                    return self.summary
             self.driver.note(event="game-start")
             self.game_open = True
             self.summary["games"] = game
@@ -166,6 +187,27 @@ class BatchLoop:
                 return self.summary
         self.summary["ended"] = "games-max"
         return self.summary
+
+    def restore_shipped_skr(self, screen):
+        """Put the shipped scoreboard file back into the run copy and log `skr-restored` with the
+        sha256 measured on the run copy after the copy, naming the game about to start (fix #152).
+        False when the restore failed or the run copy measures anything but the shipped file: then
+        the sitting ends before New Game, with the reason (below), and nothing is sent."""
+        try:
+            digest = self.restore()                   # whatever the restore reports, it fails closed
+        except Exception as exc:
+            return self.restore_failed(screen, f"{type(exc).__name__}: {exc}")
+        if digest != self.shipped_skr:
+            return self.restore_failed(screen, f"the run copy's xtras/Islepro.skr measures {digest!r}, "
+                                               f"not the shipped file {self.shipped_skr}")
+        self.driver.note(event="skr-restored", sha256=digest)
+        return True
+
+    def restore_failed(self, screen, reason):
+        """The restore failed: the sitting ends as it does on an unknown screen -- a last frame, its
+        sha256 and the reason logged, no click -- and no New Game is sent for this game."""
+        self.unknown_screen(screen, ended=f"skr-restore-failed: {reason}")
+        return False
 
     def game_over(self):
         """The winner notice is up: the game is over. Its winner is read by pixels (None when the

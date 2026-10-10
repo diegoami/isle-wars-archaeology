@@ -22,8 +22,13 @@ raw and immutable; T38 round 2, R3, R6, R7).
 
 A sitting whose log has a `loss-credited` line followed by a `game-start` is refused (T41): the game
 wrote the scoreboard file, so the games after it ran on the successor set, which F019 has no row for.
-A record never names the shipped set for a game played after a scoreboard write. A sitting whose
-credit came last (no game started after it) names the shipped set, which every game of it ran on.
+The one exception (fix #152, the owner, 2026-10-09): the driver puts the shipped `xtras/Islepro.skr`
+back into the run copy before that game's New Game, so a game after a credit is exported on the
+shipped set only when an `skr-restored` line naming that same game, carrying the shipped file's
+sha256 (read from `artifacts/known.json`, never a constant), comes after the credit and before the
+`game-start`. Anything else is refused, as it was. A record never names the shipped set for a game
+played after a scoreboard write without that proof. A sitting whose credit came last (no game started
+after it) names the shipped set, which every game of it ran on.
 
 Run ids are experiment-wide (R7): the next one is one more than every `E020-rNNNN` under
 `runs/E020/` (all batches) and `evidence/E020/`, and neither file is ever written over.
@@ -109,17 +114,37 @@ def games_started(paths):
     return {line.get("game") for line in jsonl(paths["actions"]) if line.get("event") == "game-start"}
 
 
-def games_after_loss(paths):
-    """The game ordinals the click-driver started after the game credited a loss (T41): a `loss-credited`
-    line, then `game-start` lines, in the file's order. The credit wrote the scoreboard file
-    (xtras/Islepro.skr, F003), so those games ran on the successor artifact set, not the shipped one."""
-    credited, after = False, []
+def games_after_loss(paths, shipped_skr):
+    """The game ordinals started after a credit with no shipped restore of their own (T41; fix #152):
+    a `loss-credited` line sets the credit and clears any earlier restore, an `skr-restored` line
+    after it records one, and a `game-start` line after it is a game of the successor set unless the
+    latest restore names that same game with `shipped_skr`'s sha256. A game-start with no ordinal of
+    its own is never named by a restore either, so a line that carries no game proves nothing. The
+    credit wrote the scoreboard file (xtras/Islepro.skr, F003), so without the restore those games
+    ran on the successor set."""
+    credited, restored, after = False, None, []
     for line in jsonl(paths["actions"]):
-        if line.get("event") == "loss-credited":
-            credited = True
-        elif credited and line.get("event") == "game-start":
-            after.append(line.get("game"))
+        event = line.get("event")
+        if event == "loss-credited":
+            credited, restored = True, None
+        elif event == "skr-restored":
+            restored = line
+        elif credited and event == "game-start":
+            game = line.get("game")
+            proved = isinstance(game, int) and not isinstance(game, bool) and restored is not None \
+                and restored.get("game") == game and restored.get("sha256") == shipped_skr
+            if not proved:
+                after.append(game)
     return after
+
+
+def shipped_skr_sha256():
+    """The shipped `xtras/Islepro.skr` sha256, read from this checkout's `artifacts/known.json`
+    (rule 17: read, never re-typed); ExportRefused when the file does not say what it is."""
+    try:
+        return sitting.shipped_skr_sha256()
+    except SystemExit as exc:
+        raise ExportRefused(f"{exc}; nothing was written") from None
 
 
 def events(paths, batch, frames, games):
@@ -171,11 +196,13 @@ def build(paths, name, batch, doc, run_id, rep, table):
     row = next((r for r in table if r.get("set") == sitting.SET_ID and r.get("variant") == sitting.VARIANT), None)
     if row is None or doc["binary"]["sha256"] != row.get("sha256") or doc["binary"]["file"] != row.get("file"):
         raise ExportRefused("the sitting's measured binary is not the F019 row's; nothing was written")
-    after_loss = games_after_loss(paths)
+    after_loss = games_after_loss(paths, shipped_skr_sha256())
     if after_loss:
         raise ExportRefused(
             f"the game credited a loss (a `loss-credited` line, F003) and the click-driver started game(s) "
-            f"{after_loss} after it, which ran on the successor artifact set {SUCCESSOR_SET}, not the "
+            f"{after_loss} after it with no shipped restore of its own between the credit and that start (an "
+            f"`skr-restored` line naming that game with the shipped {sitting.SKR} sha256, fix #152), so they "
+            f"ran on the successor artifact set {SUCCESSOR_SET}, not the "
             f"shipped {sitting.SET_ID}; the F019 table has no row for the successor, so a record can name "
             "neither (never the shipped set for a game played after a scoreboard write); nothing was written")
     frames = read_frames(paths)

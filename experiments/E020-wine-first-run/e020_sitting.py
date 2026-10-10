@@ -13,6 +13,11 @@ run copy's `Islepro.exe` are hashed in place, and the sitting starts only when b
 F019 known-good row's sha256. `sitting.json` keeps that measurement with the session's own status,
 its start and end times, the versions, the commit that ran and the sha256 of the block file; the
 export reads all of it from there (e020_export.py) and supplies none of it itself.
+
+The shipped scoreboard file is read, never re-typed (rule 17): `shipped_skr_sha256` takes the
+sha256 of `xtras/Islepro.skr` from the set's own file list in `artifacts/known.json`, and
+`restore_skr` puts that file back into the run copy from the install (read-only), measuring the run
+copy's file after the copy (fix #152, the owner, 2026-10-09).
 """
 import hashlib
 import json
@@ -33,15 +38,25 @@ EXPERIMENT = "E020"
 PLATFORM = "wine-on-user-machine-iwp-2.0"
 SET_ID = "iwp-2.0-996e86c5"
 VARIANT = "unregistered"
+SKR = "xtras/Islepro.skr"        # the scoreboard file a credited loss writes (F003): from then on the
+                                 # run copy is the successor set until the shipped file is put back
+                                 # (fix #152, the owner, 2026-10-09)
 SITTING_ROOT = Path("/mnt/c/Temp/iwp-shots/wine")
 SITTING_ID = re.compile(r"^[0-9]{8}T[0-9]{6}Z$")
 SITTING_SCHEMA = "e020-sitting/1"
+SHA256 = re.compile(r"[0-9a-f]{64}")
 STATUS = re.compile(r"^(completed|aborted: .+)$")
 TIME = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")
 
 
 class SittingRefused(SystemExit):
     """The sitting (or its export) is refused; nothing was launched or written."""
+
+
+class RestoreFailed(Exception):
+    """The shipped `xtras/Islepro.skr` was not put back into the run copy (the copy failed, or what
+    the run copy holds is not the shipped file). The driver ends the sitting before New Game with
+    this reason (e020_loop), sending nothing."""
 
 
 def confine_root(root=SITTING_ROOT, prescribed=SITTING_ROOT, others=()):
@@ -122,6 +137,49 @@ def binary_identity(install, prefix, row):
             raise SittingRefused(f"the {where}'s {row['file']} is not the F019 row's binary "
                                  f"({row['set']}/{row['variant']}); nothing was started")
     return {"file": row["file"], "sha256": row["sha256"], "measured": ["install", "run copy"]}
+
+
+def shipped_skr_sha256(root=ROOT):
+    """The shipped set's `xtras/Islepro.skr` sha256, read from this set's file list in
+    `artifacts/known.json` (rule 17: read, never re-typed). SittingRefused when the file does not
+    say what the shipped scoreboard file is, so nothing can be restored from a guess."""
+    try:
+        known = json.loads((Path(root) / "artifacts" / "known.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SittingRefused(f"artifacts/known.json could not be read ({exc})") from None
+    for entry in known.get("sets", []):
+        manifest = entry.get("manifest") if isinstance(entry, dict) else None
+        if not isinstance(manifest, dict) or manifest.get("id") != SET_ID:
+            continue
+        for record in manifest.get("files", []):
+            if isinstance(record, dict) and record.get("path") == SKR:
+                digest = str(record.get("sha256", ""))
+                if SHA256.fullmatch(digest):
+                    return digest
+                raise SittingRefused(f"artifacts/known.json's {SKR} of {SET_ID} is not a sha256")
+        raise SittingRefused(f"artifacts/known.json lists no {SKR} for {SET_ID}")
+    raise SittingRefused(f"artifacts/known.json has no set {SET_ID}")
+
+
+def restore_skr(install, prefix, shipped_skr):
+    """Put the install's `xtras/Islepro.skr` (bound read-only) back over the run copy's, and measure
+    the run copy's file: its sha256, which must be `shipped_skr`. The copy is refused before it
+    renames anything when the bytes are not `shipped_skr`, and the measurement is of the run copy
+    after the copy, never of the source. RestoreFailed when neither holds; the install is only ever
+    read (safeio.write_file's `source`), and nothing outside the run copy is written."""
+    source, directory = Path(install) / SKR, Path(prefix) / "drive_c" / "iwp" / "xtras"
+    try:
+        safeio.write_file(directory, "Islepro.skr", source=source, exist="replace",
+                          expect_sha256=shipped_skr)
+    except (safeio.Refused, OSError) as exc:
+        raise RestoreFailed(f"the shipped {SKR} could not be put back into the run copy: {exc}") from None
+    try:
+        found = sha256_of(directory / "Islepro.skr")
+    except (safeio.Refused, OSError) as exc:
+        raise RestoreFailed(f"the run copy's {SKR} could not be measured after the copy: {exc}") from None
+    if found != shipped_skr:
+        raise RestoreFailed(f"the run copy's {SKR} measures {found}, not the shipped file {shipped_skr}")
+    return found
 
 
 def write_sitting_json(paths, doc):

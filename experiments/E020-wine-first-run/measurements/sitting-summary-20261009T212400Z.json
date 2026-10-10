@@ -1,0 +1,45 @@
+{
+ "what": "fix #152 Done-when 5 sitting: per-game starts, ends, credits and Islepro.skr restores, from its actions log (derived; no frame, no original text)",
+ "sitting": "20261009T212400Z",
+ "driver_commit": "81c86a6",
+ "batch": "cmb-accumulation",
+ "status": "aborted: driver-bug: KeyboardInterrupt: ",
+ "recovered": true,
+ "stopped_by": "the main session at the owner's wind-down (SIGINT), during game 3",
+ "actions_sha256": "33efc95d0c07b290cb51f2fc0500557ebebc7e48d49cd54b8363a662959302a6",
+ "shipped_skr_sha256": "50d86c5cdd758f4c65f21e2a2be78da433b39c96e4fefd1549820a68abb25b95",
+ "games": {
+  "1": {
+   "started": true,
+   "ended": "game-over",
+   "turn": 55,
+   "winner": "yellow",
+   "loss_credited": true
+  },
+  "2": {
+   "skr_restored_sha256": "50d86c5cdd758f4c65f21e2a2be78da433b39c96e4fefd1549820a68abb25b95",
+   "started": true,
+   "ended": "game-over",
+   "turn": 16,
+   "winner": "green",
+   "loss_credited": true
+  },
+  "3": {
+   "skr_restored_sha256": "50d86c5cdd758f4c65f21e2a2be78da433b39c96e4fefd1549820a68abb25b95",
+   "started": true
+  }
+ },
+ "record": {
+  "run_id": "E020-r0009",
+  "exported": true,
+  "artifact": {
+   "set": "iwp-2.0-996e86c5",
+   "variant": "unregistered"
+  },
+  "sha256": "8b8199c89ca2219bd40fe51f6b59f37861d3cc694a25c996e5561a09902b6faa",
+  "bytes": 1334538,
+  "manifest_sha256": "7bdf7152f05c585ac8462a04b72a92ffbb21b4eefa50de2ac8147c9a264773fd",
+  "manifest_bytes": 1474068,
+  "not_committed": "over check_no_originals.py's 1 MB limit; kept at ~/.local/share/isle-wars-archaeology/E020-pending/ (see the PR)"
+ }
+}

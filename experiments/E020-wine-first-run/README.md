@@ -221,3 +221,45 @@ sitting's frames into per-frame readings and net observations, by pixels only (n
 - The evidence bundles stay on the user's machine (constraint A of the rule 18 carve-out), so no
   `release:E020` exists to download: a reviewer cannot re-hash the frames from a release, only on
   this machine (Sol's round-1 R5, by design).
+
+## #152: the shipped scoreboard restored before each New Game (appended; fix #152)
+
+The refusal the loop section above records — a game started after a `loss-credited` line is never
+exported on the shipped set — now has one exception, the owner's decision (2026-10-09), chosen over
+"the exporter ignores .skr" (a false identity claim) and "one record per set": **every game of a
+sitting runs on the shipped set.**
+
+- **What the driver does.** Before each `new-game` block after the first, the loop copies the
+  install's `xtras/Islepro.skr` over the run copy's
+  `<prefix>/drive_c/iwp/xtras/Islepro.skr` (`e020_sitting.restore_skr`), then hashes the **run
+  copy's** file. The install is bound read-only and is only ever read; nothing outside the run copy
+  is written. The shipped sha256 the copy must equal is read from `artifacts/known.json`'s
+  `iwp-2.0-996e86c5` file list (`e020_sitting.shipped_skr_sha256`; rule 17: read, never re-typed).
+- **Where it is logged.** One line of `actions.jsonl`:
+  `{"seq": …, "game": <the game about to start>, "turn": 0, "event": "skr-restored", "sha256": <the
+  run copy's file after the copy>}`, written by the click-driver after the `loss-credited` line
+  (when there is one) and before that game's `game-start`. The sha256 is measured on the run copy
+  *after* the copy: a constant would pass the export and prove nothing.
+- **When the restore fails** — the copy cannot be made, or the run copy then measures anything but
+  the shipped file — the loop sends no `new-game` for that game and the sitting ends there, cleanly,
+  before New Game: a last frame, an `ended: skr-restore-failed: <reason>` line with its sha256, and
+  no click, as for an unknown screen.
+- **Why the restore changes nothing about the play** (the main session's static reading of
+  `Islepro.exe` sha256 `c4d7a248…594e`, rule 24, in our own words): the handler that records a
+  game's result first re-reads the scoreboard file from disk, adds this game's wins and losses to
+  the slot for the strength and writes the whole file back, so the counts live on disk and nothing
+  carries them in memory from one game to the next. The Scoreboard frames re-read the same file from
+  disk when they open, so after a restore they show the shipped counts rather than the running
+  totals the sitting has written — a display difference only, which is what the owner's note on the
+  issue asks this README to record. No handler of the rules of play reads those counts (F019's file
+  table: an absence claim at about 90%), so which file is in the run copy changes nothing about the
+  play. Restoring it also keeps a long sitting out of the state in which the unregistered build
+  stops saving scores past a summed total of 50.
+- **What the export accepts** (`e020_export.games_after_loss`): a game started after a credit only
+  when an `skr-restored` line naming that same game with the shipped sha256 comes after the credit
+  and before its `game-start`. A restore that is missing, of another hash, logged after the start,
+  before the credit, for another game, or absent after a second credit is refused as before, so the
+  refusal in the loop section above still holds for every sitting the driver did not restore.
+
+The restore is the driver's, not the game's: the game is never asked to write anything, and the
+install is never written.
