@@ -13,11 +13,13 @@ exchange, the battle's exits and the forfeit. A sitting records what the running
 | even | attacker N in {2, 4, 8, 12} vs N−1, N, N+1, N+2 | 16 | Q-CMB-01 | the game's answer to the order: a battle, or a refusal (the attacker's click changed the bottom bar and no battle came up); an order with neither is `unresolved` and meets nothing |
 | underdog | attacker 4, 8, 12, 20 vs a strictly stronger defender | 4 | Q-CMB-02 | the same |
 | tiny | attacker 1, 2, 3 vs a defender of 1 | 3 | Q-CMB-03 | the same (an attacker of 1 refused is the observation) |
-| quit | the quit-attack button mid-battle | 2 | Q-CMB-08 | a quit-attack press while the battle panel is up |
+| quit | the quit-attack button mid-battle | 2 | Q-CMB-08 | a quit-attack press after an exchange the board showed, confirmed by a reading (battle panel gone, counts unchanged) |
 | lost | attacks that fail; what happens to the turn | 5 | Q-CMB-09 | the attacking country changing hands, with the seat after |
-| busy | turns with 3 or more attacks; what ends each | 10 | Q-CMB-10 | a turn with 3 or more battles, with what ended it |
+| busy | turns with 3 or more attacks; what ends each | 10 | Q-CMB-10 | a turn with 3 or more fights (battles with an exchange the board showed), with what ended it |
 
-Each event meets at most one cell of a row. The deal is random (F018): a cell no board offers
+Each event meets at most one cell of a row. A case whose own action fails five times in a row is
+dropped for the sitting (`case-dropped`). `measurements/CORRECTIONS.md` says why progress-r01's
+busy 10/10 is not met, and what the count requires since. The deal is random (F018): a cell no board offers
 stays unmet, and `measurements/progress-r<nn>.json` lists it under `unmet`; it is never forced.
 
 ## Files

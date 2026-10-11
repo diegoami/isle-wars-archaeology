@@ -74,8 +74,9 @@ class AttackFlowTest(unittest.TestCase):
         world = World({3: (BLUE, 2), 4: (RED, 1)}, met=only(("even", 1)), losers=["d"])
         world.game.reinforcements = 0
         self.assertIsNone(world.loop.turn())
-        order = [b for b in world.driver.blocks if b in ("attack-open", "exchange", "leave-battle", "pass")]
-        self.assertEqual(order[:3], ["attack-open", "exchange", "leave-battle"])
+        order = [b for b in world.driver.blocks
+                 if b in ("attack-open", "exchange", "quit-attack", "move-in-done", "pass")]
+        self.assertEqual(order[:3], ["attack-open", "exchange", "move-in-done"])     # 2 vs 1 captured
         self.assertEqual(order[-1], "pass")
         self.assertEqual([c for c in world.driver.country_clicks()],
                          [("attack-target", 4), ("attack-attacker", 3)])
@@ -135,7 +136,8 @@ class AttackFlowTest(unittest.TestCase):
         self.assertEqual(attempt["after"], [1, RED, 3, RED])
         self.assertEqual(attempt["seat_after"], RED)
         self.assertNotIn("pass", world.driver.blocks)
-        self.assertNotIn("leave-battle", world.driver.blocks)
+        self.assertNotIn("quit-attack", world.driver.blocks)
+        self.assertNotIn("move-in-done", world.driver.blocks)
         # the reading that shows the hand-over already boxes the next seat: that click's count is
         # unknown (round 1's R2), the one before it is not
         self.assertEqual([c["lost"] for c in world.driver.events("exchange-click")], [1, None])
@@ -188,6 +190,77 @@ class AttackFlowTest(unittest.TestCase):
         self.assertEqual(world.met("even"), [6])
         self.assertEqual(world.attempts()[0]["outcome"], "quit")
         self.assertEqual(world.met("quit"), [])
+
+    def test_a_quit_press_that_does_not_land_meets_no_cell_and_ends_the_sitting_cleanly(self):
+        # round 2, point 1: sitting 20261011T070437Z read a press from a colour under the pointer;
+        # the press is now confirmed by a reading (no battle panel, the counts unchanged)
+        world = World({3: (BLUE, 4), 4: (RED, 4)}, met=only(("even", 6), ("quit", 1)), losers=["d"])
+        world.game.reinforcements = 0
+        world.game.quit_works = False
+        self.assertEqual(world.loop.turn(), "battle-stuck")
+        (attempt,) = world.attempts()
+        self.assertEqual(attempt["outcome"], "quit-unconfirmed")
+        self.assertEqual(world.met("quit"), [])
+        self.assertEqual(world.loop.summary["quits"], 0)
+        self.assertEqual([n["confirmed"] for n in world.driver.events("quit-attack")], [0])
+
+    def test_a_confirmed_quit_meets_the_quit_cell_only_after_an_exchange_the_board_showed(self):
+        world = World({3: (BLUE, 7), 4: (RED, 3)}, met=only(("quit", 1)))
+        world.game.reinforcements = 0
+        world.game.exchange_noop = True
+        world.loop.turn()
+        (attempt,) = world.attempts()
+        self.assertEqual((attempt["outcome"], attempt["clicks"], attempt["fought"]), ("quit", 1, False))
+        self.assertEqual(world.game.quits, 1)
+        self.assertEqual(world.met("quit"), [])
+        world = World({3: (BLUE, 7), 4: (RED, 3)}, met=only(("quit", 1)), losers=["a"])
+        world.game.reinforcements = 0
+        world.loop.turn()
+        (attempt,) = world.attempts()
+        self.assertEqual((attempt["outcome"], attempt["fought"]), ("quit", True))
+        self.assertEqual(world.met("quit"), [1])
+
+    def test_battles_with_no_exchange_the_board_showed_never_make_a_busy_turn(self):
+        # round 2, point 2: three battles opened, clicked and left, the counts never moving
+        adjacency = {3: {4, 5, 6}, 4: {3}, 5: {3}, 6: {3}}
+        world = World({3: (BLUE, 9), 4: (RED, 1), 5: (RED, 1), 6: (RED, 1)},
+                      met=only(("quit", 1), ("quit", 2), ("busy", 1)))
+        world.game.adjacency = adjacency
+        world.loop.adjacency = adjacency
+        world.game.reinforcements = 0
+        world.game.exchange_noop = True
+        world.loop.turn()
+        self.assertEqual([a["battle"] for a in world.attempts()], [True] * 3)
+        end = world.driver.events("turn-end")[-1]
+        self.assertEqual((end["battles"], end["fights"]), (3, 0))
+        self.assertEqual(world.met("busy"), [])
+
+    def test_a_case_whose_action_keeps_failing_is_dropped_for_the_sitting(self):
+        # round 2, point 3: the game takes none of the targets; after DROP_AFTER failures in a row
+        # the quit row is not aimed at again, and the log says so
+        adjacency = {3: set(range(4, 11)), **{c: {3} for c in range(4, 11)}}
+        world = World({3: (BLUE, 9), **{c: (RED, 1) for c in range(4, 11)}}, met=only(("quit", 1)))
+        world.game.adjacency = {}
+        world.loop.adjacency = adjacency
+        world.game.reinforcements = 0
+        world.loop.turn()
+        self.assertEqual([a["outcome"] for a in world.attempts()], ["target-not-taken"] * e021_loop.DROP_AFTER)
+        (dropped,) = world.driver.events("case-dropped")
+        self.assertEqual((dropped["case"], dropped["failures"]), ("quit", e021_loop.DROP_AFTER))
+        self.assertEqual(world.loop.summary["dropped"], ["quit"])
+        world.loop.turn()                                  # the next turn aims at nothing
+        self.assertEqual(len(world.attempts()), e021_loop.DROP_AFTER)
+
+    def test_a_success_resets_the_failure_count(self):
+        world = World({3: (BLUE, 2), 4: (RED, 1)})
+        for outcome in ("target-not-taken",) * (e021_loop.DROP_AFTER - 1):
+            world.loop.track("quit", len(world.loop.met), outcome)
+        world.loop.track("quit", len(world.loop.met), "capture")
+        for outcome in ("target-not-taken",) * (e021_loop.DROP_AFTER - 1):
+            world.loop.track("quit", len(world.loop.met), outcome)
+        self.assertEqual(world.loop.dropped, set())
+        world.loop.track("quit", len(world.loop.met), "unresolved")
+        self.assertEqual(world.loop.dropped, {"quit"})
 
     def test_a_click_that_resolves_two_exchanges_is_logged_as_such(self):
         # DW3's hazard: the player records the number, never works around it

@@ -9,7 +9,8 @@
 # each a plain `click X Y` at the country's proven point (experiments/E021-pro-session-a/points.py),
 # sent through the same click-driver: attack-open, the target's click (the target panel is watched:
 # it changes when the game takes the target), the attacker's click (then the loop polls captures for
-# the gold quit-attack button: the battle is on), then exchange clicks, and leave-battle; or
+# the gold quit-attack button: the battle is on), then exchange clicks, and quit-attack (or
+# move-in-done after a capture); or
 # attack-cancel when the game did not take the target or the attacker. This is the order of the
 # spike's attack_picked step (runtime/iwp/spike/cycle.py), which the E002 tour ran, with the
 # attacker named by its own click instead of by the placement's pick.
@@ -80,13 +81,30 @@ click 405 530
 watch 545 502 250 70
 click 337 531
 
-# --- block leave-battle
-# The tour's exit (tour.steps): the quit-attack button, or DONE on the move-in after a capture, each
-# tried until the centre panel shows the turn menu's green. Candidate 1 is the quit-attack button,
-# candidate 2 DONE; a failure is only noted (after a failed attack the turn has passed and neither
-# is there).
+# --- block quit-attack
+# The quit-attack button, one plain click. Its point is measured on sitting 20261011T070437Z:
+# capture session/e021-read-00047.png (sha256 4f3d5c3e6f3a2ed1439223f09ba7e2b7893135be05135bee2201458f4f0aafd1)
+# shows the gold button at x 419-494, y 511-553 (centre 456,532), the first candidate of the
+# tour's exit (walkthroughs/coordinates.md, `456 531`). In that sitting this click closed the
+# battle every time: in all 178 leave steps with a watcher frame before the second candidate was
+# clicked, the battle panel was already gone (frame 167-1791702441523.png, sha256
+# abd8b73a371affabd79d70db4b165b482491271f81ed0be5ce8173a01d5899c5, 0.47 s after the step began).
+# The tour's green test then failed because the pointer was left over the turn menu's CARD button
+# (x 446-491), which a hover lights from (8,206,66) to (16,239,74): outside the test's tolerance,
+# so the second candidate was clicked and reported, and the press was misread (round 2, point 1).
+# The loop confirms the press from a reading of the board instead (no battle panel, the two
+# countries unchanged), never from a colour under the pointer.
 watch 262 502 276 70
-click-until? 0 192 64 16 600 456 531 495 540
+click 456 531
+
+# --- block move-in-done
+# DONE on the move-in after a capture: the tour's second candidate (walkthroughs/coordinates.md,
+# `495 540`). Not yet seen on a frame: the one capture of sitting 20261011T070437Z took a seat's
+# last country, and the game showed that seat's defeat and the cards screen instead of a move-in.
+# There this point is outside the cards screen's CONTINUE (x 328-477), and on the turn menu it was
+# clicked 279 times with no effect the next order could see. Sent once, after a capture only.
+watch 262 502 276 70
+click 495 540
 
 # --- block dismiss
 # A prompt between turns (a card or an event message) that keeps the placement row from showing:

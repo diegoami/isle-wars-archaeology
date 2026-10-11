@@ -20,8 +20,10 @@ handler are E020's; this module overrides `turn()` only, and adds what a turn do
    no battle is up after the cancel; otherwise it is `unresolved` and meets no cell. A battle:
    * a size cell (`even`, `underdog`, `tiny`) is met by the game's answer to the order, a battle or
      a refusal (an attacker of 1 refused is the observation, the task file); the battle gets one
-     exchange click, then the quit-attack button;
-   * a `quit` aim presses the quit-attack button at once;
+     exchange click, then the quit-attack button (block `quit-attack`, confirmed by a reading:
+     the battle panel gone and the counts unchanged; never by a colour under the pointer);
+   * a `quit` aim does the same: one exchange, then the press, so the quit is mid-battle;
+   * after a capture, DONE (block `move-in-done`), then the counts;
    * a `lost` or `busy` aim fights: exchange clicks until a capture, a failure or a bound;
    after every exchange click the board is read until the two countries' counts have changed and
    settled (`wait_settled`), and the click's line records both countries before and after;
@@ -29,9 +31,15 @@ handler are E020's; this module overrides `turn()` only, and adds what a turn do
    and the turn passes; the loop then sends nothing more).
 
 Which cell an attempt meets is said by what the game did, never by the aim alone, and each event
-meets at most one cell of a row: a quit-attack press in a battle meets the next `quit` cell; a
-failed attack (the attacker's country changed hands) the next `lost` cell; a turn with three or
-more battles the next `busy` cell, with what ended it (Q-CMB-10).
+meets at most one cell of a row: a confirmed quit-attack press after an exchange the board showed
+meets the next `quit` cell; a failed attack (the attacker's country changed hands) the next `lost`
+cell; a turn with three or more fights (battles with an exchange the board showed; an opened and
+left battle is not one, round 2) the next `busy` cell, with what ended it (Q-CMB-10).
+
+A case whose own action fails DROP_AFTER times in a row (the attempt met no cell and did not end
+by the dice: a target not taken, an unresolved order, a press not confirmed, a quit with no fight)
+is dropped for the sitting, with a `case-dropped` line: sitting 20261011T070437Z aimed at quit 299
+times while its press was misread.
 
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
 minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
@@ -45,7 +53,7 @@ click whose total fell by more is logged with the number, and the summary counts
 
 Lines of `actions.jsonl` (structural values only, constraint D: our own words, numbers, colour
 words and sha256s; no text of the original): `board` (each reading: its frame, the seat, how many
-countries were unread), `place-target`, `attack-open`, `exchange-click`, `leave-battle`,
+countries were unread), `place-target`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
 `attack-attempt` (the aim, both countries before and after, the battle, the clicks, the armies
 lost, the outcome, the frames), `case-met`, `turn-end`. The export (e021_export.py) turns
 `exchange-click`, `attack-attempt`, `case-met` and `turn-end` into the record's observations.
@@ -81,7 +89,14 @@ MAX_FIGHT_CLICKS = 60                # likewise, for one fight (the bound is als
 BATTLE_SECONDS = 3.0                 # the poll for the quit-attack button after the attacker's click
                                      # (the spike polls 1.5 s)
 SETTLE_SECONDS = 4.0                 # the poll for the counts to change and settle after a click
-BATTLE_OUTCOMES = ("quit", "capture", "forfeit", "held")
+DROP_AFTER = 5                       # consecutive failures of one case's own action before the
+                                     # sitting stops aiming at it: sitting 20261011T070437Z's ordinary
+                                     # failure rate was about 4% (12 targets not taken in 312 orders),
+                                     # so five in a row by chance is about 1 in 10^7, and five cost
+                                     # under a minute (about 8 s an order); that sitting aimed at quit
+                                     # 299 times while its press was misread
+NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
+                                             # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
 
 
@@ -103,23 +118,38 @@ class SessionALoop(e020_loop.BatchLoop):
         self.points = points_module.click_points() if points is None else points
         self.met = {tuple(pair) for pair in met}
         self.attempt = 0
+        self.failures, self.dropped = {}, set()
         self.summary.update(cases_met_before=len(self.met), cases_met=len(self.met), attack_attempts=0,
                             refusals=0, battles=0, exchange_clicks=0, clicks_one_army=0,
                             clicks_several_armies=0, clicks_no_change=0, clicks_unread=0, clicks_unisolated=0,
                             captures=0,
-                            forfeits=0, quits=0)
+                            forfeits=0, quits=0, fights=0)
 
     # --- the case table -------------------------------------------------------------------------
 
     def needed(self):
-        return cases.needed_cells(self.met)
+        """The cells the picker still aims at: unmet, and not of a case dropped for this sitting."""
+        return [pair for pair in cases.needed_cells(self.met) if pair[0] not in self.dropped]
+
+    def track(self, case, met_before, outcome):
+        """Count a failure of `case`'s own action (the attempt met no cell and did not end by the
+        dice), reset on any other attempt; at DROP_AFTER in a row the case is dropped for the
+        sitting, with a `case-dropped` line (round 2, point 3)."""
+        if len(self.met) > met_before or outcome in NO_CELL_FAILURES:
+            self.failures[case] = 0
+            return
+        self.failures[case] = self.failures.get(case, 0) + 1
+        if self.failures[case] >= DROP_AFTER and case not in self.dropped:
+            self.dropped.add(case)
+            self.summary["dropped"] = sorted(self.dropped)
+            self.driver.note(event="case-dropped", case=case, failures=self.failures[case], outcome=outcome)
 
     def meet(self, case, cell=None, **fields):
         """Mark a cell met and log it (`case-met`, the export's source for the record's case
         groups). `cell` None takes the row's lowest unmet cell (the outcome rows). False when the
         cell was met already, or the row is complete."""
         if cell is None:
-            cell = cases.next_outcome_cell(self.needed(), case)
+            cell = cases.next_outcome_cell(cases.needed_cells(self.met), case)
             if cell is None:
                 return False
         if (case, cell) in self.met:
@@ -239,22 +269,24 @@ class SessionALoop(e020_loop.BatchLoop):
     def attack_phase(self):
         """Attack while a needed cell has an untried pair; then PASS, unless a failure passed the
         turn. None, or why the game ended for the loop."""
-        tried, battles, ended = set(), 0, "pass"
+        tried, battles, fights, ended = set(), 0, 0, "pass"
         for _ in range(MAX_ATTEMPTS_PER_TURN):
             reading = self.look()
             if reading is None:
-                self.driver.note(event="turn-end", battles=battles, end="board-unreadable")
+                self.driver.note(event="turn-end", battles=battles, fights=fights, end="board-unreadable")
                 return "board-unreadable"
             choice = cases.pick(reading.board, self.needed(), self.adjacency, points=self.points,
                                 exclude=tried)
             if choice is None:
                 break
             tried.add(choice[2:])
+            met_before = len(self.met)
             outcome, game_end = self.attack(reading, *choice)
-            if outcome in BATTLE_OUTCOMES:
-                battles += 1
+            self.track(choice[0], met_before, outcome)
+            battles += int(self.last["battle"])
+            fights += int(self.last["fought"])
             if game_end is not None:
-                self.driver.note(event="turn-end", battles=battles, end="game-end")
+                self.driver.note(event="turn-end", battles=battles, fights=fights, end="game-end")
                 return game_end
             if outcome == "forfeit":
                 ended = "forfeit"
@@ -264,24 +296,27 @@ class SessionALoop(e020_loop.BatchLoop):
                 break
         if ended != "forfeit":
             self.send("pass")
-        self.driver.note(event="turn-end", battles=battles, end=ended)
-        if battles >= BUSY_MINIMUM:
-            self.meet("busy", battles=battles, end=ended)
+        self.driver.note(event="turn-end", battles=battles, fights=fights, end=ended)
+        # Q-CMB-10 asks about attacks that fought: a battle opened and left with no exchange the
+        # board showed is not one (round 2, point 2: sitting 20261011T070437Z met busy 10/10 so)
+        if fights >= BUSY_MINIMUM:
+            self.meet("busy", battles=battles, fights=fights, end=ended)
         return None
 
     # --- one attack -----------------------------------------------------------------------------
 
     def attack(self, reading, case, cell, attacker, defender):
         """One attack order aimed at (case, cell): (outcome word, why the game ended or None).
-        Outcomes: `no-menu` (the attack button did not answer), `target-refused`,
-        `attacker-refused`, `quit`, `held` (left by a press that was not the quit-attack button's),
-        `capture`, `forfeit`, `unread`."""
+        Outcomes: `no-menu` (the attack button did not answer), `target-not-taken`,
+        `attacker-refused`, `unresolved`, `quit` (the press confirmed by a reading),
+        `quit-unconfirmed`, `capture`, `forfeit`."""
         self.attempt += 1
         self.summary["attack_attempts"] += 1
         seq, board = self.attempt, reading.board
         attempt = {"attempt": seq, "case": case, "cell": cell, "attacker": attacker, "defender": defender,
                    "before": self.counts(board, attacker, defender), "frames": [reading.sha256],
-                   "battle": False, "clicks": 0, "lost": 0, "unknown": 0}
+                   "battle": False, "fought": False, "clicks": 0, "lost": 0, "unknown": 0}
+        self.last = attempt
         self.driver.note(event="attack-open", attempt=seq, case=case, cell=cell, attacker=attacker,
                          defender=defender)
         if not self.send("attack-open").get("changed"):
@@ -320,17 +355,15 @@ class SessionALoop(e020_loop.BatchLoop):
         if case in cases.SIZE_CASES:
             self.meet(case, cell, attempt=seq, battle=1)
         start = battle.board if self.counts_known(battle.board, attacker, defender) else board
-        if case == "quit":
-            return self.leave(attempt, start)
-        if case in cases.SIZE_CASES:
-            limit = 1
+        if case in cases.SIZE_CASES or case == "quit":
+            limit = 1                      # one exchange, then the quit-attack button: mid-battle
         else:
             limit = min(MAX_FIGHT_CLICKS, sum(c or 0 for c in attempt["before"][0::2]) + 5)
         return self.fight(attempt, start, limit)
 
     def fight(self, attempt, board, limit):
         """Exchange clicks, at most `limit`, each followed by the board read until it settled, until
-        a capture, a failure or the limit; then the battle is left (DONE after a capture, the
+        a capture, a failure or the limit; then the battle is left (`move-in-done` after a capture, the
         quit-attack button otherwise; nothing after a failure, which passed the turn)."""
         attacker, defender = attempt["attacker"], attempt["defender"]
         battle_seen = True                       # the battle panel was up when the fight began
@@ -348,6 +381,9 @@ class SessionALoop(e020_loop.BatchLoop):
                 seen = seen + more
                 after = seen[-1].board
                 state = self.state(board, after, attacker, defender)
+            if state in ("on", "capture", "forfeit"):
+                self.summary["fights"] += int(not attempt["fought"])
+                attempt["fought"] = True           # the board showed this exchange
             if state == "forfeit":
                 # A failure passes the turn by itself (Q-CMB-09), and the next seat plays without
                 # waiting for any input, so a later reading can hold that seat's moves too. The
@@ -361,14 +397,15 @@ class SessionALoop(e020_loop.BatchLoop):
                 self.meet("lost", attempt=attempt["attempt"])
                 return self.finish(attempt, "forfeit", first.board, seat=seen[-1].seat)
             if state == "capture":
-                picked = self.leave_battle(attempt)
+                done = bool(self.send("move-in-done").get("changed"))
+                self.driver.note(event="move-in-done", attempt=attempt["attempt"], changed=int(done))
                 final = self.look(strict=False)
                 final_board = final.board if final is not None else after
                 if final is not None:
                     attempt["frames"].append(final.sha256)
                 # counted only from a reading after DONE that still boxes the human's seat: the
                 # move-in screen's counts are not final, and no other seat may have played
-                self.note_click(attempt, board, final_board, [r.sha256 for r in seen], moved_in=picked == 2,
+                self.note_click(attempt, board, final_board, [r.sha256 for r in seen], moved_in=done,
                                 isolated=final is not None and final.seat == SEAT)
                 self.summary["captures"] += 1
                 return self.finish(attempt, "capture", final_board, after_leave=True)
@@ -382,22 +419,28 @@ class SessionALoop(e020_loop.BatchLoop):
         return self.leave(attempt, board, battle_seen=battle_seen)
 
     def leave(self, attempt, board, battle_seen=True):
-        """Leave a battle that is still on: the quit-attack button (candidate 1 of `leave-battle`),
-        which meets the next `quit` cell when the battle panel was up before the press."""
-        picked = self.leave_battle(attempt)
-        after = self.board_after(board, attempt)
-        if picked == 1:
-            self.summary["quits"] += 1
-            if battle_seen:
-                self.meet("quit", attempt=attempt["attempt"])
-            return self.finish(attempt, "quit", after, after_leave=True)
-        return self.finish(attempt, "held", after, after_leave=True)
-
-    def leave_battle(self, attempt):
-        outcome = self.send("leave-battle")
-        picked = outcome.get("picked")
-        self.driver.note(event="leave-battle", attempt=attempt["attempt"], picked=int(picked or 0))
-        return picked
+        """Leave a battle that is still on with the quit-attack button (block `quit-attack`), and
+        confirm it from a reading, never from a colour under the pointer (round 2, point 1): the
+        battle panel gone and the two countries as they were before the press. A confirmed press
+        meets the next `quit` cell only after an exchange the board showed and with the battle up
+        on the last reading (Q-CMB-08 asks about leaving mid-battle). A press the reading does not
+        confirm is `quit-unconfirmed`, meets nothing, and a battle panel still up ends the sitting
+        cleanly (finish)."""
+        self.send("quit-attack")
+        reading = self.look(strict=False)
+        if reading is not None:
+            attempt["frames"].append(reading.sha256)
+        a, d = attempt["attacker"], attempt["defender"]
+        confirmed = (reading is not None and not reading.battle
+                     and self.counts(reading.board, a, d) == self.counts(board, a, d))
+        self.driver.note(event="quit-attack", attempt=attempt["attempt"], confirmed=int(confirmed))
+        after = reading.board if reading is not None else board
+        if not confirmed:
+            return self.finish(attempt, "quit-unconfirmed", after, after_leave=True)
+        self.summary["quits"] += 1
+        if battle_seen and attempt["fought"]:
+            self.meet("quit", attempt=attempt["attempt"], fought=1)
+        return self.finish(attempt, "quit", after, after_leave=True)
 
     def board_after(self, board, attempt):
         """A reading after an attempt's last input: its board (the frame cited), else `board`."""

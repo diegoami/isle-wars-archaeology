@@ -1,0 +1,95 @@
+{
+ "met": 13,
+ "records": [
+  "E021-r0001"
+ ],
+ "rows": {
+  "busy": {
+   "cells": [],
+   "met": 0,
+   "total": 10,
+   "unmet": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  },
+  "even": {
+   "cells": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    10
+   ],
+   "met": 7,
+   "total": 16,
+   "unmet": [
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ]
+  },
+  "lost": {
+   "cells": [
+    1
+   ],
+   "met": 1,
+   "total": 5,
+   "unmet": [
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  "quit": {
+   "cells": [],
+   "met": 0,
+   "total": 2,
+   "unmet": [
+    1,
+    2
+   ]
+  },
+  "tiny": {
+   "cells": [
+    1,
+    2,
+    3
+   ],
+   "met": 3,
+   "total": 3,
+   "unmet": []
+  },
+  "underdog": {
+   "cells": [
+    1,
+    2
+   ],
+   "met": 2,
+   "total": 4,
+   "unmet": [
+    3,
+    4
+   ]
+  }
+ },
+ "schema": "e021-progress/1",
+ "total": 40
+}

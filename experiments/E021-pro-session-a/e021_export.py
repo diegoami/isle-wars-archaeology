@@ -13,10 +13,10 @@ checks are E021's: `sitting.json` names experiment E021 (an E020 sitting is neve
 and every frame a line cites is a file of the bundle.
 
 The observations come from the loop's own lines of `actions.jsonl` (e021_loop.py), one step each:
-`attack-attempt`, `exchange-click`, `case-met` and `turn-end`. Values are structural only
+`attack-attempt`, `exchange-click`, `case-met`, `turn-end` and `case-dropped`. Values are structural only
 (constraint D): E020's vocabulary (tools/check_counts.py: counters, countries, games, events,
-colour words) and five kinds of this experiment's own words -- `case:` and `aim:` (a row of the
-case table), `cell:` (a cell number), `outcome:` and `end:` (the loop's outcome and turn-end words,
+colour words) and six kinds of this experiment's own words -- `case:`, `aim:` and `dropped:` (a row of
+the case table), `cell:` (a cell number), `outcome:` and `end:` (the loop's outcome and turn-end words,
 listed below). The progress counter (e021_progress.py) reads the `case:kind` / `cell:ordinal`
 groups, which only `case-met` lines make.
 
@@ -47,12 +47,13 @@ import cases  # noqa: E402
 EXPERIMENT = "E021"
 FOLDER = "E021-pro-session-a"
 RUN_ID = re.compile(rf"^{EXPERIMENT}-r(\d{{4,}})(?:\.manifest)?\.json$")
-OUTCOMES = frozenset({"no-menu", "target-not-taken", "attacker-refused", "unresolved", "quit", "held", "capture",
-                      "forfeit"})
+OUTCOMES = frozenset({"no-menu", "target-not-taken", "attacker-refused", "unresolved", "quit", "quit-unconfirmed",
+                      "capture", "forfeit"})
 ENDS = frozenset({"pass", "forfeit", "no-menu", "game-end", "board-unreadable"})
-WORD_KINDS = {"case": frozenset(cases.CASES), "aim": frozenset(cases.CASES), "outcome": OUTCOMES, "end": ENDS}
+WORD_KINDS = {"case": frozenset(cases.CASES), "aim": frozenset(cases.CASES), "dropped": frozenset(cases.CASES),
+              "outcome": OUTCOMES, "end": ENDS}
 SUMMARY = ("exchange_clicks", "clicks_one_army", "clicks_several_armies", "clicks_no_change", "clicks_unread",
-           "clicks_unisolated",
+           "clicks_unisolated", "fights",
            "battles", "refusals", "captures", "forfeits", "quits", "attack_attempts")
 ExportRefused = e020_export.ExportRefused
 
@@ -107,7 +108,8 @@ def rows_of(line):
         rows = game + turn + [("event:seq", str(line["attempt"])), ("aim:case", line["case"]), ("cell:aim", str(line["cell"])),
                        ("country:attacker", str(line["attacker"])), ("country:defender", str(line["defender"]))]
         rows += counts_rows("before", line["before"]) + counts_rows("after", line["after"])
-        rows += [("counter:battle", flag(line["battle"])), ("counter:clicks", str(line["clicks"])),
+        rows += [("counter:battle", flag(line["battle"])), ("counter:fought", flag(line.get("fought"))),
+                 ("counter:clicks", str(line["clicks"])),
                  ("counter:clicks-unknown", str(line.get("unknown", 0))), ("outcome:attack", line["outcome"])]
         if line.get("lost") is not None:              # unknown when a click of it has no count
             rows.append(("counter:lost", str(line["lost"])))
@@ -130,7 +132,7 @@ def rows_of(line):
         rows = game + [("case:kind", line["case"]), ("cell:ordinal", str(line["cell"]))]
         if line.get("attempt") is not None:
             rows.append(("event:attempt", str(line["attempt"])))
-        for key in ("battle", "battles"):
+        for key in ("battle", "battles", "fought", "fights"):
             if line.get(key) is not None:
                 rows.append((f"counter:{key}", str(int(line[key]))))
         if line.get("end") is not None:
@@ -138,7 +140,10 @@ def rows_of(line):
         return rows, []
     if event == "turn-end":
         return game + turn + [("counter:battles", str(line["battles"])),
-                       ("end:turn", line["end"])], []
+                              ("counter:fights", str(line.get("fights", 0))), ("end:turn", line["end"])], []
+    if event == "case-dropped":
+        return game + turn + [("dropped:case", line["case"]), ("counter:failures", str(line["failures"])),
+                              ("outcome:attack", line["outcome"])], []
     return None
 
 

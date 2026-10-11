@@ -68,6 +68,9 @@ class FakeGame:
         self.after_continue = "title"
         self.after_scoreboard = "title"
         self.attack_button_works = True
+        self.quit_works = True             # False: the quit-attack press does not land
+        self.quits = 0                     # battles the quit-attack button closed
+        self.exchange_noop = False         # True: an exchange click changes nothing on the board
         self.attacker_unanswered = False   # the attacker's click reaches no handler: nothing changes
         self.refused = 0                   # orders the game's attacker check refused (its message)
         self.seat_lag = False              # the score panel still boxes blue on the first reading
@@ -111,22 +114,25 @@ class FakeGame:
             if self.phase in ("target", "attacker"):
                 self.phase = "menu"
         elif name == "exchange":
-            if self.phase == "battle":
+            if self.phase == "battle" and not self.exchange_noop:
                 for _ in range(self.per_click):
                     self.exchange()
                     if self.phase != "battle":
                         break
             return {"changed": True}
-        elif name == "leave-battle":
-            if self.phase == "battle":
+        elif name == "quit-attack":
+            if self.phase == "battle" and self.quit_works:
                 self.phase = "menu"
-                return {"picked": 1}
+                self.quits += 1
+                return {"changed": True}
+            return {"changed": False}
+        elif name == "move-in-done":
             if self.phase == "move-in":
                 self.board[self.attacker]["army"] -= 1
                 self.board[self.target] = {"army": 1, "owner": BLUE}
                 self.phase = "menu"
-                return {"picked": 2}
-            return {"picked": None}
+                return {"changed": True}
+            return {"changed": False}
         elif name == "game-over-continue":
             self.screen = self.after_continue
         elif name == "scoreboard-continue":

@@ -76,6 +76,26 @@ def groups(doc):
     return sorted(by_step.items())
 
 
+# What a met group must carry for its row to count (round 2, point 4; measurements/CORRECTIONS.md).
+# Sitting 20261011T070437Z (E021-r0001) met busy 10/10 with battles opened and left with no
+# exchange: a busy cell counts only from a group whose turn had at least 3 fights (battles with an
+# exchange the board showed), and a quit cell only from one whose battle fought before the press.
+# The rule reads the record's own fields, so a record written before the loop carried them
+# (E021-r0001) counts neither row, and nothing outside the records is kept by hand.
+BUSY_FIGHTS = 3
+
+
+def evidenced(case, fields):
+    """True when a met group carries what its row needs (above); the size and lost rows need
+    nothing beyond the group."""
+    if case == "busy":
+        fights = fields.get("counter:fights", "")
+        return fights.isdigit() and int(fights) >= BUSY_FIGHTS
+    if case == "quit":
+        return fields.get("counter:fought") == "1"
+    return True
+
+
 def cells_of_record(doc, where="the record"):
     """The (case, cell) pairs one record's observations name, once each. ProgressRefused on an
     observation group that carries one of the two fields but not both, or names a cell outside the
@@ -89,6 +109,8 @@ def cells_of_record(doc, where="the record"):
             raise ProgressRefused(f"{where}, step {step}: a group names case:kind or cell:ordinal "
                                   "but not both")
         case, cell = named["case:kind"], named["cell:ordinal"]
+        if not evidenced(case, fields):
+            continue
         if case not in cases.TOTALS:
             raise ProgressRefused(f"{where}, step {step}: {case!r} is not a Session A case "
                                   f"({', '.join(cases.CASES)})")
