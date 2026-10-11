@@ -1,7 +1,6 @@
-// git, gh, the config and argument parsing, for implement.mjs and review.mjs.
+// git, gh, the config and argument parsing, for review.mjs, post-review.mjs and switch-model.mjs.
 
 import { spawnSync } from 'node:child_process';
-import { readQuota, quotaBlock } from './quota.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { openCodeHome, listedModels, loginHint, openCodeVersion, versionProblem } from './opencode.mjs';
@@ -45,9 +44,10 @@ export function loadConfig(top) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-// A model on watch (L35) says what to look for each time it runs: its `watch` text, else nothing.
+// A model's note in harness.json (what to look for, its login, its effort), printed when it runs.
 export function watchLine(name, model) {
-  return model.watch ? `watch: ${name} (${model.id}) is on watch: ${model.watch}` : null;
+  const note = model.note ?? model.watch;
+  return note ? `note: ${name} (${model.id}): ${note}` : null;
 }
 
 // --name value, --flag, and repeatable --env KEY=VALUE / --copy path.
@@ -95,9 +95,10 @@ export function ensureAgent({ top, commonDir, worktree, agent }) {
 }
 
 // Before anything is billed: the scripts' own data directory, the OpenCode version (any major but
-// the supported one is refused, #26), and which models of the chain OpenCode lists there. A model it does not list (an unknown id, or a provider not logged in in
-// that directory) is dropped, with the command that fixes it. So is a model whose provider's quota is
-// exhausted, when quota-tracker answers (lib/quota.mjs, L50). Returns { env, usable, problems }.
+// the supported one is refused, #26), and which models of `chain` OpenCode lists there. A model it
+// does not list (an unknown id, or a provider not logged in in that directory) is dropped, with the
+// command that fixes it. Quota is not checked (the owner, 2026-10-11: the model named runs).
+// Returns { env, usable, problems }.
 export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }) {
   const oc = openCodeHome(env, { log });
   const version = await openCodeVersion(opencode, { env: oc.env, cwd });
@@ -106,18 +107,10 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
   if (bad) return { env: oc.env, usable: [], problems: [bad], version };
   const { listed, errors } = await listedModels(opencode, chain.map((m) => models[m].id.split('/')[0]), { env: oc.env, cwd });
   const problems = [];
-  const quota = await readQuota(env);
-  log(quota.off ? `quota: not checked: ${quota.off} (L50)` : `quota: checked (${[...quota.providers.values()].map((p) => `${p.provider} ${p.status}`).join(', ')})`);
   const usable = chain.filter((m) => {
-    if (!listed.has(models[m].id)) {
-      problems.push(`${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
-      return false;
-    }
-    // The user named this model (CLAUDE.md rule 6, 2026-10-11): a quota warning is reported, never
-    // a reason to skip it or pick another.
-    const block = quota.off ? null : quotaBlock(models[m].id, quota);
-    if (block) log(`quota warning: ${m}: ${block} (quota-tracker); running it, as the user chose`);
-    return true;
+    if (listed.has(models[m].id)) return true;
+    problems.push(`${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
+    return false;
   });
   return { env: oc.env, usable, problems, version };
 }
@@ -125,7 +118,7 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
 export const ocArgs = (worktree, agent, model) =>
   ['run', '--dir', worktree, '--agent', agent, '--model', model.id, ...(model.variant ? ['--variant', model.variant] : [])];
 
-// The model the user named (CLAUDE.md rule 6, 2026-10-11): a harness.json key, or any OpenCode id
+// The model named for a run (CLAUDE.md rule 6): a harness.json key, or any OpenCode id
 // `provider/model`. Its family decides the reviewer-family rule, so it is never taken on trust (Sol's
 // R1 and re-review R1 on PR 164): a registered id keeps its registered family; a new id's family
 // comes from a single-family provider or an unambiguous model name, else the id is refused; a
@@ -157,7 +150,7 @@ export function familyOf(models, name) {
   return FAMILIES.includes(name) || Object.values(models).some((m) => m.family === name) ? name : null;
 }
 export function namedModel(config, name, { family, variant, alibaba } = {}, die) {
-  if (!name) die(2, 'Name the model: the user chooses it (CLAUDE.md rule 6, 2026-10-11). Pass --model/--reviewer with a harness.json key or an OpenCode id provider/model.');
+  if (!name) die(2, 'Name the model: pass --reviewer with a harness.json key or an OpenCode id provider/model (CLAUDE.md rule 6).');
   const entry = config.models[name] ?? Object.values(config.models).find((m) => m.id === name);
   if (!entry && !name.includes('/')) die(2, `Unknown model ${name}: not a harness.json key, and not an OpenCode id provider/model.`);
   const id = entry ? entry.id : name;
@@ -181,12 +174,13 @@ export function namedModel(config, name, { family, variant, alibaba } = {}, die)
   return name;
 }
 
-// The implementer's families, for the reviewer-family rule: every name must resolve to a family,
-// and at least one must be given. An empty list (no `model:` label, or `--exclude ","`) is refused,
-// never read as "nobody to exclude" (Sol's round-3 R1 on PR 164). Returns { families } or { refuse }.
+// The implementer's families, for the reviewer-family rule: every name must resolve to a family.
+// No name at all (no `model:` label on the PR or issue, no --exclude) means Claude implemented, the
+// default since 2026-10-11 (the main session or a Claude agent), so a Claude reviewer is still
+// refused: never "nobody to exclude" (Sol's round-3 R1 on PR 164). Returns { families } or { refuse }.
 export function implementerFamilies(models, names) {
   const given = names.map((n) => String(n).trim()).filter(Boolean);
-  if (!given.length) return { refuse: 'no implementer is named (no model: label on the PR or issue, and no usable --exclude); pass --exclude <model or family>' };
+  if (!given.length) return { families: ['claude'] };
   const unknown = given.filter((n) => !familyOf(models, n));
   if (unknown.length) return { refuse: `the implementer's family cannot be established for ${unknown.join(', ')}; pass --exclude <family>` };
   return { families: [...new Set(given.map((n) => familyOf(models, n)))] };

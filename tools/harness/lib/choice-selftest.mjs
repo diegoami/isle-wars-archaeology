@@ -1,14 +1,9 @@
-// The model-choice self-test (CLAUDE.md rule 6, the owner, 2026-10-11): run by
-// `node tools/harness/review.mjs --self-test`, so CI runs it. No model is called; OpenCode is a fake
-// shell script. It pins Sol's findings on PR 164: a model's family is never taken from a declaration
-// (R1 of both rounds), an implementer name always resolves to a family (R2), a foreign session is
-// refused before anything is sent (R3), and a resumed session is watched by its id (re-review R2).
+// The model-choice self-test (CLAUDE.md rule 6): run by `node tools/harness/review.mjs --self-test`,
+// so CI runs it. No model is called. It pins Sol's findings on PR 164: a model's family is never
+// taken from a declaration (R1 of both rounds) and an implementer name always resolves to a family
+// (R2); and the 2026-10-11 default: no implementer named means Claude implemented.
 
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import { namedModel, familyOf, implementerFamilies } from './common.mjs';
-import { runOpenCodeWatched } from './opencode.mjs';
 
 const MODELS = () => ({
   'gpt-6.1-sol': { id: 'openai/gpt-6.1-sol', family: 'openai', variant: 'low' },
@@ -50,9 +45,9 @@ const IMPLEMENTERS = [
 
 // [label, names as review.mjs reads them, expected families or 'refused'] (round-3 R1 on PR 164)
 const GUARD = [
-  ['no model: label', [], 'refused'],
-  ['--exclude ","', ','.split(',').map((x) => x.trim()).filter(Boolean), 'refused'],
-  ['blank names', ['', ' '], 'refused'],
+  ['no model: label: Claude implemented', [], 'claude'],
+  ['--exclude ","', ','.split(',').map((x) => x.trim()).filter(Boolean), 'claude'],
+  ['blank names', ['', ' '], 'claude'],
   ['an unknown name', ['nonsense'], 'refused'],
   ['a registered id', ['openai/gpt-6.1-sol'], 'openai'],
   ['two names, one family', ['luna', 'openai'], 'openai'],
@@ -94,59 +89,8 @@ function checkNamed(failures) {
   }
 }
 
-// A fake `opencode`: `session list` prints one session, updated now, in `dir`; `run` writes a
-// marker file, then lives for `runMs` and exits 0.
-function fakeOpenCode(root, { sessionDir, runMs }) {
-  const exe = path.join(root, 'opencode');
-  fs.writeFileSync(exe, `#!/bin/sh
-if [ "$1" = session ]; then
-  now=$(( $(date +%s) * 1000 ))   # whole seconds: not every date(1) supports %3N
-  echo '[{"id":"ses_own","title":"first-title","directory":"${sessionDir}","created":1,"updated":'$now'}]'
-  exit 0
-fi
-echo dispatched > "${root}/dispatched"
-sleep ${runMs / 1000}
-exit 0
-`, { mode: 0o755 });
-  return { exe, prefix: [] };
-}
-
-async function checkResume(failures) {
-  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'harness-choice-')));
-  try {
-    fs.mkdirSync(path.join(root, 'wd'));
-    const wd = fs.realpathSync(path.join(root, 'wd'));
-    const other = path.join(root, 'other');
-    fs.mkdirSync(other);
-    const base = { args: ['run', '--dir', wd], prompt: 'continue', workDir: wd, title: 'resume-test', resumeSessionId: 'ses_own', logDir: root };
-
-    // R3: a session made in another directory is refused before `run` is spawned.
-    let refused = false;
-    try {
-      await runOpenCodeWatched({ ...base, opencode: fakeOpenCode(root, { sessionDir: other, runMs: 100 }) });
-    } catch { refused = true; }
-    if (!refused) failures.push('resume: a foreign session was not refused');
-    if (fs.existsSync(path.join(root, 'dispatched'))) failures.push('resume: a foreign session was dispatched before the check');
-
-    // Re-review R2: our own session, active for 3 s with a 1.5 s idle limit, runs to its exit.
-    fs.rmSync(path.join(root, 'dispatched'), { force: true });
-    try {
-      const run = await runOpenCodeWatched({
-        ...base, opencode: fakeOpenCode(root, { sessionDir: wd, runMs: 3000 }),
-        idleTimeoutMs: 1500, pollMs: 200, startupTimeoutMs: 5000, totalTimeoutMs: 20_000,
-      });
-      if (run.exitCode !== 0) failures.push(`resume: an active resumed session exited ${run.exitCode}`);
-    } catch (e) {
-      failures.push(`resume: an active resumed session was killed: ${e.message}`);
-    }
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true });
-  }
-}
-
-export async function choiceSelfTest() {
+export function choiceSelfTest() {
   const failures = [];
   checkNamed(failures);
-  await checkResume(failures);
-  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 3 };
+  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length };
 }

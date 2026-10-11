@@ -1,7 +1,9 @@
-// Switching the implementer's or the reviewer's model in harness.json, kept free of OpenCode and
-// git so it can be tested directly. switch-model.mjs runs the checks that need OpenCode.
+// Switching the default reviewer in harness.json (reviewer.default), kept free of OpenCode and git
+// so it can be tested directly. switch-model.mjs runs the checks that need OpenCode. The implementer
+// is the main session or a Claude agent (CLAUDE.md rule 6, 2026-10-11), so the one role here is the
+// reviewer, and a model of the Claude family is refused: it would be the implementer's family.
 
-export const ROLES = ['implementer', 'reviewer'];
+export const ROLES = ['reviewer'];
 
 // A model's family, from its id: the family rule (L3) compares these. "opencode-go/gpt-6-luna" and
 // "openai/gpt-6-luna" are both openai: the vendor, not the route.
@@ -64,21 +66,20 @@ export function nameOf(config, id) {
 }
 
 /**
- * The new harness.json for making `id` the role's one model (L27): the entry is added or updated,
- * the role's chain becomes [name], and every other model stays for an explicit --model. Refuses a
- * model of the other role's family unless `force`: the reviewer is never the implementer's family,
- * so every review would exit 3. A `family` that contradicts a known vendor in the id is refused
- * too, so --family can never carry a model past the family rule (Luna's R1 on PR 17); the vendor's
- * family is checked either way.
- * Returns { config, name, entry, before, after, conflict } or throws with the reason.
+ * The new harness.json for making `id` the default reviewer: the entry is added or updated,
+ * reviewer.default becomes its name, and every other model stays for an explicit --reviewer. A
+ * Claude-family model is refused: the implementer is Claude, and the reviewer is never the
+ * implementer's family. A `family` that contradicts a known vendor in the id is refused too, so
+ * --family can never carry a model past the family rule (Luna's R1 on PR 17).
+ * Returns { config, name, entry, before, after } or throws with the reason.
  */
-export function planSwitch(config, { role, id, variant, name, family, fallback, force = false }) {
+export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false }) {
   // `variant` has no default: a model that offers no variants (MiniMax-M2.7) must switch without
   // one, not inherit 'high' (Luna's round-2 R1, PR 115). Callers pass defaultVariant's answer.
-  if (!ROLES.includes(role)) throw new Error(`--role must be one of ${ROLES.join(', ')}; got ${role}`);
-  if (!/^[\w.-]+\/[\w./-]+$/.test(String(id ?? ''))) throw new Error(`--model must be a provider/model id, e.g. opencode-go/mimo-v2.6-flash; got ${id}`);
+  if (!ROLES.includes(role)) throw new Error(`--role must be ${ROLES.join(', ')}; got ${role}`);
+  if (!/^[\w.-]+\/[\w./-]+$/.test(String(id ?? ''))) throw new Error(`--model must be a provider/model id, e.g. openai/gpt-5.6-luna; got ${id}`);
   if (variant === 'max') throw new Error('Effort max is never used: it was slower with no gain (L27). Use high.');
-  if (fallback && !['sonnet', 'opus'].includes(fallback)) throw new Error(`--fallback must be sonnet or opus; got ${fallback}`);
+  if (/deepseek/i.test(id)) throw new Error('Refused: DeepSeek is never used, on any route (CLAUDE.md rule 6).');
   const n = name ?? nameOf(config, id);
   const existing = config.models?.[n];
   if (existing && existing.id !== id) throw new Error(`The name ${n} already holds ${existing.id}; pass --name for ${id}.`);
@@ -86,37 +87,26 @@ export function planSwitch(config, { role, id, variant, name, family, fallback, 
   if (family && known && family !== known && !force) {
     throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; the family rule compares vendors. Drop --family, or pass --force.`);
   }
-  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: family ?? existing?.family ?? familyOf(id), ...(existing?.watch ? { watch: existing.watch } : {}) };
-  const other = ROLES.find((r) => r !== role);
-  const otherFamilies = (config[other]?.chain ?? []).map((m) => config.models?.[m]?.family ?? m);
-  const clash = [entry.family, known].find((f) => f && otherFamilies.includes(f));
-  const conflict = clash
-    ? `${clash} is also the ${other}'s family: the reviewer is never the implementer's family, so every review would exit 3 to Claude`
-    : null;
-  if (conflict && !force) throw new Error(`Refused: ${conflict}. Switch the ${other} too, or pass --force.`);
-  const describe = (c) => (c[role]?.chain ?? []).map((m) => `${m} (${c.models?.[m]?.id ?? '?'}, ${c.models?.[m]?.variant ?? 'no variant'})`).join(', ')
-    + ` then ${afterChain(c[role])}`;
+  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: family ?? existing?.family ?? familyOf(id), ...(existing?.note ? { note: existing.note } : {}) };
+  if ([entry.family, known].some((f) => f === 'anthropic' || f === 'claude')) {
+    throw new Error('Refused: a Claude model cannot be the default reviewer: Claude implements, and the reviewer is never the implementer\'s family (CLAUDE.md rule 6).');
+  }
+  const describe = (c) => {
+    const d = c.reviewer?.default;
+    const e = c.models?.[d];
+    return d ? `${d} (${e?.id ?? '?'}, ${e?.variant ?? 'no variant'})` : '(none)';
+  };
   const next = structuredClone(config);
   next.models = { ...next.models, [n]: entry };
-  next[role] = { ...next[role], chain: [n], ...(fallback ? { claudeFallback: fallback } : {}) };
-  return { config: next, name: n, entry, before: describe(config), after: describe(next), conflict };
+  next.reviewer = { ...next.reviewer, default: n };
+  return { config: next, name: n, entry, before: describe(config), after: describe(next) };
 }
 
-// What follows a role's chain: its Claude fallback, or the owner when claudeFallback is null (the
-// review profile, #39); "?" when harness.json does not say (#43).
-const afterChain = (c) => (c?.claudeFallback === null ? 'the owner' : `Claude ${c?.claudeFallback ?? '?'}`);
-
-// One line per role harness.json has (the review profile has no implementer, #43): what runs now.
-// Then the models on watch (L35), if any.
+// What runs now: the default reviewer, then the models on watch (L35), if any.
 export function showRoles(config) {
-  const roles = ROLES.filter((r) => config[r]).map((r) => {
-    const c = config[r] ?? {};
-    const models = (c.chain ?? []).map((m) => {
-      const e = config.models?.[m] ?? {};
-      return `${m} = ${e.id ?? '?'} (${e.variant ?? 'no variant'}, family ${e.family ?? '?'})`;
-    });
-    return `${r}: ${models.join(', ') || '(none)'}, then ${afterChain(c)}`;
-  });
-  const watched = Object.entries(config.models ?? {}).filter(([, e]) => e.watch).map(([m, e]) => `${m} = ${e.id}`);
-  return [...roles, ...(watched.length ? [`on watch: ${watched.join(', ')}`] : [])].join('\n');
+  const d = config.reviewer?.default;
+  const e = config.models?.[d] ?? {};
+  const line = d ? `reviewer: ${d} = ${e.id ?? '?'} (${e.variant ?? 'no variant'}, family ${e.family ?? '?'})` : 'reviewer: (none)';
+  const others = Object.entries(config.models ?? {}).filter(([m]) => m !== d).map(([m, x]) => `${m} = ${x.id}`);
+  return [line, 'implementer: the main session, or a Claude agent (CLAUDE.md rule 6)', ...(others.length ? [`also registered, for --reviewer: ${others.join(', ')}`] : [])].join('\n');
 }

@@ -5,6 +5,7 @@
 commit 610f979af099f6d2922d667cd10674ba486b28d1
 profile full
 copied 2026-10-09
+adapt (2026-10-11, the owner: the main session or a Claude agent implements, one OpenCode model reviews; no chains, chooser or quota check) tools/harness/review.mjs, lib/common.mjs, lib/chain.mjs, lib/choice-selftest.mjs, lib/switch.mjs, switch-model.mjs, harness.json, CLAUDE.md, docs/process.md, docs/models.md, docs/environment.md, docs/tasks/TEMPLATE.md, the run-task, delegate and switch-model skills, .claude/agents/*.md, .claude/hooks/session-start.sh; removed: tools/harness/implement.mjs, choose.mjs, lib/choose.mjs, lib/quota.mjs, lib/unsaved.mjs, .opencode/agents/implementer.md, tests/test_implementer_permissions.py, .claude/agents/task-agent*.md
 adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6: the user decides, the owner 2026-10-11)
 adapt docs/tasks/README.md  (this repository's task index)
 adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside every chain (L51); reviewer.hard/sol; zai-glm-5.3 at low; five alibaba-token-plan models; jail off, the owner 2026-10-05 (#98); seven more entries 2026-10-06, placed the same day (the owner): implementer chain + mm-m2.7 + ali-qwen-flash; reviewer.hard + ali-glm + ali-qwen-max; the rest explicit-model roles: mm-m3 (thinking), mm-m2.7 (no variant), ali-deepseek-pro (the dated -0813 id), ali-deepseek-flash, ali-qwen-max (low), ali-qwen-flash (medium), ali-glm; bump to 610f979: a chooser block with rule 6's pairs (no Alibaba model), every model entry and chain kept as ours)
@@ -24,10 +25,10 @@ adapt tools/harness/choose.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the use
 adapt tools/harness/lib/choice-selftest.mjs  (new, PR 164: the model-choice and resume self-test, run by review.mjs --self-test)
 adapt docs/lessons.md  (L68 appended: the user decides models, the owner 2026-10-11, PR 164)
 adapt .claude/agents/implementer.md  (the owner 2026-10-11: never undo uncommitted work with git checkout/restore/reset, L69)
-6661ffc3140de393a054db11750b1c12245ac229bbc742d92d71624bbaea4ce3  .claude/hooks/session-start.sh
+db730e476660aa179cf9957943c062189fdcaafa97c7842bcce6381fca773703  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
-dc7d16548bb7ab6e74a9a38d0905fd21bce16c1087efdc67507a3bd2f2681ea8  .claude/skills/switch-model/SKILL.md
+b2126bc830a632ed16a5fc603d0b2623f5fed0b025af18393785e7c93c7a9a8f  .claude/skills/switch-model/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
@@ -35,18 +36,15 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
-076fd078b9efac40b9ae72644f672f76fcc016a049556f61579f07fef06d9c55  tools/harness/lib/chain.mjs
-656cf6c7014277b5276f81877da933f378eb4826f196a8b3daadb2a23aeff68a  tools/harness/lib/choose.mjs
+4fe177771b1e387af7dc013e29a4d03102416ffcb27bbf5cdf3e830c4170e15d  tools/harness/lib/chain.mjs
 b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/lib/claim.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
-00e299515d581b12747f4159a97dc8c645eeaaa7b784023ef78f96572241a8fc  tools/harness/lib/quota.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
-7c1b87904ede7abcff5df1867a1a6437b7426a6e8d7560fc2c935b81ffaf5e79  tools/harness/lib/switch.mjs
-4177a849a38ffae17dd460d9c210860d92ef0766dd4d79ca170ee07119c9eae8  tools/harness/lib/unsaved.mjs
+16d0346163cacae1557a40d943c1b2baa29dfa4d324378f6676f7154bfc65e05  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-1262d6b798a050716fe1656a3fcb9cf9b14944111db1ec3c63aeca2a569b605d  tools/harness/switch-model.mjs
+4cbc230d62f14a7a7364e30cf28301dfbbe365d09af02d762754dc8cec28717f  tools/harness/switch-model.mjs

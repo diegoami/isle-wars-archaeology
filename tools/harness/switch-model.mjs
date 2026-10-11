@@ -1,22 +1,21 @@
 #!/usr/bin/env node
-// Switches the implementer's or the reviewer's OpenCode model in harness.json, with the checks a
-// hand edit skips. The /switch-model skill says when and how.
+// Switches the default OpenCode reviewer in harness.json (reviewer.default), with the checks a hand
+// edit skips. The /switch-model skill says when and how. The implementer is the main session or a
+// Claude agent, so there is no implementer role to switch (CLAUDE.md rule 6, 2026-10-11).
 //
 //   node tools/harness/switch-model.mjs --show
-//   node tools/harness/switch-model.mjs --role implementer|reviewer --model PROVIDER/ID
-//     [--variant high] [--name NAME] [--family FAMILY] [--fallback sonnet|opus]
-//     [--probe] [--dry-run] [--force]
+//   node tools/harness/switch-model.mjs --model PROVIDER/ID
+//     [--variant high] [--name NAME] [--family FAMILY] [--probe] [--dry-run] [--force]
 //
-// 1. OpenCode must list the id in the scripts' own data directory (as implement.mjs and review.mjs
-//    check before every run): an unknown id or a missing login exits 3 with the command that fixes
-//    it.
+// 1. OpenCode must list the id in the scripts' own data directory (as review.mjs checks before
+//    every run): an unknown id or a missing login exits 3 with the command that fixes it.
 // 2. Unless --variant is given, the effort is high for a light model and low (else medium, else its
-//    lowest) for a heavy one, from the efforts OpenCode offers (L54); max is refused (L27). The family comes from the id unless
-//    given, and a model of the other role's family is refused unless --force (the family rule).
+//    lowest) for a heavy one, from the efforts OpenCode offers (L54); max is refused (L27). The
+//    family comes from the id unless given; a Claude model and DeepSeek are refused.
 // 3. --probe sends a one-word prompt through the watched runner at that variant, in a throwaway
 //    git directory under the work root. It is one small billed call, and a failure stops the switch.
-// 4. The role's chain becomes this one model, then its Claude fallback (L27); other models stay for
-//    an explicit --model. --dry-run prints the change and writes nothing.
+// 4. reviewer.default becomes this model; other models stay for an explicit --reviewer. --dry-run
+//    prints the change and writes nothing.
 //
 // Exit 0: switched (or shown, or a dry run). Exit 1: refused. Exit 2: usage. Exit 3: OpenCode, the
 // login or the probe failed; nothing written.
@@ -36,15 +35,16 @@ const top = sh('git', ['rev-parse', '--show-toplevel']);
 const file = path.join(top, 'harness.json');
 const config = loadConfig(top);
 if (a.show) { say(showRoles(config)); process.exit(0); }
-if (!a.role || !a.model) die(2, 'Usage: switch-model.mjs --role implementer|reviewer --model PROVIDER/ID [--probe] [--dry-run] (or --show)');
+if (!a.model) die(2, 'Usage: switch-model.mjs --model PROVIDER/ID [--probe] [--dry-run] (or --show)');
+if (a.role && a.role !== 'reviewer') die(2, `--role must be reviewer (the implementer is Claude, CLAUDE.md rule 6); got ${a.role}`);
+a.role = 'reviewer';
 
 let plan;
 try {
   plan = planSwitch(config, {
-    role: a.role, id: a.model, variant: a.variant ?? defaultVariant(a.model, null), name: a.name, family: a.family, fallback: a.fallback, force: a.force,
+    role: a.role, id: a.model, variant: a.variant ?? defaultVariant(a.model, null), name: a.name, family: a.family, force: a.force,
   });
 } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
-if (plan.conflict) say(`warning (--force): ${plan.conflict}`);
 say(`${a.role}: ${plan.name} = ${plan.entry.id} (${plan.entry.variant ?? 'no variant'}, family ${plan.entry.family})`);
 
 let opencode;
@@ -61,7 +61,7 @@ if (!a.variant) {
   const offered = await modelVariants(opencode, plan.entry.id, { env: pre.env, cwd: top });
   const v = defaultVariant(plan.entry.id, offered);
   if (v !== plan.entry.variant) {
-    plan = planSwitch(config, { role: a.role, id: a.model, variant: v, name: a.name, family: a.family, fallback: a.fallback, force: a.force });
+    plan = planSwitch(config, { role: a.role, id: a.model, variant: v, name: a.name, family: a.family, force: a.force });
     say(`${a.role}: ${plan.name} = ${plan.entry.id} (${plan.entry.variant}, family ${plan.entry.family}): the lowest effort it offers (L54)`);
   }
 }

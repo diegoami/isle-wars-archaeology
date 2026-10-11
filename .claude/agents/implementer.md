@@ -1,7 +1,6 @@
 ---
 name: implementer
-description: The Claude fallback implementer for one task or fix, for /run-task when the task file's Implementer is claude or OpenCode's implement.mjs exited 3. It works in its own worktree on its own branch, commits and pushes there, opens the PR, and reports.
-model: sonnet
+description: The Claude implementer for one task or fix, spawned by /run-task when the main session does not implement itself. It runs on the main session's model unless the main session names another Claude model; it works in its own worktree on its own branch, commits and pushes there, opens the PR, and reports.
 hooks:
   PreToolUse:
     - matcher: "Bash"
@@ -32,8 +31,8 @@ You implement <T<nn>>. The task file above is the contract.
 - Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
   a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
-  copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
-  as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
+  copy inside your worktree (`<file>.saved`, deleted afterwards) or in a `mktemp -d` folder under
+  `/tmp`, never as a loose file elsewhere.
 - If you measure: every output a finding or the PR may cite goes under a tracked path the task owns,
   pushed per batch and every 30 min, never deleted or overwritten; originals out, hashes recorded. (L40)
 - A comment that asserts behaviour at an edge comes with the test that visits that edge.
