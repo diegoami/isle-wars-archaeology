@@ -998,6 +998,23 @@ class ExactPlacementTest(unittest.TestCase):
         self.assertIn("place-commit", world.driver.blocks)
         self.assertNotIn("place-plus", world.driver.blocks)
 
+    def test_the_exact_path_needs_both_a_gap_above_zero_and_a_named_case(self):
+        # cases.frontier never answers one without the other today; the loop's own guard is held here
+        # against a frontier that does (gap 2 with no case, a case with gap 0): both place with ALL
+        real = e021_loop.cases.frontier
+        try:
+            for answer in ((3, 4, None, None, 2), (3, 4, "even", 5, 0)):
+                with self.subTest(answer=answer):
+                    e021_loop.cases.frontier = lambda *a, _answer=answer, **k: _answer
+                    world = self.world(5)
+                    self.assertIsNone(world.loop.turn())
+                    self.assertNotIn("place-plus", world.driver.blocks)
+                    self.assertNotIn("place-only", world.driver.blocks)
+                    self.assertIn("place-commit", world.driver.blocks)
+                    self.assertEqual(world.driver.events("place-exact"), [])
+        finally:
+            e021_loop.cases.frontier = real
+
     def test_the_fallback_placement_is_never_exact(self):
         world = self.world(3)
         original = world.driver.run_step
