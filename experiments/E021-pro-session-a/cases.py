@@ -269,6 +269,34 @@ def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None, avoid=()):
     return (attacker, defender) + target
 
 
+def rest_choices(board, needed, adjacency, target, seat=HUMAN_SEAT, points=None):
+    """The countries of `seat` that may take the rest of the pool after an exact placement (fix #180),
+    best first. The pool ends only at exactly zero (F013 Q-REI-03), so what the exact stack did not
+    take must go somewhere; the rule keeps it from spoiling a size the sitting still needs:
+
+    * never `target`, the stack just sized, and never a country without a click point or a reading;
+    * never a needed attacker showing its size (an attacker of a pair that fits an unmet size cell
+      with gap 0 now: more armies would overshoot its cell). They are excluded, not ranked last
+      (round 2): the list may be empty, and then the caller does not place exactly at all;
+    * first the interior countries (every neighbour readable and the seat's own: never an attacker),
+      then the frontier countries; within a tier the lowest country number, so the choice is a
+      function of the board."""
+    shown = {attacker for (attacker, _defender), hit in
+             reachable(board, needed, adjacency, seat=seat, points=points).items()
+             if any(gap == 0 for _case, _cell, gap in hit)}
+    ranked = []
+    for country in sorted(board):
+        row = readable(board, country)
+        if country == target or country in shown or row is None or row["owner"] != seat:
+            continue
+        if points is not None and country not in points:
+            continue
+        neighbours = [readable(board, n) for n in adjacency.get(country, ())]
+        interior = all(n is not None and n["owner"] == seat for n in neighbours)
+        ranked.append((0 if interior else 1, country))
+    return [country for _tier, country in sorted(ranked)]
+
+
 def grow_target(board, needed, country):
     """(case, cell, gap) for the smallest attacker size above `country`'s armies that an unmet
     `even` or `underdog` cell in `needed` still asks for (ties: the case order, then the lowest
