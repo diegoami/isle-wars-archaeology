@@ -1,0 +1,131 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0004",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "trade-in-doubling-banner.png",
+      "bytes": 2101061,
+      "sha256": "344aae8cd96fc351c660981501d54ad79324378b0f4524cf959f779616b9d7e7",
+      "asset": "344aae8cd96fc351-trade-in-doubling-banner.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-plus5-banner-yellow.png",
+      "bytes": 2103107,
+      "sha256": "e2884963bf7900679c468a8e1365f117403b311566c6fcdba040968179e9b341",
+      "asset": "e2884963bf790067-trade-in-plus5-banner-yellow.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-plus5-placement.png",
+      "bytes": 2115485,
+      "sha256": "951a5ab5c01085c791b8fe1b5bb96cdc692dc2b00ef20966d0a659370c1cc36d",
+      "asset": "951a5ab5c01085c7-trade-in-plus5-placement.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-bomb-match-banner.png",
+      "bytes": 2103967,
+      "sha256": "617c5db1e1fb979a01ef337410fb2b41f63e68255e63315c798b7f9fba256afa",
+      "asset": "617c5db1e1fb979a-trade-in-bomb-match-banner.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "bomb-defended-by-anti-bomb.png",
+      "bytes": 2103982,
+      "sha256": "d4f457d6d0047f84b93a4fea0062d7d22daa0be626b22ee7dc55c22a3071bbc9",
+      "asset": "d4f457d6d0047f84-bomb-defended-by-anti-bomb.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-plus5-banner-green.png",
+      "bytes": 2101593,
+      "sha256": "2d5451ebef870f729d70d58c4e53866bf9966f94c57e456717b981d6bc28497f",
+      "asset": "2d5451ebef870f72-trade-in-plus5-banner-green.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "hand-full-discard-notice-turn24.png",
+      "bytes": 2141368,
+      "sha256": "8dd481e90326ba3770de36fe7df25a59e8564ac9d9c5bc6a2d02d78cf6cefa17",
+      "asset": "8dd481e90326ba37-hand-full-discard-notice-turn24.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "hand-full-discard-notice-turn28.png",
+      "bytes": 2146162,
+      "sha256": "56d0ad99981617d5131b7a742b54e87afbae65a0e5e1e464da914e450d7a3414",
+      "asset": "56d0ad99981617d5-hand-full-discard-notice-turn28.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "hand-after-discard-turn28.png",
+      "bytes": 2118372,
+      "sha256": "370fafddee4d7258fad7f2bb70d5870bb57165f1b59c1ec31de9420de2ce20f1",
+      "asset": "370fafddee4d7258-hand-after-discard-turn28.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-view-five-cards.png",
+      "bytes": 2131829,
+      "sha256": "f5de8df4a1f2458f782a13aaabc4b744dae29c9ff1f4e41da6585a0c0635ec20",
+      "asset": "f5de8df4a1f2458f-card-view-five-cards.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "lose-all-card-drawn-full-hand.png",
+      "bytes": 2113058,
+      "sha256": "cad8afee062d96858f97cc8880391679b6885fa311e2961a48530005825cc7a1",
+      "asset": "cad8afee062d9685-lose-all-card-drawn-full-hand.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn01-yellow-placement-no-islands.png",
+      "bytes": 2107611,
+      "sha256": "5844d7ac2b03df4d07e11085687fe59863bd62b31580ae2e0ecb15b03bf5ef6e",
+      "asset": "5844d7ac2b03df4d-turn01-yellow-placement-no-islands.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn25-yellow-placement-two-islands.png",
+      "bytes": 2105926,
+      "sha256": "ba9f7def705b75e134ec2a7b70d8a5260f4452185b3a5ab000ca9ba848e5def7",
+      "asset": "ba9f7def705b75e1-turn25-yellow-placement-two-islands.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn28-blue-three-countries-no-island.png",
+      "bytes": 2102080,
+      "sha256": "06e3b5982646f85e8aee5a1f3b79b110dff99ee3dba6fff66b57315a9b6d2803",
+      "asset": "06e3b5982646f85e-turn28-blue-three-countries-no-island.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn32-blue-three-countries-one-island.png",
+      "bytes": 2100359,
+      "sha256": "82d4ab29613ac8033b2e8820128853030995c1366c3c90d7f75d3ff0b41e0709",
+      "asset": "82d4ab29613ac803-turn32-blue-three-countries-one-island.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn46-red-three-countries-one-island.png",
+      "bytes": 2095319,
+      "sha256": "e9158587c68838b51d5f4f71538a097933ce3a5553301bda28a2a9a9c3940fea",
+      "asset": "e9158587c68838b5-turn46-red-three-countries-one-island.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "turn54-red-one-country.png",
+      "bytes": 2093913,
+      "sha256": "ccaf6af886a0fdb21805fe5fe8d86720afb5271a0cbe73729d363d7a285ff998",
+      "asset": "ccaf6af886a0fdb2-turn54-red-one-country.png",
+      "class": "screenshot"
+    }
+  ]
+}

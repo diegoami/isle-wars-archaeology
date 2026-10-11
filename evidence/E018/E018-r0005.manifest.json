@@ -1,0 +1,82 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0005",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "options-screen.png",
+      "bytes": 1065227,
+      "sha256": "ae4c58272d43a270209fbfc1d86949cfb7ad547b005de48ae9bf873816df76de",
+      "asset": "ae4c58272d43a270-options-screen.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "opening-deal-and-centres.png",
+      "bytes": 2237844,
+      "sha256": "4e94d19ebc2c1af7c0b438b2a5a326c3120db4245fe5922aa22570f2ff67e945",
+      "asset": "4e94d19ebc2c1af7-opening-deal-and-centres.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "movein-counter-1-default.png",
+      "bytes": 2189024,
+      "sha256": "7cfbd723009aeff1bd3af881da35dcce2124d08c55ec8241e44aece98f098518",
+      "asset": "7cfbd723009aeff1-movein-counter-1-default.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "movein-counter-6-of-7.png",
+      "bytes": 2189775,
+      "sha256": "eba621033dcc20f3079bfb081d0eeff46d882ce5f65bcb41b9c30fea7de2074a",
+      "asset": "eba621033dcc20f3-movein-counter-6-of-7.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "movein-counter-9-of-10.png",
+      "bytes": 2184504,
+      "sha256": "c3b3064167d87ab62e49c23bb6dd0413ac6bf52f5493f17f140a780c479a2d9e",
+      "asset": "c3b3064167d87ab6-movein-counter-9-of-10.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-move-turn-end.png",
+      "bytes": 2098789,
+      "sha256": "ded1baad7f9749438a02ca079092719e041e229cb3f21006bfbb597e22ccb68e",
+      "asset": "ded1baad7f974943-computer-move-turn-end.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "blue-defeated.png",
+      "bytes": 2098346,
+      "sha256": "3bca502fe64f1f2f84dfa0bbeee16b8ada48e88693baa0a15aa46a7f70a7d5d1",
+      "asset": "3bca502fe64f1f2f-blue-defeated.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "elimination-prompt.png",
+      "bytes": 1869680,
+      "sha256": "f0ecab186c1219d51f4a98140da93f6b8c709b9a9fb12c4ac5d347bf9cdfc86c",
+      "asset": "f0ecab186c1219d5-elimination-prompt.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "prompt-ignored-play-out.png",
+      "bytes": 2097313,
+      "sha256": "65d2a8d2e6239fa8fdedf640b262c4092f6f881a6e25db1697f89f857d3d1865",
+      "asset": "65d2a8d2e6239fa8-prompt-ignored-play-out.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "green-winner.png",
+      "bytes": 1828513,
+      "sha256": "80279c5911cc06784ffb889793e1214a0976e16bf23b9313e3845b1ab86091b0",
+      "asset": "80279c5911cc0678-green-winner.png",
+      "class": "screenshot"
+    }
+  ]
+}
