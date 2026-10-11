@@ -47,10 +47,12 @@ import cases  # noqa: E402
 EXPERIMENT = "E021"
 FOLDER = "E021-pro-session-a"
 RUN_ID = re.compile(rf"^{EXPERIMENT}-r(\d{{4,}})(?:\.manifest)?\.json$")
-OUTCOMES = frozenset({"no-menu", "target-refused", "attacker-refused", "quit", "held", "capture", "forfeit"})
+OUTCOMES = frozenset({"no-menu", "target-not-taken", "attacker-refused", "unresolved", "quit", "held", "capture",
+                      "forfeit"})
 ENDS = frozenset({"pass", "forfeit", "no-menu", "game-end", "board-unreadable"})
 WORD_KINDS = {"case": frozenset(cases.CASES), "aim": frozenset(cases.CASES), "outcome": OUTCOMES, "end": ENDS}
 SUMMARY = ("exchange_clicks", "clicks_one_army", "clicks_several_armies", "clicks_no_change", "clicks_unread",
+           "clicks_unisolated",
            "battles", "refusals", "captures", "forfeits", "quits", "attack_attempts")
 ExportRefused = e020_export.ExportRefused
 
@@ -106,7 +108,11 @@ def rows_of(line):
                        ("country:attacker", str(line["attacker"])), ("country:defender", str(line["defender"]))]
         rows += counts_rows("before", line["before"]) + counts_rows("after", line["after"])
         rows += [("counter:battle", flag(line["battle"])), ("counter:clicks", str(line["clicks"])),
-                 ("counter:lost", str(line["lost"])), ("outcome:attack", line["outcome"])]
+                 ("counter:clicks-unknown", str(line.get("unknown", 0))), ("outcome:attack", line["outcome"])]
+        if line.get("lost") is not None:              # unknown when a click of it has no count
+            rows.append(("counter:lost", str(line["lost"])))
+        if "answered" in line:
+            rows.append(("counter:attacker-answered", flag(line["answered"])))
         if line.get("seat_after") is not None:
             rows.append(("owner:seat-after", line["seat_after"]))
         return rows, line.get("frames") or []
@@ -115,6 +121,8 @@ def rows_of(line):
         rows += counts_rows("before", line["before"]) + counts_rows("after", line["after"])
         if line.get("lost") is not None:
             rows.append(("counter:lost", str(line["lost"])))
+        if "isolated" in line:
+            rows.append(("counter:isolated", flag(line["isolated"])))
         if "moved_in" in line:
             rows.append(("counter:moved-in", flag(line["moved_in"])))
         return rows, line.get("frames") or []

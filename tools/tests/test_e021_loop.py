@@ -120,7 +120,7 @@ class AttackFlowTest(unittest.TestCase):
         world.game.reinforcements = 0
         world.game.adjacency = {}               # the game takes no target the player names
         world.loop.turn()
-        self.assertEqual(world.attempts()[0]["outcome"], "target-refused")
+        self.assertEqual(world.attempts()[0]["outcome"], "target-not-taken")
         self.assertEqual(world.driver.events("case-met"), [])
         self.assertEqual(world.driver.country_clicks(), [("attack-target", 4)])
 
@@ -135,7 +135,9 @@ class AttackFlowTest(unittest.TestCase):
         self.assertEqual(attempt["seat_after"], RED)
         self.assertNotIn("pass", world.driver.blocks)
         self.assertNotIn("leave-battle", world.driver.blocks)
-        self.assertEqual([c["lost"] for c in world.driver.events("exchange-click")], [1, 1])
+        # the reading that shows the hand-over already boxes the next seat: that click's count is
+        # unknown (round 1's R2), the one before it is not
+        self.assertEqual([c["lost"] for c in world.driver.events("exchange-click")], [1, None])
         self.assertEqual(world.driver.events("turn-end")[-1]["end"], "forfeit")
 
     def test_a_capture_is_left_by_done_and_its_exchanges_come_from_the_conserved_total(self):
@@ -177,14 +179,81 @@ class AttackFlowTest(unittest.TestCase):
         self.assertEqual((end["battles"], end["end"]), (3, "pass"))
 
     def test_refusals_never_count_towards_a_busy_turn(self):
+        # three orders the game refuses in one turn (attacker 4 against 5, 6 and 9: even cells 7
+        # and 8, underdog cell 1), with the busy row still needed: no busy cell is met
         adjacency = {3: {4, 5, 6}, 4: {3}, 5: {3}, 6: {3}}
-        world = World({3: (BLUE, 2), 4: (RED, 9), 5: (RED, 9), 6: (RED, 9)},
-                      met=only(("busy", 1), ("lost", 1)))
+        world = World({3: (BLUE, 4), 4: (RED, 5), 5: (RED, 6), 6: (RED, 9)},
+                      met=only(("even", 7), ("even", 8), ("underdog", 1), ("busy", 1)))
         world.game.adjacency = adjacency
         world.loop.adjacency = adjacency
         world.game.reinforcements = 0
         world.loop.turn()
+        self.assertEqual([a["outcome"] for a in world.attempts()], ["attacker-refused"] * 3)
+        self.assertEqual(world.game.refused, 3)
+        self.assertEqual(world.driver.events("turn-end")[-1]["battles"], 0)
         self.assertEqual(world.met("busy"), [])
+        self.assertEqual(sorted(world.met("even")), [7, 8])
+
+    def test_an_unanswered_attacker_click_is_unresolved_and_meets_no_cell(self):
+        world = World({3: (BLUE, 2), 4: (RED, 1)}, met=only(("even", 1)))
+        world.game.reinforcements = 0
+        world.game.attacker_unanswered = True
+        world.loop.turn()
+        (attempt,) = world.attempts()
+        self.assertEqual(attempt["outcome"], "unresolved")
+        self.assertFalse(attempt["answered"])
+        self.assertEqual(world.game.refused, 0)
+        self.assertEqual(world.driver.events("case-met"), [])
+        self.assertEqual(world.loop.summary["refusals"], 0)
+        self.assertIn("attack-cancel", world.driver.blocks)
+
+    def test_a_battle_the_probe_missed_meets_no_cell_and_ends_the_sitting_cleanly(self):
+        world = World({3: (BLUE, 2), 4: (RED, 1)}, met=only(("even", 1)))
+        world.reader.battle_blind = 1
+        world.game.reinforcements = 0
+        self.assertEqual(world.loop.turn(), "battle-stuck")
+        self.assertEqual(world.attempts()[0]["outcome"], "unresolved")
+        self.assertEqual(world.driver.events("case-met"), [])
+        self.assertEqual(world.loop.summary["ended"], "battle-stuck")
+        self.assertNotIn("pass", world.driver.blocks)
+        self.assertNotIn("exchange", world.driver.blocks)
+
+    def failure_world(self, seat_lag=False, seat_after=RED):
+        """Round 1's R2: 3 vs 3, the attacker loses one army on each of two clicks; after the
+        second the country is handed over and the next seat takes an army off the former defender
+        before the next reading."""
+        def computer(game):
+            game.board[4]["army"] -= 1
+        world = World({3: (BLUE, 3), 4: (RED, 3)}, met=only(("lost", 1)), losers=["a", "a"])
+        world.game.reinforcements = 0
+        world.game.computer_move = computer
+        world.game.seat_lag = seat_lag
+        world.reader.seat_after_failure = seat_after
+        world.loop.turn()
+        return world
+
+    def test_a_failures_count_is_unknown_once_the_next_seat_may_have_played(self):
+        world = self.failure_world()
+        clicks = world.driver.events("exchange-click")
+        self.assertEqual([c["lost"] for c in clicks], [1, None])
+        self.assertEqual([c["isolated"] for c in clicks], [True, False])
+        self.assertEqual(world.loop.summary["clicks_several_armies"], 0)
+        self.assertEqual(world.loop.summary["clicks_one_army"], 1)
+        self.assertEqual(world.loop.summary["clicks_unisolated"], 1)
+        (attempt,) = world.attempts()
+        self.assertIsNone(attempt["lost"])
+        self.assertEqual(attempt["unknown"], 1)
+        self.assertEqual(world.met("lost"), [1])
+
+    def test_a_failure_read_while_the_human_seat_is_still_boxed_is_counted_from_that_reading(self):
+        world = self.failure_world(seat_lag=True)
+        clicks = world.driver.events("exchange-click")
+        self.assertEqual([c["lost"] for c in clicks], [1, 1])
+        self.assertEqual(world.loop.summary["clicks_several_armies"], 0)
+        (attempt,) = world.attempts()
+        self.assertEqual(attempt["lost"], 2)
+        self.assertEqual(attempt["after"], [1, RED, 3, RED])
+        self.assertEqual(attempt["seat_after"], RED)
 
     def test_the_attack_button_not_answering_ends_the_attack_phase_with_a_pass(self):
         world = World({3: (BLUE, 2), 4: (RED, 1)}, met=only(("even", 1)))
@@ -209,6 +278,7 @@ class AttackFlowTest(unittest.TestCase):
         world.game.adjacency = adjacency
         world.loop.adjacency = adjacency
         world.loop.turn()
+        self.assertGreater(len(world.attempts()), 0)
         for attempt in world.attempts():
             a, d = attempt["attacker"], attempt["defender"]
             self.assertIn(d, adjacency[a])

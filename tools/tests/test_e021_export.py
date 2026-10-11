@@ -138,6 +138,20 @@ class ExportTest(unittest.TestCase):
             self.assertNotIn("counter:attacker-after", fields)
             self.assertIn("counter:defender-after", fields)
 
+    def test_an_unresolved_attempt_and_an_unknown_count_carry_no_cell_and_no_total(self):
+        with tempfile.TemporaryDirectory() as directory:
+            s = Sitting(directory, [lambda shots: attempt(shots, outcome="unresolved", answered=False, lost=None,
+                                                          unknown=1, battle=False)])
+            s.export()
+            record = s.record()
+            fields = {o.get("field"): o.get("value") for o in record["observations"] if o["step"] == 1}
+            self.assertEqual(fields["outcome:attack"], "unresolved")
+            self.assertEqual(fields["counter:attacker-answered"], "0")
+            self.assertEqual(fields["counter:clicks-unknown"], "1")
+            self.assertNotIn("counter:lost", fields)
+            path = s.repo / "runs" / "E021" / "session-a" / "E021-r0001.json"
+            self.assertEqual(e021_progress.count([path])["met"], 0)
+
     def test_run_ids_go_on_and_nothing_is_written_over(self):
         with tempfile.TemporaryDirectory() as directory:
             s = Sitting(directory, [MET])

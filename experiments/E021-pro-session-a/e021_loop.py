@@ -68,10 +68,12 @@ import steps as stepslib  # noqa: E402  (the E002 step language, on sys.path via
 PLACE_WATCH = "watch 265 530 270 26"                 # the placement row (E020's `place`)
 PLACE_SELECT = "click-until? 168 168 168 24 1000 {x} {y}"    # E020's own placement-row test, one point
 TARGET_WATCH = "watch 10 502 250 70"                 # the spike's TARGET_PANEL
+BAR_WATCH = "watch 0 495 800 105"                    # the bottom bar (the board's own blink is outside it):
+                                                     # a refusal must change it to count as one
 BUSY_MINIMUM = 3                     # a `busy` turn: at least 3 battles (Q-CMB-10)
 MAX_ATTEMPTS_PER_TURN = 12           # a bound of the player's, never a rule of the game
 MAX_FIGHT_CLICKS = 60                # likewise, for one fight (the bound is also the two stacks + 5)
-BATTLE_SECONDS = 2.0                 # the poll for the quit-attack button after the attacker's click
+BATTLE_SECONDS = 3.0                 # the poll for the quit-attack button after the attacker's click
                                      # (the spike polls 1.5 s)
 SETTLE_SECONDS = 4.0                 # the poll for the counts to change and settle after a click
 BATTLE_OUTCOMES = ("quit", "capture", "forfeit", "held")
@@ -98,7 +100,8 @@ class SessionALoop(e020_loop.BatchLoop):
         self.attempt = 0
         self.summary.update(cases_met_before=len(self.met), cases_met=len(self.met), attack_attempts=0,
                             refusals=0, battles=0, exchange_clicks=0, clicks_one_army=0,
-                            clicks_several_armies=0, clicks_no_change=0, clicks_unread=0, captures=0,
+                            clicks_several_armies=0, clicks_no_change=0, clicks_unread=0, clicks_unisolated=0,
+                            captures=0,
                             forfeits=0, quits=0)
 
     # --- the case table -------------------------------------------------------------------------
@@ -273,7 +276,7 @@ class SessionALoop(e020_loop.BatchLoop):
         seq, board = self.attempt, reading.board
         attempt = {"attempt": seq, "case": case, "cell": cell, "attacker": attacker, "defender": defender,
                    "before": self.counts(board, attacker, defender), "frames": [reading.sha256],
-                   "battle": False, "clicks": 0, "lost": 0}
+                   "battle": False, "clicks": 0, "lost": 0, "unknown": 0}
         self.driver.note(event="attack-open", attempt=seq, case=case, cell=cell, attacker=attacker,
                          defender=defender)
         if not self.send("attack-open").get("changed"):
@@ -283,16 +286,30 @@ class SessionALoop(e020_loop.BatchLoop):
             return self.finish(attempt, "no-menu", board)
         if not self.click_country("attack-target", defender, watch=TARGET_WATCH).get("changed"):
             self.send("attack-cancel")
-            return self.finish(attempt, "target-refused", self.board_after(board, attempt))
-        self.click_country("attack-attacker", attacker)
+            return self.finish(attempt, "target-not-taken", self.board_after(board, attempt))
+        answered = bool(self.click_country("attack-attacker", attacker, watch=BAR_WATCH).get("changed"))
+        attempt["answered"] = answered
         battle = self.reader.wait_battle(BATTLE_SECONDS)
         attempt["frames"].append(battle.sha256)
         if not battle.battle:
             self.send("attack-cancel")
+            after = self.look(strict=False)
+            if after is not None:
+                attempt["frames"].append(after.sha256)
+                if after.battle:
+                    # the battle came up after the probe gave up: neither a refusal nor a battle the
+                    # loop can account for; the sitting ends cleanly, the cell stays unmet
+                    self.unknown_screen(self.driver.read_screen(), ended="battle-stuck")
+                    return self.finish(attempt, "unresolved", after.board, check=False)[0], "battle-stuck"
+            board_after = after.board if after is not None else board
+            if not answered or after is None:
+                # no affirmative answer to the order (the bottom bar did not change, or no reading
+                # after the cancel): an unresolved attempt, never a refusal, and no cell is met
+                return self.finish(attempt, "unresolved", board_after)
             self.summary["refusals"] += 1
             if case in cases.SIZE_CASES:
                 self.meet(case, cell, attempt=seq, battle=0)
-            return self.finish(attempt, "attacker-refused", self.board_after(board, attempt))
+            return self.finish(attempt, "attacker-refused", board_after)
         attempt["battle"] = True
         self.summary["battles"] += 1
         if case in cases.SIZE_CASES:
@@ -320,15 +337,23 @@ class SessionALoop(e020_loop.BatchLoop):
             after = seen[-1].board
             state = self.state(board, after, attacker, defender)
             if state == "pending":                      # the attacker at 1, still the human's: the
-                seen = self.reader.wait_settled(after, (attacker, defender), SETTLE_SECONDS)
-                attempt["frames"] += [r.sha256 for r in seen]       # forfeit has not shown yet
+                more = self.reader.wait_settled(after, (attacker, defender), SETTLE_SECONDS)
+                attempt["frames"] += [r.sha256 for r in more]       # forfeit has not shown yet
+                seen = seen + more
                 after = seen[-1].board
                 state = self.state(board, after, attacker, defender)
             if state == "forfeit":
-                self.note_click(attempt, board, after, [r.sha256 for r in seen])
+                # A failure passes the turn by itself (Q-CMB-09), and the next seat plays without
+                # waiting for any input, so a later reading can hold that seat's moves too. The
+                # click's count is taken from the first reading that shows the hand-over, and only
+                # when the score panel still boxes the human's seat there (no other turn has begun);
+                # otherwise the count is unknown (R2 of the round-1 review).
+                first = next(r for r in seen if self.state(board, r.board, attacker, defender) == "forfeit")
+                self.note_click(attempt, board, first.board, [r.sha256 for r in seen],
+                                isolated=first.seat == SEAT)
                 self.summary["forfeits"] += 1
                 self.meet("lost", attempt=attempt["attempt"])
-                return self.finish(attempt, "forfeit", after, seat=seen[-1].seat)
+                return self.finish(attempt, "forfeit", first.board, seat=seen[-1].seat)
             if state == "capture":
                 picked = self.leave_battle(attempt)
                 final = self.look(strict=False)
@@ -371,22 +396,24 @@ class SessionALoop(e020_loop.BatchLoop):
         attempt["frames"].append(reading.sha256)
         return reading.board
 
-    def finish(self, attempt, outcome, board, seat=None, after_leave=False):
+    def finish(self, attempt, outcome, board, seat=None, after_leave=False, check=True):
         """The attempt's line, then the screen: (outcome, why the game ended or None). After a
         failure the turn has passed and the screen is the computers'; anything but the board after
         any other attempt is answered by E020's `off_board`. A battle panel still up after the loop
         left it ends the sitting cleanly (`battle-stuck`): the next order would go into it."""
         a, d = attempt["attacker"], attempt["defender"]
         fields = dict(attempt, event="attack-attempt", outcome=outcome, after=self.counts(board, a, d))
+        if attempt.get("unknown"):
+            fields["lost"] = None            # a click of it has no count: the total is not known
         if seat is not None:
             fields["seat_after"] = seat
         self.driver.note(**fields)
-        if outcome == "forfeit":
+        if outcome == "forfeit" or not check:
             return outcome, None
         screen = self.driver.read_screen()
         if screen not in e020_loop.BOARD:
             return outcome, self.off_board(screen)
-        if after_leave or outcome in ("target-refused", "attacker-refused"):
+        if after_leave or outcome in ("target-not-taken", "attacker-refused", "unresolved"):
             check = self.look(strict=False)
             if check is not None and check.battle:
                 self.unknown_screen(screen, ended="battle-stuck")
@@ -424,15 +451,21 @@ class SessionALoop(e020_loop.BatchLoop):
             return "no-change"
         return "on"
 
-    def note_click(self, attempt, before, after, frames, moved_in=None):
+    def note_click(self, attempt, before, after, frames, moved_in=None, isolated=True):
         """One `exchange-click` line: both countries before and after the click, and the armies
-        the two lost together (the conserved total, module text), None when a count is unread."""
+        the two lost together (the conserved total, module text): None when a count is unread, or
+        when the reading after the click cannot be shown to hold the human's battle alone
+        (`isolated` False: another seat's turn may have begun)."""
         a, d = attempt["attacker"], attempt["defender"]
         b, f = self.counts(before, a, d), self.counts(after, a, d)
         lost = None
-        if None not in (b[0], b[2], f[0], f[2]):
+        if isolated and None not in (b[0], b[2], f[0], f[2]):
             lost = (b[0] + b[2]) - (f[0] + f[2])
         if lost is None:
+            attempt["unknown"] = attempt.get("unknown", 0) + 1
+        if not isolated:
+            self.summary["clicks_unisolated"] += 1
+        elif lost is None:
             self.summary["clicks_unread"] += 1
         elif lost == 1:
             self.summary["clicks_one_army"] += 1
@@ -443,7 +476,7 @@ class SessionALoop(e020_loop.BatchLoop):
         if lost is not None and lost > 0:
             attempt["lost"] += lost
         fields = {"event": "exchange-click", "attempt": attempt["attempt"], "click": attempt["clicks"],
-                  "before": b, "after": f, "lost": lost, "frames": list(frames)}
+                  "before": b, "after": f, "lost": lost, "isolated": bool(isolated), "frames": list(frames)}
         if moved_in is not None:
             fields["moved_in"] = bool(moved_in)
         self.driver.note(**fields)

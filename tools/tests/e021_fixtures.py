@@ -68,6 +68,11 @@ class FakeGame:
         self.after_continue = "title"
         self.after_scoreboard = "title"
         self.attack_button_works = True
+        self.attacker_unanswered = False   # the attacker's click reaches no handler: nothing changes
+        self.refused = 0                   # orders the game's attacker check refused (its message)
+        self.seat_lag = False              # the score panel still boxes blue on the first reading
+                                           # after a failure
+        self.computer_move = None          # (game) -> None: the next seat's play after a failure
 
     def click_country(self, block, country):
         if block == "attack-target":
@@ -77,10 +82,14 @@ class FakeGame:
                 self.target, self.phase = country, "attacker"
             return {"changed": ok}
         if block == "attack-attacker":
+            if self.attacker_unanswered:
+                return {"changed": False}
             a, d = self.board[country], self.board.get(self.target)
             if (self.phase == "attacker" and a["owner"] == BLUE and self.target in self.adjacency.get(country, ())
                     and a["army"] > 1 and a["army"] >= d["army"]):
                 self.attacker, self.phase = country, "battle"
+            elif self.phase == "attacker":
+                self.refused += 1          # the not-enough-armies message changes the bottom bar
             return {"changed": True}
         return {"changed": False}
 
@@ -198,25 +207,43 @@ class FakeReader:
     """boardview.FrameReader's interface over a FakeGame: each read is a copy of the game's board,
     with a frame sha256 of its own. `unread` makes every reading that many countries short."""
 
-    def __init__(self, game, unread=0, fail=None):
+    def __init__(self, game, unread=0, fail=None, battle_blind=0):
         self.game = game
         self.unread = unread
         self.fail = fail
+        self.battle_blind = battle_blind   # this many battle probes miss a battle that is up
+        self.seat_after_failure = None     # the seat the score panel boxes once the turn has passed
         self.reads = 0
 
-    def read(self):
+    def read(self, seat=None):
         import boardview
         if self.fail is not None:
             raise self.fail
         self.reads += 1
         board = {c: dict(row) for c, row in self.game.board.items()}
-        return boardview.Reading(board, f"{self.reads:064x}", self.game.seat,
+        if seat is None:
+            seat = self.game.seat
+            if self.game.phase == "passed" and self.seat_after_failure is not None:
+                seat = self.seat_after_failure
+        return boardview.Reading(board, f"{self.reads:064x}", seat,
                                  self.game.phase in ("battle", "move-in"), self.unread)
 
     def wait_battle(self, seconds):
-        return self.read()
+        reading = self.read()
+        if self.battle_blind:
+            self.battle_blind -= 1
+            return reading._replace(battle=False)
+        return reading
 
     def wait_settled(self, before, countries, seconds):
+        """One reading; after a failure, the next seat's move (when the test gives one) comes after
+        it, and a second reading shows it (the interleaving of round 1's R2)."""
+        game = self.game
+        if game.phase == "passed" and game.computer_move is not None:
+            first = self.read(seat=BLUE if game.seat_lag else None)
+            game.computer_move(game)
+            game.computer_move = None
+            return [first, self.read()]
         return [self.read()]
 
 
