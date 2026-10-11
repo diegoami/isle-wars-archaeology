@@ -66,6 +66,24 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(points_module.POINTS[1], (55, 193))
         self.assertEqual(points_module.POINTS[46], (321, 262))
 
+    def test_every_block_the_loop_sends_is_in_the_step_file(self):
+        from driver.clicks import parse_blocks
+        source = (ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
+        sent = set(re.findall(r'self\.send\("([a-z-]+)"\)', source))
+        blocks = parse_blocks((ROOT / "experiments" / "E021-pro-session-a" / "session-a.steps").read_text())
+        self.assertTrue({"quit-attack", "move-in-done", "exchange", "attack-open"} <= sent)
+        self.assertEqual(sent - set(blocks), set())
+
+    def test_the_battle_presses_are_single_clicks_with_no_candidate_fallback(self):
+        # round 2, point 1: a second candidate hid that the first had worked (sitting
+        # 20261011T070437Z); each press is one plain click, and the loop reads the board after it
+        from driver.clicks import parse_blocks
+        blocks = parse_blocks((ROOT / "experiments" / "E021-pro-session-a" / "session-a.steps").read_text())
+        for name, point in (("quit-attack", (456, 531)), ("move-in-done", (495, 540)), ("exchange", (337, 531)),
+                            ("attack-open", (303, 530)), ("attack-cancel", (405, 530))):
+            inputs = [s for s in blocks[name] if s.op != "watch"]
+            self.assertEqual([(s.op, tuple(s.args)) for s in inputs], [("click", point)], name)
+
     def test_each_point_is_nearest_to_the_readers_anchor_of_its_own_country(self):
         # the reader (E020's anchors.json) and the clicks must name the same country by the same
         # number: a list position mapped to the wrong country would attack the wrong one
