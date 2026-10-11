@@ -104,6 +104,9 @@ the run works.
   why**: never weaken an assertion, skip a test, or edit the task file. A defect in code outside
   your task is reported, never patched.
 - A new test must fail before your change and pass after it; say how you checked.
+- Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+  restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
+  a file with uncommitted work: they return the last commit and destroy the rest.
 - When done: `gh pr create` as the brief says, `git -C <worktree> checkout --detach`, and make your
   final message the report: what you built, each Done-when line with the command you ran and its
   result, anything you could not verify. Never put close/closes/fix/fixes/resolve/resolves

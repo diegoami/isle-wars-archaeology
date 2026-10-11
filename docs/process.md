@@ -76,6 +76,9 @@ You implement <T<nn>>. The task file above is the contract.
 - Build only what the task asks for, even inside a file it requires; say why for each changed file. (L44)
 - A Done-when you cannot meet: stop and report. Never weaken an assertion, skip a test or edit the task file.
 - Every new test fails before your change and passes after it; say how you checked.
+- Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+  restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
+  a file with uncommitted work: they return the last commit and destroy the rest.
 - If you measure: every output a finding or the PR may cite goes under a tracked path the task owns,
   pushed per batch and every 30 min, never deleted or overwritten; originals out, hashes recorded. (L40)
 - A comment that asserts behaviour at an edge comes with the test that visits that edge.
@@ -98,6 +101,9 @@ You review PR #<n> at <sha>. You did not write it. The task file follows.
 4. Every changed file and behaviour is one the task asks for (L44); docs it makes wrong are updated.
 5. Sweep the diff: tests that pass with the behaviour deleted (mutate, rebuild clean, re-take any
    negative result), branches no input reaches, edge comments without a test, <project classes>.
+   Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
+   a file with uncommitted work: they return the last commit and destroy the rest.
 6. <docs/review-brief.md in full: "Blocking means" for this task, then its one-pass section (L47, L49)>
 Prove each finding (run it, or delete the behaviour and name the test that fails) or label it
 unverified. Your final message is the review: the header; the verdict (approve | approve after
