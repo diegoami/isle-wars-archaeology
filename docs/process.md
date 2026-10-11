@@ -20,13 +20,14 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 | Role | Who | Does |
 | --- | --- | --- |
 | Main session | Claude, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
-| Implementer | OpenCode GLM-5.3 Flash, then MiMo V2.6 Flash, via `tools/harness/implement.mjs`, then a Claude Sonnet agent (L42); a heavier model only with the reason in the task file (L46) | One task, one branch, one PR, in its own worktree |
-| Reviewer | OpenCode GPT-5.6 Luna (direct OpenAI, L51) via `tools/harness/review.mjs`, then a Claude Opus agent; never the implementer's family (L27). Exit 3: Opus reviews; exit 4: the main session reads the flagged review and decides (L28) | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Implementer | **The user's choice**, asked before each implementation (CLAUDE.md rule 6, 2026-10-11): the main session in its own worktree, a Claude agent, or OpenCode via `tools/harness/implement.mjs --model <name>`. *Superseded: GLM-5.3 Flash, then MiMo V2.6 Flash, then a Claude Sonnet agent (L42).* | One task, one branch, one PR, in its own worktree |
+| Reviewer | **The user's choice** at every review, an external model via `tools/harness/review.mjs --reviewer <name>`, one at a time; never the implementer's family (L27). Exit 3: diagnose and fix, then ask; exit 4: the main session reads the flagged review and decides (L28). *Superseded: GPT-5.6 Luna, then a Claude Opus agent.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
-`/delegate` picks the delegate; model ids come from `models.mjs` or `opencode models`, never memory
-(L25), after a look at the provider's quota: skip an exhausted one for the next with quota, saying so (L50).
+The user picks each implementer and reviewer (CLAUDE.md rule 6); quota-tracker's `/recommend` is shown
+with the question as a suggestion only. Model ids come from `models.mjs` or `opencode models`, never
+memory (L25). *Superseded: skipping an exhausted provider for the next with quota (L50).*
 The main session runs `implement.mjs` itself: a wrapper agent would spend tokens watching it.
 It watches each background job (start, end, no output for 10 min), never with `pgrep -f`. (L48), and checks quota with `docs/environment.md`'s quota-tracker.
 
@@ -56,10 +57,12 @@ What the implementer script guarantees, and why:
 - No session in 180 s, no progress in 900 s, or no exit in 3 h kills the run's process tree. (L10)
 - The agent is checked on OpenCode's session record (L11); a rejected tool call fails the run. (L26)
 - Each OpenCode model runs at the effort its `harness.json` entry names (CLAUDE.md rule 6: a heavy
-  model at medium or low, a light one at high), in the scripts' own data directory (L27, L29). The chain
-  moves on only after an infrastructure failure that left no work. (L12)
+  model at medium or low, a light one at high), in the scripts' own data directory (L27, L29). The scripts run only the
+  model the user named; no chain moves on (superseded: L12).
 - Exit 0: a PR is open. 1: the main session reads the log (a stop and report, or an early end).
-  3: OpenCode unavailable, its model not listed, or not logged in; Claude Sonnet takes the task.
+  3: OpenCode unavailable, its model not listed, or not logged in: diagnose and fix it; another
+  model only when the provider does not answer and the user names it.
+- A run that our own idle or total limit interrupted resumes in its session: `--session <ses_…>`.
 
 ## 4. The implementer brief
 
@@ -73,6 +76,11 @@ You implement <T<nn>>. The task file above is the contract.
 - Build only what the task asks for, even inside a file it requires; say why for each changed file. (L44)
 - A Done-when you cannot meet: stop and report. Never weaken an assertion, skip a test or edit the task file.
 - Every new test fails before your change and passes after it; say how you checked.
+- Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+  restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
+  a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
+  copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
+  as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
 - If you measure: every output a finding or the PR may cite goes under a tracked path the task owns,
   pushed per batch and every 30 min, never deleted or overwritten; originals out, hashes recorded. (L40)
 - A comment that asserts behaviour at an edge comes with the test that visits that edge.
@@ -95,6 +103,11 @@ You review PR #<n> at <sha>. You did not write it. The task file follows.
 4. Every changed file and behaviour is one the task asks for (L44); docs it makes wrong are updated.
 5. Sweep the diff: tests that pass with the behaviour deleted (mutate, rebuild clean, re-take any
    negative result), branches no input reaches, edge comments without a test, <project classes>.
+   Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
+   a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
+   copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
+   as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
 6. <docs/review-brief.md in full: "Blocking means" for this task, then its one-pass section (L47, L49)>
 Prove each finding (run it, or delete the behaviour and name the test that fails) or label it
 unverified. Your final message is the review: the header; the verdict (approve | approve after
@@ -103,8 +116,9 @@ named fixes | rework | user decision); per Done-when line `DW<k>: ran <command> 
 last. Never post it: the script posts it and applies the label.
 ```
 
-For a Claude reviewer, the main session also runs `/code-review <pr>` on architecture tasks,
-always with the PR number: a bare invocation from an agent reviews the wrong tree. (L8)
+A further review, such as `/code-review <pr>` on an architecture task, runs only when the user asks
+for it and names the model (CLAUDE.md rule 6.2: one review unless the user asks for more); then
+always with the PR number, since a bare invocation from an agent reviews the wrong tree. (L8)
 
 ## 6. Bugs, fixes, triage
 

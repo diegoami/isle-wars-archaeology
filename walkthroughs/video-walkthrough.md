@@ -115,9 +115,8 @@ the computer's answer to them) still rests on the owner's videos.
   recordings carry mistakes, hesitations, and tactics; the model-driven path carries
   neither. Where the question is "what does the computer do given that the human did X",
   the owner's recording is the only source.
-- It does not move the binary. The install stays at
-  `/mnt/c/Users/<owner>/Downloads/Isle-Wars-Pro_Win_EN_v20-Shareware/` (or wherever
-  F019 pins it), the wine prefix is on the user's machine, and the run copy, savestates,
+- It does not move the binary. The install stays where F019 pins it (`C:\Program Files (x86)\Solsoft\Isle Wars Pro Game\`),
+  the wine prefix is on the user's machine, and the run copy, savestates,
   screenshots, recordings, and dumps stay in the same place. None of this enters the
   repository, a release, an issue, or a cloud session.
 - It does not paraphrase the original's text. Per constraint D of rule 18, the text of

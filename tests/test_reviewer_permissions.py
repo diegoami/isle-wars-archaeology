@@ -37,6 +37,9 @@ EXPECTED_EXTERNAL = {
     "/tmp/opencode/*": "allow",
     "~/.local/share/isle-wars-archaeology/static/*": "allow",
     "/tmp/iwa-review-*": "allow",
+    # the owner, 2026-10-11, after MiniMax-M3 was refused three times: /tmp is open to the reviewer
+    "/tmp": "allow",
+    "/tmp/*": "allow",
 }
 # What OpenCode puts before an agent's own rules (as `opencode debug agent` lists them): allow all,
 # ask for any outside directory, and its own /tmp/opencode allowance, which the agent also allows (fix #144).
@@ -124,7 +127,7 @@ class ReviewerPermissions(unittest.TestCase):
             self.assertEqual(self.outside(d), "allow", d)
 
     def test_scratch_tmpdir_is_usable(self):
-        for d in ("/tmp/iwa-review-a1B2c3", "/tmp/iwa-review-a1B2c3/sub"):
+        for d in ("/tmp/iwa-review-a1B2c3", "/tmp/iwa-review-a1B2c3/sub", "/tmp", "/tmp/anything"):
             self.assertEqual(self.outside(d), "allow", d)
 
     def test_every_other_outside_path_is_rejected(self):
@@ -133,7 +136,7 @@ class ReviewerPermissions(unittest.TestCase):
                   f"{HOME}/.local/share/isle-wars-archaeology/static-other",
                   f"{HOME}/.local/share/isle-wars-archaeology/iwp.wineprefix/drive_c",
                   f"{HOME}/.local/share", HOME, f"{HOME}/.ssh", f"{HOME}/projects/isle-wars-archaeology",
-                  "/tmp", "/tmp/iwa-other", "/tmp/harness-opencode", "/mnt/c/Users", "/"):
+                  "/mnt/c/Users", "/"):
             self.assertNotEqual(self.outside(d), "allow", d)
 
     def test_edit_tool_is_denied_everywhere(self):
@@ -179,7 +182,14 @@ class ReviewerPermissions(unittest.TestCase):
         for text in (prose, rules):
             self.assertIn("~/.local/share/isle-wars-archaeology/static/", text)
             self.assertIn("mktemp -d /tmp/iwa-review-XXXXXX", text)
-            self.assertIn("git checkout -- <file>", text)
+            # L69 (the owner, 2026-10-11): a mutation is undone by writing back the saved contents,
+            # never by git checkout/restore/reset of a file with uncommitted work.
+            self.assertIn("writing back the file's saved contents", text)
+            self.assertIn("never `git checkout`, `git restore` or `git reset`", text.replace("\\`", "`"))
+            self.assertNotIn("then `git checkout -- <file>`", text)
+            # Where the saved copy goes (2026-10-11: MiniMax-M3 was refused for a loose /tmp file).
+            self.assertIn("inside your worktree (`<file>.saved`", text.replace("\\`", "`"))
+            self.assertNotIn("restored with\n  \\`git checkout -- <file>\\`", text)
         self.assertNotIn("no temp directory", prose)
         self.assertNotIn("never `/tmp`.", prose)
 

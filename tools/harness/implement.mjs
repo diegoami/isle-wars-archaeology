@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 // Runs one task's (or one fix's) implementer on OpenCode, in a worktree this script creates.
 //
-//   node tools/harness/implement.mjs --task T07 --slug calendar --issue 12 --brief brief.md [--model NAME]
-//   node tools/harness/implement.mjs --fix 34 --slug save-path --brief brief.md
+//   node tools/harness/implement.mjs --task T07 --slug calendar --issue 12 --brief brief.md --model NAME
+//     [--family FAMILY] [--variant V] [--alibaba]   for a model harness.json does not list; --alibaba when the user asked for Alibaba
+//   node tools/harness/implement.mjs --fix 34 --slug save-path --brief brief.md --model NAME
+//   node tools/harness/implement.mjs --task T07 --slug calendar --model NAME --session ses_...
+//     [--brief answer.md] [--idle-min N] [--total-min N]   resume a run's own session (rule 13)
 //     [--copy local.ini]...  untracked files copied from the main checkout into the worktree
 //     [--env KEY=VALUE]...   environment for the run
 //   node tools/harness/implement.mjs --self-test   (the reset's save, on a throwaway repository)
@@ -11,8 +14,8 @@
 // round). This script creates or resumes the branch and worktree, runs OpenCode watched, and checks
 // the handover: a PR exists, the worktree is clean, pushed and detached.
 //
-// The model is harness.json's implementer.chain (one model, by the user's decision of 2026-10-02:
-// GLM-5.3 Flash, then MiMo V2.6 Flash, then Claude Sonnet); --model runs another alone. Runs use the scripts' own
+// The model is the one the user names (CLAUDE.md rule 6, the owner, 2026-10-11): --model is
+// required, and is never replaced by another. harness.json's implementer.chain is no longer read. Runs use the scripts' own
 // OpenCode data directory, and a model OpenCode does not list there exits 3 before anything is
 // billed. With a longer chain, the next model runs
 // only on an infrastructure failure, and only when the failed run left nothing behind (no new
@@ -25,22 +28,26 @@
 // <workRoot>/<name>.<model key>.<UTC time>.unsaved.patch, created exclusively (lib/unsaved.mjs,
 // #87). The exit 1 and exit 3 messages name every patch the run saved.
 //
-// Exit 0: PR open. Exit 1: the main session decides (read the log). Exit 3: OpenCode unavailable;
-// fall back to a Claude implementer.
+// Exit 0: PR open. Exit 1: the main session decides (read the log). Exit 3: OpenCode or the model
+// unavailable: diagnose and fix it; another model only when the provider does not answer and the
+// user names it (CLAUDE.md rule 6, rule 7 of 2026-10-11).
+//
+// --session ses_... resumes a run that our own limits (the idle or total timeout) interrupted: the
+// same session, in the kept worktree, with a short "continue where you stopped" message (rule 13).
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
+import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem, sessionOwner } from './lib/opencode.mjs';
 import { runChain } from './lib/chain.mjs';
 import { resetWorktree, selfTest as unsavedSelfTest } from './lib/unsaved.mjs';
 import {
-  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ensureAgent, ocArgs, prepareOpenCode, watchLine,
+  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ensureAgent, ocArgs, prepareOpenCode, watchLine, namedModel,
 } from './lib/common.mjs';
 
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['self-test'], repeatable: ['copy', 'env'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['self-test', 'alibaba'], repeatable: ['copy', 'env'] });
 // --self-test: the reset's save on a throwaway repository (lib/unsaved.mjs), with no OpenCode or gh.
 if (a['self-test']) {
   const failures = unsavedSelfTest();
@@ -50,8 +57,10 @@ if (a['self-test']) {
 }
 if (!a.task === !a.fix) die(2, 'Give exactly one of --task T<nn> or --fix <issue>.');
 if (a.task && !/^T\d{2,3}$/.test(a.task)) die(2, `--task must look like T07; got ${a.task}`);
-if (!a.slug || !a.brief) die(2, '--slug and --brief are required.');
-if (!fs.existsSync(a.brief)) die(2, `Brief not found: ${a.brief}`);
+if (!a.slug || (!a.brief && !a.session)) die(2, '--slug and --brief (or --session) are required.');
+if (a.brief && !fs.existsSync(a.brief)) die(2, `Brief not found: ${a.brief}`);
+if (a.session && !/^ses_[A-Za-z0-9]+$/.test(a.session)) die(2, `--session takes an OpenCode session id ses_...; got ${a.session}`);
+for (const k of ['idle-min', 'total-min']) if (a[k] !== undefined && !(Number(a[k]) > 0)) die(2, `--${k} takes minutes; got ${a[k]}`);
 
 let opencode;
 try { opencode = resolveOpenCode(); } catch (e) {
@@ -64,9 +73,8 @@ const top0 = sh('git', ['rev-parse', '--show-toplevel']);
 const config = loadConfig(top0);
 const { top, commonDir, mainRoot, workRoot } = repoPaths(config);
 const impl = config.implementer;
-const chain = a.model ? [a.model] : impl.chain;
-for (const m of chain) if (!config.models[m]) die(2, `Unknown model ${m}; harness.json lists ${Object.keys(config.models).join(', ')}.`);
-const fallback = `Fall back to a Claude implementer (${impl.claudeFallback ?? 'sonnet'}).`;
+const chain = [namedModel(config, a.model, { family: a.family, variant: a.variant, alibaba: a.alibaba }, die)];
+const fallback = 'Diagnose and fix it; use another model only when the provider does not answer and the user names it (CLAUDE.md rule 6).';
 const pre = await prepareOpenCode({ opencode, chain, models: config.models, env: envWith(a.env), cwd: top, log: say });
 for (const p of pre.problems) say(p);
 if (!pre.usable.length) die(3, `OpenCode unavailable: ${pre.problems.join('; ')}. ${fallback}`);
@@ -81,6 +89,7 @@ fs.mkdirSync(workRoot, { recursive: true });
 // 1. The worktree and branch: resume a pushed branch, otherwise start from origin/main and push.
 sh('git', ['-C', top, 'fetch', '-q', 'origin']);
 const remoteHas = sh('git', ['-C', top, 'ls-remote', '--heads', 'origin', branch]);
+if (a.session && !fs.existsSync(worktree)) die(2, `--session resumes in the kept worktree, and ${worktree} is gone.`);
 if (fs.existsSync(worktree)) {
   if (sh('git', ['-C', worktree, 'rev-parse', '--abbrev-ref', 'HEAD']) !== branch) sh('git', ['-C', worktree, 'checkout', '-q', branch]);
 } else if (remoteHas) {
@@ -133,10 +142,16 @@ for (const f of a.copy) {
   fs.copyFileSync(realF, dest);
 }
 ensureAgent({ top, commonDir, worktree, agent: impl.agent });
+// A resumed session must exist and belong to this worktree before anything is sent to it (Sol's R3 on PR 164).
+if (a.session) {
+  const own = await sessionOwner(opencode, { workDir: worktree, sessionId: a.session, env: pre.env });
+  if (own.miss) die(2, `--session ${a.session} refused before the run: ${own.miss}`);
+}
 say(`worktree: ${worktree} on ${branch}`);
 
 // 2. The run.
-const prompt = `${fs.readFileSync(a.brief, 'utf8')}
+const resumeText = 'Continue where you stopped. Read your RUN-NOTES.md first, then finish the brief you already have in this session.';
+const prompt = `${a.session ? `${resumeText}\n\n${a.brief ? fs.readFileSync(a.brief, 'utf8') : ''}` : fs.readFileSync(a.brief, 'utf8')}
 
 ---
 RUN RULES (from tools/harness/implement.mjs; they override the brief where they conflict):
@@ -178,8 +193,11 @@ const result = await runChain({
     try {
       const run = await runOpenCodeWatched({
         args: ocArgs(worktree, impl.agent, model), prompt, workDir: worktree, title: `${name}-${m}`,
-        startupTimeoutMs: impl.startupTimeoutSec * 1000, idleTimeoutMs: impl.idleTimeoutSec * 1000,
-        totalTimeoutMs: impl.totalTimeoutSec * 1000, opencode, env: implementEnv, log: say,
+        resumeSessionId: a.session ?? null,
+        startupTimeoutMs: impl.startupTimeoutSec * 1000,
+        idleTimeoutMs: (a['idle-min'] ? Number(a['idle-min']) * 60 : impl.idleTimeoutSec) * 1000,
+        totalTimeoutMs: (a['total-min'] ? Number(a['total-min']) * 60 : impl.totalTimeoutSec) * 1000,
+        opencode, env: implementEnv, log: say,
       });
       output = run.output;
       // OpenCode's own error stream on a failed run, never the model's output (Luna's R1, round 2).
@@ -217,7 +235,7 @@ if (!result.ok) {
 }
 if (reasons) say(`fell back: ${reasons}`);
 // The reviewer must not be this model's family: pass it to review.mjs as --exclude.
-say(`implemented by: ${result.name} (${config.models[result.name].id})`);
+say(`implemented by: ${result.name} (${config.models[result.name].id}), family ${config.models[result.name].family}`);
 
 // 3. The handover: a PR, and a clean, pushed, detached worktree.
 sh('git', ['-C', top, 'fetch', '-q', 'origin']);

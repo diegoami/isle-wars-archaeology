@@ -41,7 +41,7 @@ TABLE = [{
     "variant": VARIANT,
     "file": "Islepro.exe",
     "sha256": KNOWN_HASH,
-    "install_path": "/mnt/c/Users/<owner>/Downloads/Isle-Wars-Pro_Win_EN_v20-Shareware/",
+    "install_path": "C:\\Program Files (x86)\\Solsoft\\Isle Wars Pro Game\\",
     "signed_on": "2026-10-08",
 }]
 

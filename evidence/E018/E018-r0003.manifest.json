@@ -1,0 +1,82 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0003",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 026.mp4",
+      "bytes": 119613032,
+      "sha256": "0591d9595aac9603d66ed7c54c289005f22ec8d9ab4af631ab2a75e08f651c1a",
+      "asset": "0591d9595aac9603-IP1 026.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "attack012-yellow-start.png",
+      "bytes": 2111113,
+      "sha256": "a3c71d035e0d2b8ddd40c25d91ba6fedcc1b75646704e27d70cfa4714ebe6863",
+      "asset": "a3c71d035e0d2b8d-attack012-yellow-start.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack078-green-large-stack.png",
+      "bytes": 2108993,
+      "sha256": "896b038272b6a8e5115d09f9525651797e66aaba5dced3afaecfef2eff60d2e4",
+      "asset": "896b038272b6a8e5-attack078-green-large-stack.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack105-green-33-v-4.png",
+      "bytes": 2106780,
+      "sha256": "085c6bcabf2a517e2e25dcfaca23ccb1ec190cd3d11b369ad67420144ca65749",
+      "asset": "085c6bcabf2a517e-attack105-green-33-v-4.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack086-stop-without-capture.png",
+      "bytes": 2110409,
+      "sha256": "3ce5fc7b6ae6aef35f57cbfb35f0fa3637ccadd462d02c4abeeab303899b1f7f",
+      "asset": "3ce5fc7b6ae6aef3-attack086-stop-without-capture.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack061-stop-without-capture.png",
+      "bytes": 2104144,
+      "sha256": "a3e19cd5578eb1a5af0bb853cb111f36c512d432c9779378976bebd346443c6d",
+      "asset": "a3e19cd5578eb1a5-attack061-stop-without-capture.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack100-human-start.png",
+      "bytes": 2189145,
+      "sha256": "735eed559dc51361a2b4cf6d50192e7d54328a76ec226ec4a9d7d607f05be4a9",
+      "asset": "735eed559dc51361-attack100-human-start.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack100-human-quit-state.png",
+      "bytes": 2188653,
+      "sha256": "ef1518d561fce87670125f81fda0265a31a34628e12e1ce985093d0e21133e09",
+      "asset": "ef1518d561fce876-attack100-human-quit-state.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack058-human-quit-state.png",
+      "bytes": 2193772,
+      "sha256": "55bf7a89d3fd52859c5d1e81740c1c357bd99851e790f05b137a59030042a3f0",
+      "asset": "55bf7a89d3fd5285-attack058-human-quit-state.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "attack091-human-capture-10-v-1.png",
+      "bytes": 2188775,
+      "sha256": "94ae624c9c4e20174564057777985d65f3ec5289bc25dcee77bd373db541d67c",
+      "asset": "94ae624c9c4e2017-attack091-human-capture-10-v-1.png",
+      "class": "screenshot"
+    }
+  ]
+}

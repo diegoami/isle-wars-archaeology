@@ -146,9 +146,10 @@ class RowContractTest(unittest.TestCase):
             )
         for row in rows:
             self.assertRegex(row["sha256"], HEX64)
-            self.assertTrue(row["install_path"].startswith("/"), row["install_path"])
-            self.assertTrue(row["install_path"].endswith("/"), row["install_path"])
-            self.assertGreaterEqual(row["install_path"].count("/"), 5, row["install_path"])
+            self.assertRegex(row["install_path"], r"^[A-Z]:\\", row["install_path"])
+            self.assertTrue(row["install_path"].endswith("\\"), row["install_path"])
+            self.assertNotIn("/", row["install_path"])
+            self.assertGreaterEqual(row["install_path"].count("\\"), 4, row["install_path"])
             datetime.date.fromisoformat(row["signed_on"])  # raises when not a real date
 
     def test_every_row_hash_agrees_with_the_static_pin_and_the_registry(self):
@@ -169,9 +170,9 @@ class RowContractTest(unittest.TestCase):
         rows = known_good_rows()
         for row in rows:
             with self.subTest(set=row["set"]):
-                self.assertIn(
-                    "Downloads/Isle-Wars-Pro_Win_EN_v20-Shareware/", row["install_path"],
-                    "install_path is not the acquired install's directory name",
+                self.assertEqual(
+                    "C:\\Program Files (x86)\\Solsoft\\Isle Wars Pro Game\\", row["install_path"],
+                    "install_path is not the install directory",
                 )
                 for field in row.values():
                     for token in PLACEHOLDER_TOKENS:
@@ -185,6 +186,13 @@ class RowContractTest(unittest.TestCase):
                 datetime.date.fromisoformat(row["signed_on"]), entry["signed_on"],
                 f"signed_on for set={entry['set']!r} is not {entry['signed_on']}",
             )
+
+    def test_every_row_install_path_has_no_host_or_placeholder_path(self):
+        for row in known_good_rows():
+            with self.subTest(set=row["set"]):
+                self.assertNotIn("/mnt/", row["install_path"])
+                self.assertNotIn("Downloads", row["install_path"])
+                self.assertNotIn("<owner>", row["install_path"])
 
     def test_every_row_hash_is_the_static_reading_pin(self):
         # Rule 17: each row's hash traces to the finding's own pinning, never a guess.
