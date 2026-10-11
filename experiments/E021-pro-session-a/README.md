@@ -21,8 +21,15 @@ Each event meets at most one cell of a row. A case whose own action fails five t
 dropped for the sitting (`case-dropped`). After three turns in a row of one game with no needed
 cell on the board and no attack opened, the game is abandoned (`game-abandoned`, then New Game
 from the board; the loss it credits is handled as E020 handles a credited loss), and a new game
-starts. With 10 or more human countries the Scoreboard may not show (F003): the sitting then ends
-on an unknown screen, and the first sitting with an abandon says what it saw. `measurements/CORRECTIONS.md` says why progress-r01's
+starts. With 10 or more human countries the Scoreboard does not show (F003): sitting 20261011T142906Z's
+second abandon went straight to the Game Options screen. The loop recognises that screen by pixels
+(`boardview.options_up`), ends the game as `abandoned-no-scoreboard` with no loss credited, restores the
+shipped scoreboard file, and starts the next game with block `options-play` (the clicks of `new-game` after
+its first, which the abandon already sent); any other screen after the abandon still ends the sitting.
+A turn that grew a stack towards a needed attacker size (its `gap` smaller than that country's smallest
+earlier one in the game; `growing` on the `turn-end` line) does not count as a no-fit turn, so a game is
+not abandoned while a stack is on its way; a stack that stops growing counts again.
+`measurements/CORRECTIONS.md` says why progress-r01's
 busy 10/10 is not met, and what the count requires since. The deal is random (F018): a cell no board offers
 stays unmet, and `measurements/progress-r<nn>.json` lists it under `unmet`; it is never forced.
 

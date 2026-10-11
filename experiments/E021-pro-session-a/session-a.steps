@@ -38,6 +38,18 @@ click! 565 532
 watch all
 click! 100 585
 
+# --- block options-play
+# The setup screen after an abandon with no Scoreboard (fix #171): sitting 20261011T142906Z, game 2
+# turn 3, showed it straight after block abandon-game's click (the human held 10 or more countries,
+# F003, so no loss was credited). It holds only the clicks of block new-game after its first one, with
+# the same points (walkthroughs/coordinates.md), never new ones: EASY (a plain click: the screen
+# already shows the last choice), then Play Game. New Game is NOT sent here: the abandon sent it, and a
+# second one would be a click on a screen that has no such button. `watch all` is new-game's own first
+# line, so the clicks are judged on the whole stage. The computers' first turns follow (block quiet).
+watch all
+click 533 311
+click! 565 532
+
 # --- block quiet
 # The computers' turns: the board unchanged for 4 s (a poll on the screen, bounded by the spike).
 # F003: 15 to 33 s before the first human turn, 23 to 24 s after a pass. The loop repeats this

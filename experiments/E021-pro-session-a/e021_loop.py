@@ -4,8 +4,9 @@ It is E020's batch loop with the human's turn replaced (imported and subclassed,
 `experiments/E020-wine-first-run/e020_loop.py` keeps the game structure -- New Game from the title
 only (T41, F003), the computers' `quiet` waits, the elimination notice, the winner notice, the
 Scoreboard, the shipped scoreboard restore (fix #152), the deadline at the door of every input, and
-the clean end on a screen the loop does not recognise). `games()`, `play_game()` and every notice
-handler are E020's; this module overrides `turn()` only, and adds what a turn does:
+the clean end on a screen the loop does not recognise). `play_game()` and every notice
+handler are E020's; this module overrides `turn()` and, for one case (the Game Options screen after an
+abandon, fix #171), `games()`, and adds what a turn does:
 
 1. read the board (boardview.FrameReader: one capture, read by E020's reader);
 2. grow a stack: ALL reinforcements on one frontier country (cases.frontier), chosen towards the
@@ -44,7 +45,23 @@ times while its press was misread.
 After NO_FIT_TURNS turns in a row of one game with no needed cell on the board and no attack opened,
 the game is abandoned (a `game-abandoned` line, then New Game from the `board-menu`, the one New
 Game sent from a board: T45 Done-when 1 as amended 2026-10-11), and E020's Scoreboard path starts
-the next game.
+the next game. A turn whose placement grew a stack towards a needed attacker size (`place-target`
+with a `gap` above 0, cases.frontier: the reinforcements the stack is short of the nearest needed size)
+is not such a turn while that gap keeps shrinking (fix #171): it starts the count again, and a
+`growing` field on the turn's `turn-end` line says so; a stack whose gap has not got smaller than
+its smallest earlier one in the game counts like any other turn, so a stack that never reaches its
+size cannot keep a game alive.
+
+With 10 or more human countries the game credits no loss, and the abandon's New Game goes straight to
+the Game Options screen with no Scoreboard (F003; sitting 20261011T142906Z, game 2 turn 3, which ended
+the sitting 55 minutes early as an unknown screen). The screen reader names that screen `unknown`, so
+after the click the loop asks the reader's capture whether it shows it (boardview.options_up, a pixel
+check traced to frames by name and sha256). It then writes `game-end` with the reason
+`abandoned-no-scoreboard` and no `loss-credited` line, restores the shipped scoreboard file as for
+any game after the first (`skr-restored`, naming the next game, #152), writes `game-start`, and sends
+block `options-play` -- the clicks of `new-game` after its own first -- instead of `new-game`; the
+game then goes on as after `new-game` (`quiet`). `games()` is overridden here for that case only.
+New Game is still sent only from the title (`new-game`) or by the abandon (`abandon-game`).
 
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
 minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
@@ -108,6 +125,10 @@ NO_FIT_TURNS = 3                     # turns in a row of one game with no needed
 NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
                                              # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
+OPTIONS = "game-options"             # the screen after an abandon's New Game that is neither the Scoreboard
+                                     # nor the board: the setup screen (boardview.options_up); the screen
+                                     # reader names it `unknown`, so the loop asks the reader's capture
+                                     # (fix #171). Never a name the click-driver's reader gives.
 
 
 class SessionALoop(e020_loop.BatchLoop):
@@ -130,11 +151,65 @@ class SessionALoop(e020_loop.BatchLoop):
         self.attempt = 0
         self.failures, self.dropped = {}, set()
         self.no_fit = (None, 0)              # (game, no-fit turns in a row in it)
+        self.options_seen = False            # the abandon's New Game went to the Game Options screen
+        self.grow = (None, {})               # (game, {country: smallest gap seen on a turn it was grown})
+        self.turn_growing = False            # this turn's placement grew a stack towards a needed size
         self.summary.update(cases_met_before=len(self.met), cases_met=len(self.met), attack_attempts=0,
                             refusals=0, battles=0, exchange_clicks=0, clicks_one_army=0,
                             clicks_several_armies=0, clicks_no_change=0, clicks_unread=0, clicks_unisolated=0,
                             captures=0,
                             forfeits=0, quits=0, fights=0)
+
+    # --- the games ------------------------------------------------------------------------------
+
+    def games(self):
+        """E020's `games()` with one addition (fix #171): a game abandoned with no Scoreboard after it
+        (the abandon's New Game went to the Game Options screen, F003's case of 10 or more human
+        countries) ends as `abandoned-no-scoreboard`, with no `loss-credited` line, and the next game
+        starts from that screen -- the skr restore (#152) and `game-start` as for any game after the
+        first, then block `options-play` in place of `new-game` (its clicks after New Game's own, which
+        was sent already). Everything else is E020's, line for line: New Game from the title only, the
+        winner notice, the Scoreboard, an unknown screen ending the sitting."""
+        after_notice = None                          # the screen read after a notice's CONTINUE (the title)
+        for game in range(1, self.games_max + 1):
+            if self.out_of_time():
+                self.summary["ended"] = "sitting-seconds"
+                return self.summary
+            self.driver.context = {"game": game, "turn": 0}
+            screen = after_notice if after_notice is not None else self.driver.read_screen()
+            after_notice = None
+            if screen not in e020_loop.NEW_GAME_ON and screen != OPTIONS:
+                self.unknown_screen(screen)
+                return self.summary
+            self.check_time("game-start")
+            if self.restore is not None and game > 1:
+                if not self.restore_shipped_skr(screen):
+                    return self.summary
+            self.driver.note(event="game-start")
+            self.game_open = True
+            self.summary["games"] = game
+            block = "options-play" if screen == OPTIONS else "new-game"
+            self.send(block)
+            self.game_over_seen, self.scoreboard_seen, self.options_seen = None, False, False
+            reason = self.play_game()
+            if self.game_over_seen is not None:
+                self.end_game(reason, **self.game_over_seen)
+                after_notice = self.continue_after_game_over()
+            elif self.scoreboard_seen:
+                self.end_game(reason)
+                after_notice = self.leave_scoreboard()
+            elif self.options_seen:
+                self.end_game(reason)
+                after_notice = OPTIONS
+            else:
+                self.end_game(reason)
+                if self.summary["ended"] is None:
+                    self.summary["ended"] = reason
+                return self.summary
+            if after_notice is None:
+                return self.summary
+        self.summary["ended"] = "games-max"
+        return self.summary
 
     # --- the case table -------------------------------------------------------------------------
 
@@ -218,6 +293,7 @@ class SessionALoop(e020_loop.BatchLoop):
     def turn(self):
         """One turn: the placement (two tries with a `dismiss` between them, as E020's), then the
         attacks, then PASS. None when the turn was played, else why the game ended for the loop."""
+        self.turn_growing = False
         screen = self.driver.read_screen()
         if screen not in e020_loop.BOARD:
             return self.off_board(screen)
@@ -254,9 +330,10 @@ class SessionALoop(e020_loop.BatchLoop):
         ready = cases.pick(board, self.needed(), self.adjacency, points=self.points)
         avoid = {ready[2]} if ready and ready[0] in cases.SIZE_CASES else set()
         choice = cases.frontier(board, self.needed(), self.adjacency, points=self.points, avoid=avoid)
-        picked = None
+        picked, target = None, None
         if choice is not None:
             country, _defender, case, cell, gap = choice
+            target = (country, gap)
             fields = {"country": country, "gap": gap}
             if case is not None:
                 fields.update(case=case, cell=cell)
@@ -264,6 +341,7 @@ class SessionALoop(e020_loop.BatchLoop):
             x, y = self.points[country]
             self.send_step("place-select", PLACE_WATCH)
             picked = self.send_step("place-select", PLACE_SELECT.format(x=x, y=y)).get("picked")
+        chosen = bool(picked)                  # the stack the loop chose, not E020's own `place-any`
         if not picked and fallback:
             picked = self.send("place-any").get("picked")
             self.driver.note(event="place-any", picked=int(picked or 0))
@@ -275,7 +353,29 @@ class SessionALoop(e020_loop.BatchLoop):
         self.summary["placements"] += 1
         self.send("place-commit")
         self.summary["turns"] += 1
+        self.turn_growing = chosen and self.growing(*target)
         return True
+
+    def growing(self, country, gap):
+        """True when this turn's placement grew a stack towards a needed size: `country` was chosen
+        with a `gap` (reinforcements short of the nearest needed attacker size, cases.frontier) above
+        0, and that gap is smaller than any earlier gap of this country in this game, or the country is
+        new to the game's list (fix #171). A stack that stays as short as it was, or a country that
+        turns up again with a gap it already had, does not count as growing, so a stack that never
+        reaches its size cannot keep the game alive: the turn then counts towards NO_FIT_TURNS. The
+        smallest gap seen is kept per country, so a few countries taking turns cannot avoid the count
+        either (a gap is a whole number, so a country shrinks at most as many times as its first gap)."""
+        game = self.driver.context.get("game")
+        previous, best = self.grow
+        if previous != game:
+            best = {}
+        if gap <= 0:
+            self.grow = (game, best)
+            return False
+        shrank = country not in best or gap < best[country]
+        best[country] = min(gap, best.get(country, gap))
+        self.grow = (game, best)
+        return shrank
 
     def attack_phase(self):
         """Attack while a needed cell has an untried pair; then PASS, unless a failure passed the
@@ -285,7 +385,8 @@ class SessionALoop(e020_loop.BatchLoop):
         for _ in range(MAX_ATTEMPTS_PER_TURN):
             reading = self.look()
             if reading is None:
-                self.driver.note(event="turn-end", battles=battles, fights=fights, end="board-unreadable")
+                self.driver.note(event="turn-end", battles=battles, fights=fights, end="board-unreadable",
+                                 growing=int(self.turn_growing))
                 return "board-unreadable"
             choice = cases.pick(reading.board, self.needed(), self.adjacency, points=self.points,
                                 exclude=tried)
@@ -299,7 +400,8 @@ class SessionALoop(e020_loop.BatchLoop):
             battles += int(self.last["battle"])
             fights += int(self.last["fought"])
             if game_end is not None:
-                self.driver.note(event="turn-end", battles=battles, fights=fights, end="game-end")
+                self.driver.note(event="turn-end", battles=battles, fights=fights, end="game-end",
+                                 growing=int(self.turn_growing))
                 return game_end
             if outcome == "forfeit":
                 ended = "forfeit"
@@ -307,14 +409,17 @@ class SessionALoop(e020_loop.BatchLoop):
             if outcome == "no-menu":
                 ended = "no-menu"
                 break
-        if opened:
+        if opened or self.turn_growing:
+            # an attack, or a stack still growing towards a needed size: the run of no-fit turns
+            # starts again (fix #171); a stack that stopped growing counts like any other turn
             self.no_fit = (None, 0)
-        if not opened and self.abandon_due():
-            self.driver.note(event="turn-end", battles=0, fights=0, end="abandoned")
+        if not opened and not self.turn_growing and self.abandon_due():
+            self.driver.note(event="turn-end", battles=0, fights=0, end="abandoned", growing=0)
             return self.abandon()
         if ended != "forfeit":
             self.send("pass")
-        self.driver.note(event="turn-end", battles=battles, fights=fights, end=ended)
+        self.driver.note(event="turn-end", battles=battles, fights=fights, end=ended,
+                         growing=int(self.turn_growing))
         # Q-CMB-10 asks about attacks that fought: a battle opened and left with no exchange the
         # board showed is not one (round 2, point 2: sitting 20261011T070437Z met busy 10/10 so)
         if fights >= BUSY_MINIMUM:
@@ -349,7 +454,24 @@ class SessionALoop(e020_loop.BatchLoop):
         self.summary["abandoned"] = self.summary.get("abandoned", 0) + 1
         self.no_fit = (None, 0)
         self.send("abandon-game")
-        return self.off_board(self.driver.read_screen())
+        screen = self.driver.read_screen()
+        if screen == "unknown" and self.options_up():
+            # no Scoreboard, no loss: the game went straight to its setup screen (fix #171; sitting
+            # 20261011T142906Z, game 2 turn 3); `games()` starts the next game from it
+            self.options_seen = True
+            return "abandoned-no-scoreboard"
+        return self.off_board(screen)
+
+    def options_up(self):
+        """True when one capture through the reader shows the Game Options screen (boardview.options_up).
+        A capture that cannot be read is no: the sitting then ends as it does on any unknown screen."""
+        try:
+            up, digest = self.reader.options_screen()
+        except Exception as exc:                   # an undecodable capture, a stand-in without the probe
+            self.driver.note(event="options-unread", reason=f"{type(exc).__name__}: {exc}"[:120])
+            return False
+        self.driver.note(event="options-screen", sha256=digest, up=int(up))
+        return up
 
     # --- one attack -----------------------------------------------------------------------------
 

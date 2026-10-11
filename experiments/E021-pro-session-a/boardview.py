@@ -42,6 +42,25 @@ POLL_SECONDS = 0.3
 UNREAD_LIMIT = 6            # more unread countries than this and the reading is not used (a guess:
                             # a blinking arrow or a panel may hide a few numerals; E020's three
                             # sittings' frames are not measured for it here)
+# The Game Options screen (fix #171): the setup screen New Game shows, which a game abandoned with 10 or
+# more human countries goes to with no Scoreboard (sitting 20261011T142906Z, game 2 turn 3). The panel
+# is one flat periwinkle ground, (148, 165, 247); `options_up` counts the pixels within
+# OPTIONS_TOLERANCE of it in two regions. Census over all 27883 frames of the 11 model-driven sittings
+# on the user's machine (decoded in place, constraint A; nothing copied): 41 frames show the screen, and
+# every one of them counts exactly 177809 (the whole panel) and 4865 (the strip between the title and
+# the first row), against at most 1119 and 628 on every other frame (the title, the board with and
+# without its menu row, the winner and elimination notices, the Scoreboard). The frames the numbers
+# are traced to, by name and sha256: 20261011T142906Z frames/696-1791729608702.png
+# (36306d4cb5826970770fa6cddedf5e447fee0fdde123d8c47d8839c2282caeb5, the screen after the abandon) and
+# 20261011T115331Z frames/4-1791719620971.png (6d5ba20ed4c4061fab7c404d54e4afd282e2eb168e09e8a25a23135d086e8163,
+# right after New Game's first click; the same bytes as 20261008T184505Z frames/5-1791485114278.png).
+# Each minimum sits at about half of the measured count, between the two populations.
+OPTIONS_GROUND = (148, 165, 247)
+OPTIONS_TOLERANCE = 8
+OPTIONS_PANEL = (140, 35, 510, 460)       # x, y, w, h: the panel; measured 177809 of 234600, others <= 1119
+OPTIONS_PANEL_MINIMUM = 100000
+OPTIONS_STRIP = (150, 84, 490, 10)        # the strip under the title; measured 4865 of 4900, others <= 628
+OPTIONS_STRIP_MINIMUM = 2500
 DEFAULT_TEMPLATES = Path("/mnt/c/Temp/iwp-shots/wine/reader-templates.json")
 
 Reading = namedtuple("Reading", "board sha256 seat battle unread")
@@ -62,6 +81,13 @@ def gold_count(rgb, rect=CENTRE_PANEL, colour=QUIT_ATTACK_COLOUR, tolerance=QUIT
 def battle_ready(rgb):
     """True when the capture shows the quit-attack button: a battle the game accepted is on."""
     return gold_count(rgb) >= QUIT_ATTACK_MINIMUM
+
+
+def options_up(rgb):
+    """True when the capture shows the Game Options screen (constants above): both regions hold the
+    panel's flat ground in the measured amount. A pure pixel check, never a guess from the board."""
+    return (gold_count(rgb, OPTIONS_PANEL, OPTIONS_GROUND, OPTIONS_TOLERANCE) >= OPTIONS_PANEL_MINIMUM
+            and gold_count(rgb, OPTIONS_STRIP, OPTIONS_GROUND, OPTIONS_TOLERANCE) >= OPTIONS_STRIP_MINIMUM)
 
 
 def board_of(rgb, templates, anchors=None):
@@ -103,6 +129,13 @@ class FrameReader:
         self.shots += 1
         board, unread = board_of(rgb, self.templates, self.anchors)
         return Reading(board, digest, boardreader.current_seat(rgb), battle_ready(rgb), unread)
+
+    def options_screen(self):
+        """One capture: (True when it shows the Game Options screen, the PNG's sha256). The loop asks
+        it only when the screen reader answered `unknown` after the abandon's New Game click."""
+        rgb, digest = self.capture()
+        self.shots += 1
+        return options_up(rgb), digest
 
     def wait_battle(self, seconds):
         """Poll until the battle panel is up or the bound runs out: the last Reading."""
