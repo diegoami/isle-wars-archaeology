@@ -100,6 +100,9 @@ indexed in `docs/tasks/README.md`.
 
         For a Claude subagent, the progress signal is its transcript file's size plus its
         worktree.
+      - When an OpenCode run starts, give the user its session id and the line to follow it:
+        `tools/harness/peek.sh ses_… [-n 20]` (its latest tool calls and messages, live; it also takes
+        the run log) (the owner, 2026-10-11).
       - Tell the user, in plain language, what each running agent is doing: the step it is on,
         what it committed, what it found (from its notes, commits and latest session messages).
         Never raw log lines or byte counts.
