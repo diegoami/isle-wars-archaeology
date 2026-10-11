@@ -1,0 +1,699 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0011",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "57081c1",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@57081c1",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 22095 video frames in 1102.77 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (18:23 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+    "args": [
+      "video file name: IP1 028.mp4",
+      "video sha256: 964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "probe: 1102.77 s, 22095 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 134194220 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the 47 turn starts, army pools, card counts, card draws, the two human trade-ins, the computer trade-ins, both bombs and the elimination of the red seat"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "reading method",
+      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message (\"<seat> has N islands. Placing M armies\") read for the army pool. Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them. The same readers as for IP1 027 (E018-r0007)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "first seat of the game (the draw of the first turn)",
+      "value": "after the deal the marker flickered over the seats for about 1.5 s (00:19.8 to 00:21.3, 14 moves) and settled on the red seat, which played first (00:21.3); the order then ran red, green, blue, yellow, as the fixed order of the earlier sittings (blue, yellow, red, green) continues cyclically. The first seat was yellow in IP1 026 and the human seat in IP1 027: three games, three different first seats. The red seat made no attack in its first turn (a 3-army pool, no draw)."
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "turn 1 (Red seat) start at video offset 00:21.300",
+      "value": "territory counts blue/yellow/red/green 9/14/11/12; cards 0/0/0/0; army pool read from the placement message 3; attacks 0, captures 0; cards of this seat at its next turn start 0"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "turn 2 (Green seat) start at video offset 00:25.367",
+      "value": "territory counts blue/yellow/red/green 9/14/11/12; cards 0/0/0/0; army pool read from the placement message 4; attacks 1, captures 1; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "turn 3 (Blue seat) start at video offset 00:31.667",
+      "value": "territory counts blue/yellow/red/green 9/14/10/13; cards 0/0/0/1; army pool read from the placement message 3; attacks 2, captures 2; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "turn 4 (Yellow seat) start at video offset 01:12.700",
+      "value": "territory counts blue/yellow/red/green 11/13/10/12; cards 1/0/0/1; army pool read from the placement message 4; attacks 1, captures 1; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "turn 5 (Red seat) start at video offset 01:19.967",
+      "value": "territory counts blue/yellow/red/green 11/14/9/12; cards 1/1/0/1; army pool read from the placement message 3; attacks 1, captures 1; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "turn 6 (Green seat) start at video offset 01:25.467",
+      "value": "territory counts blue/yellow/red/green 10/14/10/12; cards 1/1/1/1; army pool read from the placement message 4; attacks 1, captures 1; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "turn 7 (Blue seat) start at video offset 01:31.500",
+      "value": "territory counts blue/yellow/red/green 10/13/10/13; cards 1/1/1/2; army pool read from the placement message 3; attacks 1, captures 0; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "turn 8 (Yellow seat) start at video offset 01:58.300",
+      "value": "territory counts blue/yellow/red/green 10/13/10/13; cards 1/1/1/2; army pool read from the placement message 4; attacks 1, captures 1; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "turn 9 (Red seat) start at video offset 02:04.667",
+      "value": "territory counts blue/yellow/red/green 10/14/10/12; cards 1/2/1/2; army pool read from the placement message 5; attacks 4, captures 1; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "turn 10 (Green seat) start at video offset 02:12.900",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 1/2/2/2; army pool read from the placement message 3; attacks 0, captures 0; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "turn 11 (Blue seat) start at video offset 02:16.800",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 1/2/2/2; army pool read from the placement message 3; attacks 1, captures 0; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "turn 12 (Yellow seat) start at video offset 02:43.133",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 1/2/2/2; army pool read from the placement message 7; attacks 1, captures 0; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "turn 13 (Red seat) start at video offset 02:49.233",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 1/2/2/2; army pool read from the placement message 7; attacks 2, captures 0; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "turn 14 (Green seat) start at video offset 02:56.300",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 1/2/2/2; army pool read from the placement message 3; attacks 3, captures 0; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "turn 15 (Blue seat) start at video offset 03:02.967",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 1/2/2/2; army pool read from the placement message 3; attacks 2, captures 1; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 16,
+      "source": "screen",
+      "field": "turn 16 (Yellow seat) start at video offset 03:31.500",
+      "value": "territory counts blue/yellow/red/green 11/13/11/11; cards 2/2/2/2; army pool read from the placement message 7; attacks 1, captures 1; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 17,
+      "source": "screen",
+      "field": "turn 17 (Red seat) start at video offset 03:38.000",
+      "value": "territory counts blue/yellow/red/green 11/14/11/10; cards 2/3/2/2; army pool read from the placement message 7; attacks 1, captures 1; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 18,
+      "source": "screen",
+      "field": "turn 18 (Green seat) start at video offset 03:54.700",
+      "value": "territory counts blue/yellow/red/green 10/14/12/10; cards 2/3/3/2; army pool read from the placement message 3; attacks 1, captures 1; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 19,
+      "source": "screen",
+      "field": "turn 19 (Blue seat) start at video offset 04:00.500",
+      "value": "territory counts blue/yellow/red/green 10/13/12/11; cards 2/3/3/3; army pool read from the placement message 3; attacks 1, captures 0; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 20,
+      "source": "screen",
+      "field": "turn 20 (Yellow seat) start at video offset 04:21.433",
+      "value": "territory counts blue/yellow/red/green 10/13/12/11; cards 2/3/3/3; army pool read from the placement message 7; attacks 2, captures 1; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 21,
+      "source": "screen",
+      "field": "turn 21 (Red seat) start at video offset 04:29.200",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 2/4/3/3; army pool read from the placement message 7; attacks 3, captures 0; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 22,
+      "source": "screen",
+      "field": "turn 22 (Green seat) start at video offset 04:37.000",
+      "value": "territory counts blue/yellow/red/green 10/14/11/11; cards 2/4/3/3; army pool read from the placement message 3; attacks 1, captures 1; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 23,
+      "source": "screen",
+      "field": "turn 23 (Blue seat) start at video offset 04:44.933",
+      "value": "territory counts blue/yellow/red/green 10/14/10/12; cards 2/4/3/4; army pool read from the placement message 3; attacks 1, captures 1; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 24,
+      "source": "screen",
+      "field": "turn 24 (Yellow seat) start at video offset 05:10.300",
+      "value": "territory counts blue/yellow/red/green 11/14/10/11; cards 3/4/3/4; army pool read from the placement message 11; attacks 3, captures 1; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 25,
+      "source": "screen",
+      "field": "turn 25 (Red seat) start at video offset 05:24.100",
+      "value": "territory counts blue/yellow/red/green 11/15/9/11; cards 3/2/3/4; army pool read from the placement message 7; attacks 2, captures 1; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 26,
+      "source": "screen",
+      "field": "turn 26 (Green seat) start at video offset 05:31.167",
+      "value": "territory counts blue/yellow/red/green 11/14/10/11; cards 3/2/4/4; army pool read from the placement message 3; attacks 0, captures 0; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 27,
+      "source": "screen",
+      "field": "turn 27 (Blue seat) start at video offset 05:36.933",
+      "value": "territory counts blue/yellow/red/green 11/14/10/11; cards 3/2/4/4; army pool read from the placement message 8; attacks 4, captures 4; cards of this seat at its next turn start 1"
+    },
+    {
+      "step": 28,
+      "source": "screen",
+      "field": "turn 28 (Yellow seat) start at video offset 07:49.200",
+      "value": "territory counts blue/yellow/red/green 15/13/7/11; cards 1/2/4/4; army pool read from the placement message 11; attacks 1, captures 1; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 29,
+      "source": "screen",
+      "field": "turn 29 (Red seat) start at video offset 07:58.467",
+      "value": "territory counts blue/yellow/red/green 14/14/7/11; cards 1/3/4/4; army pool read from the placement message 4; attacks 1, captures 0; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 30,
+      "source": "screen",
+      "field": "turn 30 (Green seat) start at video offset 08:03.033",
+      "value": "territory counts blue/yellow/red/green 14/14/7/11; cards 1/3/4/4; army pool read from the placement message 3; attacks 1, captures 1; cards of this seat at its next turn start 5"
+    },
+    {
+      "step": 31,
+      "source": "screen",
+      "field": "turn 31 (Blue seat) start at video offset 08:13.067",
+      "value": "territory counts blue/yellow/red/green 14/13/7/12; cards 1/3/4/5; army pool read from the placement message 11; attacks 3, captures 3; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 32,
+      "source": "screen",
+      "field": "turn 32 (Yellow seat) start at video offset 09:48.467",
+      "value": "territory counts blue/yellow/red/green 17/13/5/11; cards 2/3/4/5; army pool read from the placement message 15; attacks 3, captures 2; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 33,
+      "source": "screen",
+      "field": "turn 33 (Red seat) start at video offset 10:03.367",
+      "value": "territory counts blue/yellow/red/green 17/15/3/11; cards 2/4/4/5; army pool read from the placement message 2; attacks 0, captures 0; no next turn start of this seat in the video"
+    },
+    {
+      "step": 34,
+      "source": "screen",
+      "field": "turn 34 (Green seat) start at video offset 10:06.333",
+      "value": "territory counts blue/yellow/red/green 17/15/3/11; cards 2/4/4/5; army pool read from the placement message 11; attacks 2, captures 1; cards of this seat at its next turn start 5"
+    },
+    {
+      "step": 35,
+      "source": "screen",
+      "field": "turn 35 (Blue seat) start at video offset 10:14.067",
+      "value": "territory counts blue/yellow/red/green 17/15/2/12; cards 2/4/4/5; army pool read from the placement message 17; attacks 4, captures 4; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 36,
+      "source": "screen",
+      "field": "turn 36 (Yellow seat) start at video offset 11:40.367",
+      "value": "territory counts blue/yellow/red/green 21/15/1/9; cards 3/4/4/5; army pool read from the placement message 16; attacks 2, captures 2; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 37,
+      "source": "screen",
+      "field": "turn 37 (Green seat) start at video offset 11:58.100",
+      "value": "territory counts blue/yellow/red/green 21/17/0/8; cards 3/2/0/5; army pool read from the placement message 2; attacks 1, captures 0; cards of this seat at its next turn start 5"
+    },
+    {
+      "step": 38,
+      "source": "screen",
+      "field": "turn 38 (Blue seat) start at video offset 12:02.967",
+      "value": "territory counts blue/yellow/red/green 21/17/0/8; cards 3/2/0/5; army pool read from the placement message 21; attacks 2, captures 2; cards of this seat at its next turn start 4"
+    },
+    {
+      "step": 39,
+      "source": "screen",
+      "field": "turn 39 (Yellow seat) start at video offset 12:54.500",
+      "value": "territory counts blue/yellow/red/green 23/15/0/8; cards 4/2/0/5; army pool read from the placement message 11; attacks 2, captures 1; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 40,
+      "source": "screen",
+      "field": "turn 40 (Green seat) start at video offset 13:02.233",
+      "value": "territory counts blue/yellow/red/green 22/16/0/8; cards 4/3/0/5; army pool read from the placement message 2; attacks 0, captures 0; cards of this seat at its next turn start 5"
+    },
+    {
+      "step": 41,
+      "source": "screen",
+      "field": "turn 41 (Blue seat) start at video offset 13:05.767",
+      "value": "territory counts blue/yellow/red/green 22/16/0/8; cards 4/3/0/5; army pool read from the placement message 21; attacks 3, captures 3; cards of this seat at its next turn start 2"
+    },
+    {
+      "step": 42,
+      "source": "screen",
+      "field": "turn 42 (Yellow seat) start at video offset 14:43.000",
+      "value": "territory counts blue/yellow/red/green 25/13/0/8; cards 2/3/0/5; army pool read from the placement message 6; attacks 0, captures 0; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 43,
+      "source": "screen",
+      "field": "turn 43 (Green seat) start at video offset 14:47.167",
+      "value": "territory counts blue/yellow/red/green 25/13/0/8; cards 2/3/0/5; army pool read from the placement message 2; attacks 1, captures 0; cards of this seat at its next turn start 5"
+    },
+    {
+      "step": 44,
+      "source": "screen",
+      "field": "turn 44 (Blue seat) start at video offset 14:51.500",
+      "value": "territory counts blue/yellow/red/green 25/13/0/8; cards 2/3/0/5; army pool read from the placement message 22; attacks 2, captures 2; cards of this seat at its next turn start 3"
+    },
+    {
+      "step": 45,
+      "source": "screen",
+      "field": "turn 45 (Yellow seat) start at video offset 16:05.167",
+      "value": "territory counts blue/yellow/red/green 27/11/0/8; cards 3/3/0/5; army pool read from the placement message 5; attacks 1, captures 0; no next turn start of this seat in the video"
+    },
+    {
+      "step": 46,
+      "source": "screen",
+      "field": "turn 46 (Green seat) start at video offset 16:10.633",
+      "value": "territory counts blue/yellow/red/green 27/11/0/8; cards 3/3/0/5; army pool read from the placement message 2; attacks 0, captures 0; no next turn start of this seat in the video"
+    },
+    {
+      "step": 47,
+      "source": "screen",
+      "field": "turn 47 (Blue seat) start at video offset 16:14.233",
+      "value": "territory counts blue/yellow/red/green 27/11/0/8; cards 3/3/0/5; army pool read from the placement message 26; attacks 6, captures 6; no next turn start of this seat in the video"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, green seat, at video offset 00:31.567 (the scoreboard marker is on green)",
+      "value": "0 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 01:12.700 (the scoreboard marker is on yellow)",
+      "value": "0 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 01:19.900 (the scoreboard marker is on yellow)",
+      "value": "0 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, red seat, at video offset 01:25.400 (the scoreboard marker is on red)",
+      "value": "0 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, green seat, at video offset 01:31.467 (the scoreboard marker is on green)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 02:04.567 (the scoreboard marker is on yellow)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, red seat, at video offset 02:12.800 (the scoreboard marker is on red)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 03:31.467 (the scoreboard marker is on blue)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 03:37.933 (the scoreboard marker is on yellow)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, red seat, at video offset 03:44.700 (the scoreboard marker is on red)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, green seat, at video offset 04:00.433 (the scoreboard marker is on green)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 04:29.100 (the scoreboard marker is on yellow)",
+      "value": "3 to 4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, green seat, at video offset 04:44.867 (the scoreboard marker is on green)",
+      "value": "3 to 4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 05:10.300 (the scoreboard marker is on yellow)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 05:14.000 (the scoreboard marker is on yellow)",
+      "value": "4 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 05:24.067 (the scoreboard marker is on yellow)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, red seat, at video offset 05:31.067 (the scoreboard marker is on red)",
+      "value": "3 to 4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 05:48.933 (the scoreboard marker is on blue)",
+      "value": "3 to 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 07:49.200 (the scoreboard marker is on yellow)",
+      "value": "0 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 07:58.433 (the scoreboard marker is on yellow)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, green seat, at video offset 08:13.000 (the scoreboard marker is on green)",
+      "value": "4 to 5"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 09:48.467 (the scoreboard marker is on yellow)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 10:03.333 (the scoreboard marker is on yellow)",
+      "value": "3 to 4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 11:40.367 (the scoreboard marker is on yellow)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 11:44.333 (the scoreboard marker is on yellow)",
+      "value": "4 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, red seat, at video offset 11:55.133 (the scoreboard marker is on yellow)",
+      "value": "4 to 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 11:58.000 (the scoreboard marker is on yellow)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 12:54.500 (the scoreboard marker is on yellow)",
+      "value": "3 to 4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, yellow seat, at video offset 13:02.167 (the scoreboard marker is on yellow)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 13:38.933 (the scoreboard marker is on blue)",
+      "value": "4 to 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 14:43.000 (the scoreboard marker is on yellow)",
+      "value": "1 to 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "card count change, blue seat, at video offset 16:05.167 (the scoreboard marker is on yellow)",
+      "value": "2 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human card draws (card screen at the end of each capturing turn), in order",
+      "value": "ten draws in the ten human turns with a capture and no earlier trade-in effect: turn 3 the +8 card (card screen at 01:11), turn 15 a second +8 card (03:31), turn 23 the wildcard (05:08), turn 27 the bomb card (07:38; hand empty after the trade-in), turn 31 the doubling card (09:47; hand bomb, double), turn 35 a wildcard (11:38), turn 38 a second wildcard (12:50; hand bomb, double, wild, wild), turn 41 a wildcard after the trade-in (14:42; hand double, wild), turn 44 the +5 card (16:00; hand double, wild, +5), turn 47 the bomb card (18:09; hand double, wild, +5, bomb); the +15 card and the protection card were not drawn by the human; no capture-less human turn drew a card (turns 7, 11, 19 had none)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human trade-in 1, turn 27, the trade-in offer from 05:40.3 to 05:49.9",
+      "value": "the hand held three cards, two +8 cards and a wildcard; the offer was two buttons in the middle panel (trade in, do not trade in) with a text asking to click three matching cards; the owner clicked the three cards one after another (borders at 05:45.0, 05:46.5 and 05:48.0 on the first, second and third), the trade-in button brightened at 05:48.0, and the offer closed at 05:50.0; the placement message then read \"1 island, place 16 armies\" (the pool before the trade-in was 8 at 05:39.2, 8 plus 8 extra armies made 16); cards 3 to 0 (05:48.9). Set: two +8 cards and a wildcard. The owner did not decline."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human trade-in 2, turn 41, the offer from 13:09.2 to 13:38.9",
+      "value": "the hand held four cards, the bomb card, a doubling card and two wildcards (count 4 at the turn start); the offer was read from 13:09.2; the owner waited about 22 s (the pool message \"4 islands, place 21 armies\" stayed), then clicked the bomb card (border at 13:31.5) and the two wildcards (13:34.0 and 13:36.5), pressed trade in at 13:38.9, left the doubling card in the hand (hand count 4 to 1), and the middle panel asked to click on a country to bomb (13:39.0); the owner clicked country 8 (yellow, 9 armies) and the panel read the country as the one being bombed (13:42.0); afterwards the pool was still 21 (13:44.0) and the country read 4 armies (13:45.0 to the end of the turn): a bomb removed 5 armies from a country holding 9. Set: bomb plus two wildcards (a mixed set with two wildcards). No offer was declined."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "offers: complete list",
+      "value": "the trade-in offer appeared in exactly two human turns (27 and 41), both accepted; no offer was declined; hands at the other turn starts held no set (turn 31: bomb and double; turn 35: bomb, double, wild; turn 44: double and wild; turn 47: double, wild, +5)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer trade-ins",
+      "value": "yellow turn 24: cards 4 to 1 at 05:14.0, message \"8 extra armies\" (05:14.2), pool message \"2 islands, place 19 armies\" (05:17.0); yellow turn 36: cards 4 to 1 at 11:44.3, message for bombing a country (11:46.0 to 11:50.0), pool 16 unchanged (\"3 islands, placing 16 armies\" at 11:43.8); country 43 (blue, 3 armies) read 1 after the bomb (a loss of 2, the army count floors at 1), with the other changes in that window being the placement of the pool (country 3 plus 14, country 9 plus 1, country 13 plus 1)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "the elimination of the red seat and its cards",
+      "value": "attack 57 (yellow, country 3 against country 2, strip from 11:52.4) took the red seat's last country; at 11:55.1 red's cards went from 4 to 0 and yellow's stayed 1 (yellow then drew one capture card, 1 to 2 at 11:58.0): the eliminated seat's cards vanish and are not inherited (F012, Q-SUR-03)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "full hand",
+      "value": "the green seat held 5 cards from 08:13.0 to the end (turns 30, 34, 37, 40, 43, 46): in turn 34 it captured once with 5 cards and still had 5 at its next start; the yellow seat held 5 cards only briefly (no sixth); no discard prompt was seen"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army pool against territory count, human turns",
+      "value": "turn (count, pool): 3 (9, 3), 7 (10, 3), 11 (10, 3), 15 (10, 3), 19 (10, 3), 23 (10, 3) with no island named: each equals the count divided by 3 rounded down, raised to 2 (the first turn is not special); with islands: 27 (11, 8, then 16 after the +8 trade-in), 31 (14, 11), 35 (17, 17), 38 (21, 21), 41 (22, 21), 44 (25, 22), 47 (27, 26); the country parts 3, 4, 5, 7, 7, 8, 9 plus an island amount of 5, 7, 12, 14, 14, 14, 17 (the island amounts are sums of the static bonus values, not separated here)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the trade-in offer of turn 27 at 05:40.5 (two +8 cards and a wildcard)",
+      "ref": "sha256:1cbb50332c86645975c27b45f3da23856593dc5093a954544ce4aed74385ce66"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the three cards selected at 05:49.5",
+      "ref": "sha256:9a159dc21250154bf99c2e39cf4de616a39296820cb91203d7b714f5bf8b17e6"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the placement message after the trade-in, pool 16, at 05:51.0",
+      "ref": "sha256:91dff6ab08645efe995e1a6eb2b36c0434dab4f94235ee886ddafc43139bb17d"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the trade-in offer of turn 41 at 13:11.5 (bomb, double, two wildcards)",
+      "ref": "sha256:57070f0bf6864858231258bb171cd398e9569e1a66b670d3c3a5d81179db6c71"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: bomb and two wildcards selected at 13:36.5",
+      "ref": "sha256:ae5df657f34f05023b8c5342b3567dd58f01a409c2f41802444ecd418627ca82"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the panel asking for the country to bomb, 13:39.0",
+      "ref": "sha256:bbfd6917d4ffab9a9e91d4a342d7a1d557e65102cb56effc8f144f89ccf90a90"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: country 8 after the bomb, 4 armies, at 13:45.0",
+      "ref": "sha256:76bf0c52954a1811000753eebdcd210f501d4734c637381f205026b43565ac53"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the yellow seat's bomb message at 11:46.0",
+      "ref": "sha256:e4e3c659ca787d32eb6360bd047cb54caeb37ac1d68872eb8c661a212ba54fd8"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the card screen of turn 23 at 05:08.0 (+8, +8, wildcard)",
+      "ref": "sha256:4298e8dafb11ee0db958e400d41f3a68d6d03b839dff5e5e486195d43a4fc4a1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the last card screen at 18:09.8 (double, wild, +5, bomb)",
+      "ref": "sha256:172feb9aefe8985adef0bbd3d4107c52524181d6838a9be11375f1bdf1ee504d"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "trade-in-offer-8-8-wild.png",
+      "sha256": "1cbb50332c86645975c27b45f3da23856593dc5093a954544ce4aed74385ce66",
+      "store": "release:E018"
+    },
+    {
+      "name": "trade-in-three-selected.png",
+      "sha256": "9a159dc21250154bf99c2e39cf4de616a39296820cb91203d7b714f5bf8b17e6",
+      "store": "release:E018"
+    },
+    {
+      "name": "trade-in-pool-16.png",
+      "sha256": "91dff6ab08645efe995e1a6eb2b36c0434dab4f94235ee886ddafc43139bb17d",
+      "store": "release:E018"
+    },
+    {
+      "name": "trade-in-offer-bomb-double-wild-wild.png",
+      "sha256": "57070f0bf6864858231258bb171cd398e9569e1a66b670d3c3a5d81179db6c71",
+      "store": "release:E018"
+    },
+    {
+      "name": "trade-in-bomb-selected.png",
+      "sha256": "ae5df657f34f05023b8c5342b3567dd58f01a409c2f41802444ecd418627ca82",
+      "store": "release:E018"
+    },
+    {
+      "name": "bomb-pick-country.png",
+      "sha256": "bbfd6917d4ffab9a9e91d4a342d7a1d557e65102cb56effc8f144f89ccf90a90",
+      "store": "release:E018"
+    },
+    {
+      "name": "bomb-result-country-8-at-4.png",
+      "sha256": "76bf0c52954a1811000753eebdcd210f501d4734c637381f205026b43565ac53",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-trade-in-bomb-message.png",
+      "sha256": "e4e3c659ca787d32eb6360bd047cb54caeb37ac1d68872eb8c661a212ba54fd8",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-card-draw-wild-turn24.png",
+      "sha256": "4298e8dafb11ee0db958e400d41f3a68d6d03b839dff5e5e486195d43a4fc4a1",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-card-draw-last-bomb-turn47.png",
+      "sha256": "172feb9aefe8985adef0bbd3d4107c52524181d6838a9be11375f1bdf1ee504d",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T18:41:38Z",
+  "ended": "2026-10-11T19:00:01Z",
+  "status": "completed"
+}
