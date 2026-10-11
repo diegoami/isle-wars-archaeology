@@ -23,6 +23,20 @@ indexed in `docs/tasks/README.md`.
    images and audio to OpenRouter or ElevenLabs models, whose ids come from live lists, never memory.
 2. Nobody works in the main checkout but the main session: OpenCode runs in the worktree the script
    makes, Claude agents run with worktree isolation. Never `git stash`.
+2a. **Never remove a worktree** (the owner, 2026-10-11, from goal2-archaeology, where the main session
+    removed a running review's worktree during a cleanup and the review was lost): not after a merge,
+    not in a cleanup, not one that looks finished. This machine is shared, so a worktree may belong
+    to another session's live run. The harness scripts' removal of their own worktree at the end of
+    their own run is theirs. Old worktrees go only through the **sweep**, at session start (rule 14)
+    and at least once a day. A worktree is old when ALL of these hold:
+    - no process has its cwd or an open file in it (`ls -l /proc/*/cwd`, `lsof +D`);
+    - no systemd unit or monitor of this or another session uses it;
+    - its newest file and its last commit are more than 7 days old;
+    - its branch is merged or gone on origin;
+    - it is clean, or its diff is saved as a patch beside it first.
+
+    Keep its run outputs (savestates, sitting logs, notes) before removing it. Anything in doubt
+    stays, and the sweep reports what it removed and what it kept, and why.
 3. Status lives in GitHub labels. No document carries a status snapshot.
 4. A question is not a request to edit files. Answer it; propose any fix and wait.
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
@@ -124,7 +138,8 @@ indexed in `docs/tasks/README.md`.
 12. A bug whose fix stays in the files it names and changes no outcome is a `fix`; a blocking
     one-file mechanical fix may ride the PR that found it, declared under Scope.
 13. Design decisions go to the user; nothing else waits for the user.
-14. At session start: `gh issue list --label triage:needed --state open`, and any task in flight.
+14. At session start: `gh issue list --label triage:needed --state open`, any task in flight, and
+    the worktree sweep (rule 2a).
 
 ## Token economy
 15. A brief carries the task file pasted in full, never a pointer to it.
