@@ -64,6 +64,11 @@ it could pick the target). Lines: `place-exact` (`exact`, `country`, `gap`, `plu
 placement, `place-landed` (`landed` 1 when the stack holds its armies before plus min(gap, pool), the pool being what
 the human's countries gained in all; 0 otherwise). `landed` never credits a cell: attacks are picked from the board
 alone. With no gap or no named case the placement is today's ALL and PLACE. Fix #178's bounds are unchanged.
+Whether the pool is zero is read from the placement panel, never from the screen's name (fix #182): the name
+`board-menu` is the bottom bar's menu row, lit while the panel is up (sitting 20261011T184210Z: after PLACE with 3 armies
+left the name was `board-menu` and "How Many? 0" was on screen; the loop sent PASS, which did nothing). `boardview.panel_up`
+is E020's own placement-row test (the buttons' grey in the row 265,530,270,26). It is asked after `place-only`, after the
+rest, and after every ALL placement; a panel still up after the rest or after ALL ends the sitting as `placement-stuck`.
 `measurements/CORRECTIONS.md` says why progress-r01's
 busy 10/10 is not met, and what the count requires since. The deal is random (F018): a cell no board offers
 stays unmet, and `measurements/progress-r<nn>.json` lists it under `unmet`; it is never forced.
@@ -113,9 +118,11 @@ exchange: the task file's hazard, for the main session and the owner to decide.
 
 ## Not yet measured (offline-only assumptions, for the first sitting to check)
 
-- The + button at 373,543 registers one army per click at the loop's pace (a plain `click` each, no extra delay),
-  and the counter starts at zero after a country is selected (F013's reading; the frame cited in `coordinates.md`
-  shows the counter after ALL). `place-landed` reads 0 if either fails, and the next sitting says which.
+- Measured (sitting 20261011T184210Z, game 1 turn 1; fix #182): the + button at 373,543 registers one army per click
+  at the loop's pace (a plain `click` each, no extra delay) and the counter starts at zero after a country is selected:
+  `place-target` was even cell 8 on country 2 with gap 1, one `place-plus`, then `place-only`, and the board showed
+  country 2 going from 3 to 4 (`place-landed` landed 1). Not yet measured: the exact path's remainder (a second
+  country with ALL and PLACE) and a placement that ends with the turn menu, after the fix #182 panel test.
 - The turn menu's attack button at 303,530 and the battle's at 337,531 (the spike's and the tour's
   points), the cancel button at 405,530, and the target panel changing when a target is taken.
 - A refusal of the attacker leaves no prompt that `attack-cancel` does not clear, and its message

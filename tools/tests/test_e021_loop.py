@@ -979,7 +979,7 @@ class ExactPlacementTest(unittest.TestCase):
         self.assertEqual(world.game.board[3]["army"], 3)              # the whole pool of 2
         (landed,) = world.driver.events("place-landed")
         self.assertEqual((landed["landed"], landed["pool"], landed["expected"]), (1, 2, 3))
-        self.assertEqual(world.game.screen, "board-menu")             # the pool is zero
+        self.assertFalse(world.game.panel)                            # the pool is zero: the panel is gone
 
     def test_gap_zero_or_no_case_keeps_the_place_commit_path(self):
         # no needed size cell above the stack: case None, gap 0 (fix #178's last answer)
@@ -1116,9 +1116,9 @@ class ExactPlacementTest(unittest.TestCase):
         self.assertNotIn("place-any", world.driver.blocks)
         self.assertEqual(world.driver.blocks.count("place-commit"), 0)
 
-    def test_a_row_still_up_after_the_rest_ends_the_sitting_cleanly(self):
+    def test_a_panel_still_up_after_the_rest_ends_the_sitting_cleanly(self):
         world = self.world(10)
-        world.game.rest_leaves_row = True
+        world.game.commit_leaves_panel = True
         self.assertEqual(world.loop.turn(), "placement-stuck")
         (line,) = world.driver.events("place-exact")
         self.assertEqual((line["stuck"], line["rest_to"]), (1, 1))
@@ -1210,6 +1210,111 @@ class ExactPlacementTest(unittest.TestCase):
         world.loop.turn()
         self.assertNotIn("new-game", world.driver.blocks)
         self.assertNotIn("abandon-game", world.driver.blocks)
+
+
+class PlacementPanelTest(unittest.TestCase):
+    """Fix #182: the pool is zero when the placement panel is gone, never when the screen's name says
+    `board-menu` (sitting 20261011T184210Z, game 1 turn 1: the name stayed `board-menu` with the panel up and
+    3 armies left; the loop sent PASS, which changed nothing, and the sitting aborted)."""
+
+    def world(self, reinforcements, cells=None, met=None, screen="board-menu"):
+        cells = cells or {3: (BLUE, 3), 4: (RED, 3)}
+        world = World(cells, met=only(("even", 5)) if met is None else met, screen=screen)
+        world.game.reinforcements = reinforcements
+        world.loop.deadline = 600
+        return world
+
+    def test_pool_four_gap_one_one_plus_place_then_the_rest_then_the_turn_menu_then_the_attack(self):
+        # the sitting's own sequence: even cell 5 on country 3 (3 armies, gap 1), a pool of 4
+        world = self.world(4)
+        seen = []
+        read = world.driver.read_screen
+        world.driver.read_screen = lambda: (seen.append((read(), world.game.panel)), seen[-1][0])[1]
+        self.assertIsNone(world.loop.turn())
+        # the bug's condition is on the fixture: the name is `board-menu` while the panel is up
+        self.assertIn(("board-menu", True), seen)
+        blocks = world.driver.blocks
+        self.assertEqual(blocks[:4], ["place-plus", "place-only", "place-commit", "attack-open"])
+        self.assertEqual(blocks.count("place-plus"), 1)
+        self.assertEqual(blocks[-1], "pass")
+        self.assertEqual(world.game.blocked, [])                      # nothing was clicked on a missing menu
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["gap"], line["rest_to"]), (1, 1))
+        self.assertEqual(world.game.board[1]["army"], 1 + 3)          # the rest, all of it, on the second country
+        (landed,) = world.driver.events("place-landed")
+        self.assertEqual((landed["pool"], landed["landed"], landed["armies"]), (4, 1, 4))
+        self.assertEqual(world.met("even"), [5])
+
+    def test_an_all_placement_that_leaves_the_panel_up_ends_the_sitting_cleanly(self):
+        for name, world in (("no named case", self.world(3, met=only(("quit", 1)))),
+                            ("no safe second country", ExactPlacementTest().no_safe_world())):
+            with self.subTest(name):
+                world.game.commit_leaves_panel = True
+                world.game.screen = "board-menu"
+                self.assertEqual(world.loop.turn(), "placement-stuck")
+                self.assertEqual(world.loop.summary["ended"], "placement-stuck")
+                self.assertEqual(world.driver.events("place-stuck")[0]["reason"], "panel-up-after-all")
+                for name in ("pass", "attack-open"):
+                    self.assertNotIn(name, world.driver.blocks)
+                self.assertEqual(world.game.blocked, [])
+
+    def test_the_panel_going_a_reading_late_is_not_a_stuck_pool(self):
+        # pool 1 and gap 1: PLACE spends the pool, but the first reading after it still shows the panel
+        world = self.world(1)
+        original = world.reader.read
+        lag = []
+
+        def lagging(seat=None):
+            reading = original(seat)
+            if "place-only" in world.driver.blocks and not lag:
+                lag.append(1)
+                return reading._replace(panel=True)
+            return reading
+        world.reader.read = lagging
+        self.assertIsNone(world.loop.turn())
+        self.assertEqual(lag, [1])
+        self.assertEqual(ExactPlacementTest.selects(world), [3])      # no second country was asked for
+        self.assertNotIn("place-commit", world.driver.blocks)
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual(line["rest_to"], None)
+
+    def test_panel_after_polls_a_bounded_number_of_times(self):
+        world = self.world(4)
+        original = world.reader.read
+        for flags, expected_reads, expected_panel in (((True, True, False), 3, False),
+                                                      ((True, False), 2, False),
+                                                      ((True,) * 9, e021_loop.PANEL_POLLS, True)):
+            with self.subTest(flags=flags):
+                queue, sleeps = list(flags), []
+                world.loop.sleep = sleeps.append
+                before = world.reader.reads
+                world.reader.read = lambda seat=None, queue=queue: original(seat)._replace(panel=queue.pop(0))
+                reading = world.loop.panel_after()
+                self.assertEqual(reading.panel, expected_panel)
+                self.assertEqual(len(flags) - len(queue), expected_reads)
+                self.assertEqual(len(sleeps), expected_reads - 1)
+                world.reader.reads = before
+
+    def test_an_unreadable_capture_while_the_panel_is_checked_ends_the_sitting_cleanly(self):
+        world = self.world(4)
+        original = world.reader.read
+        state = {"fail": False}
+
+        def read(seat=None):
+            if state["fail"]:
+                raise RuntimeError("no capture")
+            return original(seat)
+        world.reader.read = read
+        send = world.driver.run_block
+
+        def block(name):
+            if name == "place-only":
+                state["fail"] = True
+            return send(name)
+        world.driver.run_block = block
+        self.assertEqual(world.loop.turn(), "board-unreadable")
+        self.assertTrue(world.loop.summary["ended"].startswith("board-unreadable"))
+        self.assertNotIn("pass", world.driver.blocks)
 
 
 class ReadingTest(unittest.TestCase):

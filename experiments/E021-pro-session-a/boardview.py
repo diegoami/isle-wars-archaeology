@@ -88,7 +88,24 @@ OFFER_RED_MINIMUM = 1000
 OFFER_GREEN_MINIMUM = 1000
 DECLINE_POINT = (466, 532)                # the centre of the red button's extent on the frame; block card-decline
 
-Reading = namedtuple("Reading", "board sha256 seat battle unread offer", defaults=(False,))
+# The placement panel (fix #182): the "How Many?" box in the middle of the bottom bar, with the counter and
+# the four grey buttons ALL, +, - and PLACE, which stays up until the pool is exactly zero (F013 Q-REI-03).
+# The screen reader's name (`board-menu`) cannot say so: it reads the bottom bar's menu row, which is lit
+# while the panel is up (sitting 20261011T184210Z, game 1 turn 1: after PLACE with 3 armies left the name was
+# still `board-menu`). E020's own placement-row test separates the two: the buttons' grey (168, 168, 168, per
+# channel within 24), at least 1000 pixels of the row (265, 530, 270, 26), the test `place-select`'s
+# `click-until?` already uses. `panel_up` is that test as a pixel count on one capture.
+# Frames, by name and sha256 (sitting 20261011T184210Z, frames/): 26-1791744164897.png (sha256
+# 047911ab1a68c764c4725db087619b41ac18453d76e595c2ee5e5fa70b137570) and 26-1791744167484.png (sha256
+# 2085325e95fecf48ba0d1432d295fd500663a3d9309007b3e2b201d040fe4b11: "How Many? 0", "3 Armies To Place." in the
+# right panel, the pool still 3): panel up. The census is in the pull request of
+# fix #182 and in `PANEL_CENSUS` below.
+PANEL_ROW = (265, 530, 270, 26)           # x, y, w, h: the placement row (E020's `place` watch)
+PANEL_GREY = (168, 168, 168)
+PANEL_TOLERANCE = 24
+PANEL_MINIMUM = 1000
+
+Reading = namedtuple("Reading", "board sha256 seat battle unread offer panel", defaults=(False, False))
 
 
 def gold_count(rgb, rect=CENTRE_PANEL, colour=QUIT_ATTACK_COLOUR, tolerance=QUIT_ATTACK_TOLERANCE):
@@ -113,6 +130,12 @@ def options_up(rgb):
     panel's flat ground in the measured amount. A pure pixel check, never a guess from the board."""
     return (gold_count(rgb, OPTIONS_PANEL, OPTIONS_GROUND, OPTIONS_TOLERANCE) >= OPTIONS_PANEL_MINIMUM
             and gold_count(rgb, OPTIONS_STRIP, OPTIONS_GROUND, OPTIONS_TOLERANCE) >= OPTIONS_STRIP_MINIMUM)
+
+
+def panel_up(rgb):
+    """True when the capture shows the placement panel (constants above): the grey buttons' row holds the
+    measured amount. False on the turn menu, whose buttons are not that grey. A pure pixel check."""
+    return gold_count(rgb, PANEL_ROW, PANEL_GREY, PANEL_TOLERANCE) >= PANEL_MINIMUM
 
 
 def offer_red(r, g, b):
@@ -175,7 +198,8 @@ class FrameReader:
         rgb, digest = self.capture()
         self.shots += 1
         board, unread = board_of(rgb, self.templates, self.anchors)
-        return Reading(board, digest, boardreader.current_seat(rgb), battle_ready(rgb), unread, offer_up(rgb))
+        return Reading(board, digest, boardreader.current_seat(rgb), battle_ready(rgb), unread, offer_up(rgb),
+                       panel_up(rgb))
 
     def options_screen(self):
         """One capture: (True when it shows the Game Options screen, the PNG's sha256). The loop asks

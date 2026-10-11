@@ -227,6 +227,63 @@ class OfferScreenTest(unittest.TestCase):
         self.assertFalse(boardview.Reading({}, "s" * 64, "blue", False, 0).offer)
 
 
+def panel_screen():
+    """The placement panel as the detector sees it: a board with the four grey buttons (173, 165, 165 on the
+    real frame) in the row. Painted to about the pixel count the real frames show (2100 to 2399)."""
+    rgb = board_screen()
+    for x in (267, 355, 404, 460):
+        paint(rgb, (x, 531, 36, 22), (173, 165, 165))
+    return rgb
+
+
+def turn_menu_screen():
+    """The turn menu in the same row: the menu board with its cyan label and the green CARD button (a row
+    of other colours, none of them the buttons' grey)."""
+    rgb = menu_board()
+    paint(rgb, (300, 531, 60, 22), (8, 206, 66))
+    paint(rgb, (400, 531, 60, 22), (200, 176, 64))
+    return rgb
+
+
+class PanelScreenTest(unittest.TestCase):
+    """Fix #182: the placement panel's test is E020's own placement-row test, as a pixel count."""
+
+    def test_the_constants_are_e020s_place_select_test(self):
+        # the loop's PLACE_SELECT and PLACE_WATCH are the click-until? test of E020's block `place`
+        import e021_loop
+        self.assertEqual(e021_loop.PLACE_SELECT.split(" {x}")[0],
+                         "click-until? %d %d %d %d %d" % (*boardview.PANEL_GREY, boardview.PANEL_TOLERANCE,
+                                                           boardview.PANEL_MINIMUM))
+        self.assertEqual(e021_loop.PLACE_WATCH, "watch %d %d %d %d" % boardview.PANEL_ROW)
+
+    def test_the_panel_is_up_on_the_buttons_grey_and_down_on_the_turn_menu(self):
+        self.assertTrue(boardview.panel_up(panel_screen()))
+        self.assertFalse(boardview.panel_up(turn_menu_screen()))
+        self.assertFalse(boardview.panel_up(board_screen()))
+        self.assertFalse(boardview.panel_up(offer_screen()))
+        self.assertFalse(boardview.panel_up(blank()))
+
+    def test_the_minimum_separates_the_two(self):
+        rgb = blank()
+        x, y, w, _h = boardview.PANEL_ROW
+        flat = rgb[y:y + 10, x:x + w].reshape(-1, 3)
+        flat[:boardview.PANEL_MINIMUM] = boardview.PANEL_GREY
+        rgb[y:y + 10, x:x + w] = flat.reshape(10, w, 3)
+        self.assertTrue(boardview.panel_up(rgb))
+        flat[boardview.PANEL_MINIMUM - 1] = (0, 0, 0)
+        rgb[y:y + 10, x:x + w] = flat.reshape(10, w, 3)
+        self.assertFalse(boardview.panel_up(rgb))
+
+    def test_the_frame_reader_says_whether_the_panel_is_up_from_the_one_capture(self):
+        for rgb, expect in ((panel_screen(), True), (turn_menu_screen(), False)):
+            reader = boardview.FrameReader(lambda rgb=rgb: (rgb, "d" * 64), TEMPLATES)
+            self.assertEqual(reader.read().panel, expect)
+            self.assertEqual(reader.shots, 1)
+
+    def test_a_reading_built_without_the_flag_has_no_panel(self):
+        self.assertFalse(boardview.Reading({}, "s" * 64, "blue", False, 0).panel)
+
+
 class ReaderTest(unittest.TestCase):
     def test_a_capture_the_reader_cannot_read_is_unread_never_guessed(self):
         reader = boardview.FrameReader(lambda: (blank(), "a" * 64), TEMPLATES)
