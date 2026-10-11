@@ -263,6 +263,15 @@ class PanelScreenTest(unittest.TestCase):
         self.assertFalse(boardview.panel_up(offer_screen()))
         self.assertFalse(boardview.panel_up(blank()))
 
+    def test_a_continue_notice_in_the_same_row_is_not_the_panel(self):
+        # the winner notice's and the Scoreboard's one wide grey CONTINUE button (x 328-477) is grey in the
+        # row too, 1458 pixels on the real winner frame, over the panel's black gap
+        rgb = board_screen()
+        paint(rgb, (328, 523, 150, 25), (168, 168, 168))
+        self.assertGreaterEqual(boardview.gold_count(rgb, boardview.PANEL_ROW, boardview.PANEL_GREY,
+                                                     boardview.PANEL_TOLERANCE), boardview.PANEL_MINIMUM)
+        self.assertFalse(boardview.panel_up(rgb))
+
     def test_the_minimum_separates_the_two(self):
         rgb = blank()
         x, y, w, _h = boardview.PANEL_ROW

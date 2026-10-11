@@ -104,6 +104,11 @@ PANEL_ROW = (265, 530, 270, 26)           # x, y, w, h: the placement row (E020'
 PANEL_GREY = (168, 168, 168)
 PANEL_TOLERANCE = 24
 PANEL_MINIMUM = 1000
+# The two CONTINUE notices (the winner's and the Scoreboard's) have a grey button in the same row too, which
+# the test above alone would take for the panel; theirs is one wide button over the gap between ALL and +, where
+# the panel's own ground is black. So the panel also needs that gap free of the grey.
+PANEL_GAP = (328, 533, 24, 16)            # x, y, w, h: the black between ALL and +
+PANEL_GAP_MAXIMUM = 40
 
 Reading = namedtuple("Reading", "board sha256 seat battle unread offer panel", defaults=(False, False))
 
@@ -135,7 +140,8 @@ def options_up(rgb):
 def panel_up(rgb):
     """True when the capture shows the placement panel (constants above): the grey buttons' row holds the
     measured amount. False on the turn menu, whose buttons are not that grey. A pure pixel check."""
-    return gold_count(rgb, PANEL_ROW, PANEL_GREY, PANEL_TOLERANCE) >= PANEL_MINIMUM
+    return (gold_count(rgb, PANEL_ROW, PANEL_GREY, PANEL_TOLERANCE) >= PANEL_MINIMUM
+            and gold_count(rgb, PANEL_GAP, PANEL_GREY, PANEL_TOLERANCE) <= PANEL_GAP_MAXIMUM)
 
 
 def offer_red(r, g, b):
