@@ -100,6 +100,10 @@ indexed in `docs/tasks/README.md`.
 
         For a Claude subagent, the progress signal is its transcript file's size plus its
         worktree.
+      - A model-driven sitting's monitor adds `--frames <sitting dir>` (`tools/harness/sitting_stall.py`):
+        "game stuck" when the screen has not changed, no capture came, or the driver acted with no
+        fight, case or game change, for 5 minutes. On it, push a notification to the user, look at the
+        named frame, and stop the sitting or file the fix (the owner, 2026-10-11).
       - When an OpenCode run starts, give the user its session id and the line to follow it:
         `tools/harness/peek.sh ses_… [-n 20]` (its latest tool calls and messages, live; it also takes
         the run log) (the owner, 2026-10-11).
