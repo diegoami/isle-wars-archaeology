@@ -328,6 +328,7 @@ class SessionALoop(e020_loop.BatchLoop):
         a capture, a failure or the limit; then the battle is left (DONE after a capture, the
         quit-attack button otherwise; nothing after a failure, which passed the turn)."""
         attacker, defender = attempt["attacker"], attempt["defender"]
+        battle_seen = True                       # the battle panel was up when the fight began
         for _ in range(limit):
             self.send("exchange")
             attempt["clicks"] += 1
@@ -360,15 +361,20 @@ class SessionALoop(e020_loop.BatchLoop):
                 final_board = final.board if final is not None else after
                 if final is not None:
                     attempt["frames"].append(final.sha256)
-                self.note_click(attempt, board, final_board, [r.sha256 for r in seen], moved_in=picked == 2)
+                # counted only from a reading after DONE that still boxes the human's seat: the
+                # move-in screen's counts are not final, and no other seat may have played
+                self.note_click(attempt, board, final_board, [r.sha256 for r in seen], moved_in=picked == 2,
+                                isolated=final is not None and final.seat == SEAT)
                 self.summary["captures"] += 1
                 return self.finish(attempt, "capture", final_board, after_leave=True)
+            isolated = seen[-1].seat == SEAT
             if state in ("unread", "no-change"):
-                self.note_click(attempt, board, after, [r.sha256 for r in seen])
+                self.note_click(attempt, board, after, [r.sha256 for r in seen], isolated=isolated)
                 return self.leave(attempt, after, battle_seen=seen[-1].battle)
-            self.note_click(attempt, board, after, [r.sha256 for r in seen])
-            board = after
-        return self.leave(attempt, board)
+            self.note_click(attempt, board, after, [r.sha256 for r in seen], isolated=isolated)
+            board, battle_seen = after, seen[-1].battle
+        # the quit-attack press meets a quit cell only when the last reading showed the battle up
+        return self.leave(attempt, board, battle_seen=battle_seen)
 
     def leave(self, attempt, board, battle_seen=True):
         """Leave a battle that is still on: the quit-attack button (candidate 1 of `leave-battle`),

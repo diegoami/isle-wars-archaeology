@@ -16,6 +16,7 @@ import e020_loop  # noqa: E402
 import e021_loop  # noqa: E402
 
 BLUE, RED = fx.BLUE, fx.RED
+YELLOW = "yellow"
 ALL = fx.all_met()
 
 
@@ -154,6 +155,39 @@ class AttackFlowTest(unittest.TestCase):
         self.assertTrue(clicks[-1]["moved_in"])
         self.assertEqual(world.met("lost"), [])
         self.assertIn("pass", world.driver.blocks)
+
+    def test_a_click_read_while_another_seat_is_boxed_has_no_count(self):
+        # a reading whose score panel boxes another seat cannot be shown to hold the human's
+        # battle alone: the click's count is unknown, wherever in the battle it comes
+        world = World({3: (BLUE, 6), 4: (RED, 5)}, met=only(("lost", 1)), losers=["d", "d"])
+        world.game.reinforcements = 0
+        original = world.reader.read
+        reads = []
+
+        def read(seat=None):
+            reads.append(1)
+            reading = original(seat=seat)
+            return reading._replace(seat=YELLOW) if world.game.phase == "battle" else reading
+        world.reader.read = read
+        world.reader.wait_settled = lambda before, countries, seconds: [read()]
+        world.game.losers = ["d"] * 5
+        world.loop.turn()
+        clicks = world.driver.events("exchange-click")
+        self.assertGreater(len(clicks), 1)
+        self.assertTrue(all(c["lost"] is None for c in clicks[:-1]))
+        self.assertTrue(all(not c["isolated"] for c in clicks[:-1]))
+        self.assertEqual(world.loop.summary["clicks_one_army"], 1)     # the capture, read after DONE
+
+    def test_a_quit_press_after_a_reading_without_the_battle_meets_no_quit_cell(self):
+        world = World({3: (BLUE, 4), 4: (RED, 4)}, met=only(("even", 6), ("quit", 1)), losers=["d"])
+        world.game.reinforcements = 0
+        original = world.reader.wait_settled
+        world.reader.wait_settled = lambda before, countries, seconds: [
+            r._replace(battle=False) for r in original(before, countries, seconds)]
+        world.loop.turn()
+        self.assertEqual(world.met("even"), [6])
+        self.assertEqual(world.attempts()[0]["outcome"], "quit")
+        self.assertEqual(world.met("quit"), [])
 
     def test_a_click_that_resolves_two_exchanges_is_logged_as_such(self):
         # DW3's hazard: the player records the number, never works around it
@@ -333,6 +367,7 @@ class ReadingTest(unittest.TestCase):
     def test_a_few_unread_countries_are_tolerated(self):
         world = World({3: (BLUE, 2), 4: (RED, 1)}, met=ALL, unread=6)
         self.assertIsNone(world.loop.turn())
+        self.assertEqual(world.driver.blocks[-2:], ["place-commit", "pass"])
 
     def test_the_click_states(self):
         state = e021_loop.SessionALoop.state

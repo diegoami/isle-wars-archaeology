@@ -123,6 +123,11 @@ class PickTest(unittest.TestCase):
         board = fx.board({1: (fx.BLUE, 1), 2: (fx.BLUE, 1), 3: (fx.BLUE, 5), 4: (fx.RED, 1)})
         for needed in ({("even", 1)}, {("tiny", 3)}, {("quit", 1)}, {("lost", 1)}, {("busy", 1)}):
             self.assertIsNone(self.pick(board, needed, adjacency), needed)
+        # the positive control: with 4 (red) on 3's border, the same rows have a pair
+        adjacency[3] = {1, 2, 4}
+        adjacency[4] = {3}
+        for needed in ({("quit", 1)}, {("lost", 1)}, {("busy", 1)}):
+            self.assertEqual(self.pick(board, needed, adjacency)[2:], (3, 4), needed)
 
     def test_never_a_country_the_driver_cannot_click(self):
         # countries 11 and 15 have no proven click point (#120): never an attacker or a target
@@ -155,6 +160,7 @@ class PickTest(unittest.TestCase):
 
     def test_an_unread_country_is_never_a_pick(self):
         board = fx.frontier_board()
+        self.assertIsNotNone(self.pick(board, {("even", 1)}))        # the positive control
         board[4] = {"army": None, "owner": None}
         self.assertIsNone(self.pick(board, {("even", 1)}))
         self.assertIsNone(self.pick(board, {("lost", 1)}))
