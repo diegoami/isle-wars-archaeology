@@ -1,0 +1,147 @@
+# E021's Session A step blocks, in the E002 step language (runtime/iwp/spike/steps.py), run one
+# step at a time through the session (Session.perform) by runtime/iwp/driver/clicks.py. A block
+# starts at a "# --- block NAME" line and runs to the next one. Coordinates are the 800x600 stage's
+# (walkthroughs/coordinates.md). The texts of new-game, quiet, dismiss, place-any and the three
+# notices are E020's own (experiments/E020-wine-first-run/play.steps), unchanged: their coordinates
+# are measured, and E020's rules (New Game from the title only, T41) hold here.
+#
+# The attack flow (e021_loop.py) is these blocks with two synthesised country clicks between them,
+# each a plain `click X Y` at the country's proven point (experiments/E021-pro-session-a/points.py),
+# sent through the same click-driver: attack-open, the target's click (the target panel is watched:
+# it changes when the game takes the target), the attacker's click (then the loop polls captures for
+# the gold quit-attack button: the battle is on), then exchange clicks, and quit-attack (or
+# move-in-done after a capture); or
+# attack-cancel when the game did not take the target or the attacker. This is the order of the
+# spike's attack_picked step (runtime/iwp/spike/cycle.py), which the E002 tour ran, with the
+# attacker named by its own click instead of by the placement's pick.
+
+# --- block new-game
+# From the title screen only (T41): the order and the points are E002's loss-easy.steps (New Game,
+# EASY, Play Game). The loop never sends this block from a board: New Game in the middle of a live
+# game quits it, and with the human holding fewer than 10 countries the game credits a loss, writes
+# its scoreboard file and shows the Scoreboard (F003; sitting 20261008T204817Z). EASY is a plain
+# click: the setup screen of a later game may already show EASY. The computers' first turns follow
+# (block quiet).
+watch all
+click! 100 585
+settle
+click 533 311
+click! 565 532
+
+# --- block abandon-game
+# The no-fit abandon (T45 Done-when 1 and its Hazard, amended 2026-10-11 by the owner): E020's New
+# Game click (the first input of block new-game, 100,585, walkthroughs/coordinates.md), sent only
+# from the board with its menu row lit, after NO_FIT_TURNS turns of one game in which no needed
+# cell fitted. With the human holding fewer than 10 countries the game credits a loss and shows the
+# Scoreboard (F003; sitting 20261008T204817Z); the loop then leaves it as E020 does. The setup
+# clicks of new-game are not sent here: on the Scoreboard they would miss (that sitting's lesson).
+watch all
+click! 100 585
+
+# --- block quiet
+# The computers' turns: the board unchanged for 4 s (a poll on the screen, bounded by the spike).
+# F003: 15 to 33 s before the first human turn, 23 to 24 s after a pass. The loop repeats this
+# block until the board is quiet or its attempts are spent.
+watch 0 0 800 495
+settle 4
+
+# --- block place-any
+# E020's own placement (its block `place`, unchanged): the first of the 44 proven country points
+# that lights the placement row. The loop sends it only when its own choice of country could not be
+# selected, so the turn is still played (the stack is then not the one the loop wanted to grow).
+watch 265 530 270 26
+click-until? 168 168 168 24 1000 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+
+# --- block place-commit
+# ALL, then PLACE: every reinforcement goes on the one country the loop selected before this block
+# (the placement row only lights for a country the human owns; the selection is the loop's
+# synthesised `click-until?` on that country's point, with E020's own placement-row test). The
+# ATTACK phase follows; PASS is block pass.
+watch 262 502 276 70
+click! 307 543
+click! 497 543
+settle
+
+# --- block pass
+# PASS, then CONTINUE when a card was awarded (E020's commit block, split: the Session A turn
+# attacks between the placement and the pass). Sent once the attack phase is over and the turn is
+# still the human's.
+watch 262 502 276 70
+click! 417 530
+click-any? 402 531
+
+# --- block attack-open
+# The turn menu's attack button (the spike's ATTACK_BUTTON, 303,530), with the target panel watched
+# (the spike's TARGET_PANEL, bottom left): the game asks for a target there. The loop then clicks the
+# target and reads whether the panel changed again.
+watch 10 502 250 70
+click 303 530
+
+# --- block attack-cancel
+# The cancel button while a target or an attacker is asked for (the spike's CANCEL_BUTTON): sent
+# when the game did not take the target, or no battle came up after the attacker's click.
+watch 262 502 276 70
+click 405 530
+
+# --- block exchange
+# One click of the battle's attack button (the tour's "ATTACK: one round", 337,531), with the
+# battle result row watched (walkthroughs/coordinates.md). A plain click: a click the game does not
+# answer is an observation here, not a failure. The loop then reads the board until the two
+# countries' counts have changed and settled.
+watch 545 502 250 70
+click 337 531
+
+# --- block quit-attack
+# The quit-attack button, one plain click. Its point is measured on sitting 20261011T070437Z:
+# capture session/e021-read-00047.png (sha256 4f3d5c3e6f3a2ed1439223f09ba7e2b7893135be05135bee2201458f4f0aafd1)
+# shows the gold button at x 419-494, y 511-553 (centre 456,532), the first candidate of the
+# tour's exit (walkthroughs/coordinates.md, `456 531`). In that sitting this click closed the
+# battle every time: in all 178 leave steps with a watcher frame before the second candidate was
+# clicked, the battle panel was already gone (frame 167-1791702441523.png, epoch ms 1791702441523,
+# 0.47 s after the step began; sha256 abd8b73a371affabd79d70db4b165b482491271f81ed0be5ce8173a01d5899c5,
+# which that sitting's frames-index gives to 12 files of byte-identical frames, from
+# 152-1791702433654.png to 317-1791702521077.png: the same turn-menu screen, captured again).
+# The tour's green test then failed because the pointer was left over the turn menu's CARD button
+# (x 446-491), which a hover lights from (8,206,66) to (16,239,74): outside the test's tolerance,
+# so the second candidate was clicked and reported, and the press was misread (round 2, point 1).
+# The loop confirms the press from a reading of the board instead (no battle panel, the two
+# countries unchanged), never from a colour under the pointer.
+watch 262 502 276 70
+click 456 531
+
+# --- block move-in-done
+# DONE on the move-in after a capture: the tour's second candidate (walkthroughs/coordinates.md,
+# `495 540`). Not yet seen on a frame: the one capture of sitting 20261011T070437Z took a seat's
+# last country, and the game showed that seat's defeat and the cards screen instead of a move-in.
+# There this point is outside the cards screen's CONTINUE (x 328-477), and on the turn menu it was
+# clicked 279 times with no effect the next order could see. Sent once, after a capture only.
+watch 262 502 276 70
+click 495 540
+
+# --- block dismiss
+# A prompt between turns (a card or an event message) that keeps the placement row from showing:
+# CONTINUE when it is there; the loop then waits for a quiet board and tries the placement again.
+watch 262 502 276 70
+click-any? 402 531
+
+# --- block eliminated-keep-playing
+# The elimination notice (runtime/iwp/driver/screens.py `eliminated`): of its two buttons in the
+# bottom bar, the one that lets the computers play the game out, red, centre 665,531. The owner's
+# decision (T38 round 4): keep playing. Sent once; the notice must go (the screen changes).
+watch all
+click! 665 531
+
+# --- block game-over-continue
+# The winner notice (runtime/iwp/driver/screens.py `game-over`): its one grey CONTINUE button in
+# the middle of the bottom bar, centre 401,534. Sent once, after the loop has logged the game's
+# end; the notice must go (the screen changes). What follows is read from the screen, never
+# assumed: the next game starts only on the title.
+watch all
+click! 401 534
+
+# --- block scoreboard-continue
+# The Scoreboard (runtime/iwp/driver/screens.py `scoreboard`): shown after the game credits a
+# loss, with one grey CONTINUE button in the bottom bar, centre 401,526. Sent once, after the
+# loop has logged `loss-credited`; the screen must change. The next game starts only on the title.
+watch all
+click! 401 526
