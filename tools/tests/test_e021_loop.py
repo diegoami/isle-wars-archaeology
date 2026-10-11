@@ -80,6 +80,20 @@ class NewGameTest(unittest.TestCase):
         source = (fx.ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
         self.assertEqual(source.count('"abandon-game"'), 1)         # the abandon is still the one New Game from a board
 
+    def test_card_decline_sends_no_new_game(self):
+        # fix #175: block card-decline is one plain click on the trade offer's decline button, never New
+        # Game's point (100,585), and the loop sends no other New Game for it
+        from driver.clicks import parse_blocks
+        import boardview
+        blocks = parse_blocks((fx.ROOT / "experiments" / "E021-pro-session-a" / "session-a.steps").read_text())
+        ops = [(step.op, tuple(step.args)) for step in blocks["card-decline"]]
+        self.assertEqual(ops, [("watch", (262, 502, 276, 70)), ("click", boardview.DECLINE_POINT)])
+        self.assertNotEqual(boardview.DECLINE_POINT, (100, 585))
+        source = (fx.ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
+        self.assertEqual(source.count('self.send("abandon-game")'), 1)
+        self.assertEqual(source.count('"new-game"'), 1)
+        self.assertEqual(source.count('self.send("card-decline")'), 1)
+
     def test_new_game_is_sent_from_the_title_only(self):
         for screen in ("board", "board-menu", "scoreboard", "game-over", "eliminated", "unknown", "title"):
             with self.subTest(screen=screen):
@@ -651,6 +665,128 @@ class AttackFlowTest(unittest.TestCase):
             self.assertIn(d, adjacency[a])
             self.assertEqual(attempt["before"][1], BLUE)
             self.assertNotEqual(attempt["before"][3], BLUE)
+
+
+class CardOfferTest(unittest.TestCase):
+    """Fix #175: a turn that starts with the card trade-in offer (sitting 20261011T154319Z, game 1 turn
+    10) declines it and plays on; an offer a decline does not clear ends the sitting cleanly."""
+
+    def world(self, **kwargs):
+        world = World({3: (BLUE, 2), 4: (RED, 1)}, **kwargs)
+        world.game.offer = True
+        return world
+
+    def events(self, world, name):
+        return [n for n in world.driver.notes if n.get("event") == name]
+
+    def test_a_turn_that_starts_with_the_offer_declines_it_then_places_then_plays_on(self):
+        world = self.world(met=only(("even", 1)))
+        world.game.reinforcements = 0
+        self.assertIsNone(world.loop.turn())
+        blocks = world.driver.blocks
+        self.assertEqual(blocks[0], "card-decline")                       # before any placement click
+        self.assertEqual(world.driver.steps[0][0], "place-select")
+        self.assertEqual(blocks.count("card-decline"), 1)
+        self.assertLess(blocks.index("card-decline"), blocks.index("place-commit"))
+        self.assertLess(blocks.index("place-commit"), blocks.index("attack-open"))   # the turn played on
+        self.assertEqual(blocks[-1], "pass")
+        self.assertEqual(world.game.declines, 1)
+        self.assertFalse(world.game.offer)
+        names = [n["event"] for n in world.driver.notes]
+        self.assertLess(names.index("card-offer"), names.index("place-target"))      # logged, then placed
+        (line,) = self.events(world, "card-offer")
+        self.assertEqual((line["declined"], len(line["sha256"])), (1, 64))
+        self.assertNotIn("forced", line)
+        self.assertEqual(len(world.attempts()), 1)                          # the attack phase ran
+        self.assertEqual(world.loop.summary["placements"], 1)
+        self.assertIsNone(world.loop.summary["ended"])
+
+    def test_a_sitting_with_the_offer_on_its_first_turn_goes_on_to_play_the_game(self):
+        # from the title: the turn after the decline places and passes, the game ends on the screen after it
+        world = self.world(screen="title", met=ALL)
+        world.game.after_pass = "unknown"
+        world.loop.run()
+        blocks = world.driver.blocks
+        self.assertEqual(blocks.count("new-game"), 1)                   # card-decline is never New Game
+        self.assertEqual(blocks.count("card-decline"), 1)
+        self.assertLess(blocks.index("new-game"), blocks.index("card-decline"))
+        self.assertLess(blocks.index("card-decline"), blocks.index("place-commit"))
+        self.assertEqual(blocks[blocks.index("place-commit") + 1], "pass")
+        self.assertEqual(world.loop.summary["ended"], "unknown-screen")     # the screen after the pass
+        self.assertEqual(world.loop.summary["turns"], 1)
+
+    def test_a_decline_that_leaves_the_offer_up_ends_the_sitting_with_no_further_click(self):
+        world = self.world(met=ALL)
+        world.game.decline_works = False
+        self.assertEqual(world.loop.turn(), "card-trade-forced")
+        self.assertEqual(world.driver.blocks, ["card-decline"])            # the one click, and nothing after it
+        self.assertEqual(world.driver.steps, [])
+        self.assertEqual(world.game.declines, 1)
+        self.assertEqual(world.loop.summary["ended"], "card-trade-forced")
+        self.assertEqual(world.loop.summary["final_frame"], "f" * 64)
+        declined, forced = self.events(world, "card-offer")
+        self.assertEqual((declined["declined"], forced["forced"]), (1, 1))
+        self.assertNotIn("declined", forced)
+        self.assertEqual([n["ended"] for n in self.events(world, "ended")], ["card-trade-forced"])
+        self.assertEqual(world.loop.summary["placements"], 0)
+
+    def test_the_forced_ending_is_the_sittings_clean_end(self):
+        world = self.world(screen="title", met=ALL, games_max=3)
+        world.game.decline_works = False
+        world.loop.run()
+        self.assertEqual(world.loop.summary["ended"], "card-trade-forced")
+        self.assertEqual(world.driver.blocks.count("new-game"), 1)         # no game after it
+        self.assertEqual(world.driver.blocks.count("card-decline"), 1)
+        self.assertNotIn("pass", world.driver.blocks)
+
+    def test_the_offer_is_polled_a_bounded_number_of_times_after_the_click(self):
+        world = self.world(met=ALL)
+        world.game.decline_works = False
+        world.loop.turn()
+        # one reading before the click and OFFER_POLLS after it, then the end
+        self.assertEqual(world.reader.reads, 1 + e021_loop.OFFER_POLLS)
+
+    def test_a_decline_the_game_answers_a_moment_later_is_not_forced(self):
+        # the offer is still on the first two readings after the click, then gone: the poll waits for it
+        world = self.world(met=ALL)
+        world.game.decline_lag = 2
+        self.assertIsNone(world.loop.turn())
+        self.assertEqual(world.driver.blocks.count("card-decline"), 1)           # clicked once, never again
+        self.assertEqual(world.driver.blocks[-2:], ["place-commit", "pass"])
+        self.assertEqual(self.events(world, "card-offer")[-1].get("forced"), None)
+        self.assertIsNone(world.loop.summary["ended"])
+
+    def test_an_offer_that_comes_up_during_the_first_placement_click_is_declined_too(self):
+        # the income message comes first and the offer about a second later: the first click finds no row
+        world = World({3: (BLUE, 2), 4: (RED, 1)}, met=ALL)
+        world.game.offer_late = True
+        self.assertIsNone(world.loop.turn())
+        blocks = world.driver.blocks
+        self.assertEqual(blocks[:2], ["card-decline", "place-commit"])      # no dismiss, no place-any in between
+        self.assertEqual(blocks[-1], "pass")
+        self.assertEqual(len(self.events(world, "card-offer")), 1)
+        self.assertEqual(len([s for s in world.driver.steps if s[0] == "place-select" and s[1] == "click-until?"]), 2)
+
+    def test_a_turn_without_the_offer_sends_no_card_decline(self):
+        world = World({3: (BLUE, 2), 4: (RED, 1)}, met=ALL)
+        self.assertIsNone(world.loop.turn())
+        self.assertNotIn("card-decline", world.driver.blocks)
+        self.assertEqual(self.events(world, "card-offer"), [])
+
+    def test_an_unreadable_capture_after_the_decline_ends_the_sitting_cleanly(self):
+        world = self.world(met=ALL)
+        original = world.reader.read
+        reads = []
+
+        def read():
+            reads.append(1)
+            if len(reads) > 1:
+                raise ValueError("undecodable")
+            return original()
+        world.reader.read = read
+        self.assertEqual(world.loop.turn(), "board-unreadable")
+        self.assertEqual(world.driver.blocks, ["card-decline"])
+        self.assertTrue(world.loop.summary["ended"].startswith("board-unreadable"))
 
 
 class PlacementTest(unittest.TestCase):

@@ -2,7 +2,8 @@
 # Watch one background job (CLAUDE.md rule 6.7, L48): report its exit, a stall, and problem lines.
 #
 #   tools/harness/watch.sh --label NAME (--unit UNIT | --pid PID | --pid-of PATTERN) [--file F]... \
-#       [--opencode-log LOG] [--problem REGEX] [--idle-min 10] [--every 60]
+#       [--opencode-log LOG] [--frames SITTING_DIR [--still-min 5]] [--problem REGEX] \
+#       [--idle-min 10] [--every 60]
 #
 # --unit (preferred: a job started with tools/harness/run-unit.sh): alive while
 # `systemctl --user is-active` says so (the exit is in `journalctl --user -u UNIT`). Otherwise
@@ -18,8 +19,12 @@
 # the end and a size watch flags a healthy run as stuck (goal2-archaeology, 2026-10-11).
 # No progress for --idle-min minutes prints "possibly stuck" (once per stall). --problem: a new
 # line in the first --file matching REGEX is printed. The script ends when the job exits.
+# --frames: a model-driven sitting's folder. Each check runs tools/harness/sitting_stall.py on it and
+# prints "game stuck: …" once per stall: the same screen for --still-min minutes, no capture for
+# that long, or the driver acting with no fight, case or game change for that long (the owner,
+# 2026-10-11: sitting 20261011T091212Z passed seven turns doing nothing). The line names the frame.
 set -u
-label=job pid= unit= pattern= idle_min=10 every=60 problem= oclog=
+label=job pid= unit= pattern= idle_min=10 every=60 problem= oclog= frames= still_min=5
 files=()
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -29,6 +34,8 @@ while [ $# -gt 0 ]; do
     --pid-of) pattern=$2; shift 2 ;;
     --file) files+=("$2"); shift 2 ;;
     --opencode-log) oclog=$2; shift 2 ;;
+    --frames) frames=$2; shift 2 ;;
+    --still-min) still_min=$2; shift 2 ;;
     --problem) problem=$2; shift 2 ;;
     --idle-min) idle_min=$2; shift 2 ;;
     --every) every=$2; shift 2 ;;
@@ -100,7 +107,7 @@ progress() {
 
 tracked=0
 { [ ${#files[@]} -gt 0 ] || [ -n "$oclog" ]; } && tracked=1
-prev=$(progress) still=0 flagged=0 seen=0
+prev=$(progress) still=0 flagged=0 seen=0 stuck_seen=""
 [ -n "$problem" ] && [ ${#files[@]} -gt 0 ] && seen=$(grep -cE -- "$problem" "${files[0]}" 2>/dev/null)
 while alive; do
   sleep "$every"
@@ -108,6 +115,16 @@ while alive; do
   if [ "$now" = "$prev" ]; then still=$((still + every)); else still=0 flagged=0 prev=$now; fi
   if [ $tracked = 1 ] && [ $still -ge $((idle_min * 60)) ] && [ $flagged = 0 ]; then
     echo "$label: possibly stuck: no progress for $idle_min min"; flagged=1
+  fi
+  if [ -n "$frames" ]; then
+    stall=$(python3 -I "$(dirname "$0")/sitting_stall.py" "$frames" --still-min "$still_min" --idle-play-min "$still_min" 2>&1)
+    if [ -z "$stall" ]; then stuck_seen=""
+    else
+      while IFS= read -r line; do
+        kind=${line%% for *}
+        case " $stuck_seen " in *" ${kind// /_} "*) ;; *) echo "$label: game stuck: $line"; stuck_seen="$stuck_seen ${kind// /_}" ;; esac
+      done <<<"$stall"
+    fi
   fi
   if [ -n "$problem" ] && [ ${#files[@]} -gt 0 ]; then
     n=$(grep -cE -- "$problem" "${files[0]}" 2>/dev/null)

@@ -7,7 +7,8 @@ the board itself, right after each of its own clicks: `FrameReader.read` takes o
 the session (the launcher's `capture`: Session.observe_screenshot, which keeps the PNG as a bundle
 file, then that file decoded), reads it with E020's reader (boardreader, glyphs -- imported, never
 edited) and returns a `Reading`: the 46 countries' army counts and owners, the seat whose row is
-boxed in the score panel, whether the battle panel is up, and the PNG's sha256, which is how a
+boxed in the score panel, whether the battle panel is up, whether the card trade-in offer is up
+(`offer`, fix #175), and the PNG's sha256, which is how a
 record cites the frame.
 
 A country the reader cannot read with confidence comes back with `army` and `owner` None, never
@@ -63,7 +64,31 @@ OPTIONS_STRIP = (150, 84, 490, 10)        # the strip under the title; measured 
 OPTIONS_STRIP_MINIMUM = 2500
 DEFAULT_TEMPLATES = Path("/mnt/c/Temp/iwp-shots/wine/reader-templates.json")
 
-Reading = namedtuple("Reading", "board sha256 seat battle unread")
+# The card trade-in offer (fix #175): at a turn's start with a valid match in hand the game shows two buttons
+# in the middle panel (the info panel says to click the matching cards, the right panel shows the hand)
+# instead of the placement row, and `place-select` can pick nothing until one of them is answered (F014
+# Q-BON-07: the human's screen; the second button skips it). The right button, red, declines, and is the
+# one `card-decline` clicks; the left, green, trades, and is the other half of the test. Each is a flat
+# coloured button: `offer_up` counts the pixels of the button's colour in a box around it.
+# Census over all 28570 frames of the 12 model-driven sittings on the user's machine (frames/*.png, decoded in
+# place, constraint A; nothing copied) and the 2091 captures of their session folders: the offer is on one
+# frame, 20261011T154319Z frames/618-1791734039170.png (sha256
+# c34707147e9a488b57a47fc693353e66a11542d92442885e8e6b779c669c912c), and on the loop's own capture of it,
+# session/e021-read-00230.png (sha256 410ad3999b1892070ba83a7a3743637c8fe1563512aa167755329c35a3a08394; the
+# same bytes as e021-read-00231.png, after.png and unknown-screen.png of that sitting). On both, the red test
+# counts 2006 and the green 2071; on every other frame the red counts at most 301 (a setup screen of
+# 20261008T184505Z, frames/10-1791485157213.png and its neighbours) and the green at most 23, and no frame
+# counts both. One offer screen is all the sittings hold, so each minimum sits at about half of its
+# count (1000), between the two populations; the twin frame 618-1791734038206.png (sha256
+# 1eed8b23e9acbeb346c6ac401b7b0730bca95e939078f1d56ec62adbeb9b788b) is the income message about a second
+# before the offer, and counts 0 and 0.
+OFFER_RED_BOX = (418, 510, 98, 45)        # x, y, w, h: around the red decline button (x 421-512, y 512-552 on the frame)
+OFFER_GREEN_BOX = (286, 510, 98, 45)      # around the green trade button (x 289-380, y 512-551 on the frame)
+OFFER_RED_MINIMUM = 1000
+OFFER_GREEN_MINIMUM = 1000
+DECLINE_POINT = (466, 532)                # the centre of the red button's extent on the frame; block card-decline
+
+Reading = namedtuple("Reading", "board sha256 seat battle unread offer", defaults=(False,))
 
 
 def gold_count(rgb, rect=CENTRE_PANEL, colour=QUIT_ATTACK_COLOUR, tolerance=QUIT_ATTACK_TOLERANCE):
@@ -88,6 +113,28 @@ def options_up(rgb):
     panel's flat ground in the measured amount. A pure pixel check, never a guess from the board."""
     return (gold_count(rgb, OPTIONS_PANEL, OPTIONS_GROUND, OPTIONS_TOLERANCE) >= OPTIONS_PANEL_MINIMUM
             and gold_count(rgb, OPTIONS_STRIP, OPTIONS_GROUND, OPTIONS_TOLERANCE) >= OPTIONS_STRIP_MINIMUM)
+
+
+def offer_red(r, g, b):
+    return (r > 140) & (g < 60) & (b < 60)
+
+
+def offer_green(r, g, b):
+    return (r < 60) & (g > 140) & (b < 110)
+
+
+def colour_count(rgb, rect, predicate):
+    """How many pixels of `rect` in an (h, w, 3) uint8 capture satisfy `predicate(r, g, b)` on int32 arrays."""
+    x, y, w, h = rect
+    box = np.asarray(rgb)[y:y + h, x:x + w].astype(np.int32)
+    return int(predicate(box[:, :, 0], box[:, :, 1], box[:, :, 2]).sum())
+
+
+def offer_up(rgb):
+    """True when the capture shows the card trade-in offer (constants above): the red decline
+    button and the green trade button, both in the measured amount. A pure pixel check."""
+    return (colour_count(rgb, OFFER_RED_BOX, offer_red) >= OFFER_RED_MINIMUM
+            and colour_count(rgb, OFFER_GREEN_BOX, offer_green) >= OFFER_GREEN_MINIMUM)
 
 
 def board_of(rgb, templates, anchors=None):
@@ -128,7 +175,7 @@ class FrameReader:
         rgb, digest = self.capture()
         self.shots += 1
         board, unread = board_of(rgb, self.templates, self.anchors)
-        return Reading(board, digest, boardreader.current_seat(rgb), battle_ready(rgb), unread)
+        return Reading(board, digest, boardreader.current_seat(rgb), battle_ready(rgb), unread, offer_up(rgb))
 
     def options_screen(self):
         """One capture: (True when it shows the Game Options screen, the PNG's sha256). The loop asks

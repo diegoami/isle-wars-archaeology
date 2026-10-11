@@ -63,6 +63,21 @@ block `options-play` -- the clicks of `new-game` after its own first -- instead 
 game then goes on as after `new-game` (`quiet`). `games()` is overridden here for that case only.
 New Game is still sent only from the title (`new-game`) or by the abandon (`abandon-game`).
 
+A turn can start with the card trade-in offer instead of the placement row (fix #175; sitting
+20261011T154319Z, game 1 turn 10, which ended the sitting 50 minutes early as an unknown screen): the
+game shows two buttons in the middle panel when the human's hand holds a valid match, after income and
+before placement. F014 (Q-BON-07, C-CRD-05) reads it as the human's choice, never forced: a second
+button skips it, and the only forced card step is the discard of a full hand's draw (C-CRD-04). Every
+reading says whether the offer is up (boardview.offer_up, a pixel check of the two buttons, traced to
+frames by name and sha256); at a turn's start, and once more after a placement that picked nothing
+(the offer can come up a second after the income message), the loop sends block `card-decline` (one
+plain click on the red decline button, never a card pick, no card matching), waits a bounded poll of readings
+for the offer to go, and places as usual with the reading that shows it gone. It logs a `card-offer`
+line (`declined` 1, the frame). An offer that is still up after the poll is treated as forced: a
+second `card-offer` line (`forced` 1, the frame) and the sitting ends cleanly as `card-trade-forced`
+with no further click; a trade path is a follow-up. Block `card-decline` is not a New Game: the
+no-New-Game guard (NewGameTest) covers it.
+
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
 minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
 another seat's turn has begun (a failure passes the turn by itself) the reading may hold that seat's
@@ -75,7 +90,7 @@ click whose total fell by more is logged with the number, and the summary counts
 
 Lines of `actions.jsonl` (structural values only, constraint D: our own words, numbers, colour
 words and sha256s; no text of the original): `board` (each reading: its frame, the seat, how many
-countries were unread), `place-target`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
+countries were unread), `card-offer`, `place-target`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
 `attack-attempt` (the aim, both countries before and after, the battle, the clicks, the armies
 lost, the outcome, the frames), `case-met`, `turn-end`. The export (e021_export.py) turns
 `exchange-click`, `attack-attempt`, `case-met` and `turn-end` into the record's observations.
@@ -125,6 +140,10 @@ NO_FIT_TURNS = 3                     # turns in a row of one game with no needed
 NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
                                              # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
+OFFER_POLLS = 5                      # readings after `card-decline` before the offer counts as still up
+OFFER_POLL_SECONDS = 0.5             # between them (a guess: the game answers the click at once as far
+                                     # as any frame shows; no sitting has declined yet, so this is the
+                                     # first measurement's to confirm)
 OPTIONS = "game-options"             # the screen after an abandon's New Game that is neither the Scoreboard
                                      # nor the board: the setup screen (boardview.options_up); the screen
                                      # reader names it `unknown`, so the loop asks the reader's capture
@@ -153,6 +172,7 @@ class SessionALoop(e020_loop.BatchLoop):
         self.no_fit = (None, 0)              # (game, no-fit turns in a row in it)
         self.options_seen = False            # the abandon's New Game went to the Game Options screen
         self.grow = (None, {})               # (game, {country: smallest gap seen on a turn it was grown})
+        self.offers = 0                      # the card trade-in offers declined in this turn (fix #175)
         self.turn_growing = False            # this turn's placement grew a stack towards a needed size
         self.summary.update(cases_met_before=len(self.met), cases_met=len(self.met), attack_attempts=0,
                             refusals=0, battles=0, exchange_clicks=0, clicks_one_army=0,
@@ -294,13 +314,28 @@ class SessionALoop(e020_loop.BatchLoop):
         """One turn: the placement (two tries with a `dismiss` between them, as E020's), then the
         attacks, then PASS. None when the turn was played, else why the game ended for the loop."""
         self.turn_growing = False
+        self.offers = 0
         screen = self.driver.read_screen()
         if screen not in e020_loop.BOARD:
             return self.off_board(screen)
         reading = self.look()
         if reading is None:
             return "board-unreadable"
+        reading, ended = self.answer_offer(reading)
+        if ended is not None:
+            return ended
         placed = self.place_for(reading.board, fallback=False)
+        if placed is False:
+            # the offer can come up a second after the income message (fix #175): look once more
+            reading = self.look()
+            if reading is None:
+                return "board-unreadable"
+            answered = self.offers
+            reading, ended = self.answer_offer(reading)
+            if ended is not None:
+                return ended
+            if self.offers > answered:                 # declined just now: the row can light, try again
+                placed = self.place_for(reading.board, fallback=False)
         if placed is False:
             self.send("dismiss")
             if not self.wait_quiet():
@@ -311,6 +346,9 @@ class SessionALoop(e020_loop.BatchLoop):
             reading = self.look()
             if reading is None:
                 return "board-unreadable"
+            reading, ended = self.answer_offer(reading)
+            if ended is not None:
+                return ended
             placed = self.place_for(reading.board, fallback=True)
         if placed is False:
             screen = self.driver.read_screen()
@@ -321,6 +359,32 @@ class SessionALoop(e020_loop.BatchLoop):
         if placed is not True:                         # the game ended while the block ran
             return placed
         return self.attack_phase()
+
+    def answer_offer(self, reading):
+        """(reading, None) when no offer is up on `reading`, or when it was declined and a reading shows it
+        gone (that reading: the placement goes on from it); (None, why) when the sitting ends: an offer that
+        is still up after the poll is treated as forced (`card-offer` with `forced` 1, ended
+        `card-trade-forced`, no further click), and a reading that cannot be used ends it as any
+        unreadable board does. The loop never picks or trades cards (F014 Q-BON-07: the human may skip
+        the offer; a trade path is a follow-up). `self.offers` counts the ones declined this turn."""
+        if not reading.offer:
+            return reading, None
+        self.offers += 1
+        self.driver.note(event="card-offer", declined=1, sha256=reading.sha256)
+        self.send("card-decline")
+        after = None
+        for poll in range(OFFER_POLLS):
+            after = self.look(strict=False)
+            if after is not None and not after.offer:
+                return after, None
+            if poll + 1 < OFFER_POLLS:
+                self.sleep(OFFER_POLL_SECONDS)
+        if after is None:
+            self.unknown_screen(self.driver.read_screen(), ended="board-unreadable: after card-decline")
+            return None, "board-unreadable"
+        self.driver.note(event="card-offer", forced=1, sha256=after.sha256)
+        self.unknown_screen(self.driver.read_screen(), ended="card-trade-forced")
+        return None, "card-trade-forced"
 
     def place_for(self, board, fallback):
         """Select the frontier country (the placement row lights only for a country the human
