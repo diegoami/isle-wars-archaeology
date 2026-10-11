@@ -184,6 +184,8 @@ class ReviewerPermissions(unittest.TestCase):
             self.assertIn("writing back the file's saved contents", text)
             self.assertIn("never `git checkout`, `git restore` or `git reset`", text.replace("\\`", "`"))
             self.assertNotIn("then `git checkout -- <file>`", text)
+            # Where the saved copy goes (2026-10-11: MiniMax-M3 was refused for a loose /tmp file).
+            self.assertIn("inside your worktree (`<file>.saved`", text.replace("\\`", "`"))
             self.assertNotIn("restored with\n  \\`git checkout -- <file>\\`", text)
         self.assertNotIn("no temp directory", prose)
         self.assertNotIn("never `/tmp`.", prose)

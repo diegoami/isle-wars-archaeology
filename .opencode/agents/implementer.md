@@ -106,7 +106,9 @@ the run works.
 - A new test must fail before your change and pass after it; say how you checked.
 - Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
-  a file with uncommitted work: they return the last commit and destroy the rest.
+  a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
+  copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
+  as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
 - When done: `gh pr create` as the brief says, `git -C <worktree> checkout --detach`, and make your
   final message the report: what you built, each Done-when line with the command you ran and its
   result, anything you could not verify. Never put close/closes/fix/fixes/resolve/resolves

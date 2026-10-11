@@ -27,7 +27,9 @@ push` and `gh` fail, and so may `git fetch`; never retry them.
   never `cd`, and never `..` (L31).
 - To test a mutation, change the file in place, rebuild clean, run, then undo it. Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
-  a file with uncommitted work: they return the last commit and destroy the rest.
+  a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
+  copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
+  as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
 - Rate each finding. It is **blocking** when you proved it and it defeats what the task protects:
   a guard, check or permission that lets a forbidden action or a wrong result through, a Done-when
   line that fails, or behaviour the task forbids. A proven bypass of the task's own guard is

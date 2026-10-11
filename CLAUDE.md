@@ -113,7 +113,9 @@ indexed in `docs/tasks/README.md`.
    failed is re-taken before it is believed.
    Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
    restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
-   a file with uncommitted work: they return the last commit and destroy the rest. (The owner, 2026-10-11:
+   a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
+   copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
+   as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder. (The owner, 2026-10-11:
    in another project, a `git checkout <file>` used to undo a mutation wiped a whole rework round's
    uncommitted edits; here fix-87's implementer lost its uncommitted file the same way.)
 10. A comment asserting behaviour at an edge arrives with the test that visits that edge.
