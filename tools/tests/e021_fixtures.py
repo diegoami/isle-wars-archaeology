@@ -40,47 +40,145 @@ def all_met():
     return {(case, cell) for case in cases.CASES for cell in cases.cells(case)}
 
 
-class FakeDriver:
-    """What the loop needs of the click-driver (runtime/iwp/driver/clicks.py): run blocks and
-    steps, note lines, read the screen. `screen_after_click` moves the synthetic game on the way
-    the E020 tests' world does (a Play Game shows the board, a PASS starts the computers' turns,
-    the notices' CONTINUE buttons show what the test scripts)."""
+POINTS = {c: (10 * c, 10 * c) for c in range(1, 11)}      # synthetic click points, one per country
+AT = {xy: c for c, xy in POINTS.items()}
 
-    def __init__(self, screen="title"):
+
+class FakeGame:
+    """A synthetic game behind the click-driver: the board, the screen, the attack flow's state.
+
+    It answers the blocks and the synthesised steps the way F011's reading says the human's attack
+    goes (Q-CMB-01: the attacker needs at least the target's armies and more than 1; Q-CMB-08: an
+    exchange click is `per_click` exchanges; Q-CMB-09: at 1 army the attacking country goes to the
+    defender's owner and the turn passes; Q-OWN-01: a capture shows the move-in, DONE moves 1 in).
+    `losers` scripts who loses each exchange ("a" or "d"), in order."""
+
+    def __init__(self, board, screen="board", losers=(), per_click=1, reinforcements=3, adjacency=ADJ):
+        self.board = board
         self.screen = screen
-        self.after_pass = None            # the screen after a PASS click (None: unchanged)
+        self.losers = list(losers)
+        self.per_click = per_click
+        self.reinforcements = reinforcements
+        self.adjacency = adjacency
+        self.seat = BLUE
+        self.selected = None          # the country the placement row lit for
+        self.phase = "menu"           # menu, target, attacker, battle, move-in, passed
+        self.target = self.attacker = None
+        self.after_pass = None
         self.after_continue = "title"
         self.after_scoreboard = "title"
+        self.attack_button_works = True
+
+    def click_country(self, block, country):
+        if block == "attack-target":
+            ok = (self.phase == "target" and self.board[country]["owner"] != BLUE
+                  and any(self.board[n]["owner"] == BLUE for n in self.adjacency.get(country, ())))
+            if ok:
+                self.target, self.phase = country, "attacker"
+            return {"changed": ok}
+        if block == "attack-attacker":
+            a, d = self.board[country], self.board.get(self.target)
+            if (self.phase == "attacker" and a["owner"] == BLUE and self.target in self.adjacency.get(country, ())
+                    and a["army"] > 1 and a["army"] >= d["army"]):
+                self.attacker, self.phase = country, "battle"
+            return {"changed": True}
+        return {"changed": False}
+
+    def block(self, name):
+        if name == "new-game":
+            self.screen = "board"
+        elif name == "place-commit" and self.selected is not None:
+            self.board[self.selected]["army"] += self.reinforcements
+            self.selected = None
+        elif name == "pass":
+            if self.after_pass is not None:
+                self.screen = self.after_pass
+        elif name == "attack-open":
+            if self.attack_button_works and self.phase == "menu":
+                self.phase = "target"
+                return {"changed": True}
+            return {"changed": False}
+        elif name == "attack-cancel":
+            if self.phase in ("target", "attacker"):
+                self.phase = "menu"
+        elif name == "exchange":
+            if self.phase == "battle":
+                for _ in range(self.per_click):
+                    self.exchange()
+                    if self.phase != "battle":
+                        break
+            return {"changed": True}
+        elif name == "leave-battle":
+            if self.phase == "battle":
+                self.phase = "menu"
+                return {"picked": 1}
+            if self.phase == "move-in":
+                self.board[self.attacker]["army"] -= 1
+                self.board[self.target] = {"army": 1, "owner": BLUE}
+                self.phase = "menu"
+                return {"picked": 2}
+            return {"picked": None}
+        elif name == "game-over-continue":
+            self.screen = self.after_continue
+        elif name == "scoreboard-continue":
+            self.screen = self.after_scoreboard
+        elif name == "place-any":
+            for country in sorted(self.board):
+                if self.board[country]["owner"] == BLUE:
+                    self.selected = country
+                    return {"picked": 1}
+            return {"picked": None}
+        return {}
+
+    def exchange(self):
+        a, d = self.board[self.attacker], self.board[self.target]
+        loser = self.losers.pop(0) if self.losers else "d"
+        if loser == "a":
+            a["army"] -= 1
+        else:
+            d["army"] -= 1
+        if d["army"] == 0:
+            d["owner"] = BLUE
+            self.phase = "move-in"
+        elif a["army"] == 1:
+            self.board[self.attacker] = {"army": 1, "owner": d["owner"]}
+            self.phase, self.seat = "passed", d["owner"]
+
+
+class FakeDriver:
+    """What the loop needs of the click-driver (runtime/iwp/driver/clicks.py): blocks, steps, note
+    lines and the screen, over a FakeGame. Every block and step is logged for the tests."""
+
+    def __init__(self, game):
+        self.game = game
         self.blocks, self.steps, self.notes = [], [], []
         self.context = {}
         self.quiet = True
-        self.picked = 1                   # what the `click-until?` searches report
-
-    # --- the click-driver's interface
+        self.pending_watch = None
 
     def run_block(self, name):
         self.blocks.append(name)
         if name == "quiet":
             return {"quiet": self.quiet}
-        if name == "new-game":
-            self.screen_after_click((565, 532))     # Play Game ends the block
-        if name == "pass" and self.after_pass is not None:
-            self.screen = self.after_pass
-        return {}
+        return self.game.block(name)
 
     def run_step(self, block, step):
         self.steps.append((block, step.op, tuple(step.args)))
-        if step.op in ("click-until?", "click-until"):
-            return {"picked": self.picked}
-        if step.op in ("click", "click!"):
-            self.screen_after_click(tuple(step.args))
+        if step.op == "click-until?" and block == "place-select":
+            country = AT.get(tuple(step.args[5:7]))
+            if country is not None and self.game.board[country]["owner"] == BLUE:
+                self.game.selected = country
+                return {"picked": 1}
+            return {"picked": None}
+        if step.op == "click":
+            return self.game.click_country(block, AT.get(tuple(step.args)))
         return {}
 
     def note(self, **fields):
         self.notes.append(dict(self.context, **fields))
 
     def read_screen(self):
-        return self.screen
+        return self.game.screen
 
     def read_winner(self):
         return None
@@ -88,67 +186,44 @@ class FakeDriver:
     def final_frame(self, name):
         return "f" * 64
 
-    # --- the synthetic game behind the clicks
-
-    def screen_after_click(self, point):
-        if point == (565, 532):                       # Play Game
-            self.screen = "board"
-        elif point == (417, 530) and self.after_pass is not None:
-            self.screen = self.after_pass
-        elif point == (401, 534):
-            self.screen = self.after_continue
-        elif point == (401, 526):
-            self.screen = self.after_scoreboard
-
-    # --- the log the tests read
-
     def events(self, name):
         return [note for note in self.notes if note.get("event") == name]
 
-    def clicks(self, x, y):
-        return [s for s in self.steps if s[1] in ("click", "click!") and s[2] == (x, y)]
+    def country_clicks(self):
+        """The countries the loop clicked (synthesised steps), in order, with their block."""
+        return [(block, AT.get(args)) for block, op, args in self.steps if op == "click"]
 
 
 class FakeReader:
-    """The live view the loop reads (boardview.FrameReader's interface): a scripted sequence of
-    boards for `read`, one battle-ready answer, and one board per `wait_change`."""
+    """boardview.FrameReader's interface over a FakeGame: each read is a copy of the game's board,
+    with a frame sha256 of its own. `unread` makes every reading that many countries short."""
 
-    def __init__(self, boards, ready=True, changes=()):
-        self.boards = list(boards)
-        self.ready = ready
-        self.changes = list(changes)
+    def __init__(self, game, unread=0, fail=None):
+        self.game = game
+        self.unread = unread
+        self.fail = fail
         self.reads = 0
 
     def read(self):
+        import boardview
+        if self.fail is not None:
+            raise self.fail
         self.reads += 1
-        board = self.boards[min(self.reads - 1, len(self.boards) - 1)]
-        return board, f"{self.reads:064d}", object()
+        board = {c: dict(row) for c, row in self.game.board.items()}
+        return boardview.Reading(board, f"{self.reads:064x}", self.game.seat,
+                                 self.game.phase in ("battle", "move-in"), self.unread)
 
-    def wait_ready(self, seconds):
-        return self.ready, "e" * 64
+    def wait_battle(self, seconds):
+        return self.read()
 
-    def wait_change(self, board, countries, seconds):
-        if self.changes:
-            return self.changes.pop(0), "a" * 64
-        return board, "a" * 64
-
-
-def attack_line(case, cell, **values):
-    """One attack-attempt note line, as the loop writes it."""
-    line = {"event": "attack-attempt", "aim:case": case, "aim:cell": cell,
-            "country:attacker": "3", "country:defender": "4",
-            "counter:attacker-before": "2", "counter:defender-before": "1",
-            "counter:attacker-after": "2", "counter:defender-after": "1",
-            "counter:clicks": "1", "outcome": "exchange"}
-    line.update(values)
-    return line
+    def wait_settled(self, before, countries, seconds):
+        return [self.read()]
 
 
-def met_line(case, cell, **values):
-    """One case-met note line, as the loop writes it."""
-    line = {"event": "case-met", "case": case, "cell": cell}
-    line.update(values)
-    return line
+def game_board(cells):
+    """A 46-country board, all blue 1 (so no country but `cells` has an enemy to click: the
+    synthetic adjacency only joins 1 to 10), with `cells` ({country: (owner, army)}) over it."""
+    return board(cells)
 
 
 def record(run_id, groups, experiment="E021", batch="session-a"):

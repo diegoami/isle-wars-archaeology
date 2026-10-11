@@ -1,12 +1,18 @@
 # E021's Session A step blocks, in the E002 step language (runtime/iwp/spike/steps.py), run one
-# step at a time through the session (Session.perform) by runtime/iwp/driver/clicks.py. The loop
-# (e021_loop.py) composes these blocks with the attack flow's own synthesised clicks -- select the
-# attacker, ATTACK, the target, the attacker again, one exchange, QUIT ATTACK / DONE -- which it
-# sends through the same click-driver, one step at a time, so no input leaves the driver's
-# accounting. Coordinates are the 800x600 stage's (walkthroughs/coordinates.md). A block starts at
-# a "# --- block NAME" line and runs to the next one. The block texts of new-game, quiet, dismiss
-# and the three notices are E020's own (experiments/E020-wine-first-run/play.steps), unchanged:
-# their coordinates are measured, and E020's rules (New Game from the title only, T41) hold here.
+# step at a time through the session (Session.perform) by runtime/iwp/driver/clicks.py. A block
+# starts at a "# --- block NAME" line and runs to the next one. Coordinates are the 800x600 stage's
+# (walkthroughs/coordinates.md). The texts of new-game, quiet, dismiss, place-any and the three
+# notices are E020's own (experiments/E020-wine-first-run/play.steps), unchanged: their coordinates
+# are measured, and E020's rules (New Game from the title only, T41) hold here.
+#
+# The attack flow (e021_loop.py) is these blocks with two synthesised country clicks between them,
+# each a plain `click X Y` at the country's proven point (experiments/E021-pro-session-a/points.py),
+# sent through the same click-driver: attack-open, the target's click (the target panel is watched:
+# it changes when the game takes the target), the attacker's click (then the loop polls captures for
+# the gold quit-attack button: the battle is on), then exchange clicks, and leave-battle; or
+# attack-cancel when the game did not take the target or the attacker. This is the order of the
+# spike's attack_picked step (runtime/iwp/spike/cycle.py), which the E002 tour ran, with the
+# attacker named by its own click instead of by the placement's pick.
 
 # --- block new-game
 # From the title screen only (T41): the order and the points are E002's loss-easy.steps (New Game,
@@ -28,6 +34,13 @@ click! 565 532
 watch 0 0 800 495
 settle 4
 
+# --- block place-any
+# E020's own placement (its block `place`, unchanged): the first of the 44 proven country points
+# that lights the placement row. The loop sends it only when its own choice of country could not be
+# selected, so the turn is still played (the stack is then not the one the loop wanted to grow).
+watch 265 530 270 26
+click-until? 168 168 168 24 1000 55 193 49 261 42 330 105 441 142 385 153 433 188 399 235 441 239 282 178 283 132 238 139 166 277 177 358 60 344 110 307 160 390 163 393 98 473 139 440 190 509 223 566 143 525 89 593 86 682 99 760 129 685 153 746 196 668 211 748 264 655 282 750 411 698 436 639 446 515 404 521 343 454 363 448 444 372 453 377 410 308 425 333 305 412 294 321 262
+
 # --- block place-commit
 # ALL, then PLACE: every reinforcement goes on the one country the loop selected before this block
 # (the placement row only lights for a country the human owns; the selection is the loop's
@@ -45,6 +58,35 @@ settle
 watch 262 502 276 70
 click! 417 530
 click-any? 402 531
+
+# --- block attack-open
+# The turn menu's attack button (the spike's ATTACK_BUTTON, 303,530), with the target panel watched
+# (the spike's TARGET_PANEL, bottom left): the game asks for a target there. The loop then clicks the
+# target and reads whether the panel changed again.
+watch 10 502 250 70
+click 303 530
+
+# --- block attack-cancel
+# The cancel button while a target or an attacker is asked for (the spike's CANCEL_BUTTON): sent
+# when the game did not take the target, or no battle came up after the attacker's click.
+watch 262 502 276 70
+click 405 530
+
+# --- block exchange
+# One click of the battle's attack button (the tour's "ATTACK: one round", 337,531), with the
+# battle result row watched (walkthroughs/coordinates.md). A plain click: a click the game does not
+# answer is an observation here, not a failure. The loop then reads the board until the two
+# countries' counts have changed and settled.
+watch 545 502 250 70
+click 337 531
+
+# --- block leave-battle
+# The tour's exit (tour.steps): the quit-attack button, or DONE on the move-in after a capture, each
+# tried until the centre panel shows the turn menu's green. Candidate 1 is the quit-attack button,
+# candidate 2 DONE; a failure is only noted (after a failed attack the turn has passed and neither
+# is there).
+watch 262 502 276 70
+click-until? 0 192 64 16 600 456 531 495 540
 
 # --- block dismiss
 # A prompt between turns (a card or an event message) that keeps the placement row from showing:

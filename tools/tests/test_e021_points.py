@@ -66,6 +66,15 @@ class PointsTest(unittest.TestCase):
         self.assertEqual(points_module.POINTS[1], (55, 193))
         self.assertEqual(points_module.POINTS[46], (321, 262))
 
+    def test_each_point_is_nearest_to_the_readers_anchor_of_its_own_country(self):
+        # the reader (E020's anchors.json) and the clicks must name the same country by the same
+        # number: a list position mapped to the wrong country would attack the wrong one
+        import boardreader
+        anchors = boardreader.load_anchors()
+        for country, (x, y) in points_module.POINTS.items():
+            nearest = min(anchors, key=lambda c: (anchors[c][0] - x) ** 2 + (anchors[c][1] - y) ** 2)
+            self.assertEqual(nearest, country, (country, (x, y)))
+
 
 if __name__ == "__main__":
     unittest.main()

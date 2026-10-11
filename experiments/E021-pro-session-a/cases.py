@@ -23,10 +23,11 @@ attacker of 1 may still be refused by the game (the task file): the refusal is t
 the picker never filters it out.
 
 Size cases (`even`, `underdog`, `tiny`) are picked only when the board already shows the case's
-attacker size: the reinforcements of one turn cannot be counted on before they are placed, so the
-loop grows a stack first (`frontier`) and picks the attack after the placement.
-`quit`, `lost` and `busy` are outcome cells: any legal pair can attempt them, and the loop assigns
-the next unmet cell of the row to the attempt.
+attacker size: the reinforcements of one turn cannot be counted on before they are placed (ALL
+places every one of them), so the loop grows a stack first (`frontier`, which never grows a
+country that already shows a needed size) and picks the attack after the placement.
+`quit`, `lost` and `busy` are outcome cells: any pair past the gate can attempt them; which cell
+an attempt meets is the loop's to say, from what the game did.
 """
 CASES = ("even", "underdog", "tiny", "quit", "lost", "busy")
 TOTALS = {"even": 16, "underdog": 4, "tiny": 3, "quit": 2, "lost": 5, "busy": 10}
@@ -149,25 +150,34 @@ def pairs(board, adjacency, seat=HUMAN_SEAT, points=None):
 
 def pick(board, needed, adjacency, seat=HUMAN_SEAT, points=None, exclude=()):
     """(case, cell, attacker, defender) for the first needed cell the board can attempt, in table
-    order (a size case first, then the outcome rows), or None when no needed cell fits.
+    order (the size rows first, then the outcome rows), or None when no needed cell fits.
 
-    A size case is picked only where the board already shows its attacker size; an outcome case
-    takes any legal pair. The first pair of each cell is the lowest country numbers, so the choice
-    is a function of the board and never of a random draw. `exclude` is a set of (attacker,
-    defender) pairs the caller already tried this turn (a pair the game refused will be refused
-    again): they are never returned."""
+    A size case is picked only where the board already shows its attacker size, and its first pair
+    is the lowest country numbers, so the choice is a function of the board and never of a random
+    draw. An outcome case takes any pair past the gate, ranked by the margin (attacker minus
+    defender): the `lost` row takes the smallest margin first (the attack most likely to fail,
+    F011's model: at equal armies about 4 in 5), the `quit` and `busy` rows the largest first (the
+    attack most likely to keep the turn going); ties take the lowest country numbers. `exclude` is
+    the (attacker, defender) pairs the caller already tried this turn: they are never returned."""
     wanted = set(needed)
-    refused = set(map(tuple, exclude))
+    tried = set(map(tuple, exclude))
+    candidates = [(attacker, defender) for attacker in sorted(board)
+                  for defender in sorted(adjacency.get(attacker, ()))
+                  if (attacker, defender) not in tried]
     for case in CASES:
         for cell in cells(case):
             if (case, cell) not in wanted:
                 continue
-            for attacker in sorted(board):
-                for defender in sorted(adjacency.get(attacker, ())):
-                    if (attacker, defender) in refused:
-                        continue
-                    if fits(board, case, cell, attacker, defender, adjacency, seat=seat, points=points):
-                        return case, cell, attacker, defender
+            fitting = [(a, d) for a, d in candidates
+                       if fits(board, case, cell, a, d, adjacency, seat=seat, points=points)]
+            if not fitting:
+                continue
+            if case in OUTCOME_CASES:
+                sign = 1 if case == "lost" else -1
+                fitting.sort(key=lambda pair: (sign * (board[pair[0]]["army"] - board[pair[1]]["army"]),
+                                               pair))
+            attacker, defender = fitting[0]
+            return case, cell, attacker, defender
     return None
 
 
@@ -200,7 +210,7 @@ def reachable(board, needed, adjacency, seat=HUMAN_SEAT, points=None):
     return out
 
 
-def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None):
+def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None, avoid=()):
     """(attacker, defender, case, cell, gap) for the country this turn should grow, or None when
     the board has no country of `seat` with an adjacent enemy to click.
 
@@ -209,13 +219,22 @@ def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None):
     `ALL` placement moves the stack towards a cell that is still needed; ties take the pair whose
     attacker holds most, then the lowest country numbers. When no needed size cell is reachable,
     the strongest country of the seat with an adjacent enemy is grown anyway (case and cell None):
-    the outcome rows take any legal pair, and a bigger stack is never a waste."""
+    the outcome rows take any legal pair, and a bigger stack is never a waste.
+
+    `avoid` is the countries whose count should not change this turn: an attacker that already
+    shows a needed size (the placement would overshoot it, since ALL places every reinforcement).
+    They are grown only when the seat has no other country with an adjacent enemy to click."""
+    avoid = set(avoid)
     options = reachable(board, needed, adjacency, seat=seat, points=points)
-    if options:
-        ranked = []
-        for (attacker, defender), hit in options.items():
-            for case, cell, gap in hit:
-                ranked.append((gap, -readable(board, attacker)["army"], attacker, defender, case, cell))
+    ranked = []
+    for (attacker, defender), hit in options.items():
+        if attacker in avoid:
+            continue
+        for case, cell, gap in hit:
+            if gap == 0:
+                continue                 # already the size: growing it would only overshoot
+            ranked.append((gap, -readable(board, attacker)["army"], attacker, defender, case, cell))
+    if ranked:
         best = min(ranked)
         return best[2], best[3], best[4], best[5], best[0]
     strongest = []
@@ -233,7 +252,8 @@ def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None):
                 strongest.append((-mine["army"], attacker, defender))
     if not strongest:
         return None
-    _, attacker, defender = min(strongest)
+    preferred = [row for row in strongest if row[1] not in avoid] or strongest
+    _, attacker, defender = min(preferred)
     return attacker, defender, None, None, 0
 
 

@@ -139,6 +139,13 @@ class PickTest(unittest.TestCase):
         adjacency = {1: {2}, 2: {1}, 3: {4}, 4: {3}}
         self.assertEqual(cases.pick(board, {("tiny", 2)}, adjacency), ("tiny", 2, 1, 2))
 
+    def test_the_lost_row_takes_the_closest_fight_and_busy_the_safest(self):
+        board = fx.board({3: (fx.BLUE, 6), 4: (fx.RED, 6), 5: (fx.RED, 1)})
+        adjacency = {3: {4, 5}, 4: {3}, 5: {3}}
+        self.assertEqual(cases.pick(board, {("lost", 1)}, adjacency)[2:], (3, 4))
+        self.assertEqual(cases.pick(board, {("busy", 1)}, adjacency)[2:], (3, 5))
+        self.assertEqual(cases.pick(board, {("quit", 1)}, adjacency)[2:], (3, 5))
+
     def test_excluded_pairs_are_never_returned(self):
         board = fx.board({3: (fx.BLUE, 5), 4: (fx.RED, 5), 5: (fx.RED, 5)})
         adjacency = {3: {4, 5}, 4: {3}, 5: {3}}
@@ -156,8 +163,21 @@ class PickTest(unittest.TestCase):
 class FrontierTest(unittest.TestCase):
     def test_the_frontier_is_the_country_a_needed_size_is_reachable_from(self):
         board = fx.frontier_board()          # blue 3 at 2 next to red 4 at 1
+        answer = cases.frontier(board, {("tiny", 3)}, fx.ADJ)
+        self.assertEqual(answer, (3, 4, "tiny", 3, 1))
+
+    def test_a_country_already_at_a_needed_size_is_never_the_growth_target_for_it(self):
+        # ALL places every reinforcement: growing a stack that shows its size only overshoots it
+        board = fx.frontier_board()          # blue 3 at 2 next to red 4 at 1: even cell 1 as it is
         answer = cases.frontier(board, {("even", 1)}, fx.ADJ)
-        self.assertEqual(answer, (3, 4, "even", 1, 0))
+        self.assertEqual(answer[2:4], (None, None))
+
+    def test_avoided_countries_are_grown_only_when_nothing_else_has_an_enemy(self):
+        adjacency = {1: {2}, 2: {1}, 3: {4}, 4: {3}}
+        board = fx.board({1: (fx.BLUE, 5), 2: (fx.RED, 9), 3: (fx.BLUE, 2), 4: (fx.RED, 1)})
+        self.assertEqual(cases.frontier(board, {("even", 5)}, adjacency, avoid={3})[0], 1)
+        self.assertEqual(cases.frontier(board, set(), adjacency, avoid={1})[0], 3)
+        self.assertEqual(cases.frontier(board, set(), adjacency, avoid={1, 3})[0], 1)
 
     def test_the_frontier_grows_the_smallest_gap_first(self):
         # even cell 5 is an attacker of 4 against a defender of 3: two reinforcements away from 2
@@ -166,12 +186,12 @@ class FrontierTest(unittest.TestCase):
         self.assertEqual(answer, (3, 4, "even", 5, 2))
 
     def test_the_frontier_prefers_the_pair_whose_cell_is_closest(self):
-        # Country 1 is one reinforcement from cell 6; country 3 already fits cell 7.
+        # Country 1 is one reinforcement from cell 6 (4 vs 4); country 3 three from cell 11 (8 vs 9).
         adjacency = {1: {2}, 2: {1}, 3: {4}, 4: {3}}
-        board = fx.board({1: (fx.BLUE, 3), 2: (fx.RED, 4), 3: (fx.BLUE, 4), 4: (fx.RED, 5)})
-        needed = {("even", 6), ("even", 7)}
-        self.assertEqual(cases.frontier(board, needed, adjacency)[:4], (3, 4, "even", 7))
-        self.assertEqual(cases.frontier(board, {("even", 6)}, adjacency)[:4], (1, 2, "even", 6))
+        board = fx.board({1: (fx.BLUE, 3), 2: (fx.RED, 4), 3: (fx.BLUE, 5), 4: (fx.RED, 9)})
+        needed = {("even", 6), ("even", 11)}
+        self.assertEqual(cases.frontier(board, needed, adjacency), (1, 2, "even", 6, 1))
+        self.assertEqual(cases.frontier(board, {("even", 11)}, adjacency), (3, 4, "even", 11, 3))
 
     def test_the_frontier_falls_back_to_the_strongest_country_with_an_enemy(self):
         # nothing size-shaped is reachable (no size cells are needed): grow the strongest anyway
