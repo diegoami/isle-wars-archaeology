@@ -203,12 +203,11 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
   Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
   restore it in a \`finally\`), or commit first; never \`git checkout\`, \`git restore\` or \`git reset\`
   a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
-  copy inside your worktree (\`<file>.saved\`, deleted afterwards) or in your \`mktemp -d\` folder, never
-  as a loose file in \`/tmp\`: OpenCode refuses writes outside the worktree except in that folder. Outside your worktree, only read the static
+  copy inside your worktree (\`<file>.saved\`, deleted afterwards) or in your \`mktemp -d\` folder, or
+  anywhere under \`/tmp\` (open to the reviewer since 2026-10-11). Outside your worktree, only read the static
   folder ~/.local/share/isle-wars-archaeology/static/ (never write there, and never paste its
-  contents into the review), and only write in one TMPDIR made with
-  \`mktemp -d /tmp/iwa-review-XXXXXX\` and removed afterwards. Every other path outside it is
-  forbidden (T29).
+  contents into the review), and write only under \`/tmp\` (a \`mktemp -d /tmp/iwa-review-XXXXXX\` folder is
+  the tidiest, removed afterwards). Every other path outside your worktree is forbidden (T29).
 - Your final message is the review and nothing else. Line 1 is exactly: ${header}
   Line 2 is the verdict, alone on its line: approve, approve after named fixes, rework, or user
   decision. Then any where-I-worked lines (worktree, HEAD, diff, the commands you ran), then the
