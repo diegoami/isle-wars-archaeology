@@ -86,6 +86,14 @@ class FakeGame:
         self.declines = 0                  # card-decline blocks the game received
         self.decline_lag = 0               # readings after the decline that still show the offer
         self.lag_left = None
+        self.pool_left = None              # the pool a partial placement left (None: this turn's whole pool)
+        self.counter = 0                   # the placement panel's counter (fix #180)
+        self.plus_works = True             # False: the + button changes nothing
+        self.landing_skew = 0              # armies the PLACE of an exact stack lands short of the counter
+
+    def remaining(self):
+        """The reinforcements still to place this turn."""
+        return self.reinforcements if self.pool_left is None else self.pool_left
 
     def click_country(self, block, country):
         if block == "attack-target":
@@ -132,8 +140,22 @@ class FakeGame:
                 return {"changed": True}
             return {"changed": False}
         elif name == "place-commit" and self.selected is not None:
-            self.board[self.selected]["army"] += self.reinforcements
-            self.selected = None
+            self.board[self.selected]["army"] += self.remaining()
+            self.selected, self.pool_left, self.counter = None, None, 0
+        elif name == "place-plus":
+            # + adds one to the counter, capped at the pool's remainder (F013 Q-REI-03)
+            if self.selected is not None and self.plus_works:
+                self.counter = min(self.counter + 1, self.remaining())
+        elif name == "place-only" and self.selected is not None:
+            # PLACE alone: the counter's armies go into the selected country; the pool is smaller by
+            # that much, and the turn menu shows when it is zero (the row stays up otherwise)
+            self.board[self.selected]["army"] += max(0, self.counter - self.landing_skew)
+            left = self.remaining() - self.counter
+            self.selected, self.counter = None, 0
+            if left <= 0:
+                self.pool_left, self.screen = None, "board-menu"
+            else:
+                self.pool_left, self.screen = left, "board"
         elif name == "pass":
             self.passes += 1
             if self.on_pass is not None:

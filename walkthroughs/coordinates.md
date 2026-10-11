@@ -20,6 +20,8 @@ Source: `experiments/E002-iwp-state-inventory/scripts/tour.steps`.
 | Scores → Return | 388, 516 | |
 | ALL (place all armies) | 307, 543 | |
 | PLACE (commit placement) | 497, 543 | |
+| PLUS (+ one army on the placement counter) | 373, 543 | fix #180: centre of the grey button, x 355-391, y 529-556. Source: frame `17-1791738450340.png` of sitting 20261011T170700Z (sha256 `9a3b479b44ead6647bdefe92ebdf163e9faa62b3132af5dbe3c30b9edf6a0af8`), the panel after ALL with 4 armies to place; read by pixel extent in place on the user's machine (rule 18, carve-out A). The game's own handler is `CastScript 85 plus2` (F013 Q-REI-03): adds one, capped at the pool |
+| MINUS (- one army off the counter) | 422, 543 | same frame: grey button x 404-440, y 529-556. `CastScript 87 min2`, floored at 0. Not clicked by the loop (the counter is built up from zero) |
 | ATTACK (start attack) | 337, 531 | |
 | QUIT ATTACK / DONE | `click-until 0 192 64 16 600 456 531 495 540` | |
 | PASS (end turn) | 417, 530 | |
@@ -161,7 +163,8 @@ pick the first one the game accepts.
 
 - Board area: `watch 0 0 800 495` (the top 495 pixels of the 800×600 stage).
 - Turn menu / buttons: bottom 105 pixels of the stage.
-- Placement frame: `watch 265 530 270 26` and `watch 262 502 276 70` (the "ALL" and "PLACE" button rows).
+- Placement frame: `watch 265 530 270 26` and `watch 262 502 276 70` (the "ALL" and "PLACE" button rows; the
+  panel also holds the + and - buttons, the counter above them, and the pool's armies in the bottom bar).
 - Battle result: `watch 545 502 250 70` (the ATTACK result row).
 
 ## Converting stage to desktop

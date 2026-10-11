@@ -87,6 +87,22 @@ second `card-offer` line (`forced` 1, the frame) and the sitting ends cleanly as
 with no further click; a trade path is a follow-up. Block `card-decline` is not a New Game: the
 no-New-Game guard (NewGameTest) covers it.
 
+Exact stack sizes (fix #180; the owner, 2026-10-11): ALL puts the whole pool on one country, so a stack jumped
+past 8 and 12 (sitting 20261011T170700Z grew one to 27). The placement panel also has a + and a - button (F013
+Q-REI-03, CastScript 85 `plus2`: adds one to the counter, capped at the pool; 87 `min2`: takes one off; 83 `Pall2`:
+the whole pool; 89 `place2`: moves the counter into the selected country), so when `place_for` has a target with a
+`gap` above 0 and a named size case it selects the country as before, sends block `place-plus` once per army (the
+counter then holds min(gap, pool)), then block `place-only` (PLACE), and reads the screen: the turn menu means the pool
+is spent, the placement row still up means armies are left, which go with `place-commit` (ALL, PLACE) on a second
+country (cases.rest_choices: never the target, an interior country first, then a frontier country showing no needed
+size, a needed attacker's own stack only last; the phase ends only at pool zero, so the rest must go somewhere). It
+logs `place-exact` (`country`, `gap`, `plus`, `rest_to`, and `rest_any` when E020's `place-any` took the rest). The
+first reading after the placement is checked (`check_landing`): `place-landed` says whether the stack holds its
+armies plus min(gap, pool), the pool being what the human's countries gained in all (`landed` 0 or 1). Intent never
+credits a cell; only the board does. With gap 0, or no named case, the placement is `place-commit` as before, and
+fix #178's bounds (a gap that stops shrinking stops counting as growing; the abandon) are untouched. None of the new
+blocks is a New Game.
+
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
 minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
 another seat's turn has begun (a failure passes the turn by itself) the reading may hold that seat's
@@ -99,7 +115,7 @@ click whose total fell by more is logged with the number, and the summary counts
 
 Lines of `actions.jsonl` (structural values only, constraint D: our own words, numbers, colour
 words and sha256s; no text of the original): `board` (each reading: its frame, the seat, how many
-countries were unread), `card-offer`, `place-target`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
+countries were unread), `card-offer`, `place-target`, `place-exact`, `place-landed`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
 `attack-attempt` (the aim, both countries before and after, the battle, the clicks, the armies
 lost, the outcome, the frames), `case-met`, `turn-end`. The export (e021_export.py) turns
 `exchange-click`, `attack-attempt`, `case-met` and `turn-end` into the record's observations.
@@ -149,6 +165,7 @@ NO_FIT_TURNS = 3                     # turns in a row of one game with no needed
 NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
                                              # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
+REST_TRIES = 3                       # second-country candidates tried (fix #180) before E020's `place-any`
 OFFER_POLLS = 5                      # readings after `card-decline` before the offer counts as still up
 OFFER_POLL_SECONDS = 0.5             # between them (a guess: the game answers the click at once as far
                                      # as any frame shows; no sitting has declined yet, so this is the
@@ -183,6 +200,7 @@ class SessionALoop(e020_loop.BatchLoop):
         self.grow = (None, {})               # (game, {country: smallest gap seen on a turn it was grown})
         self.offers = 0                      # the card trade-in offers declined in this turn (fix #175)
         self.turn_growing = False            # this turn's placement grew a stack towards a needed size
+        self.landing = None                  # an exact placement the next reading checks (fix #180)
         self.summary.update(cases_met_before=len(self.met), cases_met=len(self.met), attack_attempts=0,
                             refusals=0, battles=0, exchange_clicks=0, clicks_one_army=0,
                             clicks_several_armies=0, clicks_no_change=0, clicks_unread=0, clicks_unisolated=0,
@@ -332,6 +350,7 @@ class SessionALoop(e020_loop.BatchLoop):
         """One turn: the placement (two tries with a `dismiss` between them, as E020's), then the
         attacks, then PASS. None when the turn was played, else why the game ended for the loop."""
         self.turn_growing = False
+        self.landing = None
         self.offers = 0
         screen = self.driver.read_screen()
         if screen not in e020_loop.BOARD:
@@ -433,10 +452,78 @@ class SessionALoop(e020_loop.BatchLoop):
         if screen not in e020_loop.BOARD:
             return self.off_board(screen)
         self.summary["placements"] += 1
-        self.send("place-commit")
+        self.landing = None
+        exact = chosen and choice is not None and choice[2] is not None and choice[4] > 0
+        if exact:
+            ended = self.place_exact(board, target[0], target[1])
+            if ended is not True:
+                return ended
+        else:
+            self.send("place-commit")
         self.summary["turns"] += 1
         self.turn_growing = chosen and self.growing(*target)
         return True
+
+    def place_exact(self, board, country, gap):
+        """The chosen stack gets exactly `gap` armies (fix #180; the owner, 2026-10-11): `place-plus`
+        once per army (the counter holds min(gap, pool): + is capped at the pool, F013 Q-REI-03), then
+        `place-only` (PLACE). The pool is read from the screen: the turn menu means it is zero (the
+        phase ends only then), the placement row still up means armies are left, and they go with
+        `place-commit` (ALL, PLACE) on a second country, chosen by the rule of cases.rest_choices: never
+        `country`, an interior country first (never an attacker), then a frontier country that shows no
+        needed size, and a needed attacker's own stack only when nothing else is left. If none of
+        the three first choices can be selected, E020's `place-any` takes it. Logs one `place-exact`
+        line (`country`, `gap`, `plus` clicks, `rest_to` the second country, or None when the pool
+        was zero; `rest_any` 1 when E020's `place-any` took the rest) and keeps what the landing check
+        (`check_landing`) needs. True when the pool is spent, else why the game ended."""
+        for _ in range(gap):
+            self.send("place-plus")
+        self.send("place-only")
+        screen = self.driver.read_screen()
+        if screen not in e020_loop.BOARD:
+            return self.off_board(screen)
+        rest, rest_any = None, 0
+        if screen != "board-menu":                       # the row is still up: the pool holds armies
+            for candidate in cases.rest_choices(board, self.needed(), self.adjacency, country,
+                                                points=self.points)[:REST_TRIES]:
+                x, y = self.points[candidate]
+                self.send_step("place-select", PLACE_WATCH)
+                if self.send_step("place-select", PLACE_SELECT.format(x=x, y=y)).get("picked"):
+                    rest = candidate
+                    break
+            if rest is None:
+                rest_any = int(bool(self.send("place-any").get("picked")))
+            screen = self.driver.read_screen()
+            if screen not in e020_loop.BOARD:
+                return self.off_board(screen)
+            self.send("place-commit")
+        fields = {"rest_any": 1} if rest_any else {}
+        self.driver.note(event="place-exact", country=country, gap=gap, plus=gap, rest_to=rest, **fields)
+        self.landing = {"country": country, "gap": gap, "board": board}
+        return True
+
+    def check_landing(self, reading):
+        """The landing check of an exact placement (fix #180), on the first reading after the pool is
+        spent: the pool is what the human's countries gained in all (armies of the countries the
+        seat owned and both readings read, after minus before), and the stack should hold its armies
+        before plus min(gap, pool). One `place-landed` line says what the board shows (`landed` 1 when
+        it holds that, else 0, with `armies` the reading, or None when the country was unread). It
+        credits no cell: the attack that follows is picked from the board alone, as always."""
+        landing, self.landing = self.landing, None
+        if landing is None:
+            return
+        before, country, gap = landing["board"], landing["country"], landing["gap"]
+        pool = 0
+        for number, row in before.items():
+            now = cases.readable(reading.board, number)
+            was = cases.readable(before, number)
+            if was is not None and now is not None and was["owner"] == SEAT and now["owner"] == SEAT:
+                pool += now["army"] - was["army"]
+        now = cases.readable(reading.board, country)
+        armies = None if now is None else now["army"]
+        expected = before[country]["army"] + min(gap, pool)
+        self.driver.note(event="place-landed", country=country, gap=gap, pool=pool, expected=expected,
+                         armies=armies, landed=int(armies == expected))
 
     def growing(self, country, gap, size=None):
         """True when this turn's placement grew a stack towards a needed size: `country` was chosen
@@ -474,6 +561,7 @@ class SessionALoop(e020_loop.BatchLoop):
                 self.driver.note(event="turn-end", battles=battles, fights=fights, end="board-unreadable",
                                  growing=int(self.turn_growing))
                 return "board-unreadable"
+            self.check_landing(reading)
             choice = cases.pick(reading.board, self.needed(), self.adjacency, points=self.points,
                                 exclude=tried)
             if choice is None:
