@@ -343,6 +343,112 @@ class GrowingStackTest(unittest.TestCase):
         self.assertTrue(loop.growing(3, 7))                          # the list starts again each game
 
 
+class GrowTowardBigStacksTest(unittest.TestCase):
+    """Fix #178: no needed cell is reachable (the open rows need stacks of 8, 12 or 20 against
+    defenders the board does not have), so the placement grows the strongest stack towards the
+    smallest open size, and those turns count as growing."""
+
+    def world(self, reinforcements, open_cells=(("even", 13),)):
+        # blue 3 holds 3 next to red 4 holding 2: even 13 (attacker 12 vs 11) is out of reach
+        world = World({3: (BLUE, 3), 4: (RED, 2)}, screen="board-menu", met=only(*open_cells))
+        world.game.reinforcements = reinforcements
+        world.loop.deadline = 600
+        return world
+
+    def turn(self, world, number):
+        world.loop.driver.context = {"game": 1, "turn": number}
+        return world.loop.turn()
+
+    def test_a_stack_growing_three_six_nine_towards_twelve_is_not_abandoned(self):
+        world = self.world(3)
+        for number in (1, 2, 3):
+            self.assertIsNone(self.turn(world, number))
+        targets = world.driver.events("place-target")
+        self.assertEqual([(t["country"], t["case"], t["cell"], t["gap"]) for t in targets],
+                         [(3, "even", 13, 9), (3, "even", 13, 6), (3, "even", 13, 3)])
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 1, 1])
+        self.assertEqual(world.driver.events("game-abandoned"), [])
+        self.assertNotIn("abandon-game", world.driver.blocks)
+        self.assertEqual(world.game.passes, 3)
+
+    def test_a_stack_passing_one_open_size_and_heading_for_the_next_is_still_growing(self):
+        # 3 -> 6 -> 9 with sizes 8 and 12 open: the gaps are 5, 2, then 3 towards 12
+        world = self.world(3, open_cells=(("even", 9), ("even", 13)))
+        for number in (1, 2, 3):
+            self.assertIsNone(self.turn(world, number))
+        self.assertEqual([(t["cell"], t["gap"]) for t in world.driver.events("place-target")],
+                         [(9, 5), (9, 2), (13, 3)])
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 1, 1])
+        self.assertEqual(world.driver.events("game-abandoned"), [])
+
+    def test_a_stack_that_stops_growing_is_abandoned_after_no_fit_turns(self):
+        world = self.world(3)
+        for number in (1, 2):
+            self.assertIsNone(self.turn(world, number))              # 3 -> 6 -> 9, growing
+        world.game.reinforcements = 0
+        self.assertIsNone(self.turn(world, 3))                       # gap 3: a first, so growing
+        for number in (4, 5):
+            self.assertIsNone(self.turn(world, number))              # gap 3 again: no-fit turns 1 and 2
+            self.assertNotIn("abandon-game", world.driver.blocks)
+        self.turn(world, 6)
+        self.assertEqual([(a["turn"], a["turns"]) for a in world.driver.events("game-abandoned")], [(6, 3)])
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 1, 1, 0, 0, 0])
+
+    def test_with_every_open_size_below_the_strongest_stack_nothing_is_growing(self):
+        world = World({3: (BLUE, 9), 4: (RED, 2)}, screen="board-menu", met=only(("even", 9)))
+        world.game.reinforcements = 0
+        world.loop.deadline = 600
+        for number in (1, 2):
+            self.assertIsNone(self.turn(world, number))
+        self.turn(world, 3)
+        self.assertEqual([("case" in t, t["gap"]) for t in world.driver.events("place-target")],
+                         [(False, 0)] * 3)
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [0, 0, 0])
+        self.assertEqual(world.driver.events("game-abandoned")[0]["turn"], 3)
+
+    def test_a_stack_that_shows_a_needed_size_is_attacked_with_not_grown_past_it(self):
+        # blue 3 shows 8 next to red 4 holding 8 (even 10: 8 vs 8 fits); blue 5 shows 2 next to red 6
+        # holding 1 and could be grown; the growth goes to 5 (the 8-stack is the pick), and 3 attacks
+        adjacency = {**fx.ADJ, 5: {6}, 6: {5}}
+        world = World({3: (BLUE, 8), 4: (RED, 8), 5: (BLUE, 2), 6: (RED, 1)}, met=only(("even", 10), ("even", 13)))
+        world.game.adjacency = world.loop.adjacency = adjacency
+        world.game.reinforcements = 3
+        world.loop.turn()
+        self.assertEqual(world.driver.events("place-target")[0]["country"], 5)
+        self.assertEqual(world.attempts()[0]["before"][0], 8)
+        self.assertEqual(world.met("even"), [10])
+
+
+class BusyPerGameTest(unittest.TestCase):
+    """Fix #178: busy's drop belongs to the game; the other cases keep the sitting-wide count."""
+
+    def test_busy_dropped_in_game_one_is_aimed_at_again_in_game_two_but_quit_stays_dropped(self):
+        world = World({3: (BLUE, 20), 4: (GREEN, 30)}, screen="title", games_max=2,
+                      met=only(("busy", 1), ("quit", 1)))
+        world.game.board_screen = "board-menu"
+        world.game.reinforcements = 0
+        world.loop.restore, world.loop.shipped_skr = (lambda: "s" * 64), "s" * 64
+        note = world.driver.note
+        seen = {}
+
+        def drop_in_game_one(**fields):
+            note(**fields)
+            if fields.get("event") == "game-abandoned" and world.driver.context.get("game") == 1:
+                world.loop.dropped.update({"busy", "quit"})
+                world.loop.failures.update({"busy": e021_loop.DROP_AFTER, "quit": e021_loop.DROP_AFTER})
+                world.loop.summary["dropped"] = sorted(world.loop.dropped)
+                seen["needed_in_game_one"] = world.loop.needed()
+        world.driver.note = drop_in_game_one
+        world.loop.run()
+        self.assertEqual(seen["needed_in_game_one"], [])
+        self.assertEqual(world.loop.dropped, {"quit"})
+        self.assertNotIn("busy", world.loop.failures)
+        self.assertEqual(world.loop.failures["quit"], e021_loop.DROP_AFTER)
+        self.assertEqual(world.loop.summary["dropped"], ["quit"])
+        self.assertEqual(world.loop.needed(), [("busy", 1)])
+        self.assertEqual(world.driver.events("case-dropped"), [])
+
+
 class AttackFlowTest(unittest.TestCase):
     def test_an_attack_is_open_target_attacker_exchange_then_leave(self):
         world = World({3: (BLUE, 2), 4: (RED, 1)}, met=only(("even", 1)), losers=["d"])

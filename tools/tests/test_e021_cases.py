@@ -251,3 +251,43 @@ class LegalTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FrontierGrowTargetTest(unittest.TestCase):
+    """Fix #178: with no needed cell reachable now, the strongest country is grown towards the
+    smallest open even or underdog attacker size above its armies."""
+
+    def board(self, armies, defender=1):
+        # blue 3 holds `armies` next to red 4 holding `defender`: no size cell below fits a defender of 1
+        return fx.board({3: (fx.BLUE, armies), 4: (fx.RED, defender)})
+
+    def test_the_smallest_open_size_above_the_armies_is_the_target(self):
+        needed = {("even", 13), ("even", 9), ("underdog", 3)}      # attackers 12, 8, 12
+        self.assertEqual(cases.reachable(self.board(3), needed, fx.ADJ), {})
+        self.assertEqual(cases.frontier(self.board(3), needed, fx.ADJ), (3, 4, "even", 9, 5))
+
+    def test_the_target_moves_up_when_the_smaller_size_is_passed_or_met(self):
+        needed = {("even", 13), ("even", 9), ("underdog", 3)}
+        self.assertEqual(cases.frontier(self.board(9), needed, fx.ADJ), (3, 4, "even", 13, 3))
+        self.assertEqual(cases.frontier(self.board(3), {("even", 13), ("underdog", 3)}, fx.ADJ),
+                         (3, 4, "even", 13, 9))
+
+    def test_an_underdog_size_is_a_target_too(self):
+        self.assertEqual(cases.frontier(self.board(3), {("underdog", 1)}, fx.ADJ), (3, 4, "underdog", 1, 1))
+
+    def test_a_tiny_or_outcome_cell_is_never_a_growth_target(self):
+        # a defender of 2 fits no tiny cell (they ask a defender of 1), so nothing is reachable
+        self.assertEqual(cases.frontier(self.board(1, defender=2), {("tiny", 3), ("busy", 1), ("lost", 1)},
+                                        fx.ADJ)[2:],
+                         (None, None, 0))
+
+    def test_when_every_open_size_is_below_the_strongest_stack_the_fallback_is_as_before(self):
+        needed = {("even", 9), ("even", 5)}                        # attackers 8 and 4
+        self.assertEqual(cases.frontier(self.board(9), needed, fx.ADJ), (3, 4, None, None, 0))
+        self.assertEqual(cases.frontier(self.board(8), needed, fx.ADJ), (3, 4, None, None, 0))
+
+    def test_a_reachable_cell_still_beats_the_target(self):
+        needed = {("even", 9), ("even", 5)}
+        board = self.board(3, defender=3)                          # attacker 4 vs 3 is reachable: even cell 5
+        self.assertEqual(cases.frontier(board, needed, fx.ADJ), (3, 4, "even", 5, 1))
+
