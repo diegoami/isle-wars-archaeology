@@ -111,8 +111,8 @@ Records, all immutable, `runtime.platform` `windows-native-bandicam`:
 
 Frames are in the bundle store by hash, listed in `evidence/E018/E018-r0003..5.manifest.json`; the video and
 the frames are never committed (rule 18). Everything was read by pixels (region comparison against the
-counter panel, no OCR). Four checks backed the readings: every one of the 363 counter steps is a single
-loss on one side (none was missed or double); for all 82 captures the two country counters after the capture
+counter panel, no OCR). Four checks backed the readings: every one of the 360 counter steps is a single
+loss on one side (none was missed or double; three repeated, unchanged counter states in attacks 19, 58 and 83 are not exchanges); for all 82 captures the two country counters after the capture
 add up to the attacker's armies at the capture; 72 states of 24 attacks were re-read by eye against the
 readings and matched; and every attack's two countries are neighbours in the F017 border tables.
 
@@ -120,7 +120,7 @@ One correction to a record's label (rule 20: the record stays as written). `E018
 frame at 17:03.2 as the human seat eliminated; that frame shows the seat's last country, 0.8 s before attack
 111 captured it. The elimination is at 17:04.0, the prompt at about 17:04.5.
 
-Counts this sitting adds to the per-claim totals (constraint E): 445 exchanges (363 read from counter
+Counts this sitting adds to the per-claim totals (constraint E): 442 exchanges (360 read from counter
 steps, 82 capture exchanges inferred from the defender's last army), 111 attacks, 55 turn starts with income,
 45 capturing turns with the card count before and after, 5 trade-ins, 8 moves.
 
@@ -262,7 +262,7 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
   (six starts, with attackers of 3, 3, 4, 4, 7 and 7 armies; the table's `before` column has every start).
   Human, 17 starts: all had at least 2 armies and at least as many as the target; no equal-strength start
   and no refusal was shown, and the 16-case grid (N in 2, 4, 8, 12 against N-1 to N+2) was not played.
-- **Why narrowed:** the computer half is met on 94 starts (target 100+, nearly); the human boundary and the
+- **Why narrowed:** the computer half is not met on 94 starts (target 100+); the human boundary and the
   refusal are untested.
 - **Cited by:** E018-r0003.
 
@@ -277,7 +277,7 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 
 ### Q-CMB-03 (C-CMB-03) — minimum attacking stack
 
-- **Status:** narrowed (computer corroborated, human unestablished)
+- **Status:** narrowed (the computer arm has 94 starts against a target of 100 or more, so it is narrowed too; the human arm is unestablished)
 - **Static claim:** human minimum 2; computer minimum 3 or 4 before a capture this turn (4 or 5 for a country
   on the fixed 23-country list) and 4 after one (5 on the list).
 - **This sitting:** the computer's smallest start by class, all four matching the low end of the claim:
@@ -290,8 +290,8 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 ### Q-CMB-04 (C-CMB-04) — one die each, one army per exchange, five-at-once batching
 
 - **Status:** narrowed
-- **This sitting:** 445 exchanges; each changed exactly one counter by one (363 counter steps, none of
-  (-1,-1) or larger). Exchanges against a one-army defender by attacker size: 2: 2, 3: 15, 4: 35, 5: 27,
+- **This sitting:** 442 exchanges; each changed exactly one counter by one (360 counter steps, none of
+  (-1,-1) or larger). Exchanges against a one-army defender by attacker size: 2: 1, 3: 15, 4: 35, 5: 27,
   10: 9 (target 100+ each); 11 and over: 59. The five-exchange pass needs more than 40 against more than 15
   (computer) or more than 35 against more than 15 (human); the largest stack pairs seen were 37 v 4
   (computer) and 10 v 1 (human), so batching was not exercised.
@@ -300,9 +300,9 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 ### Q-CMB-05 (C-CMB-04, defender-size half) — defender size
 
 - **Status:** narrowed
-- **This sitting:** attacker-loss share by defender size: 1 army 128/211 (60.7%), 2 armies 61/117 (52.1%),
-  3 armies 40/81 (49.4%), 4 armies 10/22, 5 or more 6/14. A chi-square test across the five groups gives
-  p = 0.21, so no dependence on the defender's size is detected, but the trend (60.7% down to about 49%) is
+- **This sitting:** attacker-loss share by defender size: 1 army 128/210 (61.0%), 2 armies 61/116 (52.6%),
+  3 armies 40/80 (50.0%), 4 armies 10/22, 5 or more 6/14. A chi-square test across the five groups gives
+  p = 0.22, so no dependence on the defender's size is detected, but the trend (61.0% down to about 50%) is
   not excluded at this count. Defender size 10 was not seen (largest defender 6).
 - **Cited by:** E018-r0003.
 
@@ -310,16 +310,16 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 
 - **Status:** narrowed
 - **Static claim:** ties go to the defender, so the attacker loses an exchange 21 times in 36 (7/12, 58.3%).
-- **This sitting:** attacker lost 245 of 445 exchanges (55.1%, 95% interval 50.4% to 59.7%); 7/12 is inside
-  the interval (z = -1.40); an even 50% is not (z = +2.13, p about 0.03). Human 30 of 51 (58.8%), computer
-  215 of 394 (54.6%). Dice are not visible, so only the outcome share is tested.
-- **Why narrowed:** 445 of the 500 target; the share is consistent with the claim, not a proof of it.
+- **This sitting:** attacker lost 245 of 442 exchanges (55.4%; the defender lost 197), 95% interval 50.8% to 60.1%; 7/12
+  is inside the interval (z = -1.24); an even 50% is not (z = +2.28, two-sided p about 0.02). Human 30 of 49
+  (61.2%), computer 215 of 393 (54.7%); the two shares do not differ detectably (p = 0.39). Dice are not visible, so only the outcome share is tested.
+- **Why narrowed:** 442 of the 500 target; the share is consistent with the claim, not a proof of it.
 - **Cited by:** E018-r0003.
 
 ### Q-CMB-07 (C-CMB-06) — exactly one army lost per exchange
 
 - **Status:** corroborated
-- **This sitting:** 363 counter steps (target 200), every one a loss of one army on exactly one side; none
+- **This sitting:** 360 counter steps (target 200), every one a loss of one army on exactly one side; none
   lost two or lost one on each side; a 5-army run could not occur (see Q-CMB-04). 82 capture exchanges end
   with the defender's last army gone.
 - **Cited by:** E018-r0003.
@@ -330,15 +330,18 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 - **This sitting:** human, 17 attacks: 12 ended in a capture, 5 were quit by the owner with armies as they
   stood (attacks 11, 27, 34, 58, 100: ending at 2, 3, 2, 2 and 2 armies), ownership unchanged and no cost
   seen at the 5 offsets. Whether one click is one exchange is not established: clicks are not visible, and
-  consecutive exchanges are 0.13 to 2.0 s apart (median 0.5 s over 39 intervals; two longer pauses of 7.4 and
-  11.4 s). Targets met on count (human 10 attacks, computer 30 battles). Computer, 94 battles: 70 captures, 24 stops without a capture; the attacker's armies at those
+  consecutive exchanges are 0.13 to 2.0 s apart (median 0.47 s over 37 intervals; the two repeated
+  states, in attacks 19 and 58, are 11.4 s and 7.4 s apart and are pauses, not exchanges). Targets met on
+  count (human 10 attacks, computer 30 battles). Computer, 94 battles: 70 captures, 24 stops without a
+  capture; the attacker's armies at those
   stops were 2 (nine times), 3 (fourteen) and 5 (once), never below 2, as the static claim says. Computer
-  exchange intervals 0.03 to 7.3 s, median 0.20 s over 255.
+  exchange intervals 0.03 to 0.23 s, median 0.20 s over 254 (the repeated state in attack 83 is a 7.3 s
+  pause, not an exchange).
 - **Cited by:** E018-r0003.
 
 ### Q-CMB-09 (C-CMB-09) — a failed attack
 
-- **Status:** narrowed (computer corroborated, human unestablished)
+- **Status:** narrowed (the computer arm met its count, 24 stops against 20; the human arm, 5 failed attacks wanted, saw none)
 - **This sitting:** computer, 24 stops without a capture (target 20): the attacker's and defender's owners
   are unchanged in all 24 when read 1.2 s after the stop, and the attacker's country keeps at least 2.
   Human: no attack was lost down to 1 army (five quits at 2 or more), so the forfeit rule, the card
@@ -359,9 +362,9 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 
 - **Status:** narrowed
 - **This sitting:** attacker-loss share by whether the attacker's country is on the fixed 23-country list:
-  list 146/261 (55.9%), not on the list 99/184 (53.8%), chi-square p = 0.66. By attacker size band: 1-3 14/30,
-  4-6 90/165, 7-10 60/110, 11-20 43/81, 21+ 38/59, p = 0.54. A shift of about 4 points is not detectable
-  with 445 exchanges; no gross effect appears.
+  list 146/259 (56.4%), not on the list 99/183 (54.1%), chi-square p = 0.64. By attacker size band: 1-3 14/27,
+  4-6 90/165, 7-10 60/110, 11-20 43/81, 21+ 38/59, p = 0.68. A shift of about 4 points is not detectable
+  with 442 exchanges; no gross effect appears.
 - **Cited by:** E018-r0003.
 
 ## Capture, moves, ownership
@@ -419,14 +422,21 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 
 ### Q-BON-05 (C-CRD-03) — a card per capturing turn
 
-- **Status:** corroborated
+- **Status:** narrowed
+- **Why narrowed:** F014's plan asks for at least 20 human turns and 20 computer turns split by captures, and a
+  human turn ending in a forfeited attack after an earlier capture. This sitting has 13 human turns (with a
+  following turn start: 2 with no capture, 10 with one, 1 with two or more) and 41 computer turns (7, 19 and
+  15), and no forfeited human attack. The computer arm is met; the human arm and the forfeit case are not.
+  The earlier sitting (IP1 025) is not counted here: its records do not give per-turn human counts.
+  The IP1 025 section above marks Q-BON-05 `corroborated` on one capturing turn; that does not meet this
+  target either, so read both sittings together as `narrowed`.
 - **This sitting:** over the 54 turns with a following turn start: 45 capturing turns and 9 without a
   capture. In the 9 non-capturing turns the seat's card count did not change. In the 31 capturing turns
   with fewer than 5 cards and no trade-in the count rose by exactly 1, 11 of them turns with two or more
   captures (still +1). The other 14 capturing turns: 4 with a trade-in (3 cards out, 1 drawn: turns 23, 25,
   29, 43), 8 with 5 cards that stayed at 5 (Q-BON-06), and 2 where the empty-the-hand card was drawn (Red,
   turn 42; Blue, turn 44 after a trade-in). Human and computer seats alike. A failed human attack
-  cancelling the draw is not tested.
+  cancelling the draw is not tested. Every one of these observations agrees with the claim.
 - **Cited by:** E018-r0004.
 
 ### Q-BON-06 (C-CRD-04) — five cards, discard on a full hand
@@ -477,10 +487,17 @@ move-in the owner chose and what the attacker keeps). A stop or quit leaves both
 
 ### Q-REI-01 / Q-REI-02 (C-REI-01, C-REI-02) — income from the territory count, the floor of 2
 
-- **Status:** corroborated
+- **Status:** narrowed
+- **Why narrowed:** F013's plan asks for at least 2 turns at each of 1, 2, 3, 6, 9, 12 and 15 countries with no
+  island held (and, for the floor, at 1, 2, 3, 5, 6 and 9, plus the floor-plus-bonus case of a whole small
+  island and 2 outside countries). The turns with no island held are, by country count: 1 country, 1 turn;
+  3, 1 turn; 9, 2 turns; and also 8 (1), 10 (3), 13 (4). There is none at 2, 6, 12, 15 or (for the second
+  list) 5 with no island. The island identities were not read, so a bonus cannot be subtracted on an
+  independent basis; the island turns agree with the static values but do not test them.
 - **Static claim:** the country part is the count divided by 3, rounded down, raised to 2; the island bonus
   is added after; no first-turn exception.
-- **This sitting:** all 55 turns match. The 12 turns with no island read exactly the country part: counts 13,
+- **This sitting:** all 55 turns agree with the claim (an independent check only for the 12 turns that
+  show no island). The 12 turns with no island read exactly the country part: counts 13,
   10, 13, 9, 13, 10, 13, 9, 3, 10, 8 and 1 gave 4, 3, 4, 3, 4, 3, 4, 3, 2, 3, 2, 2 (counts of 1 and 3 get the
   floor; the first turn is not special). The remaining 43 turns read the country part plus an island
   amount that is a sum of the static bonus values: one island 2 (13 turns), 3 (9), 4 (9); two islands 7 (1)
