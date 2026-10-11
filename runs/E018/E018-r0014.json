@@ -49,7 +49,7 @@
       "step": 0,
       "source": "screen",
       "field": "reading method",
-      "value": "the left panel's moving message and the right panel's \"moving from N to M\" line were detected by template match and read for the pair (glyph shapes, no OCR); counters on the map were read before and 0.7 s after, as for the human moves in E018-r0012. Added as a record of its own after E018-r0013 was written."
+      "value": "the left panel's moving message and the right panel's the pair of countries named line were detected by template match and read for the pair (glyph shapes, no OCR); counters on the map were read before and 0.7 s after, as for the human moves in E018-r0012. Added as a record of its own after E018-r0013 was written."
     },
     {
       "step": 1,

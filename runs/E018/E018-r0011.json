@@ -49,7 +49,7 @@
       "step": 0,
       "source": "screen",
       "field": "reading method",
-      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message (\"<seat> has N islands. Placing M armies\") read for the army pool. Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them. The same readers as for IP1 027 (E018-r0007)."
+      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message (the seat, its number of islands, the armies to place) read for the army pool. Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them. The same readers as for IP1 027 (E018-r0007)."
     },
     {
       "step": 0,
@@ -541,13 +541,13 @@
       "step": 0,
       "source": "screen",
       "field": "human trade-in 1, turn 27, the trade-in offer from 05:40.3 to 05:49.9",
-      "value": "the hand held three cards, two +8 cards and a wildcard; the offer was two buttons in the middle panel (trade in, do not trade in) with a text asking to click three matching cards; the owner clicked the three cards one after another (borders at 05:45.0, 05:46.5 and 05:48.0 on the first, second and third), the trade-in button brightened at 05:48.0, and the offer closed at 05:50.0; the placement message then read \"1 island, place 16 armies\" (the pool before the trade-in was 8 at 05:39.2, 8 plus 8 extra armies made 16); cards 3 to 0 (05:48.9). Set: two +8 cards and a wildcard. The owner did not decline."
+      "value": "the hand held three cards, two +8 cards and a wildcard; the offer was two buttons in the middle panel (trade in, do not trade in) with a text asking to click three matching cards; the owner clicked the three cards one after another (borders at 05:45.0, 05:46.5 and 05:48.0 on the first, second and third), the trade-in button brightened at 05:48.0, and the offer closed at 05:50.0; the placement message then read the pool message (1 islands, 16 armies) (the pool before the trade-in was 8 at 05:39.2, 8 plus 8 extra armies made 16); cards 3 to 0 (05:48.9). Set: two +8 cards and a wildcard. The owner did not decline."
     },
     {
       "step": 0,
       "source": "screen",
       "field": "human trade-in 2, turn 41, the offer from 13:09.2 to 13:38.9",
-      "value": "the hand held four cards, the bomb card, a doubling card and two wildcards (count 4 at the turn start); the offer was read from 13:09.2; the owner waited about 22 s (the pool message \"4 islands, place 21 armies\" stayed), then clicked the bomb card (border at 13:31.5) and the two wildcards (13:34.0 and 13:36.5), pressed trade in at 13:38.9, left the doubling card in the hand (hand count 4 to 1), and the middle panel asked to click on a country to bomb (13:39.0); the owner clicked country 8 (yellow, 9 armies) and the panel read the country as the one being bombed (13:42.0); afterwards the pool was still 21 (13:44.0) and the country read 4 armies (13:45.0 to the end of the turn): the country went from 9 armies to 4, which is within 1 to half of 9 (4), a replacement by a draw, not a fixed loss. Set: bomb plus two wildcards (a mixed set with two wildcards). No offer was declined."
+      "value": "the hand held four cards, the bomb card, a doubling card and two wildcards (count 4 at the turn start); the offer was read from 13:09.2; the owner waited about 22 s (the pool message the pool message (4 islands, 21 armies) stayed), then clicked the bomb card (border at 13:31.5) and the two wildcards (13:34.0 and 13:36.5), pressed trade in at 13:38.9, left the doubling card in the hand (hand count 4 to 1), and the middle panel asked to click on a country to bomb (13:39.0); the owner clicked country 8 (yellow, 9 armies) and the panel read the country as the one being bombed (13:42.0); afterwards the pool was still 21 (13:44.0) and the country read 4 armies (13:45.0 to the end of the turn): the country went from 9 armies to 4, which is within 1 to half of 9 (4), a replacement by a draw, not a fixed loss. Set: bomb plus two wildcards (a mixed set with two wildcards). No offer was declined."
     },
     {
       "step": 0,
@@ -559,7 +559,7 @@
       "step": 0,
       "source": "screen",
       "field": "computer trade-ins",
-      "value": "yellow turn 24: cards 4 to 1 at 05:14.0, message \"8 extra armies\" (05:14.2), pool message \"2 islands, place 19 armies\" (05:17.0); yellow turn 36: cards 4 to 1 at 11:44.3, message for bombing a country (11:46.0 to 11:50.0), pool 16 unchanged (\"3 islands, placing 16 armies\" at 11:43.8); country 43 (blue, 3 armies) read 1 after the bomb (within 1 to half of 3, floored at 1), with the other changes in that window being the placement of the pool (country 3 plus 14, country 9 plus 1, country 13 plus 1)"
+      "value": "yellow turn 24: cards 4 to 1 at 05:14.0, message naming 8 extra armies (05:14.2), pool message the pool message (2 islands, 19 armies) (05:17.0); yellow turn 36: cards 4 to 1 at 11:44.3, message for bombing a country (11:46.0 to 11:50.0), pool 16 unchanged (the pool message (3 islands, 16 armies) at 11:43.8); country 43 (blue, 3 armies) read 1 after the bomb (within 1 to half of 3, floored at 1), with the other changes in that window being the placement of the pool (country 3 plus 14, country 9 plus 1, country 13 plus 1)"
     },
     {
       "step": 0,
