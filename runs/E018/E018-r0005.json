@@ -1,0 +1,333 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0005",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 3,
+  "code_commit": "029e4ef",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@029e4ef",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 18456 video frames in 1039.57 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (17:20 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts before the options screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "0591d9595aac9603d66ed7c54c289005f22ec8d9ab4af631ab2a75e08f651c1a",
+    "args": [
+      "video file name: IP1 026.mp4",
+      "video sha256: 0591d9595aac9603d66ed7c54c289005f22ec8d9ab4af631ab2a75e08f651c1a",
+      "probe: 1039.57 s, 18456 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 119613032 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: options screen, opening deal, human move-ins and the move, computer moves, the end of the game"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen at video offset 00:15.000",
+      "ref": "sha256:ae4c58272d43a270209fbfc1d86949cfb7ad547b005de48ae9bf873816df76de"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen, controls read by role",
+      "value": "five option groups (starting armies with five entries, seat toggles for four seats, a strength group with three entries, an event-frequency group with four entries, a speed group with three entries) plus a sound icon, a save-as-default button and a play button; seat row shows one human then three computers; highlighted entries: armies 3, the middle strength, the middle frequency, the middle speed"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "opening deal and centres banner at video offset 00:23.000",
+      "ref": "sha256:4e94d19ebc2c1af7c0b438b2a5a326c3120db4245fe5922aa22570f2ff67e945"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "opening position, read from the board",
+      "value": "territory counts blue/yellow/red/green 9/13/10/14 (sum 46); every country shows 1, 2 or 3 armies; first seat to play is the yellow seat; a production-centre message box shows at the start"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "human capture move-in after attack 5 (country 3 to country 2), capture at video offset 01:04.767",
+      "value": "attacker had 4 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 3; total conserved"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "human capture move-in after attack 10 (country 42 to country 41), capture at video offset 01:60.000",
+      "value": "attacker had 5 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 4; total conserved"
+    },
+    {
+      "step": 19,
+      "source": "screen",
+      "field": "human capture move-in after attack 19 (country 39 to country 37), capture at video offset 03:17.767",
+      "value": "attacker had 2 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 1; total conserved"
+    },
+    {
+      "step": 26,
+      "source": "screen",
+      "field": "human capture move-in after attack 26 (country 42 to country 40), capture at video offset 04:07.200",
+      "value": "attacker had 5 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 4; total conserved"
+    },
+    {
+      "step": 33,
+      "source": "screen",
+      "field": "human capture move-in after attack 33 (country 39 to country 37), capture at video offset 05:03.600",
+      "value": "attacker had 5 armies at the capture; counter started at 1 (target country showed 0 before); moved in 4; attacker country keeps 1; total conserved"
+    },
+    {
+      "step": 44,
+      "source": "screen",
+      "field": "human capture move-in after attack 44 (country 37 to country 38), capture at video offset 08:33.900",
+      "value": "attacker had 7 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 6; total conserved"
+    },
+    {
+      "step": 53,
+      "source": "screen",
+      "field": "human capture move-in after attack 53 (country 2 to country 3), capture at video offset 09:44.500",
+      "value": "attacker had 3 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 2; total conserved"
+    },
+    {
+      "step": 67,
+      "source": "screen",
+      "field": "human capture move-in after attack 67 (country 3 to country 5), capture at video offset 11:53.733",
+      "value": "attacker had 3 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 2; total conserved"
+    },
+    {
+      "step": 73,
+      "source": "screen",
+      "field": "human capture move-in after attack 73 (country 5 to country 6), capture at video offset 12:40.033",
+      "value": "attacker had 5 armies at the capture; counter started at 1 (target country showed 0 before); moved in 1; attacker country keeps 4; total conserved"
+    },
+    {
+      "step": 84,
+      "source": "screen",
+      "field": "human capture move-in after attack 84 (country 1 to country 13), capture at video offset 14:09.100",
+      "value": "attacker had 7 armies at the capture; counter started at 1 (target country showed 0 before); moved in 6; attacker country keeps 1; total conserved"
+    },
+    {
+      "step": 91,
+      "source": "screen",
+      "field": "human capture move-in after attack 91 (country 13 to country 11), capture at video offset 15:00.167",
+      "value": "attacker had 10 armies at the capture; counter started at 1 (target country showed 0 before); moved in 9; attacker country keeps 1; total conserved"
+    },
+    {
+      "step": 92,
+      "source": "screen",
+      "field": "human capture move-in after attack 92 (country 11 to country 9), capture at video offset 15:10.533",
+      "value": "attacker had 9 armies at the capture; counter started at 1 (target country showed 0 before); moved in 3; attacker country keeps 6; total conserved"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move-in counter at its start value 1, video offset 02:00.400",
+      "ref": "sha256:7cfbd723009aeff1bd3af881da35dcce2124d08c55ec8241e44aece98f098518"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move-in counter at 6 with 7 in the attacker, video offset 14:12.100",
+      "ref": "sha256:eba621033dcc20f3079bfb081d0eeff46d882ce5f65bcb41b9c30fea7de2074a"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move-in counter at 9 with 10 in the attacker, video offset 15:03.200",
+      "ref": "sha256:c3b3064167d87ab62e49c23bb6dd0413ac6bf52f5493f17f140a780c479a2d9e"
+    },
+    {
+      "step": 48,
+      "source": "screen",
+      "field": "human move at turn 48, video offsets 15:30.5 to 15:35.0 (source and destination chosen on the board, then a count)",
+      "value": "country 11 held 6, country 13 held 1 (adjacent); after the move 11 holds 1 and 13 holds 6, so 5 moved (all but one); the yellow seat's turn start follows 1.3 s after the move; one move in the turn; no attack after it"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 4 to country 5 at video offset 01:19.000",
+      "value": "source 3 before, 1 after; destination 1 before, 3 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 25 to country 24 at video offset 01:33.000",
+      "value": "source 4 before, 1 after; destination 3 before, 6 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 11 to country 9 at video offset 05:37.200",
+      "value": "source 3 before, 1 after; destination 3 before, 5 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 41 to country 43 at video offset 06:03.400",
+      "value": "source 10 before, 1 after; destination 3 before, 12 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 39 to country 38 at video offset 10:42.400",
+      "value": "source 14 before, 1 after; destination 3 before, 16 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 16 to country 15 at video offset 11:26.700",
+      "value": "source 3 before, 1 after; destination 2 before, 4 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move from country 4 to country 5 at video offset 12:57.400",
+      "value": "source 4 before, 1 after; destination 4 before, 7 after; adjacent: True; source in the 23-country list: False; destination in the list: True"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer end-of-turn move at video offset 01:20.2",
+      "ref": "sha256:ded1baad7f9749438a02ca079092719e041e229cb3f21006bfbb597e22ccb68e"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move scan",
+      "value": "7 computer move messages in 42 computer turns, none twice in one turn; each came after that seat's last attack"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "attacks launched from a country captured earlier in the same turn",
+      "value": "29 attacks (attack, turn, seat, country): 22, 14, Red, 18; 31, 19, Green, 35; 32, 19, Green, 36; 40, 23, Green, 42; 41, 23, Green, 39; 42, 23, Green, 39; 43, 23, Green, 40; 47, 25, Yellow, 14; 48, 25, Yellow, 46; 51, 27, Green, 8; 55, 29, Yellow, 6; 63, 34, Red, 18; 65, 35, Green, 22; 66, 35, Green, 19; 70, 39, Green, 21; 72, 39, Green, 20; 79, 43, Green, 15; 80, 43, Green, 14; 81, 43, Green, 18; 82, 43, Green, 17; 90, 47, Green, 9; 92, 48, Blue, 11; 98, 51, Green, 23; 99, 51, Green, 45; 106, 55, Green, 8; 108, 55, Green, 6; 109, 55, Green, 5; 110, 55, Green, 3; 111, 55, Green, 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human attack screen, own country chosen as a target at video offset 05:22.4",
+      "value": "a refusal message appeared (a selection of the human's own seat was refused); the next attack started at 05:24.5"
+    },
+    {
+      "step": 28,
+      "source": "screen",
+      "field": "human placement controls at turn 28, video offsets 09:35.4 to 09:38.5",
+      "value": "a prompt to click a country, then a counter starting at 0 with an all button, plus and minus buttons and a place button; the pool message counts down"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "blue seat eliminated at video offset 17:03.0",
+      "ref": "sha256:3bca502fe64f1f2f84dfa0bbeee16b8ada48e88693baa0a15aa46a7f70a7d5d1"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "elimination prompt at video offset 17:05.0 (two buttons: accept the loss, keep playing)",
+      "ref": "sha256:f0ecab186c1219d51f4a98140da93f6b8c709b9a9fb12c4ac5d347bf9cdfc86c"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "keep-playing button changed state at video offsets 17:04.0 and 17:07.4",
+      "value": "the button highlighted at 17:07.4, about 3 s after the prompt appeared; the screen after it shows a stop-playing control; the click itself is not visible"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "play-out after the prompt at video offset 17:09.3",
+      "ref": "sha256:65d2a8d2e6239fa8fdedf640b262c4092f6f881a6e25db1697f89f857d3d1865"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "play-out duration",
+      "value": "territory counts yellow 6, red 1, green 39 at 17:09.2; green 46 at 17:09.6; the remaining conquests ran in under 0.5 s with no per-attack animation"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "end screen at video offset 17:10.2",
+      "ref": "sha256:80279c5911cc06784ffb889793e1214a0976e16bf23b9313e3845b1ab86091b0"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "options-screen.png",
+      "sha256": "ae4c58272d43a270209fbfc1d86949cfb7ad547b005de48ae9bf873816df76de",
+      "store": "release:E018"
+    },
+    {
+      "name": "opening-deal-and-centres.png",
+      "sha256": "4e94d19ebc2c1af7c0b438b2a5a326c3120db4245fe5922aa22570f2ff67e945",
+      "store": "release:E018"
+    },
+    {
+      "name": "movein-counter-1-default.png",
+      "sha256": "7cfbd723009aeff1bd3af881da35dcce2124d08c55ec8241e44aece98f098518",
+      "store": "release:E018"
+    },
+    {
+      "name": "movein-counter-6-of-7.png",
+      "sha256": "eba621033dcc20f3079bfb081d0eeff46d882ce5f65bcb41b9c30fea7de2074a",
+      "store": "release:E018"
+    },
+    {
+      "name": "movein-counter-9-of-10.png",
+      "sha256": "c3b3064167d87ab62e49c23bb6dd0413ac6bf52f5493f17f140a780c479a2d9e",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-move-turn-end.png",
+      "sha256": "ded1baad7f9749438a02ca079092719e041e229cb3f21006bfbb597e22ccb68e",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-defeated.png",
+      "sha256": "3bca502fe64f1f2f84dfa0bbeee16b8ada48e88693baa0a15aa46a7f70a7d5d1",
+      "store": "release:E018"
+    },
+    {
+      "name": "elimination-prompt.png",
+      "sha256": "f0ecab186c1219d51f4a98140da93f6b8c709b9a9fb12c4ac5d347bf9cdfc86c",
+      "store": "release:E018"
+    },
+    {
+      "name": "prompt-ignored-play-out.png",
+      "sha256": "65d2a8d2e6239fa8fdedf640b262c4092f6f881a6e25db1697f89f857d3d1865",
+      "store": "release:E018"
+    },
+    {
+      "name": "green-winner.png",
+      "sha256": "80279c5911cc06784ffb889793e1214a0976e16bf23b9313e3845b1ab86091b0",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-10T08:06:04Z",
+  "ended": "2026-10-10T08:23:24Z",
+  "status": "completed"
+}

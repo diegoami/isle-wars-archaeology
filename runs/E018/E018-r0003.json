@@ -1,0 +1,832 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0003",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "029e4ef",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@029e4ef",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 18456 video frames in 1039.57 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (17:20 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts before the options screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "0591d9595aac9603d66ed7c54c289005f22ec8d9ab4af631ab2a75e08f651c1a",
+    "args": [
+      "video file name: IP1 026.mp4",
+      "video sha256: 0591d9595aac9603d66ed7c54c289005f22ec8d9ab4af631ab2a75e08f651c1a",
+      "probe: 1039.57 s, 18456 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 119613032 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the 111 attacks of the game (17 human, 94 computer) with their counter states, endings and capture splits"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "file",
+      "field": "video container probe",
+      "value": "duration 1039.567 s; 18456 video frames; frame timestamps irregular (largest gap 0.133 s); 1920x1080 H.264; AAC 48 kHz stereo; 119613032 bytes; creation tag 2026-10-10T08:06:04Z"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "reading method",
+      "value": "counter panel (bottom message strip) sampled at every frame where it changed (933 states); attack states are the attacker/defender counters it shows; a capture's last exchange is inferred (defender 1 to 0); split and move-in counts read from the two country counters after the capture; no OCR"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "attack 1 (computer, Yellow seat, turn 1): country 4 attacks country 5; video offset 00:30.167 to 00:30.933",
+      "value": "counters before the first exchange 7/3; observed states (attacker/defender) 7/2 6/2 6/1 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "attack 2 (computer, Red seat, turn 2): country 46 attacks country 44; video offset 00:36.567 to 00:37.300",
+      "value": "counters before the first exchange 6/3; observed states (attacker/defender) 6/2 6/1 5/1 4/1 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "attack 3 (computer, Green seat, turn 3): country 25 attacks country 26; video offset 00:42.200 to 00:42.733",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 6/1 5/1 4/1 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "attack 4 (computer, Green seat, turn 3): country 20 attacks country 21; video offset 00:43.433 to 00:43.667",
+      "value": "counters before the first exchange 3/2; observed states (attacker/defender) 3/1 2/1; ended without capture by the computer stopping; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "attack 5 (human, Blue seat, turn 4): country 3 attacks country 2; video offset 01:01.833 to 01:03.600",
+      "value": "counters before the first exchange 6/1; observed states (attacker/defender) 6/1 5/1 4/1; capture; human move-in 1, attacker country keeps 3"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "attack 6 (computer, Yellow seat, turn 5): country 7 attacks country 6; video offset 01:16.967 to 01:17.667",
+      "value": "counters before the first exchange 7/3; observed states (attacker/defender) 7/2 7/1 6/1 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "attack 7 (computer, Red seat, turn 6): country 22 attacks country 20; video offset 01:25.033 to 01:25.033",
+      "value": "counters before the first exchange 3/2; observed states (attacker/defender) 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "attack 8 (computer, Red seat, turn 6): country 46 attacks country 44; video offset 01:25.700 to 01:25.700",
+      "value": "counters before the first exchange 6/1; observed states (attacker/defender) 5/1; capture; computer split: attacker country keeps 3, captured country gets 2"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "attack 9 (computer, Green seat, turn 7): country 25 attacks country 26; video offset 01:31.833 to 01:31.833",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 7/1; capture; computer split: attacker country keeps 4, captured country gets 3"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "attack 10 (human, Blue seat, turn 8): country 42 attacks country 41; video offset 01:58.500 to 01:59.700",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 7/1 6/1 5/1; capture; human move-in 1, attacker country keeps 4"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "attack 11 (human, Blue seat, turn 8): country 42 attacks country 43; video offset 02:16.633 to 02:18.067",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 4/1 3/1 2/1; ended without capture by the human quitting the battle; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "attack 12 (computer, Yellow seat, turn 9): country 32 attacks country 31; video offset 02:29.467 to 02:31.233",
+      "value": "counters before the first exchange 11/3; observed states (attacker/defender) 10/3 9/3 9/2 8/2 7/2 7/1 6/1 5/1 4/1 3/1 2/1; ended without capture by the computer stopping; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "attack 13 (computer, Yellow seat, turn 9): country 17 attacks country 18; video offset 02:31.833 to 02:31.833",
+      "value": "counters before the first exchange 3/1; observed states (attacker/defender) 2/1; ended without capture by the computer stopping; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "attack 14 (computer, Red seat, turn 10): country 14 attacks country 15; video offset 02:36.933 to 02:37.067",
+      "value": "counters before the first exchange 5/2; observed states (attacker/defender) 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "attack 15 (computer, Red seat, turn 10): country 22 attacks country 23; video offset 02:38.900 to 02:39.300",
+      "value": "counters before the first exchange 6/3; observed states (attacker/defender) 6/3 6/2 5/2 5/1; capture; computer split: attacker country keeps 1, captured country gets 4"
+    },
+    {
+      "step": 16,
+      "source": "screen",
+      "field": "attack 16 (computer, Green seat, turn 11): country 27 attacks country 28; video offset 02:46.333 to 02:46.333",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 17,
+      "source": "screen",
+      "field": "attack 17 (computer, Green seat, turn 11): country 30 attacks country 32; video offset 02:47.967 to 02:48.100",
+      "value": "counters before the first exchange 5/2; observed states (attacker/defender) 4/2 4/1; capture; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 18,
+      "source": "screen",
+      "field": "attack 18 (computer, Green seat, turn 11): country 24 attacks country 23; video offset 02:49.900 to 02:50.433",
+      "value": "counters before the first exchange 7/4; observed states (attacker/defender) 7/3 6/3 6/2 6/1; capture; computer split: attacker country keeps 3, captured country gets 3"
+    },
+    {
+      "step": 19,
+      "source": "screen",
+      "field": "attack 19 (human, Blue seat, turn 12): country 39 attacks country 37; video offset 03:03.733 to 03:16.967",
+      "value": "counters before the first exchange 6/1; observed states (attacker/defender) 6/1 5/1 4/1 3/1 2/1 2/1; capture; human move-in 1, attacker country keeps 1"
+    },
+    {
+      "step": 20,
+      "source": "screen",
+      "field": "attack 20 (computer, Yellow seat, turn 13): country 12 attacks country 11; video offset 03:35.467 to 03:36.233",
+      "value": "counters before the first exchange 10/2; observed states (attacker/defender) 9/2 8/2 8/1 7/1 6/1; capture; computer split: attacker country keeps 3, captured country gets 3"
+    },
+    {
+      "step": 21,
+      "source": "screen",
+      "field": "attack 21 (computer, Red seat, turn 14): country 19 attacks country 18; video offset 03:42.400 to 03:42.400",
+      "value": "counters before the first exchange 6/1; observed states (attacker/defender) 6/1; capture; computer split: attacker country keeps 2, captured country gets 4"
+    },
+    {
+      "step": 22,
+      "source": "screen",
+      "field": "attack 22 (computer, Red seat, turn 14): country 18 attacks country 17; video offset 03:43.967 to 03:43.967",
+      "value": "counters before the first exchange 4/2; observed states (attacker/defender) 4/1; capture; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 23,
+      "source": "screen",
+      "field": "attack 23 (computer, Green seat, turn 15): country 32 attacks country 33; video offset 03:50.833 to 03:51.233",
+      "value": "counters before the first exchange 5/2; observed states (attacker/defender) 4/2 4/1 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 24,
+      "source": "screen",
+      "field": "attack 24 (computer, Green seat, turn 15): country 31 attacks country 33; video offset 03:51.867 to 03:52.100",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 3/1 2/1; ended without capture by the computer stopping; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 25,
+      "source": "screen",
+      "field": "attack 25 (computer, Green seat, turn 15): country 24 attacks country 33; video offset 03:52.667 to 03:52.667",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 26,
+      "source": "screen",
+      "field": "attack 26 (human, Blue seat, turn 16): country 42 attacks country 40; video offset 04:05.033 to 04:06.500",
+      "value": "counters before the first exchange 6/2; observed states (attacker/defender) 6/2 6/1 5/1; capture; human move-in 1, attacker country keeps 4"
+    },
+    {
+      "step": 27,
+      "source": "screen",
+      "field": "attack 27 (human, Blue seat, turn 16): country 42 attacks country 43; video offset 04:13.667 to 04:14.400",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 4/1 3/1; ended without capture by the human quitting the battle; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 28,
+      "source": "screen",
+      "field": "attack 28 (computer, Yellow seat, turn 17): country 12 attacks country 10; video offset 04:28.500 to 04:29.367",
+      "value": "counters before the first exchange 6/3; observed states (attacker/defender) 5/3 5/2 4/2 3/2 3/1 2/1; ended without capture by the computer stopping; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 29,
+      "source": "screen",
+      "field": "attack 29 (computer, Yellow seat, turn 17): country 11 attacks country 10; video offset 04:30.000 to 04:30.000",
+      "value": "counters before the first exchange 5/1; observed states (attacker/defender) 5/1; capture; computer split: attacker country keeps 3, captured country gets 2"
+    },
+    {
+      "step": 30,
+      "source": "screen",
+      "field": "attack 30 (computer, Green seat, turn 19): country 34 attacks country 35; video offset 04:41.000 to 04:41.000",
+      "value": "counters before the first exchange 11/2; observed states (attacker/defender) 11/1; capture; computer split: attacker country keeps 3, captured country gets 8"
+    },
+    {
+      "step": 31,
+      "source": "screen",
+      "field": "attack 31 (computer, Green seat, turn 19): country 35 attacks country 36; video offset 04:42.867 to 04:43.200",
+      "value": "counters before the first exchange 8/2; observed states (attacker/defender) 8/1 7/1 6/1; capture; computer split: attacker country keeps 1, captured country gets 5"
+    },
+    {
+      "step": 32,
+      "source": "screen",
+      "field": "attack 32 (computer, Green seat, turn 19): country 36 attacks country 37; video offset 04:45.100 to 04:45.100",
+      "value": "counters before the first exchange 5/1; observed states (attacker/defender) 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 33,
+      "source": "screen",
+      "field": "attack 33 (human, Blue seat, turn 20): country 39 attacks country 37; video offset 05:02.867 to 05:02.867",
+      "value": "counters before the first exchange 5/1; observed states (attacker/defender) 5/1; capture; human move-in 4, attacker country keeps 1"
+    },
+    {
+      "step": 34,
+      "source": "screen",
+      "field": "attack 34 (human, Blue seat, turn 20): country 42 attacks country 43; video offset 05:24.533 to 05:25.433",
+      "value": "counters before the first exchange 3/1; observed states (attacker/defender) 3/1 2/1; ended without capture by the human quitting the battle; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 35,
+      "source": "screen",
+      "field": "attack 35 (computer, Yellow seat, turn 21): country 10 attacks country 9; video offset 05:34.767 to 05:35.867",
+      "value": "counters before the first exchange 9/3; observed states (attacker/defender) 9/2 8/2 7/2 6/2 5/2 4/2 4/1; capture; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 36,
+      "source": "screen",
+      "field": "attack 36 (computer, Red seat, turn 22): country 15 attacks country 16; video offset 05:43.267 to 05:43.267",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 6/1; capture; computer split: attacker country keeps 3, captured country gets 3"
+    },
+    {
+      "step": 37,
+      "source": "screen",
+      "field": "attack 37 (computer, Red seat, turn 22): country 22 attacks country 20; video offset 05:45.033 to 05:45.033",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 38,
+      "source": "screen",
+      "field": "attack 38 (computer, Red seat, turn 22): country 17 attacks country 20; video offset 05:45.633 to 05:45.633",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 6/1; capture; computer split: attacker country keeps 5, captured country gets 1"
+    },
+    {
+      "step": 39,
+      "source": "screen",
+      "field": "attack 39 (computer, Green seat, turn 23): country 43 attacks country 42; video offset 05:54.267 to 05:54.733",
+      "value": "counters before the first exchange 29/2; observed states (attacker/defender) 29/1 28/1 27/1 26/1; capture; computer split: attacker country keeps 3, captured country gets 23"
+    },
+    {
+      "step": 40,
+      "source": "screen",
+      "field": "attack 40 (computer, Green seat, turn 23): country 42 attacks country 39; video offset 05:56.567 to 05:56.900",
+      "value": "counters before the first exchange 23/1; observed states (attacker/defender) 22/1 21/1 20/1; capture; computer split: attacker country keeps 1, captured country gets 19"
+    },
+    {
+      "step": 41,
+      "source": "screen",
+      "field": "attack 41 (computer, Green seat, turn 23): country 39 attacks country 40; video offset 05:58.867 to 05:58.867",
+      "value": "counters before the first exchange 19/1; observed states (attacker/defender) 18/1; capture; computer split: attacker country keeps 4, captured country gets 14"
+    },
+    {
+      "step": 42,
+      "source": "screen",
+      "field": "attack 42 (computer, Green seat, turn 23): country 39 attacks country 38; video offset 06:00.667 to 06:00.667",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 43,
+      "source": "screen",
+      "field": "attack 43 (computer, Green seat, turn 23): country 40 attacks country 41; video offset 06:02.267 to 06:02.267",
+      "value": "counters before the first exchange 14/1; observed states (attacker/defender) 14/1; capture; computer split: attacker country keeps 4, captured country gets 10"
+    },
+    {
+      "step": 44,
+      "source": "screen",
+      "field": "attack 44 (human, Blue seat, turn 24): country 37 attacks country 38; video offset 08:32.567 to 08:33.400",
+      "value": "counters before the first exchange 8/1; observed states (attacker/defender) 8/1 7/1; capture; human move-in 1, attacker country keeps 6"
+    },
+    {
+      "step": 45,
+      "source": "screen",
+      "field": "attack 45 (computer, Yellow seat, turn 25): country 5 attacks country 3; video offset 09:05.233 to 09:05.400",
+      "value": "counters before the first exchange 4/3; observed states (attacker/defender) 4/2 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 46,
+      "source": "screen",
+      "field": "attack 46 (computer, Yellow seat, turn 25): country 9 attacks country 14; video offset 09:07.267 to 09:07.833",
+      "value": "counters before the first exchange 18/3; observed states (attacker/defender) 18/3 18/2 17/2 16/2 16/1; capture; computer split: attacker country keeps 3, captured country gets 13"
+    },
+    {
+      "step": 47,
+      "source": "screen",
+      "field": "attack 47 (computer, Yellow seat, turn 25): country 14 attacks country 46; video offset 09:09.667 to 09:10.200",
+      "value": "counters before the first exchange 13/3; observed states (attacker/defender) 12/3 12/2 11/2 11/1; capture; computer split: attacker country keeps 3, captured country gets 8"
+    },
+    {
+      "step": 48,
+      "source": "screen",
+      "field": "attack 48 (computer, Yellow seat, turn 25): country 46 attacks country 45; video offset 09:11.967 to 09:13.000",
+      "value": "counters before the first exchange 8/4; observed states (attacker/defender) 7/4 7/3 7/2 6/2 5/2 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 49,
+      "source": "screen",
+      "field": "attack 49 (computer, Red seat, turn 26): country 44 attacks country 45; video offset 09:18.500 to 09:18.500",
+      "value": "counters before the first exchange 5/1; observed states (attacker/defender) 5/1; capture; computer split: attacker country keeps 4, captured country gets 1"
+    },
+    {
+      "step": 50,
+      "source": "screen",
+      "field": "attack 50 (computer, Green seat, turn 27): country 43 attacks country 8; video offset 09:24.667 to 09:25.433",
+      "value": "counters before the first exchange 12/5; observed states (attacker/defender) 12/4 12/3 12/2 12/1 11/1; capture; computer split: attacker country keeps 4, captured country gets 7"
+    },
+    {
+      "step": 51,
+      "source": "screen",
+      "field": "attack 51 (computer, Green seat, turn 27): country 8 attacks country 6; video offset 09:27.233 to 09:27.633",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 6/1 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 52,
+      "source": "screen",
+      "field": "attack 52 (computer, Green seat, turn 27): country 40 attacks country 37; video offset 09:29.367 to 09:31.200",
+      "value": "counters before the first exchange 16/6; observed states (attacker/defender) 15/6 15/5 14/5 14/4 13/4 12/4 11/4 11/3 10/3 10/2 10/1; capture; computer split: attacker country keeps 1, captured country gets 9"
+    },
+    {
+      "step": 53,
+      "source": "screen",
+      "field": "attack 53 (human, Blue seat, turn 28): country 2 attacks country 3; video offset 09:43.633 to 09:43.633",
+      "value": "counters before the first exchange 3/1; observed states (attacker/defender) 3/1; capture; human move-in 1, attacker country keeps 2"
+    },
+    {
+      "step": 54,
+      "source": "screen",
+      "field": "attack 54 (computer, Yellow seat, turn 29): country 4 attacks country 6; video offset 10:20.200 to 10:20.200",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 6/1; capture; computer split: attacker country keeps 1, captured country gets 5"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "attack 55 (computer, Yellow seat, turn 29): country 6 attacks country 8; video offset 10:22.033 to 10:22.400",
+      "value": "counters before the first exchange 5/3; observed states (attacker/defender) 5/2 4/2 4/1; capture; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 56,
+      "source": "screen",
+      "field": "attack 56 (computer, Red seat, turn 30): country 44 attacks country 46; video offset 10:35.067 to 10:35.233",
+      "value": "counters before the first exchange 7/3; observed states (attacker/defender) 7/2 7/1; capture; computer split: attacker country keeps 4, captured country gets 3"
+    },
+    {
+      "step": 57,
+      "source": "screen",
+      "field": "attack 57 (computer, Green seat, turn 31): country 39 attacks country 38; video offset 10:41.233 to 10:41.233",
+      "value": "counters before the first exchange 17/1; observed states (attacker/defender) 17/1; capture; computer split: attacker country keeps 14, captured country gets 3"
+    },
+    {
+      "step": 58,
+      "source": "screen",
+      "field": "attack 58 (human, Blue seat, turn 32): country 3 attacks country 5; video offset 10:56.633 to 11:05.900",
+      "value": "counters before the first exchange 5/3; observed states (attacker/defender) 5/3 4/3 3/3 3/3 2/3; ended without capture by the human quitting the battle; attacker 2 defender 3 at the end"
+    },
+    {
+      "step": 59,
+      "source": "screen",
+      "field": "attack 59 (computer, Yellow seat, turn 33): country 14 attacks country 18; video offset 11:14.233 to 11:14.600",
+      "value": "counters before the first exchange 11/1; observed states (attacker/defender) 10/1 9/1 8/1; capture; computer split: attacker country keeps 3, captured country gets 5"
+    },
+    {
+      "step": 60,
+      "source": "screen",
+      "field": "attack 60 (computer, Yellow seat, turn 33): country 13 attacks country 15; video offset 11:16.533 to 11:16.733",
+      "value": "counters before the first exchange 5/3; observed states (attacker/defender) 4/3 3/3; ended without capture by the computer stopping; attacker 3 defender 3 at the end"
+    },
+    {
+      "step": 61,
+      "source": "screen",
+      "field": "attack 61 (computer, Red seat, turn 34): country 15 attacks country 14; video offset 11:21.900 to 11:22.400",
+      "value": "counters before the first exchange 6/3; observed states (attacker/defender) 5/3 4/3 3/3 2/3; ended without capture by the computer stopping; attacker 2 defender 3 at the end"
+    },
+    {
+      "step": 62,
+      "source": "screen",
+      "field": "attack 62 (computer, Red seat, turn 34): country 17 attacks country 18; video offset 11:23.033 to 11:24.300",
+      "value": "counters before the first exchange 11/5; observed states (attacker/defender) 10/5 10/4 10/3 10/2 10/1 9/1 8/1 7/1; capture; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 63,
+      "source": "screen",
+      "field": "attack 63 (computer, Red seat, turn 34): country 18 attacks country 14; video offset 11:26.100 to 11:26.433",
+      "value": "counters before the first exchange 4/3; observed states (attacker/defender) 4/3 4/2 3/2 3/1; ended without capture, then the computer move; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 64,
+      "source": "screen",
+      "field": "attack 64 (computer, Green seat, turn 35): country 23 attacks country 22; video offset 11:32.667 to 11:33.433",
+      "value": "counters before the first exchange 24/3; observed states (attacker/defender) 23/3 22/3 22/2 22/1 21/1; capture; computer split: attacker country keeps 3, captured country gets 18"
+    },
+    {
+      "step": 65,
+      "source": "screen",
+      "field": "attack 65 (computer, Green seat, turn 35): country 22 attacks country 19; video offset 11:35.233 to 11:36.700",
+      "value": "counters before the first exchange 18/2; observed states (attacker/defender) 17/2 16/2 15/2 14/2 13/2 12/2 11/2 10/2 10/1; capture; computer split: attacker country keeps 1, captured country gets 9"
+    },
+    {
+      "step": 66,
+      "source": "screen",
+      "field": "attack 66 (computer, Green seat, turn 35): country 19 attacks country 17; video offset 11:38.533 to 11:39.633",
+      "value": "counters before the first exchange 9/3; observed states (attacker/defender) 8/3 7/3 6/3 5/3 4/3 4/2 3/2; ended without capture by the computer stopping; attacker 3 defender 2 at the end"
+    },
+    {
+      "step": 67,
+      "source": "screen",
+      "field": "attack 67 (human, Blue seat, turn 36): country 3 attacks country 5; video offset 11:51.400 to 11:52.900",
+      "value": "counters before the first exchange 6/3; observed states (attacker/defender) 6/3 5/3 5/2 4/2 4/1 3/1; capture; human move-in 1, attacker country keeps 2"
+    },
+    {
+      "step": 68,
+      "source": "screen",
+      "field": "attack 68 (computer, Red seat, turn 38): country 20 attacks country 19; video offset 12:12.833 to 12:13.800",
+      "value": "counters before the first exchange 7/3; observed states (attacker/defender) 7/3 6/3 5/3 4/3 3/3 3/2 3/1; capture; computer split: attacker country keeps 1, captured country gets 2"
+    },
+    {
+      "step": 69,
+      "source": "screen",
+      "field": "attack 69 (computer, Green seat, turn 39): country 22 attacks country 21; video offset 12:20.267 to 12:20.267",
+      "value": "counters before the first exchange 17/1; observed states (attacker/defender) 17/1; capture; computer split: attacker country keeps 2, captured country gets 15"
+    },
+    {
+      "step": 70,
+      "source": "screen",
+      "field": "attack 70 (computer, Green seat, turn 39): country 21 attacks country 20; video offset 12:21.900 to 12:21.900",
+      "value": "counters before the first exchange 15/1; observed states (attacker/defender) 15/1; capture; computer split: attacker country keeps 1, captured country gets 14"
+    },
+    {
+      "step": 71,
+      "source": "screen",
+      "field": "attack 71 (computer, Green seat, turn 39): country 43 attacks country 8; video offset 12:23.633 to 12:24.500",
+      "value": "counters before the first exchange 7/5; observed states (attacker/defender) 6/5 6/4 6/3 6/2 5/2 5/1; capture; computer split: attacker country keeps 4, captured country gets 1"
+    },
+    {
+      "step": 72,
+      "source": "screen",
+      "field": "attack 72 (computer, Green seat, turn 39): country 20 attacks country 16; video offset 12:26.400 to 12:26.400",
+      "value": "counters before the first exchange 14/1; observed states (attacker/defender) 14/1; capture; computer split: attacker country keeps 2, captured country gets 12"
+    },
+    {
+      "step": 73,
+      "source": "screen",
+      "field": "attack 73 (human, Blue seat, turn 40): country 5 attacks country 6; video offset 12:39.167 to 12:39.167",
+      "value": "counters before the first exchange 5/1; observed states (attacker/defender) 5/1; capture; human move-in 1, attacker country keeps 4"
+    },
+    {
+      "step": 74,
+      "source": "screen",
+      "field": "attack 74 (computer, Yellow seat, turn 41): country 4 attacks country 6; video offset 12:52.800 to 12:52.800",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 7/1; capture; computer split: attacker country keeps 4, captured country gets 3"
+    },
+    {
+      "step": 75,
+      "source": "screen",
+      "field": "attack 75 (computer, Yellow seat, turn 41): country 7 attacks country 5; video offset 12:54.400 to 12:55.167",
+      "value": "counters before the first exchange 9/4; observed states (attacker/defender) 9/4 9/3 9/2 8/2 8/1 7/1; capture; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 76,
+      "source": "screen",
+      "field": "attack 76 (computer, Yellow seat, turn 41): country 13 attacks country 1; video offset 12:57.000 to 12:57.167",
+      "value": "counters before the first exchange 5/1; observed states (attacker/defender) 4/1 3/1; ended without capture, then the computer move; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 77,
+      "source": "screen",
+      "field": "attack 77 (computer, Red seat, turn 42): country 18 attacks country 14; video offset 13:02.767 to 13:03.333",
+      "value": "counters before the first exchange 8/1; observed states (attacker/defender) 7/1 6/1 5/1 4/1; capture; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 78,
+      "source": "screen",
+      "field": "attack 78 (computer, Green seat, turn 43): country 16 attacks country 15; video offset 13:12.500 to 13:14.500",
+      "value": "counters before the first exchange 37/4; observed states (attacker/defender) 36/4 35/4 34/4 34/3 33/3 33/2 32/2 32/1 31/1 30/1 29/1 28/1; capture; computer split: attacker country keeps 2, captured country gets 26"
+    },
+    {
+      "step": 79,
+      "source": "screen",
+      "field": "attack 79 (computer, Green seat, turn 43): country 15 attacks country 14; video offset 13:16.333 to 13:17.300",
+      "value": "counters before the first exchange 26/3; observed states (attacker/defender) 25/3 24/3 24/2 24/1 23/1 22/1; capture; computer split: attacker country keeps 3, captured country gets 19"
+    },
+    {
+      "step": 80,
+      "source": "screen",
+      "field": "attack 80 (computer, Green seat, turn 43): country 14 attacks country 18; video offset 13:19.167 to 13:19.167",
+      "value": "counters before the first exchange 19/1; observed states (attacker/defender) 18/1; capture; computer split: attacker country keeps 3, captured country gets 15"
+    },
+    {
+      "step": 81,
+      "source": "screen",
+      "field": "attack 81 (computer, Green seat, turn 43): country 18 attacks country 17; video offset 13:21.000 to 13:21.200",
+      "value": "counters before the first exchange 15/2; observed states (attacker/defender) 15/1 14/1; capture; computer split: attacker country keeps 2, captured country gets 12"
+    },
+    {
+      "step": 82,
+      "source": "screen",
+      "field": "attack 82 (computer, Green seat, turn 43): country 17 attacks country 19; video offset 13:23.033 to 13:23.333",
+      "value": "counters before the first exchange 12/2; observed states (attacker/defender) 11/2 10/2 10/1; capture; computer split: attacker country keeps 9, captured country gets 1"
+    },
+    {
+      "step": 83,
+      "source": "screen",
+      "field": "attack 83 (computer, Green seat, turn 43): country 43 attacks country 44; video offset 13:25.133 to 13:33.133",
+      "value": "counters before the first exchange 6/4; observed states (attacker/defender) 5/4 5/3 5/2 4/2 3/2 3/2; ended without capture by the computer stopping; attacker 3 defender 2 at the end"
+    },
+    {
+      "step": 84,
+      "source": "screen",
+      "field": "attack 84 (human, Blue seat, turn 44): country 1 attacks country 13; video offset 14:06.567 to 14:08.567",
+      "value": "counters before the first exchange 9/3; observed states (attacker/defender) 9/3 9/2 8/2 8/1 7/1; capture; human move-in 6, attacker country keeps 1"
+    },
+    {
+      "step": 85,
+      "source": "screen",
+      "field": "attack 85 (computer, Yellow seat, turn 45): country 6 attacks country 8; video offset 14:22.633 to 14:22.633",
+      "value": "counters before the first exchange 3/1; observed states (attacker/defender) 3/1; capture; computer split: attacker country keeps 1, captured country gets 2"
+    },
+    {
+      "step": 86,
+      "source": "screen",
+      "field": "attack 86 (computer, Yellow seat, turn 45): country 5 attacks country 3; video offset 14:24.267 to 14:24.433",
+      "value": "counters before the first exchange 7/6; observed states (attacker/defender) 6/6 5/6; ended without capture by the computer stopping; attacker 5 defender 6 at the end"
+    },
+    {
+      "step": 87,
+      "source": "screen",
+      "field": "attack 87 (computer, Red seat, turn 46): country 45 attacks country 23; video offset 14:28.533 to 14:29.233",
+      "value": "counters before the first exchange 6/3; observed states (attacker/defender) 5/3 5/2 4/2 3/2 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 88,
+      "source": "screen",
+      "field": "attack 88 (computer, Green seat, turn 47): country 43 attacks country 8; video offset 14:35.300 to 14:35.767",
+      "value": "counters before the first exchange 5/2; observed states (attacker/defender) 4/2 4/1 3/1 2/1; ended without capture by the computer stopping; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 89,
+      "source": "screen",
+      "field": "attack 89 (computer, Green seat, turn 47): country 14 attacks country 9; video offset 14:36.467 to 14:38.667",
+      "value": "counters before the first exchange 29/3; observed states (attacker/defender) 29/3 29/2 28/2 27/2 27/1 26/1 25/1 24/1 23/1 22/1 21/1 20/1 19/1 18/1; capture; computer split: attacker country keeps 3, captured country gets 15"
+    },
+    {
+      "step": 90,
+      "source": "screen",
+      "field": "attack 90 (computer, Green seat, turn 47): country 9 attacks country 11; video offset 14:40.567 to 14:42.367",
+      "value": "counters before the first exchange 15/1; observed states (attacker/defender) 14/1 13/1 12/1 11/1 10/1 9/1 8/1 7/1 6/1 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 91,
+      "source": "screen",
+      "field": "attack 91 (human, Blue seat, turn 48): country 13 attacks country 11; video offset 14:59.367 to 14:59.367",
+      "value": "counters before the first exchange 10/1; observed states (attacker/defender) 10/1; capture; human move-in 9, attacker country keeps 1"
+    },
+    {
+      "step": 92,
+      "source": "screen",
+      "field": "attack 92 (human, Blue seat, turn 48): country 11 attacks country 9; video offset 15:08.967 to 15:10.233",
+      "value": "counters before the first exchange 9/3; observed states (attacker/defender) 9/3 9/2 9/1; capture; human move-in 3, attacker country keeps 6"
+    },
+    {
+      "step": 93,
+      "source": "screen",
+      "field": "attack 93 (computer, Yellow seat, turn 49): country 10 attacks country 11; video offset 15:40.967 to 15:40.967",
+      "value": "counters before the first exchange 3/1; observed states (attacker/defender) 3/1; capture; computer split: attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 94,
+      "source": "screen",
+      "field": "attack 94 (computer, Yellow seat, turn 49): country 7 attacks country 9; video offset 15:42.567 to 15:43.167",
+      "value": "counters before the first exchange 5/3; observed states (attacker/defender) 5/2 5/1 4/1 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 95,
+      "source": "screen",
+      "field": "attack 95 (computer, Red seat, turn 50): country 44 attacks country 43; video offset 15:47.367 to 15:47.600",
+      "value": "counters before the first exchange 4/2; observed states (attacker/defender) 4/1 3/1; ended without capture by the computer stopping; attacker 3 defender 1 at the end"
+    },
+    {
+      "step": 96,
+      "source": "screen",
+      "field": "attack 96 (computer, Red seat, turn 50): country 45 attacks country 23; video offset 15:48.167 to 15:48.533",
+      "value": "counters before the first exchange 7/3; observed states (attacker/defender) 7/2 6/2 6/1; capture; computer split: attacker country keeps 3, captured country gets 3"
+    },
+    {
+      "step": 97,
+      "source": "screen",
+      "field": "attack 97 (computer, Green seat, turn 51): country 22 attacks country 23; video offset 15:55.600 to 15:55.933",
+      "value": "counters before the first exchange 19/3; observed states (attacker/defender) 18/3 18/2 18/1; capture; computer split: attacker country keeps 1, captured country gets 17"
+    },
+    {
+      "step": 98,
+      "source": "screen",
+      "field": "attack 98 (computer, Green seat, turn 51): country 23 attacks country 45; video offset 15:57.733 to 15:58.467",
+      "value": "counters before the first exchange 17/3; observed states (attacker/defender) 16/3 16/2 15/2 14/2 14/1; capture; computer split: attacker country keeps 3, captured country gets 11"
+    },
+    {
+      "step": 99,
+      "source": "screen",
+      "field": "attack 99 (computer, Green seat, turn 51): country 45 attacks country 46; video offset 16:00.300 to 16:01.900",
+      "value": "counters before the first exchange 11/4; observed states (attacker/defender) 10/4 9/4 9/3 8/3 7/3 7/2 7/1 6/1 5/1 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 100,
+      "source": "screen",
+      "field": "attack 100 (human, Blue seat, turn 52): country 13 attacks country 11; video offset 16:21.967 to 16:27.800",
+      "value": "counters before the first exchange 10/1; observed states (attacker/defender) 10/1 9/1 8/1 7/1 6/1 5/1 4/1 3/1 2/1; ended without capture by the human quitting the battle; attacker 2 defender 1 at the end"
+    },
+    {
+      "step": 101,
+      "source": "screen",
+      "field": "attack 101 (computer, Yellow seat, turn 53): country 5 attacks country 3; video offset 16:35.767 to 16:36.867",
+      "value": "counters before the first exchange 7/6; observed states (attacker/defender) 7/5 7/4 7/3 6/3 5/3 4/3 3/3; ended without capture by the computer stopping; attacker 3 defender 3 at the end"
+    },
+    {
+      "step": 102,
+      "source": "screen",
+      "field": "attack 102 (computer, Yellow seat, turn 53): country 7 attacks country 9; video offset 16:37.567 to 16:37.767",
+      "value": "counters before the first exchange 7/1; observed states (attacker/defender) 6/1 5/1; capture; computer split: attacker country keeps 3, captured country gets 2"
+    },
+    {
+      "step": 103,
+      "source": "screen",
+      "field": "attack 103 (computer, Red seat, turn 54): country 44 attacks country 45; video offset 16:42.167 to 16:42.733",
+      "value": "counters before the first exchange 5/3; observed states (attacker/defender) 4/3 4/2 3/2 2/2; ended without capture by the computer stopping; attacker 2 defender 2 at the end"
+    },
+    {
+      "step": 104,
+      "source": "screen",
+      "field": "attack 104 (computer, Green seat, turn 55): country 14 attacks country 9; video offset 16:48.600 to 16:48.800",
+      "value": "counters before the first exchange 4/2; observed states (attacker/defender) 3/2 2/2; ended without capture by the computer stopping; attacker 2 defender 2 at the end"
+    },
+    {
+      "step": 105,
+      "source": "screen",
+      "field": "attack 105 (computer, Green seat, turn 55): country 43 attacks country 8; video offset 16:49.333 to 16:50.500",
+      "value": "counters before the first exchange 33/5; observed states (attacker/defender) 33/4 33/3 33/2 32/2 31/2 31/1 30/1; capture; computer split: attacker country keeps 3, captured country gets 27"
+    },
+    {
+      "step": 106,
+      "source": "screen",
+      "field": "attack 106 (computer, Green seat, turn 55): country 8 attacks country 6; video offset 16:52.433 to 16:52.433",
+      "value": "counters before the first exchange 27/1; observed states (attacker/defender) 27/1; capture; computer split: attacker country keeps 3, captured country gets 24"
+    },
+    {
+      "step": 107,
+      "source": "screen",
+      "field": "attack 107 (computer, Green seat, turn 55): country 15 attacks country 13; video offset 16:54.033 to 16:54.200",
+      "value": "counters before the first exchange 5/2; observed states (attacker/defender) 5/2 4/2 4/1; capture; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 108,
+      "source": "screen",
+      "field": "attack 108 (computer, Green seat, turn 55): country 6 attacks country 5; video offset 16:56.000 to 16:57.300",
+      "value": "counters before the first exchange 24/3; observed states (attacker/defender) 24/3 24/2 23/2 22/2 21/2 20/2 19/2 18/2 18/1; capture; computer split: attacker country keeps 3, captured country gets 15"
+    },
+    {
+      "step": 109,
+      "source": "screen",
+      "field": "attack 109 (computer, Green seat, turn 55): country 5 attacks country 3; video offset 16:59.067 to 16:59.600",
+      "value": "counters before the first exchange 15/3; observed states (attacker/defender) 15/2 15/1 14/1 13/1; capture; computer split: attacker country keeps 3, captured country gets 10"
+    },
+    {
+      "step": 110,
+      "source": "screen",
+      "field": "attack 110 (computer, Green seat, turn 55): country 3 attacks country 2; video offset 17:01.367 to 17:01.933",
+      "value": "counters before the first exchange 10/2; observed states (attacker/defender) 10/1 9/1 8/1 7/1; capture; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 111,
+      "source": "screen",
+      "field": "attack 111 (computer, Green seat, turn 55): country 2 attacks country 1; video offset 17:03.700 to 17:03.700",
+      "value": "counters before the first exchange 4/1; observed states (attacker/defender) 4/1; capture, last country of the defender seat; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer attack 12 at video offset 02:29.517",
+      "ref": "sha256:a3c71d035e0d2b8ddd40c25d91ba6fedcc1b75646704e27d70cfa4714ebe6863"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer attack 78, largest stack pair of the game for a computer start before the last turn at video offset 13:12.550",
+      "ref": "sha256:896b038272b6a8e5115d09f9525651797e66aaba5dced3afaecfef2eff60d2e4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer attack 105 at video offset 16:49.383",
+      "ref": "sha256:085c6bcabf2a517e2e25dcfaca23ccb1ec190cd3d11b369ad67420144ca65749"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer attack 86 stopped with the defender larger at video offset 14:24.483",
+      "ref": "sha256:3ce5fc7b6ae6aef35f57cbfb35f0fa3637ccadd462d02c4abeeab303899b1f7f"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer attack 61 stopped without a capture at video offset 11:22.450",
+      "ref": "sha256:a3e19cd5578eb1a5af0bb853cb111f36c512d432c9779378976bebd346443c6d"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human attack 100 start at video offset 16:22.017",
+      "ref": "sha256:735eed559dc51361a2b4cf6d50192e7d54328a76ec226ec4a9d7d607f05be4a9"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human attack 100 after the quit at video offset 16:28.400",
+      "ref": "sha256:ef1518d561fce87670125f81fda0265a31a34628e12e1ce985093d0e21133e09"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human attack 58 after the quit at video offset 11:06.500",
+      "ref": "sha256:55bf7a89d3fd52859c5d1e81740c1c357bd99851e790f05b137a59030042a3f0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human attack 91 at video offset 14:59.417",
+      "ref": "sha256:94ae624c9c4e20174564057777985d65f3ec5289bc25dcee77bd373db541d67c"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "attack012-yellow-start.png",
+      "sha256": "a3c71d035e0d2b8ddd40c25d91ba6fedcc1b75646704e27d70cfa4714ebe6863",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack078-green-large-stack.png",
+      "sha256": "896b038272b6a8e5115d09f9525651797e66aaba5dced3afaecfef2eff60d2e4",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack105-green-33-v-4.png",
+      "sha256": "085c6bcabf2a517e2e25dcfaca23ccb1ec190cd3d11b369ad67420144ca65749",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack086-stop-without-capture.png",
+      "sha256": "3ce5fc7b6ae6aef35f57cbfb35f0fa3637ccadd462d02c4abeeab303899b1f7f",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack061-stop-without-capture.png",
+      "sha256": "a3e19cd5578eb1a5af0bb853cb111f36c512d432c9779378976bebd346443c6d",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack100-human-start.png",
+      "sha256": "735eed559dc51361a2b4cf6d50192e7d54328a76ec226ec4a9d7d607f05be4a9",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack100-human-quit-state.png",
+      "sha256": "ef1518d561fce87670125f81fda0265a31a34628e12e1ce985093d0e21133e09",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack058-human-quit-state.png",
+      "sha256": "55bf7a89d3fd52859c5d1e81740c1c357bd99851e790f05b137a59030042a3f0",
+      "store": "release:E018"
+    },
+    {
+      "name": "attack091-human-capture-10-v-1.png",
+      "sha256": "94ae624c9c4e20174564057777985d65f3ec5289bc25dcee77bd373db541d67c",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-10T08:06:04Z",
+  "ended": "2026-10-10T08:23:24Z",
+  "status": "completed"
+}
