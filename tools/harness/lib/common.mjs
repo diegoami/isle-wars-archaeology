@@ -168,8 +168,15 @@ export function namedModel(config, name, { family, variant, alibaba } = {}, die)
   if (!known) die(2, `${name}: its family cannot be established from its provider or its name. Register it in harness.json with its family (via /switch-model), then name it.`);
   if (family && family !== known) die(2, `${name} is of the ${known} family; --family ${family} disagrees.`);
   const fam = known;
-  if (config.models[name]) return name;
-  if (entry) return Object.keys(config.models).find((k) => config.models[k] === entry);
+  if (entry) {
+    const key = config.models[name] ? name : Object.keys(config.models).find((k) => config.models[k] === entry);
+    // --variant on a registered model runs it at that effort (the user's choice, e.g. Sol at medium);
+    // a copy keeps harness.json's entry as it is.
+    if (!variant || variant === entry.variant) return key;
+    const vkey = `${key}@${variant}`;
+    config.models[vkey] = { ...entry, variant };
+    return vkey;
+  }
   config.models[name] = { id, family: fam, ...(variant ? { variant } : {}) };
   return name;
 }
