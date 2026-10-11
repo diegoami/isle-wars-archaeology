@@ -87,8 +87,10 @@ click 337 531
 # shows the gold button at x 419-494, y 511-553 (centre 456,532), the first candidate of the
 # tour's exit (walkthroughs/coordinates.md, `456 531`). In that sitting this click closed the
 # battle every time: in all 178 leave steps with a watcher frame before the second candidate was
-# clicked, the battle panel was already gone (frame 167-1791702441523.png, sha256
-# abd8b73a371affabd79d70db4b165b482491271f81ed0be5ce8173a01d5899c5, 0.47 s after the step began).
+# clicked, the battle panel was already gone (frame 167-1791702441523.png, epoch ms 1791702441523,
+# 0.47 s after the step began; sha256 abd8b73a371affabd79d70db4b165b482491271f81ed0be5ce8173a01d5899c5,
+# which that sitting's frames-index gives to 12 files of byte-identical frames, from
+# 152-1791702433654.png to 317-1791702521077.png: the same turn-menu screen, captured again).
 # The tour's green test then failed because the pointer was left over the turn menu's CARD button
 # (x 446-491), which a hover lights from (8,206,66) to (16,239,74): outside the test's tolerance,
 # so the second candidate was clicked and reported, and the press was misread (round 2, point 1).
