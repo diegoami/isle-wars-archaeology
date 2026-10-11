@@ -14,8 +14,10 @@ handler are E020's; this module overrides `turn()` only, and adds what a turn do
    so the turn is still played;
 3. attack while a needed cell has a pair on the board (cases.pick) that this turn has not tried:
    `attack-open`, the target's click (the game took it when the target panel changed), the
-   attacker's click, then captures polled for the quit-attack button (the battle is on). No battle:
-   `attack-cancel`, and the attempt is a refusal. A battle:
+   attacker's click (the bottom bar watched), then captures polled for the quit-attack button (the
+   battle is on). No battle: `attack-cancel`, and the attempt is a refusal only when the game
+   answered the click (the bottom bar changed: its not-enough-armies message, F011 Q-CMB-01) and
+   no battle is up after the cancel; otherwise it is `unresolved` and meets no cell. A battle:
    * a size cell (`even`, `underdog`, `tiny`) is met by the game's answer to the order, a battle or
      a refusal (an attacker of 1 refused is the observation, the task file); the battle gets one
      exchange click, then the quit-attack button;
@@ -32,7 +34,10 @@ failed attack (the attacker's country changed hands) the next `lost` cell; a tur
 more battles the next `busy` cell, with what ended it (Q-CMB-10).
 
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
-minus their armies after it. A capture moves armies between the same two countries (the move-in,
+minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
+another seat's turn has begun (a failure passes the turn by itself) the reading may hold that seat's
+moves too, and the click's count is unknown (`isolated` false). A failure's click is counted from
+the first reading that shows the hand-over. A capture moves armies between the same two countries (the move-in,
 F011 Q-OWN-01: the total is conserved), and a failure gives the attacker's last army to the
 defender's owner and leaves the defender as it was (Q-CMB-09), so the total holds across both,
 and the count after a capture is read after DONE. One army lost is one exchange (Q-CMB-07); a

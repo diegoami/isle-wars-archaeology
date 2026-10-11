@@ -10,7 +10,7 @@ exchange, the battle's exits and the forfeit. A sitting records what the running
 
 | Case | Attack | Cells | Claim | Met by |
 | --- | --- | --- | --- | --- |
-| even | attacker N in {2, 4, 8, 12} vs N−1, N, N+1, N+2 | 16 | Q-CMB-01 | the game's answer to the order: a battle, or a refusal |
+| even | attacker N in {2, 4, 8, 12} vs N−1, N, N+1, N+2 | 16 | Q-CMB-01 | the game's answer to the order: a battle, or a refusal (the attacker's click changed the bottom bar and no battle came up); an order with neither is `unresolved` and meets nothing |
 | underdog | attacker 4, 8, 12, 20 vs a strictly stronger defender | 4 | Q-CMB-02 | the same |
 | tiny | attacker 1, 2, 3 vs a defender of 1 | 3 | Q-CMB-03 | the same (an attacker of 1 refused is the observation) |
 | quit | the quit-attack button mid-battle | 2 | Q-CMB-08 | a quit-attack press while the battle panel is up |
@@ -54,8 +54,9 @@ code has uncommitted changes.
 ## What to read from a first sitting (DW3)
 
 `sitting.json`'s `loop` and the record's step-0 counters: `exchange-clicks`, `clicks-one-army`
-(the two countries lost one army together), `clicks-several-armies`, `clicks-no-change` and
-`clicks-unread`. Each `exchange-click` group holds both countries before and after one click and
+(the two countries lost one army together), `clicks-several-armies`, `clicks-no-change`,
+`clicks-unread` and `clicks-unisolated` (the reading after the click boxed another seat, so the
+count is unknown: mostly the click that lost a country, after which the turn passes by itself). Each `exchange-click` group holds both countries before and after one click and
 `counter:lost`, the armies the two lost together: their total is conserved across a capture's
 move-in (Q-OWN-01) and a failure's hand-over (Q-CMB-09), so it counts exchanges at one army each
 (Q-CMB-07). F011 expects five exchanges per click only when the attacker holds more than 35 and the
@@ -66,7 +67,11 @@ exchange: the task file's hazard, for the main session and the owner to decide.
 
 - The turn menu's attack button at 303,530 and the battle's at 337,531 (the spike's and the tour's
   points), the cancel button at 405,530, and the target panel changing when a target is taken.
-- A refusal of the attacker leaves no prompt that `attack-cancel` does not clear.
+- A refusal of the attacker leaves no prompt that `attack-cancel` does not clear, and its message
+  changes the bottom bar (`watch 0 495 800 105`). If the message shows on the board instead, every
+  refusal is recorded `unresolved` and no size cell is met by one: widen the watch then.
+- The score panel boxes the next seat only once its turn has begun, so a reading that still boxes
+  blue holds the human's battle alone.
 - The session's screenshots decode with E020's PNG reader and hold the stage at the origin the
   session recorded.
 - `boardview.UNREAD_LIMIT` (6) is a guess: a turn's reading with more unread countries ends the
