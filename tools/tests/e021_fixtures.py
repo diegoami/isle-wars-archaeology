@@ -68,6 +68,10 @@ class FakeGame:
         self.after_continue = "title"
         self.after_scoreboard = "title"
         self.attack_button_works = True
+        self.board_screen = "board"        # the screen New Game's Play Game leaves up
+        self.after_abandon = "scoreboard"  # the screen after New Game from the board
+        self.games = self.passes = 0
+        self.on_pass = None                # (game) -> None: the computers' turns, as a test scripts them
         self.quit_works = True             # False: the quit-attack press does not land
         self.quits = 0                     # battles the quit-attack button closed
         self.exchange_noop = False         # True: an exchange click changes nothing on the board
@@ -98,11 +102,22 @@ class FakeGame:
 
     def block(self, name):
         if name == "new-game":
-            self.screen = "board"
+            self.screen = self.board_screen
+            self.games += 1
+        elif name == "abandon-game":
+            # New Game from the board: with fewer than 10 human countries the game credits a loss
+            # and shows the Scoreboard (F003); elsewhere the click is not on the screen
+            if self.screen == "board-menu":
+                self.screen = self.after_abandon
+                return {"changed": True}
+            return {"changed": False}
         elif name == "place-commit" and self.selected is not None:
             self.board[self.selected]["army"] += self.reinforcements
             self.selected = None
         elif name == "pass":
+            self.passes += 1
+            if self.on_pass is not None:
+                self.on_pass(self)
             if self.after_pass is not None:
                 self.screen = self.after_pass
         elif name == "attack-open":

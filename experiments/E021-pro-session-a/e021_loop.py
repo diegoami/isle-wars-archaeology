@@ -41,6 +41,11 @@ by the dice: a target not taken, an unresolved order, a press not confirmed, a q
 is dropped for the sitting, with a `case-dropped` line: sitting 20261011T070437Z aimed at quit 299
 times while its press was misread.
 
+After NO_FIT_TURNS turns in a row of one game with no needed cell on the board and no attack opened,
+the game is abandoned (a `game-abandoned` line, then New Game from the `board-menu`, the one New
+Game sent from a board: T45 Done-when 1 as amended 2026-10-11), and E020's Scoreboard path starts
+the next game.
+
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
 minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
 another seat's turn has begun (a failure passes the turn by itself) the reading may hold that seat's
@@ -95,6 +100,11 @@ DROP_AFTER = 5                       # consecutive failures of one case's own ac
                                      # so five in a row by chance is about 1 in 10^7, and five cost
                                      # under a minute (about 8 s an order); that sitting aimed at quit
                                      # 299 times while its press was misread
+NO_FIT_TURNS = 3                     # turns in a row of one game with no needed cell on the board and
+                                     # no attack opened before the game is abandoned (the owner,
+                                     # 2026-10-11, T45 Done-when 1 as amended in 50b6f35): sitting
+                                     # 20261011T091212Z passed turns 7 to 13 on one blue country that
+                                     # no needed cell fitted
 NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
                                              # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
@@ -119,6 +129,7 @@ class SessionALoop(e020_loop.BatchLoop):
         self.met = {tuple(pair) for pair in met}
         self.attempt = 0
         self.failures, self.dropped = {}, set()
+        self.no_fit = (None, 0)              # (game, no-fit turns in a row in it)
         self.summary.update(cases_met_before=len(self.met), cases_met=len(self.met), attack_attempts=0,
                             refusals=0, battles=0, exchange_clicks=0, clicks_one_army=0,
                             clicks_several_armies=0, clicks_no_change=0, clicks_unread=0, clicks_unisolated=0,
@@ -270,6 +281,7 @@ class SessionALoop(e020_loop.BatchLoop):
         """Attack while a needed cell has an untried pair; then PASS, unless a failure passed the
         turn. None, or why the game ended for the loop."""
         tried, battles, fights, ended = set(), 0, 0, "pass"
+        opened = False
         for _ in range(MAX_ATTEMPTS_PER_TURN):
             reading = self.look()
             if reading is None:
@@ -280,6 +292,7 @@ class SessionALoop(e020_loop.BatchLoop):
             if choice is None:
                 break
             tried.add(choice[2:])
+            opened = True
             met_before = len(self.met)
             outcome, game_end = self.attack(reading, *choice)
             self.track(choice[0], met_before, outcome)
@@ -294,6 +307,11 @@ class SessionALoop(e020_loop.BatchLoop):
             if outcome == "no-menu":
                 ended = "no-menu"
                 break
+        if opened:
+            self.no_fit = (None, 0)
+        if not opened and self.abandon_due():
+            self.driver.note(event="turn-end", battles=0, fights=0, end="abandoned")
+            return self.abandon()
         if ended != "forfeit":
             self.send("pass")
         self.driver.note(event="turn-end", battles=battles, fights=fights, end=ended)
@@ -302,6 +320,36 @@ class SessionALoop(e020_loop.BatchLoop):
         if fights >= BUSY_MINIMUM:
             self.meet("busy", battles=battles, fights=fights, end=ended)
         return None
+
+    # --- the no-fit abandon ---------------------------------------------------------------------
+
+    def abandon_due(self):
+        """Count one more turn of this game in which no needed cell fitted and no attack was opened
+        (any other turn resets the count, in `attack_phase`'s caller below); True on the
+        NO_FIT_TURNS-th in a row."""
+        game = self.driver.context.get("game")
+        previous, count = self.no_fit
+        count = count + 1 if previous == game else 1
+        self.no_fit = (game, count)
+        return count >= NO_FIT_TURNS
+
+    def abandon(self):
+        """End a game no needed cell fits (T45 Done-when 1, amended 2026-10-11): a `game-abandoned`
+        line, then E020's New Game click from the `board-menu` (block `abandon-game`). The game
+        credits a loss and shows the Scoreboard (F003; sitting 20261008T204817Z), and E020's own
+        path takes over: `loss-credited`, `scoreboard-continue`, the title, the skr restore (#152),
+        `new-game`. Any other screen after the click ends the sitting cleanly (`off_board`). On a
+        board without its menu row New Game is not on the screen: the turn passes instead."""
+        game, count = self.no_fit
+        screen = self.driver.read_screen()
+        if screen != "board-menu":
+            self.send("pass")
+            return None
+        self.driver.note(event="game-abandoned", reason="no-fit", turns=count)
+        self.summary["abandoned"] = self.summary.get("abandoned", 0) + 1
+        self.no_fit = (None, 0)
+        self.send("abandon-game")
+        return self.off_board(self.driver.read_screen())
 
     # --- one attack -----------------------------------------------------------------------------
 

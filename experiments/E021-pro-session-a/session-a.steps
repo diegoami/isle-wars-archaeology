@@ -28,6 +28,16 @@ settle
 click 533 311
 click! 565 532
 
+# --- block abandon-game
+# The no-fit abandon (T45 Done-when 1 and its Hazard, amended 2026-10-11 by the owner): E020's New
+# Game click (the first input of block new-game, 100,585, walkthroughs/coordinates.md), sent only
+# from the board with its menu row lit, after NO_FIT_TURNS turns of one game in which no needed
+# cell fitted. With the human holding fewer than 10 countries the game credits a loss and shows the
+# Scoreboard (F003; sitting 20261008T204817Z); the loop then leaves it as E020 does. The setup
+# clicks of new-game are not sent here: on the Scoreboard they would miss (that sitting's lesson).
+watch all
+click! 100 585
+
 # --- block quiet
 # The computers' turns: the board unchanged for 4 s (a poll on the screen, bounded by the spike).
 # F003: 15 to 33 s before the first human turn, 23 to 24 s after a pass. The loop repeats this

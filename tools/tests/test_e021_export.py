@@ -75,6 +75,7 @@ MET = {"seq": 11, "game": 1, "turn": 2, "event": "case-met", "case": "even", "ce
 BUSY = {"seq": 12, "game": 1, "turn": 2, "event": "case-met", "case": "busy", "cell": 1, "battles": 3, "fights": 3,
         "end": "pass"}
 TURN = {"seq": 13, "game": 1, "turn": 2, "event": "turn-end", "battles": 3, "fights": 3, "end": "pass"}
+ABANDONED = {"seq": 15, "game": 1, "turn": 3, "event": "game-abandoned", "reason": "no-fit", "turns": 3}
 DROPPED = {"seq": 14, "game": 1, "turn": 2, "event": "case-dropped", "case": "quit", "failures": 5,
            "outcome": "quit-unconfirmed"}
 
@@ -82,7 +83,7 @@ DROPPED = {"seq": 14, "game": 1, "turn": 2, "event": "case-dropped", "case": "qu
 class ExportTest(unittest.TestCase):
     def test_a_sitting_exports_a_valid_record_the_gate_and_the_progress_counter_accept(self):
         with tempfile.TemporaryDirectory() as directory:
-            s = Sitting(directory, [click, attempt, MET, BUSY, TURN, DROPPED])
+            s = Sitting(directory, [click, attempt, MET, BUSY, TURN, DROPPED, ABANDONED])
             written = s.export()
             self.assertEqual(written, ["evidence/E021/E021-r0001.manifest.json", "runs/E021/session-a/E021-r0001.json"])
             record = s.record()
@@ -103,6 +104,7 @@ class ExportTest(unittest.TestCase):
             self.assertEqual(fields[(5, "counter:fights")], "3")
             self.assertEqual(fields[(6, "dropped:case")], "quit")
             self.assertEqual(fields[(6, "counter:failures")], "5")
+            self.assertEqual((fields[(7, "end:game")], fields[(7, "counter:turns")]), ("no-fit", "3"))
             # only case-met groups name case:kind, so the counter sees two cells, not the aim too
             progress = e021_progress.count([s.repo / "runs" / "E021" / "session-a" / "E021-r0001.json"])
             self.assertEqual(progress["met"], 2)

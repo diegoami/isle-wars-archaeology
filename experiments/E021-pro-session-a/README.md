@@ -18,7 +18,11 @@ exchange, the battle's exits and the forfeit. A sitting records what the running
 | busy | turns with 3 or more attacks; what ends each | 10 | Q-CMB-10 | a turn with 3 or more fights (battles with an exchange the board showed), with what ended it |
 
 Each event meets at most one cell of a row. A case whose own action fails five times in a row is
-dropped for the sitting (`case-dropped`). `measurements/CORRECTIONS.md` says why progress-r01's
+dropped for the sitting (`case-dropped`). After three turns in a row of one game with no needed
+cell on the board and no attack opened, the game is abandoned (`game-abandoned`, then New Game
+from the board; the loss it credits is handled as E020 handles a credited loss), and a new game
+starts. With 10 or more human countries the Scoreboard may not show (F003): the sitting then ends
+on an unknown screen, and the first sitting with an abandon says what it saw. `measurements/CORRECTIONS.md` says why progress-r01's
 busy 10/10 is not met, and what the count requires since. The deal is random (F018): a cell no board offers
 stays unmet, and `measurements/progress-r<nn>.json` lists it under `unmet`; it is never forced.
 

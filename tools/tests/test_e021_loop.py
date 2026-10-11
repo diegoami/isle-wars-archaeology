@@ -17,6 +17,7 @@ import e021_loop  # noqa: E402
 
 BLUE, RED = fx.BLUE, fx.RED
 YELLOW = "yellow"
+GREEN = "green"
 ALL = fx.all_met()
 
 
@@ -51,6 +52,13 @@ class NewGameTest(unittest.TestCase):
                      "leave_scoreboard", "restore_shipped_skr", "send"):
             self.assertIs(getattr(e021_loop.SessionALoop, name), getattr(e020_loop.BatchLoop, name), name)
 
+    def test_new_game_is_sent_from_the_title_or_by_the_no_fit_abandon_only(self):
+        # Done-when 1 as amended 2026-10-11: the setup block runs only on the title, and the one
+        # New Game sent from a board is the no-fit abandon's, on the board-menu, after its line
+        source = (fx.ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
+        self.assertEqual(source.count('self.send("abandon-game")'), 1)
+        self.assertNotIn('self.send("new-game")', source)          # E020's games() sends it
+
     def test_new_game_is_sent_from_the_title_only(self):
         for screen in ("board", "board-menu", "scoreboard", "game-over", "eliminated", "unknown", "title"):
             with self.subTest(screen=screen):
@@ -66,6 +74,81 @@ class NewGameTest(unittest.TestCase):
         world.game.after_pass = "unknown"
         world.loop.run()
         self.assertEqual(world.driver.blocks.count("new-game"), 1)
+        self.assertEqual(world.loop.summary["ended"], "unknown-screen")
+
+
+class NoFitAbandonTest(unittest.TestCase):
+    """Done-when 1 (amended 2026-10-11): NO_FIT_TURNS turns in a row of one game with no needed cell
+    on the board and no attack opened abandon the game; fewer, or a fit in between, do not."""
+
+    def world(self, met=ALL, games_max=2, restore=True):
+        world = World({3: (BLUE, 20), 4: (GREEN, 30)}, screen="title", met=met, games_max=games_max)
+        world.game.board_screen = "board-menu"
+        world.game.reinforcements = 0
+        if restore:
+            world.loop.restore, world.loop.shipped_skr = (lambda: "s" * 64), "s" * 64
+        return world
+
+    def test_three_no_fit_turns_abandon_the_game_and_the_next_starts_from_the_title(self):
+        world = self.world()
+        world.loop.run()
+        abandoned = world.driver.events("game-abandoned")
+        self.assertEqual([(a["game"], a["turn"], a["reason"], a["turns"]) for a in abandoned],
+                         [(1, 3, "no-fit", 3), (2, 3, "no-fit", 3)])
+        self.assertEqual(world.game.games, 2)
+        self.assertEqual(world.driver.blocks.count("abandon-game"), 2)
+        self.assertEqual(world.game.passes, 4)                     # turns 1 and 2 of each game
+        events = [n["event"] for n in world.driver.notes if n.get("event") in
+                  ("game-abandoned", "loss-credited", "skr-restored", "game-start", "game-end")]
+        self.assertEqual(events, ["game-start", "game-abandoned", "game-end", "loss-credited",
+                                  "skr-restored", "game-start", "game-abandoned", "game-end",
+                                  "loss-credited"])
+        self.assertEqual(world.loop.summary["ended"], "games-max")
+        self.assertEqual(world.loop.summary["abandoned"], 2)
+
+    def test_two_no_fit_turns_and_then_a_fit_do_not_abandon(self):
+        world = self.world(met=only(("even", 1)), games_max=1, restore=False)
+        world.game.screen = "board-menu"
+        world.loop.deadline = 60
+        world.loop.driver.context = {"game": 1, "turn": 0}
+
+        def fit_after_two(game):
+            if game.passes == 2:               # the computers leave blue a 2 next to a red 1
+                game.board[5] = {"army": 2, "owner": BLUE}
+                game.board[6] = {"army": 1, "owner": RED}
+        world.game.on_pass = fit_after_two
+        world.game.adjacency = world.loop.adjacency = {**fx.ADJ, 5: {6}, 6: {5}}
+        world.loop.points = {**fx.POINTS}
+        for turn in (1, 2, 3, 4, 5):
+            world.loop.driver.context = {"game": 1, "turn": turn}
+            world.loop.turn()
+        self.assertEqual(world.driver.events("game-abandoned"), [])
+        self.assertNotIn("abandon-game", world.driver.blocks)
+        self.assertEqual([a["attacker"] for a in world.attempts()], [5])     # turn 3 attacked
+
+    def test_the_count_is_per_game(self):
+        world = self.world(games_max=1)
+        world.loop.no_fit = (0, 2)              # two no-fit turns of an earlier game
+        world.loop.driver.context = {"game": 1, "turn": 1}
+        self.assertFalse(world.loop.abandon_due())
+
+    def test_on_a_board_without_its_menu_row_the_turn_passes_instead(self):
+        world = self.world(games_max=1)
+        world.loop.deadline = 60
+        world.game.screen = "board"
+        world.loop.no_fit = (1, 2)
+        world.loop.driver.context = {"game": 1, "turn": 3}
+        self.assertIsNone(world.loop.turn())
+        self.assertNotIn("abandon-game", world.driver.blocks)
+        self.assertEqual(world.driver.events("game-abandoned"), [])
+        self.assertEqual(world.game.passes, 1)
+
+    def test_a_screen_other_than_the_scoreboard_after_the_click_ends_the_sitting_cleanly(self):
+        # F003: with 10 or more human countries the Scoreboard may not show
+        world = self.world(games_max=2)
+        world.game.after_abandon = "unknown"
+        world.loop.run()
+        self.assertEqual(world.game.games, 1)
         self.assertEqual(world.loop.summary["ended"], "unknown-screen")
 
 

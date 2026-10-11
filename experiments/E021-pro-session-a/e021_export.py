@@ -13,7 +13,7 @@ checks are E021's: `sitting.json` names experiment E021 (an E020 sitting is neve
 and every frame a line cites is a file of the bundle.
 
 The observations come from the loop's own lines of `actions.jsonl` (e021_loop.py), one step each:
-`attack-attempt`, `exchange-click`, `case-met`, `turn-end` and `case-dropped`. Values are structural only
+`attack-attempt`, `exchange-click`, `case-met`, `turn-end`, `case-dropped` and `game-abandoned`. Values are structural only
 (constraint D): E020's vocabulary (tools/check_counts.py: counters, countries, games, events,
 colour words) and six kinds of this experiment's own words -- `case:`, `aim:` and `dropped:` (a row of
 the case table), `cell:` (a cell number), `outcome:` and `end:` (the loop's outcome and turn-end words,
@@ -49,7 +49,7 @@ FOLDER = "E021-pro-session-a"
 RUN_ID = re.compile(rf"^{EXPERIMENT}-r(\d{{4,}})(?:\.manifest)?\.json$")
 OUTCOMES = frozenset({"no-menu", "target-not-taken", "attacker-refused", "unresolved", "quit", "quit-unconfirmed",
                       "capture", "forfeit"})
-ENDS = frozenset({"pass", "forfeit", "no-menu", "game-end", "board-unreadable"})
+ENDS = frozenset({"pass", "forfeit", "no-menu", "game-end", "board-unreadable", "abandoned", "no-fit"})
 WORD_KINDS = {"case": frozenset(cases.CASES), "aim": frozenset(cases.CASES), "dropped": frozenset(cases.CASES),
               "outcome": OUTCOMES, "end": ENDS}
 SUMMARY = ("exchange_clicks", "clicks_one_army", "clicks_several_armies", "clicks_no_change", "clicks_unread",
@@ -141,6 +141,8 @@ def rows_of(line):
     if event == "turn-end":
         return game + turn + [("counter:battles", str(line["battles"])),
                               ("counter:fights", str(line.get("fights", 0))), ("end:turn", line["end"])], []
+    if event == "game-abandoned":
+        return game + turn + [("end:game", line["reason"]), ("counter:turns", str(line["turns"]))], []
     if event == "case-dropped":
         return game + turn + [("dropped:case", line["case"]), ("counter:failures", str(line["failures"])),
                               ("outcome:attack", line["outcome"])], []
