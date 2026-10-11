@@ -29,6 +29,15 @@ its first, which the abandon already sent); any other screen after the abandon s
 A turn that grew a stack towards a needed attacker size (its `gap` smaller than that country's smallest
 earlier one in the game; `growing` on the `turn-end` line) does not count as a no-fit turn, so a game is
 not abandoned while a stack is on its way; a stack that stops growing counts again.
+When no needed cell is reachable on the board, the placement still names a target (fix #178; sitting
+20261011T163105Z, 26 of 40 met, where the open even and underdog rows needed stacks of 8, 12 or 20 and every
+`place-target` read no case and gap 0, so games 2 to 6 were abandoned at turn 3 with no fights): the strongest
+country with an adjacent enemy is grown towards the smallest attacker size an unmet even or underdog cell
+still asks for above its armies (`place-target` then carries `case`, `cell` and the `gap`). The gap is kept per
+country and target size, so a stack that passes 8 and heads for 12 is still growing; a stack that stops growing,
+or one with no open size above it, is abandoned after three turns as before. Busy's drop count is per game: at each
+game start busy's failures are cleared and busy is aimed at again (the same sitting dropped it at game 1 turn 6
+for the rest of the sitting); the other cases keep the sitting-wide count.
 A turn can start with the card trade-in offer instead of the placement row (fix #175; sitting 20261011T154319Z,
 game 1 turn 10): the game shows two buttons in the middle panel when the hand holds a valid match, after income and
 before placement. F014 (Q-BON-07, C-CRD-05) reads it as the human's choice, with a second button that skips it, and

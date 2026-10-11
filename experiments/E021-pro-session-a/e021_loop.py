@@ -50,7 +50,16 @@ with a `gap` above 0, cases.frontier: the reinforcements the stack is short of t
 is not such a turn while that gap keeps shrinking (fix #171): it starts the count again, and a
 `growing` field on the turn's `turn-end` line says so; a stack whose gap has not got smaller than
 its smallest earlier one in the game counts like any other turn, so a stack that never reaches its
-size cannot keep a game alive.
+size cannot keep a game alive. When no needed cell is reachable on the board, cases.frontier still
+names a target (fix #178; sitting 20261011T163105Z read `case None, gap 0` on every placement, so no
+game counted as growing and games 2 to 6 were abandoned at turn 3 with no fights): the smallest
+attacker size an unmet even or underdog cell still asks for above the grown country's armies. The gap
+is then counted against that size, so a stack that passes one size and heads for the next (3, 6, 9
+towards 8 and then 12) is still growing, while a stack that stops growing is abandoned as before.
+Busy's drop count is per game (same fix): at each game start busy's failures are cleared and busy leaves
+`dropped`, since what fails it (the game ended before three fights) belongs to the game; the other cases
+keep the sitting-wide count, since their failures are about the press or the target (sitting
+20261011T163105Z dropped busy at game 1 turn 6 and never aimed at it again).
 
 With 10 or more human countries the game credits no loss, and the abandon's New Game goes straight to
 the Game Options screen with no Scoreboard (F003; sitting 20261011T142906Z, game 2 turn 3, which ended
@@ -206,6 +215,7 @@ class SessionALoop(e020_loop.BatchLoop):
                 if not self.restore_shipped_skr(screen):
                     return self.summary
             self.driver.note(event="game-start")
+            self.new_game_state()
             self.game_open = True
             self.summary["games"] = game
             block = "options-play" if screen == OPTIONS else "new-game"
@@ -230,6 +240,14 @@ class SessionALoop(e020_loop.BatchLoop):
                 return self.summary
         self.summary["ended"] = "games-max"
         return self.summary
+
+    def new_game_state(self):
+        """What belongs to one game: busy's failure count and its drop (fix #178). The other cases'
+        failures stay sitting-wide."""
+        self.failures.pop("busy", None)
+        if "busy" in self.dropped:
+            self.dropped.discard("busy")
+            self.summary["dropped"] = sorted(self.dropped)
 
     # --- the case table -------------------------------------------------------------------------
 
@@ -397,7 +415,7 @@ class SessionALoop(e020_loop.BatchLoop):
         picked, target = None, None
         if choice is not None:
             country, _defender, case, cell, gap = choice
-            target = (country, gap)
+            target = (country, gap, board[country]["army"] + gap)
             fields = {"country": country, "gap": gap}
             if case is not None:
                 fields.update(case=case, cell=cell)
@@ -420,7 +438,7 @@ class SessionALoop(e020_loop.BatchLoop):
         self.turn_growing = chosen and self.growing(*target)
         return True
 
-    def growing(self, country, gap):
+    def growing(self, country, gap, size=None):
         """True when this turn's placement grew a stack towards a needed size: `country` was chosen
         with a `gap` (reinforcements short of the nearest needed attacker size, cases.frontier) above
         0, and that gap is smaller than any earlier gap of this country in this game, or the country is
@@ -428,7 +446,10 @@ class SessionALoop(e020_loop.BatchLoop):
         turns up again with a gap it already had, does not count as growing, so a stack that never
         reaches its size cannot keep the game alive: the turn then counts towards NO_FIT_TURNS. The
         smallest gap seen is kept per country, so a few countries taking turns cannot avoid the count
-        either (a gap is a whole number, so a country shrinks at most as many times as its first gap)."""
+        either (a gap is a whole number, so a country shrinks at most as many times as its first gap).
+        `size` is the attacker size the gap is counted towards (the country's armies plus the gap): the
+        smallest gap is kept per (country, size), so a stack that has passed one size and heads for
+        the next one (fix #178) is growing, and the bound holds still, as there are only so many sizes."""
         game = self.driver.context.get("game")
         previous, best = self.grow
         if previous != game:
@@ -436,8 +457,9 @@ class SessionALoop(e020_loop.BatchLoop):
         if gap <= 0:
             self.grow = (game, best)
             return False
-        shrank = country not in best or gap < best[country]
-        best[country] = min(gap, best.get(country, gap))
+        key = (country, size)
+        shrank = key not in best or gap < best[key]
+        best[key] = min(gap, best.get(key, gap))
         self.grow = (game, best)
         return shrank
 

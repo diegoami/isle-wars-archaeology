@@ -39,6 +39,8 @@ UNDERDOG_SIZES = (4, 8, 12, 20)
 TINY_SIZES = (1, 2, 3)
 
 SIZE_CASES = ("even", "underdog", "tiny")
+GROW_CASES = ("even", "underdog")       # the size rows whose attacker sizes (4 to 20) a stack is grown
+                                        # towards when no cell is reachable now (fix #178)
 OUTCOME_CASES = ("quit", "lost", "busy")
 HUMAN_SEAT = "blue"                     # the driver's seat (F019 Q-SET-02; exchange_events.HUMAN_SEAT)
 COUNTRIES = 46
@@ -218,8 +220,15 @@ def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None, avoid=()):
     of reinforcements away (gap = size - the attacker's armies, never negative), so one turn's
     `ALL` placement moves the stack towards a cell that is still needed; ties take the pair whose
     attacker holds most, then the lowest country numbers. When no needed size cell is reachable,
-    the strongest country of the seat with an adjacent enemy is grown anyway (case and cell None):
-    the outcome rows take any legal pair, and a bigger stack is never a waste.
+    the strongest country of the seat with an adjacent enemy is grown anyway, and it now names a
+    target (fix #178; sitting 20261011T163105Z, 26 of 40 met, where the open size rows needed stacks
+    of 8, 12 or 20 that an early board lacks, so every `place-target` read case None, gap 0 and no
+    game counted as growing): the smallest attacker size still needed by an unmet `even` or
+    `underdog` cell (`GROW_CASES`) that is above the country's armies, with that cell's case and
+    cell, and gap = that size minus the country's armies. The defender is not asked to fit (none
+    does, or the pair would have been reachable). When no open size cell is above the country's
+    armies, the answer is as before: case and cell None, gap 0, since the outcome rows take any
+    legal pair and a bigger stack is never a waste.
 
     `avoid` is the countries whose count should not change this turn: an attacker that already
     shows a needed size (the placement would overshoot it, since ALL places every reinforcement).
@@ -254,7 +263,29 @@ def frontier(board, needed, adjacency, seat=HUMAN_SEAT, points=None, avoid=()):
         return None
     preferred = [row for row in strongest if row[1] not in avoid] or strongest
     _, attacker, defender = min(preferred)
-    return attacker, defender, None, None, 0
+    target = grow_target(board, needed, attacker)
+    if target is None:
+        return attacker, defender, None, None, 0
+    return (attacker, defender) + target
+
+
+def grow_target(board, needed, country):
+    """(case, cell, gap) for the smallest attacker size above `country`'s armies that an unmet
+    `even` or `underdog` cell in `needed` still asks for (ties: the case order, then the lowest
+    cell), or None when no such size is open. A pure function of the board and the cells."""
+    wanted = set(needed)
+    armies = readable(board, country)["army"]
+    best = None
+    for case in GROW_CASES:
+        for cell in cells(case):
+            if (case, cell) not in wanted:
+                continue
+            size = spec(case, cell)["size"]
+            if size > armies and (best is None or size < best[0]):
+                best = (size, case, cell)
+    if best is None:
+        return None
+    return best[1], best[2], best[0] - armies
 
 
 def next_outcome_cell(needed, case):
