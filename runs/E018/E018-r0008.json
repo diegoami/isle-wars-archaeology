@@ -1,0 +1,299 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0008",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "e805305",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@e805305",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 12978 video frames in 662.50 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (11:02 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+    "args": [
+      "video file name: IP1 027.mp4",
+      "video sha256: aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "probe: 662.50 s, 12978 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 87585120 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the options screen, the opening deal, the 12 human placements, the computer moves, the elimination of the human seat and the end of the game"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen at video offset 00:01.0 to 00:03.0",
+      "value": "five option groups (starting armies with five entries, seat toggles for four seats, a strength group with three entries, an event-frequency group with four entries, a speed group with three entries) plus a sound icon, a save-as-default button and a play button; the seat row shows one human then three computers; highlighted entries: the second starting-armies entry, the middle strength, the middle event frequency and the middle speed. The recording starts on the title screen (00:00.0); this screen is up at 00:01.0 and 00:02.0, the title screen is back at 00:03.0 (the owner pressed play between 00:02.0 and 00:03.0) and the empty board is up at 00:04.0. Same screen and defaults as in IP1 026."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen frame",
+      "ref": "sha256:a6c288f0d4b2c19ae176c444dfb9cd42165cd4ff85c81af522c808a905e2e141"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "opening deal, read at video offset 00:12.6 after the count-up (00:04.1 to 00:05.6)",
+      "value": "territory counts blue/yellow/red/green 9/11/10/16 (sum 46); the human seat holds 9 with the middle strength; the scoreboard counts rise one by one in about 1.5 s while the board colours in; the first seat to play is the human seat (a difference from IP1 026, where yellow was first). One deal; the target is 10."
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "human placement 1 (turn 1): the placement panel shows from 00:26.867 to 00:36.033",
+      "value": "army pool 3; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@00:26.867 1@00:30.733 2@00:31.133 0@00:33.367 1@00:35.400 blank@00:36.033; country counters on the map before and after: country 39 3 to 5; country 42 3 to 4"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "human placement 2 (turn 5): the placement panel shows from 01:23.500 to 01:27.067",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@01:23.500 2@01:25.033 blank@01:27.067; country counters on the map before and after: country 39 3 to 5"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "human placement 3 (turn 9): the placement panel shows from 02:06.267 to 02:08.400",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@02:06.267 2@02:07.567 blank@02:08.400; country counters on the map before and after: country 39 3 to 5"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "human placement 4 (turn 13): the placement panel shows from 03:20.367 to 03:23.767",
+      "value": "army pool 3; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@03:20.367 3@03:22.667 blank@03:23.767; country counters on the map before and after: country 42 3 to 6"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "human placement 5 (turn 17): the placement panel shows from 04:10.333 to 04:13.533",
+      "value": "army pool 3; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read blank@04:10.333 0@04:10.367 3@04:12.367 blank@04:13.567; country counters on the map before and after: country 42 2 to 5"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "human placement 6 (turn 21): the placement panel shows from 04:52.700 to 04:54.800",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read blank@04:52.700 0@04:52.733 2@04:53.800 blank@04:54.800; country counters on the map before and after: country 40 2 to 4"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "human placement 7 (turn 25): the placement panel shows from 05:28.967 to 05:35.100",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@05:28.967 2@05:34.367 blank@05:35.100; country counters on the map before and after: country 44 3 to 5"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "human placement 8 (turn 29): the placement panel shows from 06:23.100 to 06:25.333",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@06:23.100 2@06:24.600 blank@06:25.333; country counters on the map before and after: country 4 3 to 5"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "human placement 9 (turn 33): the placement panel shows from 07:16.633 to 07:18.700",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@07:16.633 2@07:17.667 blank@07:18.733; country counters on the map before and after: country 4 2 to 4"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "human placement 10 (turn 37): the placement panel shows from 08:12.533 to 08:14.433",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@08:12.533 2@08:13.567 blank@08:14.467; country counters on the map before and after: country 12 1 to 3"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "human placement 11 (turn 41): the placement panel shows from 09:00.067 to 09:02.933",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@09:00.067 2@09:00.933 blank@09:02.933; country counters on the map before and after: country 12 2 to 4"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "human placement 12 (turn 45): the placement panel shows from 10:16.667 to 10:20.200",
+      "value": "army pool 2; the placement counter (middle panel, starts at 0, with an all button, plus and minus buttons and a place button) read 0@10:16.667 2@10:19.400 blank@10:20.200; country counters on the map before and after: country 12 2 to 4"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human placement summary",
+      "value": "12 placements in 12 human turns; the owner placed the whole pool each time, in one go except turn 1 (2 on one country, then 1 on another); every placement went to a country already holding 1 to 3 armies; stack sizes after placement 5 and 4 (turn 1), then 5, 6, 5, 4, 5, 5, 4, 3, 4, 4; the counter never exceeded the pool; the placement is committed with the place button (the counter returns to 0 and the pool message counts down, 1 army left after the first placement of turn 1); the biggest human stack of the sitting is 6 (country 42, from 3 plus 3 at placement 4). The owner never built the stacks of 8, 12 or 20 for which the sitting was meant."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "placement frame: counter at 2, turn 1",
+      "ref": "sha256:538eff24a54f259998bb505645479f4e63f03c4578a7ec154756b46196114084"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "first placement message at video offset 00:26.0",
+      "ref": "sha256:f7e6dabd798c8df8c5aa6723020545e0d99e047607dff017c3c3268e502a263e"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "computer move 1 (end of a computer turn): move message visible from 02:01.233 to 02:03.033",
+      "value": "from country 35 to country 34; counters before and after (changes only, other changes in the window belong to attacks): country 34 3 to 6, country 35 4 to 1"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "computer move 2 (end of a computer turn): move message visible from 04:29.733 to 04:31.433",
+      "value": "from country 19 to country 22; counters before and after (changes only, other changes in the window belong to attacks): country 19 5 to 1, country 22 2 to 6"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "computer move 3 (end of a computer turn): move message visible from 06:44.133 to 06:45.867",
+      "value": "the pair was not read from the strip; the counters show source and destination; counters before and after (changes only, other changes in the window belong to attacks): country 14 3 to None, country 18 3 to 1"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "computer move 4 (end of a computer turn): move message visible from 07:00.467 to 07:02.200",
+      "value": "from country 42 to country 43; counters before and after (changes only, other changes in the window belong to attacks): country 42 3 to 1, country 43 3 to 5"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "computer move 5 (end of a computer turn): move message visible from 07:42.300 to 07:44.000",
+      "value": "from country 21 to country 23; counters before and after (changes only, other changes in the window belong to attacks): country 21 3 to 1, country 23 4 to 6"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "computer move 6 (end of a computer turn): move message visible from 08:36.467 to 08:38.233",
+      "value": "from country 22 to country 23; counters before and after (changes only, other changes in the window belong to attacks): country 22 3 to 1, country 23 5 to 7, country 43 4 to 3"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "computer move 7 (end of a computer turn): move message visible from 09:22.667 to 09:24.300",
+      "value": "from country 6 to country 8; counters before and after (changes only, other changes in the window belong to attacks): country 2 4 to 2, country 6 3 to 1, country 8 1 to 3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "moves summary",
+      "value": "computer: 7 moves in 34 computer turns (one move at most per turn, each at the end of the turn): the source kept exactly 1 army in 7 of 7 and the destination received the rest (in time order the sources were country 35 holding 4, country 19 holding 5, then country 18 holding 3 whose pair the strip did not give, taken from the counters as source 18 and destination 14, then country 42, 21, 22 and 6, each holding 3); every move was between neighbouring countries. Human: no move in 12 turns, and the move button was never pressed."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move frame, computer, country 22 to country 23 at 08:37.0",
+      "ref": "sha256:e38ecc3d0a50f70c89b39a585986383fb63c187c4a7d2003ee383420016e447a"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human seat eliminated",
+      "value": "the last human country (13) was taken by attack 86 (yellow, strip visible from 10:42.700); the human seat read 0 countries at 10:42.867 and the elimination prompt (an accept-the-loss button and a keep-playing button) appeared at 10:42.97"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "elimination prompt frame at 10:43.5",
+      "ref": "sha256:3743c7099d1c44f8c07f7d8daa8c7d2185136b3dc3833b7f8a4914149b326274"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "the owner's answer",
+      "value": "the prompt closed at 10:46.97 and a stop-playing control stayed on the bottom bar: the owner chose to keep playing (the computers played the game out); the owner did not stop the play-out"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "prompt closed, play-out running at 10:47.2",
+      "ref": "sha256:f6425bd2547d91a02fadea9c25cf4fad709fef6b2694cf9aa9961b431b4d5857"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "play-out and end",
+      "value": "from 10:47.0 to 10:49.0 the computer seats moved in about 0.03 to 0.2 s per attack with no per-attack screen; counts yellow/red/green at 10:47.1 26/4/16; red reached 0 at 10:48.4; the yellow seat held 46 countries at 10:49.000; a winner dialog (yellow) came at 10:49.2 and stayed until about 10:55; the owner pressed continue; a scoreboard screen came at 10:56.2 and the title screen at 10:58.3 (scene changes found by frame differences); the recording ends at 11:02.5 on the title screen. The game ended by the human seat being eliminated and the owner letting the computers finish, not by the owner stopping the play-out."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "winner dialog frame at 10:51.0",
+      "ref": "sha256:138ce1da46a091c2971df38fea36f9f70a743e84e2dceef40dfcf46d52449efe"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "scoreboard frame at 10:57.0",
+      "ref": "sha256:ad5abeae0f50c1de2a53050015065b7b5020f5266d4eec395252e29c4ad9afcc"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "options-screen.png",
+      "sha256": "a6c288f0d4b2c19ae176c444dfb9cd42165cd4ff85c81af522c808a905e2e141",
+      "store": "release:E018"
+    },
+    {
+      "name": "placement-window1-counter-2.png",
+      "sha256": "538eff24a54f259998bb505645479f4e63f03c4578a7ec154756b46196114084",
+      "store": "release:E018"
+    },
+    {
+      "name": "blue-first-placement-message.png",
+      "sha256": "f7e6dabd798c8df8c5aa6723020545e0d99e047607dff017c3c3268e502a263e",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-move-22-to-23.png",
+      "sha256": "e38ecc3d0a50f70c89b39a585986383fb63c187c4a7d2003ee383420016e447a",
+      "store": "release:E018"
+    },
+    {
+      "name": "elimination-prompt.png",
+      "sha256": "3743c7099d1c44f8c07f7d8daa8c7d2185136b3dc3833b7f8a4914149b326274",
+      "store": "release:E018"
+    },
+    {
+      "name": "prompt-closed-play-out-running.png",
+      "sha256": "f6425bd2547d91a02fadea9c25cf4fad709fef6b2694cf9aa9961b431b4d5857",
+      "store": "release:E018"
+    },
+    {
+      "name": "winner-dialog.png",
+      "sha256": "138ce1da46a091c2971df38fea36f9f70a743e84e2dceef40dfcf46d52449efe",
+      "store": "release:E018"
+    },
+    {
+      "name": "scoreboard.png",
+      "sha256": "ad5abeae0f50c1de2a53050015065b7b5020f5266d4eec395252e29c4ad9afcc",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T17:55:47Z",
+  "ended": "2026-10-11T18:06:49Z",
+  "status": "completed"
+}
