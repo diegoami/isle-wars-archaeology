@@ -49,7 +49,7 @@
       "step": 0,
       "source": "screen",
       "field": "reading method",
-      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message (\"<seat> has N islands. Placing M armies\") read for the number of armies to place (the digits before the word for armies). Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them."
+      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message (the seat, its number of islands, the armies to place) read for the number of armies to place (the digits before the word for armies). Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them."
     },
     {
       "step": 0,
@@ -565,7 +565,7 @@
       "step": 0,
       "source": "screen",
       "field": "computer trade-ins (all four took three cards from the hand)",
-      "value": "green turn 16: cards 3 to 0 at 04:01.1, message \"5 extra armies\", pool 6 became 11 (04:03.5), then a capture draw 0 to 1 at 04:06.1; yellow turn 26: 5 to 2 at 05:49.8, message for doubling the army total, pool 4 became 8 (05:52.1), no capture that turn; red turn 43: 5 to 2 at 09:34.0, message \"8 extra armies\", then a capture draw 2 to 3 at 09:41.1; green turn 44: 4 to 1 at 09:45.1, message for bombing a country (09:46.0 to 09:52.5), pool 12 unchanged at 09:56.5 (it was 12 before)"
+      "value": "green turn 16: cards 3 to 0 at 04:01.1, message naming 5 extra armies, pool 6 became 11 (04:03.5), then a capture draw 0 to 1 at 04:06.1; yellow turn 26: 5 to 2 at 05:49.8, message for doubling the army total, pool 4 became 8 (05:52.1), no capture that turn; red turn 43: 5 to 2 at 09:34.0, message naming 8 extra armies, then a capture draw 2 to 3 at 09:41.1; green turn 44: 4 to 1 at 09:45.1, message for bombing a country (09:46.0 to 09:52.5), pool 12 unchanged at 09:56.5 (it was 12 before)"
     },
     {
       "step": 0,

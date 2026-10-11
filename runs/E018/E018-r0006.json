@@ -55,7 +55,7 @@
       "step": 0,
       "source": "screen",
       "field": "reading method",
-      "value": "the two-line counter strip (bottom right, \"attacker armies against defender armies\") was read at every frame where it changed, by matching glyph shapes of the digits (no OCR); the two country counters on the map were read before and after each attack by matching the large digits at the 46 country anchors; the owner of a country was read from its colour at the anchor (a selection or capture flash changes the colour for about 0.4 s, so owners right after a capture were not trusted and the counts decide). A capture is the country changing hands with the two counters adding up to the attacker armies at the capture; the last exchange of a capture is inferred (defender 1 to 0)."
+      "value": "the two-line counter strip (bottom right, the attacker's armies and the defender's armies) was read at every frame where it changed, by matching glyph shapes of the digits (no OCR); the two country counters on the map were read before and after each attack by matching the large digits at the 46 country anchors; the owner of a country was read from its colour at the anchor (a selection or capture flash changes the colour for about 0.4 s, so owners right after a capture were not trusted and the counts decide). A capture is the country changing hands with the two counters adding up to the attacker armies at the capture; the last exchange of a capture is inferred (defender 1 to 0)."
     },
     {
       "step": 0,
