@@ -1,0 +1,12 @@
+# E021's batch list (T45). One batch, read by launcher.py through tools/check_counts.py's parser:
+# `--batch session-a --help` prints it and never starts wine. A batch not listed here is refused by
+# name before wine starts (constraint B of the rule 18 carve-out).
+
+[batch session-a]
+questions = Q-CMB-01 Q-CMB-02 Q-CMB-03 Q-CMB-08 Q-CMB-09 Q-CMB-10
+source = the original Pro binary under Wine on the user's machine, the human seat played by e021_loop.py
+target = the 40 Session A cells (even 16, underdog 4, tiny 3, quit 2, lost 5, busy 10), counted once per cell across all E021 records in measurements/progress-r<nn>.json
+games_max = 20
+sitting_seconds = 3600
+blocks = session-a.steps
+note = static first (rule 24): F011 names the human's gate, exchange, exits and forfeit; the sitting records what the running game shows. A cell a deal does not offer is left unmet, never forced; stacks above 12 not reached are recorded as unreached.

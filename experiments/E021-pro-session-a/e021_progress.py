@@ -117,9 +117,12 @@ def collect(paths):
 
 
 def count(paths):
-    """The progress of every record in `paths`: rows per case with their met cells, and the sums."""
+    """The progress of every record in `paths`: rows per case with their met and unmet cells (a cell
+    no deal offered yet stays listed as unmet: the outcome is narrowed for it, the owner's
+    2026-10-07 rule for stacks above 12), and the sums."""
     met, run_ids = collect(paths)
-    rows = {case: {"met": len(met[case]), "total": cases.TOTALS[case], "cells": sorted(met[case])}
+    rows = {case: {"met": len(met[case]), "total": cases.TOTALS[case], "cells": sorted(met[case]),
+                   "unmet": [c for c in cases.cells(case) if c not in met[case]]}
             for case in cases.CASES}
     return {"schema": SCHEMA, "records": run_ids, "rows": rows,
             "met": sum(row["met"] for row in rows.values()), "total": cases.TOTAL}

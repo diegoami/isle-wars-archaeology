@@ -22,6 +22,8 @@ class ProgressTest(unittest.TestCase):
             self.assertEqual(result["met"], 3)
             self.assertEqual(result["total"], 40)
             self.assertEqual(result["rows"]["even"]["cells"], [1])
+            self.assertEqual(result["rows"]["even"]["unmet"], list(range(2, 17)))
+            self.assertEqual(result["rows"]["busy"]["unmet"], [1] + list(range(3, 11)))
             self.assertEqual(sum(row["met"] for row in result["rows"].values()), 3)
 
     def test_other_experiments_cannot_credit_session_a(self):
