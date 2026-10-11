@@ -126,7 +126,7 @@ For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the
      3. `gh pr merge <pr> --squash --delete-branch`, then label `status:merged`.
      4. File one `T<nn> follow-up` issue (`triage:needed`) for the non-blocking findings.
      5. Unblock the tasks whose Merge-after are now all merged.
-     6. Remove the task's worktrees.
+     6. Leave the task's worktrees; the sweep removes old ones (CLAUDE.md rule 2a).
      7. Post §9's measurement comment on the PR.
      8. Report the merge, the findings, the follow-ups and what is ready next.
    - `status:rework`:
