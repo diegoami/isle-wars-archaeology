@@ -70,7 +70,18 @@ DEFAULT_TEMPLATES = Path("/mnt/c/Temp/iwp-shots/wine/reader-templates.json")
 # Q-BON-07: the human's screen; the second button skips it). The right button, red, declines, and is the
 # one `card-decline` clicks; the left, green, trades, and is the other half of the test. Each is a flat
 # coloured button: `offer_up` counts the pixels of the button's colour in a box around it.
-# Census: see the commit that follows (pending).
+# Census over all 28570 frames of the 12 model-driven sittings on the user's machine (frames/*.png, decoded in
+# place, constraint A; nothing copied) and the 2091 captures of their session folders: the offer is on one
+# frame, 20261011T154319Z frames/618-1791734039170.png (sha256
+# c34707147e9a488b57a47fc693353e66a11542d92442885e8e6b779c669c912c), and on the loop's own capture of it,
+# session/e021-read-00230.png (sha256 410ad3999b1892070ba83a7a3743637c8fe1563512aa167755329c35a3a08394; the
+# same bytes as e021-read-00231.png, after.png and unknown-screen.png of that sitting). On both, the red test
+# counts 2006 and the green 2071; on every other frame the red counts at most 301 (a setup screen of
+# 20261008T184505Z, frames/10-1791485157213.png and its neighbours) and the green at most 23, and no frame
+# counts both. One offer screen is all the sittings hold, so each minimum sits at about half of its
+# count (1000), between the two populations; the twin frame 618-1791734038206.png (sha256
+# 1eed8b23e9acbeb346c6ac401b7b0730bca95e939078f1d56ec62adbeb9b788b) is the income message about a second
+# before the offer, and counts 0 and 0.
 OFFER_RED_BOX = (418, 510, 98, 45)        # x, y, w, h: around the red decline button (x 421-512, y 512-552 on the frame)
 OFFER_GREEN_BOX = (286, 510, 98, 45)      # around the green trade button (x 289-380, y 512-551 on the frame)
 OFFER_RED_MINIMUM = 1000

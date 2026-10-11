@@ -118,6 +118,7 @@ def offer_screen():
     """The card trade-in offer as the detector sees it: a board (score panel) with the two buttons of the
     middle panel in their grounds, red on the right and green on the left. Painted to about the pixel
     count the real frame shows (2006 red, 2071 green: the buttons' text and shading take the rest)."""
+    # (the painted rectangles are 92x22 = 2024 pixels each)
     rgb = board_screen()
     paint(rgb, (421, 514, 92, 22), (176, 16, 16))
     paint(rgb, (289, 514, 92, 22), (0, 176, 32))
@@ -132,7 +133,7 @@ def menu_board():
 
 
 def placement_row_board():
-    """The board with the placement row lit (E020's `place` test: (168, 168, 168) in its watched area)."""
+    """The board with a patch of the placement row's grey (168, 168, 168) lit in its area."""
     rgb = board_screen()
     return paint(rgb, (265, 530, 50, 26), (168, 168, 168))
 
@@ -204,10 +205,9 @@ class OfferScreenTest(unittest.TestCase):
                 self.assertFalse(boardview.offer_up(rgb))
 
     def test_the_minimums_sit_between_the_measured_populations(self):
-        # 2006 red and 2071 green on the real offer frames (the loop's capture and the watcher's, where it
-        # was 2061 and 1952); 0 of both on every other frame of the census
-        self.assertTrue(0 < boardview.OFFER_RED_MINIMUM < 1952)
-        self.assertTrue(0 < boardview.OFFER_GREEN_MINIMUM < 1952)
+        # 2006 red and 2071 green on the offer frames; at most 301 red and 23 green on every other frame
+        self.assertTrue(301 < boardview.OFFER_RED_MINIMUM < 2006)
+        self.assertTrue(23 < boardview.OFFER_GREEN_MINIMUM < 2071)
 
     def test_the_decline_point_is_inside_the_red_button_and_outside_the_green_one(self):
         x, y = boardview.DECLINE_POINT
