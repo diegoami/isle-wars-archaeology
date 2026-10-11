@@ -1,0 +1,102 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0009",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "e805305",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@e805305",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 12978 video frames in 662.50 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (11:02 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+    "args": [
+      "video file name: IP1 027.mp4",
+      "video sha256: aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "probe: 662.50 s, 12978 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 87585120 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the event messages of the game and the scene changes at the end"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "event scan over the whole video",
+      "value": "the middle panel was scanned at 4 frames a second for the magenta message text and every hit was checked against the turn it fell in (the human turns' action buttons also trigger the colour test and were set aside); three event messages in 46 turns, all between turns and all of one kind (a production-centre increase), each preceded by a placeholder message in both side panels for about 1.5 s"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "event message 1, video offsets 03:52.00 to 03:57.00, between turns 15 (red) and 16 (green)",
+      "value": "one production-centre increase message in the middle panel (placeholder at 03:51.5); no other event kind"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "event message 2, video offsets 09:26.00 to 09:31.00, between turns 42 (yellow) and 43 (red)",
+      "value": "one production-centre increase message in the middle panel (the message box fills from 09:26.0 (partial text at 09:26.0)); no other event kind"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "event message 3, video offsets 10:03.25 to 10:08.25, between turns 44 (green) and 45 (blue)",
+      "value": "one production-centre increase message in the middle panel (placeholder from about 10:02.0 to 10:03.2); no other event kind"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "rate",
+      "value": "3 events in the 40 turn changes from turn 6 on (turn 6 to turn 7 up to turn 45 to turn 46), none in the first 14 turn changes; about 7.5 per cent; the setting was the middle one; no seat held 39 or more countries before the play-out (the largest was yellow with 26 at the elimination)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "scene changes from 10:40 on (frame differences)",
+      "value": "prompt opens 10:42.97; prompt closes 10:46.97; winner dialog 10:49.20; scoreboard screen 10:56.20; title screen 10:58.27"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "event message frame at 03:55.0",
+      "ref": "sha256:f78c9f0a1d9c06d2757799ba84250b0b317a712bde54d06af9291385bf0526f7"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "event-message-between-turns-15-and-16.png",
+      "sha256": "f78c9f0a1d9c06d2757799ba84250b0b317a712bde54d06af9291385bf0526f7",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T17:55:47Z",
+  "ended": "2026-10-11T18:06:49Z",
+  "status": "completed"
+}
