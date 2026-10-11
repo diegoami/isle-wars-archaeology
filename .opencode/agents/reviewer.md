@@ -69,7 +69,9 @@ how the run works.
   review. To test a mutation, change the file in place in your worktree, rebuild clean, run, and say
   so; a mutation is never committed. Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
-  a file with uncommitted work: they return the last commit and destroy the rest.
+  a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
+  copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
+  as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
 - Stay inside your worktree, but for two places (T29). OpenCode rejects any other path outside it,
   and the script then discards the whole review: never a home directory, main checkout or other
   worktree.
