@@ -78,7 +78,13 @@ indexed in `docs/tasks/README.md`.
       - Start every OpenCode run in the background, with stdin from a file or closed, never an
         inherited pipe. `opencode run` waits for stdin's end-of-file before it creates a session;
         the scripts close it. Never wait on a run blind.
-      - Watch it with one monitor that checks every 1–2 minutes:
+      - Watch it with one monitor that checks every 1–2 minutes, started with
+        `tools/harness/watch.sh --label <name> --pid <pid> --file <log>` (or `--pid-of <pattern>`,
+        resolved once, leaving out the watcher itself). It sees the exit by `kill -0 <pid>`. Never
+        test a job's life with `pgrep -f <pattern>` in a loop: the pattern is in the watching
+        shell's own command line, so it always matches and the exit is never seen (L48; on
+        2026-10-11 a review's exit went unseen for 1.5 hours that way). Add the run's own
+        progress checks below in a second monitor if needed, never a hand-made liveness test:
         - that the session started (the run log's `session ses_… started` line, or
           `opencode session list` in the run's directory), and the run's exit;
         - progress: the session's `updated` time, the worktree's changed files, new lines in
