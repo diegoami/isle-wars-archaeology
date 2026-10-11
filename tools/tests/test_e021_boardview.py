@@ -255,9 +255,9 @@ class PanelScreenTest(unittest.TestCase):
     def test_the_constants_are_e020s_place_select_test(self):
         # the loop's PLACE_SELECT and PLACE_WATCH are the click-until? test of E020's block `place`
         import e021_loop
+        # (the colour and the tolerance; the minimum is the detector's own, 500, from the census)
         self.assertEqual(e021_loop.PLACE_SELECT.split(" {x}")[0],
-                         "click-until? %d %d %d %d %d" % (*boardview.PANEL_GREY, boardview.PANEL_TOLERANCE,
-                                                           boardview.PANEL_MINIMUM))
+                         "click-until? %d %d %d %d 1000" % (*boardview.PANEL_GREY, boardview.PANEL_TOLERANCE))
         self.assertEqual(e021_loop.PLACE_WATCH, "watch %d %d %d %d" % boardview.PANEL_ROW)
 
     def test_the_panel_is_up_on_the_buttons_grey_and_down_on_the_turn_menu(self):
@@ -285,6 +285,19 @@ class PanelScreenTest(unittest.TestCase):
         # row too, 1458 pixels on the real winner frame, over the panel's black gap
         rgb = board_screen()
         paint(rgb, (328, 523, 150, 25), (168, 168, 168))
+        self.assertGreaterEqual(boardview.gold_count(rgb, boardview.PANEL_ROW, boardview.PANEL_GREY,
+                                                     boardview.PANEL_TOLERANCE), boardview.PANEL_MINIMUM)
+        self.assertFalse(boardview.panel_up(rgb))
+
+    def test_the_move_in_panel_is_not_the_placement_panel(self):
+        # after a capture: "Move in how many?" with ALL, +, - and DONE, its + a few pixels left of the
+        # placement panel's (the census's 14 frames: gap pixels 64 on 20261011T091212Z
+        # frames/402-1791710281089.png): grey in the row, and over the gap box
+        rgb = board_screen()
+        paint(rgb, (274, 531, 55, 22), (173, 165, 165))
+        paint(rgb, (348, 531, 38, 22), (173, 165, 165))
+        paint(rgb, (400, 531, 38, 22), (173, 165, 165))
+        paint(rgb, (459, 531, 70, 22), (0, 176, 32))
         self.assertGreaterEqual(boardview.gold_count(rgb, boardview.PANEL_ROW, boardview.PANEL_GREY,
                                                      boardview.PANEL_TOLERANCE), boardview.PANEL_MINIMUM)
         self.assertFalse(boardview.panel_up(rgb))
