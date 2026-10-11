@@ -11,7 +11,7 @@ import { namedModel, familyOf, implementerFamilies } from './common.mjs';
 import { runOpenCodeWatched } from './opencode.mjs';
 
 const MODELS = () => ({
-  'gpt-6.1-sol': { id: 'openai/gpt-6.1-sol', family: 'openai' },
+  'gpt-6.1-sol': { id: 'openai/gpt-6.1-sol', family: 'openai', variant: 'low' },
   luna: { id: 'openai/gpt-5.6-luna', family: 'openai' },
   'mm-m3': { id: 'minimax/MiniMax-M3', family: 'minimax' },
   'ali-glm': { id: 'alibaba-token-plan/glm-5.3', family: 'glm' },
@@ -34,6 +34,14 @@ const NAMED = [
   ['not a key, not an id', 'nonsense', {}, 'refused'],
 ];
 
+// [label, name, variant, expected variant] (the user's effort choice is honoured, PR 166's review)
+const VARIANTS = [
+  ['registered key, no variant', 'gpt-6.1-sol', undefined, 'low'],
+  ['registered key, medium', 'gpt-6.1-sol', 'medium', 'medium'],
+  ['registered id, medium', 'openai/gpt-6.1-sol', 'medium', 'medium'],
+  ['same as registered', 'gpt-6.1-sol', 'low', 'low'],
+];
+
 // [implementer name, expected family or null]
 const IMPLEMENTERS = [
   ['gpt-6.1-sol', 'openai'], ['openai/gpt-6.1-sol', 'openai'], ['openai/chatgpt-4o-latest', 'openai'],
@@ -50,7 +58,19 @@ const GUARD = [
   ['two names, one family', ['luna', 'openai'], 'openai'],
 ];
 
+function checkVariants(failures) {
+  for (const [label, name, variant, want] of VARIANTS) {
+    const config = { models: MODELS() };
+    const key = namedModel(config, name, { variant }, (c, m) => { throw new Error(m); });
+    const got = config.models[key].variant;
+    if (got !== want) failures.push(`variant: ${label}: ${got}, expected ${want}`);
+    if (config.models['gpt-6.1-sol'].variant !== 'low') failures.push(`variant: ${label}: harness.json's entry was changed`);
+    if (config.models[key].family !== 'openai') failures.push(`variant: ${label}: family lost`);
+  }
+}
+
 function checkNamed(failures) {
+  checkVariants(failures);
   for (const [label, names, want] of GUARD) {
     const r = implementerFamilies(MODELS(), names);
     const got = r.refuse ? 'refused' : r.families.join(',');
@@ -128,5 +148,5 @@ export async function choiceSelfTest() {
   const failures = [];
   checkNamed(failures);
   await checkResume(failures);
-  return { failures, count: GUARD.length + NAMED.length + IMPLEMENTERS.length + 3 };
+  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 3 };
 }
