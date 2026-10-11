@@ -136,6 +136,19 @@ click 495 540
 watch 262 502 276 70
 click-any? 402 531
 
+# --- block card-decline
+# The card trade-in offer (fix #175): at a turn's start, with a valid match in hand, the game shows two
+# buttons in the middle panel instead of the placement row (sitting 20261011T154319Z, game 1 turn 10,
+# frame 618-1791734039170.png, sha256 c34707147e9a488b57a47fc693353e66a11542d92442885e8e6b779c669c912c;
+# the loop's own capture of the same screen is session/e021-read-00230.png, sha256
+# 410ad3999b1892070ba83a7a3743637c8fe1563512aa167755329c35a3a08394). The red button, the one that skips
+# the offer (F014 Q-BON-07), has its red ground at x 421-512, y 512-552 on that frame: its centre is 466,532.
+# Not in walkthroughs/coordinates.md (E002's tour never met the offer). A plain click, never `click!`: if
+# the game does not answer it, the loop reads the screen and ends the sitting as card-trade-forced instead of
+# aborting on a step failure. The green trade button (centre 334,532) is never clicked here.
+watch 262 502 276 70
+click 466 532
+
 # --- block eliminated-keep-playing
 # The elimination notice (runtime/iwp/driver/screens.py `eliminated`): of its two buttons in the
 # bottom bar, the one that lets the computers play the game out, red, centre 665,531. The owner's
