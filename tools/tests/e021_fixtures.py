@@ -89,7 +89,11 @@ class FakeGame:
         self.pool_left = None              # the pool a partial placement left (None: this turn's whole pool)
         self.counter = 0                   # the placement panel's counter (fix #180)
         self.plus_works = True             # False: the + button changes nothing
-        self.rest_leaves_row = False       # True: the rest's PLACE leaves the placement row up (a fault)
+        self.panel = False                 # the placement panel (How Many?, ALL + - PLACE) is up: a country is
+                                           # selected and the pool is not yet zero (fix #182). The screen's
+                                           # name stays `board-menu` while it is, as the real reader's does
+        self.commit_leaves_panel = False   # True: an ALL and PLACE leaves the panel up (a fault)
+        self.blocked = []                  # inputs the game ignored because the panel was up
         self.landing_skew = 0              # armies the PLACE of an exact stack lands short of the counter
 
     def remaining(self):
@@ -142,25 +146,23 @@ class FakeGame:
             return {"changed": False}
         elif name == "place-commit" and self.selected is not None:
             self.board[self.selected]["army"] += self.remaining()
-            if self.pool_left is not None and self.rest_leaves_row:
-                self.screen = "board"          # a fault the test scripts: the row is still up after the rest
-            elif self.pool_left is not None:
-                self.screen = "board-menu"     # the rest spent the pool: the turn menu shows
             self.selected, self.pool_left, self.counter = None, None, 0
+            self.panel = self.commit_leaves_panel
         elif name == "place-plus":
             # + adds one to the counter, capped at the pool's remainder (F013 Q-REI-03)
             if self.selected is not None and self.plus_works:
                 self.counter = min(self.counter + 1, self.remaining())
         elif name == "place-only" and self.selected is not None:
             # PLACE alone: the counter's armies go into the selected country; the pool is smaller by
-            # that much, and the turn menu shows when it is zero (the row stays up otherwise)
+            # that much. The panel goes only when the pool is zero; the screen's name does not change
             self.board[self.selected]["army"] += max(0, self.counter - self.landing_skew)
             left = self.remaining() - self.counter
             self.selected, self.counter = None, 0
-            if left <= 0:
-                self.pool_left, self.screen = None, "board-menu"
-            else:
-                self.pool_left, self.screen = left, "board"
+            self.pool_left = None if left <= 0 else left
+            self.panel = left > 0
+        elif name in ("pass", "attack-open") and self.panel:
+            self.blocked.append(name)          # the turn menu is not there: the click changes nothing
+            return {"changed": False}
         elif name == "pass":
             self.passes += 1
             if self.on_pass is not None:
@@ -204,7 +206,7 @@ class FakeGame:
                 return {"picked": None}
             for country in sorted(self.board):
                 if self.board[country]["owner"] == BLUE:
-                    self.selected = country
+                    self.selected, self.panel = country, True
                     return {"picked": 1}
             return {"picked": None}
         return {}
@@ -250,7 +252,7 @@ class FakeDriver:
             if self.game.offer:
                 return {"picked": None}
             if country is not None and self.game.board[country]["owner"] == BLUE:
-                self.game.selected = country
+                self.game.selected, self.game.panel = country, True
                 return {"picked": 1}
             return {"picked": None}
         if step.op == "click":
@@ -262,7 +264,10 @@ class FakeDriver:
 
     def read_screen(self):
         # the click-driver's pixel reader has no name for the Game Options screen: `unknown` (fix #171)
-        return "unknown" if self.game.screen == "game-options" else self.game.screen
+        if self.game.screen == "game-options":
+            return "unknown"
+        # while the placement panel is up the real reader names the board `board-menu` (fix #182)
+        return "board-menu" if self.game.panel and self.game.screen == "board" else self.game.screen
 
     def read_winner(self):
         return None
@@ -307,7 +312,8 @@ class FakeReader:
             if self.game.phase == "passed" and self.seat_after_failure is not None:
                 seat = self.seat_after_failure
         return boardview.Reading(board, f"{self.reads:064x}", seat,
-                                 self.game.phase in ("battle", "move-in"), self.unread, self.game.offer)
+                                 self.game.phase in ("battle", "move-in"), self.unread, self.game.offer,
+                                 self.game.panel)
 
     def options_screen(self):
         """boardview.FrameReader.options_screen: (the capture shows the Game Options screen, its sha256)."""

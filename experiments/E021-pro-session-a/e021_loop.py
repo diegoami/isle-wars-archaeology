@@ -92,8 +92,8 @@ past 8 and 12 (sitting 20261011T170700Z grew one to 27). The placement panel als
 Q-REI-03, CastScript 85 `plus2`: adds one to the counter, capped at the pool; 87 `min2`: takes one off; 83 `Pall2`:
 the whole pool; 89 `place2`: moves the counter into the selected country), so when `place_for` has a target with a
 `gap` above 0 and a named size case it selects the country as before, sends block `place-plus` once per army (the
-counter then holds min(gap, pool)), then block `place-only` (PLACE), and reads the screen: the turn menu means the pool
-is spent, the placement row still up means armies are left, which go with `place-commit` (ALL, PLACE) on a second
+counter then holds min(gap, pool)), then block `place-only` (PLACE), and reads the placement panel (below): the panel gone means the pool
+is spent, the panel still up means armies are left, which go with `place-commit` (ALL, PLACE) on a second
 country (cases.rest_choices: never the target, never a needed attacker showing its size, an interior country first,
 then a frontier country; the phase ends only at pool zero, so the rest must go somewhere). That list is asked
 BEFORE the exact path is taken: with no safe second country the turn keeps today's ALL on the target, and a
@@ -108,6 +108,16 @@ credits a cell; only the board does. With gap 0, or no named case, the placement
 fix #178's bounds (a gap that stops shrinking stops counting as growing; the abandon) are untouched. None of the new
 blocks is a New Game.
 
+"The pool is zero" is read from the placement panel, never from the screen's name (fix #182; sitting
+20261011T184210Z, game 1 turn 1): the name `board-menu` is the bottom bar's menu row, which is lit while the panel is
+up, and after PLACE with 3 armies left it still read `board-menu` with "How Many? 0" on screen. The loop took the pool
+as spent, skipped the rest and sent PASS, which did nothing. `panel_after` now takes readings (boardview.panel_up: E020's
+own placement-row test, the buttons' grey in the row 265,530,270,26) until one shows no panel; it is asked after
+`place-only`, after the rest's `place-commit`, and after every ALL placement (`place-commit` on the target, including
+the no-safe-rest path). A panel still up after the rest, or after ALL, ends the sitting as `placement-stuck`
+(`place-stuck` line for the ALL path). `place-landed`'s `pool` is what the human's countries gained in all, read at the
+first attack-phase reading, which is after the panel went, so it holds the target's armies and the rest.
+
 Exchanges are counted from the conserved total (DW3): the two countries' armies before a click
 minus their armies after it, and only from a reading whose score panel boxes the human's seat: once
 another seat's turn has begun (a failure passes the turn by itself) the reading may hold that seat's
@@ -120,7 +130,7 @@ click whose total fell by more is logged with the number, and the summary counts
 
 Lines of `actions.jsonl` (structural values only, constraint D: our own words, numbers, colour
 words and sha256s; no text of the original): `board` (each reading: its frame, the seat, how many
-countries were unread), `card-offer`, `place-target`, `place-exact`, `place-landed`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
+countries were unread), `card-offer`, `place-target`, `place-exact`, `place-landed`, `place-stuck`, `attack-open`, `exchange-click`, `quit-attack`, `move-in-done`, `case-dropped`,
 `attack-attempt` (the aim, both countries before and after, the battle, the clicks, the armies
 lost, the outcome, the frames), `case-met`, `turn-end`. The export (e021_export.py) turns
 `exchange-click`, `attack-attempt`, `case-met` and `turn-end` into the record's observations.
@@ -170,6 +180,10 @@ NO_FIT_TURNS = 3                     # turns in a row of one game with no needed
 NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
                                              # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
+PANEL_POLLS = 3                      # readings after a PLACE before the placement panel counts as still up
+PANEL_POLL_SECONDS = 0.5             # between them (a guess: the click-driver's `settle` already waited for a
+                                     # quiet panel; the panel did not go in 3.5 s of frames when armies were left,
+                                     # sitting 20261011T184210Z)
 OFFER_POLLS = 5                      # readings after `card-decline` before the offer counts as still up
 OFFER_POLL_SECONDS = 0.5             # between them (a guess: the game answers the click at once as far
                                      # as any frame shows; no sitting has declined yet, so this is the
@@ -472,15 +486,40 @@ class SessionALoop(e020_loop.BatchLoop):
                 return ended
         else:
             self.send("place-commit")
+            reading = self.panel_after()
+            if reading is None:
+                return "board-unreadable"
+            if reading.panel:                            # ALL and PLACE left the panel up (fix #182)
+                self.driver.note(event="place-stuck", reason="panel-up-after-all")
+                self.unknown_screen(self.driver.read_screen(), ended="placement-stuck")
+                return "placement-stuck"
         self.summary["turns"] += 1
         self.turn_growing = chosen and self.growing(*target)
         return True
 
+    def panel_after(self):
+        """The reading that says whether the placement panel is gone (fix #182): captures, up to
+        PANEL_POLLS of them PANEL_POLL_SECONDS apart, until one shows no panel (boardview.panel_up, the
+        pixel test) -- the pool is zero only then. The screen's name cannot say so: `board-menu` is the
+        bottom bar's menu row, lit while the panel is up (sitting 20261011T184210Z, game 1 turn 1: after
+        PLACE with 3 armies left the name was `board-menu` and the panel, "How Many? 0", was still up).
+        The last reading when the panel never went; None when a reading cannot be used (the sitting then
+        ends cleanly, as `look` does)."""
+        reading = None
+        for poll in range(PANEL_POLLS):
+            reading = self.look()
+            if reading is None or not reading.panel:
+                return reading
+            if poll + 1 < PANEL_POLLS:
+                self.sleep(PANEL_POLL_SECONDS)
+        return reading
+
     def place_exact(self, board, country, gap, rest_choices):
         """The chosen stack gets exactly `gap` armies (fix #180; the owner, 2026-10-11): `place-plus`
         once per army (the counter holds min(gap, pool): + is capped at the pool, F013 Q-REI-03), then
-        `place-only` (PLACE). The pool is read from the screen: the turn menu means it is zero (the
-        phase ends only then), the placement row still up means armies are left, and they go with
+        `place-only` (PLACE). The pool is read from the placement panel (`panel_after`, fix #182): the
+        panel gone means it is zero (the phase ends only then), the panel still up means armies are left,
+        and they go with
         `place-commit` (ALL, PLACE) on a second country. `rest_choices` is cases.rest_choices' answer
         (never `country`, never a needed attacker showing its size; interior countries first, then
         frontier countries), and the caller took this path only because it holds at least one. They are
@@ -497,8 +536,11 @@ class SessionALoop(e020_loop.BatchLoop):
         screen = self.driver.read_screen()
         if screen not in e020_loop.BOARD:
             return self.off_board(screen)
+        reading = self.panel_after()
+        if reading is None:
+            return "board-unreadable"
         rest = None
-        if screen != "board-menu":                       # the row is still up: the pool holds armies
+        if reading.panel:                                # the panel is still up: the pool holds armies
             for candidate in rest_choices:
                 x, y = self.points[candidate]
                 self.send_step("place-select", PLACE_WATCH)
@@ -511,10 +553,10 @@ class SessionALoop(e020_loop.BatchLoop):
             if screen not in e020_loop.BOARD:
                 return self.off_board(screen)
             self.send("place-commit")
-            screen = self.driver.read_screen()
-            if screen not in e020_loop.BOARD:
-                return self.off_board(screen)
-            if screen != "board-menu":                   # the pool is not spent: never attack with it
+            reading = self.panel_after()
+            if reading is None:
+                return "board-unreadable"
+            if reading.panel:                            # the pool is not spent: never attack with it
                 return self.placement_stuck(country, gap, rest)
         self.driver.note(event="place-exact", exact=1, country=country, gap=gap, plus=gap, rest_to=rest)
         self.landing = {"country": country, "gap": gap, "board": board}
