@@ -5,14 +5,15 @@
 #       [--opencode-log LOG] [--problem REGEX] [--idle-min 10] [--every 60]
 #
 # --unit (preferred: a job started with tools/harness/run-unit.sh): alive while
-# `systemctl --user is-active` says so, and the exit line gives the unit's result. Otherwise the
-# job is alive while `kill -0 PID` succeeds. Never `pgrep -f PATTERN` in a loop: the pattern is in
+# `systemctl --user is-active` says so (the exit is in `journalctl --user -u UNIT`). Otherwise
+# the job is alive while `kill -0 PID` succeeds. Never `pgrep -f PATTERN` in a loop: the pattern is in
 # the watching shell's own command line, so it always matches itself and the exit is never seen
 # (2026-10-04, L48; again 2026-10-11, where a review's exit went unseen for 1.5 h).
 # --pid-of resolves PATTERN once, at start, leaving out this script and its own ancestors, and
 # refuses when it finds no process or more than one.
 # Progress: --file (repeatable) counts the files' total size. --opencode-log is an OpenCode run's
-# log: its "session ses_… started" line names the session, whose newest update in the harness
+# log: its "session ses_… started" line (or, for `opencode run --format json`, its events'
+# "sessionID") names the session, whose newest update in the harness
 # database (read-only) is then the signal, since `opencode run` writes its output file only at
 # the end and a size watch flags a healthy run as stuck (goal2-archaeology, 2026-10-11).
 # No progress for --idle-min minutes prints "possibly stuck" (once per stall). --problem: a new
@@ -77,6 +78,8 @@ echo "$label: watching ${unit:-pid $pid}"
 session_updated() {  # newest update (ms) of the OpenCode session the log names, or nothing
   local sid
   sid=$(grep -o 'session ses_[A-Za-z0-9]* started' "$oclog" 2>/dev/null | tail -1 | cut -d' ' -f2)
+  # a bare `opencode run --format json` log names it in each event instead
+  [ -n "$sid" ] || sid=$(grep -o '"sessionID":"ses_[A-Za-z0-9]*"' "$oclog" 2>/dev/null | head -1 | cut -d'"' -f4)
   [ -n "$sid" ] || return 0
   python3 -I -c '
 import os, sqlite3, sys
