@@ -104,6 +104,11 @@ class FakeGame:
         if name == "new-game":
             self.screen = self.board_screen
             self.games += 1
+        elif name == "options-play":
+            # the clicks after New Game's own, on the Game Options screen (fix #171)
+            if self.screen == "game-options":
+                self.screen = self.board_screen
+                self.games += 1
         elif name == "abandon-game":
             # New Game from the board: with fewer than 10 human countries the game credits a loss
             # and shows the Scoreboard (F003); elsewhere the click is not on the screen
@@ -208,7 +213,8 @@ class FakeDriver:
         self.notes.append(dict(self.context, **fields))
 
     def read_screen(self):
-        return self.game.screen
+        # the click-driver's pixel reader has no name for the Game Options screen: `unknown` (fix #171)
+        return "unknown" if self.game.screen == "game-options" else self.game.screen
 
     def read_winner(self):
         return None
@@ -248,6 +254,11 @@ class FakeReader:
                 seat = self.seat_after_failure
         return boardview.Reading(board, f"{self.reads:064x}", seat,
                                  self.game.phase in ("battle", "move-in"), self.unread)
+
+    def options_screen(self):
+        """boardview.FrameReader.options_screen: (the capture shows the Game Options screen, its sha256)."""
+        self.reads += 1
+        return self.game.screen == "game-options", f"{self.reads:064x}"
 
     def wait_battle(self, seconds):
         reading = self.read()

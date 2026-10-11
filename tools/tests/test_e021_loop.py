@@ -48,7 +48,9 @@ class NewGameTest(unittest.TestCase):
     """Done-when 1: the player never sends New Game except on the title (E020's rule, reused)."""
 
     def test_the_games_and_their_new_game_rule_are_e020s_own(self):
-        for name in ("run", "games", "play_game", "off_board", "continue_after_game_over",
+        # `games` is no longer on this list: fix #171 overrides it, for the Game Options case only
+        # (OptionsAfterAbandonTest holds every other path to E020's behaviour)
+        for name in ("run", "play_game", "off_board", "continue_after_game_over",
                      "leave_scoreboard", "restore_shipped_skr", "send"):
             self.assertIs(getattr(e021_loop.SessionALoop, name), getattr(e020_loop.BatchLoop, name), name)
 
@@ -57,7 +59,26 @@ class NewGameTest(unittest.TestCase):
         # New Game sent from a board is the no-fit abandon's, on the board-menu, after its line
         source = (fx.ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
         self.assertEqual(source.count('self.send("abandon-game")'), 1)
-        self.assertNotIn('self.send("new-game")', source)          # E020's games() sends it
+        self.assertNotIn('self.send("new-game")', source)          # the one send is `self.send(block)`
+        # fix #171: the games() override sends `new-game` only for a game that starts from the title
+        # (the screen it read is not the Game Options screen); the Game Options screen gets options-play
+        self.assertEqual(source.count('"new-game"'), 1)
+        self.assertEqual(source.count('block = "options-play" if screen == OPTIONS else "new-game"'), 1)
+        self.assertEqual(source.count("self.send(block)"), 1)
+
+    def test_options_play_sends_no_new_game(self):
+        # fix #171: block options-play holds only the clicks of new-game after its first one (the same
+        # points, none new), and never new-game's own first click, 100,585, which is New Game
+        from driver.clicks import parse_blocks
+        blocks = parse_blocks((fx.ROOT / "experiments" / "E021-pro-session-a" / "session-a.steps").read_text())
+
+        def points(name):
+            return [tuple(step.args) for step in blocks[name] if step.op in ("click", "click!")]
+        self.assertEqual(points("options-play"), points("new-game")[1:])
+        self.assertEqual(points("options-play"), [(533, 311), (565, 532)])
+        self.assertNotIn((100, 585), points("options-play"))
+        source = (fx.ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
+        self.assertEqual(source.count('"abandon-game"'), 1)         # the abandon is still the one New Game from a board
 
     def test_new_game_is_sent_from_the_title_only(self):
         for screen in ("board", "board-menu", "scoreboard", "game-over", "eliminated", "unknown", "title"):
@@ -150,6 +171,162 @@ class NoFitAbandonTest(unittest.TestCase):
         world.loop.run()
         self.assertEqual(world.game.games, 1)
         self.assertEqual(world.loop.summary["ended"], "unknown-screen")
+
+
+class OptionsAfterAbandonTest(unittest.TestCase):
+    """Fix #171: an abandon whose New Game goes straight to the Game Options screen (no Scoreboard, no
+    loss: sitting 20261011T142906Z, game 2 turn 3) carries on instead of ending the sitting."""
+
+    def world(self, games_max=2, restore=True):
+        world = World({3: (BLUE, 20), 4: (GREEN, 30)}, screen="title", met=ALL, games_max=games_max)
+        world.game.board_screen = "board-menu"
+        world.game.reinforcements = 0
+        world.game.after_abandon = "game-options"
+        if restore:
+            world.loop.restore, world.loop.shipped_skr = (lambda: "s" * 64), "s" * 64
+        return world
+
+    def test_game_options_after_an_abandon_ends_the_game_and_starts_the_next_through_options_play(self):
+        world = self.world()
+        world.loop.run()
+        events = [(n["event"], n.get("reason")) for n in world.driver.notes if n.get("event") in
+                  ("game-abandoned", "loss-credited", "skr-restored", "game-start", "game-end")]
+        self.assertEqual(events, [("game-start", None), ("game-abandoned", "no-fit"),
+                                  ("game-end", "abandoned-no-scoreboard"), ("skr-restored", None),
+                                  ("game-start", None), ("game-abandoned", "no-fit"),
+                                  ("game-end", "abandoned-no-scoreboard")])
+        blocks = world.driver.blocks
+        self.assertEqual(blocks.count("new-game"), 1)                  # game 1, from the title only
+        self.assertEqual(blocks.count("options-play"), 1)              # game 2, from the options screen
+        self.assertEqual(blocks.count("abandon-game"), 2)
+        self.assertNotIn("scoreboard-continue", blocks)
+        start = blocks.index("options-play")
+        self.assertEqual(blocks[start - 1], "abandon-game")
+        self.assertEqual(blocks[start + 1], "quiet")                   # then as after new-game
+        self.assertEqual(world.game.games, 2)                          # the second game started and played
+        self.assertEqual(world.game.passes, 4)                         # turns 1 and 2 of each game
+        self.assertEqual(world.loop.summary["ended"], "games-max")
+        self.assertEqual(world.loop.summary["abandoned"], 2)
+        self.assertNotIn("loss_credited", world.loop.summary)
+
+    def test_every_game_after_a_credited_loss_has_its_own_restore_line_first(self):
+        # the exporter's check (e020_export.games_after_loss): a game after a credited loss is proved
+        # only by a restore line that names that game; game 1 credits a loss, games 2 and 3 are started
+        # (the second from the options screen), and each is preceded by its own restore line
+        world = self.world(games_max=3)
+        screens = iter(["scoreboard", "game-options", "game-options"])
+        original = world.game.block
+
+        def block(name):
+            out = original(name)
+            if name == "abandon-game" and out.get("changed"):
+                world.game.screen = next(screens)
+            return out
+        world.game.block = block
+        world.loop.run()
+        lines = [(n["event"], n.get("game")) for n in world.driver.notes if n.get("event") in
+                 ("loss-credited", "skr-restored", "game-start")]
+        self.assertEqual(lines, [("game-start", 1), ("loss-credited", 1), ("skr-restored", 2),
+                                 ("game-start", 2), ("skr-restored", 3), ("game-start", 3)])
+
+    def test_a_failed_restore_ends_the_sitting_before_options_play(self):
+        world = self.world()
+        world.loop.restore = lambda: "x" * 64
+        world.loop.run()
+        self.assertNotIn("options-play", world.driver.blocks)
+        self.assertTrue(world.loop.summary["ended"].startswith("skr-restore-failed"))
+        self.assertEqual(world.driver.events("skr-restored"), [])
+
+    def test_an_unknown_screen_that_is_not_the_options_screen_still_ends_the_sitting(self):
+        world = self.world()
+        world.game.after_abandon = "unknown"
+        world.loop.run()
+        self.assertNotIn("options-play", world.driver.blocks)
+        self.assertEqual(world.game.games, 1)
+        self.assertEqual(world.loop.summary["ended"], "unknown-screen")
+
+    def test_a_capture_that_cannot_be_read_ends_the_sitting_cleanly(self):
+        world = self.world()
+
+        def broken():
+            raise RuntimeError("no capture")
+        world.reader.options_screen = broken
+        world.loop.run()
+        self.assertNotIn("options-play", world.driver.blocks)
+        self.assertEqual(world.loop.summary["ended"], "unknown-screen")
+        self.assertEqual(world.driver.events("options-unread")[0]["reason"], "RuntimeError: no capture")
+
+    def test_the_scoreboard_path_is_unchanged(self):
+        world = self.world()
+        world.game.after_abandon = "scoreboard"
+        world.loop.run()
+        self.assertEqual(world.driver.blocks.count("scoreboard-continue"), 2)
+        self.assertEqual(len(world.driver.events("loss-credited")), 2)
+        self.assertNotIn("options-play", world.driver.blocks)
+        self.assertEqual([n["reason"] for n in world.driver.events("game-end")], ["scoreboard", "scoreboard"])
+
+
+class GrowingStackTest(unittest.TestCase):
+    """Fix #171: a turn whose placement grew a stack towards a needed attacker size is not a no-fit
+    turn, as long as its gap keeps shrinking; a stack that stops growing counts again."""
+
+    def world(self, reinforcements):
+        # blue 3 holds 1 army next to red 4 with 8: the even cell 10 (attacker 8 vs 8) is the only
+        # one needed, and the stack must grow by 7 first (the gap)
+        world = World({3: (BLUE, 1), 4: (RED, 8)}, screen="board-menu", met=only(("even", 10)))
+        world.game.reinforcements = reinforcements
+        world.loop.deadline = 600
+        return world
+
+    def turn(self, world, number):
+        world.loop.driver.context = {"game": 1, "turn": number}
+        return world.loop.turn()
+
+    def test_turns_with_a_shrinking_gap_do_not_abandon(self):
+        world = self.world(2)
+        for number in (1, 2, 3, 4):
+            self.assertIsNone(self.turn(world, number))
+        self.assertEqual([t["gap"] for t in world.driver.events("place-target")], [7, 5, 3, 1])
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 1, 1, 1])
+        self.assertEqual(world.driver.events("game-abandoned"), [])
+        self.assertNotIn("abandon-game", world.driver.blocks)
+        self.assertEqual(world.game.passes, 4)
+
+    def test_a_gap_that_stops_shrinking_counts_and_abandons_after_no_fit_turns(self):
+        world = self.world(2)
+        for number in (1, 2, 3):                                     # gaps 7, 5, 3: growing
+            self.assertIsNone(self.turn(world, number))
+        world.game.reinforcements = 0                                # the stack stops growing
+        self.assertIsNone(self.turn(world, 4))                       # gap 1: it did shrink since turn 3
+        for number in (5, 6):
+            self.assertIsNone(self.turn(world, number))              # gap 1 again: the 1st and 2nd no-fit turn
+            self.assertNotIn("abandon-game", world.driver.blocks)
+        self.turn(world, 7)
+        self.assertEqual(e021_loop.NO_FIT_TURNS, 3)
+        abandoned = world.driver.events("game-abandoned")
+        self.assertEqual([(a["turn"], a["turns"]) for a in abandoned], [(7, 3)])
+        self.assertEqual(world.driver.blocks.count("abandon-game"), 1)
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 1, 1, 1, 0, 0, 0])
+
+    def test_a_stack_that_never_grows_is_abandoned_on_the_fourth_turn(self):
+        world = self.world(0)
+        for number in (1, 2, 3):
+            self.assertIsNone(self.turn(world, number))
+        self.assertNotIn("abandon-game", world.driver.blocks)
+        self.turn(world, 4)                                          # the 1st turn grew nothing new, but
+        self.assertEqual(world.driver.events("game-abandoned")[0]["turn"], 4)   # is the country's first
+
+    def test_the_gap_is_remembered_per_country_so_taking_turns_does_not_hide_a_stalled_stack(self):
+        loop = self.world(0).loop
+        loop.driver.context = {"game": 1, "turn": 1}
+        self.assertTrue(loop.growing(3, 7))                          # new country
+        self.assertTrue(loop.growing(5, 7))                          # another new country
+        self.assertFalse(loop.growing(3, 7))                         # no smaller than its own best
+        self.assertTrue(loop.growing(3, 6))
+        self.assertFalse(loop.growing(3, 6))
+        self.assertFalse(loop.growing(3, 0))                         # a stack at its size is not growing
+        loop.driver.context = {"game": 2, "turn": 1}
+        self.assertTrue(loop.growing(3, 7))                          # the list starts again each game
 
 
 class AttackFlowTest(unittest.TestCase):
