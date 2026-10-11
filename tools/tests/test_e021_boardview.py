@@ -114,6 +114,119 @@ class OptionsScreenTest(unittest.TestCase):
             self.assertEqual(reader.shots, 1)
 
 
+def offer_screen():
+    """The card trade-in offer as the detector sees it: a board (score panel) with the two buttons of the
+    middle panel in their grounds, red on the right and green on the left. Painted to about the pixel
+    count the real frame shows (2006 red, 2071 green: the buttons' text and shading take the rest)."""
+    rgb = board_screen()
+    paint(rgb, (421, 514, 92, 22), (176, 16, 16))
+    paint(rgb, (289, 514, 92, 22), (0, 176, 32))
+    return rgb
+
+
+def menu_board():
+    """The board with the turn menu lit: its cyan label, and the green CARD button (8, 206, 66)."""
+    rgb = board_screen()
+    paint(rgb, screens.MENU_LABEL, (140, 230, 230))
+    return paint(rgb, (446, 518, 46, 28), (8, 206, 66))
+
+
+def placement_row_board():
+    """The board with the placement row lit (E020's `place` test: (168, 168, 168) in its watched area)."""
+    rgb = board_screen()
+    return paint(rgb, (265, 530, 50, 26), (168, 168, 168))
+
+
+def notice_screen():
+    """The elimination notice: its navy panel, its red and olive buttons (screens.py's regions)."""
+    rgb = board_screen()
+    paint(rgb, screens.NOTICE_PANEL, (10, 10, 100))
+    paint(rgb, screens.KEEP_PLAYING_BOX, (190, 30, 60))
+    return paint(rgb, screens.ACCEPT_LOSS_BOX, (200, 190, 40))
+
+
+def winner_screens():
+    """The winner notice in both phases of its CONTINUE button (grey, and the green phase of fix #141)."""
+    out = []
+    for colour in ((176, 176, 176), (144, 208, 128)):
+        rgb = board_screen()
+        paint(rgb, screens.NOTICE_PANEL, (10, 10, 100))
+        out.append(paint(rgb, screens.CONTINUE_BOX, colour))
+    return out
+
+
+def card_award_screen():
+    """A card award's CONTINUE: the smaller grey button near 402,531 on the board."""
+    return paint(board_screen(), (370, 520, 64, 24), (176, 176, 176))
+
+
+class OfferScreenTest(unittest.TestCase):
+    """Fix #175: the detector of the card trade-in offer (boardview.offer_up), on painted arrays. The
+    constants are traced to the real frames by name and sha256 in boardview.py."""
+
+    def census(self):
+        return (("board", board_screen()), ("board with the turn menu", menu_board()),
+                ("board with the placement row", placement_row_board()), ("elimination notice", notice_screen()),
+                ("winner notice, grey", winner_screens()[0]), ("winner notice, green", winner_screens()[1]),
+                ("card award", card_award_screen()), ("title", title_screen()),
+                ("scoreboard", scoreboard_screen()), ("game options", options_screen()), ("blank", blank()))
+
+    def test_the_offer_is_taken_for_the_offer(self):
+        self.assertTrue(boardview.offer_up(offer_screen()))
+
+    def test_the_fixtures_are_the_screens_they_stand_for(self):
+        # the negatives mean something only if the screen reader names them as the screens they stand for
+        self.assertEqual(screens.name_of(board_screen().tobytes()), "board")
+        self.assertEqual(screens.name_of(menu_board().tobytes()), "board-menu")
+        self.assertEqual(screens.name_of(placement_row_board().tobytes()), "board")
+        self.assertEqual(screens.name_of(notice_screen().tobytes()), "eliminated")
+        self.assertEqual([screens.name_of(rgb.tobytes()) for rgb in winner_screens()], ["game-over", "game-over"])
+        self.assertEqual(screens.name_of(title_screen().tobytes()), "title")
+        self.assertEqual(screens.name_of(scoreboard_screen().tobytes()), "scoreboard")
+        # and the screen reader sees the offer as the board it sits on: the loop's old blind spot (fix #175)
+        self.assertEqual(screens.name_of(offer_screen().tobytes()), "board")
+
+    def test_no_other_screen_is_taken_for_the_offer(self):
+        for name, rgb in self.census():
+            with self.subTest(screen=name):
+                self.assertFalse(boardview.offer_up(rgb))
+
+    def test_one_button_alone_is_not_the_offer(self):
+        red_only = board_screen()
+        paint(red_only, (421, 514, 92, 22), (176, 16, 16))
+        green_only = board_screen()
+        paint(green_only, (289, 514, 92, 22), (0, 176, 32))
+        wrong_colours = board_screen()                      # a green button on the right, a red one on the left
+        paint(wrong_colours, (421, 514, 92, 22), (0, 176, 32))
+        paint(wrong_colours, (289, 514, 92, 22), (176, 16, 16))
+        for name, rgb in (("red only", red_only), ("green only", green_only), ("swapped", wrong_colours)):
+            with self.subTest(screen=name):
+                self.assertFalse(boardview.offer_up(rgb))
+
+    def test_the_minimums_sit_between_the_measured_populations(self):
+        # 2006 red and 2071 green on the real offer frames (the loop's capture and the watcher's, where it
+        # was 2061 and 1952); 0 of both on every other frame of the census
+        self.assertTrue(0 < boardview.OFFER_RED_MINIMUM < 1952)
+        self.assertTrue(0 < boardview.OFFER_GREEN_MINIMUM < 1952)
+
+    def test_the_decline_point_is_inside_the_red_button_and_outside_the_green_one(self):
+        x, y = boardview.DECLINE_POINT
+        rx, ry, rw, rh = boardview.OFFER_RED_BOX
+        gx, gy, gw, gh = boardview.OFFER_GREEN_BOX
+        self.assertTrue(rx <= x < rx + rw and ry <= y < ry + rh)
+        self.assertFalse(gx <= x < gx + gw)
+
+    def test_the_frame_reader_says_whether_the_offer_is_up_from_the_one_capture(self):
+        for rgb, expect in ((offer_screen(), True), (board_screen(), False)):
+            reader = boardview.FrameReader(lambda rgb=rgb: (rgb, "d" * 64), TEMPLATES)
+            reading = reader.read()
+            self.assertEqual((reading.offer, reading.sha256), (expect, "d" * 64))
+            self.assertEqual(reader.shots, 1)
+
+    def test_a_reading_built_without_the_flag_has_no_offer(self):
+        self.assertFalse(boardview.Reading({}, "s" * 64, "blue", False, 0).offer)
+
+
 class ReaderTest(unittest.TestCase):
     def test_a_capture_the_reader_cannot_read_is_unread_never_guessed(self):
         reader = boardview.FrameReader(lambda: (blank(), "a" * 64), TEMPLATES)

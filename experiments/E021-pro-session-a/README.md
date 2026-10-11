@@ -29,6 +29,16 @@ its first, which the abandon already sent); any other screen after the abandon s
 A turn that grew a stack towards a needed attacker size (its `gap` smaller than that country's smallest
 earlier one in the game; `growing` on the `turn-end` line) does not count as a no-fit turn, so a game is
 not abandoned while a stack is on its way; a stack that stops growing counts again.
+A turn can start with the card trade-in offer instead of the placement row (fix #175; sitting 20261011T154319Z,
+game 1 turn 10): the game shows two buttons in the middle panel when the hand holds a valid match, after income and
+before placement. F014 (Q-BON-07, C-CRD-05) reads it as the human's choice, with a second button that skips it, and
+finds no forced trade (the only forced card step is a full hand's discard, C-CRD-04). Every reading carries
+`offer` (`boardview.offer_up`, a pixel check of the two buttons, traced to frames by name and sha256); at a turn's
+start, and once more after a placement that picked nothing, the loop sends block `card-decline` (one plain click on
+the red decline button), waits for the offer to go, logs `card-offer` (`declined` 1) and places as usual. An offer
+still up after the wait is treated as forced: `card-offer` with `forced` 1 and the sitting ends cleanly as
+`card-trade-forced`, with no further click. The loop never trades; a trade path (picking three matching cards) is a
+follow-up. The card count is not read (no reader for it), so the line has none.
 `measurements/CORRECTIONS.md` says why progress-r01's
 busy 10/10 is not met, and what the count requires since. The deal is random (F018): a cell no board offers
 stays unmet, and `measurements/progress-r<nn>.json` lists it under `unmet`; it is never forced.

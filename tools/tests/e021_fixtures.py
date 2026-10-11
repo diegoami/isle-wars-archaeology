@@ -80,6 +80,12 @@ class FakeGame:
         self.seat_lag = False              # the score panel still boxes blue on the first reading
                                            # after a failure
         self.computer_move = None          # (game) -> None: the next seat's play after a failure
+        self.offer = False                 # the card trade-in offer is up: the placement row cannot light (#175)
+        self.offer_late = False            # the offer comes up at the first placement click, not before it
+        self.decline_works = True          # False: the decline click does not clear the offer
+        self.declines = 0                  # card-decline blocks the game received
+        self.decline_lag = 0               # readings after the decline that still show the offer
+        self.lag_left = None
 
     def click_country(self, block, country):
         if block == "attack-target":
@@ -114,6 +120,15 @@ class FakeGame:
             # and shows the Scoreboard (F003); elsewhere the click is not on the screen
             if self.screen == "board-menu":
                 self.screen = self.after_abandon
+                return {"changed": True}
+            return {"changed": False}
+        elif name == "card-decline":
+            self.declines += 1
+            if self.offer and self.decline_works:
+                if self.decline_lag:
+                    self.lag_left = self.decline_lag      # the offer goes after that many more readings
+                else:
+                    self.offer = False
                 return {"changed": True}
             return {"changed": False}
         elif name == "place-commit" and self.selected is not None:
@@ -158,6 +173,8 @@ class FakeGame:
         elif name == "scoreboard-continue":
             self.screen = self.after_scoreboard
         elif name == "place-any":
+            if self.offer:
+                return {"picked": None}
             for country in sorted(self.board):
                 if self.board[country]["owner"] == BLUE:
                     self.selected = country
@@ -201,6 +218,10 @@ class FakeDriver:
         self.steps.append((block, step.op, tuple(step.args)))
         if step.op == "click-until?" and block == "place-select":
             country = AT.get(tuple(step.args[5:7]))
+            if self.game.offer_late:
+                self.game.offer, self.game.offer_late = True, False
+            if self.game.offer:
+                return {"picked": None}
             if country is not None and self.game.board[country]["owner"] == BLUE:
                 self.game.selected = country
                 return {"picked": 1}
@@ -247,13 +268,19 @@ class FakeReader:
         if self.fail is not None:
             raise self.fail
         self.reads += 1
+        game = self.game
+        if game.lag_left is not None:
+            if game.lag_left > 0:
+                game.lag_left -= 1
+            else:
+                game.offer, game.lag_left = False, None
         board = {c: dict(row) for c, row in self.game.board.items()}
         if seat is None:
             seat = self.game.seat
             if self.game.phase == "passed" and self.seat_after_failure is not None:
                 seat = self.seat_after_failure
         return boardview.Reading(board, f"{self.reads:064x}", seat,
-                                 self.game.phase in ("battle", "move-in"), self.unread)
+                                 self.game.phase in ("battle", "move-in"), self.unread, self.game.offer)
 
     def options_screen(self):
         """boardview.FrameReader.options_screen: (the capture shows the Game Options screen, its sha256)."""
