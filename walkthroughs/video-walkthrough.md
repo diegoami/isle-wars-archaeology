@@ -158,7 +158,8 @@ The machinery is implemented (T38, [T38](../docs/tasks/T38.md), issue #114): the
 
 After the owner's go-ahead, the first dispatch (batch 1, then batch 2) is run from the
 repository root, with the E004 environment (`IWP_DIR`, `IWP_PREFIX` and `E020_BUNDLES`, outside
-every checkout; `IWP_MACHINE`):
+every checkout; `IWP_MACHINE`; the template is `setup/iwp/iwp-env.example.sh`, whose master copy
+lives outside `/tmp`, which a WSL restart wipes):
 
 ```bash
 bash tools/wine-driver.sh --batch cmb-accumulation

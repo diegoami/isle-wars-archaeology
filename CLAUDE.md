@@ -151,6 +151,23 @@ indexed in `docs/tasks/README.md`.
 12. A bug whose fix stays in the files it names and changes no outcome is a `fix`; a blocking
     one-file mechanical fix may ride the PR that found it, declared under Scope.
 13. Design decisions go to the user; nothing else waits for the user.
+    - **Work autonomously** (the owner, 2026-10-05): chain write, run, review, merge and the next
+      task. Ask only for design decisions, escalations, the questions rule 6 requires, and when
+      every quota is out.
+    - **Merge without asking** on an approving cross-family review and green CI (rule 7). Research
+      PRs (those that add run records) merge with `gh pr merge --merge`, never squash, so their
+      measurement commits survive; other PRs squash.
+    - **Wine sittings run without a go-ahead** (the owner, 2026-10-08) once the driver is reviewed
+      to stay on its own Xvfb display, off the desktop (`:0`). Report stuck points from the screenshots.
+    - **Fix the cause, not the brief** (the owner, 2026-10-11, not happy): after the FIRST permission
+      or setup failure of a delegated run, stop and fix the cause in the most practical way
+      (relax a guard that protects nothing important, fix the runner or the setup), or propose the
+      fix at once. Never re-brief and retry the same thing; a failure class that comes back is
+      never retried a third time with a reworded brief. (M3's review of PR 166 was refused three
+      times for writing in `/tmp`; the fix was opening `/tmp` to the reviewer, d30a137.)
+    - **Memory cap**: every delegated run, and every test run on unreviewed code, goes under
+      `systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 --` (`run-unit.sh` sets it).
+      A looping test grew to ~13 GB and crashed WSL three times on 2026-10-09.
 14. At session start: `gh issue list --label triage:needed --state open`, any task in flight, and
     the worktree sweep (rule 2a).
 
@@ -256,6 +273,12 @@ indexed in `docs/tasks/README.md`.
       skills, and `harness_imperial` propagate this rule change (memory:
       propagate-harness-fixes). They are amended when the next task that reads the carve-out is
       dispatched, not in this commit.
+
+    **The runtime** (the owner, 2026-10-10): Wine 10.0 is accepted on IT13 (Ubuntu 26.04 has no
+    9.0); its fingerprints were re-pinned in #159. On another machine a different Wine version is
+    re-pinned the same way before a sitting's records are trusted. Sittings run on their own Xvfb
+    with xfwm4 and xdotool (WSLg's `:0` hangs on IT13). The sitting environment is
+    `setup/iwp/iwp-env.example.sh`.
 19. **Pro is the subject; DOS is history** (U3, U11; the owner, 2026-10-05). The research reads and
     corroborates Windows *Isle Wars Pro*, the shareware/unregistered release. DOS *Isle Wars* findings
     stay as they are, scoped to DOS, and no new DOS work is planned: the two games may differ, so a
