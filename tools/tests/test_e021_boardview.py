@@ -227,12 +227,16 @@ class OfferScreenTest(unittest.TestCase):
         self.assertFalse(boardview.Reading({}, "s" * 64, "blue", False, 0).offer)
 
 
-def panel_screen():
+def panel_screen(all_grey=True):
     """The placement panel as the detector sees it: a board with the four grey buttons (173, 165, 165 on the
-    real frame) in the row. Painted to about the pixel count the real frames show (2100 to 2399)."""
+    real frames) in the row, painted by their measured extents on frame 150-1791738555449.png of
+    20261011T170700Z (ALL x 267-335, + x 355-391, - x 404-440, PLACE x 460-530, y 529-556). The text and
+    shading take some of the pixels on a real frame (2859 in the row there; 1779 at the lowest). With
+    `all_grey` False the ALL button is the hover's gold, as on frame 17-1791738450340.png of the same sitting."""
     rgb = board_screen()
-    for x in (267, 355, 404, 460):
-        paint(rgb, (x, 531, 36, 22), (173, 165, 165))
+    paint(rgb, (267, 531, 69, 22), (173, 165, 165) if all_grey else (198, 181, 115))
+    for x, w in ((355, 36), (404, 36), (460, 70)):
+        paint(rgb, (x, 531, w, 22), (173, 165, 165))
     return rgb
 
 
@@ -258,10 +262,23 @@ class PanelScreenTest(unittest.TestCase):
 
     def test_the_panel_is_up_on_the_buttons_grey_and_down_on_the_turn_menu(self):
         self.assertTrue(boardview.panel_up(panel_screen()))
+        self.assertTrue(boardview.panel_up(panel_screen(all_grey=False)))   # ALL lit by the hover
         self.assertFalse(boardview.panel_up(turn_menu_screen()))
         self.assertFalse(boardview.panel_up(board_screen()))
         self.assertFalse(boardview.panel_up(offer_screen()))
         self.assertFalse(boardview.panel_up(blank()))
+
+    def test_the_all_button_reaches_x_335_and_the_gap_to_plus_stays_black(self):
+        # round 2 of fix #182: a gap box at x 328-351 held ALL's right edge on 30 real panel frames (ALL is grey
+        # to x 335 when the mouse is elsewhere) and the detector said "no panel". Frame 150 of 20261011T170700Z:
+        # gap pixels in the old box 129, in the box below 0.
+        rgb = panel_screen()
+        grey = lambda box: boardview.gold_count(rgb, box, boardview.PANEL_GREY, boardview.PANEL_TOLERANCE)  # noqa: E731
+        self.assertGreater(grey((328, 533, 24, 16)), boardview.PANEL_GAP_MAXIMUM)         # the old box: too wide
+        self.assertEqual(grey(boardview.PANEL_GAP), 0)
+        gx, _gy, gw, _gh = boardview.PANEL_GAP
+        self.assertTrue(gx >= 336 and gx + gw <= 355)                  # between ALL's end and +'s start
+        self.assertTrue(boardview.panel_up(rgb))
 
     def test_a_continue_notice_in_the_same_row_is_not_the_panel(self):
         # the winner notice's and the Scoreboard's one wide grey CONTINUE button (x 328-477) is grey in the

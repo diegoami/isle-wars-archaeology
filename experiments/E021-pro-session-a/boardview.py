@@ -107,7 +107,7 @@ PANEL_MINIMUM = 1000
 # The two CONTINUE notices (the winner's and the Scoreboard's) have a grey button in the same row too, which
 # the test above alone would take for the panel; theirs is one wide button over the gap between ALL and +, where
 # the panel's own ground is black. So the panel also needs that gap free of the grey.
-PANEL_GAP = (328, 533, 24, 16)            # x, y, w, h: the black between ALL and +
+PANEL_GAP = (338, 533, 14, 16)            # x, y, w, h: the black between ALL (to x 335) and + (from x 355)
 PANEL_GAP_MAXIMUM = 40
 
 Reading = namedtuple("Reading", "board sha256 seat battle unread offer panel", defaults=(False, False))
