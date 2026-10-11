@@ -94,9 +94,14 @@ the whole pool; 89 `place2`: moves the counter into the selected country), so wh
 `gap` above 0 and a named size case it selects the country as before, sends block `place-plus` once per army (the
 counter then holds min(gap, pool)), then block `place-only` (PLACE), and reads the screen: the turn menu means the pool
 is spent, the placement row still up means armies are left, which go with `place-commit` (ALL, PLACE) on a second
-country (cases.rest_choices: never the target, an interior country first, then a frontier country showing no needed
-size, a needed attacker's own stack only last; the phase ends only at pool zero, so the rest must go somewhere). It
-logs `place-exact` (`country`, `gap`, `plus`, `rest_to`, and `rest_any` when E020's `place-any` took the rest). The
+country (cases.rest_choices: never the target, never a needed attacker showing its size, an interior country first,
+then a frontier country; the phase ends only at pool zero, so the rest must go somewhere). That list is asked
+BEFORE the exact path is taken: with no safe second country the turn keeps today's ALL on the target, and a
+`place-exact` line with `exact` 0 and `reason` `no-safe-rest` says so. If the exact path was taken and no candidate can
+be selected (this module tries each in turn; E020's `place-any` is not used, since it could pick the target or an
+attacker), or the row is still up after the rest was placed, the sitting ends cleanly as `placement-stuck`, with no
+further click, instead of attacking with armies unplaced. It logs `place-exact` (`exact` 1, `country`, `gap`, `plus`,
+`rest_to`, and `stuck` 1 when it ended so). The
 first reading after the placement is checked (`check_landing`): `place-landed` says whether the stack holds its
 armies plus min(gap, pool), the pool being what the human's countries gained in all (`landed` 0 or 1). Intent never
 credits a cell; only the board does. With gap 0, or no named case, the placement is `place-commit` as before, and
@@ -165,7 +170,6 @@ NO_FIT_TURNS = 3                     # turns in a row of one game with no needed
 NO_CELL_FAILURES = ("capture", "forfeit")    # an attempt that met no cell but ended by the dice is
                                              # not a failure of the case's own action
 SEAT = cases.HUMAN_SEAT
-REST_TRIES = 3                       # second-country candidates tried (fix #180) before E020's `place-any`
 OFFER_POLLS = 5                      # readings after `card-decline` before the offer counts as still up
 OFFER_POLL_SECONDS = 0.5             # between them (a guess: the game answers the click at once as far
                                      # as any frame shows; no sitting has declined yet, so this is the
@@ -455,7 +459,15 @@ class SessionALoop(e020_loop.BatchLoop):
         self.landing = None
         exact = chosen and choice is not None and choice[2] is not None and choice[4] > 0
         if exact:
-            ended = self.place_exact(board, target[0], target[1])
+            # decided BEFORE the exact path (fix #180 round 2): the pool ends only at zero (F013), so a
+            # turn with no safe second country for the rest keeps today's ALL on the target
+            rest = cases.rest_choices(board, self.needed(), self.adjacency, target[0], points=self.points)
+            if not rest:
+                self.driver.note(event="place-exact", exact=0, reason="no-safe-rest", country=target[0],
+                                 gap=target[1])
+                exact = False
+        if exact:
+            ended = self.place_exact(board, target[0], target[1], rest)
             if ended is not True:
                 return ended
         else:
@@ -464,43 +476,57 @@ class SessionALoop(e020_loop.BatchLoop):
         self.turn_growing = chosen and self.growing(*target)
         return True
 
-    def place_exact(self, board, country, gap):
+    def place_exact(self, board, country, gap, rest_choices):
         """The chosen stack gets exactly `gap` armies (fix #180; the owner, 2026-10-11): `place-plus`
         once per army (the counter holds min(gap, pool): + is capped at the pool, F013 Q-REI-03), then
         `place-only` (PLACE). The pool is read from the screen: the turn menu means it is zero (the
         phase ends only then), the placement row still up means armies are left, and they go with
-        `place-commit` (ALL, PLACE) on a second country, chosen by the rule of cases.rest_choices: never
-        `country`, an interior country first (never an attacker), then a frontier country that shows no
-        needed size, and a needed attacker's own stack only when nothing else is left. If none of
-        the three first choices can be selected, E020's `place-any` takes it. Logs one `place-exact`
-        line (`country`, `gap`, `plus` clicks, `rest_to` the second country, or None when the pool
-        was zero; `rest_any` 1 when E020's `place-any` took the rest) and keeps what the landing check
-        (`check_landing`) needs. True when the pool is spent, else why the game ended."""
+        `place-commit` (ALL, PLACE) on a second country. `rest_choices` is cases.rest_choices' answer
+        (never `country`, never a needed attacker showing its size; interior countries first, then
+        frontier countries), and the caller took this path only because it holds at least one. They are
+        tried in order, every one, by this module's own selection (no E020 `place-any`, which could pick
+        the stack just sized or an attacker). When none can be selected, or the row is still up after the
+        rest was placed, the sitting ends cleanly as `placement-stuck` with no further click, never with
+        armies unplaced. Logs one `place-exact` line (`exact` 1, `country`, `gap`, `plus` clicks,
+        `rest_to` the second country, or None when the pool was zero; `stuck` 1 when it ended so) and
+        keeps what the landing check (`check_landing`) needs. True when the pool is spent, else why the
+        game ended."""
         for _ in range(gap):
             self.send("place-plus")
         self.send("place-only")
         screen = self.driver.read_screen()
         if screen not in e020_loop.BOARD:
             return self.off_board(screen)
-        rest, rest_any = None, 0
+        rest = None
         if screen != "board-menu":                       # the row is still up: the pool holds armies
-            for candidate in cases.rest_choices(board, self.needed(), self.adjacency, country,
-                                                points=self.points)[:REST_TRIES]:
+            for candidate in rest_choices:
                 x, y = self.points[candidate]
                 self.send_step("place-select", PLACE_WATCH)
                 if self.send_step("place-select", PLACE_SELECT.format(x=x, y=y)).get("picked"):
                     rest = candidate
                     break
             if rest is None:
-                rest_any = int(bool(self.send("place-any").get("picked")))
+                return self.placement_stuck(country, gap, None)
             screen = self.driver.read_screen()
             if screen not in e020_loop.BOARD:
                 return self.off_board(screen)
             self.send("place-commit")
-        fields = {"rest_any": 1} if rest_any else {}
-        self.driver.note(event="place-exact", country=country, gap=gap, plus=gap, rest_to=rest, **fields)
+            screen = self.driver.read_screen()
+            if screen not in e020_loop.BOARD:
+                return self.off_board(screen)
+            if screen != "board-menu":                   # the pool is not spent: never attack with it
+                return self.placement_stuck(country, gap, rest)
+        self.driver.note(event="place-exact", exact=1, country=country, gap=gap, plus=gap, rest_to=rest)
         self.landing = {"country": country, "gap": gap, "board": board}
         return True
+
+    def placement_stuck(self, country, gap, rest):
+        """End the sitting cleanly (`ended: placement-stuck`, no further click) when the pool cannot be
+        spent: no second country could be selected, or the row is still up after ALL and PLACE on it."""
+        self.driver.note(event="place-exact", exact=1, country=country, gap=gap, plus=gap, rest_to=rest,
+                         stuck=1)
+        self.unknown_screen(self.driver.read_screen(), ended="placement-stuck")
+        return "placement-stuck"
 
     def check_landing(self, reading):
         """The landing check of an exact placement (fix #180), on the first reading after the pool is

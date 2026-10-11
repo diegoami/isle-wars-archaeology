@@ -89,6 +89,7 @@ class FakeGame:
         self.pool_left = None              # the pool a partial placement left (None: this turn's whole pool)
         self.counter = 0                   # the placement panel's counter (fix #180)
         self.plus_works = True             # False: the + button changes nothing
+        self.rest_leaves_row = False       # True: the rest's PLACE leaves the placement row up (a fault)
         self.landing_skew = 0              # armies the PLACE of an exact stack lands short of the counter
 
     def remaining(self):
@@ -141,6 +142,10 @@ class FakeGame:
             return {"changed": False}
         elif name == "place-commit" and self.selected is not None:
             self.board[self.selected]["army"] += self.remaining()
+            if self.pool_left is not None and self.rest_leaves_row:
+                self.screen = "board"          # a fault the test scripts: the row is still up after the rest
+            elif self.pool_left is not None:
+                self.screen = "board-menu"     # the rest spent the pool: the turn menu shows
             self.selected, self.pool_left, self.counter = None, None, 0
         elif name == "place-plus":
             # + adds one to the counter, capped at the pool's remainder (F013 Q-REI-03)

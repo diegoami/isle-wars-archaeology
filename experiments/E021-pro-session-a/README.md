@@ -55,9 +55,12 @@ sets it to the whole pool; `place2` moves it into the selected country), so when
 `gap` above 0 and a named size case, the loop selects the country, sends block `place-plus` once per army (+ at
 373,543, `walkthroughs/coordinates.md`), then block `place-only` (PLACE). If the turn menu shows, the pool is spent;
 if the placement row is still up, the rest goes with `place-commit` (ALL, PLACE) on a second country, chosen by
-`cases.rest_choices`: never the stack just sized, an interior country first, then a frontier country that shows no
-needed size, and a needed attacker's own stack only as the last resort (the phase ends only at pool zero, so the rest
-must go somewhere). Lines: `place-exact` (`country`, `gap`, `plus`, `rest_to`) and, from the first reading after the
+`cases.rest_choices`: never the stack just sized, never a needed attacker showing its size, an interior country first,
+then a frontier country (the phase ends only at pool zero, so the rest must go somewhere). The list is asked before the
+exact path is taken: with no safe second country the turn keeps ALL and PLACE on the target (`place-exact` with `exact` 0
+and `reason` `no-safe-rest`). If the exact path was taken and no candidate can be selected, or the row is still up after
+the rest, the sitting ends cleanly as `placement-stuck` with no further click (E020's `place-any` is not used for the rest:
+it could pick the target). Lines: `place-exact` (`exact`, `country`, `gap`, `plus`, `rest_to`) and, from the first reading after the
 placement, `place-landed` (`landed` 1 when the stack holds its armies before plus min(gap, pool), the pool being what
 the human's countries gained in all; 0 otherwise). `landed` never credits a cell: attacks are picked from the board
 alone. With no gap or no named case the placement is today's ALL and PLACE. Fix #178's bounds are unchanged.

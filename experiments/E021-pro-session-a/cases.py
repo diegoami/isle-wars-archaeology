@@ -275,26 +275,25 @@ def rest_choices(board, needed, adjacency, target, seat=HUMAN_SEAT, points=None)
     take must go somewhere; the rule keeps it from spoiling a size the sitting still needs:
 
     * never `target`, the stack just sized, and never a country without a click point or a reading;
+    * never a needed attacker showing its size (an attacker of a pair that fits an unmet size cell
+      with gap 0 now: more armies would overshoot its cell). They are excluded, not ranked last
+      (round 2): the list may be empty, and then the caller does not place exactly at all;
     * first the interior countries (every neighbour readable and the seat's own: never an attacker),
-      then the frontier countries that do not show a needed attacker size now (no unmet size cell
-      fits them with gap 0, so more armies do not overshoot a cell the board offers), and last, only
-      when nothing else is left, the ones that do show one (a needed attacker, whose growth would
-      overshoot its cell);
-    * within a tier the lowest country number, so the choice is a function of the board."""
+      then the frontier countries; within a tier the lowest country number, so the choice is a
+      function of the board."""
     shown = {attacker for (attacker, _defender), hit in
              reachable(board, needed, adjacency, seat=seat, points=points).items()
              if any(gap == 0 for _case, _cell, gap in hit)}
     ranked = []
     for country in sorted(board):
         row = readable(board, country)
-        if country == target or row is None or row["owner"] != seat:
+        if country == target or country in shown or row is None or row["owner"] != seat:
             continue
         if points is not None and country not in points:
             continue
         neighbours = [readable(board, n) for n in adjacency.get(country, ())]
         interior = all(n is not None and n["owner"] == seat for n in neighbours)
-        tier = 2 if country in shown else (0 if interior else 1)
-        ranked.append((tier, country))
+        ranked.append((0 if interior else 1, country))
     return [country for _tier, country in sorted(ranked)]
 
 

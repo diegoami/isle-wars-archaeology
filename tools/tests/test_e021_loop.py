@@ -1043,36 +1043,117 @@ class ExactPlacementTest(unittest.TestCase):
         self.assertEqual(line["rest_to"], 3)                          # an interior country first
         self.assertEqual(self.selects(world), [5, 3])
 
-    def test_rest_choices_prefers_interior_then_frontier_then_a_showing_attacker(self):
+    def test_rest_choices_prefers_interior_then_frontier_and_never_a_showing_attacker(self):
         import cases
         adjacency = {1: {2}, 2: {1}, 4: {5, 6}, 5: {4}, 6: {4}, 7: {8}, 8: {7}}
         board = fx.board({1: (BLUE, 4), 2: (RED, 3), 4: (RED, 3), 5: (BLUE, 1), 6: (BLUE, 1),
                           7: (BLUE, 1), 8: (BLUE, 1), 3: (RED, 1), 9: (RED, 1), 10: (RED, 1)})
         needed = [("even", 5)]
         ranked = cases.rest_choices(board, needed, adjacency, 5, points=fx.POINTS)
-        self.assertEqual(ranked, [7, 8, 6, 1])                        # interior, frontier, then the showing 1
+        self.assertEqual(ranked, [7, 8, 6])                           # interior, then frontier; the showing 1 is out
         self.assertNotIn(5, ranked)                                   # never the target
-        self.assertEqual(cases.rest_choices(board, needed, adjacency, 5, points={1: 1, 2: 1, 4: 1, 5: 1, 6: 1}), [6, 1])
+        self.assertEqual(cases.rest_choices(board, needed, adjacency, 5, points={1: 1, 2: 1, 4: 1, 5: 1, 6: 1}), [6])
 
-    def test_a_second_country_that_cannot_be_selected_gives_way_to_the_next_candidate_then_to_place_any(self):
-        world = self.world(10)
+    def refuse_selects(self, world, allowed=(3,)):
+        """Make the placement row refuse every selection but the `allowed` countries'; the refused
+        countries are collected."""
         original = world.driver.run_step
         refused = []
 
         def refuse(block, step):
             country = fx.AT.get(tuple(step.args[5:7])) if step.op == "click-until?" else None
-            if block == "place-select" and country not in (None, 3):
+            if block == "place-select" and country is not None and country not in allowed:
                 refused.append(country)
                 world.driver.steps.append((block, step.op, tuple(step.args)))
                 return {"picked": None}
             return original(block, step)
         world.driver.run_step = refuse
+        return refused
+
+    def test_a_second_country_that_cannot_be_selected_gives_way_to_the_next_candidate(self):
+        world = self.world(10)
+        refused = self.refuse_selects(world, allowed=(3, 2))
         self.assertIsNone(world.loop.turn())
-        self.assertEqual(len(refused), e021_loop.REST_TRIES)         # the candidates, then E020's own
+        self.assertEqual(refused, [1])
+        self.assertEqual(self.selects(world), [3, 1, 2])
         (line,) = world.driver.events("place-exact")
-        self.assertEqual((line["rest_to"], line["rest_any"]), (None, 1))
-        self.assertIn("place-any", world.driver.blocks)
-        self.assertEqual(world.driver.blocks[:6].count("place-commit"), 1)       # the rest still goes with ALL, PLACE
+        self.assertEqual((line["exact"], line["rest_to"]), (1, 2))
+        self.assertEqual(world.game.board[2]["army"], 1 + 7)
+
+    def test_a_refused_remainder_ends_the_sitting_cleanly_never_attacking_with_armies_unplaced(self):
+        # R1: every second-country selection refused, and E020's place-any would answer nothing either
+        world = self.world(10)
+        refused = self.refuse_selects(world)
+        original = world.driver.run_block
+
+        def block(name):
+            if name == "place-any":
+                world.driver.blocks.append(name)
+                return {"picked": None}
+            return original(name)
+        world.driver.run_block = block
+        self.assertEqual(world.loop.turn(), "placement-stuck")
+        self.assertEqual(world.loop.summary["ended"], "placement-stuck")
+        self.assertTrue(refused)                                      # every safe candidate was tried
+        blocks = world.driver.blocks
+        self.assertNotIn("place-commit", blocks)
+        self.assertNotIn("place-any", blocks)                         # E020's unrestricted pick is not used
+        for name in ("attack-open", "pass", "attack-cancel"):
+            self.assertNotIn(name, blocks)                            # no click after the stop
+        self.assertEqual(world.game.pool_left, 7)                     # the armies stayed unplaced
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["exact"], line["stuck"], line["rest_to"]), (1, 1, None))
+        self.assertEqual(world.driver.events("place-landed"), [])
+
+    def test_the_rest_never_goes_back_on_the_target_through_a_fallback(self):
+        # R2: countries 1 and 2 are the enemy's, the explicit choices are refused; nothing may put the
+        # remainder on country 3, the stack just sized
+        world = self.world(10, cells={1: (RED, 1), 2: (RED, 1), 3: (BLUE, 1), 4: (RED, 3)})
+        self.refuse_selects(world)
+        self.assertEqual(world.loop.turn(), "placement-stuck")
+        self.assertEqual(world.game.board[3]["army"], 4)              # the exact size, not 11
+        self.assertEqual(self.selects(world).count(3), 1)             # the target is selected once, first
+        self.assertNotIn("place-any", world.driver.blocks)
+        self.assertEqual(world.driver.blocks.count("place-commit"), 0)
+
+    def test_a_row_still_up_after_the_rest_ends_the_sitting_cleanly(self):
+        world = self.world(10)
+        world.game.rest_leaves_row = True
+        self.assertEqual(world.loop.turn(), "placement-stuck")
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["stuck"], line["rest_to"]), (1, 1))
+        self.assertNotIn("attack-open", world.driver.blocks)
+        self.assertNotIn("pass", world.driver.blocks)
+
+    def no_safe_world(self, reinforcements=10):
+        # R3: blue 1 shows 4 beside red 2 holding 3 (even cell 5 fits it now); the target is blue 3 at 1
+        # beside red 4 holding 3; every other country with a click point is the enemy's
+        adjacency = {1: {2}, 2: {1}, 3: {4}, 4: {3}}
+        cells = {1: (BLUE, 4), 2: (RED, 3), 3: (BLUE, 1), 4: (RED, 3)}
+        cells.update({c: (RED, 1) for c in range(5, 11)})
+        world = self.world(reinforcements, cells=cells)
+        world.game.adjacency = world.loop.adjacency = adjacency
+        return world
+
+    def test_a_needed_attacker_showing_its_size_is_excluded_from_the_rest_not_ranked_last(self):
+        import cases
+        world = self.no_safe_world()
+        needed = world.loop.needed()
+        self.assertEqual(cases.rest_choices(world.game.board, needed, world.loop.adjacency, 3,
+                                            points=fx.POINTS), [])
+
+    def test_with_no_safe_second_country_the_exact_path_is_not_taken_and_all_goes_on_the_target(self):
+        world = self.no_safe_world()
+        self.assertIsNone(world.loop.turn())
+        blocks = world.driver.blocks
+        self.assertNotIn("place-plus", blocks)
+        self.assertNotIn("place-only", blocks)
+        self.assertEqual(blocks.count("place-commit"), 1)
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["exact"], line["reason"], line["country"], line["gap"]), (0, "no-safe-rest", 3, 3))
+        self.assertEqual(world.game.board[3]["army"], 1 + 10)         # today's path: ALL on the target
+        self.assertEqual(world.game.board[1]["army"], 4)              # the showing attacker is untouched
+        self.assertEqual(world.driver.events("place-landed"), [])
 
     def test_a_landing_the_board_does_not_confirm_is_logged_as_0_and_credits_no_cell(self):
         world = self.world(10)
