@@ -78,12 +78,15 @@ slower, with no gain (L27). **GPT-6.1 Sol** (the owner, 2026-10-03) is also used
 
 Credit is not the reason, and is not a reason to raise it.
 
-**Never used:**
+*Superseded on 2026-10-11 (the user decides; the only fixed rules are: never the implementer's
+family, never DeepSeek, Alibaba only when the user asks). Kept as history, they are no longer rules:*
+
+**Never used** (history):
 - Haiku;
 - Gemini, because of its cost;
 - Kimi and Grok.
 
-**Routes that matter:**
+**Routes that matter** (history; a route the user names is the one that runs):
 - GLM runs only through the Z.AI Coding Plan, never through Go or pay-per-token Z.AI.
 - Luna runs only on the direct OpenAI route. Go's Luna went through a proxy that returned
   `400 Bad Request` in long agent loops (L27).
@@ -96,7 +99,14 @@ Credit is not the reason, and is not a reason to raise it.
 
 ## Routing: easy or hard
 
-**Since 2026-10-10, quota-tracker's `/recommend` picks the pair** (the owner, effective at once;
+**Since 2026-10-11 the user decides** (the owner; CLAUDE.md rule 6). Before each implementation the
+main session asks who implements (itself in its own worktree, a Claude agent, or OpenCode) and with
+which model; at every review it asks which external model reviews. `/recommend` is shown with the
+question as a suggestion only (`tier=heavy` for hard work, `tier=light` for easy). Everything below in
+this section, the roster's "placed" roles, and every chain, substitute order, tier or escalation ladder
+that names a model on this page, and every list that excludes a model or a route ("Never used", "Routes that matter", the GLM-only-via-Z.AI and Luna-only-direct rules), are **superseded**, kept as history; read "the user's choice" in their place. The only fixed rules are CLAUDE.md rule 6.4's.
+
+*Superseded on 2026-10-11:* **Since 2026-10-10, quota-tracker's `/recommend` picks the pair** (the owner, effective at once;
 CLAUDE.md rule 6). The difficulty chooses the tier, `light` for easy and `heavy` for hard. Take
 `pair.implementer` and `pair.reviewer`, which come from different families, or the rows in `rank`
 order when the pair's model cannot run. Name the rank in the brief. The family rule, the effort caps,
@@ -235,6 +245,117 @@ itself measure Jev against the main session, not against the truth. So every tas
 or an easy one whose review found blocking bypasses, says the call was wrong. At about 60 items,
 the decision `task-hard` is defined and trialled (`/jev`). Until then, the main session decides.
 Jev would give only the decision, so the main session still writes the reason.
+
+## Superseded model-choice rules
+
+CLAUDE.md rule 6 as it stood before 2026-10-11, kept as history (the owner's 2026-10-11 rule
+replaced it; see Routing above).
+
+```text
+6. Each task file names its implementer and its reviewer, at the effort below, and says
+   whether the task is `easy` or `hard`, and why.
+   - **`/recommend` decides** (the owner, 2026-10-10, effective at once; it supersedes the fixed
+     pairs below). Before each implement or review run, ask quota-tracker
+     `curl -s 'localhost:8765/recommend?tier=<light|heavy>'`: `light` for an easy task, `heavy`
+     for a hard one. Take its `pair` (`implementer`, then `reviewer` from another family), or the
+     rows in `rank` order when the pair's model cannot run. Pass the model explicitly (`--model`,
+     `--reviewer`, the Agent's model), and write the rank used in the brief and the run's report.
+     Its `skipped` rows are never used. The rules below still hold: the family rule, the effort
+     caps, the blacklist, the exclusions, Sonnet's tripwire, the escalation ladder, and L26
+     (work on the user's install goes to Claude, the ranking's best Claude row). The table stays
+     as the fallback when the service is down.
+
+   The pairs (the owner's decision, 2026-10-03; since 2026-10-10 the fallback when `/recommend`
+   cannot be reached):
+
+   | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
+   | --- | --- | --- | --- | --- |
+   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-5.6 Luna (direct OpenAI) | Sonnet |
+   | Hard | MiMo v2.6 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
+
+   - **Hard** is any of:
+     - a guard, a gate, or a tool whose failure would let an original or a copy through (in T06
+       Sol found two bypasses that the implementer's own mutation tests missed, #9);
+     - a new mechanism across several files, or a new external dependency;
+     - a task whose earlier round found blocking bypasses.
+
+     Everything else is easy.
+   - **Family:** the reviewer comes from another family than the implementer. When a constraint
+     forces the same family, the task file names it: OpenCode cannot reach the user's install or a
+     cloud session (L26).
+   - **Research, or anything on the user's install:** Sonnet implements, because OpenCode cannot
+     reach the install (L26). The reviewer follows the difficulty and reviews the repository side.
+     The main session runs the lines that read the install, and posts their output on the PR. If
+     no OpenCode reviewer is available, the Claude fallback would be the implementer's family:
+     escalate.
+   - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): MiMo v2.6
+     Pro (Go), GLM-5.3 and GPT-6 Sol, and on the Alibaba Token Plan (2026-10-05; its key is an
+     environment variable, `docs/models.md`) Qwen 3.8 Max and Flash, and GLM-5.3; Opus and Fable
+     implement only when a task file says why.
+   - **MiMo replaces DeepSeek** (the owner, 2026-10-09). OpenCode Go's heavy model is
+     `opencode-go/mimo-v2.6-pro`, its light one `opencode-go/mimo-v2.6-flash`; MiMo is a family of
+     its own for the family rule. DeepSeek (V4 Pro, V4.1 Flash, on any route, Alibaba included) is
+     blacklisted: never used, and removed from `harness.json`.
+   - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
+     `medium` only when the task file says why; never `high`.
+   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro)
+     runs at `medium` at most, and at `low` when medium is not needed. A model that offers no
+     medium takes its lowest variant at or below `high`: GLM-5.3 `low`. MiMo offers no variant on
+     Go, so it runs without one. Opus runs as `task-agent-heavy` (effort `medium`). A light model
+     (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) stays at `high`.
+   - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
+     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`). As of 2026-10-09, Luna
+     shares OpenAI's main quota with Sol — the `gpt-5.6-luna:7d` window of its own is gone; its own
+     limit surfaces only as `when_exhausted.usable_models` in `/quota/openai` (harness's L65).
+     GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
+     every chain, never the reviewer. Never a Luna on OpenCode Go (`opencode-go/…`).
+   - **Quota first** (harness_imperial L50; the owner, 2026-10-05, superseding every earlier limit
+     on which models may be used): before choosing, recommending or delegating to a model, check
+     its provider with quota-tracker (`docs/environment.md`). A provider that is `exhausted` is not
+     used until it is usable again: take the next model of the pair or chain whose provider has
+     quota, pass it explicitly (`--model`, `--reviewer`, the Agent's model, `opencode -m`), and say
+     so in the run's report or the PR body ("GLM skipped: zai exhausted until 21:40; reviewed by
+     Luna"). Without the service, count a usage-limit error as `exhausted`. Ids still come from the
+     live list (`opencode models <provider>`), never memory.
+   - **Sonnet's tripwire** (the owner, 2026-10-04). Every Sonnet brief carries the paragraph in
+     `docs/models.md`. Sonnet stops and hands back an `ESCALATE` block when:
+     - two hypotheses for the same question have failed;
+     - it would rely on bytes, code or behaviour it cannot explain;
+     - it is about to write a claim it cannot back;
+     - it has made three attempts at one step without progress.
+
+     The main session then brings in Opus, to answer the question (consult) or to take the task
+     (takeover), on the pushed branch.
+   - **Escalation after a heavy review** (the owner, 2026-10-03). The implementer moves up one step
+     for the next round when either holds:
+     - a review asks for rework with three or more blocking findings;
+     - a rework round brings new blocking findings of the class the last round raised.
+
+     The steps are GLM-5.3 Flash → MiMo v2.6 Flash → Opus, and Sonnet → Opus. The round count
+     does not reset (rule 7). The new implementer gets the task file, every review so far, and the
+     previous implementer's unpushed work as a patch to weigh, never to apply blindly.
+   - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
+     family is forced. On 2026-10-03, `isolation: "remote"` silently ran T05's agents locally. A
+     cloud brief therefore starts by checking the hostname and that `/mnt/c` is absent, and stops
+     if either check fails.
+   - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
+   - **Switching** (the owner's decision, 2026-10-02): the owner decides which models are in use,
+     and switches them often, as credits and prices change. The main session does not choose
+     models by budget; it checks only whether a provider has quota (Quota first, above). It keeps
+     every switch cheap:
+     - every candidate stays probed, with a `harness.json` entry;
+     - each task file names its implementer and reviewer, one line each;
+     - when the owner calls a switch, it is applied to tasks not yet started (and to
+       `harness.json`'s defaults when asked), with the owner's reason in the commit message.
+
+   The families and switching were the owner's decisions on 2026-10-02; the difficulty pairs on
+   2026-10-03. They override the family rule in the harness copies
+   (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
+   pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
+
+   The working strategy, how runs are made, the adjustments and what each model has shown are in
+   `docs/models.md`, kept identical to malpaco's copy; the main session keeps it current.
+```
 
 ## Faster game cycles (Isle Wars Pro)
 

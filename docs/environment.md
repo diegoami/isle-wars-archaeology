@@ -1,7 +1,9 @@
 # Environment
 
 What a session needs so the main session can delegate. Everything here is optional: each missing
-piece turns one delegate off, and the main session falls back to Claude (the scripts exit 3).
+piece turns one delegate off. The scripts then exit 3, and the main session diagnoses and fixes it,
+or asks the user for another choice (CLAUDE.md rule 6, 2026-10-11). *Superseded: "the main session
+falls back to Claude".*
 
 ## On your desktop
 
@@ -47,7 +49,7 @@ directory, another machine, WSL beside Windows, or a new cloud session each need
 
 ## OpenAI, for the reviewer
 
-The reviewer is GPT-5.6 Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, L51), never a Luna
+*History (superseded 2026-10-11: the user chooses the reviewer and its route, CLAUDE.md rule 6):* the reviewer was GPT-5.6 Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, L51), never a Luna
 on Go (`opencode-go/…`): a third-party proxy behind Go's returned `Bad Request` in long agent loops
 (L27). OpenAI is an ordinary OpenCode provider: log in once with `opencode auth login`, choose
 OpenAI (a ChatGPT login or an API key), and check with `opencode models openai`. The login is kept in
@@ -73,7 +75,7 @@ its DeepSeek models are blacklisted, the owner 2026-10-09; its Kimi and MiniMax 
 from this list: quota-tracker stopped checking it (Alibaba flagged the console checks as unusual
 activity), so `/quota/alibaba` returns `not_monitored` with `pricing` only — see the Alibaba
 Token Plan section below for what this means and how to use those models.
-Check it before choosing, recommending or delegating to a model (L50). It is read-only, on
+Its `/recommend` is shown to the user as a suggestion with each model question (CLAUDE.md rule 6, 2026-10-11); the user chooses. *Superseded: "check it before choosing a model" (L50).* It is read-only, on
 localhost, with no auth; results are cached 60 s, and `?refresh` bypasses the cache:
 - `curl -s localhost:8765/quota`, or `/quota/<provider>` for one (alibaba's still carries a
   `pricing` object, even though the rest of its entry is empty; zai's carries `pricing` too);
@@ -93,7 +95,8 @@ localhost, with no auth; results are cached 60 s, and `?refresh` bypasses the ca
 - `curl -s localhost:8765/avoid`: the providers out of quota, with when each is usable again.
 
 Each provider has a `status`: `ok` (under 80% used), `low` (80% or more), `exhausted` (95% or
-more: do not use it until `available_at` / `available_in`), `error` (it could not be checked;
+more: usable again at `available_at` / `available_in`; shown with the question, and the user decides,
+CLAUDE.md rule 6; *superseded: "do not use it"*), `error` (it could not be checked;
 `error` says why) or `not_configured`. `headroom_pct` is the percent left on its most-used window;
 `windows[]` lists every limit with `used_pct` and when it resets. OpenRouter is prepaid: its
 windows never reset, and `remaining_usd` is the balance. Every model is judged on its
@@ -102,8 +105,9 @@ provider is `exhausted` can a model still run on a limit of its own, and then th
 `when_exhausted.usable_models` names it (today `gpt-5.6-luna` on OpenAI; L65). Read which pools
 exist from the windows the endpoint returns, not from this page.
 
-Free models on OpenRouter are a supplement, for smaller tasks and additional reviews (a second
-opinion next to a regular model), never the main model for important work (the owner, 2026-10-06):
+Free models on OpenRouter are usable when the user names one (CLAUDE.md rule 6). *Superseded on
+2026-10-11, kept as history: "a supplement, for smaller tasks and additional reviews, never the main
+model for important work" (the owner, 2026-10-06).* Their privacy limit still holds (below):
 
 | Model | Use |
 | --- | --- |
@@ -113,10 +117,11 @@ opinion next to a regular model), never the main model for important work (the o
 | `openrouter/poolside/laguna-s-2.1:free` | usable, often rate-limited |
 
 They share one allowance of 1,000 requests a day and about 20 a minute, and each agent step is one
-request: `free_model_daily_requests` in `/quota/openrouter` gives what remains, and the scripts skip
-a free model when none remain (`lib/quota.mjs`). Free providers may log and train on prompts: never
+request: `free_model_daily_requests` in `/quota/openrouter` gives what remains; since 2026-10-11 the scripts
+only warn when none remain (`lib/quota.mjs`, CLAUDE.md rule 6). Free providers may log and train on prompts: never
 send private or client code, secrets, or anything under NDA. They come and go and get rate-limited:
-on a 429, fall back to the next model instead of retrying. Check their output like any unreviewed
+on a 429, do not retry; tell the user, who names another model or waits (CLAUDE.md rule 6; *superseded:
+"fall back to the next model"*). Check their output like any unreviewed
 contribution; they have been tried only on small tasks.
 
 The models per provider, heavy and light:
@@ -135,8 +140,9 @@ The models per provider, heavy and light:
 
 Alibaba's Token Plan is no longer in quota-tracker: `/quota/alibaba` returns `not_monitored` with
 `pricing` only — there is no `month` window, and Alibaba is absent from `/quota` and
-`/avoid`, and `/recommend` does not rank it. Use Alibaba only as a supplement or an extra reviewer, not as a main or default model,
-and not in long loops. OpenCode's key for it comes only from the environment variable
+`/avoid`, and `/recommend` does not rank it. Use Alibaba only when the user asks for it (CLAUDE.md rule 6.4; the scripts need `--alibaba`).
+*Superseded, kept as history: "only as a supplement or an extra reviewer, not as a main or default
+model, and not in long loops".* OpenCode's key for it comes only from the environment variable
 `ALIBABA_TOKEN_PLAN_API_KEY` (in WSL from `~/.config/ai-keys.env`, which `~/.bashrc` and
 `~/.profile` load, and through WSLENV for commands started from Windows; on Windows a user
 variable), so it works in every OpenCode data directory, the scripts' own included. Never add it
@@ -179,11 +185,10 @@ If `curl -sf localhost:8765/health` fails where the service is installed:
 4. To run it without the service: `cd ~/projects/models_quota_tracker && uv run quota-tracker serve`
    in the background (it stops when the session ends).
 
-`implement.mjs` and `review.mjs` ask the service themselves before their chain runs (`lib/quota.mjs`,
-L52): a model is skipped when its provider is `exhausted`, unless the provider's
-`when_exhausted.usable_models` names it (L65). A provider in `error` or
-`not_configured` skips nothing. Each skip is logged with its reason, and with none left the script
-exits 3. `HARNESS_QUOTA_URL` names another
+`implement.mjs` and `review.mjs` ask the service before they run (`lib/quota.mjs`, L52), and since
+2026-10-11 only warn: they run the model the user named even when its provider is `exhausted`, and
+log `quota warning: …` (CLAUDE.md rule 6). *Superseded: skipping an exhausted model, and exit 3 when
+none was left.* `HARNESS_QUOTA_URL` names another
 address. Where the service does not answer, they skip nothing and log `quota: not checked`.
 
 Never read or edit `~/.config/quota-tracker/config.toml`: it holds account tokens. A provider in
@@ -286,7 +291,9 @@ Contents, Pull requests and Issues.
 
 OpenCode reads both `OPENCODE_API_KEY` and `OPENROUTER_API_KEY` from the environment (checked with
 `opencode auth list` on 1.18.33), so those need no `opencode auth login`. Go is the exception: without
-its console login, `implement.mjs` and `review.mjs` fail over and exit 3, and Claude agents take the work.
+its console login, `implement.mjs` and `review.mjs` exit 3. Log in (`opencode console login`, in both
+data directories) and run again; another model only when the user names it (CLAUDE.md rule 6).
+*Superseded: "and Claude agents take the work".*
 
 ## Network
 

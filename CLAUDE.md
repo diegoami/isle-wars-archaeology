@@ -18,8 +18,8 @@ The process is `docs/process.md`; read it before running a task. Tasks are `docs
 indexed in `docs/tasks/README.md`.
 
 ## Rules
-1. The main session plans, runs `/run-task`, triages and talks to the user. It delegates (`/delegate`):
-   code to OpenCode, review to another model (rule 6), repeated decisions to Jev after a trial, and
+1. The main session plans, runs `/run-task`, triages and talks to the user. Who implements and who
+   reviews is the user's choice, asked each time (rule 6). It delegates repeated decisions to Jev after a trial, and
    images and audio to OpenRouter or ElevenLabs models, whose ids come from live lists, never memory.
 2. Nobody works in the main checkout but the main session: OpenCode runs in the worktree the script
    makes, Claude agents run with worktree isolation. Never `git stash`.
@@ -28,109 +28,81 @@ indexed in `docs/tasks/README.md`.
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. Each task file names its implementer and its reviewer, at the effort below, and says
-   whether the task is `easy` or `hard`, and why.
-   - **`/recommend` decides** (the owner, 2026-10-10, effective at once; it supersedes the fixed
-     pairs below). Before each implement or review run, ask quota-tracker
-     `curl -s 'localhost:8765/recommend?tier=<light|heavy>'`: `light` for an easy task, `heavy`
-     for a hard one. Take its `pair` (`implementer`, then `reviewer` from another family), or the
-     rows in `rank` order when the pair's model cannot run. Pass the model explicitly (`--model`,
-     `--reviewer`, the Agent's model), and write the rank used in the brief and the run's report.
-     Its `skipped` rows are never used. The rules below still hold: the family rule, the effort
-     caps, the blacklist, the exclusions, Sonnet's tripwire, the escalation ladder, and L26
-     (work on the user's install goes to Claude, the ranking's best Claude row). The table stays
-     as the fallback when the service is down.
+6. **Choosing models: the user decides** (the owner, 2026-10-11). This replaces every earlier
+   model-choice rule in this repository: the 2026-10-03 pairs, the 2026-10-10 "/recommend decides",
+   `harness.json`'s chains and substitutes, the escalation ladder's named models, and #163. The old
+   rule 6 is kept as history in `docs/models.md` ("Superseded model-choice rules"). It must work
+   whatever model the orchestrator itself runs on, so it never names the orchestrator's model.
+   1. **Before implementing anything** (a task, a fix, a plan change), ask the user ONE question
+      with the question tool: does the main session implement it, or a subagent, and which model?
+      - The main session implements itself, in its own git worktree (never the main checkout).
+      - A subagent is the Agent tool with the model the user names (any model this session's
+        backend offers), or an external run (OpenCode, `implement.mjs --model <name>`) with the
+        model the user names.
 
-   The pairs (the owner's decision, 2026-10-03; since 2026-10-10 the fallback when `/recommend`
-   cannot be reached):
+      Whoever implements works in its own worktree and keeps a short running-notes file there
+      (`RUN-NOTES.md`: the plan, a progress line per commit, an END block before stopping). It
+      pushes after every commit, and opens the PR. When a subagent ends, the main session reads
+      its final report before acting (rule 25), and posts its notes on the issue.
+   2. **At every review** (a first review, a re-review, a re-check of named fixes), ask the user ONE
+      question: which external model reviews? Run that review alone, one at a time
+      (`review.mjs --reviewer <name>`), and relay its findings to the user in full (rule 8). A PR
+      gets one review unless the user asks for more.
+   3. With each question, show quota-tracker's recommendation as a **suggestion only**:
+      `curl -s "http://localhost:8765/recommend?tier=heavy"` for heavy work (a hard task: a guard,
+      a gate, a new mechanism across files, a new dependency, or a task whose last round found
+      bypasses), `tier=light` for small work. Give its `pick`/`pair` with rank, outlook and
+      reliability. If it does not answer, ask without the suggestion.
+   4. **The only fixed rules:**
+      - the reviewer is never of the implementer's family (`review.mjs` refuses it);
+      - DeepSeek is never used, on any route;
+      - Alibaba only when the user asks.
+   5. Record each choice (who, which model, the suggestion and its reasons) on the issue or PR.
+   6. A failed run is diagnosed and fixed, not silently re-routed: another model only when the
+      provider does not answer, and the user names it.
+   7. **Watching OpenCode runs, and any other background agent:**
+      - Start every OpenCode run in the background, with stdin from a file or closed, never an
+        inherited pipe. `opencode run` waits for stdin's end-of-file before it creates a session;
+        the scripts close it. Never wait on a run blind.
+      - Watch it with one monitor that checks every 1–2 minutes:
+        - that the session started (the run log's `session ses_… started` line, or
+          `opencode session list` in the run's directory), and the run's exit;
+        - progress: the session's `updated` time, the worktree's changed files, new lines in
+          `RUN-NOTES.md`, and new commits on the branch;
+        - "possibly stuck" after about 10 minutes with no change;
+        - "unpushed" when a commit sits on the branch but not on origin for about 15 minutes: push
+          it for the run, and record that;
+        - free memory, when the machine is short of it: run reviews and builds one at a time.
 
-   | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
-   | --- | --- | --- | --- | --- |
-   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-5.6 Luna (direct OpenAI) | Sonnet |
-   | Hard | MiMo v2.6 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
+        For a Claude subagent, the progress signal is its transcript file's size plus its
+        worktree.
+      - Tell the user, in plain language, what each running agent is doing: the step it is on,
+        what it committed, what it found (from its notes, commits and latest session messages).
+        Never raw log lines or byte counts.
+      - On a "possibly stuck" flag: check that the process is alive, and read its newest session
+        messages (`opencode export <ses_…>`, or rule 25's reader). A long build or test step is
+        not stuck. A run that is dead, or silent for 20 minutes, is stuck: kill it only if it is ours.
+      - When a run ends, read its final message before doing anything else (rule 25). A run that
+        stopped and reported a blocker gets an answer (fix the brief or the setup), not a retry on
+        another model.
+      - A run that our own limits interrupted (the idle or the total timeout) is resumed in its own
+        session and worktree, not restarted: `implement.mjs … --model <same> --session <ses_…>
+        [--idle-min N --total-min N]`, which sends a short "continue where you stopped" message.
+   8. **Still in force**, because they are not model choices:
+      - **Effort**: a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro, MiniMax-M3) runs at
+        `medium` at most, and at `low` when medium is not needed. A model with no medium takes its
+        lowest variant at or below `high`. A light model stays at `high`.
+      - **Sonnet's tripwire**: every Sonnet brief carries the paragraph in `docs/models.md`. On an
+        `ESCALATE`, the main session asks the user who answers it, or who takes the task over.
+      - **Reach** (L26): OpenCode cannot reach the user's install or a cloud session. The main
+        session runs the lines that read the install and posts their output on the PR, so only
+        choices that can do the work are offered.
+      - **Cloud sessions**: a cloud brief starts by checking the hostname and that `/mnt/c` is
+        absent, and stops if either check fails.
+      - Every model id comes from a live list (`opencode models <provider>`), never memory.
 
-   - **Hard** is any of:
-     - a guard, a gate, or a tool whose failure would let an original or a copy through (in T06
-       Sol found two bypasses that the implementer's own mutation tests missed, #9);
-     - a new mechanism across several files, or a new external dependency;
-     - a task whose earlier round found blocking bypasses.
-
-     Everything else is easy.
-   - **Family:** the reviewer comes from another family than the implementer. When a constraint
-     forces the same family, the task file names it: OpenCode cannot reach the user's install or a
-     cloud session (L26).
-   - **Research, or anything on the user's install:** Sonnet implements, because OpenCode cannot
-     reach the install (L26). The reviewer follows the difficulty and reviews the repository side.
-     The main session runs the lines that read the install, and posts their output on the PR. If
-     no OpenCode reviewer is available, the Claude fallback would be the implementer's family:
-     escalate.
-   - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): MiMo v2.6
-     Pro (Go), GLM-5.3 and GPT-6 Sol, and on the Alibaba Token Plan (2026-10-05; its key is an
-     environment variable, `docs/models.md`) Qwen 3.8 Max and Flash, and GLM-5.3; Opus and Fable
-     implement only when a task file says why.
-   - **MiMo replaces DeepSeek** (the owner, 2026-10-09). OpenCode Go's heavy model is
-     `opencode-go/mimo-v2.6-pro`, its light one `opencode-go/mimo-v2.6-flash`; MiMo is a family of
-     its own for the family rule. DeepSeek (V4 Pro, V4.1 Flash, on any route, Alibaba included) is
-     blacklisted: never used, and removed from `harness.json`.
-   - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
-     `medium` only when the task file says why; never `high`.
-   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro)
-     runs at `medium` at most, and at `low` when medium is not needed. A model that offers no
-     medium takes its lowest variant at or below `high`: GLM-5.3 `low`. MiMo offers no variant on
-     Go, so it runs without one. Opus runs as `task-agent-heavy` (effort `medium`). A light model
-     (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) stays at `high`.
-   - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
-     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`). As of 2026-10-09, Luna
-     shares OpenAI's main quota with Sol — the `gpt-5.6-luna:7d` window of its own is gone; its own
-     limit surfaces only as `when_exhausted.usable_models` in `/quota/openai` (harness's L65).
-     GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
-     every chain, never the reviewer. Never a Luna on OpenCode Go (`opencode-go/…`).
-   - **Quota first** (harness_imperial L50; the owner, 2026-10-05, superseding every earlier limit
-     on which models may be used): before choosing, recommending or delegating to a model, check
-     its provider with quota-tracker (`docs/environment.md`). A provider that is `exhausted` is not
-     used until it is usable again: take the next model of the pair or chain whose provider has
-     quota, pass it explicitly (`--model`, `--reviewer`, the Agent's model, `opencode -m`), and say
-     so in the run's report or the PR body ("GLM skipped: zai exhausted until 21:40; reviewed by
-     Luna"). Without the service, count a usage-limit error as `exhausted`. Ids still come from the
-     live list (`opencode models <provider>`), never memory.
-   - **Sonnet's tripwire** (the owner, 2026-10-04). Every Sonnet brief carries the paragraph in
-     `docs/models.md`. Sonnet stops and hands back an `ESCALATE` block when:
-     - two hypotheses for the same question have failed;
-     - it would rely on bytes, code or behaviour it cannot explain;
-     - it is about to write a claim it cannot back;
-     - it has made three attempts at one step without progress.
-
-     The main session then brings in Opus, to answer the question (consult) or to take the task
-     (takeover), on the pushed branch.
-   - **Escalation after a heavy review** (the owner, 2026-10-03). The implementer moves up one step
-     for the next round when either holds:
-     - a review asks for rework with three or more blocking findings;
-     - a rework round brings new blocking findings of the class the last round raised.
-
-     The steps are GLM-5.3 Flash → MiMo v2.6 Flash → Opus, and Sonnet → Opus. The round count
-     does not reset (rule 7). The new implementer gets the task file, every review so far, and the
-     previous implementer's unpushed work as a patch to weigh, never to apply blindly.
-   - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
-     family is forced. On 2026-10-03, `isolation: "remote"` silently ran T05's agents locally. A
-     cloud brief therefore starts by checking the hostname and that `/mnt/c` is absent, and stops
-     if either check fails.
-   - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
-   - **Switching** (the owner's decision, 2026-10-02): the owner decides which models are in use,
-     and switches them often, as credits and prices change. The main session does not choose
-     models by budget; it checks only whether a provider has quota (Quota first, above). It keeps
-     every switch cheap:
-     - every candidate stays probed, with a `harness.json` entry;
-     - each task file names its implementer and reviewer, one line each;
-     - when the owner calls a switch, it is applied to tasks not yet started (and to
-       `harness.json`'s defaults when asked), with the owner's reason in the commit message.
-
-   The families and switching were the owner's decisions on 2026-10-02; the difficulty pairs on
-   2026-10-03. They override the family rule in the harness copies
-   (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
-   pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
-
-   The working strategy, how runs are made, the adjustments and what each model has shown are in
-   `docs/models.md`, kept identical to malpaco's copy; the main session keeps it current.
+   The working strategy, how runs are made and what each model has shown are in `docs/models.md`,
+   kept identical to malpaco's copy; the main session keeps it current.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
    Exception (the owner, 2026-10-05): when the remaining findings are small and change no result
    (wording, a narrowed claim, a missing test or correction note), the main session grants a third,
@@ -270,8 +242,8 @@ indexed in `docs/tasks/README.md`.
         ones, and the finding says which ones it cites.
       - This reaches every brief for a task that measures (research, runtime spikes, drivers that
         time things, static reading), as the standing paragraph in `docs/models.md`.
-21. **Model trials** (the owner's decision, 2026-10-02). Rule 6's list exists to find out which
-    models are viable. After every implement or review run, the main session adds one comment to
+21. **Model trials** (the owner's decision, 2026-10-02). The record shows the user which models are
+    viable. After every implement or review run, the main session adds one comment to
     the model-trials issue (implementers and reviewers post only on their own PR):
     - the model, its role and the task;
     - the exit code, the duration and the review round;
@@ -338,10 +310,10 @@ indexed in `docs/tasks/README.md`.
     separate tasks or fixes if the parts can each merge on their own and each part's Done-when
     passes without the others. Split when any of these holds:
     - **Different difficulty or pair:** one part is a guard, gate or new mechanism (hard) and the
-      rest is not (easy). Each part gets its own pair, so an easy part is not held to a hard review,
+      rest is not (easy). Each part gets its own choice of models (rule 6), so an easy part is not held to a hard review,
       and a hard part is not reviewed as easy. (T39's catalogue and the check's hash verification,
       #140, 2026-10-09.)
-    - **Different hands:** one part reads the user's install (Sonnet or the main session, L26), and
+    - **Different hands:** one part reads the user's install (a Claude agent or the main session, L26), and
       another is repository-only work OpenCode can do.
     - **One part can be blocked** (on the owner, on quota, on another task) while the others are
       ready.

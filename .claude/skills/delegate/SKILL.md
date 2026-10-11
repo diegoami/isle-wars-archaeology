@@ -12,8 +12,8 @@ yourself, check whether a delegate below does it better or cheaper.
 
 | Work | Delegate | How | Key |
 | --- | --- | --- | --- |
-| Code: implement a task or a fix | OpenCode GLM-5.3 Flash, then MiMo V2.6 Flash, then a Claude Sonnet agent | `/run-task` → `tools/harness/implement.mjs` | Z.AI's login (`opencode auth login`) and OpenCode Go's (`opencode console login`) to implement; OpenAI's (`opencode auth login`) to review |
-| Review a PR | GPT-5.6 Luna on OpenAI, through OpenCode (default), then a Claude Opus agent; never the implementer's family | `/run-task` → `tools/harness/review.mjs`, or Agent | as above |
+| Code: implement a task or a fix | **The user's choice** (CLAUDE.md rule 6): the main session in its own worktree, a Claude agent, or OpenCode | `/run-task` → `tools/harness/implement.mjs --model <name>`, or Agent | Z.AI's login (`opencode auth login`) and OpenCode Go's (`opencode console login`) to implement; OpenAI's (`opencode auth login`) to review |
+| Review a PR | **The user's choice** at every review: an external model, never the implementer's family | `/run-task` → `tools/harness/review.mjs --reviewer <name>` | as above |
 | Repeated decisions with known answers (triage, routing, gating, labelling) | Jev | `/jev` → `tools/harness/jev.mjs` | `OPENROUTER_API_KEY` |
 | Images: sprites, icons, maps, mockups, illustrations | An image model on OpenRouter | pick one with `models.mjs openrouter --output image` | `OPENROUTER_API_KEY` |
 | A second opinion from another model family, or reading audio or images | A model on OpenRouter | `models.mjs openrouter --input image` (or `audio`) | `OPENROUTER_API_KEY` |
@@ -33,36 +33,29 @@ another way, or tell the user what is missing (`docs/environment.md`).
 
    Do the same when you are unsure a model still exists. (L25)
    To change the implementer's or reviewer's model itself, use `/switch-model`.
-2. **Check the quota first** (L50). Where quota-tracker runs (`curl -sf localhost:8765/health`),
-   `curl -s localhost:8765/avoid` lists the providers out of quota and when each is usable again,
-   and `curl -s 'localhost:8765/recommend?tier=heavy'` (or `tier=light`) ranks the models to use:
-   `pick` is the best, `ranking` lists them with `score`, spare calls per day until the pool's reset
-   (negative: it runs out before then at the current demand) (`docs/environment.md`). Never rank by
-   headroom: pools differ in size and period, and Claude sessions draw on some.
-   Skip a model whose provider is `exhausted`: name the next model of its chain that has quota
-   (`--model` for `implement.mjs`, `--reviewer` for `review.mjs`) and say so in the run's report.
-   Both scripts also skip such a model themselves and log why (L52); never pause a provider by
-   editing `harness.json` for quota.
-   When a task needs both an implementer and a reviewer, use `/recommend`'s `pair` field
-   (`curl -s 'localhost:8765/recommend?tier=heavy' | jq .pair`): `pair.implementer` and
-   `pair.reviewer`, the reviewer from another family (claude, openai, glm, mimo, minimax;
-   each free model its own). Add `review_tier=light` for a lighter reviewer; `private=0` is for
-   code that is not private (the free OpenRouter models may then be in the pair). With
-   `tier=heavy`, the same response also offers `free_reviewer` — a free second opinion on the
-   shared 1,000-requests-a-day allowance, lost at 00:00 UTC. Never use a free model for private
-   or client code, secrets or NDA material. A null reviewer means no other family has quota:
-   tell the owner. Project exclusions apply on top: if the suggested reviewer is one the
-   project rules out (rule 3, the family rule), take the next row of `ranking` whose reviewer
-   is from a different family than the implementer. Alibaba is never recommended and never
-   appears in `pair`.
+2. **Ask the user** (CLAUDE.md rule 6, the owner, 2026-10-11). For code and reviews the user
+   chooses, with ONE question each time:
+   - before implementing: does the main session implement it, or a subagent (a Claude agent, or
+     OpenCode), and with which model?
+   - at every review: which external model reviews?
+
+   Show quota-tracker's suggestion with the question, as a suggestion only:
+   `curl -s 'localhost:8765/recommend?tier=heavy'` for heavy work, `tier=light` for small work.
+   Give its `pick`/`pair` with rank, outlook and reliability, and ask without it when it does not
+   answer. The only fixed rules: the reviewer is never of the implementer's family, DeepSeek is
+   never used, and Alibaba only when the user asks. Record the choice and the suggestion's reasons
+   on the issue or PR. A failed run is diagnosed and fixed; another model only when its provider does
+   not answer, and the user names it.
+   *Superseded on 2026-10-11 and kept as history:* checking the quota and taking the next model of a
+   chain (L50, L52); `/recommend`'s `pair` as the choice; `choose.mjs`.
 3. **Choose on the evidence you have.** In order of preference:
    - this project's own measurements (review rounds and tokens per task, from the merge comments);
    - a small trial;
    - the listed price and capabilities.
 
    Vendor benchmarks come last.
-4. **Record the choice where it is used.** Implementer and reviewer models go in `harness.json`,
-   and a task's own choice goes in its task file, with the date and the reason in the commit
+4. **Record the choice where it is used.** An implementer or reviewer choice goes on the issue or PR,
+   and in the task file, with the date and the reason in the commit
    message. A generated asset gets a sidecar next to it, `<asset>.json`, with the provider, the
    model id, the prompt, the date and the cost. That records where it came from, and lets it be
    made again.
