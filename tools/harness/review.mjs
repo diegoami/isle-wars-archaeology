@@ -199,8 +199,10 @@ const attempt = async (m, second) => {
 ---
 OUTPUT RULES (from tools/harness/review.mjs; they override anything above that conflicts):
 - Do not post to GitHub, commit, push, label or merge anything. The script posts your review.
-  Edit nothing, but for a mutation made in place in your worktree, restored with
-  \`git checkout -- <file>\` and never committed. Outside your worktree, only read the static
+  Edit nothing, but for a mutation made in place in your worktree and never committed.
+  Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+  restore it in a \`finally\`), or commit first; never \`git checkout\`, \`git restore\` or \`git reset\`
+  a file with uncommitted work: they return the last commit and destroy the rest. Outside your worktree, only read the static
   folder ~/.local/share/isle-wars-archaeology/static/ (never write there, and never paste its
   contents into the review), and only write in one TMPDIR made with
   \`mktemp -d /tmp/iwa-review-XXXXXX\` and removed afterwards. Every other path outside it is

@@ -111,6 +111,11 @@ indexed in `docs/tasks/README.md`.
 8. Relay review findings in full, never a subset.
 9. A test proves behaviour only if it fails when the behaviour is removed; a claim that nothing
    failed is re-taken before it is believed.
+   Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
+   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
+   a file with uncommitted work: they return the last commit and destroy the rest. (The owner, 2026-10-11:
+   in another project, a `git checkout <file>` used to undo a mutation wiped a whole rework round's
+   uncommitted edits; here fix-87's implementer lost its uncommitted file the same way.)
 10. A comment asserting behaviour at an edge arrives with the test that visits that edge.
 11. Until the first playable build, schedule only bugs that break play; label the rest
     `post-playable`.

@@ -179,7 +179,12 @@ class ReviewerPermissions(unittest.TestCase):
         for text in (prose, rules):
             self.assertIn("~/.local/share/isle-wars-archaeology/static/", text)
             self.assertIn("mktemp -d /tmp/iwa-review-XXXXXX", text)
-            self.assertIn("git checkout -- <file>", text)
+            # L69 (the owner, 2026-10-11): a mutation is undone by writing back the saved contents,
+            # never by git checkout/restore/reset of a file with uncommitted work.
+            self.assertIn("writing back the file's saved contents", text)
+            self.assertIn("never `git checkout`, `git restore` or `git reset`", text.replace("\\`", "`"))
+            self.assertNotIn("then `git checkout -- <file>`", text)
+            self.assertNotIn("restored with\n  \\`git checkout -- <file>\\`", text)
         self.assertNotIn("no temp directory", prose)
         self.assertNotIn("never `/tmp`.", prose)
 
