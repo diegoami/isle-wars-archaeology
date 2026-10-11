@@ -151,7 +151,7 @@
       "step": 0,
       "source": "screen",
       "field": "human placement summary",
-      "value": "13 placements in 13 human turns, the whole pool each time; one country in 9 turns, two or more in 4 (turn 27: 15 and 1; turn 44: 8 and 14; turn 47: 7, 9, 4 and 6); the panel counter counts down one army at a time about every 0.17 s after the place button (turn 27: 15 to 0 from 06:06.3 to 06:09.6, read from the counter); largest single stack after a placement: 6 (turns 3, 7, 19), 5 (turns 11, 15, 23), 16 (turn 27, country 37), 14 (turn 31, country 31), 25 (turn 35, country 33), 22 (turn 38, country 43), 33 (turn 41, country 43), 20 (turn 44, country 7) and 27 (turn 47, country 7). The owner built stacks of 14 to 33 from turn 27 on, but never a stack of exactly 8 or 12 by placement alone and never against a defender of 7 to 14 armies: every human defender held 1 to 4."
+      "value": "13 placements in 13 human turns, the whole pool each time; one country in 10 turns, two or more in 3 (turn 27: 15 and 1; turn 44: 14 and 8; turn 47: 7, 9, 4 and 6); the panel counter counts down one army at a time about every 0.17 s after the place button (turn 27: 15 to 0 from 06:06.3 to 06:09.6, read from the counter); largest single stack after a placement: 6 (turns 3, 7, 19), 5 (turns 11, 15, 23), 16 (turn 27, country 37), 14 (turn 31, country 31), 25 (turn 35, country 33), 22 (turn 38, country 43), 33 (turn 41, country 43), 20 (turn 44, country 7) and 27 (turn 47, country 7). The owner built stacks of 14 to 33 from turn 27 on, but never a stack of exactly 8 or 12 by placement alone and never against a defender of 7 to 14 armies: every human defender held 1 to 4."
     },
     {
       "step": 1,
