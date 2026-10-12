@@ -250,6 +250,33 @@ class VarietyCleanTest(VarietyWorld):
         self.assertEqual(problems, ["spec/production-centres.md: missing"])
 
 
+class VariantsBanTest(VarietyWorld):
+    """design/variants.md has no decision table; only the fence and comment ban applies to it."""
+
+    def run_main(self, variants):
+        self.write_design()
+        (self.root / "design" / "variants.md").write_text(variants)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        return code, out.getvalue().strip().splitlines()
+
+    def test_clean_variants_prints_nothing_extra(self):
+        self.assertEqual(self.run_main("# Variants\n\nText.\n"),
+                         (0, ["design/core-rules.md ok: 3 claims, 3 rows",
+                              "design/variety.md ok: 3 claims, 3 rows"]))
+
+    def test_a_fence_in_variants_fails(self):
+        code, lines = self.run_main("# Variants\n\n~~~\nx\n~~~\n")
+        self.assertEqual(code, 1)
+        self.assertEqual(lines[2:], [l for l in lines[2:] if l.startswith("design/variants.md:")])
+        self.assertEqual([l.split(":")[1] for l in lines[2:]], ["3", "5"])
+
+    def test_a_comment_in_variants_fails(self):
+        code, lines = self.run_main("# Variants\n\nText <!-- hidden -->.\n")
+        self.assertEqual((code, lines[2:]), (1, ["design/variants.md:3: an HTML comment; design files may not hold HTML comments"]))
+
+
 class VarietyFailureTest(VarietyWorld, FailureTest):
     """The five failures, each tripped alone, in design/variety.md."""
 

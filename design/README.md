@@ -17,8 +17,9 @@ goal is a fun game, not a copy", 2026-10-11).
 - **Who decides.** Every `open` row, and every change that alters the feel of play, is listed in its
   file's `## Choices for the owner` with options and a recommendation. The owner decides; the section
   then becomes `## The owner's decisions (<date>)`, keeping the options and reasons and adding each
-  decision. `core-rules.md`'s choices were all decided on 2026-10-12. An implementer builds each
-  decided value behind a named constant.
+  decision. The choices of `core-rules.md` and `variety.md` were all decided on 2026-10-12. The decided
+  options are the **canonical** variant; the other options are kept as named variants in
+  `variants.md`. An implementer builds each decided value behind a named constant.
 
 ## Files
 
@@ -26,9 +27,12 @@ goal is a fun game, not a copy", 2026-10-11).
 | --- | --- | --- |
 | [core-rules.md](core-rules.md) | setup, seats, the board generator and island bonuses, the deal, the turn, reinforcement, movement, combat, ownership, victory and leaving a game | T50 (#192) |
 | [variety.md](variety.md) | cards, island bonuses on a generated board, production centres and events | T51 (#193) |
+| [variants.md](variants.md) | every T50 and T51 choice: the canonical option and each alternative as a named variant, with its interactions; no spec rows | T51 (#193) |
 | T53's file | the computer opponent's policy: how it values cards, trade-ins, targets and centres | T53 (#196) |
 | `ui.md` (planned) | the UI, against the predecessor's and malpaco's recorded weaknesses | T52 (#194) |
 
 `python3 tools/check_design.py` checks that each design file's decision table has exactly one row per
 claim of its own in-scope spec files, with a valid decision and a reason, and that every `open` row is
-in the owner's list; it prints one line per design file.
+in the owner's list; it prints one line per design file. Every design file, `variants.md` included,
+fails the check if it holds a code fence or an HTML comment, so nothing in it can be hidden from a
+reader; code goes in indented blocks.

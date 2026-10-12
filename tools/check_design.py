@@ -17,7 +17,8 @@ claim tables of those spec files and the design file's decision table (every lin
 
 With no argument it checks every design file and prints one line per clean file,
 `design/<file> ok: N claims, N rows`, or one line per problem; it exits 1 if any file has a
-problem. Naming design files (`variety.md` or `design/variety.md`) checks only those.
+problem. It also applies the fence and comment ban to the design files without a decision table
+(`BAN_ONLY`), printing only their problems. Naming design files (`variety.md` or `design/variety.md`) checks only those.
 `--root` points at another tree (the tests use it).
 """
 import argparse
@@ -30,6 +31,9 @@ SPEC_FILES = ("board", "setup", "seats", "starting-state", "turn-sequence", "rei
               "movement", "combat", "ownership", "victory", "surrender")
 VARIETY_SPEC_FILES = ("cards", "island-bonuses", "production-centres", "hazards")
 DESIGNS = {"core-rules.md": SPEC_FILES, "variety.md": VARIETY_SPEC_FILES}
+# Design files with no decision table: only the fence and comment ban applies, and a clean one prints
+# nothing (T51's variants catalogue).
+BAN_ONLY = ("variants.md",)
 DECISIONS = {"keep", "change", "replace", "drop", "open"}
 NEED_WHY = {"change", "replace", "drop"}
 CLAIM_ROW = re.compile(r"^\|\s*(C-[A-Z]+-\d+)\s*\|")
@@ -141,6 +145,13 @@ def main(argv=None):
             print("\n".join(problems))
         else:
             print(f"design/{name} ok: {n_claims} claims, {n_rows} rows")
+    if not args.designs:
+        for name in BAN_ONLY:
+            path = args.root / "design" / name
+            problems = inactive_markdown(path.read_text(encoding="utf-8"), f"design/{name}") if path.is_file() else []
+            if problems:
+                failed = True
+                print("\n".join(problems))
     return 1 if failed else 0
 
 
