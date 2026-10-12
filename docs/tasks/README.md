@@ -51,3 +51,4 @@ status; this index carries none.
 | T49 | Constraint F accepts run/1 objects only where records live | #154 | T48 |
 | T50 | malpaco's design, the core rules: kept from Pro, changed or new | #192 | — |
 | T51 | malpaco's design, variety: cards, island bonuses, production centres and events | #193 | T50 |
+| T53 | malpaco's design, the computer opponent: how it plays, and its difficulty levels | #196 | T51 |
