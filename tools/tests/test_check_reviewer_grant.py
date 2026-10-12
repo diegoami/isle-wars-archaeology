@@ -25,6 +25,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TOOL = ROOT / "tools" / "check_reviewer_grant.py"
 
+# Import the check's helpers directly so the worktree-name substitution can be tested
+# without spawning a subprocess.
+sys.path.insert(0, str(ROOT / "tools"))
+import check_reviewer_grant as crg  # noqa: E402  (the tool under test, beside this file)
+_main_repo_path = crg._main_repo_path
+_main_repo_name = crg._main_repo_name
+_worktree_root = crg._worktree_root
+
 # A minimal reviewer.md frontmatter, with one grant that the happy-path case adds and the
 # mutations remove or change.
 FRONTMATTER_HEAD = """---
@@ -108,6 +116,35 @@ def _write_fixture_with_marker_grant(tmpdir: Path) -> Path:
 
 
 class TestCheckReviewerGrant(unittest.TestCase):
+    def test_worktree_root_resolves_against_main_checkout(self):
+        # R3 (round 4 + R1 round 5): `_worktree_root` must resolve the
+        # worktreeRoot relative to the main checkout, not the worktree the check
+        # happens to be invoked from. The test runs in the real worktree
+        # (`fix-208/`), a sibling of the main checkout, and asserts the
+        # computed path matches the main checkout's expectations.
+        wt = _worktree_root(ROOT)
+        # canonical expected path; `isle-wars-archaeology-work` lives next to the
+        # main checkout.
+        expected = Path('/home/diego/projects/isle-wars-archaeology-work').resolve()
+        self.assertEqual(wt, expected)
+
+    def test_main_repo_path_picks_first_worktree(self):
+        # When `repo` is a worktree, `_main_repo_path` returns the main checkout's
+        # path (git-worktree-list porcelain's first `worktree` line). Mutating
+        # callers' failures on detached worktrees imply they were resolving
+        # relative paths against the wrong directory.
+        main = _main_repo_path(ROOT)
+        self.assertEqual(main.name, 'isle-wars-archaeology')
+        self.assertNotEqual(main.resolve(), ROOT.resolve(),
+                             msg='_main_repo_path returned the current worktree, '
+                                 'not the main checkout')
+
+    def test_main_repo_name_expands_to_main_checkout(self):
+        # `{repo}` in `harness.json`'s worktreeRoot should expand to the main
+        # checkout's leaf (e.g., `isle-wars-archaeology`), regardless of which
+        # worktree the check runs from.
+        self.assertEqual(_main_repo_name(ROOT), 'isle-wars-archaeology')
+
     def _run_check(self, repo: Path, ci: bool = False) -> subprocess.CompletedProcess:
         """Run the check as a subprocess with the test's intended CI mode.
 

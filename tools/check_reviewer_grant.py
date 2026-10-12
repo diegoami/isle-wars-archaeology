@@ -28,11 +28,13 @@ import sys
 from pathlib import Path
 
 
-def _main_repo_name(repo: Path) -> str:
-    """Return the leaf name of the main checkout, even when `repo` is a worktree.
+def _main_repo_path(repo: Path) -> Path:
+    """Return the absolute path of the main checkout, even when `repo` is a worktree.
 
-    `git worktree list --porcelain` emits the main checkout first; that leaf is what
-    `{repo}` should expand to. Falls back to `repo.name` when not in a git worktree.
+    `git worktree list --porcelain` emits the main checkout first; that path is what
+    `harness.json`'s relative `worktreeRoot` should be resolved against, not the
+    current worktree's directory (which has a different leaf). Falls back to `repo`
+    when not in a git worktree.
     """
     import subprocess
     try:
@@ -41,12 +43,19 @@ def _main_repo_name(repo: Path) -> str:
             capture_output=True, text=True, check=True,
         ).stdout
     except (subprocess.CalledProcessError, FileNotFoundError):
-        return repo.name
+        return repo.resolve()
     for line in out.splitlines():
         if line.startswith('worktree '):
-            path = line[len('worktree '):]
-            return Path(path).name
-    return repo.name
+            return Path(line[len('worktree '):]).resolve()
+    return repo.resolve()
+
+
+def _main_repo_name(repo: Path) -> str:
+    """Leaf name of the main checkout (e.g., `isle-wars-archaeology`).
+
+    Used to expand `{repo}` in `harness.json`'s `worktreeRoot`.
+    """
+    return _main_repo_path(repo).name
 
 
 def _worktree_root(repo: Path) -> Path:
@@ -57,7 +66,11 @@ def _worktree_root(repo: Path) -> Path:
     rel = cfg.get('worktreeRoot', '../{repo}-work')
     if '{repo}' in rel:
         rel = rel.replace('{repo}', _main_repo_name(repo))
-    return (repo / rel).resolve()
+    # harness.json's worktreeRoot is relative to the *main* checkout, not to whichever
+    # worktree the check happens to be run from. Resolve against the main path so the
+    # same answer is produced from any worktree.
+    main_path = _main_repo_path(repo)
+    return (main_path / rel).resolve()
 
 
 def _frontmatter(path: Path) -> str:
