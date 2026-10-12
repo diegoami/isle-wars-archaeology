@@ -91,6 +91,18 @@ def design_text(rows, choices):
     return "# Rules\n\n## The board\n\nText.\n\n" + choices + "\n## Decisions, claim by claim\n\n" + table
 
 
+# Disguised rows for fix #202. Each is a line that bypasses the row parser without bypassing a
+# permissive Markdown renderer. The four mutation tests below pin one row per disguise class.
+DISGUISED_ROWS = {
+    "blockquote":  "> | C-BRD-09 | nope    | text | |",                # R1 (rest): blockquote
+    "list_dash":   "- | C-BRD-09 | nope    | text | |",               # R1 (rest): list bullet, dash
+    "list_star":   "* | C-BRD-09 | nope    | text | |",               # R1 (rest): list bullet, star
+    "entity_num":  "| Q&#45;UI&#45;99 | nope | text | |",               # R4: HTML entity, numeric
+    "entity_name": "| Q&ndash;UI&ndash;99 | nope | text | |",         # R4: HTML entity, named (–)
+    "lookalike":   "| Q‐UI‐99 | nope    | text | |",         # R4: look-alike U+2010
+}
+
+
 class DesignWorld(unittest.TestCase):
     design = "core-rules.md"
     # The ids used by the shared failure cases, per world.
@@ -561,6 +573,61 @@ class QuestionRowElsewhereTest(DesignWorld):
         path.write_text(path.read_text().replace("| C-BRD-02 |", "  | C-BRD-02 |"))
         self.write_design()
         self.assertEqual(check_design.check(self.root), ([], 3, 3))
+
+
+class DisguisedRowTest(DesignWorld):
+    """Mutation tests for fix #202: each disguise class must fail the check."""
+
+    def setUp(self):
+        super().setUp()
+        self.ok_rows = list(self.rows.values())
+
+    def _problems_with(self, disguised_line):
+        # Replace the design file's decision table with: the OK rows + one disguised row.
+        body = TABLE_HEAD + "\n".join(self.ok_rows) + "\n" + disguised_line + "\n"
+        text = ("# Rules\n\n## The board\n\nText.\n\n" + self.choices
+                + "\n## Decisions, claim by claim\n\n" + body)
+        (self.root / "design" / self.design).write_text(text)
+        problems, _, _ = check_design.check(self.root, self.design)
+        return problems
+
+    def assert_disguise_fails(self, disguise_key, expected_substring):
+        problems = self._problems_with(DISGUISED_ROWS[disguise_key])
+        disguise_problems = [p for p in problems if expected_substring in p]
+        self.assertEqual(
+            len(disguise_problems), 1,
+            msg=f"{disguise_key!r}: expected one problem containing "
+                f"{expected_substring!r}, got {problems!r}",
+        )
+        where = disguise_problems[0]
+        self.assertIn(f"design/{self.design}", where)
+        self.assertNotIn(
+            "no row in", "".join(problems),
+            msg=f"{disguise_key!r}: the disguised line should NOT be parsed as a "
+                f"missing row (it should fail closed before that); got {problems!r}",
+        )
+
+    def test_blockquote_table_line_fails(self):
+        self.assert_disguise_fails("blockquote", "blockquote or list prefix")
+
+    def test_list_bullet_table_line_fails(self):
+        self.assert_disguise_fails("list_dash", "blockquote or list prefix")
+        self.assert_disguise_fails("list_star", "blockquote or list prefix")
+
+    def test_html_entity_in_table_line_fails(self):
+        self.assert_disguise_fails("entity_num", "HTML entity")
+        self.assert_disguise_fails("entity_name", "HTML entity")
+
+    def test_lookalike_unicode_hyphen_next_to_id_fails(self):
+        self.assert_disguise_fails("lookalike", "look-alike Unicode hyphen")
+
+    def test_clean_design_without_disguise_passes(self):
+        # Sanity: the OK rows alone still pass (DesignWorld's setUp completes with a
+        # clean design). Pinning keeps the disguise tests from inadvertently flipping
+        # the rule on a clean baseline.
+        self.write_design()
+        problems, _, _ = check_design.check(self.root, self.design)
+        self.assertEqual(problems, [])
 
 
 class RepositoryTest(unittest.TestCase):
