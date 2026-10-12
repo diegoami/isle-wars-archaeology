@@ -379,7 +379,9 @@ a setting a player can change, and none changes a rule.
 - **UI5a One exchange first**, fight on to a capture or down to `N` as the second control.
 - **UI5b Fight on first** (to a capture or down to `N`, default 2), one exchange as the second.
 - **UI5c Fight on first, `N` half the starting stack.**
-- Interacts with: UI6 (`EXCHANGE_TIME`, `HUMAN_BATTLE_WATCH`), T50-11 (ties re-rolled shown), UI10.
+- Every option keeps stop live after every exchange (T50's rule) and pauses a long battle for the
+  player's choice: keep watching, finish now, or stop.
+- Interacts with: UI6 (`EXCHANGE_TIME`, `HUMAN_BATTLE_WATCH`, Instant), T50-11 (ties re-rolled shown), UI10.
 
 ### UI6 Pacing
 - **Canonical: the owner's choice.** Recommended (a). [Pacing](ui.md#pacing).
@@ -387,6 +389,8 @@ a setting a player can change, and none changes a rule.
   15 s: turns of up to 8 battles shown whole.
 - **UI6b Quicker Normal**, `STEP_TIME` 0.35 s, `TURN_WATCH` 10 s: turns of 8 or more battles cut.
 - **UI6c As UI6a without Instant.**
+- In every option a human's long battle pauses after `HUMAN_BATTLE_WATCH` for the player's choice;
+  only Instant, which the player picks, runs the main battle control to its end at once.
 - Interacts with: A6 and A17 (the step and battle bounds), A14 (placements are steps), V9 (events are
   shown outside the budget).
 

@@ -339,12 +339,24 @@ once, and the legal choices are marked again. The reasons cover at least:
   (fight to the end) to the attacking stack less one; a remembered value above that is lowered to it
   for the battle, so an attack from 2 armies fights to the end. At 1 army the battle stops by rule and
   the panel says so. The engine resolves exchanges one at a time either way.
-- **Long battles**: a human's battle in the main control shows each exchange for `EXCHANGE_TIME`
-  (0.4 s proposed at Normal; the predecessor's human exchanges came about 0.5 s apart, `runs/E018`) up
-  to `HUMAN_BATTLE_WATCH` (5 s proposed at Normal), then the rest of the battle in one step, with the
-  tally. A battle of 1000 against 100 is therefore shown in about 12 exchanges and one jump. Stop
-  works between the shown exchanges; the jump runs the battle to the end the player set (a capture or
-  `N` armies).
+- **Every stop is offered** (core-rules.md, Combat: the attacker may stop after every exchange). In
+  the main control, each exchange is shown for `EXCHANGE_TIME` (0.4 s proposed at Normal; the
+  predecessor's human exchanges came about 0.5 s apart, `runs/E018`), and the next exchange is resolved
+  only after the previous one has been shown. Stop stays live throughout: pressed at any moment, it
+  takes effect before the next exchange. The UI never resolves an exchange the player has not chosen
+  to fight.
+- **Long battles pause for a choice**: when a battle in the main control has run for
+  `HUMAN_BATTLE_WATCH` (5 s proposed at Normal), it pauses, with the stacks and the tally, and waits
+  for one of three choices: keep watching (another `HUMAN_BATTLE_WATCH`, with stop live as before),
+  finish now (the rest of the battle, to a capture or `N` armies, in one step, with the tally), or
+  stop. Finish now is the only way exchanges are resolved unseen, and only when the player picks it at
+  the pause. A battle of 1000 against 100 with `N` = 1 shows 12 exchanges in 5 s at Normal, then
+  pauses (at 1000 against 88 if the attacker won all 12); stop is offered there and after every
+  further exchange the player chooses to watch, the 13th included.
+- **At Instant** *(UI6)*, which the player chooses in settings, the main control runs the battle to its
+  end (a capture or `N` armies) at once, with the last exchange's dice and the tally; the settings screen
+  says so beside the Instant setting. The single-exchange control and stop are unchanged, so a player
+  at Instant who wants to judge each exchange still can.
 - **The capture**: the country changes colour and cue with a short effect *(UI16)* and its sound;
   the move-in counter follows.
 - **Quitting** leaves both countries as they are; the panel and the log say "stopped" with the
@@ -476,7 +488,7 @@ game from the board.
 | `STEP_TIME` | 0.5 s | one step of a computer turn |
 | `TURN_WATCH` | 15 s (computer.md's proposal) | a computer turn's watch budget |
 | `EXCHANGE_TIME` | 0.4 s | one exchange of a human's battle |
-| `HUMAN_BATTLE_WATCH` | 5 s | a human's battle before the rest is shown in one step |
+| `HUMAN_BATTLE_WATCH` | 5 s | a human's battle before it pauses for the player's choice (keep watching, finish now, stop) |
 | `EVENT_HOLD` | 3 s | an event step, unless the player acts first |
 
 What follows at Normal, as arithmetic on computer.md's bounds:
@@ -603,6 +615,10 @@ one. malpaco's tests run in a pinned rendering environment.
   each illegal attempt of the table above changes nothing and shows its reason.
 - **Presentation never changes play**: one scripted game at every speed, with and without
   fast-forward and reduced motion, ends in the same state with the same action list.
+- **Every stop offered**: in scripted human battles at every speed but Instant, no exchange is
+  resolved before the previous one has been shown, unless the player picked finish now; a stop sent at
+  any moment takes effect before the next exchange; a battle past `HUMAN_BATTLE_WATCH` waits at the
+  pause until the player chooses.
 - **Step bounds**: in many games of computers, no computer turn shows more than 36 steps or a battle
   more than 3, and the budget's fast-forward appears only past `TURN_WATCH`.
 - **No trace**: the checks of [Disabled features](#disabled-features-leave-no-trace).
@@ -717,7 +733,7 @@ Anything that falls short is named, with the choice that settles it.
 | UW-10 computer turns presented | the computer places with no screen; its exchanges come about 0.2 s apart; turns 5 to 18 s at slow speed; a play-out after elimination ran in under 0.5 s with nothing to follow | all seats human | every placement, trade and battle shown within 36 steps, a watch budget, fast-forward, the level per seat, a since-your-last-turn summary: beats both. **Short of the predecessor in one way:** a large computer battle shows 3 steps, not its exchanges; the tally and the log carry the rest (A17, decided; UI6 sets the pace) |
 | UW-11 the event log | none found | planned | a full, filterable log whose entries mark their countries: beats both |
 | UW-12 the hand | a card screen after a capture and a hand screen of five slots behind a control; a set is offered to accept or decline | not built | the hand always on screen in its turn, sets found and grouped, every swing (Surge, raid, Shield, Squall, discard) shown as it happens: beats both |
-| UW-13 juice | counts change in place; no dice shown; a capture flash; by its code, battles of large stacks resolve in batches of five | planned, not built | dice faces, visible re-rolled ties, stepped counts, a capture effect and sound, bounded long battles (UI5, UI16): beats both |
+| UW-13 juice | counts change in place; no dice shown; a capture flash; by its code, battles of large stacks resolve in batches of five | planned, not built | dice faces, visible re-rolled ties, stepped counts, a capture effect and sound; long battles pause for the player's choice, and stop is offered after every exchange (UI5, UI6, UI16): beats both |
 | UW-14 audio | a sound on-off switch; its sounds are not established (the screen walks ran with no audio) | left to a later pass | a sound per kind of happening, music as a setting, mute and two volumes (UI7): meets the requirement; against the predecessor, beats its controls, and its sound content cannot be compared |
 | UW-15 hit targets, no hover | mouse clicks; hover lights buttons, cosmetically; playing by keyboard is not established | named as a need | `HIT_MIN` areas, no hover reliance, full keyboard play, touch: beats both |
 | UW-16 resolution independence | a fixed-size stage; it did not start at 640 by 480; whether it scales on larger desktops is not established | named as a need | vector drawing, reframing on resize, compact panels, a message below the minimum: beats both |
@@ -761,14 +777,18 @@ replace them. [variants.md](variants.md) keeps every option as a named variant.
 5. **UI5. A human's battle controls** (Q-UI-16; UW-13).
    - (a) the main control rolls one exchange, a second fights on to a capture or down to `N`; (b) the
      main control fights on to a capture or down to `N` (default 2, remembered), a second rolls one
-     exchange; (c) as (b), with `N` defaulting to half the starting stack, rounded up.
+     exchange; (c) as (b), with `N` defaulting to half the starting stack, rounded up. Every option
+     keeps stop live after every exchange and the pause after `HUMAN_BATTLE_WATCH`
+     ([Combat feedback](#combat-feedback)); none resolves an exchange the player has not chosen.
    - Recommendation (b): with large stacks (no cap) one click per exchange is tiring, and the owner's
      sittings of the predecessor show battles stopped at 2 or 3 armies (`runs/E018`), which `N` = 2
      serves; (c) stops early more often than most battles need.
 6. **UI6. Pacing** (Q-UI-13, Q-UI-16; UW-10; A17's budget).
    - (a) Slow, Normal, Fast and Instant, scaling the constants of [Pacing](#pacing) by 1.5, 1, 0.5 and
      0, with `STEP_TIME` 0.5 s and `TURN_WATCH` 15 s at Normal; (b) the same with a quicker Normal,
-     `STEP_TIME` 0.35 s and `TURN_WATCH` 10 s; (c) as (a) without Instant.
+     `STEP_TIME` 0.35 s and `TURN_WATCH` 10 s; (c) as (a) without Instant. In every option a human's
+     long battle pauses for the player's choice instead of jumping; only at Instant, a setting the
+     player picks, does the main battle control run to its end at once.
    - Recommendation (a): a typical computer turn takes about 5 s at Normal, close to the predecessor's
      at its slow speed, and every turn of up to 8 battles is shown whole; (b) shows a 2-battle turn in
      3.5 s, but 28 steps fit its 10 s budget, so turns of 8 battles or more (6 + 3 × 8 = 30 steps)
@@ -874,7 +894,7 @@ something different; `drop` removes it; `open` waits for the owner (in
 | Q-UI-13 | change | [Computer turns](#computer-turns): placements, trades and battles shown within 36 steps and a watch budget, fast-forward, the level per seat (UI6) | The computer places with no screen and plays out a game in under half a second after the human's elimination; showing every decision within a budget makes computer turns followable (UW-10). |
 | Q-UI-14 | replace | [The log](#the-log): a full, filterable log whose entries mark their countries | None found: only status texts; a log replaces them as the game's memory (UW-11). |
 | Q-UI-15 | change | [Cards](#cards): the hand always on screen in its turn, sets found, every swing shown, hot-seat privacy (UI8, UI9) | A card screen after a capture, a hand of five slots behind a control, and an offer of a set to accept or decline; T51's swings need to be seen as they happen (UW-12). |
-| Q-UI-16 | change | [Combat feedback](#combat-feedback): dice, visible re-rolled ties, stepped counts, a capture effect, bounded long battles (UI5, UI16) | Counts change in place with no dice, about 0.5 s per exchange, and by its code battles of large stacks resolve in batches of five; malpaco shows why each army fell (UW-13). |
+| Q-UI-16 | change | [Combat feedback](#combat-feedback): dice, visible re-rolled ties, stepped counts, a capture effect, stop after every exchange, long battles paused for the player's choice (UI5, UI6, UI16) | Counts change in place with no dice, about 0.5 s per exchange, and by its code battles of large stacks resolve in batches of five; malpaco shows why each army fell (UW-13). |
 | Q-UI-17 | change | [Sound](#sound): a sound per kind of happening, never alone; music a setting; mute and two volumes (UI7) | A sound on-off switch; what it plays was not captured. malpaco makes sound part of the feedback and gives volume control (UW-14). |
 | Q-UI-18 | change | [Input](#input): `HIT_MIN` hit areas, no hover reliance, full keyboard play, touch | Mouse clicks; hover only lights buttons; playing by keyboard is not established; malpaco serves keyboard and touch players (UW-15). |
 | Q-UI-19 | replace | [Resolution independence](#resolution-independence): vector drawing, reframing on resize, compact panels, a message below the minimum (UI13) | A fixed-size stage that did not start at 640 by 480; a resolution-independent board replaces it (UW-16). |
