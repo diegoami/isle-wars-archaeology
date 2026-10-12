@@ -1,0 +1,89 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0011",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 028.mp4",
+      "bytes": 134194220,
+      "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "asset": "964272f436c11b76-IP1 028.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "trade-in-offer-8-8-wild.png",
+      "bytes": 2143606,
+      "sha256": "1cbb50332c86645975c27b45f3da23856593dc5093a954544ce4aed74385ce66",
+      "asset": "1cbb50332c866459-trade-in-offer-8-8-wild.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-three-selected.png",
+      "bytes": 2157305,
+      "sha256": "9a159dc21250154bf99c2e39cf4de616a39296820cb91203d7b714f5bf8b17e6",
+      "asset": "9a159dc21250154b-trade-in-three-selected.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-pool-16.png",
+      "bytes": 2158062,
+      "sha256": "91dff6ab08645efe995e1a6eb2b36c0434dab4f94235ee886ddafc43139bb17d",
+      "asset": "91dff6ab08645efe-trade-in-pool-16.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-offer-bomb-double-wild-wild.png",
+      "bytes": 2128756,
+      "sha256": "57070f0bf6864858231258bb171cd398e9569e1a66b670d3c3a5d81179db6c71",
+      "asset": "57070f0bf6864858-trade-in-offer-bomb-double-wild-wild.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "trade-in-bomb-selected.png",
+      "bytes": 2128322,
+      "sha256": "ae5df657f34f05023b8c5342b3567dd58f01a409c2f41802444ecd418627ca82",
+      "asset": "ae5df657f34f0502-trade-in-bomb-selected.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "bomb-pick-country.png",
+      "bytes": 2079614,
+      "sha256": "bbfd6917d4ffab9a9e91d4a342d7a1d557e65102cb56effc8f144f89ccf90a90",
+      "asset": "bbfd6917d4ffab9a-bomb-pick-country.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "bomb-result-country-8-at-4.png",
+      "bytes": 2137359,
+      "sha256": "76bf0c52954a1811000753eebdcd210f501d4734c637381f205026b43565ac53",
+      "asset": "76bf0c52954a1811-bomb-result-country-8-at-4.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-trade-in-bomb-message.png",
+      "bytes": 2082643,
+      "sha256": "e4e3c659ca787d32eb6360bd047cb54caeb37ac1d68872eb8c661a212ba54fd8",
+      "asset": "e4e3c659ca787d32-computer-trade-in-bomb-message.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-card-draw-wild-turn24.png",
+      "bytes": 2108060,
+      "sha256": "4298e8dafb11ee0db958e400d41f3a68d6d03b839dff5e5e486195d43a4fc4a1",
+      "asset": "4298e8dafb11ee0d-human-card-draw-wild-turn24.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-card-draw-last-bomb-turn47.png",
+      "bytes": 2077527,
+      "sha256": "172feb9aefe8985adef0bbd3d4107c52524181d6838a9be11375f1bdf1ee504d",
+      "asset": "172feb9aefe8985a-human-card-draw-last-bomb-turn47.png",
+      "class": "screenshot"
+    }
+  ]
+}

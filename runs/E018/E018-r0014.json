@@ -1,0 +1,102 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0014",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "57081c1",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@57081c1",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 22095 video frames in 1102.77 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (18:23 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+    "args": [
+      "video file name: IP1 028.mp4",
+      "video sha256: 964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "probe: 1102.77 s, 22095 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 134194220 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the five computer end-of-turn moves and one computer stop above the usual minimum"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "reading method",
+      "value": "the left panel's moving message and the right panel's the pair of countries named line were detected by template match and read for the pair (glyph shapes, no OCR); counters on the map were read before and 0.7 s after, as for the human moves in E018-r0012. Added as a record of its own after E018-r0013 was written."
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "computer move 1: move message visible from 04:43.167 to 04:44.900",
+      "value": "from country 20 to country 17; counters before and after: country 17 1 to 3, country 20 3 to 1; the source kept exactly 1 and the destination received the rest; both countries held by the same seat; neighbours (F017 border tables); the source is not on the fixed 23-country list; the destination is not on the list"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "computer move 2: move message visible from 05:35.000 to 05:36.900",
+      "value": "from country 17 to country 15; counters before and after: country 15 4 to 6, country 17 3 to 1; the source kept exactly 1 and the destination received the rest; both countries held by the same seat; neighbours (F017 border tables); the source is not on the fixed 23-country list; the destination is on the list"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "computer move 3: move message visible from 07:56.833 to 07:58.433",
+      "value": "from country 12 to country 13; counters before and after: country 12 6 to 1, country 13 3 to 8; the source kept exactly 1 and the destination received the rest; both countries held by the same seat; neighbours (F017 border tables); the source is not on the fixed 23-country list; the destination is on the list"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "computer move 4: move message visible from 08:11.400 to 08:13.033",
+      "value": "from country 18 to country 14; counters before and after: country 14 1 to 3, country 18 3 to 1; the source kept exactly 1 and the destination received the rest; both countries held by the same seat; neighbours (F017 border tables); the source is not on the fixed 23-country list; the destination is on the list"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "computer move 5: move message visible from 10:01.533 to 10:03.333",
+      "value": "from country 11 to country 13; counters before and after: country 11 4 to 1, country 13 4 to 7; the source kept exactly 1 and the destination received the rest; both countries held by the same seat; neighbours (F017 border tables); the source is not on the fixed 23-country list; the destination is on the list"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "computer moves summary",
+      "value": "five moves in 34 computer turns (green at 04:43.2, green at 05:35.0, yellow at 07:56.8, green at 08:11.4, yellow at 10:01.5), never two in one turn, each at the end of the seat's turn after its last attack; the source kept exactly 1 in 5 of 5 (sources held 3, 3, 6, 3, 4); every source is off the fixed 23-country list; the destination is on the list in 4 of 5 (the first, country 17, is not)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "a computer stop above the usual minimum, attack 70",
+      "value": "attack 70 (yellow, country 11 attacks country 9, a country of the human seat holding 9; strip from 16:09.6, E018-r0010): the country counters read 12 against 10 just before, the strip states 12/9 11/9 10/9 9/9 8/9, then the attack ended with no capture at 8 against 9 and both countries kept their owners; the attacker stopped with 8 armies against a defender of 9, after four losses in a row; most computer stops are at 2 or 3 armies (22 of 23 in this game)"
+    }
+  ],
+  "outputs": [],
+  "decoded": [],
+  "started": "2026-10-11T18:41:38Z",
+  "ended": "2026-10-11T19:00:01Z",
+  "status": "completed"
+}

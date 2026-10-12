@@ -1,0 +1,326 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0012",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "57081c1",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@57081c1",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 22095 video frames in 1102.77 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (18:23 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+    "args": [
+      "video file name: IP1 028.mp4",
+      "video sha256: 964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "probe: 1102.77 s, 22095 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 134194220 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the options screen, the opening deal, the 13 human placements, the 6 human moves and the move controls"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen at video offset 00:03.0 to 00:09.5",
+      "value": "five option groups (starting armies with five entries, seat toggles for four seats, a strength group with three entries, an event-frequency group with four entries, a speed group with three entries) plus a sound icon, a save-as-default button and a play button; the seat row shows one human then three computers; highlighted entries: the second starting-armies entry, the middle strength, the middle event frequency and the middle speed. The title screen shows at 00:00.5; the empty board is up at 00:12.8 (the owner pressed play between 00:09.5 and 00:12.5). Same screen and defaults as IP1 026 and IP1 027."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen frame",
+      "ref": "sha256:a6c288f0d4b2c19ae176c444dfb9cd42165cd4ff85c81af522c808a905e2e141"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "opening deal, read at video offset 00:15.5 after the fill-in (00:12.8 to 00:15.3, the board colours in)",
+      "value": "territory counts blue/yellow/red/green 9/14/11/12 (sum 46); the human seat holds 9 with the middle strength; a production-centres box is up at 00:15.5 and 00:18.5; first seat to play: the red seat (see E018-r0011). Third deal across the sittings (IP1 026: 9/13/10/14; IP1 027: 9/11/10/16); the human seat held 9 in all three."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "opening deal frame",
+      "ref": "sha256:001cac811e0c8db029f6ae14c14e6f612ce120a3d20503fd7edd712aab4b5829"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "human placement 1 (turn 3): the placement panel shows from 00:41.733 to 00:44.967",
+      "value": "army pool 3; country counters on the map before and after: country 37 3 to 6"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "human placement 2 (turn 7): the placement panel shows from 01:45.867 to 01:48.433",
+      "value": "army pool 3; country counters on the map before and after: country 40 3 to 6"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "human placement 3 (turn 11): the placement panel shows from 02:27.033 to 02:29.167",
+      "value": "army pool 3; country counters on the map before and after: country 40 2 to 5"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "human placement 4 (turn 15): the placement panel shows from 03:13.333 to 03:14.900",
+      "value": "army pool 3; country counters on the map before and after: country 40 2 to 5"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "human placement 5 (turn 19): the placement panel shows from 04:05.667 to 04:10.667",
+      "value": "army pool 3; country counters on the map before and after: country 41 3 to 6"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "human placement 6 (turn 23): the placement panel shows from 04:50.600 to 04:52.367",
+      "value": "army pool 3; country counters on the map before and after: country 41 2 to 5"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "human placement 7 (turn 27): the placement panel shows from 06:01.333 to 06:26.267",
+      "value": "army pool 16; country counters on the map before and after: country 37 1 to 16; country 38 1 to 2"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "human placement 8 (turn 31): the placement panel shows from 08:24.100 to 08:27.867",
+      "value": "army pool 11; country counters on the map before and after: country 31 3 to 14"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "human placement 9 (turn 35): the placement panel shows from 10:20.200 to 10:22.200",
+      "value": "army pool 17; country counters on the map before and after: country 33 8 to 25"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "human placement 10 (turn 38): the placement panel shows from 12:12.833 to 12:15.567",
+      "value": "army pool 21; country counters on the map before and after: country 43 1 to 22"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "human placement 11 (turn 41): the placement panel shows from 13:49.767 to 13:51.567",
+      "value": "army pool 21; country counters on the map before and after: country 43 12 to 33"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "human placement 12 (turn 44): the placement panel shows from 14:59.900 to 15:12.100",
+      "value": "army pool 22; country counters on the map before and after: country 7 12 to 20; country 44 1 to 15 (plus country 46, changed by the capture flash and not read); the counter rose from 0 to 14 one army at a time (about 0.2 s per step, 15:01.2 to 15:04.3), the 14 were placed (counter back to 0 at 15:05.4), then the counter jumped to 8, the rest of the pool, at 15:11.1"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "human placement 13 (turn 47): the placement panel shows from 16:28.033 to 16:56.967",
+      "value": "army pool 26; country counters on the map before and after: country 7 20 to 27; country 9 9 to 18; country 23 6 to 10; country 46 9 to 15"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human placement summary",
+      "value": "13 placements in 13 human turns, the whole pool each time; one country in 10 turns, two or more in 3 (turn 27: 15 and 1; turn 44: 14 and 8; turn 47: 7, 9, 4 and 6); the panel counter counts down one army at a time about every 0.17 s after the place button (turn 27: 15 to 0 from 06:06.3 to 06:09.6, read from the counter); largest single stack after a placement: 6 (turns 3, 7, 19), 5 (turns 11, 15, 23), 16 (turn 27, country 37), 14 (turn 31, country 31), 25 (turn 35, country 33), 22 (turn 38, country 43), 33 (turn 41, country 43), 20 (turn 44, country 7) and 27 (turn 47, country 7). The owner built stacks of 14 to 33 from turn 27 on, but never a stack of exactly 8 or 12 by placement alone and never against a defender of 7 to 14 armies: every human defender held 1 to 4."
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "human move 1 (turn 3): from country 37 to country 40; prompts visible from 01:03.967 to 01:10.800",
+      "value": "source held blue 3 armies; counters before and after: source 3 to 1, destination 1 to 3; moved 2, kept 1; the move counter read 1; the plus button then 2 (ALL only hovered at 01:07.5); the source and destination were both blue and neighbours (F017 border tables); the move came after the last attack of the turn and no attack followed it; after done the turn ended: the card screen of the turn came within 2 s (a draw for the capturing turn) and then the next seat"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "human move 2 (turn 27): from country 34 to country 32; prompts visible from 07:23.500 to 07:36.433",
+      "value": "source held blue 2 armies; counters before and after: source 2 to 1, destination 1 to 2; moved 1, kept 1; the move counter read 1 (left at 1; the plus and minus buttons only hovered at 07:34.0 and 07:36.0); the source and destination were both blue and neighbours (F017 border tables); the move came after the last attack of the turn and no attack followed it; after done the turn ended: the card screen of the turn came within 2 s (a draw for the capturing turn) and then the next seat"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "human move 3 (turn 31): from country 31 to country 33; prompts visible from 09:35.333 to 09:46.167",
+      "value": "source held blue 8 armies; counters before and after: source 8 to 1, destination 1 to 8; moved 7, kept 1; the move counter read 1 then 7 at 09:45.1 (the all button highlighted at 09:44.9); the source and destination were both blue and neighbours (F017 border tables); the move came after the last attack of the turn and no attack followed it; after done the turn ended: the card screen of the turn came within 2 s (a draw for the capturing turn) and then the next seat"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "human move 4 (turn 35): from country 23 to country 24; prompts visible from 11:24.600 to 11:36.733",
+      "value": "source held blue 2 armies; counters before and after: source 2 to 1, destination 7 to 8; moved 1, kept 1; the move counter read 1 (left at 1; done highlighted at 11:34.0, plus hovered at 11:36.0); the source and destination were both blue and neighbours (F017 border tables); the move came after the last attack of the turn and no attack followed it; after done the turn ended: the card screen of the turn came within 2 s (a draw for the capturing turn) and then the next seat"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "human move 5 (turn 38): from country 24 to country 23; prompts visible from 12:44.500 to 12:49.933",
+      "value": "source held blue 8 armies; counters before and after: source 8 to 1, destination 1 to 8; moved 7, kept 1; the move counter read 1 then 7 (jump within 0.1 s at 12:48.7; the minus button hovered at 12:49.5); the source and destination were both blue and neighbours (F017 border tables); the move came after the last attack of the turn and no attack followed it; after done the turn ended: the card screen of the turn came within 2 s (a draw for the capturing turn) and then the next seat"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "human move 6 (turn 44): from country 44 to country 46; prompts visible from 15:49.733 to 15:54.900",
+      "value": "source held blue 6 armies; counters before and after: source 6 to 1, destination 4 to 9 (the destination counter was hidden by a flash; 9 read from the total); moved 5, kept 1; the move counter read 1 then 5 (jump within 0.1 s at 15:54.07; the plus button hovered at 15:54.5); the source and destination were both blue and neighbours (F017 border tables); the move came after the last attack of the turn and no attack followed it; after done the turn ended: the card screen of the turn came within 2 s (a draw for the capturing turn) and then the next seat"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move summary",
+      "value": "six human moves in 13 human turns (turns 3, 27, 31, 35, 38, 44), each after at least one capture of the turn and after the last attack, one per turn; every move left exactly 1 army in the source (6 of 6: sources of 3, 2, 8, 2, 8 and 6 armies, moves of 2, 1, 7, 1, 7 and 5); all but one was reached with the all button three times (moves 3, 5, 6), with the plus button once (move 1, from 1 to 2), and by leaving the counter at 1 on a source of 2 twice (moves 2, 4); all-but-two, a counter of 0 and sources of 5 or 10 were not tried; no second move in a turn was offered (the turn ended after done)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move controls: the sequence on screen (move 1, 00:59.0 to 01:10.8)",
+      "value": "the action bar (attack, move, pass, card and cancel buttons) at 00:59.0; the move button starts a move; the left panel then asks for the country to move from, with an arrow marker, and the middle panel shows only a cancel button at 01:04.5; clicking a country of the owner shows the source country named in the right panel at 01:05.2 and the left panel asks for the destination; clicking a neighbour shows the destination named and the move counter panel (a counter starting at 1, an all button, a plus button, a minus button and a done button) at 01:06.4; the counter changes with the all button (all but one), the plus and minus buttons (one at a time); the done button, green when the pointer is over it (01:10.5), commits the move; no confirmation question follows. A button under the pointer shows a gold fill (all, plus, minus) or a green fill (done); the buttons are grey otherwise."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move controls: positions",
+      "value": "the game window is the area x 125 to 1859, y 85 to 1003 of the 1920x1080 frame (1735 by 919 pixels, from where the picture is not black), stretched from the 800x600 stage by 2.169 horizontally and 1.532 vertically, so stage = ((frame x - 125) / 2.169, (frame y - 85) / 1.532); the mapping reproduces the attack button (337, 531) and the pass button (419, 530) listed in walkthroughs/coordinates.md and the numeral centres of 44 countries to within 5 stage pixels of E021's click points. Button centres, frame to stage: move (926, 897) to (369, 530) at 00:59.0; cancel on the action bar and on the source and destination prompts (1239, 893) to (514, 528) at 00:59.0 and 01:04.5 (the cancel of the attack-target prompt is centred, (997, 893) to (402, 528) at 00:47.0); all (796, 911) to (309, 539), plus (933, 911) to (373, 539), minus (1036, 911) to (420, 539), done (1199, 911) to (495, 539), counter digit (1203, 872) to (496, 514), all at 01:06.5 (same positions at 01:10.5 and 09:45.0); the same panel serves the placement counter (all, plus, minus, place) with place at the place of done. Countries are clicked on the map: source 37 and destination 40 of move 1 have numeral centres at (516, 404) and (451, 443) in stage coordinates, 4 and 5 stage pixels from E021's click points."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the action bar at 00:59.0 (move button)",
+      "ref": "sha256:d79efbb90a6118f97c5702091fdab381a3765a6ddc68a60174e0a5d324aea7aa"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the source prompt at 01:04.5 (cancel at the right)",
+      "ref": "sha256:05cc7de419294507f67d1a9512561f26c8255646acd3da71d25acc543fa5f2ef"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the destination prompt at 01:05.5, source 37 shown",
+      "ref": "sha256:fbf1791d9338cd80a344af4d15a4db8a7285377f4817f2c2a55941165e574c1f"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the move counter panel at 01:06.5, counter 1, source 37 and destination 40",
+      "ref": "sha256:479d8c3d00598e5e8a101646d72b002f9546dde83deb0748babd7085b857f776"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the same panel at 01:07.5 with the all button highlighted",
+      "ref": "sha256:f81fc05fe2502553962960b8031ffe48d9e2dcd9960bc1c749be967f8264bc9f"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the counter at 2 at 01:09.9 (plus button highlighted)",
+      "ref": "sha256:5b909d38021a32a7ff045b49762bba96d5947dbcb1188a9c6566534022003022"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the done button green at 01:10.5",
+      "ref": "sha256:5e7f11e0868d23cdba7a0e2005023c520168a8163d2f51890f15048debe8e9c6"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: move 3, counter 7 after the all button, at 09:45.1",
+      "ref": "sha256:c7c72a3784eca202bc48b7d83515b1d3b681c36c12f4485f2aa9b97d46e852f5"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: move 6, counter 5, at 15:54.5",
+      "ref": "sha256:b9b78014dab03c834990750b83ccbd188a25cc111474b9ebfbe234e0f8515051"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "options-screen.png",
+      "sha256": "a6c288f0d4b2c19ae176c444dfb9cd42165cd4ff85c81af522c808a905e2e141",
+      "store": "release:E018"
+    },
+    {
+      "name": "opening-deal-and-centres.png",
+      "sha256": "001cac811e0c8db029f6ae14c14e6f612ce120a3d20503fd7edd712aab4b5829",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-action-bar-with-move-button.png",
+      "sha256": "d79efbb90a6118f97c5702091fdab381a3765a6ddc68a60174e0a5d324aea7aa",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-prompt-select-source.png",
+      "sha256": "05cc7de419294507f67d1a9512561f26c8255646acd3da71d25acc543fa5f2ef",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-prompt-select-destination.png",
+      "sha256": "fbf1791d9338cd80a344af4d15a4db8a7285377f4817f2c2a55941165e574c1f",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-counter-panel-at-1.png",
+      "sha256": "479d8c3d00598e5e8a101646d72b002f9546dde83deb0748babd7085b857f776",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-counter-all-pressed.png",
+      "sha256": "f81fc05fe2502553962960b8031ffe48d9e2dcd9960bc1c749be967f8264bc9f",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-counter-at-2.png",
+      "sha256": "5b909d38021a32a7ff045b49762bba96d5947dbcb1188a9c6566534022003022",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-done-pressed.png",
+      "sha256": "5e7f11e0868d23cdba7a0e2005023c520168a8163d2f51890f15048debe8e9c6",
+      "store": "release:E018"
+    },
+    {
+      "name": "move3-counter-all-pressed-at-7.png",
+      "sha256": "c7c72a3784eca202bc48b7d83515b1d3b681c36c12f4485f2aa9b97d46e852f5",
+      "store": "release:E018"
+    },
+    {
+      "name": "move6-counter-at-5.png",
+      "sha256": "b9b78014dab03c834990750b83ccbd188a25cc111474b9ebfbe234e0f8515051",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T18:41:38Z",
+  "ended": "2026-10-11T19:00:01Z",
+  "status": "completed"
+}
