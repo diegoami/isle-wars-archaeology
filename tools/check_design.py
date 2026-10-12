@@ -10,7 +10,10 @@ claim tables of those spec files and the design file's decision table (every lin
 - a change, replace or drop row has an empty "why";
 - an open row's id does not appear in the owner's section: the `## Choices for the owner` section
   while choices are pending, or the `## The owner's decisions (<date>)` section once they are made.
-  With no open row left, neither section is required.
+  With no open row left, neither section is required;
+- a row does not have exactly four cells.
+Inactive Markdown in a design file (HTML comments and fenced code blocks) is ignored: a row or a
+mention inside it does not count.
 
 With no argument it checks every design file and prints one line per clean file,
 `design/<file> ok: N claims, N rows`, or one line per problem; it exits 1 if any file has a
@@ -53,6 +56,29 @@ def spec_claims(root, spec_files=SPEC_FILES):
     return ids, problems
 
 
+FENCE = re.compile(r"^\s{0,3}(```|~~~)")
+
+
+def active_text(text):
+    """The design text with inactive Markdown blanked: HTML comments (one line or several, an
+    unclosed one running to the end) and fenced code blocks. Newlines are kept, so line numbers
+    stay those of the file. A row or an owner's-section mention inside either does not count."""
+    text = re.sub(r"<!--.*?(-->|\Z)", lambda m: "\n" * m.group(0).count("\n"), text, flags=re.S)
+    lines, fence = [], None
+    for line in text.split("\n"):
+        m = FENCE.match(line)
+        if fence is None and m:
+            fence = m.group(1)
+            lines.append("")
+        elif fence is not None:
+            if m and m.group(1) == fence:
+                fence = None
+            lines.append("")
+        else:
+            lines.append(line)
+    return "\n".join(lines)
+
+
 def choices_section(text):
     """The text under the owner's heading, up to the next `## ` heading, or None."""
     m = OWNER_HEADING.search(text)
@@ -70,7 +96,7 @@ def check(root, design="core-rules.md"):
     path = root / "design" / design
     if not path.is_file():
         return problems + [f"{rel}: missing"], len(claims), 0
-    text = path.read_text(encoding="utf-8")
+    text = active_text(path.read_text(encoding="utf-8"))
     rows = []
     for n, line in enumerate(text.splitlines(), 1):
         m = CLAIM_ROW.match(line)

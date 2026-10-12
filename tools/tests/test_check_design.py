@@ -43,6 +43,7 @@ V_ROWS = {
 }
 V_CHOICES = "## Choices for the owner\n\n1. **Rate** (C-HAZ-03; `open`). (a) one; (b) two. Recommendation: (b).\n"
 
+ROWS_OF = {"core-rules.md": ROWS, "variety.md": V_ROWS}
 WORLDS = {
     "core-rules.md": (SPEC, ROWS, CHOICES),
     "variety.md": (V_SPEC, V_ROWS, V_CHOICES),
@@ -143,6 +144,36 @@ class FailureTest(DesignWorld):
 
     def test_open_row_missing_from_choices(self):
         self.choices = f"## Choices for the owner\n\n1. **Other** ({self.keep_id}). Recommendation: (a).\n"
+        self.assert_one(f"{self.open_id} is open but not in")
+
+    def test_row_with_an_extra_cell_fails(self):
+        # Otherwise valid: a known id, a valid decision and a reason; only the cell count is wrong.
+        self.rows[self.keep_id] = f"| {self.keep_id} | keep | [The board](#the-board) | A reason. | extra |"
+        self.assert_one(f"{self.keep_id} has 5 cells, not 4")
+
+    def test_row_with_too_few_cells_fails(self):
+        self.rows[self.keep_id] = f"| {self.keep_id} | keep | [The board](#the-board) |"
+        self.assert_one(f"{self.keep_id} has 3 cells, not 4")
+
+    def test_row_inside_a_multi_line_html_comment_is_not_a_row(self):
+        self.rows[self.change_id] = "<!--\n" + self.rows[self.change_id] + "\n-->"
+        self.assert_one(f"{self.change_id}: no row")
+
+    def test_row_inside_an_unclosed_html_comment_is_not_a_row(self):
+        # An unclosed comment hides everything after it, so the last row of the table goes.
+        last = list(self.rows)[-1]
+        self.rows[last] = "<!--\n" + self.rows[last]
+        problems = self.problems()
+        self.assertIn(f"{last}: no row in design/{self.design}", problems)
+
+    def test_row_inside_a_fenced_block_is_not_a_row(self):
+        for fence in ("```", "~~~"):
+            with self.subTest(fence=fence):
+                self.rows[self.change_id] = f"{fence}text\n" + ROWS_OF[self.design][self.change_id] + f"\n{fence}"
+                self.assert_one(f"{self.change_id}: no row")
+
+    def test_open_row_named_only_in_a_comment_in_choices_fails(self):
+        self.choices = f"## Choices for the owner\n\n<!-- 1. **Choice** ({self.open_id}). -->\n"
         self.assert_one(f"{self.open_id} is open but not in")
 
     def test_open_row_named_only_outside_choices_still_fails(self):
