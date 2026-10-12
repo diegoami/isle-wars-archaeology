@@ -227,6 +227,102 @@ class OfferScreenTest(unittest.TestCase):
         self.assertFalse(boardview.Reading({}, "s" * 64, "blue", False, 0).offer)
 
 
+def panel_screen(all_grey=True):
+    """The placement panel as the detector sees it: a board with the four grey buttons (173, 165, 165 on the
+    real frames) in the row, painted by their measured extents on frame 150-1791738555449.png of
+    20261011T170700Z (ALL x 267-335, + x 355-391, - x 404-440, PLACE x 460-530, y 529-556). The text and
+    shading take some of the pixels on a real frame (2859 in the row there; 1779 at the lowest). With
+    `all_grey` False the ALL button is the hover's gold, as on frame 17-1791738450340.png of the same sitting."""
+    rgb = board_screen()
+    paint(rgb, (267, 531, 69, 22), (173, 165, 165) if all_grey else (198, 181, 115))
+    for x, w in ((355, 36), (404, 36), (460, 70)):
+        paint(rgb, (x, 531, w, 22), (173, 165, 165))
+    return rgb
+
+
+def turn_menu_screen():
+    """The turn menu in the same row: the menu board with its cyan label and the green CARD button (a row
+    of other colours, none of them the buttons' grey)."""
+    rgb = menu_board()
+    paint(rgb, (300, 531, 60, 22), (8, 206, 66))
+    paint(rgb, (400, 531, 60, 22), (200, 176, 64))
+    return rgb
+
+
+class PanelScreenTest(unittest.TestCase):
+    """Fix #182: the placement panel's test is E020's own placement-row test, as a pixel count."""
+
+    def test_the_constants_are_e020s_place_select_test(self):
+        # the loop's PLACE_SELECT and PLACE_WATCH are the click-until? test of E020's block `place`
+        import e021_loop
+        # (the colour and the tolerance; the minimum is the detector's own, 500, from the census)
+        self.assertEqual(e021_loop.PLACE_SELECT.split(" {x}")[0],
+                         "click-until? %d %d %d %d 1000" % (*boardview.PANEL_GREY, boardview.PANEL_TOLERANCE))
+        self.assertEqual(e021_loop.PLACE_WATCH, "watch %d %d %d %d" % boardview.PANEL_ROW)
+
+    def test_the_panel_is_up_on_the_buttons_grey_and_down_on_the_turn_menu(self):
+        self.assertTrue(boardview.panel_up(panel_screen()))
+        self.assertTrue(boardview.panel_up(panel_screen(all_grey=False)))   # ALL lit by the hover
+        self.assertFalse(boardview.panel_up(turn_menu_screen()))
+        self.assertFalse(boardview.panel_up(board_screen()))
+        self.assertFalse(boardview.panel_up(offer_screen()))
+        self.assertFalse(boardview.panel_up(blank()))
+
+    def test_the_all_button_reaches_x_335_and_the_gap_to_plus_stays_black(self):
+        # round 2 of fix #182: a gap box at x 328-351 held ALL's right edge on 30 real panel frames (ALL is grey
+        # to x 335 when the mouse is elsewhere) and the detector said "no panel". Frame 150 of 20261011T170700Z:
+        # gap pixels in the old box 129, in the box below 0.
+        rgb = panel_screen()
+        grey = lambda box: boardview.gold_count(rgb, box, boardview.PANEL_GREY, boardview.PANEL_TOLERANCE)  # noqa: E731
+        self.assertGreater(grey((328, 533, 24, 16)), boardview.PANEL_GAP_MAXIMUM)         # the old box: too wide
+        self.assertEqual(grey(boardview.PANEL_GAP), 0)
+        gx, _gy, gw, _gh = boardview.PANEL_GAP
+        self.assertTrue(gx >= 336 and gx + gw <= 355)                  # between ALL's end and +'s start
+        self.assertTrue(boardview.panel_up(rgb))
+
+    def test_a_continue_notice_in_the_same_row_is_not_the_panel(self):
+        # the winner notice's and the Scoreboard's one wide grey CONTINUE button (x 328-477) is grey in the
+        # row too, 1458 pixels on the real winner frame, over the panel's black gap
+        rgb = board_screen()
+        paint(rgb, (328, 523, 150, 25), (168, 168, 168))
+        self.assertGreaterEqual(boardview.gold_count(rgb, boardview.PANEL_ROW, boardview.PANEL_GREY,
+                                                     boardview.PANEL_TOLERANCE), boardview.PANEL_MINIMUM)
+        self.assertFalse(boardview.panel_up(rgb))
+
+    def test_the_move_in_panel_is_not_the_placement_panel(self):
+        # after a capture: "Move in how many?" with ALL, +, - and DONE, its + a few pixels left of the
+        # placement panel's (the census's 14 frames: gap pixels 64 on 20261011T091212Z
+        # frames/402-1791710281089.png): grey in the row, and over the gap box
+        rgb = board_screen()
+        paint(rgb, (274, 531, 55, 22), (173, 165, 165))
+        paint(rgb, (348, 531, 38, 22), (173, 165, 165))
+        paint(rgb, (400, 531, 38, 22), (173, 165, 165))
+        paint(rgb, (459, 531, 70, 22), (0, 176, 32))
+        self.assertGreaterEqual(boardview.gold_count(rgb, boardview.PANEL_ROW, boardview.PANEL_GREY,
+                                                     boardview.PANEL_TOLERANCE), boardview.PANEL_MINIMUM)
+        self.assertFalse(boardview.panel_up(rgb))
+
+    def test_the_minimum_separates_the_two(self):
+        rgb = blank()
+        x, y, w, _h = boardview.PANEL_ROW
+        flat = rgb[y:y + 10, x:x + w].reshape(-1, 3)
+        flat[:boardview.PANEL_MINIMUM] = boardview.PANEL_GREY
+        rgb[y:y + 10, x:x + w] = flat.reshape(10, w, 3)
+        self.assertTrue(boardview.panel_up(rgb))
+        flat[boardview.PANEL_MINIMUM - 1] = (0, 0, 0)
+        rgb[y:y + 10, x:x + w] = flat.reshape(10, w, 3)
+        self.assertFalse(boardview.panel_up(rgb))
+
+    def test_the_frame_reader_says_whether_the_panel_is_up_from_the_one_capture(self):
+        for rgb, expect in ((panel_screen(), True), (turn_menu_screen(), False)):
+            reader = boardview.FrameReader(lambda rgb=rgb: (rgb, "d" * 64), TEMPLATES)
+            self.assertEqual(reader.read().panel, expect)
+            self.assertEqual(reader.shots, 1)
+
+    def test_a_reading_built_without_the_flag_has_no_panel(self):
+        self.assertFalse(boardview.Reading({}, "s" * 64, "blue", False, 0).panel)
+
+
 class ReaderTest(unittest.TestCase):
     def test_a_capture_the_reader_cannot_read_is_unread_never_guessed(self):
         reader = boardview.FrameReader(lambda: (blank(), "a" * 64), TEMPLATES)
