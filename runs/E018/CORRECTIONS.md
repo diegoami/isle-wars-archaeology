@@ -1671,12 +1671,31 @@ These rest on the owner's videos, and on this one for the sitting's own readings
 A re-read of `IP1 028.mp4` writes new files beside r0010..r0014 (the next free record numbers) with their own frame hashes, and says which record it cross-references; these records stay as written.
 
 **Correction notes (Luna's review of PR #187; the records stay as written):**
-- **R1, readings inside observations.** Some observation values carry a reading or a finding reference beside what the screen showed. Read these clauses as interpretation, not as observation; the per-question entries above are where they are weighed:
-  - r0011 obs[86]: "the eliminated seat's cards vanish and are not inherited (F012, Q-SUR-03)";
-  - r0013 obs[24]: "as F012 reads (Q-SUR-01…)", the offer's timing read against the finding;
-  - r0013 obs[25]: the clause reading the scoreboard's "0 won" as the win not counted, and its F012 reference. IP1 029's note shows the scoreboard adds the result about 1.7 s after it appears;
-  - r0012 obs[18]–[23] and r0014 obs[1]–[5]: "neighbours (F017 border tables)", a lookup in the finding's border tables, not something the screen showed;
-  - r0010 obs[2], r0013 obs[21] and obs[22]: method notes (where a start count is taken from, how a total is read, the seat order inferred from the turn sequence), derivations rather than single screen readings.
+- **R1, readings inside observations** (round 1 of Luna's review; completed after its re-review, from a full read of every observation value in r0010–r0014). Read the clauses below as interpretation, not observation. The per-question entries above are where they are weighed.
+  - *Finding, question or static-list references* (a lookup, not something the screen showed):
+    - r0011 obs[86]: "not inherited (F012, Q-SUR-03)";
+    - r0013 obs[24]: "as F012 reads (Q-SUR-01…)";
+    - r0013 obs[25]: the F012 clause and the reading of "0 won" (IP1 029's note shows the result is added about 1.7 s after the screen appears);
+    - r0012 obs[18]–[23] and r0014 obs[1]–[5]: "neighbours (F017 border tables)";
+    - r0014 obs[1]–[6]: on or off "the fixed 23-country list".
+  - *Formulas and rule readings fitted to the counts:*
+    - r0011 obs[88]: the pool as the count divided by 3, rounded down, raised to 2, and the island amounts as sums of the static bonus values;
+    - r0011 obs[83] and obs[85]: the bombed country's new count read as "within 1 to half", "a replacement by a draw, not a fixed loss", "floored at 1";
+    - r0011 obs[82]: the pool of 16 read as 8 plus 8 extra armies;
+    - r0014 obs[7]: "above the usual minimum".
+  - *Comparisons with other sittings or other sources:*
+    - r0011 obs[1]: the order "continues cyclically" from the earlier sittings, and the first seats across three games;
+    - r0012 obs[0]: same screen and defaults as IP1 026 and 027;
+    - r0012 obs[2]: the deals across the sittings;
+    - r0012 obs[17]: the stacks set against E021's defender sizes;
+    - r0012 obs[26]: the mapping said to reproduce coordinates.md's attack (337, 531) and pass rows and E021's click points (attack's centre is 305, per Luna's review of this PR);
+    - r0013 obs[0]: the event rate set against the middle setting and the earlier sittings.
+  - *Derivations and method notes:*
+    - r0010 obs[1]: the last exchange of a capture is inferred;
+    - r0010 obs[2]: the computer's start is taken from the counters;
+    - r0012 obs[23]: the destination is read from the total;
+    - r0013 obs[21]: totals are lower bounds;
+    - r0013 obs[22]: the seat order is inferred from the turn sequence.
 - **R3, a count corrected before review.** Commit 3cbbaa0, labelled a wording fix, also changed r0012's placement count from "one country in 9 turns, two or more in 4" to "10 and 3". The new numbers are the consistent ones: the value lists exactly three turns with two or more countries (27, 44 and 47), and 10 + 3 = 13 placements. The change was a correction of the first write, made before any review, and is recorded here because its commit message did not say so.
 
 ---
