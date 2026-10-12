@@ -7,54 +7,54 @@ this page claims nothing of its own. Outcome words: corroborated > narrowed > un
 (`walkthroughs/f011-questions.md`, which also lists the planned questions; "—" = not yet touched). Counts are nice to have (CLAUDE.md, "The goal is a fun game"):
 an open row is worth playing only when a session covers it naturally.
 
-| Question | What | Best | IP1 025 | IP1 026 | IP1 027 | IP1 028 | Model sittings |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Q-AI-01 | attacks and turns with none | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-AI-02 | placement and cards | unestablished |  | unestablished | unestablished | unestablished |  |
-| Q-AI-04 | attacks and turns with none | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-AI-05 | placement and cards | unestablished |  | unestablished | unestablished | unestablished |  |
-| Q-AI-07 | strength against scripted opponents | narrowed |  | unestablished | unestablished | narrowed |  |
-| Q-BON-01 | island bonuses | narrowed |  | narrowed |  | narrowed |  |
-| Q-BON-02 | island bonuses | narrowed |  | narrowed |  | narrowed |  |
-| Q-BON-03 | kinds seen | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-BON-05 | a card is given for a capturing turn | **corroborated** | corroborated | narrowed | narrowed | narrowed |  |
-| Q-BON-06 | hand limit and discard-on-draw | narrowed | narrowed | narrowed | narrowed | narrowed |  |
-| Q-BON-07 | trade-in only on a 3-of-a-kind match | narrowed | narrowed | narrowed | narrowed | narrowed |  |
-| Q-BON-08 | the bomb card | narrowed |  | unestablished | unestablished | narrowed |  |
-| Q-BON-09 | the anti-bomb card | narrowed |  | narrowed | narrowed | unestablished |  |
-| Q-BON-10 | trade-in effects on the pool | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-BON-11 | trade-in effects on the pool | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-CMB-01 | who may attack, human and computer | narrowed | unestablished | narrowed | narrowed | narrowed | 8/16 cells (even) |
-| Q-CMB-02 | equality, not a ratio | narrowed |  | narrowed | narrowed | narrowed | 2/4 cells (underdog) |
-| Q-CMB-03 | minimum attacking stack | narrowed |  | narrowed | narrowed | narrowed | 3/3 cells (tiny) |
-| Q-CMB-04 | one die each, one army per exchange, five-at-once batching | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-CMB-05 | defender size | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-CMB-06 | ties go to the defender | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-CMB-07 | exactly one army lost per exchange | **corroborated** |  | corroborated | corroborated | corroborated |  |
-| Q-CMB-08 | a battle's end, quit, automatic loop | narrowed |  | narrowed | narrowed | narrowed | 2/2 cells (quit) |
-| Q-CMB-09 | a failed attack | narrowed |  | narrowed | narrowed | narrowed | 5/5 cells (lost) |
-| Q-CMB-10 | attacks per turn | narrowed |  | narrowed | narrowed | narrowed | 10/10 cells (busy) |
-| Q-CMB-11 | nothing but counts and dice enters an exchange | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-CMB-12 | **Dropped this batch** — "never attacks" is rare. | — |  |  |  |  |  |
-| Q-HAZ-01 | event messages | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-HAZ-02 | event messages | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-MOV-01 | moves per turn, what ends the turn | narrowed | narrowed | narrowed | narrowed | narrowed |  |
-| Q-MOV-02 | all but one | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-MOV-03 | adjacency, move then attack | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-OWN-01 | armies moved in on a capture | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-REI-01 | income from the territory count, the floor of 2 | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-REI-02 | income from the territory count, the floor of 2 | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-REI-03 | placing the pool | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-REI-05 | army growth over a game | narrowed |  | unestablished | unestablished | narrowed |  |
-| Q-SET-04 | the options screen | **corroborated** | unestablished | corroborated | corroborated | corroborated |  |
-| Q-STA-01 | the deal | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-STA-03 | the deal | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-SUR-01 | the concession offer | narrowed |  |  |  | narrowed |  |
-| Q-SUR-03 | what an eliminated seat's cards do | narrowed |  |  |  | narrowed |  |
-| Q-SUR-04 | the concession offer | narrowed |  |  |  | narrowed |  |
-| Q-SUR-05 | the end | narrowed |  | narrowed | narrowed | unestablished |  |
-| Q-TRN-02 | seat order | narrowed |  | narrowed | narrowed | narrowed |  |
-| Q-TRN-05 | game length | narrowed |  | unestablished | unestablished | narrowed |  |
-| Q-VIC-01 | the end | narrowed |  | narrowed | narrowed | unestablished |  |
+| Question | What | Best | IP1 025 | IP1 026 | IP1 027 | IP1 028 | IP1 029 | Model sittings |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Q-AI-01 | attacks and turns with none | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-AI-02 | placement and cards | unestablished |  | unestablished | unestablished | unestablished | unestablished |  |
+| Q-AI-04 | attacks and turns with none | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-AI-05 | placement and cards | unestablished |  | unestablished | unestablished | unestablished | unestablished |  |
+| Q-AI-07 | strength against scripted opponents | narrowed |  | unestablished | unestablished | narrowed | narrowed |  |
+| Q-BON-01 | island bonuses | narrowed |  | narrowed |  | narrowed | narrowed |  |
+| Q-BON-02 | island bonuses | narrowed |  | narrowed |  | narrowed | narrowed |  |
+| Q-BON-03 | kinds seen | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-BON-05 | a card is given for a capturing turn | **corroborated** | corroborated | narrowed | narrowed | narrowed | narrowed |  |
+| Q-BON-06 | hand limit and discard-on-draw | narrowed | narrowed | narrowed | narrowed | narrowed | narrowed |  |
+| Q-BON-07 | trade-in only on a 3-of-a-kind match | narrowed | narrowed | narrowed | narrowed | narrowed | narrowed |  |
+| Q-BON-08 | the bomb card | narrowed |  | unestablished | unestablished | narrowed | narrowed |  |
+| Q-BON-09 | the anti-bomb card | narrowed |  | narrowed | narrowed | unestablished | unestablished |  |
+| Q-BON-10 | trade-in effects on the pool | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-BON-11 | trade-in effects on the pool | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-CMB-01 | who may attack, human and computer | narrowed | unestablished | narrowed | narrowed | narrowed | narrowed | 8/16 cells (even) |
+| Q-CMB-02 | equality, not a ratio | narrowed |  | narrowed | narrowed | narrowed | narrowed | 2/4 cells (underdog) |
+| Q-CMB-03 | minimum attacking stack | narrowed |  | narrowed | narrowed | narrowed | narrowed | 3/3 cells (tiny) |
+| Q-CMB-04 | one die each, one army per exchange, five-at-once batching | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-CMB-05 | defender size | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-CMB-06 | ties go to the defender | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-CMB-07 | exactly one army lost per exchange | **corroborated** |  | corroborated | corroborated | corroborated | corroborated |  |
+| Q-CMB-08 | a battle's end, quit, automatic loop | narrowed |  | narrowed | narrowed | narrowed | narrowed | 2/2 cells (quit) |
+| Q-CMB-09 | a failed attack | narrowed |  | narrowed | narrowed | narrowed | narrowed | 5/5 cells (lost) |
+| Q-CMB-10 | attacks per turn | narrowed |  | narrowed | narrowed | narrowed | narrowed | 10/10 cells (busy) |
+| Q-CMB-11 | nothing but counts and dice enters an exchange | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-CMB-12 | **Dropped this batch** — "never attacks" is rare. | — |  |  |  |  |  |  |
+| Q-HAZ-01 | event messages | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-HAZ-02 | event messages | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-MOV-01 | moves per turn, what ends the turn | narrowed | narrowed | narrowed | narrowed | narrowed | narrowed |  |
+| Q-MOV-02 | all but one | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-MOV-03 | adjacency, move then attack | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-OWN-01 | armies moved in on a capture | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-REI-01 | income from the territory count, the floor of 2 | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-REI-02 | income from the territory count, the floor of 2 | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-REI-03 | placing the pool | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-REI-05 | army growth over a game | narrowed |  | unestablished | unestablished | narrowed | narrowed |  |
+| Q-SET-04 | the options screen | **corroborated** | unestablished | corroborated | corroborated | corroborated | corroborated |  |
+| Q-STA-01 | the deal | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-STA-03 | the deal | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-SUR-01 | the concession offer | narrowed |  |  |  | narrowed | narrowed |  |
+| Q-SUR-03 | what an eliminated seat's cards do | narrowed |  |  |  | narrowed | narrowed |  |
+| Q-SUR-04 | the concession offer | narrowed |  |  |  | narrowed | narrowed |  |
+| Q-SUR-05 | the end | narrowed |  | narrowed | narrowed | unestablished |  |  |
+| Q-TRN-02 | seat order | narrowed |  | narrowed | narrowed | narrowed | narrowed |  |
+| Q-TRN-05 | game length | narrowed |  | unestablished | unestablished | narrowed | narrowed |  |
+| Q-VIC-01 | the end | narrowed |  | narrowed | narrowed | unestablished | unestablished |  |
 
 Totals by best outcome: corroborated 3, narrowed 41, unestablished 2, — 1.
