@@ -1398,6 +1398,11 @@ video bears on it.
   Over the three sittings (245 of 442, 127 of 237, 183 of 319): 555 of 998 (55.6%), interval 52.5% to 58.7%; 7/12 is inside (z = -1.74), an even 50% is not (z = +3.55).
   Human 74 of 141 (52.5%), computer 109 of 178 (61.2%); the two shares do not differ detectably (Fisher p = 0.14). Dice are not visible, so only the outcome share is tested.
 - **Why narrowed:** 998 of the 500 target over the three sittings, but the share is consistent with the claim, not a proof.
+- **Other explanations of the 57.4% (Luna's review of PR #187, R4):**
+  - *Missed exchanges.* Frames could miss strip steps unevenly between wins and losses. This is mostly excluded: all 233 strip steps are single losses, and the strips reconcile with the before and after counters, so a missed step would show as a two-army jump, and none does. The 49 capture exchanges and the first exchanges are inferred by rule rather than seen. Capture exchanges are always attacker wins, so if anything they pull the loss share down, not up.
+  - *Selection of attacks.* Which stacks fight is chosen: the computer attacks only at a margin, and the owner chose the targets. That could shift the share only if an exchange depended on the stack sizes, which is what Q-CMB-05 and Q-CMB-11 test. No dependence on the defender's size is detected (p = 0.83), but it is not excluded at this count.
+  - *Five-at-once batching.* Not reached: no stack crossed the thresholds (see Q-CMB-04), so batching cannot have changed what was counted.
+  - *Dice that are not uniform.* Not excluded: the dice are never shown, and only the outcome share is tested. 7/12 is the uniform-dice value. A share inside its interval is consistent with uniform dice, but does not prove them.
 - **Cited by:** E018-r0010.
 
 ### Q-CMB-07 (C-CMB-06) - exactly one army lost per exchange
@@ -1436,7 +1441,7 @@ video bears on it.
 ### Q-CMB-11 (C-CMB-07) - nothing but counts and dice enters an exchange
 
 - **Status:** narrowed
-- **This sitting:** computer attacker-loss share by whether the attacker's country is on the fixed 23-country list: list 63/110 (57.3%), not on the list 46/68 (67.6%), chi-square p = 0.22 (the difference seen is 10 points
+- **This sitting:** computer attacker-loss share by whether the attacker's country is on the fixed 23-country list: list 63/110 (57.3%), not on the list 46/68 (67.6%), chi-square p = 0.17 (Pearson, no continuity correction, as in the IP1 026 and 027 sections; 0.22, first written here, was the Yates-corrected value; Luna's review of PR #187, R2) (the difference seen is 10 points
   against a 50 to 60 per cent baseline, not significant at this count); no gross effect appears.
 - **Cited by:** E018-r0010.
 
@@ -1664,6 +1669,15 @@ These rest on the owner's videos, and on this one for the sitting's own readings
 ## Re-reads (rule 20)
 
 A re-read of `IP1 028.mp4` writes new files beside r0010..r0014 (the next free record numbers) with their own frame hashes, and says which record it cross-references; these records stay as written.
+
+**Correction notes (Luna's review of PR #187; the records stay as written):**
+- **R1, readings inside observations.** Some observation values carry a reading or a finding reference beside what the screen showed. Read these clauses as interpretation, not as observation; the per-question entries above are where they are weighed:
+  - r0011 obs[86]: "the eliminated seat's cards vanish and are not inherited (F012, Q-SUR-03)";
+  - r0013 obs[24]: "as F012 reads (Q-SUR-01…)", the offer's timing read against the finding;
+  - r0013 obs[25]: the clause reading the scoreboard's "0 won" as the win not counted, and its F012 reference. IP1 029's note shows the scoreboard adds the result about 1.7 s after it appears;
+  - r0012 obs[18]–[23] and r0014 obs[1]–[5]: "neighbours (F017 border tables)", a lookup in the finding's border tables, not something the screen showed;
+  - r0010 obs[2], r0013 obs[21] and obs[22]: method notes (where a start count is taken from, how a total is read, the seat order inferred from the turn sequence), derivations rather than single screen readings.
+- **R3, a count corrected before review.** Commit 3cbbaa0, labelled a wording fix, also changed r0012's placement count from "one country in 9 turns, two or more in 4" to "10 and 3". The new numbers are the consistent ones: the value lists exactly three turns with two or more countries (27, 44 and 47), and 10 + 3 = 13 placements. The change was a correction of the first write, made before any review, and is recorded here because its commit message did not say so.
 
 ---
 
