@@ -1,15 +1,18 @@
 // Switching the defaults in harness.json, kept free of OpenCode and git so it can be tested directly;
 // switch-model.mjs runs the checks that need OpenCode. The roster is the owner's to change (the
 // owner, 2026-10-11), through this script and the /switch-model skill:
-// - implementer.default: `session` (the main session implements) or a Claude Code model alias
-//   (sonnet, opus, haiku, fable: the `implementer` agent is spawned on it). Either runs through the
-//   session's Anthropic environment, so its family is the session's (lib/common.mjs sessionFamily).
+// - implementer.default: a Claude Code model alias (sonnet, opus, haiku, fable) or any model id the
+//   session's provider serves, on which the `implementer` subagent is spawned (Opus spawns Sonnet;
+//   under Z.AI `sonnet` is GLM-5.3 Flash); or `session`, the main session implementing directly
+//   where the provider cannot spawn one. Either runs through the session's Anthropic environment,
+//   so its family is the session's (lib/common.mjs sessionFamily).
 // - reviewer.default: a harness.json key, the OpenCode model that reviews unless the user names
 //   another; never the session's family.
 // - blocked: families or id fragments that never run (--block / --unblock).
 
 export const ROLES = ['implementer', 'reviewer'];
-export const IMPLEMENTER_CHOICES = ['session', 'sonnet', 'opus', 'haiku', 'fable'];
+export const IMPLEMENTER_ALIASES = ['sonnet', 'opus', 'haiku', 'fable'];
+export const IMPLEMENTER_CHOICES = ['session', ...IMPLEMENTER_ALIASES];
 
 // A model's family, from its id: the family rule (L3) compares these. "opencode-go/gpt-6-luna" and
 // "openai/gpt-6-luna" are both openai: the vendor, not the route.
@@ -105,13 +108,19 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
   return { config: next, name: n, entry, before: describeReviewer(config), after: describeReviewer(next) };
 }
 
-// The implementer's default: the main session, or the implementer agent on a Claude Code alias.
+// The implementer's default: the implementer subagent on a Claude Code alias or a model id the
+// session's provider serves, or `session` (the main session implements directly). A model id is
+// taken as given: the next run shows whether the provider honours it.
 function planImplementer(config, choice) {
-  const c = String(choice ?? '').toLowerCase();
-  if (!IMPLEMENTER_CHOICES.includes(c)) throw new Error(`--model for the implementer is one of ${IMPLEMENTER_CHOICES.join(', ')} (the main session, or the implementer agent on that Claude Code alias); got ${choice}`);
+  const c = String(choice ?? '').trim();
+  const lower = c.toLowerCase();
+  if (!IMPLEMENTER_CHOICES.includes(lower) && !/^[\w.:-]+$/.test(c)) {
+    throw new Error(`--model for the implementer is session, one of ${IMPLEMENTER_ALIASES.join(', ')}, or a model id the session's provider serves; got ${choice}`);
+  }
+  const value = IMPLEMENTER_CHOICES.includes(lower) ? lower : c;
   const next = structuredClone(config);
-  next.implementer = { ...next.implementer, default: c };
-  return { config: next, name: c, entry: { id: c }, before: describeImplementer(config), after: describeImplementer(next) };
+  next.implementer = { ...next.implementer, default: value };
+  return { config: next, name: value, entry: { id: value }, before: describeImplementer(config), after: describeImplementer(next) };
 }
 
 // harness.json's blocked list: a family or an id fragment, case-insensitive. The reason, or null.
@@ -149,7 +158,7 @@ const describeReviewer = (c) => {
 };
 const describeImplementer = (c) => {
   const d = c.implementer?.default ?? 'session';
-  return `implementer: ${d === 'session' ? 'the main session' : `the implementer agent on ${d}`} (the session's family)`;
+  return `implementer: ${d === 'session' ? 'the main session, directly' : `the implementer subagent on ${d}`} (the session's family, through its endpoint)`;
 };
 
 // What runs now: the session's family, both defaults, the blocked list, then the other models

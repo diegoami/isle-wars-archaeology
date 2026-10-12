@@ -1,16 +1,18 @@
 ---
 name: switch-model
-description: Change who implements and who reviews by default, and which models are blocked (harness.json, through switch-model.mjs), safely - live ids, the right login, the effort rule, the session's family read from the Anthropic environment, and a one-word probe before anything is written. Use when the user wants another default implementer (the main session, or the implementer agent on sonnet, opus, haiku or fable) or reviewer, wants a model blocked or unblocked, when the reviewer keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real reviews.
+description: Change who implements and who reviews by default, and which models are blocked (harness.json, through switch-model.mjs), safely - live ids, the right login, the effort rule, the session's family read from the Anthropic environment, and a one-word probe before anything is written. Use when the user wants another default implementer (the implementer subagent on sonnet, opus, haiku, fable or a model id the session's provider serves, or the main session directly) or reviewer, wants a model blocked or unblocked, when the reviewer keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real reviews.
 ---
 
 # /switch-model: change the defaults, or the blocked list
 
 The roster is the owner's and changes often (CLAUDE.md rule 6): it lives in `harness.json`, and
 this skill is how it changes. Three things can change:
-- **the implementer's default** (`implementer.default`): `session`, the main session itself, or
-  a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) the `implementer` agent is spawned on.
-  Both run through the session's Anthropic environment, so under Claude `sonnet` is Sonnet and
-  under Z.AI it is GLM-5.3 Flash; no OpenCode check or probe applies;
+- **the implementer's default** (`implementer.default`): the model the `implementer` subagent is
+  spawned on inside Claude Code, a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) or any
+  model id the session's provider serves; or `session`, the main session implementing directly
+  where the provider cannot spawn one. Both run through the session's Anthropic environment, so
+  under Claude `sonnet` is Sonnet and under Z.AI it is GLM-5.3 Flash; no OpenCode check or probe
+  applies, and a model id is taken as given (the next run shows whether the provider honours it);
 - **the reviewer's default** (`reviewer.default`): the OpenCode model that reviews unless the
   user names another at the question before a review; never the session's family;
 - **the blocked list** (`blocked`): families (`deepseek`) or id fragments that never run anywhere.
@@ -31,7 +33,8 @@ no switch: the question before each implementation and review takes any option.
    login; leave out the session's family and blocked models. For an implementer, the Claude Code
    aliases above. `--show` lists the registered reviewers, each with its note in `harness.json`.
 4. **Dry run.**
-   - Implementer: `node tools/harness/switch-model.mjs --role implementer --model sonnet --dry-run`.
+   - Implementer: `node tools/harness/switch-model.mjs --role implementer --model sonnet --dry-run`
+     (an alias, a model id, or `session`).
    - Reviewer, with a probe: `node tools/harness/switch-model.mjs --role reviewer --model PROVIDER/ID --probe --dry-run`.
      It checks the id against OpenCode's list in the scripts' data directory (exit 3: give the
      user the login command it prints); the effort, unless `--variant` gives one, is `high` for

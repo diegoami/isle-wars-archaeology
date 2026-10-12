@@ -3,14 +3,16 @@
 // checks a hand edit skips. The /switch-model skill says when and how.
 //
 //   node tools/harness/switch-model.mjs --show
-//   node tools/harness/switch-model.mjs --role implementer --model session|sonnet|opus|haiku|fable [--dry-run]
+//   node tools/harness/switch-model.mjs --role implementer --model sonnet|opus|haiku|fable|<model id>|session [--dry-run]
 //   node tools/harness/switch-model.mjs --role reviewer --model PROVIDER/ID
 //     [--variant high] [--name NAME] [--family FAMILY] [--probe] [--dry-run] [--force]
 //   node tools/harness/switch-model.mjs --block FAMILY-OR-ID-FRAGMENT | --unblock ... [--dry-run]
 //
-// The implementer is the main session (`session`) or the `implementer` agent on a Claude Code
-// alias; both run through the session's Anthropic environment, so no OpenCode check applies and
-// the family is the session's (lib/common.mjs sessionFamily, printed by --show).
+// The implementer is the `implementer` subagent spawned inside Claude Code on a Claude Code alias
+// or a model id the session's provider serves (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3
+// Flash), or `session`: the main session implements directly where the provider cannot spawn one.
+// Both run through the session's Anthropic environment, so no OpenCode check applies and the
+// family is the session's (lib/common.mjs sessionFamily, printed by --show).
 // The reviewer is an OpenCode model:
 // 1. OpenCode must list the id in the scripts' own data directory (as review.mjs checks before
 //    every run): an unknown id or a missing login exits 3 with the command that fixes it.

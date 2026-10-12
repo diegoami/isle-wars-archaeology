@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: The Claude implementer for one task or fix, spawned by /run-task when the main session does not implement itself. It runs on the main session's model unless the main session names another Claude model; it works in its own worktree on its own branch, commits and pushes there, opens the PR, and reports.
+description: The implementer subagent for one task or fix, spawned inside Claude Code by /run-task on the model the user chose (an alias such as sonnet, or a model id the session's provider serves), not the orchestrator's. It works in its own worktree on its own branch, commits and pushes there, opens the PR, and reports.
 hooks:
   PreToolUse:
     - matcher: "Bash"

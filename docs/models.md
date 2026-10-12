@@ -19,7 +19,7 @@ What worked in practice, after ten days of chains, pairs and quota checks:
 | Role | Who | How |
 | --- | --- | --- |
 | Orchestrator | The main session, set by the Anthropic environment variables alone (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude, or GLM-5.3 through Z.AI's Anthropic-compatible endpoint when Claude's tokens are out | never named by the harness; its family is read from the environment (`lib/common.mjs` `sessionFamily`, `HARNESS_SESSION_FAMILY` overrides) |
-| Implementer | **The main session**, in its own worktree; or the **`implementer` agent** it spawns (worktree isolation) on a Claude Code alias, `sonnet` under Opus, which under Z.AI is GLM-5.3 Flash. Asked before each implementation, `harness.json`'s `implementer.default` proposed first | `/run-task` step 2; `.claude/agents/implementer.md` |
+| Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's: `sonnet` under Opus, which under Z.AI is GLM-5.3 Flash, or any model id the session's provider serves. **The main session** implements directly, in its own worktree, only where the provider cannot spawn a subagent. Asked before each implementation, `harness.json`'s `implementer.default` proposed first | `/run-task` step 2; `.claude/agents/implementer.md` |
 | Reviewer | **One OpenCode run** of another family than the session's, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; `gpt-6.1-sol` for a guard, a gate or hard research | `tools/harness/review.mjs [--reviewer <name>]`, as a systemd unit, watched |
 
 The roster is the owner's and changes often: `harness.json`'s two defaults and its `blocked` list
@@ -58,7 +58,7 @@ read-only) in `.opencode/agents/reviewer.md`, so a loose scratch file no longer 
 | `mimo-flash`, `mimo-pro` | MiMo v2.6 Flash and Pro on OpenCode Go, no variant (they offer none) | MiMo | a family of its own; Go needs `opencode console login` in the scripts' data directory |
 | `mm-m3`, `mm-m2.7` | MiniMax-M3 (variant `thinking`) and M2.7 (no variant) | MiniMax | a family of its own; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`, never `opencode auth login` |
 | `ali-qwen-max`, `ali-qwen-flash`, `ali-glm` | Qwen 3.8 Max (`low`), Qwen 3.8 Flash (`medium`) and GLM-5.3 (`low`) on the Alibaba Token Plan | Qwen, GLM | only when the user asks (`--alibaba`); key `ALIBABA_TOKEN_PLAN_API_KEY` the same way |
-| (the session) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku` or `fable` for the `implementer` agent, the same family | Claude, or GLM under Z.AI | implements; reviews only when the user asks |
+| (the session's provider) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku`, `fable` or a model id for the `implementer` subagent, which the orchestrator spawns on a model of its own | Claude, or GLM under Z.AI | implements; reviews only when the user asks |
 
 **DeepSeek is blocked** (the owner, 2026-10-09), on any route: `harness.json`'s `blocked` list, which
 `review.mjs` and `switch-model.mjs` refuse and `/switch-model --block` and `--unblock` change.
@@ -135,9 +135,10 @@ implementer and reviewer time a driver costs. Measured in T08's control runs, r0
   The task file's Owns must name that tracked path, for example `runs/E<nnn>/**` or
   `experiments/E<nnn>-*/measurements/**`.
 
-- **The implementer**, asked before each implementation, is the main session in
-  `../isle-wars-archaeology-work/<task>` on the task's branch, or
-  `Agent(subagent_type: "implementer", model: <alias>, isolation: "worktree")` with the brief: the task
+- **The implementer**, asked before each implementation, is
+  `Agent(subagent_type: "implementer", model: <alias or id>, isolation: "worktree")` with the brief,
+  or, where the provider cannot spawn one, the main session in
+  `../isle-wars-archaeology-work/<task>` on the task's branch: the task
   file pasted in full, then `docs/process.md` §4's block, then, on rework, the review's URL
   (rule 15). Either keeps `RUN-NOTES.md`, pushes after every commit and opens the PR. A cloud
   brief first checks the hostname and that `/mnt/c` is absent, and stops if either check fails.

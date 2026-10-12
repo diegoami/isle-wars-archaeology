@@ -25,10 +25,10 @@ adapt tools/harness/choose.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the use
 adapt tools/harness/lib/choice-selftest.mjs  (new, PR 164: the model-choice and resume self-test, run by review.mjs --self-test)
 adapt docs/lessons.md  (L68 appended: the user decides models, the owner 2026-10-11, PR 164)
 adapt .claude/agents/implementer.md  (the owner 2026-10-11: never undo uncommitted work with git checkout/restore/reset, L69)
-6afbe109e3ceca9e1ebca7c41ba64b6d4dee0d30b01865d44a393b00f09b9751  .claude/hooks/session-start.sh
+55ad4f63f1731365b3b82501168e5417d3539d70a8ee074a0c74ea2b511ac1b1  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
-024aa7802cdc8e150874766aa7838d9d6a2aa2ef3bae3f5dc95074fb43f70c43  .claude/skills/switch-model/SKILL.md
+2228f5489727380a4bdaa82e94275f8e4ef69206811c4ee4fe4a74d69d9c5020  .claude/skills/switch-model/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
@@ -44,7 +44,7 @@ b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
-4e11178306f1c39ed66131b37fea1580f7af32d67dc7fbe628342649a6289246  tools/harness/lib/switch.mjs
+718290e2c3645ebcd4944420cc877d665378ec56c4a0a24acd6bdee814c6776b  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-31ae98683613e5fc87f69e598a9ca3a90c4a2372dfd809f8007b7053e0628035  tools/harness/switch-model.mjs
+ba43f7573f27e280e103e04dabf774388adf317f28662e0ce867151a19f3adda  tools/harness/switch-model.mjs
