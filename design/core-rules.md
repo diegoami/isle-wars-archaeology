@@ -12,8 +12,8 @@ claims). Each was kept, changed, replaced or dropped for malpaco's sake: the
 [decision table](#decisions-claim-by-claim) gives one row per claim. The guiding direction
 is the owner's (2026-10-11): fun, roughly balanced, varied; not a copy.
 
-**Status.** Settled. The owner decided every feel-changing choice on 2026-10-12; values marked
-*(decision N)* are those decisions, listed with their options and reasons in
+The owner decided every feel-changing choice on 2026-10-12. Values marked *(decision N)* are those
+decisions, listed with their options and reasons in
 [The owner's decisions](#the-owners-decisions-2026-10-12). Build each behind a named constant.
 
 ## Terms
@@ -110,22 +110,25 @@ only; no rule reads them.
 
 ### Generation
 
-All draws come from the game's seeded stream, before the deal.
+What a board must satisfy is the requirement; how to build one is malpaco's implementation work.
 
-1. **Islands.** Place 9 island centres in the play area by rejection sampling with a minimum spacing,
-   and give them the 9 sizes in a random order.
-2. **Countries.** Inside each island, place its countries as points with a minimum spacing, and join
-   them by a planar triangulation of those points (Delaunay). Remove the longest edges while every
-   country keeps at least 2 neighbours inside the island (or 1 for a country that will get a
-   crossing) and the island stays connected, until no country has more than 4 inside neighbours.
-3. **Crossings.** Build the island graph: first a minimum spanning tree of the island centres
-   (8 crossings, so the board is connected), then add the next-shortest island pairs until there are
-   16 crossings (drawn uniformly from 14 to 18). Each crossing joins the closest pair of countries of
-   the two islands that both still have fewer than 5 neighbours.
-4. **Validate** the invariants (country count, sizes, degree 2–5, symmetry, connectedness, 14–18
-   crossings) and the [fairness checks](#fairness-checks). A board that fails is discarded and the
-   next attempt starts from the same stream, so redraws stay reproducible. The engine's tests run the
-   generator over many seeds and require a valid board within 50 attempts for every seed tested.
+- **Requirements.** All draws come from the game's seeded stream, before the deal, so a seed
+  reproduces the board, including any redraws. Every board meets the invariants above (country
+  count, island sizes, degree 2–5, symmetry, connectedness, 14–18 crossings) and passes the
+  [fairness checks](#fairness-checks). The fairness checks are not weakened to make generation
+  easier.
+- **What the engine's tests show.** Over many seeds, the generator finds a valid board within a
+  stated, small number of attempts, and the test fixes that number. When attempts run out, the
+  behaviour is defined (for example, falling back to a known-valid board for that seed), never a
+  hang.
+- **Implementation hazard** (GPT-6.1 Sol's re-review of PR #195; a prototype, not a measurement). A
+  naive build fails often: island centres by spaced rejection sampling, a minimum spanning tree of
+  the centres, then the next-shortest island pairs until 14–18 crossings. Adding the shortest pairs
+  without limiting each island's crossings creates hub islands, which the fairness checks reject. At
+  a middle spacing, only 14 of 200 seeds gave a valid board within 50 attempts, though valid boards
+  do occur, so the checks do not contradict each other. Build with the limits enforced as the board
+  grows (island degree at most 4, at most 2 crossings per country), or repair and backtrack, rather
+  than generate and reject.
 
 ### Island bonuses
 
@@ -136,8 +139,8 @@ An island's bonus, paid while one seat holds every country of it, is
 where **entrances** is the number of the island's countries that border another island. A larger
 island pays more, and an island with more entrances, harder to hold, pays more than one of the same
 size that is easy to close. Examples: 3 countries with 1 entrance pay 2; 7 with 3 pay 6; 10 with 4
-pay 9. T51 may tune the constants when it designs the bonuses' place among cards and events; the
-rule's form is settled here because the generator needs it.
+pay 9. The owner chose this rule (decision 12, 2026-10-12). T51 may tune its constants when it designs
+the bonuses' place among cards and events.
 
 ### Fairness checks
 
@@ -442,7 +445,7 @@ strength is a matter of its decisions (T51), and the human's handicap is an expl
 
 ## The owner's decisions (2026-10-12)
 
-The owner decided all eleven choices on 2026-10-12. Each entry keeps the claims it settles, the
+The owner decided all twelve choices on 2026-10-12 (the twelfth, the island bonus rule, after GPT-6.1 Sol's re-review). Each entry keeps the claims it settles, the
 options offered, the recommendation and its reason, and adds the decision. Ten decisions follow the
 recommendation; **decision 1 went against it** (a generator, not hand-made boards). The rules above
 describe the decided options.
@@ -519,6 +522,13 @@ describe the decided options.
     - Recommendation (b): with (a) defence is 1.4 times as efficient as attack and boards lock; with
       (c) attacking is so strong that position stops mattering.
     - **Decided: (b).**
+12. **Island bonuses on a generated board** (part of C-BRD-01's replacement; raised by GPT-6.1 Sol's
+    re-review, because decision 1 does not itself choose a bonus rule).
+    - (a) `floor(size / 2) + entrances`, minimum 2, never above the size; (b) `round(0.75 × size)`,
+      minimum 2, the predecessor's proportion, ignoring entrances; (c) left to T51.
+    - Recommendation (a): an island that is harder to hold pays more, and a single-entrance island is
+      not cheap to hold for its value.
+    - **Decided: (a).**
 
 ## Decisions, claim by claim
 
@@ -530,7 +540,7 @@ so.
 
 | Claim | Decision | malpaco's rule | Why |
 | --- | --- | --- | --- |
-| C-BRD-01 | replace | [The board](#the-board): a new board generated from the seed each game, under fixed invariants and fairness checks | One fixed map is the same game every time; a seeded generator gives a new board each game while the invariants and fairness checks keep it fair (decision 1). Replace, not change: the fixed board itself is gone, only its shape properties stay. |
+| C-BRD-01 | replace | [The board](#the-board): a new board generated from the seed each game, under fixed invariants and fairness checks; bonuses by size and entrances | One fixed map is the same game every time; a seeded generator gives a new board each game while the invariants and fairness checks keep it fair (decisions 1 and 12). Replace, not change: the fixed board itself is gone, only its shape properties stay. |
 | C-BRD-02 | keep | [What is fixed](#what-is-fixed-and-what-is-generated): 46 countries on every generated board | About 11–12 countries per seat for four seats gives a starting income of 3–4 and enough room to manoeuvre without long games; a fixed count also fixes the win threshold at 35. |
 | C-BRD-03 | keep | [What is fixed](#what-is-fixed-and-what-is-generated): 9 islands of sizes 3, 3, 3, 3, 5, 5, 7, 7, 10, none of one country | Mixed sizes give a ladder of goals: cheap small bonuses early, large valuable ones later. The generator keeps the sizes; their places and shapes are new each game. |
 | C-BRD-04 | keep | [Generation](#generation): symmetric borders, 2–5 neighbours, connected, 14–18 crossings | Few crossings make island entrances chokepoints worth holding or forcing; symmetry and connectedness keep every country reachable. These are the generator's invariants. |
