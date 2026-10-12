@@ -27,12 +27,15 @@ goal is a fun game, not a copy", 2026-10-11).
 | --- | --- | --- |
 | [core-rules.md](core-rules.md) | setup, seats, the board generator and island bonuses, the deal, the turn, reinforcement, movement, combat, ownership, victory and leaving a game | T50 (#192) |
 | [variety.md](variety.md) | cards, island bonuses on a generated board, production centres and events | T51 (#193) |
-| [variants.md](variants.md) | every T50, T51 and T53 choice: the canonical option and each alternative as a named variant, with its interactions; no spec rows | T51 (#193), T53 (#196) |
+| [variants.md](variants.md) | every T50, T51, T53 and T52 choice: the canonical option and each alternative as a named variant, with its interactions; no spec rows | T51 (#193), T53 (#196), T52 (#194) |
 | [computer.md](computer.md) | the computer opponent: what it may know, how it plays each phase of the turn under the T50 and T51 rules, its difficulty levels, and how malpaco measures its strength | T53 (#196) |
-| `ui.md` (planned) | the UI, against the predecessor's and malpaco's recorded weaknesses | T52 (#194) |
+| [ui.md](ui.md) | the UI: screens and flow, the board, the turn, combat, cards, events, computer turns, standings and log, sound, input, no trace of switched-off features, and what tests can check; argued against the predecessor's UI and the 19 weaknesses malpaco's proof of concept recorded | T52 (#194) |
 
 `python3 tools/check_design.py` checks that each design file's decision table has exactly one row per
 claim of its own in-scope spec files, with a valid decision and a reason, and that every `open` row is
-in the owner's list; it prints one line per design file. Every design file, `variants.md` included,
+in the owner's list; it prints one line per design file. `ui.md` also has one row per UI question of
+`questions/malpaco.md` (`Q-UI-01` to `Q-UI-22`), checked the same way. A row may be indented up to
+three spaces, as Markdown allows; a line whose first cell looks like an id but is not a well-formed row
+(indented deeper, without a leading pipe, or with a malformed id) fails the check. Every design file, `variants.md` included,
 fails the check if it holds a code fence or an HTML comment, so nothing in it can be hidden from a
 reader; code goes in indented blocks.
