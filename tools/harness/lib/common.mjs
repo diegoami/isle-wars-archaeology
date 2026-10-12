@@ -118,11 +118,13 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
 // The family of the main session, and so of every Claude Code agent it spawns (an agent runs through
 // the same endpoint). The session is set only by the Anthropic environment variables: with
 // ANTHROPIC_BASE_URL unset or at anthropic.com it is Claude; when Claude's tokens are out the owner
-// points it at Z.AI's GLM, which speaks the same API (the owner, 2026-10-11), and the family rule
-// must then keep GLM out of the reviewer's seat. HARNESS_SESSION_FAMILY overrides the guess; an
-// endpoint this list does not know returns null, and the caller refuses to review until it is set.
-const ENDPOINT_FAMILIES = [[/z\.ai|bigmodel/, 'glm'], [/minimax/, 'minimax'], [/moonshot|kimi/, 'moonshot'],
-  [/deepseek/, 'deepseek'], [/dashscope|aliyun/, 'qwen'], [/openai\.com/, 'openai'], [/mimo|xiaomi/, 'mimo']];
+// points it at another provider that speaks the same API: Z.AI's GLM, MiniMax, or Moonshot's Kimi
+// (the owner, 2026-10-12), and the family rule must then keep that family out of the reviewer's
+// seat. The names match the families the reviewer models get (glm, minimax, kimi). HARNESS_SESSION_FAMILY
+// overrides the guess; an endpoint this list does not know returns null, and the caller refuses
+// to review until it is set.
+const ENDPOINT_FAMILIES = [[/z\.ai|bigmodel/, 'glm'], [/minimax/, 'minimax'], [/moonshot|kimi/, 'kimi'],
+  [/deepseek/, 'deepseek'], [/dashscope|aliyun/, 'qwen'], [/mimo|xiaomi/, 'mimo']];
 export function sessionFamily(env = process.env) {
   if (env.HARNESS_SESSION_FAMILY) return env.HARNESS_SESSION_FAMILY.trim().toLowerCase();
   const url = String(env.ANTHROPIC_BASE_URL || '').toLowerCase();
@@ -150,12 +152,12 @@ export const ocArgs = (worktree, agent, model) =>
 // R1 and re-review R1 on PR 164): a registered id keeps its registered family; a new id's family
 // comes from a single-family provider or an unambiguous model name, else the id is refused; a
 // declared --family is only a cross-check. harness.json's blocked list is refused.
-export const FAMILIES = ['claude', 'openai', 'glm', 'mimo', 'minimax', 'qwen', 'deepseek'];
+export const FAMILIES = ['claude', 'openai', 'glm', 'mimo', 'minimax', 'kimi', 'qwen', 'deepseek'];
 // Providers that serve one family only: their prefix alone fixes the family. Every other route
 // (openrouter, opencode-go, alibaba-token-plan, …) serves several, so the model name must say it.
-const PROVIDER_FAMILY = { openai: 'openai', anthropic: 'claude', minimax: 'minimax', 'zai-coding-plan': 'glm', zai: 'glm' };
+const PROVIDER_FAMILY = { openai: 'openai', anthropic: 'claude', minimax: 'minimax', moonshot: 'kimi', 'zai-coding-plan': 'glm', zai: 'glm' };
 const NAME_FAMILY = [[/deepseek/, 'deepseek'], [/claude|opus|sonnet|haiku|fable/, 'claude'], [/gpt|^o\d|codex/, 'openai'],
-  [/glm/, 'glm'], [/mimo/, 'mimo'], [/minimax/, 'minimax'], [/qwen/, 'qwen']];
+  [/glm/, 'glm'], [/mimo/, 'mimo'], [/minimax/, 'minimax'], [/kimi/, 'kimi'], [/qwen/, 'qwen']];
 // The family an OpenCode id belongs to, established from the id alone, never from a declaration
 // (Sol's re-review R1 on PR 164); null when it cannot be established.
 export function familyFromId(id) {

@@ -18,7 +18,7 @@ What worked in practice, after ten days of chains, pairs and quota checks:
 
 | Role | Who | How |
 | --- | --- | --- |
-| Orchestrator | The main session, set by the Anthropic environment variables alone (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude, or GLM-5.3 through Z.AI's Anthropic-compatible endpoint when Claude's tokens are out | never named by the harness; its family is read from the environment (`lib/common.mjs` `sessionFamily`, `HARNESS_SESSION_FAMILY` overrides) |
+| Orchestrator | The main session, set by the Anthropic environment variables alone (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude; or GLM-5.3 through Z.AI's Anthropic-compatible endpoint, MiniMax, or Moonshot's Kimi when Claude's tokens are out | never named by the harness; its family is read from the environment (`lib/common.mjs` `sessionFamily`, `HARNESS_SESSION_FAMILY` overrides) |
 | Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's: `sonnet` under Opus, which under Z.AI is GLM-5.3 Flash, or any model id the session's provider serves. **The main session** implements directly, in its own worktree, only where the provider cannot spawn a subagent. Asked before each implementation, `harness.json`'s `implementer.default` proposed first | `/run-task` step 2; `.claude/agents/implementer.md` |
 | Reviewer | **One OpenCode run** of another family than the session's, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; `gpt-6.1-sol` for a guard, a gate or hard research | `tools/harness/review.mjs [--reviewer <name>]`, as a systemd unit, watched |
 
@@ -58,7 +58,7 @@ read-only) in `.opencode/agents/reviewer.md`, so a loose scratch file no longer 
 | `mimo-flash`, `mimo-pro` | MiMo v2.6 Flash and Pro on OpenCode Go, no variant (they offer none) | MiMo | a family of its own; Go needs `opencode console login` in the scripts' data directory |
 | `mm-m3`, `mm-m2.7` | MiniMax-M3 (variant `thinking`) and M2.7 (no variant) | MiniMax | a family of its own; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`, never `opencode auth login` |
 | `ali-qwen-max`, `ali-qwen-flash`, `ali-glm` | Qwen 3.8 Max (`low`), Qwen 3.8 Flash (`medium`) and GLM-5.3 (`low`) on the Alibaba Token Plan | Qwen, GLM | only when the user asks (`--alibaba`); key `ALIBABA_TOKEN_PLAN_API_KEY` the same way |
-| (the session's provider) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku`, `fable` or a model id for the `implementer` subagent, which the orchestrator spawns on a model of its own | Claude, or GLM under Z.AI | implements; reviews only when the user asks |
+| (the session's provider) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku`, `fable` or a model id for the `implementer` subagent, which the orchestrator spawns on a model of its own | Claude; GLM, MiniMax or Kimi when the environment says so | implements; reviews only when the user asks |
 
 **DeepSeek is blocked** (the owner, 2026-10-09), on any route: `harness.json`'s `blocked` list, which
 `review.mjs` and `switch-model.mjs` refuse and `/switch-model --block` and `--unblock` change.

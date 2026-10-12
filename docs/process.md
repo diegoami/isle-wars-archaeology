@@ -28,8 +28,8 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 Before each implementation and each review the main session asks the user one question, with
 `harness.json`'s default proposed first (CLAUDE.md rule 6); no quota, tier or chain picks a model, and the
 roster changes through `/switch-model`. The implementer's family is the session's, read from the
-Anthropic environment variables (`lib/common.mjs` `sessionFamily`; the orchestrator is Claude, or
-GLM through Z.AI when Claude's tokens are out), and the reviewer is never of it. Model ids come
+Anthropic environment variables (`lib/common.mjs` `sessionFamily`; the orchestrator is Claude, or GLM
+through Z.AI, MiniMax or Kimi when Claude's tokens are out), and the reviewer is never of it. Model ids come
 from `harness.json`, `models.mjs` or `opencode models`, never memory (L25).
 
 ## 2. Task files

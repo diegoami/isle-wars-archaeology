@@ -70,7 +70,8 @@ function checkNamed(failures) {
   checkVariants(failures);
   // The session's family, from the Anthropic environment (the owner, 2026-10-11).
   const SESSION = [['no base URL', {}, 'claude'], ['anthropic.com', { ANTHROPIC_BASE_URL: 'https://api.anthropic.com' }, 'claude'],
-    ['Z.AI', { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic' }, 'glm'], ['override', { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_SESSION_FAMILY: 'Claude' }, 'claude'],
+    ['Z.AI', { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic' }, 'glm'], ['MiniMax', { ANTHROPIC_BASE_URL: 'https://api.minimax.io/anthropic' }, 'minimax'],
+    ['Moonshot', { ANTHROPIC_BASE_URL: 'https://api.moonshot.ai/anthropic' }, 'kimi'], ['override', { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_SESSION_FAMILY: 'Claude' }, 'claude'],
     ['unknown endpoint', { ANTHROPIC_BASE_URL: 'https://proxy.example/v1' }, null]];
   for (const [label, env, want] of SESSION) {
     const got = sessionFamily(env);
@@ -106,5 +107,5 @@ function checkNamed(failures) {
 export function choiceSelfTest() {
   const failures = [];
   checkNamed(failures);
-  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 7 };
+  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 9 };
 }

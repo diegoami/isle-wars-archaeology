@@ -11,7 +11,7 @@ this skill is how it changes. Three things can change:
   spawned on inside Claude Code, a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) or any
   model id the session's provider serves; or `session`, the main session implementing directly
   where the provider cannot spawn one. Both run through the session's Anthropic environment, so
-  under Claude `sonnet` is Sonnet and under Z.AI it is GLM-5.3 Flash; no OpenCode check or probe
+  under Claude `sonnet` is Sonnet and under Z.AI it is GLM-5.3 Flash (MiniMax and Kimi map it their own way); no OpenCode check or probe
   applies, and a model id is taken as given (the next run shows whether the provider honours it);
 - **the reviewer's default** (`reviewer.default`): the OpenCode model that reviews unless the
   user names another at the question before a review; never the session's family;
