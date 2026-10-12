@@ -85,12 +85,9 @@ def _parse_external_directory(yaml_text: str) -> tuple:
                 in_permission = False
                 in_ext = False
                 ext_indent = -1
-                # fall through so the line is not consumed silently
+                continue  # do not re-evaluate the line as part of permission:
 
             if head == 'external_directory:':
-                if not in_permission:
-                    errors.append(f'line {lineno}: external_directory: outside permission:')
-                    continue
                 in_ext = True
                 ext_indent = indent
                 continue

@@ -79,15 +79,25 @@ def _write_fixture(tmpdir: Path, *, grant_line: str) -> Path:
 
 
 class TestCheckReviewerGrant(unittest.TestCase):
-    def _run_check(self, repo: Path, env_extra: dict | None = None) -> subprocess.CompletedProcess:
-        env = {}
-        if env_extra:
-            env.update(env_extra)
+    def _run_check(self, repo: Path, ci: bool = False) -> subprocess.CompletedProcess:
+        """Run the check as a subprocess with the test's intended CI mode.
+
+        CI mode is set explicitly per test; it does not inherit from the parent
+        process environment, since that would make the non-CI tests run in CI
+        mode under any CI host.
+        """
+        env = {
+            k: v
+            for k, v in __import__('os').environ.items()
+            if k not in ('CI', 'GITHUB_ACTIONS')
+        }
+        if ci:
+            env['CI'] = 'true'
         return subprocess.run(
             [sys.executable, str(TOOL), "--root", str(repo)],
             capture_output=True,
             text=True,
-            env={**__import__('os').environ, **env} or None,
+            env=env,
         )
 
     def test_passes_when_granted_allow(self):
@@ -128,7 +138,7 @@ class TestCheckReviewerGrant(unittest.TestCase):
         # pass when any `allow` entry exists under permission.external_directory.
         with tempfile.TemporaryDirectory() as td:
             repo = _write_fixture(Path(td), grant_line=GRANT_ALLOW)
-            cp = self._run_check(repo, env_extra={"CI": "true"})
+            cp = self._run_check(repo, ci=True)
             self.assertEqual(
                 cp.returncode, 0,
                 msg=f"check failed on CI when allow entries were present; stderr={cp.stderr!r}",
@@ -159,7 +169,7 @@ class TestCheckReviewerGrant(unittest.TestCase):
                 "---\n"
                 + REVIEWER_BODY
             )
-            cp = self._run_check(repo, env_extra={"GITHUB_ACTIONS": "true"})
+            cp = self._run_check(repo, ci=True)
             self.assertEqual(
                 cp.returncode, 1,
                 msg=f"check passed on CI when no allow entries existed; "
@@ -193,6 +203,40 @@ class TestCheckReviewerGrant(unittest.TestCase):
                 msg=f"check returned {cp.returncode} for a misplaced external_directory; "
                     f"stdout={cp.stdout!r} stderr={cp.stderr!r}",
             )
+
+    def test_ignores_external_directory_nested_under_permission_child(self):
+        # R2 (round 3): an `external_directory:` nested below a *child* of permission
+        # (e.g., under `edit:`) is not permission's external_directory; the parser
+        # must not collect grants from it.
+        with tempfile.TemporaryDirectory() as td:
+            repo = Path(td)
+            harness = repo / "harness.json"
+            harness.write_text(json.dumps({"worktreeRoot": "/worktree-root"}))
+            agents = repo / ".opencode" / "agents"
+            agents.mkdir(parents=True)
+            reviewer = agents / "reviewer.md"
+            # permission -> edit -> external_directory with the grant; the user's
+            # grant is here at the wrong nesting level, so the parser must not pick
+            # it up and must report the worktree-root grant as missing.
+            reviewer.write_text(
+                "---\n"
+                "description: nested external_directory\n"
+                "permission:\n"
+                "  edit:\n"
+                "    external_directory:\n"
+                + GRANT_ALLOW
+                + "  task:\n"
+                "    \"*\": deny\n"
+                "---\n"
+                + REVIEWER_BODY
+            )
+            cp = self._run_check(repo)
+            self.assertEqual(
+                cp.returncode, 1,
+                msg=f"check accepted a nested external_directory grant; "
+                    f"stdout={cp.stdout!r} stderr={cp.stderr!r}",
+            )
+            self.assertIn("not granted", cp.stderr)
 
 
 if __name__ == "__main__":
