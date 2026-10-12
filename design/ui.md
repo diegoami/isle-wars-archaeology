@@ -44,7 +44,7 @@ Every screen obeys these. A screen that breaks one is a bug, whatever it looks l
 
 1. **The state is on the screen.** Everything a seat may know is visible or one action away: every
    owner and stack, the centres, the round, the phase, every seat's hand count, the viewer's own hand,
-   the piles' counts and the top of the discard pile, the standings and the history in the log. What
+   the piles' counts and the top of the discard pile *(UI9)*, the standings and the history in the log. What
    no seat may know (another hand's kinds, the draw pile's order) is never shown, to anyone.
 2. **What is legal is offered; what is illegal is explained.** Controls and countries that can act
    now are marked as such; an attempt at anything else changes nothing and says why
@@ -335,13 +335,16 @@ once, and the legal choices are marked again. The reasons cover at least:
   with its sound.
 - **Controls** *(UI5; recommended b)*: the main control fights on until the target is captured, the
   attacker is down to `N` armies, or the player stops, with `N` set beside it (default 2, remembered);
-  a second control rolls a single exchange; stop ends the battle at once, at no cost. At 1 army the
-  battle stops by rule and the panel says so. The engine resolves exchanges one at a time either way.
+  a second control rolls a single exchange; stop ends the battle at once, at no cost. `N` runs from 1
+  (fight to the end) to the attacking stack less one; a remembered value above that is lowered to it
+  for the battle, so an attack from 2 armies fights to the end. At 1 army the battle stops by rule and
+  the panel says so. The engine resolves exchanges one at a time either way.
 - **Long battles**: a human's battle in the main control shows each exchange for `EXCHANGE_TIME`
   (0.4 s proposed at Normal; the predecessor's human exchanges came about 0.5 s apart, `runs/E018`) up
   to `HUMAN_BATTLE_WATCH` (5 s proposed at Normal), then the rest of the battle in one step, with the
-  tally. A battle of 1000 against 100 is therefore shown in about 12 exchanges and one jump, and stop
-  still works between steps.
+  tally. A battle of 1000 against 100 is therefore shown in about 12 exchanges and one jump. Stop
+  works between the shown exchanges; the jump runs the battle to the end the player set (a capture or
+  `N` armies).
 - **The capture**: the country changes colour and cue with a short effect *(UI16)* and its sound;
   the move-in counter follows.
 - **Quitting** leaves both countries as they are; the panel and the log say "stopped" with the
@@ -386,6 +389,8 @@ visible as it happens and readable at a glance.
 - When a seat draws the Squall, every seat sees it: the Squall and the drawer's whole hand go face up
   to the discard pile in one step, with the number of cards lost (variety.md, The hand). Drawn into an
   empty hand, it shows that nothing was lost.
+- **An eliminated seat's hand** goes face up to the discard pile in the step that shows the
+  elimination (variety.md, V6), and the log names the cards.
 
 ### A draw into a full hand
 
