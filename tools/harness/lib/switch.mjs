@@ -95,13 +95,15 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
   const n = name ?? nameOf(config, id);
   const existing = config.models?.[n];
   if (existing && existing.id !== id) throw new Error(`The name ${n} already holds ${existing.id}; pass --name for ${id}.`);
-  // The family established from the id decides the family and blocked checks, whatever --family or
-  // --force say (Sol's R3 on PR 189); --force only lets a declaration stand where it is written.
+  // The family established from the id decides, whatever --family says: a contradicting declaration
+  // is refused, also with --force, so no entry is ever saved with a family its id contradicts (Sol's
+  // R3 and re-review R1/R2 on PR 189). --force no longer overrides this; review.mjs also re-derives
+  // the family from the id (lib/common.mjs entryFamily) for entries saved before.
   const known = knownFamilyOf(id);
-  if (family && known && canonicalFamily(family) !== known && !force) {
-    throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; the family rule compares vendors. Drop --family, or pass --force.`);
+  if (family && known && canonicalFamily(family) !== known) {
+    throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; the family rule compares vendors${force ? ', and --force does not override it' : ''}. Drop --family.`);
   }
-  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: canonicalFamily(family ?? existing?.family ?? familyOf(id)), ...(existing?.note ? { note: existing.note } : {}) };
+  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: known ?? canonicalFamily(family ?? existing?.family ?? familyOf(id)), ...(existing?.note ? { note: existing.note } : {}) };
   const blocked = blockedBy(config, entry) ?? (known ? blockedBy(config, { family: known }) : null);
   if (blocked) throw new Error(`Refused: ${blocked}.`);
   const own = canonicalFamily(sessionFamily);

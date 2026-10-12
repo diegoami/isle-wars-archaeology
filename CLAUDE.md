@@ -51,9 +51,8 @@ indexed in `docs/tasks/README.md`.
    live in `harness.json` and change through `/switch-model`, never by a rule that names a model.
    No quota, tier or difficulty table picks a model.
    0. **The orchestrator is set by the Anthropic environment variables alone** (`ANTHROPIC_BASE_URL`,
-      `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude by default; when Claude's tokens are out, GLM-5.3
-      through Z.AI's Anthropic-compatible endpoint, or MiniMax, or Moonshot's Kimi, which then
-      work like Claude.
+      `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude by default; when Claude's tokens are out, another
+      Anthropic-compatible provider such as Z.AI, MiniMax or Moonshot, which then works like Claude.
       The harness never names the orchestrator's model. It reads the orchestrator's **family**
       from that environment (`lib/common.mjs` `sessionFamily`: Claude when the base URL is unset
       or Anthropic's, GLM for Z.AI, MiniMax, Kimi for Moonshot; `HARNESS_SESSION_FAMILY` overrides, and an unknown endpoint

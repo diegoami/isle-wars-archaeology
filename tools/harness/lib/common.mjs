@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { openCodeHome, listedModels, loginHint, openCodeVersion, versionProblem } from './opencode.mjs';
 import { canonicalFamily } from './family.mjs';
+import { knownFamilyOf } from './switch.mjs';
 export { canonicalFamily };
 
 // The command that runs a tool. HARNESS_GH_EXE names the gh to run (the tests' fake, #2); a .mjs or
@@ -125,27 +126,32 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
 // seat. The names match the families the reviewer models get (glm, minimax, kimi). HARNESS_SESSION_FAMILY
 // overrides the guess; an endpoint this list does not know returns null, and the caller refuses
 // to review until it is set.
-// Matched on the parsed URL's hostname only, never on its path or query string (Sol's R5 on PR 189):
-// anthropic.com and its subdomains are Claude; an unparseable URL or an unknown host is null.
-const ENDPOINT_FAMILIES = [[/z\.ai|bigmodel/, 'glm'], [/minimax/, 'minimax'], [/moonshot|kimi/, 'kimi'],
-  [/deepseek/, 'deepseek'], [/dashscope|aliyun/, 'qwen'], [/mimo|xiaomi/, 'mimo']];
+// Matched on the parsed URL's hostname only, never on its path or query string (Sol's R5 on PR 189),
+// and only as an exact domain or a bounded suffix of one (host === d or host ends with '.' + d; Sol's
+// re-review R3): api.z.ai is glm, notz.ai and api.z.ai.evil.example are unknown. anthropic.com and
+// its subdomains are Claude; an unparseable URL or an unknown host is null.
+const ENDPOINT_FAMILIES = [['anthropic.com', 'claude'], ['z.ai', 'glm'], ['bigmodel.cn', 'glm'],
+  ['minimax.io', 'minimax'], ['minimaxi.com', 'minimax'], ['minimax.chat', 'minimax'],
+  ['moonshot.ai', 'kimi'], ['moonshot.cn', 'kimi'], ['kimi.com', 'kimi'], ['deepseek.com', 'deepseek'],
+  ['aliyuncs.com', 'qwen'], ['aliyun.com', 'qwen'], ['xiaomimimo.com', 'mimo'], ['xiaomi.com', 'mimo']];
 export function sessionFamily(env = process.env) {
   if (env.HARNESS_SESSION_FAMILY) return canonicalFamily(env.HARNESS_SESSION_FAMILY);
   const url = String(env.ANTHROPIC_BASE_URL || '').trim();
   if (!url) return 'claude';
   let host;
   try { host = new URL(url).hostname.toLowerCase(); } catch { return null; }
-  if (host === 'anthropic.com' || host.endsWith('.anthropic.com')) return 'claude';
-  return ENDPOINT_FAMILIES.find(([re]) => re.test(host))?.[1] ?? null;
+  return ENDPOINT_FAMILIES.find(([d]) => host === d || host.endsWith(`.${d}`))?.[1] ?? null;
 }
 
 // harness.json's `blocked` list, changed with switch-model.mjs --block/--unblock: a family name
 // ("deepseek") or a piece of a model id ("deepseek-v4"), case-insensitive. The reason a model may
-// not run, or null.
+// not run, or null. The family the id names is checked too, whatever family was declared or saved
+// (Sol's re-review R2 on PR 189).
 export function blockedReason(config, { id, family }) {
+  const fams = [family, id ? knownFamilyOf(id) : null].map(canonicalFamily).filter(Boolean);
   for (const b of config.blocked ?? []) {
     const needle = String(b).toLowerCase();
-    if (family && canonicalFamily(family) === canonicalFamily(needle)) return `${family} is blocked in harness.json (switch-model.mjs --unblock ${b} lifts it)`;
+    if (fams.includes(canonicalFamily(needle))) return `${family} is blocked in harness.json (switch-model.mjs --unblock ${b} lifts it)`;
     if (id && id.toLowerCase().includes(needle)) return `${id} matches "${b}", blocked in harness.json (switch-model.mjs --unblock ${b} lifts it)`;
   }
   return null;
@@ -174,13 +180,17 @@ export function familyFromId(id) {
   if (byProvider) return byName.every((f) => f === byProvider) ? byProvider : null;   // e.g. openai/glm-x: contradictory
   return new Set(byName).size === 1 ? byName[0] : null;
 }
+// A registered entry's family: the family its id names wherever that is known (knownFamilyOf), and
+// the saved family only where the id says nothing, so a declared or force-saved family never
+// carries a model past the family rule or the blocked list (Sol's re-review R1/R2 on PR 189).
+export const entryFamily = (entry) => (entry ? knownFamilyOf(entry.id) ?? canonicalFamily(entry.family) : null);
 // The family a name stands for: a harness.json key, a registered id, a provider/model id, or a
 // family name. Null when it cannot be established (Sol's R2 on PR 164).
 export function familyOf(models, name) {
   if (!name) return null;
-  if (models[name]) return canonicalFamily(models[name].family);
+  if (models[name]) return entryFamily(models[name]);
   const reg = Object.values(models).find((m) => m.id === name);
-  if (reg) return canonicalFamily(reg.family);
+  if (reg) return entryFamily(reg);
   if (name.includes('/')) return familyFromId(name);
   const fam = canonicalFamily(name);
   return FAMILIES.includes(fam) || Object.values(models).some((m) => canonicalFamily(m.family) === fam) ? fam : null;
@@ -190,7 +200,7 @@ export function namedModel(config, name, { family, variant } = {}, die) {
   const entry = config.models[name] ?? Object.values(config.models).find((m) => m.id === name);
   if (!entry && !name.includes('/')) die(2, `Unknown model ${name}: not a harness.json key, and not an OpenCode id provider/model.`);
   const id = entry ? entry.id : name;
-  const known = entry ? canonicalFamily(entry.family) : familyFromId(id);
+  const known = entry ? entryFamily(entry) : familyFromId(id);
   const blocked = blockedReason(config, { id, family: known });
   if (blocked) die(2, `${name}: ${blocked} (CLAUDE.md rule 6).`);
   // The family is never taken from --family alone: an unknown one is refused (re-review R1 on PR 164).

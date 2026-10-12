@@ -8,7 +8,12 @@
 // and blocked refusals (one family name for Claude, R2; the id's family over --family/--force, R3),
 // planImplementer's blocked refusal (R4), and the session's family from the URL's host only (R5).
 
-import { namedModel, familyOf, implementerFamilies, sessionFamily, reviewRefusal } from './common.mjs';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { namedModel, familyOf, implementerFamilies, sessionFamily, reviewRefusal, blockedReason } from './common.mjs';
 import { planSwitch } from './switch.mjs';
 
 const BLOCKED = ['deepseek', 'gpt-5.6'];
@@ -82,6 +87,7 @@ const SWITCH = [
   ['a blocked reviewer on any route', ['deepseek'], { id: 'openrouter/deepseek/deepseek-v4-pro', variant: 'low', sessionFamily: 'claude' }, 'refused'],
   ['a blocked family behind --family --force (R3)', ['openai'], { id: 'opencode-go/gpt-6-luna', variant: 'high', family: 'qwen', force: true, sessionFamily: 'claude' }, 'refused'],
   ['the session family behind --family --force (R3)', [], { id: 'zai-coding-plan/glm-5.3', variant: 'low', family: 'qwen', force: true, sessionFamily: 'glm' }, 'refused'],
+  ['a contradicting --family, even with --force (re-review R1)', [], { id: 'opencode-go/gpt-6-luna', variant: 'high', family: 'qwen', force: true, sessionFamily: 'claude' }, 'refused'],
 ];
 // planImplementer: [label, blocked list, choice, session family, 'refused' or 'allowed'] (R4)
 const IMPLEMENTER_CHOICE = [
@@ -112,6 +118,28 @@ function checkDecisions(failures) {
   const plan = planSwitch({ models: MODELS(), blocked: [], reviewer: { default: 'luna' } }, { id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'glm' });
   if (!reviewRefusal(plan.config.models, plan.name, [], {})) failures.push('switch then review: a switched-in Claude reviewer reviews Claude work');
   if (!reviewRefusal(plan.config.models, plan.name, [], { HARNESS_SESSION_FAMILY: 'anthropic' })) failures.push('switch then review: HARNESS_SESSION_FAMILY=anthropic is not claude');
+  // Sol's re-review R1/R2 on PR 189: an entry saved with a family its id contradicts (a force-saved
+  // qwen on an OpenAI id, as an older harness.json may hold) is judged by its id at review time:
+  // refused from an openai session, and refused once openai is blocked.
+  const forced = () => ({ ...MODELS(), forced: { id: 'opencode-go/gpt-6-luna', family: 'qwen' } });
+  if (!reviewRefusal(forced(), 'forced', ['claude'], { HARNESS_SESSION_FAMILY: 'openai' })) failures.push('reviewRefusal: a force-saved qwen family on an OpenAI id reviews from an openai session (re-review R1)');
+  let blockedForced = false;
+  try { namedModel({ models: forced(), blocked: ['openai'] }, 'forced', {}, (c, m) => { throw Object.assign(new Error(m), { refused: c }); }); } catch (e) {
+    if (e.refused === undefined) throw e;
+    blockedForced = true;
+  }
+  if (!blockedForced) failures.push('namedModel: a force-saved qwen family on an OpenAI id passes --block openai (re-review R2)');
+  if (!blockedReason({ blocked: ['openai'] }, { id: 'opencode-go/gpt-6-luna', family: 'qwen' })) failures.push('blockedReason: a declared qwen family hides an OpenAI id from --block openai (re-review R2)');
+  // Re-switching that saved entry without --family saves the id's family, not the saved one.
+  const resaved = { models: { ...MODELS(), 'gpt-6-luna': { id: 'opencode-go/gpt-6-luna', family: 'qwen' } }, reviewer: { default: 'luna' } };
+  const again = planSwitch({ ...resaved, blocked: [] }, { id: 'opencode-go/gpt-6-luna', variant: 'high', sessionFamily: 'claude' });
+  if (again.entry.family !== 'openai') failures.push(`planSwitch: re-switching a force-saved qwen entry keeps ${again.entry.family}, expected openai`);
+  let resavedBlocked = false;
+  try { planSwitch({ ...resaved, blocked: ['openai'] }, { id: 'opencode-go/gpt-6-luna', variant: 'high', sessionFamily: 'claude' }); } catch (e) {
+    if (!/^Refused/.test(e.message)) throw e;
+    resavedBlocked = true;
+  }
+  if (!resavedBlocked) failures.push('planSwitch: a force-saved qwen entry passes --block openai when re-switched');
   for (const [label, blocked, choice, own, want] of IMPLEMENTER_CHOICE) {
     let got = 'allowed';
     try { planSwitch({ models: MODELS(), blocked, implementer: { default: 'sonnet' } }, { role: 'implementer', id: choice, sessionFamily: own }); } catch (e) {
@@ -145,7 +173,13 @@ function checkNamed(failures) {
     ['unknown host, anthropic.com in the path', { ANTHROPIC_BASE_URL: 'https://proxy.example/anthropic.com/v1' }, null],
     ['a host that only starts with anthropic.com', { ANTHROPIC_BASE_URL: 'https://anthropic.com.proxy.example/v1' }, null],
     ['an anthropic.com subdomain', { ANTHROPIC_BASE_URL: 'https://gateway.anthropic.com/v1' }, 'claude'],
-    ['not a URL', { ANTHROPIC_BASE_URL: 'anthropic.com' }, null]];
+    ['not a URL', { ANTHROPIC_BASE_URL: 'anthropic.com' }, null],
+    // Bounded domain suffixes only (re-review R3).
+    ['a host that only starts with api.z.ai', { ANTHROPIC_BASE_URL: 'https://api.z.ai.evil.example/v1' }, null],
+    ['a host that only ends in z.ai', { ANTHROPIC_BASE_URL: 'https://notz.ai/' }, null],
+    ['a host that only starts with api.minimax.io', { ANTHROPIC_BASE_URL: 'https://api.minimax.io.evil.example/' }, null],
+    ['Z.AI China', { ANTHROPIC_BASE_URL: 'https://open.bigmodel.cn/api/anthropic' }, 'glm'],
+    ['Moonshot China', { ANTHROPIC_BASE_URL: 'https://api.moonshot.cn/anthropic' }, 'kimi']];
   for (const [label, env, want] of SESSION) {
     const got = sessionFamily(env);
     if (got !== want) failures.push(`sessionFamily: ${label}: ${got}, expected ${want}`);
@@ -177,10 +211,33 @@ function checkNamed(failures) {
   }
 }
 
+// review.mjs itself enforces the refusal (Sol's re-review R4 on PR 189): run as a child from a Z.AI
+// session with a GLM reviewer and --exclude (so it reads no PR labels), it must exit 1 with
+// "Refused". OpenCode points at a path that does not exist, so a run past the guard stops at exit 3
+// before any model is called; nothing reaches the network.
+function checkReviewRunner(failures) {
+  const script = fileURLToPath(new URL('../review.mjs', import.meta.url));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'iwa-choice-selftest-'));
+  try {
+    const brief = path.join(dir, 'brief.md');
+    fs.writeFileSync(brief, 'PR 1 review (self-test)\n');
+    const env = { ...process.env, ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_OPENCODE_EXE: path.join(dir, 'no-opencode') };
+    delete env.HARNESS_SESSION_FAMILY;
+    const r = spawnSync(process.execPath, [script, '--pr', '1', '--brief', brief, '--reviewer', 'zai-coding-plan/glm-5.3', '--exclude', 'claude'],
+      { cwd: path.dirname(script), env, encoding: 'utf8', timeout: 60_000 });
+    if (r.status !== 1 || !/Refused/.test(r.stderr)) {
+      failures.push(`review.mjs: a GLM reviewer from a Z.AI session was not refused (exit ${r.status}: ${(r.stderr || r.stdout || '').trim().split('\n').at(-1)})`);
+    }
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 export function choiceSelfTest() {
   const failures = [];
   checkNamed(failures);
   checkDecisions(failures);
-  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 14
-    + REVIEW.length + SWITCH.length + 2 + IMPLEMENTER_CHOICE.length };
+  checkReviewRunner(failures);
+  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 19
+    + REVIEW.length + SWITCH.length + 2 + 5 + IMPLEMENTER_CHOICE.length + 1 };
 }
