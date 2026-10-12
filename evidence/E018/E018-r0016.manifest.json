@@ -1,0 +1,61 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0016",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 029.mp4",
+      "bytes": 103171810,
+      "sha256": "d19ad65dc161a1d3c4138fec478fd6e660300c05227979ec4e91a26feeea1d95",
+      "asset": "d19ad65dc161a1d3-IP1 029.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "card-offer-declined-hand-5-wild-bomb-bomb.png",
+      "bytes": 2133857,
+      "sha256": "cf07878d0e240da32648b435e39e70bb16458214717874f82d9dba224d0dfb19",
+      "asset": "cf07878d0e240da3-card-offer-declined-hand-5-wild-bomb-bomb.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-offer-after-decline-pool-10.png",
+      "bytes": 2146030,
+      "sha256": "12e5a51f3b40e5c5450341b4c81a95b2567a26e13507366b9ec12611d6ecb954",
+      "asset": "12e5a51f3b40e5c5-card-offer-after-decline-pool-10.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-offer-three-selected-5-wild-5.png",
+      "bytes": 2130929,
+      "sha256": "afc5035acbc9af6206ae654816cb92c8cf4f5069a159844759df9ce1296a45eb",
+      "asset": "afc5035acbc9af62-card-offer-three-selected-5-wild-5.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-trade-in-pool-23.png",
+      "bytes": 2155844,
+      "sha256": "c86b71c286e5999f2f4af01985d1dc9e3aa65c22a4e9f55a25785fdb35c6bcb1",
+      "asset": "c86b71c286e5999f-card-trade-in-pool-23.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-hand-after-draw-bomb-bomb-15.png",
+      "bytes": 2081616,
+      "sha256": "1a72da93b66de78455144f74d551f9d8a7f4a0d3297a0deae83611fb9b550616",
+      "asset": "1a72da93b66de784-card-hand-after-draw-bomb-bomb-15.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-hand-with-protection-card.png",
+      "bytes": 2063849,
+      "sha256": "e4b16857b7d0d11273f088add6c9f65978082422023d4b9d8f43ac9013f43333",
+      "asset": "e4b16857b7d0d112-card-hand-with-protection-card.png",
+      "class": "screenshot"
+    }
+  ]
+}

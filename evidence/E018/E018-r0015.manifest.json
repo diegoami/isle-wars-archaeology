@@ -1,0 +1,54 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0015",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 029.mp4",
+      "bytes": 103171810,
+      "sha256": "d19ad65dc161a1d3c4138fec478fd6e660300c05227979ec4e91a26feeea1d95",
+      "asset": "d19ad65dc161a1d3-IP1 029.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "human-attack01-start-7-v-1.png",
+      "bytes": 2184956,
+      "sha256": "dbdc59a058ca7537e8a7f24e073ed93c6953be6a0ff2d0c2183e808f41d8e510",
+      "asset": "dbdc59a058ca7537-human-attack01-start-7-v-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-attack02-start-5-v-1.png",
+      "bytes": 2088112,
+      "sha256": "42ab44f868d733df4da15510b77d8235c912a165412dcb0705b58a6359aa159a",
+      "asset": "42ab44f868d733df-computer-attack02-start-5-v-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack40-start-41-v-2.png",
+      "bytes": 2166340,
+      "sha256": "85efdabf40b409b6941983bd07f775d097b2da600d71844b7b5e5350de697b1e",
+      "asset": "85efdabf40b409b6-human-attack40-start-41-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack42-start-34-v-4.png",
+      "bytes": 2163172,
+      "sha256": "95c8d713ae00c31e49150d4cb19a93fe1eaee7a10121cf6687dfd8b47d8dfb35",
+      "asset": "95c8d713ae00c31e-human-attack42-start-34-v-4.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack53-quit-at-2-v-1.png",
+      "bytes": 2123876,
+      "sha256": "be17e963d30e94810b97c6b48148d61cbaa722444b843c745f62582b490ae20e",
+      "asset": "be17e963d30e9481-human-attack53-quit-at-2-v-1.png",
+      "class": "screenshot"
+    }
+  ]
+}

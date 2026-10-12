@@ -1,0 +1,96 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0017",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 029.mp4",
+      "bytes": 103171810,
+      "sha256": "d19ad65dc161a1d3c4138fec478fd6e660300c05227979ec4e91a26feeea1d95",
+      "asset": "d19ad65dc161a1d3-IP1 029.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "options-screen-first.png",
+      "bytes": 1065033,
+      "sha256": "073f21f70b2e1ac866ba6c0ea417ff223325ca605def85a392fe7e5cc9ed5a93",
+      "asset": "073f21f70b2e1ac8-options-screen-first.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "options-screen-easy-and-slow.png",
+      "bytes": 1100314,
+      "sha256": "bf880346c7351d3b906589fc320b67b7a680ad979c7050344492cab356b153ff",
+      "asset": "bf880346c7351d3b-options-screen-easy-and-slow.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "opening-deal-14-7-12-13.png",
+      "bytes": 2085600,
+      "sha256": "ed6c46c0eb76ba98c76460a8056d283ea39ebf87da25bf3ed7d017d393da2b31",
+      "asset": "ed6c46c0eb76ba98-opening-deal-14-7-12-13.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-action-bar.png",
+      "bytes": 2155122,
+      "sha256": "e065f9d9a8f089b537ae6559d8b1d1aed070ab41f64e8fd4399c266e36a8bfd0",
+      "asset": "e065f9d9a8f089b5-move-action-bar.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-source-prompt.png",
+      "bytes": 2146390,
+      "sha256": "1c132ffc7e6bb5210b0ae02c733ed2329b0d9c923f1b85eee603aa2325d3adc3",
+      "asset": "1c132ffc7e6bb521-move-source-prompt.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-destination-prompt.png",
+      "bytes": 2156801,
+      "sha256": "852093f98ffaded13a668d8d2f4d11c4d7bb8e347fc77f690cd79cd0b9b1b3d8",
+      "asset": "852093f98ffaded1-move-destination-prompt.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-cancelled-back-to-action-bar.png",
+      "bytes": 2156803,
+      "sha256": "8ae7a3e3b56dd84eacc51511ae27d57cd28c44530ecd735bffec6e3c3d1b2e7c",
+      "asset": "8ae7a3e3b56dd84e-move-cancelled-back-to-action-bar.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-counter-panel-at-1.png",
+      "bytes": 2179445,
+      "sha256": "24ee452e7ddd408ad0ff361c4f57969e6c2bbbcf5884c3817f08d97020adb5ff",
+      "asset": "24ee452e7ddd408a-move-counter-panel-at-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-counter-plus-hover.png",
+      "bytes": 2178525,
+      "sha256": "b4ceb9d29239d1380b2a2d18f1be7d460b8eb2071deb6e18bb0bd394a608d0df",
+      "asset": "b4ceb9d29239d138-move-counter-plus-hover.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move-counter-done-green-at-5.png",
+      "bytes": 2181149,
+      "sha256": "ef8bace632368adec2560279a1f71c22b1827c0cd8307b90d02bcbedeb65da21",
+      "asset": "ef8bace632368ade-move-counter-done-green-at-5.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "move3-counter-all-at-11.png",
+      "bytes": 2168066,
+      "sha256": "6da56b7b8393c8eb2943dd6869481c34885fee270df98ae1409944ff06a6cbe8",
+      "asset": "6da56b7b8393c8eb-move3-counter-all-at-11.png",
+      "class": "screenshot"
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0017",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "9a2fda1",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@9a2fda1",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 17099 video frames in 910.37 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (15:10 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, starting level set to the easy entry and game speed to the slow entry). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "d19ad65dc161a1d3c4138fec478fd6e660300c05227979ec4e91a26feeea1d95",
+    "args": [
+      "video file name: IP1 029.mp4",
+      "video sha256: d19ad65dc161a1d3c4138fec478fd6e660300c05227979ec4e91a26feeea1d95",
+      "probe: 910.37 s, 17099 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 103171810 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the options screen with the easy level, the opening deal, the 8 human placements, the 4 human moves and 2 cancelled moves, and the move controls checked against IP1 028"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen, three visits to its controls, video offsets 00:04.5 to 00:31.5",
+      "value": "the options screen is up from 00:03.0 (title screen at 00:00.5). Five option groups as in the three earlier sittings, with the human seat first and three computers. At 00:20.5 the second starting-armies entry and the middle entries of the other groups are lit, as in the earlier sittings; between 00:20.5 and 00:24.5 the starting-level group changed from the middle entry to the easy entry; by 00:28.5 the speed group had changed from the middle entry to the slow entry; both stayed until the play button (the board at 00:36.2). The owner thus played the easy level at slow speed (the first sitting not on the middle level)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen frame at 00:05.0",
+      "ref": "sha256:073f21f70b2e1ac866ba6c0ea417ff223325ca605def85a392fe7e5cc9ed5a93"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "options screen with the easy and slow entries lit, at 00:31.0",
+      "ref": "sha256:bf880346c7351d3b906589fc320b67b7a680ad979c7050344492cab356b153ff"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "opening deal at 00:47.0",
+      "ref": "sha256:ed6c46c0eb76ba98c76460a8056d283ea39ebf87da25bf3ed7d017d393da2b31"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "human placement 1 (turn 1): the placement panel shows from 01:04.367 to 01:07.433",
+      "value": "army pool 4; the whole pool went to one country, country 39, which read 3 before and 7 after; the counter read 4 at 01:06.3 (the all-but-one button, the counter jumping from 0 to the pool)"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "human placement 2 (turn 5): the placement panel shows from 01:52.867 to 01:55.300",
+      "value": "army pool 5; the whole pool went to one country, country 42, which read 3 before and 8 after"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "human placement 3 (turn 9): the placement panel shows from 02:53.933 to 02:56.033",
+      "value": "army pool 5; the whole pool went to one country, country 43, which read 7 before and 12 after"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "human placement 4 (turn 13): the placement panel shows from 04:28.200 to 04:36.167",
+      "value": "army pool 10; the whole pool went to one country, country 7, which read 3 before and 13 after"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "human placement 5 (turn 17): the placement panel shows from 06:02.967 to 06:05.967",
+      "value": "army pool 10; the whole pool went to one country, country 11, which read 7 before and 17 after"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "human placement 6 (turn 21): the placement panel shows from 09:34.500 to 09:37.133",
+      "value": "army pool 23; the whole pool went to one country, country 13, which read 4 before and 27 after"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "human placement 7 (turn 25): the placement panel shows from 11:37.667 to 11:48.100",
+      "value": "army pool 27; the whole pool went to one country, country 23, which read 14 before and 41 after"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "human placement 8 (turn 29): the placement panel shows from 13:03.933 to 13:18.033",
+      "value": "army pool 25; the whole pool went to one country, country 38, which read 1 before and 26 after"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human placement summary",
+      "value": "eight placements in eight human turns, the whole pool each time on one country (no split), stacks after placement 7, 8, 12, 13, 17, 27, 41 and 26 (the last on a country that held 1; 1 plus 25); the pool is 4 to 27. The owner built exact stacks of 8 (turn 5, country 42) and 12 (turn 9, country 43) and attacked from stacks of 12, 13, 17, 27, 41 and 34 later, but every defender held 1 to 4 armies, so no even or underdog cell of E021 was reached (see the sitting's section)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human move 1 (turn 5): from country 42 to country 43; prompts visible from 02:10.3 to 02:21.1",
+      "value": "source held 7 armies; counters before and after: source 7 to 1, destination 1 to 7; moved 6, kept 1; the move counter read 1 at 02:13.2 and 6 at 02:15.0 (the way it was set, all-but-one button or up button, was not isolated: intermediate values were not read); source and destination both blue and neighbours; the move came after the last attack of the turn (attack 4 at 02:01.9); after confirm the draw screen of the turn came within 2 s (a joker draw), then the next seat."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human move 2 (turn 13): from country 9 to country 11, after a cancelled start; prompts visible from 04:57.4 to 05:12.1",
+      "value": "first attempt: at 04:58.0 the source prompt, at 05:00.0 and 05:02.0 the destination prompt with the right panel naming country 11 as the source; at 05:02.4 the action bar was back (the cancel button of the destination prompt was pressed: no counter panel ever showed), and the move was started again at 05:04.0 with the source prompt, source 9 and destination 11 (the right panel named both at 05:06.0); source held 6 armies; counters before and after: source 6 to 1, destination 2 to 7; moved 5, kept 1; the counter read 1 at 05:06.0 to 05:10.0 (the up button highlighted at 05:10.0) and 5 at 05:12.0 (the confirm button green); intermediate values not read; after confirm the draw screen (05:13.8, a strike draw) and the next seat; the move came after the last attack of the turn (attack 16 at 04:49.9)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human move 3 (turn 21): from country 22 to country 23, after a cancelled start and a cancelled attack order; prompts visible from 10:49.1 to 11:04.8",
+      "value": "first attempt: source 23 chosen (right panel at 10:50.0 and 10:52.0), back to the action bar at 10:52.4 (the cancel of the destination prompt); then the attack-target prompt at 10:56.0 with a cancel button (the attack button was pressed and cancelled), the action bar again at 10:58.0 and 11:00.0; the move was started at 11:02.0 (source prompt), source 22 and destination 23 named at 11:04.0; source held 12 armies; counters before and after: source 12 to 1, destination 3 to 14; moved 11, kept 1; the counter read 1 at 11:03.8, 11 at 11:04.8 (the all-but-one button highlighted at 11:04.0); the move came after the last attack of the turn (attack 36 at 10:31.6); then the draw screen (11:06, a fifteen-army card drawn)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "human move 4 (turn 25): from country 36 to country 35; prompts visible from 12:31.5 to 12:35.6",
+      "value": "source held 26 armies; counters before and after: source 26 to 1, destination 3 to 28; moved 25, kept 1; the counter read 1 at 12:34.0 and 25 at 12:35.0 (the all-but-one button highlighted at 12:35.0); the draw screen followed within 1 s (12:36.0, a five-army card drawn); the move came after the last attack of the turn (attack 42 at 12:17.1)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move summary",
+      "value": "four completed human moves in eight human turns (turns 5, 13, 21, 25), at most one per turn, each after the turn's last attack and ending the turn (the draw screen followed within 2 s); every move left exactly 1 in the source (sources of 7, 6, 12 and 26 armies; moves of 6, 5, 11 and 25: all but one, the largest all-but-one so far, a stack of 26); the all-but-one button was shown highlighted for moves 3 and 4, the up button for move 2; two moves were started and cancelled (turn 13 at 05:02.4 and turn 21 at 10:52.4, both by the cancel button of the destination prompt, after choosing a source), and the owner started a move again each time; a third cancelled order was an attack target prompt (turn 21, 10:56.0 to 10:58.0). No computer move was detected by the left-panel template that found 5 in IP1 028 and 7 in IP1 027."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "move controls: this video against the positions proposed from IP1 028 (E018-r0012)",
+      "value": "the picture is not black from x 125 to 1859 and y 85 to 1003 of the frame, the same bounds as in IP1 028, so the mapping stage x = (frame x - 125) / 2.169, stage y = (frame y - 85) / 1.532 is unchanged. Button centres found by colour regions: action bar at 04:56.0 (also at 02:10.3 and 12:30.0): attack (786, 897), move (926, 897), pass (1034, 897), card (1140, 898), cancel (1239, 893); source and destination prompts at 04:58.0 and 05:00.0: the cancel button at (1239, 893); counter panel at 05:06.0: all-but-one (796, 911), up (932, 911), down (1036, 911), confirm (1198, 911). In stage coordinates: attack (305, 530), move (369, 530), pass (419, 530), card (468, 531), cancel (514, 528); all-but-one (309, 539), up (373, 539), down (420, 539), confirm (495, 539). Every row proposed from IP1 028 is confirmed to within 2 frame pixels (1 stage pixel); nothing is corrected. New in this video: the cancel button of the destination prompt returns to the action bar without a counter panel, and the source prompt's left-panel arrow marker alternates between a yellow arrow and a red bar every 1 to 2 s (also at 05:04.0)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the action bar at 04:56.0 (move button)",
+      "ref": "sha256:e065f9d9a8f089b537ae6559d8b1d1aed070ab41f64e8fd4399c266e36a8bfd0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the source prompt at 04:58.0",
+      "ref": "sha256:1c132ffc7e6bb5210b0ae02c733ed2329b0d9c923f1b85eee603aa2325d3adc3"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the destination prompt at 05:00.0, source 11 named, cancel button",
+      "ref": "sha256:852093f98ffaded13a668d8d2f4d11c4d7bb8e347fc77f690cd79cd0b9b1b3d8"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the action bar after the cancelled move at 05:02.8",
+      "ref": "sha256:8ae7a3e3b56dd84eacc51511ae27d57cd28c44530ecd735bffec6e3c3d1b2e7c"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the move counter panel at 05:06.0, counter 1, source 9, destination 11",
+      "ref": "sha256:24ee452e7ddd408ad0ff361c4f57969e6c2bbbcf5884c3817f08d97020adb5ff"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the counter panel at 05:10.0 with the up button highlighted",
+      "ref": "sha256:b4ceb9d29239d1380b2a2d18f1be7d460b8eb2071deb6e18bb0bd394a608d0df"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the counter at 5 and the confirm button green at 05:12.0",
+      "ref": "sha256:ef8bace632368adec2560279a1f71c22b1827c0cd8307b90d02bcbedeb65da21"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: move 3, counter 11 after the all-but-one button, at 11:03.9",
+      "ref": "sha256:6da56b7b8393c8eb2943dd6869481c34885fee270df98ae1409944ff06a6cbe8"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "options-screen-first.png",
+      "sha256": "073f21f70b2e1ac866ba6c0ea417ff223325ca605def85a392fe7e5cc9ed5a93",
+      "store": "release:E018"
+    },
+    {
+      "name": "options-screen-easy-and-slow.png",
+      "sha256": "bf880346c7351d3b906589fc320b67b7a680ad979c7050344492cab356b153ff",
+      "store": "release:E018"
+    },
+    {
+      "name": "opening-deal-14-7-12-13.png",
+      "sha256": "ed6c46c0eb76ba98c76460a8056d283ea39ebf87da25bf3ed7d017d393da2b31",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-action-bar.png",
+      "sha256": "e065f9d9a8f089b537ae6559d8b1d1aed070ab41f64e8fd4399c266e36a8bfd0",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-source-prompt.png",
+      "sha256": "1c132ffc7e6bb5210b0ae02c733ed2329b0d9c923f1b85eee603aa2325d3adc3",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-destination-prompt.png",
+      "sha256": "852093f98ffaded13a668d8d2f4d11c4d7bb8e347fc77f690cd79cd0b9b1b3d8",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-cancelled-back-to-action-bar.png",
+      "sha256": "8ae7a3e3b56dd84eacc51511ae27d57cd28c44530ecd735bffec6e3c3d1b2e7c",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-counter-panel-at-1.png",
+      "sha256": "24ee452e7ddd408ad0ff361c4f57969e6c2bbbcf5884c3817f08d97020adb5ff",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-counter-plus-hover.png",
+      "sha256": "b4ceb9d29239d1380b2a2d18f1be7d460b8eb2071deb6e18bb0bd394a608d0df",
+      "store": "release:E018"
+    },
+    {
+      "name": "move-counter-done-green-at-5.png",
+      "sha256": "ef8bace632368adec2560279a1f71c22b1827c0cd8307b90d02bcbedeb65da21",
+      "store": "release:E018"
+    },
+    {
+      "name": "move3-counter-all-at-11.png",
+      "sha256": "6da56b7b8393c8eb2943dd6869481c34885fee270df98ae1409944ff06a6cbe8",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T20:25:53Z",
+  "ended": "2026-10-11T20:41:04Z",
+  "status": "completed"
+}
