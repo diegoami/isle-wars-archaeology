@@ -40,6 +40,16 @@ COUNT_TARGETS = {
     "Q-SET-04": 1,     # one visit
 }
 
+# Per-arm minimums from the F011 plan. The plan names the count PER arm
+# (per attacker size, per defender size, per ratio band), so a 'corroborated'
+# record must clear that minimum on every arm it tracks. A question with no
+# per-arm floor (Q-CMB-06 totals, Q-CMB-09 failures) is absent here.
+PER_ARM_MINIMUMS = {
+    "Q-CMB-04": 100,   # 100 exchanges per attacker size
+    "Q-CMB-05": 100,   # 100 exchanges per defender size
+    "Q-CMB-12": 100,   # 100 attacks per ratio band
+}
+
 
 def load_records():
     """Load all E018 records from runs/E018/*/. Returns dict claim_id -> list of records."""
@@ -109,24 +119,37 @@ def check_corroborated_outcomes(records):
     """Check 3: no 'corroborated' without meeting the per-arm count target."""
     errors = []
     for claim_id, recs in sorted(records.items()):
-        # Extract question id from claim_id (e.g. C-CMB-04 -> Q-CMB-04)
+        # Extract question id from claim_id (e.g. C-CMB-04 -> Q-CMB-04).
+        # Preserve the numeric suffix: "C-CMB-04" must become "Q-CMB-04",
+        # not "Q-CMB" (which is not a key in COUNT_TARGETS and used to
+        # silently floor the target to 0, letting every record pass).
         parts = claim_id.split("-")
-        if len(parts) >= 2:
-            qid = parts[0] + "-" + parts[1]  # e.g. "C-CMB"
-            qid = qid.replace("C-", "Q-")
+        if len(parts) >= 3:
+            qid = "Q-" + "-".join(parts[1:])  # Q-CMB-04
+        elif len(parts) >= 2:
+            qid = "Q-" + "-".join(parts[1:])
         else:
             qid = claim_id
         target = COUNT_TARGETS.get(qid, 0)
+        per_arm_min = PER_ARM_MINIMUMS.get(qid, 0)
         for rec in recs:
             outcome = rec.get("outcome")
             if outcome == "corroborated":
-                per_arm = rec.get("per_arm_counts", {})
+                per_arm = rec.get("per_arm_counts", {}) or {}
                 total = sum(v for v in per_arm.values() if isinstance(v, (int, float)))
                 if total < target:
                     errors.append(
                         f"ERROR: {claim_id} record {rec.get('run_id')} is 'corroborated' "
                         f"but total {total} < target {target}"
                     )
+                # Per-arm floor: every arm in the dict must clear it (when set).
+                if per_arm_min > 0:
+                    for arm, count in per_arm.items():
+                        if isinstance(count, (int, float)) and count < per_arm_min:
+                            errors.append(
+                                f"ERROR: {claim_id} record {rec.get('run_id')} is 'corroborated' "
+                                f"but arm {arm!r} count {count} < per-arm minimum {per_arm_min}"
+                            )
     if not errors:
         print(f"CHECK 3: no 'corroborated' without per-arm count target violations")
     return errors
