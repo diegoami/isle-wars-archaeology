@@ -46,7 +46,9 @@ status; this index carries none.
 | T40 | E020 reader and counts: read the sittings' frames by pixels | #119 | T38 |
 | T41 | E020 driver: play each game to its end, and the Scoreboard | #123 | T38 |
 | T42 | E020 watcher: capture fast enough to see single exchanges | #128 | T41 |
+| T44 | Fast capture: single computer-vs-computer exchanges from a model sitting | #142 | #141, the harness bump, T45 |
 | T45 | Model-played Session A, attacks: the human boundary cases | #143 | #141, the harness bump, #152 |
+| T47 | Model-played Session A, moves and captures: small stacks | #147 | T45, T44 if it lands, #152 |
 | T48 | Wine run records name the carve-out platform, and constraint F sees the older ones | #149 | #141 |
 | T49 | Constraint F accepts run/1 objects only where records live | #154 | T48 |
 | T50 | malpaco's design, the core rules: kept from Pro, changed or new | #192 | — |
