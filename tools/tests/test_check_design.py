@@ -245,6 +245,43 @@ class FailureTest(DesignWorld):
         self.assertTrue(problems)
         self.assertTrue(all("a code fence" in p for p in problems), problems)
 
+    # Rows Markdown renders but a column-zero reader would skip (Sol's round-1 bypass of T52): each is
+    # either read as a row (up to 3 spaces of indentation) or rejected, never skipped.
+    def test_rows_indented_up_to_three_spaces_count(self):
+        for i, cid in enumerate(self.rows):
+            self.rows[cid] = " " * (i % 3 + 1) + self.rows[cid]
+        self.write_design()
+        problems, n_claims, n_rows = check_design.check(self.root, self.design)
+        self.assertEqual((problems, n_claims, n_rows), ([], len(self.rows), len(self.rows)))
+
+    def test_an_indented_unknown_id_fails(self):
+        self.extra_rows.append(f" | {self.alien_id} | keep | [The board](#the-board) | Invented. |")
+        self.assert_one(f"{self.alien_id} is not an in-scope spec claim")
+
+    def test_an_indented_duplicate_fails(self):
+        self.extra_rows.append(f"   | {self.keep_id} | keep | [The board](#the-board) | Again. |")
+        self.assert_one(f"{self.keep_id}: 2 rows")
+
+    def test_a_malformed_id_suffix_fails(self):
+        self.extra_rows.append(f"| {self.keep_id}a | keep | [The board](#the-board) | A suffix. |")
+        self.assert_one(f"'{self.keep_id}a' is not a well-formed claim or question id")
+
+    def test_a_lower_case_id_fails(self):
+        self.extra_rows.append(f"| {self.keep_id.lower()} | keep | [The board](#the-board) | Lower case. |")
+        self.assert_one("is not a well-formed claim or question id")
+
+    def test_a_row_indented_four_spaces_fails(self):
+        self.extra_rows.append(f"    | {self.alien_id} | keep | [The board](#the-board) | Deep. |")
+        self.assert_one("is indented 4 spaces")
+
+    def test_a_row_indented_by_a_tab_fails(self):
+        self.extra_rows.append(f"\t| {self.alien_id} | keep | [The board](#the-board) | Tab. |")
+        self.assert_one("is indented 4 spaces")
+
+    def test_a_row_without_a_leading_pipe_fails(self):
+        self.extra_rows.append(f"{self.alien_id} | keep | [The board](#the-board) | No pipe. |")
+        self.assert_one("has no leading pipe")
+
     def test_open_row_named_only_outside_choices_still_fails(self):
         self.choices = f"## Choices for the owner\n\nNone yet.\n\n## Notes\n\n{self.open_id} is discussed here.\n"
         self.assert_one(f"{self.open_id} is open but not in")
@@ -426,6 +463,12 @@ class UiCleanTest(UiWorld):
         self.write_design()
         self.assertEqual(check_design.check(self.root, "ui.md"), ([], 4, 4))
 
+    def test_an_indented_question_row_still_counts(self):
+        path = self.root / "questions" / "malpaco.md"
+        path.write_text(path.read_text().replace("| Q-UI-03 |", "   | Q-UI-03 |"))
+        self.write_design()
+        self.assertEqual(check_design.check(self.root, "ui.md"), ([], 4, 4))
+
     def test_main_exits_1_without_the_ui_design(self):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
@@ -507,6 +550,17 @@ class QuestionRowElsewhereTest(DesignWorld):
         # Only ui.md answers questions: a Q-UI row in another design file names an unknown id.
         self.extra_rows.append("| Q-UI-01 | keep | [The board](#the-board) | Wrong file. |")
         self.assert_one("Q-UI-01 is not an in-scope spec claim")
+
+    def test_an_indented_question_row_in_core_rules_fails(self):
+        self.extra_rows.append("  | Q-UI-01 | keep | [The board](#the-board) | Wrong file. |")
+        self.assert_one("Q-UI-01 is not an in-scope spec claim")
+
+    def test_an_indented_spec_row_still_counts(self):
+        # The spec side reads rows with up to 3 spaces too, so an indented claim keeps its coverage.
+        path = self.root / "spec" / "board.md"
+        path.write_text(path.read_text().replace("| C-BRD-02 |", "  | C-BRD-02 |"))
+        self.write_design()
+        self.assertEqual(check_design.check(self.root), ([], 3, 3))
 
 
 class RepositoryTest(unittest.TestCase):

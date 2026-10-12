@@ -34,6 +34,8 @@ goal is a fun game, not a copy", 2026-10-11).
 `python3 tools/check_design.py` checks that each design file's decision table has exactly one row per
 claim of its own in-scope spec files, with a valid decision and a reason, and that every `open` row is
 in the owner's list; it prints one line per design file. `ui.md` also has one row per UI question of
-`questions/malpaco.md` (`Q-UI-01` to `Q-UI-22`), checked the same way. Every design file, `variants.md` included,
+`questions/malpaco.md` (`Q-UI-01` to `Q-UI-22`), checked the same way. A row may be indented up to
+three spaces, as Markdown allows; a line whose first cell looks like an id but is not a well-formed row
+(indented deeper, without a leading pipe, or with a malformed id) fails the check. Every design file, `variants.md` included,
 fails the check if it holds a code fence or an HTML comment, so nothing in it can be hidden from a
 reader; code goes in indented blocks.

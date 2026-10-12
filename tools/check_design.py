@@ -3,7 +3,7 @@
 
 Each design file in `DESIGNS` has its own in-scope `spec/` files. For each, the check reads the
 claim tables of those spec files and the design file's decision table (every line that starts with
-`| C-` or `| Q-`). A design file in `QUESTIONS` is also checked against the question ids of one
+`| C-` or `| Q-`, after at most three spaces, as Markdown allows). A design file in `QUESTIONS` is also checked against the question ids of one
 `questions/` file (`design/ui.md`: the `Q-UI-*` rows of `questions/malpaco.md`); its ids count as
 claims. A design file fails if:
 - an in-scope claim or question has no row, or more than one;
@@ -14,6 +14,9 @@ claims. A design file fails if:
   while choices are pending, or the `## The owner's decisions (<date>)` section once they are made.
   With no open row left, neither section is required;
 - a row does not have exactly four cells;
+- a line whose first table cell looks like an id (C- or Q-, any case) is not a well-formed row: indented
+  more than three spaces, without a leading pipe, or with an id that is not `C-`/`Q-`, capitals, `-`,
+  digits (for example `Q-UI-23a`). Such a line is rejected, never skipped;
 - a line opens a code fence (``` or ~~~, after any indentation), holds an HTML comment (`<!--`), or
   starts with an HTML tag (`<` then a letter, `/` or `!`, after any indentation): the check fails
   closed on inactive Markdown and raw HTML rather than parsing around them.
@@ -44,9 +47,14 @@ QUESTIONS = {"ui.md": ("questions/malpaco.md", "Q-UI")}
 BAN_ONLY = ("variants.md",)
 DECISIONS = {"keep", "change", "replace", "drop", "open"}
 NEED_WHY = {"change", "replace", "drop"}
-CLAIM_ROW = re.compile(r"^\|\s*(C-[A-Z]+-\d+)\s*\|")
+# Markdown lets a table row start with up to 3 spaces; the check reads rows there too (T52 round 1).
+CLAIM_ROW = re.compile(r"^ {0,3}\|\s*(C-[A-Z]+-\d+)\s*\|")
 # A decision row names a spec claim or a question; a question row in a file without questions is unknown.
-ROW = re.compile(r"^\|\s*((?:C|Q)-[A-Z]+-\d+)\s*\|")
+ID = re.compile(r"(?:C|Q)-[A-Z]+-\d+")
+# A first cell that looks like an id (C- or Q-, any case, anywhere in the cell) makes a line a candidate
+# row; a candidate that is not a well-formed row fails rather than being skipped.
+LOOKS_LIKE_ID = re.compile(r"(?<![A-Za-z0-9])[CcQq]-[A-Za-z0-9]")
+MAX_INDENT = 3
 CHOICES = "the owner's section ('## Choices for the owner' or '## The owner's decisions')"
 OWNER_HEADING = re.compile(r"^## (Choices for the owner|The owner's decisions\b.*)$", re.M)
 
@@ -78,7 +86,7 @@ def question_ids(root, design):
     path = root / rel
     if not path.is_file():
         return [], [f"{rel}: missing"]
-    row = re.compile(rf"^\|\s*({re.escape(prefix)}-\d+)\s*\|")
+    row = re.compile(rf"^ {{0,3}}\|\s*({re.escape(prefix)}-\d+)\s*\|")
     return [m.group(1) for line in path.read_text(encoding="utf-8").splitlines() if (m := row.match(line))], []
 
 
@@ -105,6 +113,35 @@ def inactive_markdown(text, rel):
     return problems
 
 
+def decision_rows(text, rel):
+    """The decision rows of a design file as (line number, id, cells), and one problem per candidate row
+    that is not a well-formed one. A candidate is a line with a pipe whose first cell looks like an id
+    (`LOOKS_LIKE_ID`). It is a row when it starts with a pipe after at most `MAX_INDENT` spaces (what
+    Markdown allows) and its first cell is exactly an id (`ID`); otherwise it fails closed: Markdown may
+    render it as a table row that a stricter reader would have skipped."""
+    rows, problems = [], []
+    for n, line in enumerate(text.splitlines(), 1):
+        body = line.lstrip(" \t")
+        if "|" not in body:
+            continue
+        lead = line[:len(line) - len(body)].expandtabs(4)
+        piped = body.startswith("|")
+        first = cells(body)[0] if piped else body.split("|", 1)[0].strip()
+        if not LOOKS_LIKE_ID.search(first):
+            continue
+        where = f"{rel}:{n}"
+        if len(lead) > MAX_INDENT:
+            problems.append(f"{where}: a row naming {first!r} is indented {len(lead)} spaces; a decision row "
+                            f"starts at most {MAX_INDENT} spaces in")
+        elif not piped:
+            problems.append(f"{where}: a row naming {first!r} has no leading pipe; a decision row starts with '|'")
+        elif not ID.fullmatch(first):
+            problems.append(f"{where}: {first!r} is not a well-formed claim or question id")
+        else:
+            rows.append((n, first, cells(body)))
+    return rows, problems
+
+
 def choices_section(text):
     """The text under the owner's heading, up to the next `## ` heading, or None."""
     m = OWNER_HEADING.search(text)
@@ -127,11 +164,8 @@ def check(root, design="core-rules.md"):
         return problems + [f"{rel}: missing"], len(claims), 0
     text = path.read_text(encoding="utf-8")
     problems += inactive_markdown(text, rel)
-    rows = []
-    for n, line in enumerate(text.splitlines(), 1):
-        m = ROW.match(line)
-        if m:
-            rows.append((n, m.group(1), cells(line)))
+    rows, row_problems = decision_rows(text, rel)
+    problems += row_problems
     known = set(claims)
     counts = Counter(cid for _, cid, _ in rows)
     for cid in claims:
