@@ -2,12 +2,12 @@
 
 Every design choice of [core-rules.md](core-rules.md) (T50, the owner's decisions 1 to 12),
 [variety.md](variety.md) (T51, the owner's decisions V1 to V12) and [computer.md](computer.md) (T53,
-the choices A1 to A12), with its decided option, the **canonical** variant malpaco builds first, and
-every other option kept as a named variant that a later version may offer as a setting. This file is
-a catalogue: it claims no spec rows, and the rule text lives in the design files, linked from each
-entry. Options, recommendations and reasons are in each file's owner's section. For T53 the
-canonical option is the owner's to choose; each entry names the recommended option, and the
-canonical line is filled in with the owner's decision.
+the owner's decisions A1 to A12, and the choices A13 to A17), with its decided option, the
+**canonical** variant malpaco builds first, and every other option kept as a named variant that a
+later version may offer as a setting. This file is a catalogue: it claims no spec rows, and the rule
+text lives in the design files, linked from each entry. Options, recommendations and reasons are in
+each file's owner's sections. For A13 to A17 the canonical line names the owner's choice and the
+recommended option; it gives the decided option once the owner decides.
 
 A variant name is the choice's number and the option's letter (for example **T50-11a**, **V2b**,
 **A5c**).
@@ -60,8 +60,10 @@ screen offers them together or warns.
 - **T50-6a No handicap.** Only the computer's strength sets difficulty.
 - **T50-6c Shares by difficulty level.** Fixed shares per level, as the predecessor did: the handicap
   is hidden in the level.
-- Interacts with: A1 to A3 (the computer's strength, a separate setting), A5 (a handicap the player
-  chose is never treated as a runaway at the deal).
+- Interacts with: A1 to A3 (the computer's strength, a separate setting), A5 and A16 (whether the
+  countries the share settings move at the deal count towards the leader check: on real counts, 40
+  setups have a leader at the deal, for example 11, 11 and 24 with two humans at −4; on adjusted
+  counts, none).
 
 ### T50-7 Attack rules: the gate and the forfeit
 - **Canonical (b): one rule, at least 2 armies, no comparison, no forfeit; a failed attack does not
@@ -204,7 +206,7 @@ Every T53 option keeps [computer.md](computer.md)'s requirements: the same rules
 seat's view, its own random stream, and levels that change only decisions. No variant may relax them.
 
 ### A1 The levels
-- **Canonical: the owner's choice.** Recommended (a): Easy, Normal and Hard.
+- **Canonical (a): Easy, Normal and Hard.** Decided 2026-10-12.
   [Difficulty levels](computer.md#difficulty-levels).
 - **A1a Three levels.** Easy, Normal and Hard.
 - **A1b Four levels.** Adds Expert: no mistakes, full card memory, the strongest leader check.
@@ -213,42 +215,42 @@ seat's view, its own random stream, and levels that change only decisions. No va
   share is the other difficulty control).
 
 ### A2 The default level
-- **Canonical: the owner's choice.** Recommended (b): Normal. [Difficulty levels](computer.md#difficulty-levels).
+- **Canonical (b): Normal.** Decided 2026-10-12. [Difficulty levels](computer.md#difficulty-levels).
 - **A2a Easy.** **A2b Normal.** **A2c Hard.**
 - Interacts with: A1, T50-6.
 
 ### A3 One strength for all, or per seat
-- **Canonical: the owner's choice.** Recommended (b): per computer seat, default Normal for all.
+- **Canonical (b): per computer seat, default Normal for all.** Decided 2026-10-12.
   [Difficulty levels](computer.md#difficulty-levels).
 - **A3a One setting.** Every computer seat at the same level.
 - **A3b Per seat.** A level beside each computer seat on the options screen.
 - Interacts with: T50-3 (seats and who plays them), A5 (mixed levels check a leader unequally).
 
 ### A4 Deliberate mistakes
-- **Canonical: the owner's choice.** Recommended (b). [Difficulty levels](computer.md#difficulty-levels).
+- **Canonical (b).** Decided 2026-10-12. [Difficulty levels](computer.md#difficulty-levels).
 - **A4a None.** Levels differ only in foresight, aggression, card timing and the leader check.
 - **A4b Low levels only.** Easy 25%, Normal 8% of decisions, among the three best actions; Hard none.
 - **A4c Every level.** As A4b, and Hard 3%.
 - Interacts with: A1, A9 (mistakes move win rates), A8 (mistakes draw on the seat's own stream).
 
 ### A5 The leader check
-- **Canonical: the owner's choice.** Recommended (b). [The leader check](computer.md#the-leader-check).
+- **Canonical (b).** Decided 2026-10-12. [The leader check](computer.md#the-leader-check).
 - **A5a None.** Each computer plays only for its own gain.
 - **A5b Seat-blind leader weight.** From 28 countries, or 1.5 times the next seat and at least 22,
-  scaled by level, none at Easy.
+  scaled by level, none at Easy; A16 sets the counts the ratio test reads.
 - **A5c Near a win only.** As A5b, only from 31 countries, where events stop.
 - Interacts with: T50-9 (the domination threshold sets the leader count), T50-3 (in a two-seat game
   the leader is the only opponent), A10, V3 (a Surge set near the threshold).
 
 ### A6 Battles per turn
-- **Canonical: the owner's choice.** Recommended (b): at most 10. [Quick turns](computer.md#quick-turns).
+- **Canonical (b): at most 10.** Decided 2026-10-12. [Quick turns](computer.md#quick-turns).
 - **A6a No bound.**
 - **A6b At most 10.**
 - **A6c At most 6.**
 - Interacts with: T52's presentation speed, T50-9 (a bound can delay a domination finish by a turn).
 
 ### A7 Card timing
-- **Canonical: the owner's choice.** Recommended (b). [Cards](computer.md#cards).
+- **Canonical (b).** Decided 2026-10-12. [Cards](computer.md#cards).
 - **A7a Always at once.** A set traded in every turn the hand makes one, at every level.
 - **A7b By level.** Army sets at once everywhere; at Normal and Hard the Surge waits for a big turn and
   the Raid set for a target; Easy trades all at once.
@@ -257,37 +259,81 @@ seat's view, its own random stream, and levels that change only decisions. No va
   and V11 (holding risks the Squall and the discard), A12 (the Squall's place).
 
 ### A8 The computer's random streams
-- **Canonical: the owner's choice.** Recommended (a). [Randomness](computer.md#randomness).
+- **Canonical (a).** Decided 2026-10-12. [Randomness](computer.md#randomness).
 - **A8a A stream per computer seat**, seeded from the game seed and the seat number.
 - **A8b One computer stream** for all computer seats, seeded from the game seed.
 - Interacts with: T50-2 (a saved game replays from the action list either way), A3 and A9 (with
-  A8a, changing one seat leaves the others' random choices as they were). Either needs the proposed
-  amendment to core-rules.md's Randomness section.
+  A8a, changing one seat leaves the others' random choices as they were). core-rules.md's Randomness
+  section carries A8a; A8b would need its wording changed.
 
 ### A9 Strength targets
-- **Canonical: the owner's choice.** Recommended (a). [Targets](computer.md#targets).
-- **A9a The proposed ladder.** Normal 55% and Hard 70% against three scripted seats; Hard 35%
+- **Canonical (a).** Decided 2026-10-12. [Targets](computer.md#targets).
+- **A9a The middle ladder.** Normal 55% and Hard 70% against three scripted seats; Hard 35%
   against three Normal.
 - **A9b Steeper.** 65%, 80% and 45%.
 - **A9c Gentler.** 45%, 60% and 30%.
 - Interacts with: A1, A4, A6 (a battle bound can cap Hard's strength).
 
 ### A10 Raid targets
-- **Canonical: the owner's choice.** Recommended (b). [Cards](computer.md#cards).
+- **Canonical (b).** Decided 2026-10-12. [Cards](computer.md#cards).
 - **A10a Planned attacks only.** A stack the computer attacks this turn.
 - **A10b Planned attacks or the leader.** Also the largest stack of a leader (A5) of 8 or more.
 - **A10c Largest anywhere.** The largest enemy stack on the board.
 - Interacts with: V5 (the raid's reach and size), A5, A12 (the Shield estimate).
 
 ### A11 Playing for the score
-- **Canonical: the owner's choice.** Recommended (b). [Near the end](computer.md#near-the-end).
+- **Canonical (a): no change.** Decided 2026-10-12, against the recommendation (b): the computer plays
+  as usual in the last 3 rounds of a round-limit game. [Near the end](computer.md#near-the-end).
 - **A11a No change.**
 - **A11b The last 3 rounds.** Countries valued over armies in a round-limit game.
-- Interacts with: T50-10 (only with the round limit on), V12 (no events in those rounds).
+- Interacts with: T50-10 (only with the round limit on), V12 (events pause in those rounds anyway, so
+  with A11a they are decided by ordinary play on every side).
 
 ### A12 Card memory
-- **Canonical: the owner's choice.** Recommended (b). [Difficulty levels](computer.md#difficulty-levels).
+- **Canonical (b).** Decided 2026-10-12. [Difficulty levels](computer.md#difficulty-levels).
 - **A12a Every level remembers** every public card since the last reshuffle.
 - **A12b By level.** Easy none, Normal the Squall's place, Hard every public card.
 - **A12c None.** Only what the screen shows now.
 - Interacts with: V1 (the reshuffle resets what is known), V4 (the Squall's place), A7, A10.
+
+### A13 Where the computer places
+- **Canonical: the owner's choice.** Recommended (a). [Placement](computer.md#placement).
+- **A13a Front only.**
+- **A13b Front and one behind.** Also an interior country one border from the front, when the move can
+  bring its stack forward.
+- **A13c Anywhere.** Any own country, by value.
+- Interacts with: A14, the end-of-turn move (it brings interior armies forward), V5 and V8 (raids and
+  storms hit front stacks; a reserve behind the front is safer from neither).
+
+### A14 How many countries receive armies
+- **Canonical: the owner's choice.** Recommended (a). [Placement](computer.md#placement).
+- **A14a At most 3.**
+- **A14b At most 5.**
+- **A14c No limit.**
+- Interacts with: A13, A17 (each placement is one shown step), A15 (spreading thin slows captures).
+
+### A15 The anti-stall drop
+- **Canonical: the owner's choice.** Recommended (a). [Attacks](computer.md#attacks).
+- **A15a Floor 0.40.** After 2 own turns without a capture, the threshold drops by 0.10 a turn to 0.40.
+- **A15b Floor 0.45.** The same drop, to 0.45: a mirrored border breaks only once both stacks reach 33.
+- **A15c No drop.** Stalls are left to raids, storms, the domination win and the round limit.
+- Interacts with: T50-11 (with ties re-rolled, equal stacks never reach one half), T50-9 and T50-10
+  (what ends a stalled game), V5 and V8, A1 (each level's own threshold).
+
+### A16 Starting handicaps and the leader check
+- **Canonical: the owner's choice.** Recommended (b). [The leader check](computer.md#the-leader-check).
+- **A16a Real counts.** A seat dealt extra countries by the share settings can be a leader from the
+  start.
+- **A16b Adjusted ratio test.** The ratio test reads countries minus the deal's handicap transfer; the
+  28-country test reads real countries.
+- **A16c Adjusted in both.** A seat handed extra countries is checked near the win only later.
+- Interacts with: T50-6 (the share settings), A5, T50-9 (the near-win test follows the domination
+  threshold).
+
+### A17 What a player watches of a computer turn
+- **Canonical: the owner's choice.** Recommended (a). [Quick turns](computer.md#quick-turns).
+- **A17a Grouped steps and a watch budget.** At most 3 steps a battle and a per-turn budget, then
+  fast-forward; play unchanged.
+- **A17b Batches of five.** Exchanges shown five at a time, no turn budget.
+- **A17c Budget ends attacks.** As A17a, but the computer stops attacking when the budget runs out.
+- Interacts with: A6, A14, T52's speed settings.

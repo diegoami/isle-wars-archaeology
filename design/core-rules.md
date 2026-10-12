@@ -41,7 +41,7 @@ locked option and no registration.
 | Board | generated from the game seed, a new one each game *(decision 1)* | generated |
 | Starting armies per country | 1–2, 1–3, 1–4 (range of the per-country spread, see [the deal](#the-deal)) | 1–3 |
 | Human share | −4 to +4 countries per human seat, relative to an even share *(decision 6)* | 0 |
-| Computer strength | T53 | T53 |
+| Computer strength | Easy, Normal or Hard, per computer seat; how each plays is in [computer.md](computer.md#difficulty-levels) *(computer.md, decisions A1 and A3)* | Normal for every computer seat *(computer.md, decision A2)* |
 | Event frequency | Off, Rare (1 in 21 per eligible turn change), Normal (1 in 14) or Often (1 in 8); the events are in [variety.md](variety.md#events) *(variety.md, decision V9)* | Normal |
 | Domination win | on (threshold [below](#victory)) or off *(decision 9)* | on |
 | Round limit | off, or 20 / 30 / 40 rounds *(decision 10)* | off |
@@ -50,9 +50,13 @@ locked option and no registration.
 
 ### Randomness
 
-- Every random value in a game (the board, the deal, the starting armies, the first seat, dice, card draws,
-  events, the computer's random choices) comes from **one seeded pseudo-random stream**. The seed is
-  set at setup, shown during the game, and can be typed in to replay the same board and deal.
+- Every random value of the rules (the board, the deal, the starting armies, the first seat, dice, card
+  draws, events) comes from **one seeded pseudo-random stream**, the game stream. The seed is set at
+  setup, shown during the game, and can be typed in to replay the same board and deal.
+- Each computer seat's own random choices come from a **separate stream**, seeded from the game seed and
+  the seat number; the game stream never serves them, so the computer's choices never change the game
+  stream's sequence of values. The computer's actions are recorded in the action list like a human's
+  *(computer.md, decision A8)*.
 - A draw of an integer in `[a, b]` is uniform. The engine's tests check uniformity and that the same
   seed and the same actions give the same game.
 - The engine is deterministic: a game is fully described by its settings, its seed and the list of
@@ -61,7 +65,8 @@ locked option and no registration.
 ### Stored files
 
 - **Settings**: the last options chosen, restored at the next start.
-- **Record**: wins and losses, per seat count and human-share setting, with no cap.
+- **Record**: wins and losses, per seat count, human-share setting and the computer seats' levels, with
+  no cap *(computer.md, decision A1)*.
 - **Saved game** *(decision 2)*: one slot, stored as settings + seed + action list and restored by
   replaying them, so a saved game cannot be re-rolled by reloading.
 - Every stored file carries a format version. A file that fails validation (wrong version, missing
@@ -560,7 +565,7 @@ so.
 | C-SET-07 | change | [Stored files](#stored-files): versioned, validated files; invalid files fall back to defaults | Unvalidated files let bad values into a game; a version and validation make old or edited files safe. |
 | C-RND-01 | change | [Randomness](#randomness): one seeded stream; the seed is shown and can be set | A visible seed lets players replay or share a deal and makes the engine testable; nothing about play changes. |
 | C-RND-02 | change | [Randomness](#randomness), [Stored files](#stored-files): deterministic engine; a saved game is restored by replay | Replay from seed and actions restores a game exactly, so reloading cannot re-roll luck. |
-| C-RND-03 | keep | [Randomness](#randomness): one stream, uniform integer draws | One stream keeps replay exact; malpaco requires uniform draws and tests them, where the predecessor's uniformity was not established. |
+| C-RND-03 | keep | [Randomness](#randomness): one game stream for the rules' draws, uniform integer draws; each computer seat's choices use a stream of its own from the same seed (computer.md, decision A8) | One stream keeps replay exact; malpaco requires uniform draws and tests them, where the predecessor's uniformity was not established. The computer's separate streams keep its choices from shifting the dice, and its actions are in the action list. |
 | C-PLY-01 | change | [Seats](#seats): 2 to 4 seats | Two- and three-seat games are shorter and play differently, which adds variety (decision 3). |
 | C-PLY-02 | change | [Seats](#seats): each seat human or computer; hot-seat and all-computer allowed | The lock served registration; several humans on one screen and watch-only games add ways to play (decision 3). |
 | C-PLY-03 | keep | [Seats](#seats): default one human, three computers | A full four-seat game against the computer is the standard single-player game and the base the balance is tuned for. |
@@ -600,7 +605,7 @@ so.
 | C-VIC-03 | change | [Victory](#victory): domination and the round limit end stalled games | Nothing ended a stalled board; with domination or a round limit on, every game ends. |
 | C-VIC-04 | change | [Victory](#victory): events paused in round 1 and within 4 countries of winning (31 or 42 of 46) | Kept: no luck at the very start or end. Changed: the threshold follows malpaco's win condition. Event odds are T51's. |
 | C-VIC-05 | keep | [Ownership change](#ownership-change): a seat with no countries is eliminated and skipped | Elimination is the clear consequence of losing everything; what happens to its cards is T51's and may change there. |
-| C-VIC-06 | change | [Stored files](#stored-files): the record per seat count and share setting, no cap | The cap served registration; a record grouped by setup shows progress honestly. |
+| C-VIC-06 | change | [Stored files](#stored-files): the record per seat count, share setting and computer levels, no cap | The cap served registration; a record grouped by setup shows progress honestly. |
 | C-SUR-01 | replace | [Victory](#victory): a domination win for any seat replaces the concession | An offer only a human receives is an asymmetry; one automatic threshold for all is simpler and fair (decision 9). |
 | C-SUR-02 | replace | [Victory](#victory): no offer; a human who wants to fight on turns domination off at setup | The accept-or-refuse step is replaced by a setup option, so the choice is made once and known to all (decision 9). |
 | C-SUR-03 | replace | [Leaving a game](#leaving-a-game): an explicit resign that records a loss whatever the seat holds | Leaving through a new game, charged only at 1–9 countries and not for one seat, was unclear and uneven; an explicit resign is honest. |

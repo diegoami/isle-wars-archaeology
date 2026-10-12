@@ -15,10 +15,13 @@ game three of the four seats are computers, so this file describes most of what 
 
 This is a design, not an algorithm. It states the computer's goals, the information it may use, its
 decision rules and the properties they must have; how to compute them well is malpaco's implementation
-work, and malpaco's tests measure the result ([Measuring strength](#measuring-strength)). Every
-feel-changing call is listed in [Choices for the owner](#choices-for-the-owner) as A1 to A12, with
-options and a recommendation; values marked *(A<n>)* below are the recommended options, and the owner
-decides each. Build every value behind a named constant (the names in capitals below).
+work, and malpaco's tests measure the result ([Measuring strength](#measuring-strength)). The owner
+decided the feel-changing calls A1 to A12 on 2026-10-12
+([The owner's decisions](#the-owners-decisions-2026-10-12)); values marked *(A1)* to *(A12)* below are
+those decisions. The calls A13 to A17, raised by the first review, are listed in
+[Choices for the owner](#choices-for-the-owner) with options and a recommendation; the text below
+describes their recommended options, marked *(A13)* to *(A17)*. Build every value behind a named
+constant (the names in capitals below).
 
 ## Terms
 
@@ -83,8 +86,7 @@ These are requirements on every level. A level that breaks one is a bug, whateve
   actions without re-running the computer, so a later version of the computer cannot change a saved
   game. Re-running the computer from the same state, view and stream gives the same actions; the tests
   use this.
-- This needs a change to core-rules.md, whose [Randomness](core-rules.md#randomness) section puts
-  the computer's random choices in the one game stream: the proposed amendment is in A8.
+- core-rules.md's [Randomness](core-rules.md#randomness) section states the same (decision A8).
 
 ### Levels change decisions only
 
@@ -182,16 +184,26 @@ In the cards phase it may trade one set, or skip ([variety.md, Trade-ins](variet
 The whole pool is placed on the seat's own countries (the rule). Since the board is connected, every
 seat that does not hold every country has at least one front country.
 
-- **On front countries only.** An interior stack cannot attack and guards nothing directly, so the
-  computer never places there; the end-of-turn move brings interior armies forward instead.
-- **Concentrated.** Armies go to at most `MAX_PLACEMENT_STACKS` (3) countries a turn. One battle won
-  by a large stack is worth more than three lost by small ones, and few placements are quick to watch.
-- **The attack stack first.** It picks the turn's first battle (as in [Attacks](#attacks)) and places
-  enough on its source to bring `cap(a, d)` to the level's attack threshold against that target, when
-  the pool allows; the rest goes to the next battle of its plan or to defence.
+- **On front countries only** *(A13)*. An interior stack cannot attack and guards nothing directly, so
+  the computer never places there; the end-of-turn move brings interior armies forward instead.
+- **Concentrated** *(A14)*. Armies go to at most `MAX_PLACEMENT_STACKS` (3) countries a turn. One
+  battle won by a large stack is worth more than three lost by small ones, and few placements are
+  quick to watch.
+- **Candidates are judged after the placement.** A candidate battle for placement is an own front
+  country `S` and an enemy neighbour `T`, judged with `S`'s stack plus the armies `S` would receive, up
+  to the whole pool. A front stack of 1 is therefore a candidate source once armies are placed on it.
+- **The attack stack first.** Among those candidates it picks the turn's first battle (valued as in
+  [Attacks](#attacks)) whose capture chance can reach the level's attack threshold with the pool, and
+  places on `S` the fewest armies that bring `cap(a, d)` to that threshold.
 - **Then defence.** An entrance of an island it holds, or a country whose loss would break an island
-  bonus or a near-complete island, gets armies until its exposure falls below `DEFEND_RISK` (0.5), if
-  the pool allows after the attack stack. When defence and attack compete, the level's weights decide.
+  bonus or a near-complete island, gets armies until its exposure falls below `DEFEND_RISK` (0.5), from
+  what the pool has left. When defence and attack compete, the level's weights decide.
+- **Every army is placed.** What is left after the attack stack and defence goes to the attack stack.
+  With no attack stack (no candidate reaches the threshold even with the whole pool), it goes to the
+  **fallback country**: the front country where the remaining pool gives the highest capture chance
+  against its weakest enemy neighbour (on a tie, the higher value, then the first in board order). If
+  three countries already received armies, the fallback country is chosen among those three. The
+  fallback needs only one front country, which every seat has, so the whole pool is always placed.
 
 ### Attacks
 
@@ -199,8 +211,7 @@ seat that does not hold every country has at least one front country.
   computer values capturing the neighbour by what it adds: a country (income), an island completed
   (its bonus), an enemy bonus broken, a card if this is the turn's first capture, a seat eliminated,
   a centre held (worth something only through the harvest event, and less right after a shift), the
-  leader check's weight, and in a round-limit game's last rounds the count for scoring (A11). It
-  subtracts the exposure it leaves behind.
+  leader check's weight. It subtracts the exposure it leaves behind.
 - **Starting a battle.** It starts the battle of highest value whose capture chance is at least the
   level's `ATTACK_THRESHOLD`; with none, its attacks are over for the turn.
 - **During a battle**, after each exchange, it continues while `cap(current attacker, current
@@ -212,7 +223,7 @@ seat that does not hold every country has at least one front country.
 - **The stop threshold stays below the attack threshold.** `STOP_THRESHOLD` never exceeds the
   current attack threshold minus `STOP_GAP` (0.10), so a battle the computer starts is not abandoned
   after one exchange by a stricter stop rule.
-- **No stalling.** When the seat has made no capture in its last `STALL_TURNS` (2) own turns, its
+- **No stalling** *(A15)*. When the seat has made no capture in its last `STALL_TURNS` (2) own turns, its
   attack threshold drops by `STALL_STEP` (0.10) each further turn, down to `ATTACK_FLOOR` (0.40),
   and returns to the level's value after a capture. Every level reaches the floor within 5 own turns
   without a capture (Easy: 2 turns, then 0.70 to 0.40 in 3 steps). The floor is below the chance of
@@ -223,13 +234,26 @@ seat that does not hold every country has at least one front country.
 
 ### Move-in after a capture
 
-The rule lets the attacker move in from 1 to all but one of its remaining armies. The computer
-chooses by the threats on the two countries:
+After a capture the attacking stack holds `P` armies, at least 2 (a battle stops when the attacker is
+down to 1, so a capture always comes with 2 or more), and the rule lets it move in any `m` from 1 to
+`P − 1`. A legal split therefore always exists: at least 1 stays and at least 1 moves. The computer
+chooses `m` this way:
 
-- if the source is left with no enemy neighbour, it moves all but one in;
-- otherwise it keeps on the source what its exposure needs (up to `DEFEND_RISK`) and moves the rest,
-  so the stack that goes on attacking is the larger;
-- if the captured country completes an island, its entrances weigh as in placement.
+- **Needs.** A country's need is the fewest armies that bring its exposure to `DEFEND_RISK` or below,
+  and at least 1. A country with no enemy neighbour needs 1.
+- **Priority.** The country from which its plan attacks next this turn has first claim, with what that
+  battle needs (its stack must reach the attack threshold). With no further battle planned from either,
+  the country whose loss would cost more (an island bonus completed or at stake, an entrance, a centre)
+  has first claim; on a tie, the captured country.
+- **Split.** The first-claim country gets its need, or as much as the rule allows when its need is
+  larger (`P − 1` if it is the captured country, `P − 1` kept if it is the source). The other country
+  gets the rest, which is always at least the 1 the rule requires. So when both needs cannot be met,
+  the first-claim country is served first and the other is left with 1.
+- **Examples.** A source left with no enemy neighbour needs 1, so all but one move in. A source of 3
+  that captures a 1-army country after losing one exchange has `P = 2`: the only legal split is 1 and
+  1, and the computer makes it, even if a 10-army enemy borders the source. That source is then likely
+  lost; the battle's value already counted the exposure it would leave behind
+  ([Attacks](#attacks)), so a level that weighs exposure heavily does not start such a battle.
 
 ### The move
 
@@ -253,36 +277,103 @@ A seat drawing into a full hand discards one of its five first, without seeing t
 - it keeps a Shield while some opponent could still assemble a Raid set (an opponent holds 3 or more
   cards and not all four Raids have been seen on the discard pile since the last reshuffle, as far as
   its card memory reaches, A12);
-- among the rest, it discards a card of the kind with the most copies already seen on the discard
-  pile (as far as its card memory reaches), which is the kind least likely to complete.
+- among the rest, it discards a card of the kind with the fewest **unseen copies**: the kind's copies
+  in the deck ([variety.md, The kinds](variety.md#the-kinds): 11 Anchors, 7 Compasses, 4 each of
+  Lanterns, Surges and Raids) minus those in its own hand and those on the discard pile since the last
+  reshuffle, as far as its card memory reaches (at Easy, the deck's copies minus its own). This is a
+  heuristic, not the exact chance of completing a set: the unseen copies may sit in other hands, and
+  the draw order is unknown.
 
 ### The leader check
 
-*(A5.)* A seat is a **leader** when it holds at least `LEADER_COUNT` (28) countries, seven short of
-the domination win, or at least `LEADER_RATIO` (1.5) times the countries of the next largest seat and
-at least `LEADER_MIN` (22). Each computer seat adds `W_LEADER` (by level) to the value of battles and
-raids against a leader. The test reads only counts: a human leader and a computer leader are treated
-alike, and a computer seat that is itself the leader plays for the win. The view does not say which
-seats are human, so the check cannot single one out.
+*(A5, A16.)* A seat is a **leader** when either holds:
 
-No seat is a leader at the deal, whatever the human share setting: the largest starting counts, at
-+4, are 16 against 10 with four seats, 20 against 13 with three and 27 against 19 with two
-([core-rules.md, The deal](core-rules.md#the-deal)). All are below 28; the two that reach 1.5 times the
-next seat (16 and 20) are below 22, and 27 is 1.42 times 19. A handicap the player chose is not
-treated as a runaway.
+- it holds at least `LEADER_COUNT` (28) countries, seven short of the domination win;
+- its **adjusted count** is at least `LEADER_MIN` (22) and at least `LEADER_RATIO` (1.5) times the
+  next largest adjusted count. A seat's adjusted count is its countries minus its **handicap
+  transfer**, the countries the human share settings moved to it at the deal (negative if they moved
+  countries away from it). The transfers follow from the options and the deal, which every seat sees.
+
+Each computer seat adds `W_LEADER` (by level) to the value of battles and raids against a leader. The
+test is one formula for every seat: a human leader and a computer leader are treated alike, and a
+computer seat that is itself the leader plays for the win. The view does not say which seats are
+human, so the check cannot single one out. The adjusted count keeps a handicap the players chose from
+counting as a runaway; the near-win test reads real countries, because a seat at 28 is seven
+captures from winning however it got there.
+
+**At the deal**, over every supported setup (2 to 4 seats, at least one human and one computer seat,
+every human's share from −4 to +4; with no computer seat the settings are ignored, and with no human
+every share is even), as an indented block with its output:
+
+    from itertools import product
+
+    def deal(kinds, settings, C=46):
+        """core-rules.md, The deal, step 2: even shares, the remainder to the last seats, then each human's
+        share setting in turn order. Returns each seat's count and its handicap transfer."""
+        n = len(kinds); shares = [C // n + (i >= n - C % n) for i in range(n)]; even = list(shares)
+        comps = [i for i, k in enumerate(kinds) if k == "C"]
+        for h, s in zip([i for i, k in enumerate(kinds) if k == "H"], settings):
+            for _ in range(abs(s)):
+                if s > 0:
+                    c = max(comps, key=lambda i: (shares[i], i))      # largest computer share, later on a tie
+                    if shares[c] - 1 >= 3: shares[c] -= 1; shares[h] += 1
+                else:
+                    c = min(comps, key=lambda i: (shares[i], i))      # smallest computer share, earlier on a tie
+                    shares[c] += 1; shares[h] -= 1
+        return shares, [s - e for s, e in zip(shares, even)]
+
+    def leaders(count, ratio_basis):                # LEADER_COUNT 28 on real counts; LEADER_RATIO 1.5, LEADER_MIN 22
+        return [i for i, c in enumerate(count) if c >= 28 or
+                (ratio_basis[i] >= 22 and ratio_basis[i] >= 1.5 * max(x for j, x in enumerate(ratio_basis) if j != i))]
+
+    setups = real = adjusted = checked = 0; largest = 0; example = None
+    for n in (2, 3, 4):
+        for kinds in product("HC", repeat=n):
+            if "H" not in kinds or "C" not in kinds: continue
+            for settings in product(range(-4, 5), repeat=kinds.count("H")):
+                setups += 1
+                count, transfer = deal(kinds, settings); largest = max(largest, max(count))
+                L = leaders(count, count)
+                if L:
+                    real += 1; example = example or ("".join(kinds), settings, count)
+                    checked += any(kinds[j] == "C" and j not in L for j in range(n))   # another computer seat to apply it
+                adjusted += bool(leaders(count, [c - t for c, t in zip(count, transfer)]))
+    print("setups with a human and a computer seat (seat count, kinds in turn order, share settings):", setups)
+    print("largest starting count:", largest)
+    print("setups with a leader at the deal, real counts:", real, "; with another computer seat to apply the check:", checked)
+    print("  first found:", example)
+    print("setups with a leader at the deal, ratio test on adjusted counts:", adjusted)
+
+Its output:
+
+    setups with a human and a computer seat (seat count, kinds in turn order, share settings): 3726
+    largest starting count: 27
+    setups with a leader at the deal, real counts: 40 ; with another computer seat to apply the check: 0
+      first found: ('HHC', (-4, -4), [11, 11, 24])
+    setups with a leader at the deal, ratio test on adjusted counts: 0
+
+- No seat starts at 28 or more (the largest start is 27, with two seats and the human at −4).
+- On real counts the ratio test would name a leader at the deal in 40 setups, for example three seats
+  dealt 15, 15 and 16 with the two humans each at −4, giving 11, 11 and 24. In every one of them the
+  leader is the only computer seat, so no computer seat would apply the check at the deal, but the
+  lead the humans handed it would count against it for the rest of the game.
+- On adjusted counts no setup has a leader at the deal: adjusted counts are the even shares, at most
+  12 against 11.
 
 ### Near the end
 
 - **Domination in reach.** When the seat's foresight shows battles this turn that can reach 35
   countries, it plays for them first.
-- **A round-limit game's last rounds** *(A11)*. In the last `SCORE_ROUNDS` (3) rounds of a round-limit
-  game, the computer values a country more than armies, since the count decides the result, and moves
-  in 1 army after a capture where its exposure allows.
+- **A round-limit game's last rounds** *(A11)*. The computer plays as usual: it does not switch to
+  playing for the count in the last rounds. Events pause in a round-limit game's last 3 rounds
+  ([variety.md, When an event is drawn](variety.md#when-an-event-is-drawn), V12), so those rounds are
+  decided by ordinary play on every side.
 
 ## Difficulty levels
 
 *(A1, A2, A3.)* Three levels, set for each computer seat on the options screen; the default is
-Normal for every computer seat. The proposed values:
+Normal for every computer seat. The constants below are starting values, tuned until each level meets
+its targets (A9):
 
 | What changes | Easy | Normal | Hard |
 | --- | --- | --- | --- |
@@ -302,7 +393,7 @@ Normal for every computer seat. The proposed values:
   big turn and raids what it then attacks. Hard plans whole turns, guards entrances with no armies
   wasted, keeps its hand away from the Squall and turns on a runaway seat early.
 - **Options row.** core-rules.md's [Options](core-rules.md#options) row "Computer strength" reads
-  Easy, Normal or Hard per computer seat, default Normal; the proposed amendment is in A1 and A3.
+  Easy, Normal or Hard per computer seat, default Normal (decisions A1 to A3).
 
 ## Making it fun, argued
 
@@ -353,7 +444,7 @@ Code is shown as an indented block, with its output after it.
     for u, s in ((30, 4), (30, 2), (20, 1)):
         print(f"  u={u}, s={s}:", {h: f"{100 * p_shield(u, s, h):.0f}%" for h in (1, 3, 5)})
 
-    print("95% half-width of a win rate over n games (points):")
+    print("95% half-width of a win rate over n independent seeds (points; it bounds a seed-clustered interval):")
     for n in (200, 500, 2000):
         print(f"  n={n}:", {p: round(196 * sqrt(p * (1 - p) / n), 1) for p in (0.25, 0.4, 0.5)})
 
@@ -376,7 +467,7 @@ Its output:
       u=30, s=4: {1: '13%', 3: '36%', 5: '54%'}
       u=30, s=2: {1: '7%', 3: '19%', 5: '31%'}
       u=20, s=1: {1: '5%', 3: '15%', 5: '25%'}
-    95% half-width of a win rate over n games (points):
+    95% half-width of a win rate over n independent seeds (points; it bounds a seed-clustered interval):
       n=200: {0.25: 6.0, 0.4: 6.8, 0.5: 6.9}
       n=500: {0.25: 3.8, 0.4: 4.3, 0.5: 4.4}
       n=2000: {0.25: 1.9, 0.4: 2.1, 0.5: 2.2}
@@ -442,21 +533,36 @@ below a chance of 0.25).
 
 ### Quick turns
 
-A requirement for T52's presentation and for the computer itself. A computer turn holds at most:
+*(A6, A17.)* A requirement on the computer and on T52's presentation: it bounds what a player must
+watch in a computer turn, and changes no combat rule.
 
-| Action | At most |
-| --- | --- |
-| a trade-in (with a raid target if a Raid set) | 1 |
-| placements (countries that receive armies) | 3 |
-| battles, each with its move-in after a capture | 10 |
-| the move | 1 |
-| a discard before the end-of-turn draw | 1 |
+- **Decisions.** A computer turn makes at most:
 
+  | Action | At most |
+  | --- | --- |
+  | a trade-in (with a raid target if a Raid set) | 1 |
+  | placements (countries that receive armies) | 3 |
+  | battles, each with its move-in after a capture | 10 |
+  | the move | 1 |
+  | a discard before the end-of-turn draw | 1 |
+
+- **What is shown.** Each computer battle is shown in at most `BATTLE_STEPS` (3) steps, whatever its
+  number of exchanges: its start, the stacks part-way, and its end with the move-in. The engine still
+  resolves every exchange one at a time, and the computer still decides after each one whether to go
+  on ([Attacks](#attacks)); only the showing is grouped, as a human's own "continue until captured,
+  stopped, or down to N" control groups a human's exchanges
+  ([core-rules.md, Combat](core-rules.md#combat)). A computer turn is therefore shown in at most
+  1 + 3 + 10 × 3 + 1 + 1 = **36 steps**, however large the stacks: a battle of 1000 against 100 still
+  takes 3.
+- **The watch budget.** A computer turn has a budget of `TURN_WATCH` seconds at normal speed (15
+  proposed; T52 tunes it with its speed settings). When the budget runs out, the rest of the turn is
+  shown as one fast-forward step to the turn's end state, with one log line per remaining action.
+  Running out changes nothing in play: the remaining actions are the ones the computer's rules give,
+  decided as they would have been; only their showing is shortened.
 - The predecessor's computer, in the owner's four recorded games, made 235 attacks in 131 turns
   (about 1.8 a turn), at most 8 in a turn, and none in 16 turns (counts from `runs/E018`). A bound
-  of 10 is above every turn recorded there. malpaco's computer may want more battles than the
+  of 10 battles is above every turn recorded there. malpaco's computer may want more battles than the
   predecessor's, which drew its rounds; a turn that reaches the bound stops attacking and moves.
-- The exchanges inside a battle are not bounded by the policy; T52 shows them at its chosen pace.
 - Each decision takes a bounded time: the engine's tests fix a time budget per decision and fail if
   a decision over many seeds exceeds it.
 
@@ -488,13 +594,19 @@ It draws on no random stream, so its games differ only through the game seed.
   duels of each level against the level below.
 - Every seed is played once per seat rotation, so each seat plays from every place in the turn order.
   Settings: domination on, no round limit, events Normal, human share 0, 46-country generated boards.
-- **Sample sizes**: 2000 games per matchup for the release suite, giving a 95% interval of at most
-  about ±2.2 points; 200 games in CI as a smoke test (about ±7 points), with targets loosened by that
-  margin.
+- **Seeds and games.** A matchup is played on `S` independent seeds, each once per seat rotation: a
+  4-seat matchup is `4S` games and a duel `2S`. The games of one seed share a board and a deal, so they
+  are not independent. A win rate's 95% interval is computed with the seed as the cluster: each seed's
+  mean result over its rotations is one sample (or a bootstrap that resamples seeds). A seed's mean
+  lies between 0 and 1 with mean `p`, so its variance is at most `p(1 − p)`, and the model's half-width
+  for `S` seeds bounds the clustered interval whatever the correlation between rotations.
+- **Sample sizes**: 2000 seeds per matchup for the release suite (8000 games in a 4-seat matchup), a
+  95% interval of at most ±2.2 points; 200 seeds in CI as a smoke test (at most ±6.9 points), with
+  targets loosened by that margin.
 
 ### Targets
 
-*(A9.)* In a 4-seat game an even chance is 25%. The proposed targets:
+*(A9.)* In a 4-seat game an even chance is 25%. The targets:
 
 | Matchup | Target |
 | --- | --- |
@@ -519,8 +631,8 @@ It draws on no random stream, so its games differ only through the game seed.
 - At most 2% of those games last beyond 60 rounds with domination on and no round limit.
 - Any game of computers that reaches 150 rounds fails the test: it is a stall the policy must not
   allow.
-- Turn length: the largest number of actions in a computer turn stays within the bound of
-  [Quick turns](#quick-turns), and the mean is reported.
+- Turn length: the largest number of decisions and of shown steps in a computer turn stays within
+  the bounds of [Quick turns](#quick-turns), and the means are reported.
 
 ### Behaviour tests
 
@@ -533,12 +645,16 @@ It draws on no random stream, so its games differ only through the game seed.
   sequence of values unchanged; re-running a turn from the same state gives the same actions; a saved
   game replays identically.
 - **Readable rules**: a seat holding an army set trades a set that turn, at every level; no placement
-  on an interior country; at most 3 placements, 10 battles and 1 move a turn.
+  on an interior country; the whole pool placed, on at most 3 countries; at most 10 battles and 1 move
+  a turn; every move-in legal, including `P = 2`.
 
-## Choices for the owner
+## The owner's decisions (2026-10-12)
 
-Each entry names what it decides, the options, a recommendation and its reason. No row of the
-decision table is `open`; these are the feel-changing calls inside the rows' new rules.
+The owner decided A1 to A12 on 2026-10-12. Each entry keeps the claims it touches, the options
+offered, the recommendation and its reason, and adds the decision. Eleven follow the recommendation;
+**A11 goes against it**. The rules above describe the decided options; [variants.md](variants.md)
+keeps the others. No row of the decision table is `open`; these are the feel-changing calls inside
+the rows' new rules.
 
 1. **A1. The levels** (C-AI-08).
    - (a) three levels, Easy, Normal and Hard, as in [Difficulty levels](#difficulty-levels); (b) four,
@@ -547,36 +663,42 @@ decision table is `open`; these are the feel-changing calls inside the rows' new
    - Recommendation (a): three levels can each be made distinct and tested to separate (A9); a fourth
      is easy to add once three are tuned, and a slider would have neighbouring values a player cannot
      tell apart.
-   - **Proposed amendments to core-rules.md**: the [Options](core-rules.md#options) row "Computer
-     strength" reads the chosen levels, per computer seat (A3), default as A2; the record in
-     [Stored files](core-rules.md#stored-files) is kept per seat count, human share and computer
-     strength.
+   - **Decided: (a).**
+   - **Amendments to core-rules.md**, applied there: the [Options](core-rules.md#options) row
+     "Computer strength" reads Easy, Normal or Hard per computer seat, default Normal (A2, A3); the
+     record in [Stored files](core-rules.md#stored-files) is kept per seat count, human share and the
+     computer seats' levels.
 2. **A2. The default level** (C-AI-08).
    - (a) Easy; (b) Normal; (c) Hard.
    - Recommendation (b): Normal is the game the balance is tuned on; a new player can step down to
      Easy, and the human share setting gives a further handicap.
+   - **Decided: (b).**
 3. **A3. One strength for all, or per seat** (C-AI-08).
    - (a) one setting for every computer seat; (b) a setting per computer seat, default Normal for all.
    - Recommendation (b): the options screen already sets each seat human or computer, so a level beside
      each is one control more, and mixed tables (two Easy, one Hard) are variety for free.
+   - **Decided: (b).**
 4. **A4. Deliberate mistakes** (C-AI-08).
    - (a) none: levels differ only in foresight, aggression, card timing and the leader check; (b)
      Easy 25% and Normal 8% of decisions, among the three best actions, Hard none; (c) as (b), and
      Hard 3%.
    - Recommendation (b): small, plausible mistakes make a low level feel human rather than broken, and
      a top level without them gives a practised player a fixed target.
+   - **Decided: (b).**
 5. **A5. The leader check** (C-AI-03, C-AI-04).
    - (a) none: each computer plays only for its own gain; (b) a seat-blind leader weight, from 28
-     countries or 1.5 times the next seat, scaled by level (none at Easy); (c) as (b), only within 4
-     countries of a win (31 or more), where events already stop.
+     countries or 1.5 times the next seat and at least 22, scaled by level (none at Easy); (c) as (b),
+     only within 4 countries of a win (31 or more), where events already stop.
    - Recommendation (b): a runaway is answered while it can still be stopped, and because the view
      carries no seat kinds the check cannot single out the human. (c) acts when the game is nearly
      decided.
+   - **Decided: (b).** How the ratio test treats the deal's handicap transfers is A16, below.
 6. **A6. Battles per turn** (C-AI-03).
    - (a) no bound; (b) at most 10; (c) at most 6.
    - Recommendation (b): above every turn recorded of the predecessor's computer (at most 8), and it
      keeps a turn watchable; how often malpaco's computer reaches it is for the tests to report. (c)
      would cut chains of captures more often.
+   - **Decided: (b).**
 7. **A7. Card timing** (C-AI-06).
    - (a) a set traded in every turn the hand makes one, at every level; (b) army sets at once at every
      level; the Surge waits for a big turn and the Raid set for a target at Normal and Hard; Easy
@@ -584,17 +706,19 @@ decision table is `open`; these are the feel-changing calls inside the rows' new
      close to a win.
    - Recommendation (b): the timing a player can read (army sets now, Surge later, raid before an
      attack) and a clear difference between levels. (c) adds a rule few players would notice.
+   - **Decided: (b).**
 8. **A8. The computer's random streams** (C-AI-02, C-AI-03).
    - (a) a stream per computer seat, seeded from the game seed and the seat number; (b) one stream for
      all computer seats, seeded from the game seed.
    - Recommendation (a): changing one seat's level or policy then leaves every other seat's random
      choices as they were, which keeps the strength tests' comparisons clean. Both keep the game stream
      (dice, cards, events) apart from the computer's choices, as [Randomness](#randomness) requires.
-   - **Proposed amendment to core-rules.md**: in [Randomness](core-rules.md#randomness), the first
-     item's list drops "the computer's random choices", and a new item reads: "Each computer seat's own
-     random choices come from a separate stream seeded from the game seed and the seat number
-     (computer.md, A8); the game stream never serves them. The computer's actions are recorded in the
-     action list like a human's."
+   - **Decided: (a).**
+   - **Amendment to core-rules.md**, applied there: in [Randomness](core-rules.md#randomness), the
+     first item's list no longer names the computer's random choices, and a new item says that each
+     computer seat's own random choices come from a separate stream seeded from the game seed and the
+     seat number, that the game stream never serves them, and that the computer's actions are recorded
+     in the action list like a human's.
 9. **A9. Strength targets** (C-AI-09).
    - (a) the targets in [Targets](#targets): Normal at least 55% and Hard at least 70% against three
      scripted seats, Hard at least 35% against three Normal; (b) a steeper ladder: 65%, 80% and 45%;
@@ -602,17 +726,21 @@ decision table is `open`; these are the feel-changing calls inside the rows' new
    - Recommendation (a): each level clearly better than the one below without Hard becoming a wall; the
      steeper ladder may need foresight the time budget does not allow, and the gentler one may leave
      levels a player cannot tell apart.
+   - **Decided: (a).**
 10. **A10. Raid targets** (C-AI-06).
     - (a) only a stack the computer attacks this turn; (b) that, or the largest stack of a leader (A5)
       of at least 8 armies; (c) the largest enemy stack anywhere.
     - Recommendation (b): the combination is readable, and the leader target is the raid's comeback
       use; (c) spends raids on stacks that matter little to the raider and hits whoever is biggest,
       even far away.
+    - **Decided: (b).**
 11. **A11. Playing for the score** (C-AI-03).
     - (a) no change near the end of a round-limit game; (b) in the last 3 rounds, value countries over
       armies.
     - Recommendation (b): the round limit counts countries, so a computer that ignores it would throw
       games a human can see are winnable.
+    - **Decided: (a), against the recommendation.** The computer plays as usual in the last 3 rounds.
+      Events pause in those rounds anyway (V12), so they are decided by ordinary play.
 12. **A12. Card memory** (C-AI-06).
     - (a) every level remembers every public card since the last reshuffle; (b) Easy none, Normal the
       Squall's place only, Hard every public card; (c) no level remembers more than the screen shows
@@ -620,26 +748,70 @@ decision table is `open`; these are the feel-changing calls inside the rows' new
     - Recommendation (b): what a human can see and remember is fair at every level, and how much is
       remembered is a natural difference between levels; (c) would make Hard forget what any careful
       player tracks.
+    - **Decided: (b).**
 
-The three proposed amendments to core-rules.md (A1's options row and record, A3's per-seat setting
-in the same row, and A8's randomness item) are for the main session to apply on `main` once the owner
-decides.
+The amendments to core-rules.md that A1, A3 and A8 call for are applied there, citing these
+decisions.
+
+## Choices for the owner
+
+The first review raised five more feel-changing calls. Each entry names the claims it touches, the
+options, a recommendation and its reason; the text above describes the recommended option. None of
+them reopens a row of the decision table: no option brings back the predecessor's rule, so each row's
+decision stands whichever option is chosen.
+
+13. **A13. Where the computer places** (C-AI-01).
+    - (a) front countries only; (b) front countries, and an interior country one border from the front
+      when its stack would reach the front by the end-of-turn move; (c) any own country, by value.
+    - Recommendation (a): an interior army cannot attack or defend this turn, and the move already
+      brings interior armies forward; (b) and (c) add stacks a player must track for little gain.
+14. **A14. How many countries receive armies** (C-AI-01).
+    - (a) at most 3 a turn; (b) at most 5, as many as the predecessor's top-five split; (c) no limit,
+      by value.
+    - Recommendation (a): concentration wins battles under one-die combat, and three placements are
+      quick to watch; (c) lets a cautious level spread thin, which stalls.
+15. **A15. The anti-stall drop** (C-AI-03, C-AI-04).
+    - (a) after 2 own turns without a capture, the attack threshold drops by 0.10 a turn to a floor of
+      0.40; (b) the same drop to a floor of 0.45; (c) no drop: each level keeps its threshold, and
+      stalls are left to raids, storms, the domination win and the round limit.
+    - Recommendation (a): the model shows a threshold of 0.5 or more never breaks a mirrored border,
+      and 0.40 breaks it in 2 turns at an even trade of armies; (b) breaks it only once both stacks
+      reach 33 (6 turns in the model's mirrored border; equal stacks of 20 capture 43.6%), and (c) can stall a game of
+      computers until the round cap.
+16. **A16. Starting handicaps and the leader check** (C-AI-03, C-AI-04).
+    - (a) real counts in both tests: a seat dealt extra countries by the humans' share settings can
+      count as a leader from the start; (b) the ratio test on adjusted counts (countries minus the
+      deal's handicap transfer), the near-win test on real counts; (c) adjusted counts in both tests.
+    - Recommendation (b): a handicap the players chose is not treated as a runaway (on real counts, 40
+      setups have a leader at the deal, as in [The leader check](#the-leader-check)), while a seat at
+      28 real countries is checked however it got there. (c) would let a seat handed 8 or more
+      countries (up to 12) reach the domination win at 35 before its adjusted count reached 28. All three are one formula
+      for every seat.
+17. **A17. What a player watches of a computer turn** (C-AI-03).
+    - (a) each battle shown in at most 3 steps, and a watch budget per turn (15 seconds at normal speed
+      proposed) after which the rest of the turn is fast-forwarded, play unchanged; (b) exchanges
+      shown in batches of five, as the predecessor paced them, with no turn budget; (c) as (a), but
+      the computer stops attacking when the budget runs out.
+    - Recommendation (a): at most 36 steps a turn whatever the stacks, and the budget shortens only the
+      showing; (b) leaves a battle of large stacks long to watch, and (c) lets the presentation change
+      the play.
 
 ## Decisions, claim by claim
 
 One row per in-scope spec claim (9). `keep` serves fun or balance as it is; `change` alters it;
-`replace` swaps in a different rule; `drop` removes it; `open` would wait for the owner (no row is
-`open`: the owner's calls are the choices above, inside each row's new rule). A claim that is not
+`replace` swaps in a different rule; `drop` removes it; `open` would wait for the owner. No row is
+`open`: A1 to A12 are decided, and none of A13 to A17 can bring back the predecessor's rule, so each
+row's decision stands whichever option the owner picks. A claim that is not
 `supported` or `corroborated` still gets a row; its decision is a design choice and the row says so.
 
 | Claim | Decision | malpaco's rule | Why |
 | --- | --- | --- | --- |
-| C-AI-01 | replace | [Placement](#placement): the whole pool on at most 3 front countries, the attack stack first, then the entrances of held islands; no ranks, no fixed scores, no drawn splits, no cap | Ranks and drawn splits spread armies by formula; placing for the turn's plan concentrates force and defends bonuses in a way a player can read. The trade-in's armies join the pool by the shared rule (variety.md). |
+| C-AI-01 | replace | [Placement](#placement): the whole pool on at most 3 front countries (A13, A14), the attack stack first, then the entrances of held islands, the rest by a fallback that always places it; no ranks, no fixed scores, no drawn splits, no cap | Ranks and drawn splits spread armies by formula; placing for the turn's plan concentrates force and defends bonuses in a way a player can read. The trade-in's armies join the pool by the shared rule (variety.md). |
 | C-AI-02 | replace | [Placement](#placement), [Attacks](#attacks): no one-army seeds and no weighted uniform pick; the computer picks the battle worth most, with ties and planned mistakes from its own stream (A8) | Seeds and weighted draws made the computer's play a lottery over a fixed rank table; a value-based pick on the generated board makes it purposeful, and its own stream keeps the dice apart. |
-| C-AI-03 | drop | [Attacks](#attacks): no drawn attack rounds, no skip draw, no extra rounds once the humans are out; the computer attacks while a battle meets its threshold, up to 10 battles (A6) | Drawn pacing made the computer attack or stop by lot, and the extra rounds served only a game the humans had left; T50 ends that game, and a threshold with an anti-stall floor keeps the computer from stalling. |
-| C-AI-04 | replace | [Attacks](#attacks): T50's one rule (2 armies, no comparison); the computer's caution is a capture-chance threshold by level, a stop threshold inside the battle, and the leader check (A5) | Drawn floors and margins were rules only the computer followed and the player could not see; a threshold on the exact capture chance gives the same caution as a decision, readable as "it waits until it is bigger". |
+| C-AI-03 | drop | [Attacks](#attacks): no drawn attack rounds, no skip draw, no extra rounds once the humans are out; the computer attacks while a battle meets its threshold, with an anti-stall drop (A15), up to 10 battles shown in at most 36 steps (A6, A17) | Drawn pacing made the computer attack or stop by lot, and the extra rounds served only a game the humans had left; T50 ends that game, and a threshold with an anti-stall floor keeps the computer from stalling. |
+| C-AI-04 | replace | [Attacks](#attacks): T50's one rule (2 armies, no comparison); the computer's caution is a capture-chance threshold by level, a stop threshold inside the battle, and the leader check (A5, A16) | Drawn floors and margins were rules only the computer followed and the player could not see; a threshold on the exact capture chance gives the same caution as a decision, readable as "it waits until it is bigger". |
 | C-AI-05 | replace | [The move](#the-move): one move, interior armies forward or surplus to a threatened neighbour, all but one from an interior source; any country may be the source | A table over fixed countries cannot work on a generated board, and the centre veto and corridor walks were tied to one map; a move chosen by purpose works on every board. |
 | C-AI-06 | change | [Cards](#cards), [Discards](#discards): kept, the shared income, dice and card rules; changed, army sets traded at once, the Surge held for a big turn, raids on a planned attack or the leader, discards by prospects (A7, A10, A12) | Kept: the computer earns and trades cards exactly as a human. Changed: the fixed trade and discard orders and the separate batching threshold go; every seat may skip a trade, and the computer's timing is its policy. |
-| C-AI-07 | replace | [Move-in after a capture](#move-in-after-a-capture): all but one when the source is left interior, else what the source's exposure needs stays and the rest moves in | Fixed branches with drawn gates were a hidden recipe; reading the threats on both countries is the same decision a careful human makes. |
+| C-AI-07 | replace | [Move-in after a capture](#move-in-after-a-capture): each country's need from its exposure; the country the plan attacks from next, else the one whose loss costs more, is served first; the other keeps or gets at least 1, so a legal split always exists | Fixed branches with drawn gates were a hidden recipe; reading the threats on both countries is the same decision a careful human makes. |
 | C-AI-08 | replace | [Difficulty levels](#difficulty-levels): Easy, Normal and Hard change foresight, aggression, card timing, mistakes, the leader check and card memory; the human share is a separate option (A1 to A4) | A level that changed only the human's dealt share hid the handicap and left the computer the same; malpaco's levels make the computer play differently, and core-rules.md's decision 6 already made the share a setting of its own. |
 | C-AI-09 | keep | [Measuring strength](#measuring-strength): nothing about the predecessor's playing strength is carried; malpaco measures its own computer against a scripted baseline and between levels, over many seeds (A9) | The claim is `unknown`, so this row is a design choice: a design does not rest on how well the predecessor played. Keeping it unknown, and testing malpaco's own levels, is the honest course. |
