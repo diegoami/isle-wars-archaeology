@@ -45,6 +45,9 @@ if [ -z "${OPENROUTER_API_KEY:-}" ]; then
   echo "  Jev is off: jev.mjs exits 3, so decide every item yourself."
 fi
 for n in "${notes[@]}"; do echo "  Setup: $n"; done
-echo "Who does what (CLAUDE.md rule 6): the main session or a Claude agent implements; OpenCode reviews, reviewer.default in harness.json unless the user names another."
+case "${ANTHROPIC_BASE_URL:-}" in "") fam=claude ;; *anthropic.com*) fam=claude ;; *z.ai*|*bigmodel*) fam=glm ;; *) fam="${HARNESS_SESSION_FAMILY:-unknown (set HARNESS_SESSION_FAMILY)}" ;; esac
+echo "- This session's family: ${HARNESS_SESSION_FAMILY:-$fam} (from the Anthropic environment; the implementer's family, never the reviewer's)"
+echo "- Defaults (harness.json, switched with /switch-model): implementer $(node -p "require('./harness.json').implementer.default" 2>/dev/null || echo ?), reviewer $(node -p "require('./harness.json').reviewer.default" 2>/dev/null || echo ?), blocked $(node -p "require('./harness.json').blocked.join(', ')" 2>/dev/null || echo ?)"
+echo "Who does what (CLAUDE.md rule 6): the main session asks before each implementation (itself, or the implementer agent) and each review (an OpenCode model), proposing these defaults."
 echo "See docs/environment.md for what each key needs and which hosts the network policy must allow."
 exit 0

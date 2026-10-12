@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Hands one pull request to OpenCode for a review, and posts the result as one PR comment.
 //
-//   node tools/harness/review.mjs --pr 42 --brief brief.md [--reviewer NAME [--family F] [--variant V] [--alibaba]]
+//   node tools/harness/review.mjs --pr 42 --brief brief.md [--reviewer NAME [--family F] [--variant V]]
 //     [--exclude NAME,...] [--issue 12 --apply-label] [--done-when K] [--dry-run] [--env KEY=VALUE]...
 //   node tools/harness/review.mjs --self-test   (the reader's samples and the family checks; no model is called)
 //
@@ -9,8 +9,10 @@
 // --reviewer is a harness.json key or an OpenCode id provider/model; without it, harness.json's
 // reviewer.default runs. The reviewer is never the implementer's model family: --exclude names the
 // implementer (a harness.json key, an id or a family), else a model:<name> label on the PR or
-// --issue, else Claude, since the main session or a Claude agent implements by default. Runs use
-// the scripts' own OpenCode data directory. DeepSeek is refused; Alibaba runs only with --alibaba.
+// --issue, else the session's own family: the main session or an agent it spawned implements by
+// default, and lib/common.mjs sessionFamily reads that family from ANTHROPIC_BASE_URL (or
+// HARNESS_SESSION_FAMILY). Runs use the scripts' own OpenCode data directory. harness.json's
+// blocked list is refused (switch-model.mjs --block/--unblock).
 //
 // The brief's first line is the review header the model prints, e.g. "T07 review (Luna)". The
 // model never writes to GitHub (the agent file denies it); this script is the only writer.
@@ -52,7 +54,7 @@ import {
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test', 'alibaba'], repeatable: ['env'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test'], repeatable: ['env'] });
 if (a['self-test']) {
   const failures = selfTest();
   for (const f of failures) console.error(`FAIL ${f}`);
@@ -84,12 +86,12 @@ const implementedBy = a.exclude ? a.exclude.split(',').map((s) => s.trim()).filt
     .filter((l) => l.startsWith('model:')).map((l) => l.slice(6));
 // The reviewer: the one named, else harness.json's reviewer.default (CLAUDE.md rule 6).
 if (!a.reviewer && !rev.default) die(2, 'No reviewer: pass --reviewer, or set reviewer.default in harness.json.');
-const reviewer = namedModel(config, a.reviewer ?? rev.default, { family: a.family, variant: a.variant, alibaba: a.alibaba }, die);
+const reviewer = namedModel(config, a.reviewer ?? rev.default, { family: a.family, variant: a.variant }, die);
 // Every implementer name resolves to a family, or the review is refused (Sol's R2 on PR 164); none
-// named means Claude implemented (lib/common.mjs implementerFamilies).
+// named means the session's family implemented (lib/common.mjs implementerFamilies).
 const fams = implementerFamilies(config.models, implementedBy);
 if (fams.refuse) die(1, `Refused: ${fams.refuse}. Nothing posted.`);
-say(`implemented by: ${implementedBy.join(', ') || 'claude (the default)'}`);
+say(`implemented by: ${implementedBy.join(', ') || `${fams.families[0]} (the session's family, from the Anthropic environment)`}`);
 if (fams.families.includes(familyOf(config.models, reviewer))) die(1, `Refused: ${reviewer} is the implementer's model family (${fams.families.join(', ')}). Nothing posted.`);
 const fallback = 'Nothing posted. Read the run\'s final message (CLAUDE.md rule 25) and fix the cause; another reviewer is the user\'s call.';
 // OpenCode is looked for only now, so that its absence is reported with the same fallback (Sol's R1 on PR 41).

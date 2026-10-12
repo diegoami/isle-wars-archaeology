@@ -12,8 +12,8 @@ yourself, check whether a delegate below does it better or cheaper.
 
 | Work | Delegate | How | Key |
 | --- | --- | --- | --- |
-| Code: implement a task or a fix | The main session in its own worktree, or the `implementer` Claude agent (CLAUDE.md rule 6); never OpenCode | `/run-task` → yourself, or `Agent(subagent_type: "implementer", isolation: "worktree")` | — |
-| Review a PR | One OpenCode run: `harness.json`'s `reviewer.default`, or the model the user or the task file names; never the implementer's family | `/run-task` → `tools/harness/review.mjs [--reviewer <name>]` | OpenAI's login (`opencode auth login`) for Luna and Sol; Z.AI's for GLM; OpenCode Go's (`opencode console login`) for MiMo |
+| Code: implement a task or a fix | The main session in its own worktree, or the `implementer` agent on a Claude Code alias, asked before each (CLAUDE.md rule 6); never OpenCode | `/run-task` → yourself, or `Agent(subagent_type: "implementer", model: <alias>, isolation: "worktree")` | the session's Anthropic environment |
+| Review a PR | One OpenCode run on the model the user names at the question, `harness.json`'s `reviewer.default` proposed first; never the session's family, never a blocked model | `/run-task` → `tools/harness/review.mjs [--reviewer <name>]` | OpenAI's login (`opencode auth login`) for Luna and Sol; Z.AI's for GLM; OpenCode Go's (`opencode console login`) for MiMo |
 | Repeated decisions with known answers (triage, routing, gating, labelling) | Jev | `/jev` → `tools/harness/jev.mjs` | `OPENROUTER_API_KEY` |
 | Images: sprites, icons, maps, mockups, illustrations | An image model on OpenRouter | pick one with `models.mjs openrouter --output image` | `OPENROUTER_API_KEY` |
 | A second opinion from another model family, or reading audio or images | A model on OpenRouter | `models.mjs openrouter --input image` (or `audio`) | `OPENROUTER_API_KEY` |
@@ -32,15 +32,16 @@ another way, or tell the user what is missing (`docs/environment.md`).
 
    Do the same when you are unsure a model still exists. (L25)
    To change the default reviewer, use `/switch-model`.
-2. **Do not ask before a run** (CLAUDE.md rule 6, the owner, 2026-10-11). Code is implemented by
-   the main session or a Claude agent, and reviewed by `harness.json`'s default reviewer; a task
-   file or the user may name another reviewer (`--reviewer`). No quota is checked. The only fixed
-   rules: the reviewer is never of the implementer's family, DeepSeek is never used, and Alibaba
-   only when the user asks. Record on the PR which model reviewed. A failed run is diagnosed and
-   fixed; another model only when its provider does not answer, and the user names it.
-   *Superseded on 2026-10-11 and kept as history (`docs/models.md`):* asking the user one question
-   before each implementation and review; quota-tracker's `/recommend` as a suggestion; checking
-   the quota and taking the next model of a chain (L50, L52); `choose.mjs`; OpenCode implementing.
+2. **Two questions, nothing else picks** (CLAUDE.md rule 6, the owner, 2026-10-12). Before an
+   implementation, ask the user ONE question: the main session, or the `implementer` agent on a
+   Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`); before each review, ONE question: which
+   OpenCode model. Propose `harness.json`'s defaults first. The roster and the blocked list change
+   through `/switch-model`, never by a rule or a quota. Fixed: the reviewer is never the session's
+   family (read from the Anthropic environment); a blocked model never runs; Alibaba only when the
+   user asks. Record the answers on the issue or PR. A failed run is diagnosed and fixed; another
+   model only when its provider does not answer, and the user names it.
+   *Superseded and kept as history:* quota-tracker's `/recommend` as a suggestion; checking the
+   quota and taking the next model of a chain (L50, L52); `choose.mjs`; OpenCode implementing.
 3. **Choose on the evidence you have.** In order of preference:
    - this project's own measurements (review rounds and tokens per task, from the merge comments);
    - a small trial;

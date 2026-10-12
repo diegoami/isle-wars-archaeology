@@ -1,10 +1,12 @@
 // The model-choice self-test (CLAUDE.md rule 6): run by `node tools/harness/review.mjs --self-test`,
 // so CI runs it. No model is called. It pins Sol's findings on PR 164: a model's family is never
 // taken from a declaration (R1 of both rounds) and an implementer name always resolves to a family
-// (R2); and the 2026-10-11 default: no implementer named means Claude implemented.
+// (R2); the 2026-10-11 default: no implementer named means the session's family implemented, read
+// from the Anthropic environment; and harness.json's blocked list.
 
-import { namedModel, familyOf, implementerFamilies } from './common.mjs';
+import { namedModel, familyOf, implementerFamilies, sessionFamily } from './common.mjs';
 
+const BLOCKED = ['deepseek', 'gpt-5.6'];
 const MODELS = () => ({
   'gpt-6.1-sol': { id: 'openai/gpt-6.1-sol', family: 'openai', variant: 'low' },
   luna: { id: 'openai/gpt-5.6-luna', family: 'openai' },
@@ -23,9 +25,9 @@ const NAMED = [
   ['multi-family route, recognised name', 'openrouter/xiaomi/mimo-v2.6-pro', {}, 'mimo'],
   ['multi-family route, unrecognised name, declared family', 'openrouter/acme/zeta-1', { family: 'zeta' }, 'refused'],
   ['unknown provider, unrecognised name', 'acme/zeta-1', {}, 'refused'],
-  ['DeepSeek on any route', 'openrouter/deepseek/deepseek-v4-pro', {}, 'refused'],
-  ['Alibaba without --alibaba', 'ali-glm', {}, 'refused'],
-  ['Alibaba with --alibaba', 'ali-glm', { alibaba: true }, 'glm'],
+  ['a blocked family on any route', 'openrouter/deepseek/deepseek-v4-pro', {}, 'refused'],
+  ['a blocked id fragment', 'openai/gpt-5.6-luna', {}, 'refused'],
+  ['Alibaba, no flag needed', 'ali-glm', {}, 'glm'],
   ['not a key, not an id', 'nonsense', {}, 'refused'],
 ];
 
@@ -45,7 +47,7 @@ const IMPLEMENTERS = [
 
 // [label, names as review.mjs reads them, expected families or 'refused'] (round-3 R1 on PR 164)
 const GUARD = [
-  ['no model: label: Claude implemented', [], 'claude'],
+  ['no model: label: the session implemented (Claude)', [], 'claude'],
   ['--exclude ","', ','.split(',').map((x) => x.trim()).filter(Boolean), 'claude'],
   ['blank names', ['', ' '], 'claude'],
   ['an unknown name', ['nonsense'], 'refused'],
@@ -55,7 +57,7 @@ const GUARD = [
 
 function checkVariants(failures) {
   for (const [label, name, variant, want] of VARIANTS) {
-    const config = { models: MODELS() };
+    const config = { models: MODELS(), blocked: BLOCKED };
     const key = namedModel(config, name, { variant }, (c, m) => { throw new Error(m); });
     const got = config.models[key].variant;
     if (got !== want) failures.push(`variant: ${label}: ${got}, expected ${want}`);
@@ -66,13 +68,25 @@ function checkVariants(failures) {
 
 function checkNamed(failures) {
   checkVariants(failures);
+  // The session's family, from the Anthropic environment (the owner, 2026-10-11).
+  const SESSION = [['no base URL', {}, 'claude'], ['anthropic.com', { ANTHROPIC_BASE_URL: 'https://api.anthropic.com' }, 'claude'],
+    ['Z.AI', { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic' }, 'glm'], ['override', { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_SESSION_FAMILY: 'Claude' }, 'claude'],
+    ['unknown endpoint', { ANTHROPIC_BASE_URL: 'https://proxy.example/v1' }, null]];
+  for (const [label, env, want] of SESSION) {
+    const got = sessionFamily(env);
+    if (got !== want) failures.push(`sessionFamily: ${label}: ${got}, expected ${want}`);
+  }
+  const glm = implementerFamilies(MODELS(), [], { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic' });
+  if (glm.families?.[0] !== 'glm') failures.push('implementerFamilies: a GLM-backed session excludes glm');
+  const unknown = implementerFamilies(MODELS(), [], { ANTHROPIC_BASE_URL: 'https://proxy.example/v1' });
+  if (!unknown.refuse) failures.push('implementerFamilies: an unknown endpoint is refused');
   for (const [label, names, want] of GUARD) {
-    const r = implementerFamilies(MODELS(), names);
+    const r = implementerFamilies(MODELS(), names, {});
     const got = r.refuse ? 'refused' : r.families.join(',');
     if (got !== want) failures.push(`implementerFamilies: ${label}: ${got}, expected ${want}`);
   }
   for (const [label, name, opts, want] of NAMED) {
-    const config = { models: MODELS() };
+    const config = { models: MODELS(), blocked: BLOCKED };
     let got;
     try {
       const key = namedModel(config, name, opts, (code, msg) => { throw Object.assign(new Error(msg), { refused: code }); });
@@ -92,5 +106,5 @@ function checkNamed(failures) {
 export function choiceSelfTest() {
   const failures = [];
   checkNamed(failures);
-  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length };
+  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 7 };
 }

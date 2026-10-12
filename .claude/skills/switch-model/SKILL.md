@@ -1,40 +1,52 @@
 ---
 name: switch-model
-description: Switch the default OpenCode reviewer (harness.json's reviewer.default), safely - live ids, the right login, the effort rule, the family rule, and a one-word probe before anything is written. Use when the user wants another default reviewer, when the reviewer keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real reviews.
+description: Change who implements and who reviews by default, and which models are blocked (harness.json, through switch-model.mjs), safely - live ids, the right login, the effort rule, the session's family read from the Anthropic environment, and a one-word probe before anything is written. Use when the user wants another default implementer (the main session, or the implementer agent on sonnet, opus, haiku or fable) or reviewer, wants a model blocked or unblocked, when the reviewer keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real reviews.
 ---
 
-# /switch-model: change the default reviewer
+# /switch-model: change the defaults, or the blocked list
 
-The implementer is the main session or a Claude agent (CLAUDE.md rule 6), so the one model to
-switch is the OpenCode reviewer: today GPT-5.6 Luna on the direct OpenAI route. A one-off review
-on another model needs no switch (`review.mjs --reviewer <name>`); a switch changes the default,
-and it is the user's decision, so you propose it and the user says yes.
+The roster is the owner's and changes often (CLAUDE.md rule 6): it lives in `harness.json`, and
+this skill is how it changes. Three things can change:
+- **the implementer's default** (`implementer.default`): `session`, the main session itself, or
+  a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) the `implementer` agent is spawned on.
+  Both run through the session's Anthropic environment, so under Claude `sonnet` is Sonnet and
+  under Z.AI it is GLM-5.3 Flash; no OpenCode check or probe applies;
+- **the reviewer's default** (`reviewer.default`): the OpenCode model that reviews unless the
+  user names another at the question before a review; never the session's family;
+- **the blocked list** (`blocked`): families (`deepseek`) or id fragments that never run anywhere.
+
+The orchestrator itself is never switched here: it is set by the Anthropic environment variables
+alone (rule 6.0), and `--show` prints the family the harness reads from them.
+
+A switch is the user's decision, so you propose it and the user says yes. A one-off choice needs
+no switch: the question before each implementation and review takes any option.
 
 1. **Why.** Name the reason: a measured failure (the run logs, the measurement comments, the
-   model-trials issue), a cheaper or better candidate, or the user's request. A model that failed
-   once on a strange task is not yet a reason (L14).
-2. **What runs now.** `node tools/harness/switch-model.mjs --show`.
-3. **Candidates, live** (L25), never from memory: `opencode models openai`, `opencode models
-   zai-coding-plan`, `opencode models opencode-go`, and so on, each with its own login. Leave out
-   Claude models (the implementer's family), DeepSeek (never used), Alibaba unless the user asks,
-   and models ruled out in `docs/lessons.md` (L27: Go's own GPT-6 Luna returns `Bad Request` in
-   long loops). `--show` lists the registered models, each with its note in `harness.json`.
-4. **Dry run with a probe:**
-   `node tools/harness/switch-model.mjs --model PROVIDER/ID --probe --dry-run`.
-   - It checks the id against OpenCode's list in the scripts' data directory. On exit 3, give
-     the user the login command it prints; the user runs it.
-   - The effort, unless `--variant` gives one: `high` for a light model; for a heavy one (Sol,
-     GLM-5.3, MiMo V2.6 Pro, MiniMax-M3) `low`, else `medium`, else the lowest OpenCode offers
-     (L54). `max` is refused.
-   - It refuses a Claude model and DeepSeek.
-   - The probe is one billed one-word call at that effort.
-5. **Ask.** Show the user the before and after lines and the probe's time, with your
+   model-trials record), a cheaper or better candidate, a token pool that is out, or the user's
+   request. A model that failed once on a strange task is not yet a reason (L14).
+2. **What runs now.** `node tools/harness/switch-model.mjs --show`: the session's family, both
+   defaults, the blocked list, the other registered models.
+3. **Candidates, live** (L25), never from memory: for a reviewer, `opencode models openai`,
+   `opencode models zai-coding-plan`, `opencode models opencode-go`, and so on, each with its own
+   login; leave out the session's family and blocked models. For an implementer, the Claude Code
+   aliases above. `--show` lists the registered reviewers, each with its note in `harness.json`.
+4. **Dry run.**
+   - Implementer: `node tools/harness/switch-model.mjs --role implementer --model sonnet --dry-run`.
+   - Reviewer, with a probe: `node tools/harness/switch-model.mjs --role reviewer --model PROVIDER/ID --probe --dry-run`.
+     It checks the id against OpenCode's list in the scripts' data directory (exit 3: give the
+     user the login command it prints); the effort, unless `--variant` gives one, is `high` for
+     a light model and `low` (else `medium`, else the lowest OpenCode offers) for a heavy one
+     (L54), `max` refused; it refuses the session's family and a blocked model; the probe is one
+     billed one-word call at that effort.
+   - Blocked list: `node tools/harness/switch-model.mjs --block <family or id fragment> --dry-run`,
+     or `--unblock`. Blocking the default reviewer is refused until the reviewer is switched.
+5. **Ask.** Show the user the before and after lines (and the probe's time), with your
    recommendation. Switch only on their yes.
 6. **Switch.** Run the same command without `--dry-run` (and without `--probe`, which already
-   passed). Then commit `harness.json` on `main` with the reason and the probe in the message
-   (L6, L25). Keep the old model's entry: an explicit `--reviewer` can still use it.
-7. **Watch the first review** on the new model: the log's tail and the posted review. Afterwards,
-   add a line to the model-trials issue (CLAUDE.md rule 21). Switch back the same way if it fails.
+   passed). Then commit `harness.json` on `main` with the reason (and the probe) in the message
+   (L6, L25). Keep the old model's entry: the question before a review can still name it.
+7. **Watch the first run** on the new default: the log's tail and, for a reviewer, the posted
+   review. Afterwards, add a line to the model-trials record. Switch back the same way if it fails.
 
-Exits: 0 switched (or shown, or a dry run); 1 refused (the family rule, DeepSeek, or a taken name);
-2 usage; 3 OpenCode, the login or the probe failed, and nothing was written.
+Exits: 0 switched (or shown, or a dry run); 1 refused (the family rule, the blocked list, or a
+taken name); 2 usage; 3 OpenCode, the login or the probe failed, and nothing was written.

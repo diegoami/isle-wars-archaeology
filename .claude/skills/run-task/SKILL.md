@@ -1,6 +1,6 @@
 ---
 name: run-task
-description: Run tasks or fixes end to end. The main session (or a Claude agent it spawns) implements, one OpenCode model of another family reviews, the main session merges and reports. Main session only.
+description: Run tasks or fixes end to end. The main session (or an agent it spawns) implements and one OpenCode model of another family reviews, each after one question to the user; the main session merges and reports. Main session only.
 ---
 
 # /run-task [T<nn> | #<issue> ...]
@@ -10,9 +10,12 @@ Read `docs/process.md` §3–§6 first. Given ids, run them in order; given none
 For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the branch is
 `fix/<issue>-<slug>`, and there is one review round.
 
-Nothing is asked before a run (CLAUDE.md rule 6, the owner, 2026-10-11): the main session
-implements, `harness.json`'s default reviewer reviews, and the user overrides either when they
-want to. Ask only for design decisions and escalations.
+Two questions per task, and no other choice of model (CLAUDE.md rule 6, the owner, 2026-10-12):
+before the implementation, whether the main session implements or the `implementer` agent does,
+and on which Claude Code alias; before each review, which OpenCode model reviews. Each question
+proposes `harness.json`'s default first; the roster changes through `/switch-model`, never here.
+No quota is checked. The implementer's family is the session's, read from the Anthropic
+environment (`switch-model.mjs --show` prints it); the reviewer is never of that family.
 
 0. **Check.** The issue is `status:ready` and every Merge-after task is merged. Run
    `gh issue list --label triage:needed --state open`; triage anything that names this task first.
@@ -26,15 +29,18 @@ want to. Ask only for design decisions and escalations.
    rework) the review comment's URL. Never a pointer to the task file. The main session
    implementing itself reads the same block as its contract.
 
-2. **Implement.** Label `status:in-progress`. Either:
+2. **Implement.** First ask the user ONE question with the question tool (CLAUDE.md rule 6
+   rule 1): the main session, or the `implementer` agent, and on which alias (`sonnet`, `opus`,
+   `haiku`, `fable`)? Put `harness.json`'s `implementer.default` first. Record the answer on the
+   issue. Label `status:in-progress`. Then:
    - **The main session**, in its own worktree (`git worktree add ../isle-wars-archaeology-work/T<nn> -b task/T<nn>-<slug> origin/main`,
      never the main checkout): keep `RUN-NOTES.md` there (`docs/running-notes.md`: the plan, a
      line per commit, an END block), push after every commit, open the PR with the template body.
      This is the default for research, for anything that reads the user's install (L26), and for
      any task the session can do in one sitting.
    - **The `implementer` Claude agent**: `Agent(subagent_type: "implementer", isolation: "worktree")`
-     with the brief, on the session's model (or another Claude model when the user names one;
-     a Sonnet brief carries the tripwire paragraph from `docs/models.md`). Its agent file carries
+     with the brief, on the alias the user chose (`model: sonnet`, say; a Sonnet brief carries
+     the tripwire paragraph from `docs/models.md`). Under Z.AI the same alias is a GLM model. Its agent file carries
      §4's block and the run mechanics; its hook refuses `git stash`, `git worktree`, a force-push
      and `gh pr merge`. Watch it by its transcript file's size and its worktree (CLAUDE.md
      rule 6.6); tell the user in plain language what it is doing. Read its final report in full
@@ -42,22 +48,24 @@ want to. Ask only for design decisions and escalations.
      Done-when it cannot meet gets an answer (amend the task on `main`, decide, or escalate),
      never a blind retry.
 
-3. **Review.** Label `status:in-review`. Name the PR's head in the brief only after the push has
-   landed (`git rev-parse <branch>`); a brief naming another commit exits 2 before anything runs
-   (L33). Then, as a systemd unit, watched (CLAUDE.md rule 6.6):
+3. **Review.** First ask the user ONE question (CLAUDE.md rule 6 rule 2): which OpenCode model
+   reviews? Put `harness.json`'s `reviewer.default` first (`gpt-6.1-sol` for a guard, a gate or
+   hard research), then the registered models that are neither of the session's family nor
+   blocked (`switch-model.mjs --show`). Record the answer on the PR. Label `status:in-review`.
+   Name the PR's head in the brief only after the push has landed (`git rev-parse <branch>`); a
+   brief naming another commit exits 2 before anything runs (L33). Then, as a systemd unit,
+   watched (CLAUDE.md rule 6.6; `run-unit.sh` forwards the environment, so the script reads the
+   session's family from it):
    ```bash
-   tools/harness/run-unit.sh review-<pr> <log> -- node tools/harness/review.mjs --pr <pr> --brief <file> --issue <n> --apply-label
+   tools/harness/run-unit.sh review-<pr> <log> -- node tools/harness/review.mjs --pr <pr> --brief <file> --issue <n> --apply-label [--reviewer <the answer>]
    ```
-   `reviewer.default` (GPT-5.6 Luna) reviews; add `--reviewer gpt-6.1-sol` for a guard, a gate or
-   hard research, or `--reviewer <name>` when the user names one (never a Claude model: the
-   implementer is Claude). One review per PR unless the user asks for more. Relay its findings
-   in full (rule 8).
+   One review per PR unless the user asks for more. Relay its findings in full (rule 8).
    - Exit 0: posted and labelled.
    - Exit 3: no review came back (OpenCode, the login, the model, a rejected path, or a review
      the script could not find). Nothing was posted. Read the run's final message first (rule 25,
      the snippet below), fix the cause (a wider grant in `.opencode/agents/reviewer.md`, a login,
      a brief line), and run again. Another model only when the provider does not answer, and the
-     user names it.
+     user names it at the question.
    - Exit 4: a review was posted whole under a note (cut off, verdict unreadable, verdicts differ,
      a finding after the closing verdict, or an approve with a Done-when line unaccounted for or
      not run, L32). No label was applied. Read it on the PR and decide: apply the label it

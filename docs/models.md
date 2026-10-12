@@ -12,20 +12,21 @@ This page is the main session's working strategy for routing work to models, for
 - **The binding rules** are CLAUDE.md rules 1, 6 and 21. Where this page and those rules differ,
   the rules win, and this page gets fixed.
 
-## Who does what (the owner, 2026-10-11)
+## Who does what (the owner, 2026-10-11 and 2026-10-12)
 
-What worked in practice, after ten days of chains, pairs, quota checks and a rule that asked the
-user before every run:
+What worked in practice, after ten days of chains, pairs and quota checks:
 
 | Role | Who | How |
 | --- | --- | --- |
-| Implementer | **The main session**, in its own worktree; or the **`implementer` Claude agent** it spawns (worktree isolation), on the session's model or another Claude model the user names | `/run-task` step 2; `.claude/agents/implementer.md` |
-| Reviewer | **One OpenCode run** of another family: `harness.json`'s `reviewer.default` (GPT-5.6 Luna), or the model the user or the task file names (`gpt-6.1-sol` for a guard, a gate or hard research) | `tools/harness/review.mjs [--reviewer <name>]`, as a systemd unit, watched |
+| Orchestrator | The main session, set by the Anthropic environment variables alone (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude, or GLM-5.3 through Z.AI's Anthropic-compatible endpoint when Claude's tokens are out | never named by the harness; its family is read from the environment (`lib/common.mjs` `sessionFamily`, `HARNESS_SESSION_FAMILY` overrides) |
+| Implementer | **The main session**, in its own worktree; or the **`implementer` agent** it spawns (worktree isolation) on a Claude Code alias, `sonnet` under Opus, which under Z.AI is GLM-5.3 Flash. Asked before each implementation, `harness.json`'s `implementer.default` proposed first | `/run-task` step 2; `.claude/agents/implementer.md` |
+| Reviewer | **One OpenCode run** of another family than the session's, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; `gpt-6.1-sol` for a guard, a gate or hard research | `tools/harness/review.mjs [--reviewer <name>]`, as a systemd unit, watched |
 
-Nobody is asked which model to use before a run, and no quota is checked: the defaults run, and
-the user overrides them when they want to. The fixed rules: the reviewer is never of the
-implementer's family (so no Claude reviewer unless the user asks for a same-family review);
-DeepSeek is never used; Alibaba only when the user asks (`--alibaba`).
+The roster is the owner's and changes often: `harness.json`'s two defaults and its `blocked` list
+change through `/switch-model`, never by a rule that names a model, and no quota, tier or
+difficulty table picks one. The fixed rules: the reviewer is never of the session's family (so no
+Claude reviewer under Claude, no GLM reviewer under Z.AI, unless the user asks for a same-family
+review); a blocked model never runs (DeepSeek today); Alibaba only when the user asks.
 
 **Why OpenCode does not implement any more.** Its implementer runs were the harness's main source
 of lost work: runs ended by a rejected path outside the worktree (T13 three times, T21 and T22,
@@ -57,11 +58,12 @@ read-only) in `.opencode/agents/reviewer.md`, so a loose scratch file no longer 
 | `mimo-flash`, `mimo-pro` | MiMo v2.6 Flash and Pro on OpenCode Go, no variant (they offer none) | MiMo | a family of its own; Go needs `opencode console login` in the scripts' data directory |
 | `mm-m3`, `mm-m2.7` | MiniMax-M3 (variant `thinking`) and M2.7 (no variant) | MiniMax | a family of its own; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`, never `opencode auth login` |
 | `ali-qwen-max`, `ali-qwen-flash`, `ali-glm` | Qwen 3.8 Max (`low`), Qwen 3.8 Flash (`medium`) and GLM-5.3 (`low`) on the Alibaba Token Plan | Qwen, GLM | only when the user asks (`--alibaba`); key `ALIBABA_TOKEN_PLAN_API_KEY` the same way |
-| (Claude) | the main session's model; Sonnet, Opus or Fable for the `implementer` agent when the user names one | Claude | implements; reviews only when the user asks |
+| (the session) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku` or `fable` for the `implementer` agent, the same family | Claude, or GLM under Z.AI | implements; reviews only when the user asks |
 
-**DeepSeek is blacklisted** (the owner, 2026-10-09), on any route; `review.mjs` and
-`switch-model.mjs` refuse it. Every id comes from a live list (`opencode models <provider>`),
-never memory; `/switch-model` changes the default with a probe.
+**DeepSeek is blocked** (the owner, 2026-10-09), on any route: `harness.json`'s `blocked` list, which
+`review.mjs` and `switch-model.mjs` refuse and `/switch-model --block` and `--unblock` change.
+Every id comes from a live list (`opencode models <provider>`), never memory; `/switch-model`
+changes a default with a probe.
 
 **Effort.** A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) runs at `high`; a heavy model
 (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro, MiniMax-M3) at `medium` at most, and at `low` when
@@ -133,13 +135,14 @@ implementer and reviewer time a driver costs. Measured in T08's control runs, r0
   The task file's Owns must name that tracked path, for example `runs/E<nnn>/**` or
   `experiments/E<nnn>-*/measurements/**`.
 
-- **The implementer** is the main session in `../isle-wars-archaeology-work/<task>` on the task's
-  branch, or `Agent(subagent_type: "implementer", isolation: "worktree")` with the brief: the task
+- **The implementer**, asked before each implementation, is the main session in
+  `../isle-wars-archaeology-work/<task>` on the task's branch, or
+  `Agent(subagent_type: "implementer", model: <alias>, isolation: "worktree")` with the brief: the task
   file pasted in full, then `docs/process.md` §4's block, then, on rework, the review's URL
   (rule 15). Either keeps `RUN-NOTES.md`, pushes after every commit and opens the PR. A cloud
   brief first checks the hostname and that `/mnt/c` is absent, and stops if either check fails.
-- **The reviewer:** `tools/harness/run-unit.sh review-<pr> <log> -- node tools/harness/review.mjs
-  --pr <n> --brief <file> --issue <n> --apply-label [--reviewer <name>]`, watched with
+- **The reviewer**, asked before each review: `tools/harness/run-unit.sh review-<pr> <log> -- node
+  tools/harness/review.mjs --pr <n> --brief <file> --issue <n> --apply-label [--reviewer <name>]`, watched with
   `tools/harness/watch.sh` (CLAUDE.md rule 6.6). The brief is §5's block, filled in with the PR,
   its head sha and the issue, then the contract and `docs/review-brief.md`.
   - Exit 0: the review is posted and labelled.
@@ -280,7 +283,8 @@ then `git show <sha>^:docs/models.md`), and in `docs/lessons.md` L68:
 - `/recommend` decides (2026-10-10), then "the user decides, asked before every run" (the morning
   of 2026-10-11, L68) with `/recommend` as a suggestion;
 - the implementer and reviewer chains, `choose.mjs`, the Claude fallbacks, `--hard`, `--sol` and
-  `--second-opinion`;
+  `--second-opinion`; the afternoon of 2026-10-11's "nobody is asked" (the two questions came back
+  on 2026-10-12, with the switchable roster);
 - the exclusions by name (never Haiku, Gemini, Kimi, Grok; GLM only via Z.AI; Luna only direct),
   which `review.mjs --reviewer` no longer enforces: DeepSeek is the one blacklist.
 

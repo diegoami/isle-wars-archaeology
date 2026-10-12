@@ -20,15 +20,17 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 | Role | Who | Does |
 | --- | --- | --- |
 | Main session | Claude, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
-| Implementer | **The main session**, in its own worktree, or the **`implementer` Claude agent** it spawns with worktree isolation (CLAUDE.md rule 6, 2026-10-11), on the session's model unless the user names another Claude model. *Superseded: OpenCode via `implement.mjs` (removed), the GLM/MiMo/Sonnet chains (L42), the user asked before each run.* | One task, one branch, one PR, in its own worktree |
-| Reviewer | **One OpenCode run** via `tools/harness/review.mjs`: `harness.json`'s `reviewer.default` (GPT-5.6 Luna), or `--reviewer <name>` when the user asks or the task file names one; never the implementer's family (L27), so never a Claude model unless the user asks for a same-family review. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the reviewer chains, the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Implementer | **The main session**, in its own worktree, or the **`implementer` agent** it spawns with worktree isolation on a Claude Code alias, asked before each implementation (CLAUDE.md rule 6). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/MiMo/Sonnet chains (L42), the user asked before each run.* | One task, one branch, one PR, in its own worktree |
+| Reviewer | **One OpenCode run** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the reviewer chains, the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
-Nothing is asked before a run and no quota is checked (the owner, 2026-10-11): the defaults run,
-and the user overrides them when they want to. Model ids come from `harness.json`, `models.mjs` or
-`opencode models`, never memory (L25). The main session starts `review.mjs` itself as a systemd
-unit and watches it as CLAUDE.md rule 6.6 says, never with `pgrep -f` (L48).
+Before each implementation and each review the main session asks the user one question, with
+`harness.json`'s default proposed first (CLAUDE.md rule 6); no quota, tier or chain picks a model, and the
+roster changes through `/switch-model`. The implementer's family is the session's, read from the
+Anthropic environment variables (`lib/common.mjs` `sessionFamily`; the orchestrator is Claude, or
+GLM through Z.AI when Claude's tokens are out), and the reviewer is never of it. Model ids come
+from `harness.json`, `models.mjs` or `opencode models`, never memory (L25).
 
 ## 2. Task files
 
