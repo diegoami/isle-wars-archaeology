@@ -20,16 +20,17 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 | Role | Who | Does |
 | --- | --- | --- |
 | Main session | Claude, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
-| Implementer | **The user's choice**, asked before each implementation (CLAUDE.md rule 6, 2026-10-11): the main session in its own worktree, a Claude agent, or OpenCode via `tools/harness/implement.mjs --model <name>`. *Superseded: GLM-5.3 Flash, then MiMo V2.6 Flash, then a Claude Sonnet agent (L42).* | One task, one branch, one PR, in its own worktree |
-| Reviewer | **The user's choice** at every review, an external model via `tools/harness/review.mjs --reviewer <name>`, one at a time; never the implementer's family (L27). Exit 3: diagnose and fix, then ask; exit 4: the main session reads the flagged review and decides (L28). *Superseded: GPT-5.6 Luna, then a Claude Opus agent.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or **the main session** directly, in its own worktree, where the provider cannot spawn one; asked before each implementation (CLAUDE.md rule 6). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/MiMo/Sonnet chains (L42), the user asked before each run.* | One task, one branch, one PR, in its own worktree |
+| Reviewer | **One OpenCode run** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the reviewer chains, the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
-The user picks each implementer and reviewer (CLAUDE.md rule 6); quota-tracker's `/recommend` is shown
-with the question as a suggestion only. Model ids come from `models.mjs` or `opencode models`, never
-memory (L25). *Superseded: skipping an exhausted provider for the next with quota (L50).*
-The main session runs `implement.mjs` itself: a wrapper agent would spend tokens watching it.
-It watches each background job (start, end, no output for 10 min), never with `pgrep -f`. (L48), and checks quota with `docs/environment.md`'s quota-tracker.
+Before each implementation and each review the main session asks the user one question, with
+`harness.json`'s default proposed first (CLAUDE.md rule 6); no quota, tier or chain picks a model, and the
+roster changes through `/switch-model`. The implementer's family is the session's, read from the
+Anthropic environment variables (`lib/common.mjs` `sessionFamily`; the orchestrator is Claude, or GLM
+through Z.AI, MiniMax or Kimi when Claude's tokens are out), and the reviewer is never of it. Model ids come
+from `harness.json`, `models.mjs` or `opencode models`, never memory (L25).
 
 ## 2. Task files
 
@@ -52,24 +53,22 @@ Rework sends the full review back to the same branch, at most two rounds (one fo
 escalates. The implementer script resumes a pushed branch; it never starts over. Before a merge the
 main session re-runs the check the approval rests on most; a different result is rework. (L46)
 
-What the implementer script guarantees, and why:
+What the review script guarantees, and why:
 - OpenCode starts with stdin closed; without it a run hangs before it starts. (L10)
-- No session in 180 s, no progress in 900 s, or no exit in 3 h kills the run's process tree. (L10)
-- The agent is checked on OpenCode's session record (L11); a rejected tool call fails the run. (L26)
-- Each OpenCode model runs at the effort its `harness.json` entry names (CLAUDE.md rule 6: a heavy
-  model at medium or low, a light one at high), in the scripts' own data directory (L27, L29). The scripts run only the
-  model the user named; no chain moves on (superseded: L12).
-- Exit 0: a PR is open. 1: the main session reads the log (a stop and report, or an early end).
-  3: OpenCode unavailable, its model not listed, or not logged in: diagnose and fix it; another
-  model only when the provider does not answer and the user names it.
-- A run that our own idle or total limit interrupted resumes in its session: `--session <ses_…>`.
+- No session in 180 s, no progress in 600 s, or no exit in 1 h kills the run's process tree. (L10)
+- The agent is checked on OpenCode's session record (L11); a rejected tool call fails the run (L26),
+  and the fix is a wider grant in the agent file, not a re-brief (CLAUDE.md rule 6.4).
+- The model runs at the effort its `harness.json` entry names (a heavy model at medium or low, a
+  light one at high), in the scripts' own data directory (L27, L29). One model, one run; no chain.
+- Exit 0: posted and labelled. 3: no review, nothing posted: read the final message (rule 25), fix
+  the cause, run again. 4: posted under a note, no label: the main session reads it and decides.
 
 ## 4. The implementer brief
 
-The brief is the task file pasted in full, then this block, then on a rework round the review's URL. The
-OpenCode agent file repeats the run mechanics; this block is the contract. A brief never asks an OpenCode
-implementer for anything outside its worktree: a line that needs it (a TMPDIR outside every checkout, the
-user's install, `.git/info`) is one the main session runs itself (L57).
+The brief is the task file pasted in full, then this block, then on a rework round the review's URL.
+The `implementer` agent file repeats the run mechanics; this block is the contract, for the main
+session implementing directly as much as for the subagent. A line that needs the user's install or a
+cloud session is the main session's (L26).
 
 ```text
 You implement <T<nn>>. The task file above is the contract.
@@ -79,8 +78,8 @@ You implement <T<nn>>. The task file above is the contract.
 - Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
   restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
   a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
-  copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
-  as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
+  copy inside your worktree (`<file>.saved`, deleted afterwards) or in a `mktemp -d` folder under
+  `/tmp`, never as a loose file elsewhere.
 - If you measure: every output a finding or the PR may cite goes under a tracked path the task owns,
   pushed per batch and every 30 min, never deleted or overwritten; originals out, hashes recorded. (L40)
 - A comment that asserts behaviour at an edge comes with the test that visits that edge.
@@ -106,8 +105,8 @@ You review PR #<n> at <sha>. You did not write it. The task file follows.
    Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
    restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
    a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
-   copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
-   as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder.
+   copy inside your worktree (`<file>.saved`, deleted afterwards) or in a `mktemp -d` folder under
+   `/tmp`, never as a loose file elsewhere.
 6. <docs/review-brief.md in full: "Blocking means" for this task, then its one-pass section (L47, L49)>
 Prove each finding (run it, or delete the behaviour and name the test that fails) or label it
 unverified. Your final message is the review: the header; the verdict (approve | approve after
@@ -141,13 +140,15 @@ A design question; a Done-when would have to weaken; a third rework round; anyth
 
 `task`, `bug`, `fix`, `triage:needed`, `post-playable`,
 `status:{ready,in-progress,in-review,rework,approved,blocked,escalated,merged}`,
-`review-round:{1,2}`, and `model:<name>` on a PR whose implementer was not the default.
+`review-round:{1,2}`, and `model:<name>` on a PR whose implementer was not Claude (then `review.mjs`
+reads the family to exclude from it).
 
 ## 9. Measure
 
-After each merge, one PR comment records each Claude agent's token total (from its completion
-notice), each OpenCode run's model and duration, and the review rounds. After 10–20 tasks, compare
-the rework rate with the baseline in `docs/lessons.md` before changing models. (L13)
+After each merge, one PR comment records the implementer (the main session or an agent, with the
+agent's token total from its completion notice), the review's model and duration, and the review
+rounds. After 10–20 tasks, compare the rework rate with the baseline in `docs/lessons.md` before
+changing the default reviewer. (L13)
 
 ## 10. Adding a rule
 

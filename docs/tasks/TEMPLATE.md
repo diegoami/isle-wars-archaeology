@@ -5,8 +5,8 @@
   Done-when lines, its table and gate named in Scope; here CLAUDE.md rule 18's carve-out:
   T35, T36, T37 merged, per-claim wording per constraint G)
 - **Issue**: #<n> · **Branch**: `task/T<nn>-<slug>` · **Merge after**: T<nn>, …
-- **Implementer**: the user's choice, asked before the run (CLAUDE.md rule 6, 2026-10-11): who (the main session, a Claude agent, OpenCode) and which model, with `/recommend`'s suggestion and its reasons. Recorded here and on the issue. *Superseded: the default chain, choose.mjs and the Claude fallback.*
-- **Reviewer**: the user's choice at each review: an external model, never the implementer's family (CLAUDE.md rule 6). *Superseded: Luna, then Opus.*
+- **Implementer**: the `implementer` subagent on the model chosen at the question, or the main session directly (CLAUDE.md rule 6); say which, and why, only when it matters (the user's install needs the main session, L26).
+- **Reviewer**: `reviewer.default` (GPT-5.6 Luna), or a `harness.json` key with the reason: `gpt-6.1-sol` for a guard, a gate or hard research; never the implementer's family (CLAUDE.md rule 6).
 - **Evidence**: the reports, fixtures or investigations this task rests on, with links.
 - **Owns**: directories or files, e.g. `src/Calendar/**`, `tests/Calendar/**`. A task that measures
   owns a tracked path for its outputs, e.g. `runs/E<nnn>/**` or `spike/measurements/**`: they are

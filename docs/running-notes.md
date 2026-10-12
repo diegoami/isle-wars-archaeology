@@ -40,8 +40,8 @@ repository's git worktrees (below).
 Progress and Notes are append-only: a line that turns out wrong gets a new line saying so.
 
 ## The rules
-- **Implementer** (`.opencode/agents/implementer.md`): read it first; append, never rewrite; write
-  the END block before detaching. Never stage it.
+- **Implementer** (the main session in its worktree, or `.claude/agents/implementer.md`): read it
+  first; append, never rewrite; write the END block before detaching. Never stage it.
 - **Reviewer** (`.opencode/agents/reviewer.md`): when the brief carries the implementer's notes,
   read them before the diff, and grade against the design as well as the result. The notes are
   the implementer's account, not evidence.

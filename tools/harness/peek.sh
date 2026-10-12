@@ -6,7 +6,7 @@
 #
 # Prints the newest N steps: each tool call with its status (running, completed, error) and the
 # start of its input, and the start of each message the model wrote. It reads the session through
-# `opencode export` with the harness's XDG directories (implement.mjs and review.mjs run there),
+# `opencode export` with the harness's XDG directories (review.mjs runs there),
 # never auth.json. Works while the run is going and after it ends.
 set -eu
 target=${1:?usage: peek.sh ses_XXXX|<run log> [-n N]}; shift
@@ -20,7 +20,7 @@ if [ -f "$target" ]; then
 fi
 case "$sid" in ses_*) ;; *) echo "peek.sh: not a session id or a run log: $target" >&2; exit 2 ;; esac
 H=${HARNESS_OPENCODE_HOME:-$HOME/.local/share/harness-opencode}
-# The harness's own binary (implement.mjs and review.mjs log it), never whichever `opencode` comes
+# The harness's own binary (review.mjs logs it), never whichever `opencode` comes
 # first on PATH: in a WSL shell that can be the Windows install (/mnt/c/…/npm/opencode), which
 # cannot read this database and answers "Session not found".
 oc=${OPENCODE_BIN:-$HOME/.opencode/bin/opencode}

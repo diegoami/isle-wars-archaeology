@@ -34,9 +34,9 @@ on_off() { if [ -n "${!1:-}" ]; then echo "set"; else echo "MISSING"; fi; }
 echo "Harness environment:"
 echo "- node $(node --version 2>/dev/null || echo none), opencode $(opencode --version 2>/dev/null || echo none), gh $(gh --version 2>/dev/null | head -1 | awk '{print $3}' || echo none)"
 oc_data="${HARNESS_OPENCODE_HOME:-$HOME/.local/share/harness-opencode}/data"
-echo "- Z.AI (implementer, zai-coding-plan/glm-5.3-flash; hard reviewer, zai-coding-plan/glm-5.3): $(opencode models zai-coding-plan 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in: opencode auth login, then choose Z.AI Coding Plan")"
-echo "- OpenCode Go (second implementer, opencode-go/* models): $(XDG_DATA_HOME="$oc_data" opencode models opencode-go 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in for the scripts' data directory: XDG_DATA_HOME=$oc_data opencode console login")"
-echo "- OpenAI (reviewer, openai/gpt-5.6-luna): $(opencode models openai 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in: opencode auth login, then choose OpenAI")"
+echo "- OpenAI (the default reviewer, openai/gpt-5.6-luna): $(opencode models openai 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in: opencode auth login, then choose OpenAI")"
+echo "- Z.AI (reviewers zai-coding-plan/glm-5.3 and glm-5.3-flash): $(opencode models zai-coding-plan 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in: opencode auth login, then choose Z.AI Coding Plan")"
+echo "- OpenCode Go (reviewers opencode-go/mimo-*): $(XDG_DATA_HOME="$oc_data" opencode models opencode-go 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in for the scripts' data directory: XDG_DATA_HOME=$oc_data opencode console login")"
 echo "- OPENCODE_API_KEY: $(on_off OPENCODE_API_KEY) (OpenCode Zen's opencode/* models, only if harness.json names any)"
 echo "- OPENROUTER_API_KEY: $(on_off OPENROUTER_API_KEY) (Jev decisions, image models, and OpenCode's openrouter/* models)"
 echo "- ELEVENLABS_API_KEY: $(on_off ELEVENLABS_API_KEY) (speech, sound effects, music; /delegate)"
@@ -45,6 +45,9 @@ if [ -z "${OPENROUTER_API_KEY:-}" ]; then
   echo "  Jev is off: jev.mjs exits 3, so decide every item yourself."
 fi
 for n in "${notes[@]}"; do echo "  Setup: $n"; done
-echo "Delegates and how to pick their models (live lists, never memory): the /delegate skill."
+case "${ANTHROPIC_BASE_URL:-}" in "") fam=claude ;; *anthropic.com*) fam=claude ;; *z.ai*|*bigmodel*) fam=glm ;; *minimax*) fam=minimax ;; *moonshot*|*kimi*) fam=kimi ;; *) fam="${HARNESS_SESSION_FAMILY:-unknown (set HARNESS_SESSION_FAMILY)}" ;; esac
+echo "- This session's family: ${HARNESS_SESSION_FAMILY:-$fam} (from the Anthropic environment; the implementer's family, never the reviewer's)"
+echo "- Defaults (harness.json, switched with /switch-model): implementer $(node -p "require('./harness.json').implementer.default" 2>/dev/null || echo ?), reviewer $(node -p "require('./harness.json').reviewer.default" 2>/dev/null || echo ?), blocked $(node -p "require('./harness.json').blocked.join(', ')" 2>/dev/null || echo ?)"
+echo "Who does what (CLAUDE.md rule 6): the main session asks before each implementation (which subagent, or itself directly) and each review (an OpenCode model), proposing these defaults."
 echo "See docs/environment.md for what each key needs and which hosts the network policy must allow."
 exit 0

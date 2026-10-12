@@ -34,11 +34,13 @@ The process is `docs/process.md`; read it before running a task. Tasks are `docs
 indexed in `docs/tasks/README.md`.
 
 ## Rules
-1. The main session plans, runs `/run-task`, triages and talks to the user. Who implements and who
-   reviews is the user's choice, asked each time (rule 6). It delegates repeated decisions to Jev after a trial, and
-   images and audio to OpenRouter or ElevenLabs models, whose ids come from live lists, never memory.
-2. Nobody works in the main checkout but the main session: OpenCode runs in the worktree the script
-   makes, Claude agents run with worktree isolation. Never `git stash`.
+1. The main session plans, runs `/run-task`, triages and talks to the user. A subagent it spawns
+   implements (or it does itself), and OpenCode reviews, asking the user before each (rule 6). It delegates repeated decisions to Jev
+   after a trial, and images and audio to OpenRouter or ElevenLabs models, whose ids come from live
+   lists, never memory.
+2. Nobody works in the main checkout but the main session: the main session implements in a
+   worktree of its own, OpenCode's reviewer runs in the worktree the script makes, Claude agents run
+   with worktree isolation. Never `git stash`.
 2a. **Never remove a worktree** (the owner, 2026-10-11, from goal2-archaeology, where the main session
     removed a running review's worktree during a cleanup and the review was lost): not after a merge,
     not in a cleanup, not one that looks finished. This machine is shared, so a worktree may belong
@@ -58,98 +60,84 @@ indexed in `docs/tasks/README.md`.
 5. The Done-when is not negotiable by the implementer. It stops and reports; it never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
-6. **Choosing models: the user decides** (the owner, 2026-10-11). This replaces every earlier
-   model-choice rule in this repository: the 2026-10-03 pairs, the 2026-10-10 "/recommend decides",
-   `harness.json`'s chains and substitutes, the escalation ladder's named models, and #163. The old
-   rule 6 is kept as history in `docs/models.md` ("Superseded model-choice rules"). It must work
-   whatever model the orchestrator itself runs on, so it never names the orchestrator's model.
-   1. **Before implementing anything** (a task, a fix, a plan change), ask the user ONE question
-      with the question tool: does the main session implement it, or a subagent, and which model?
-      - The main session implements itself, in its own git worktree (never the main checkout).
-      - A subagent is the Agent tool with the model the user names (any model this session's
-        backend offers), or an external run (OpenCode, `implement.mjs --model <name>`) with the
-        model the user names.
+6. **Who implements, who reviews** (the owner, 2026-10-11 and 2026-10-12, superseding every
+   earlier model-choice rule; kept as history in `docs/models.md`). What worked: the main session
+   implements, or a Claude Code agent it spawns does, and a separate OpenCode process of another
+   family reviews. The roster is the owner's, and changes often: the defaults and the blocked list
+   live in `harness.json` and change through `/switch-model`, never by a rule that names a model.
+   No quota, tier or difficulty table picks a model.
+   0. **The orchestrator is set by the Anthropic environment variables alone** (`ANTHROPIC_BASE_URL`,
+      `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude by default; when Claude's tokens are out, another
+      Anthropic-compatible provider such as Z.AI, MiniMax or Moonshot, which then works like Claude.
+      The harness never names the orchestrator's model. It reads the orchestrator's **family**
+      from that environment (`lib/common.mjs` `sessionFamily`: Claude when the base URL is unset
+      or Anthropic's, GLM for Z.AI, MiniMax, Kimi for Moonshot; `HARNESS_SESSION_FAMILY` overrides, and an unknown endpoint
+      refuses to review until it is set), because every subagent the session spawns, whatever
+      its model, runs through the same endpoint and is of that provider's family.
+   1. **Before each implementation, ask the user ONE question** with the question tool: which
+      **subagent** implements, or does the main session implement directly? The implementer is
+      normally a subagent spawned inside Claude Code with the Agent tool
+      (`subagent_type: "implementer"`, `.claude/agents/implementer.md`, worktree isolation) on a
+      model of its own, not the orchestrator's: for example, an Opus session spawns Sonnet. The model is
+      a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) or any model id the session's
+      provider serves; under another Anthropic-compatible provider (Z.AI's GLM, MiniMax, Kimi) the same
+      alias resolves to whatever that provider maps it to (GLM-5.3 Flash for `sonnet` on Z.AI),
+      or the id names its model outright. When the provider cannot spawn a subagent (one model
+      only, or the Agent tool's model is not honoured), the main session implements directly, in
+      its own git worktree (never the main checkout). Propose `harness.json`'s
+      `implementer.default` first. Whatever the model, a subagent runs through the session's
+      endpoint, so its family for the reviewer rule is the session's (6.0). OpenCode never
+      implements: `implement.mjs` was removed on 2026-10-11 because its runs died on rejected
+      paths, resets and early ends and did not follow the brief (`docs/models.md`). Whoever
+      implements keeps `RUN-NOTES.md` in its worktree (the plan, a progress line per commit, an
+      END block), pushes after every commit, and opens the PR. When a subagent ends, the main
+      session reads its final report before acting (rule 25), and posts its notes on the issue.
+   2. **Before each review, ask the user ONE question:** which OpenCode model reviews? Propose
+      `harness.json`'s `reviewer.default` first (GPT-5.6 Luna today; GPT-6.1 Sol at `low` for a
+      guard, a gate or hard research), and list the registered models that are neither of the
+      session's family nor blocked. Then `tools/harness/review.mjs --pr <n> --brief <file>
+      --issue <n> --apply-label [--reviewer <name>]`, one review per PR unless the user asks for
+      more; its findings are relayed in full (rule 8). OpenCode's models do not always follow the
+      brief: the script posts what came back, flags what it cannot read (exit 4), and the main
+      session reads a flagged review and decides rather than paying for another. Record the
+      answers to both questions on the issue or PR.
+   3. **The fixed rules:** the reviewer is never of the session's family (`review.mjs` refuses it
+      from the environment; a `/code-review` or the `reviewer` agent, which are that family, run
+      only when the user asks); a model on `harness.json`'s `blocked` list never runs (DeepSeek
+      today; `/switch-model --block` and `--unblock` change it); Alibaba only when the user asks.
+   4. **Permissions, not briefs** (the owner, 2026-10-11): an agent gets the permissions its work
+      needs, in its agent file (`.opencode/agents/reviewer.md`: all of `/tmp`, the static folder
+      read-only; `.claude/agents/*.md`: the guard hook refuses only a force-push, `git stash`,
+      `git worktree`, a merge and, for the reviewer, every write). A run that dies on a rejected
+      path is fixed by widening the grant, never by re-briefing (rule 13).
+   5. A failed run is diagnosed and fixed, not silently re-routed: another model only when the
+      provider does not answer, and the user names it. The PR records who implemented and which
+      model reviewed.
+   6. **Watching a review, a sitting or any other background job** (L48): start it as its own
+      systemd unit, `tools/harness/run-unit.sh <name> <log> -- <command>` (unit `iwa-<name>`,
+      memory cap, stdin from /dev/null), never with an inherited pipe (`opencode run` waits for
+      stdin's end-of-file). Watch it with one monitor every 1–2 minutes,
+      `tools/harness/watch.sh --label <name> --unit iwa-<name> --file <log>` (`--opencode-log <log>`
+      for an OpenCode run, `--frames <sitting dir>` for a sitting: "game stuck" after 5 minutes
+      without change means notify the user, look at the frame, and stop the sitting or file the
+      fix), never `pgrep -f` in a loop (it matches the watching shell itself; 2026-10-11, 1.5 hours
+      lost). As soon as the log shows `session ses_… started`, give the user the session id and
+      `tools/harness/peek.sh ses_… [-n 20]`, and say in plain language what the agent is doing,
+      never raw log lines or byte counts. "Possibly stuck" after 10 minutes without change: check
+      the process and read its newest messages; a long build or test is not stuck. Dead, or
+      silent for 20 minutes: stuck; kill it only if it is ours. For a Claude agent, the progress
+      signal is its transcript file's size plus its worktree.
+   7. **Still in force:** the effort rule (a heavy model, Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6
+      Pro or MiniMax-M3, runs at `medium` at most and at `low` when medium is not needed; a model
+      with no medium takes its lowest variant at or below `high`; a light model stays at `high`);
+      Sonnet's tripwire (`docs/models.md`) in every Sonnet brief; reach (L26: an OpenCode reviewer
+      cannot reach the user's install or a cloud session, so the main session runs those lines
+      and posts their output on the PR); a cloud brief starts by checking the hostname and that
+      `/mnt/c` is absent, and stops if either check fails; every model id comes from a live list
+      (`opencode models <provider>`), never memory.
 
-      Whoever implements works in its own worktree and keeps a short running-notes file there
-      (`RUN-NOTES.md`: the plan, a progress line per commit, an END block before stopping). It
-      pushes after every commit, and opens the PR. When a subagent ends, the main session reads
-      its final report before acting (rule 25), and posts its notes on the issue.
-   2. **At every review** (a first review, a re-review, a re-check of named fixes), ask the user ONE
-      question: which external model reviews? Run that review alone, one at a time
-      (`review.mjs --reviewer <name>`), and relay its findings to the user in full (rule 8). A PR
-      gets one review unless the user asks for more.
-   3. With each question, show quota-tracker's recommendation as a **suggestion only**:
-      `curl -s "http://localhost:8765/recommend?tier=heavy"` for heavy work (a hard task: a guard,
-      a gate, a new mechanism across files, a new dependency, or a task whose last round found
-      bypasses), `tier=light` for small work. Give its `pick`/`pair` with rank, outlook and
-      reliability. If it does not answer, ask without the suggestion.
-   4. **The only fixed rules:**
-      - the reviewer is never of the implementer's family (`review.mjs` refuses it);
-      - DeepSeek is never used, on any route;
-      - Alibaba only when the user asks.
-   5. Record each choice (who, which model, the suggestion and its reasons) on the issue or PR.
-   6. A failed run is diagnosed and fixed, not silently re-routed: another model only when the
-      provider does not answer, and the user names it.
-   7. **Watching OpenCode runs, and any other background agent:**
-      - Start every OpenCode run in the background, with stdin from a file or closed, never an
-        inherited pipe. `opencode run` waits for stdin's end-of-file before it creates a session;
-        the scripts close it. Never wait on a run blind.
-      - Start every long job (a sitting, a review, an implement run) as its own systemd unit:
-        `tools/harness/run-unit.sh <name> <log> -- <command>` (unit `iwa-<name>`, memory cap,
-        stdin from /dev/null; it outlives a Claude Code restart). Watch it with one monitor that
-        checks every 1–2 minutes: `tools/harness/watch.sh --label <name> --unit iwa-<name> --file <log>`,
-        plus `--opencode-log <log>` for an OpenCode run (its stall signal is the session's last
-        update, since `opencode run` writes its output file only at the end). A job started
-        otherwise is watched by `--pid <pid>` (`kill -0`). Never
-        test a job's life with `pgrep -f <pattern>` in a loop: the pattern is in the watching
-        shell's own command line, so it always matches and the exit is never seen (L48; on
-        2026-10-11 a review's exit went unseen for 1.5 hours that way). Add the run's own
-        progress checks below in a second monitor if needed, never a hand-made liveness test:
-        - that the session started (the run log's `session ses_… started` line, or
-          `opencode session list` in the run's directory), and the run's exit;
-        - progress: the session's `updated` time, the worktree's changed files, new lines in
-          `RUN-NOTES.md`, and new commits on the branch;
-        - "possibly stuck" after about 10 minutes with no change;
-        - "unpushed" when a commit sits on the branch but not on origin for about 15 minutes: push
-          it for the run, and record that;
-        - free memory, when the machine is short of it: run reviews and builds one at a time.
-
-        For a Claude subagent, the progress signal is its transcript file's size plus its
-        worktree.
-      - A model-driven sitting's monitor adds `--frames <sitting dir>` (`tools/harness/sitting_stall.py`):
-        "game stuck" when the screen has not changed, no capture came, or the driver acted with no
-        fight, case or game change, for 5 minutes. On it, push a notification to the user, look at the
-        named frame, and stop the sitting or file the fix (the owner, 2026-10-11).
-      - When an OpenCode run starts, give the user its session id and the line to follow it:
-        `tools/harness/peek.sh ses_… [-n 20]` (its latest tool calls and messages, live; it also takes
-        the run log) (the owner, 2026-10-11).
-      - Tell the user, in plain language, what each running agent is doing: the step it is on,
-        what it committed, what it found (from its notes, commits and latest session messages).
-        Never raw log lines or byte counts.
-      - On a "possibly stuck" flag: check that the process is alive, and read its newest session
-        messages (`opencode export <ses_…>`, or rule 25's reader). A long build or test step is
-        not stuck. A run that is dead, or silent for 20 minutes, is stuck: kill it only if it is ours.
-      - When a run ends, read its final message before doing anything else (rule 25). A run that
-        stopped and reported a blocker gets an answer (fix the brief or the setup), not a retry on
-        another model.
-      - A run that our own limits interrupted (the idle or the total timeout) is resumed in its own
-        session and worktree, not restarted: `implement.mjs … --model <same> --session <ses_…>
-        [--idle-min N --total-min N]`, which sends a short "continue where you stopped" message.
-   8. **Still in force**, because they are not model choices:
-      - **Effort**: a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro, MiniMax-M3) runs at
-        `medium` at most, and at `low` when medium is not needed. A model with no medium takes its
-        lowest variant at or below `high`. A light model stays at `high`.
-      - **Sonnet's tripwire**: every Sonnet brief carries the paragraph in `docs/models.md`. On an
-        `ESCALATE`, the main session asks the user who answers it, or who takes the task over.
-      - **Reach** (L26): OpenCode cannot reach the user's install or a cloud session. The main
-        session runs the lines that read the install and posts their output on the PR, so only
-        choices that can do the work are offered.
-      - **Cloud sessions**: a cloud brief starts by checking the hostname and that `/mnt/c` is
-        absent, and stops if either check fails.
-      - Every model id comes from a live list (`opencode models <provider>`), never memory.
-
-   The working strategy, how runs are made and what each model has shown are in `docs/models.md`,
-   kept identical to malpaco's copy; the main session keeps it current.
+   The roster, how a run is made and what each model has shown are in `docs/models.md`; the main
+   session keeps it current.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate.
    Exception (the owner, 2026-10-05): when the remaining findings are small and change no result
    (wording, a narrowed claim, a missing test or correction note), the main session grants a third,
@@ -161,8 +149,8 @@ indexed in `docs/tasks/README.md`.
    Undo a mutation or scratch edit by writing back the file's saved contents (read it first,
    restore it in a `finally`), or commit first; never `git checkout`, `git restore` or `git reset`
    a file with uncommitted work: they return the last commit and destroy the rest. Keep the saved
-   copy inside your worktree (`<file>.saved`, deleted afterwards) or in your `mktemp -d` folder, never
-   as a loose file in `/tmp`: OpenCode refuses writes outside the worktree except in that folder. (The owner, 2026-10-11:
+   copy inside your worktree (`<file>.saved`, deleted afterwards) or in a `mktemp -d` folder under
+   `/tmp`. (The owner, 2026-10-11:
    in another project, a `git checkout <file>` used to undo a mutation wiped a whole rework round's
    uncommitted edits; here fix-87's implementer lost its uncommitted file the same way.)
 10. A comment asserting behaviour at an edge arrives with the test that visits that edge.
@@ -172,8 +160,8 @@ indexed in `docs/tasks/README.md`.
     one-file mechanical fix may ride the PR that found it, declared under Scope.
 13. Design decisions go to the user; nothing else waits for the user.
     - **Work autonomously** (the owner, 2026-10-05): chain write, run, review, merge and the next
-      task. Ask only for design decisions, escalations, the questions rule 6 requires, and when
-      every quota is out.
+      task. Ask only for design decisions, escalations, rule 6's two questions, and when every
+      quota is out.
     - **Merge without asking** on an approving cross-family review and green CI (rule 7). Research
       PRs (those that add run records) merge with `gh pr merge --merge`, never squash, so their
       measurement commits survive; other PRs squash.
@@ -320,15 +308,13 @@ indexed in `docs/tasks/README.md`.
         ones, and the finding says which ones it cites.
       - This reaches every brief for a task that measures (research, runtime spikes, drivers that
         time things, static reading), as the standing paragraph in `docs/models.md`.
-21. **Model trials** (the owner's decision, 2026-10-02). The record shows the user which models are
-    viable. After every implement or review run, the main session adds one comment to
-    the model-trials issue (implementers and reviewers post only on their own PR):
-    - the model, its role and the task;
-    - the exit code, the duration and the review round;
-    - what the review caught or missed.
-
-    A model that fails is diagnosed and fixed before any fallback: its log, the brief, the agent
-    file, the harness and the login. It is then retried. The diagnosis goes in the same comment.
+21. **Model trials** (the owner's decision, 2026-10-02; narrowed 2026-10-11). The record shows the
+    user which reviewer models are viable. After a review run that taught something (a model missed
+    a bypass, found a class of defects, failed on infrastructure), the main session adds one comment
+    to the model-trials issue (reviewers post only on their own PR): the model, the task, the exit
+    code, the duration, the round, and what the review caught or missed. A routine approve needs no
+    comment. A model that fails is diagnosed and fixed before any fallback: its log, the brief, the
+    agent file, the harness and the login. The diagnosis goes in the same comment.
 22. **Be practical** (the owner, 2026-10-05, a lesson from goal2-archaeology). Be flexible: when
     something is true with a probability of 80–90%, accept it rather than spend much more time
     proving it, and say how sure you are.
@@ -361,10 +347,11 @@ indexed in `docs/tasks/README.md`.
 25. **Read a delegated run's result before acting on it** (the owner, 2026-10-05, from
     goal2-archaeology T23). Before retrying a delegated run, re-routing it to another model, or calling
     it a failure, read what it returned. Never retry blind.
-    - OpenCode runs (`implement.mjs`, `review.mjs`): exit 1 with an empty diff looks the same for an
-      early end and for a run that stopped and reported a blocker, and the log's tail shows only the
-      last tool output. Read the model's final message from the session record, read-only, with the
-      session id from the run log's `session ses_…` line (never read `auth.json` in that directory):
+    - OpenCode reviews (`review.mjs`): exit 3 looks the same for a model that never answered, one
+      that stopped on a rejected path and one that wrote a review the script could not read, and the
+      log's tail shows only the last tool output. Read the model's final message from the session
+      record, read-only, with the session id from the run log's `session ses_…` line (never read
+      `auth.json` in that directory):
 
       ```bash
       python3 - <<'PY'
@@ -388,11 +375,11 @@ indexed in `docs/tasks/README.md`.
     separate tasks or fixes if the parts can each merge on their own and each part's Done-when
     passes without the others. Split when any of these holds:
     - **Different difficulty or pair:** one part is a guard, gate or new mechanism (hard) and the
-      rest is not (easy). Each part gets its own choice of models (rule 6), so an easy part is not held to a hard review,
-      and a hard part is not reviewed as easy. (T39's catalogue and the check's hash verification,
+      rest is not (easy). Each part gets its own reviewer (rule 6), so an easy part is not held to
+      a hard review, and a hard part is not reviewed as easy. (T39's catalogue and the check's hash verification,
       #140, 2026-10-09.)
-    - **Different hands:** one part reads the user's install (a Claude agent or the main session, L26), and
-      another is repository-only work OpenCode can do.
+    - **Different hands:** one part reads the user's install (the main session, L26), and another
+      is repository-only work a Claude agent can do unattended.
     - **One part can be blocked** (on the owner, on quota, on another task) while the others are
       ready.
     - **L58's case:** the task is likely to outlast one implementer run (about an hour), or its
