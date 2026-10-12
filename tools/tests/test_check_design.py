@@ -1,9 +1,10 @@
-"""Tests for tools/check_design.py (T50 Done-when 2; T51 Done-when 2; T53 Done-when 2).
+"""Tests for tools/check_design.py (T50 Done-when 2; T51 Done-when 2; T53 Done-when 2; T52 Done-when 2).
 
 Each failure the tasks' Scope lists has one fixture that trips that failure alone: the clean
 fixture passes, and each test changes exactly one thing in it and expects exactly one problem.
-`DesignWorld` tests `design/core-rules.md`; `VarietyWorld` and `ComputerWorld` run the same failures
-against `design/variety.md` and `design/computer.md`, each with its own spec files. Every world writes
+`DesignWorld` tests `design/core-rules.md`; `VarietyWorld`, `ComputerWorld` and `UiWorld` run the same
+failures against `design/variety.md`, `design/computer.md` and `design/ui.md`, each with its own spec
+files; `design/ui.md` is also checked against the `Q-UI-*` rows of `questions/malpaco.md`. Every world writes
 every design file clean, so `main()` sees a whole tree and only the file under test changes.
 """
 import contextlib
@@ -54,15 +55,35 @@ C_ROWS = {
 }
 C_CHOICES = "## Choices for the owner\n\n1. **Levels** (C-AI-08; `open`). (a) one; (b) two. Recommendation: (b).\n"
 
+# ui.md: two claims in user-interface.md, its only in-scope spec file, and two UI questions.
+U_SPEC = {
+    "user-interface": ["C-UI-01", "C-UI-02"],
+}
+U_ROWS = {
+    "C-UI-01": "| C-UI-01 | keep | [Screens](#screens) | It serves play. |",
+    "C-UI-02": "| C-UI-02 | change | [The board](#the-board) | Ownership needs a second cue. |",
+    "Q-UI-01": "| Q-UI-01 | keep | [The board](#the-board) | Counts read well. |",
+    "Q-UI-03": "| Q-UI-03 | open | [Sound](#sound) | The owner chooses. |",
+}
+U_CHOICES = "## Choices for the owner\n\n1. **Sound** (Q-UI-03; `open`). (a) one; (b) two. Recommendation: (b).\n"
+# questions/malpaco.md: the in-scope rows are the Q-UI ones only. A rules question (Q-CMB-01) and the
+# weakness table, which names Q-UI-05 in a later cell, are out of scope and must not count.
+QUESTIONS_TEXT = ("# Questions\n\n## Rules\n\n| Id | q |\n| --- | --- |\n| Q-CMB-01 | a rules question |\n\n"
+                  "## User interface\n\n| Id | What | Questions |\n| --- | --- | --- |\n"
+                  "| UW-1 | a weakness | Q-UI-01, Q-UI-05 |\n\n"
+                  "| Id | q |\n| --- | --- |\n| Q-UI-01 | a UI question |\n| Q-UI-03 | another |\n")
+
 WORLDS = {
     "core-rules.md": (SPEC, ROWS, CHOICES),
     "variety.md": (V_SPEC, V_ROWS, V_CHOICES),
     "computer.md": (C_SPEC, C_ROWS, C_CHOICES),
+    "ui.md": (U_SPEC, U_ROWS, U_CHOICES),
 }
 # What main() prints for each clean design file of the fixture tree, in check order.
 OK = ["design/core-rules.md ok: 3 claims, 3 rows",
       "design/variety.md ok: 3 claims, 3 rows",
-      "design/computer.md ok: 3 claims, 3 rows"]
+      "design/computer.md ok: 3 claims, 3 rows",
+      "design/ui.md ok: 4 claims, 4 rows"]
 
 
 def design_text(rows, choices):
@@ -81,6 +102,8 @@ class DesignWorld(unittest.TestCase):
         self.root = Path(tmp.name)
         (self.root / "spec").mkdir()
         (self.root / "design").mkdir()
+        (self.root / "questions").mkdir()
+        (self.root / "questions" / "malpaco.md").write_text(QUESTIONS_TEXT)
         for name, (spec, rows, choices) in WORLDS.items():
             for spec_file in check_design.DESIGNS[name]:
                 body = "".join(f"| {cid} | a claim | supported | s | b | f |\n" for cid in spec.get(spec_file, []))
@@ -260,7 +283,7 @@ class VarietyCleanTest(VarietyWorld):
             code = check_design.main(["--root", str(self.root)])
         self.assertEqual(code, 1)
         lines = out.getvalue().strip().splitlines()
-        self.assertEqual(lines, [OK[0], "design/variety.md: missing", OK[2]])
+        self.assertEqual(lines, [OK[0], "design/variety.md: missing", OK[2], OK[3]])
 
     def test_main_names_one_design(self):
         self.write_design()
@@ -276,7 +299,7 @@ class VarietyCleanTest(VarietyWorld):
         with contextlib.redirect_stdout(out):
             code = check_design.main(["--root", str(self.root)])
         self.assertEqual((code, out.getvalue().strip().splitlines()),
-                         (1, [OK[0], "C-CRD-02: no row in design/variety.md", OK[2]]))
+                         (1, [OK[0], "C-CRD-02: no row in design/variety.md", OK[2], OK[3]]))
 
     def test_variety_spec_file_missing(self):
         (self.root / "spec" / "production-centres.md").unlink()
@@ -304,19 +327,19 @@ class VariantsBanTest(VarietyWorld):
     def test_a_fence_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\n~~~\nx\n~~~\n")
         self.assertEqual(code, 1)
-        self.assertEqual(lines[:3], OK)
-        self.assertEqual(lines[3:], [l for l in lines[3:] if l.startswith("design/variants.md:")])
-        self.assertEqual([l.split(":")[1] for l in lines[3:]], ["3", "5"])
+        self.assertEqual(lines[:4], OK)
+        self.assertEqual(lines[4:], [l for l in lines[4:] if l.startswith("design/variants.md:")])
+        self.assertEqual([l.split(":")[1] for l in lines[4:]], ["3", "5"])
 
     def test_a_tag_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\n<div hidden>\n")
         self.assertEqual(code, 1)
-        self.assertEqual(len(lines), 4, lines)
-        self.assertTrue(lines[3].startswith("design/variants.md:3: a raw HTML tag"), lines)
+        self.assertEqual(len(lines), 5, lines)
+        self.assertTrue(lines[4].startswith("design/variants.md:3: a raw HTML tag"), lines)
 
     def test_a_comment_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\nText <!-- hidden -->.\n")
-        self.assertEqual((code, lines[3:]), (1, ["design/variants.md:3: an HTML comment; design files may not hold HTML comments"]))
+        self.assertEqual((code, lines[4:]), (1,["design/variants.md:3: an HTML comment; design files may not hold HTML comments"]))
 
 
 class VarietyFailureTest(VarietyWorld, FailureTest):
@@ -347,7 +370,7 @@ class ComputerCleanTest(ComputerWorld):
         with contextlib.redirect_stdout(out):
             code = check_design.main(["--root", str(self.root)])
         self.assertEqual((code, out.getvalue().strip().splitlines()),
-                         (1, [OK[0], OK[1], "design/computer.md: missing"]))
+                         (1, [OK[0], OK[1], "design/computer.md: missing", OK[3]]))
 
     def test_main_names_one_design(self):
         self.write_design()
@@ -363,7 +386,7 @@ class ComputerCleanTest(ComputerWorld):
         with contextlib.redirect_stdout(out):
             code = check_design.main(["--root", str(self.root)])
         self.assertEqual((code, out.getvalue().strip().splitlines()),
-                         (1, [OK[0], OK[1], "C-AI-02: no row in design/computer.md"]))
+                         (1, [OK[0], OK[1], "C-AI-02: no row in design/computer.md", OK[3]]))
 
     def test_computer_spec_file_missing(self):
         (self.root / "spec" / "computer-opponent.md").unlink()
@@ -391,6 +414,101 @@ class ComputerDecisionsHeadingTest(ComputerWorld, DecisionsHeadingTest):
     """The owner's section, both headings, in design/computer.md."""
 
 
+class UiWorld(DesignWorld):
+    design = "ui.md"
+    # keep_id and open_id are Q-UI questions, change_id a spec claim, alien_id an unknown question.
+    keep_id, change_id, open_id, alien_id = "Q-UI-01", "C-UI-02", "Q-UI-03", "Q-UI-99"
+
+
+class UiCleanTest(UiWorld):
+    def test_clean_fixture_passes_and_counts(self):
+        # 2 spec claims and 2 Q-UI questions; Q-CMB-01 and the weakness table's Q-UI-05 do not count.
+        self.write_design()
+        self.assertEqual(check_design.check(self.root, "ui.md"), ([], 4, 4))
+
+    def test_main_exits_1_without_the_ui_design(self):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        self.assertEqual((code, out.getvalue().strip().splitlines()),
+                         (1, [OK[0], OK[1], OK[2], "design/ui.md: missing"]))
+
+    def test_main_names_one_design(self):
+        self.write_design()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root), "design/ui.md"])
+        self.assertEqual((code, out.getvalue().strip()), (0, OK[3]))
+
+    def test_main_fails_on_a_problem_in_the_fourth_file_only(self):
+        del self.rows["Q-UI-01"]
+        self.write_design()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        self.assertEqual((code, out.getvalue().strip().splitlines()),
+                         (1, [OK[0], OK[1], OK[2], "Q-UI-01: no row in design/ui.md"]))
+
+    def test_ui_spec_file_missing(self):
+        (self.root / "spec" / "user-interface.md").unlink()
+        problems = self.problems()
+        # The missing file, and each C-UI row then names an unknown id.
+        self.assertEqual(problems[0], "spec/user-interface.md: missing")
+        self.assertEqual([p.split(": ", 1)[1] for p in problems[1:]],
+                         ["C-UI-01 is not an in-scope spec claim or question",
+                          "C-UI-02 is not an in-scope spec claim or question"])
+
+    def test_questions_file_missing(self):
+        (self.root / "questions" / "malpaco.md").unlink()
+        problems = self.problems()
+        # The missing file, and each Q-UI row then names an unknown id.
+        self.assertEqual(problems[0], "questions/malpaco.md: missing")
+        self.assertEqual([p.split(": ", 1)[1] for p in problems[1:]],
+                         ["Q-UI-01 is not an in-scope spec claim or question",
+                          "Q-UI-03 is not an in-scope spec claim or question"])
+
+
+class UiFailureTest(UiWorld, FailureTest):
+    """The failures, each tripped alone, in design/ui.md, plus the question-specific ones."""
+
+    def test_a_missing_spec_claim_row(self):
+        del self.rows["C-UI-01"]
+        self.assert_one("C-UI-01: no row")
+
+    def test_a_missing_question_row(self):
+        del self.rows["Q-UI-01"]
+        self.assert_one("Q-UI-01: no row")
+
+    def test_an_unknown_question_id(self):
+        self.extra_rows.append("| Q-UI-23 | keep | [Screens](#screens) | Invented. |")
+        self.assert_one("Q-UI-23 is not an in-scope spec claim or question")
+
+    def test_an_id_named_only_in_the_weakness_table_is_unknown(self):
+        # Q-UI-05 is in the questions file, but only inside the weakness table's last cell, not as a row.
+        self.extra_rows.append("| Q-UI-05 | keep | [Screens](#screens) | Not a question row. |")
+        self.assert_one("Q-UI-05 is not an in-scope spec claim or question")
+
+    def test_a_rules_question_row_is_unknown(self):
+        # Q-CMB-01 is a row of the questions file, but not a Q-UI one.
+        self.extra_rows.append("| Q-CMB-01 | keep | [Combat](#combat) | Wrong file. |")
+        self.assert_one("Q-CMB-01 is not an in-scope spec claim or question")
+
+    def test_a_core_claim_row_in_the_ui_file_fails(self):
+        self.extra_rows.append("| C-BRD-01 | keep | [The board](#the-board) | Wrong file. |")
+        self.assert_one("C-BRD-01 is not an in-scope spec claim or question")
+
+
+class UiDecisionsHeadingTest(UiWorld, DecisionsHeadingTest):
+    """The owner's section, both headings, in design/ui.md."""
+
+
+class QuestionRowElsewhereTest(DesignWorld):
+    def test_a_question_row_in_core_rules_fails(self):
+        # Only ui.md answers questions: a Q-UI row in another design file names an unknown id.
+        self.extra_rows.append("| Q-UI-01 | keep | [The board](#the-board) | Wrong file. |")
+        self.assert_one("Q-UI-01 is not an in-scope spec claim")
+
+
 class RepositoryTest(unittest.TestCase):
     def test_the_repository_design_is_complete(self):
         root = Path(check_design.__file__).resolve().parents[1]
@@ -403,6 +521,10 @@ class RepositoryTest(unittest.TestCase):
     def test_the_repository_computer_design_is_complete(self):
         root = Path(check_design.__file__).resolve().parents[1]
         self.assertEqual(check_design.check(root, "computer.md"), ([], 9, 9))
+
+    def test_the_repository_ui_design_is_complete(self):
+        root = Path(check_design.__file__).resolve().parents[1]
+        self.assertEqual(check_design.check(root, "ui.md"), ([], 24, 24))
 
 
 if __name__ == "__main__":

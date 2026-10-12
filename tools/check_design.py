@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Check each design file's decision table against its in-scope spec claims (T50, T51, T53).
+"""Check each design file's decision table against its in-scope spec claims (T50, T51, T53, T52).
 
 Each design file in `DESIGNS` has its own in-scope `spec/` files. For each, the check reads the
 claim tables of those spec files and the design file's decision table (every line that starts with
-`| C-`). A design file fails if:
-- an in-scope claim has no row, or more than one;
-- a row names an id that is not in its own in-scope spec files;
+`| C-` or `| Q-`). A design file in `QUESTIONS` is also checked against the question ids of one
+`questions/` file (`design/ui.md`: the `Q-UI-*` rows of `questions/malpaco.md`); its ids count as
+claims. A design file fails if:
+- an in-scope claim or question has no row, or more than one;
+- a row names an id that is not in its own in-scope spec files or questions;
 - a decision is not one of keep, change, replace, drop, open;
 - a change, replace or drop row has an empty "why";
 - an open row's id does not appear in the owner's section: the `## Choices for the owner` section
@@ -32,13 +34,19 @@ SPEC_FILES = ("board", "setup", "seats", "starting-state", "turn-sequence", "rei
               "movement", "combat", "ownership", "victory", "surrender")
 VARIETY_SPEC_FILES = ("cards", "island-bonuses", "production-centres", "hazards")
 COMPUTER_SPEC_FILES = ("computer-opponent",)
-DESIGNS = {"core-rules.md": SPEC_FILES, "variety.md": VARIETY_SPEC_FILES, "computer.md": COMPUTER_SPEC_FILES}
+UI_SPEC_FILES = ("user-interface",)
+DESIGNS = {"core-rules.md": SPEC_FILES, "variety.md": VARIETY_SPEC_FILES, "computer.md": COMPUTER_SPEC_FILES,
+           "ui.md": UI_SPEC_FILES}
+# Design files that also answer questions: (the questions file, the id prefix of its in-scope rows).
+QUESTIONS = {"ui.md": ("questions/malpaco.md", "Q-UI")}
 # Design files with no decision table: only the fence and comment ban applies, and a clean one prints
 # nothing (T51's variants catalogue).
 BAN_ONLY = ("variants.md",)
 DECISIONS = {"keep", "change", "replace", "drop", "open"}
 NEED_WHY = {"change", "replace", "drop"}
 CLAIM_ROW = re.compile(r"^\|\s*(C-[A-Z]+-\d+)\s*\|")
+# A decision row names a spec claim or a question; a question row in a file without questions is unknown.
+ROW = re.compile(r"^\|\s*((?:C|Q)-[A-Z]+-\d+)\s*\|")
 CHOICES = "the owner's section ('## Choices for the owner' or '## The owner's decisions')"
 OWNER_HEADING = re.compile(r"^## (Choices for the owner|The owner's decisions\b.*)$", re.M)
 
@@ -60,6 +68,18 @@ def spec_claims(root, spec_files=SPEC_FILES):
             if m:
                 ids.append(m.group(1))
     return ids, problems
+
+
+def question_ids(root, design):
+    """The in-scope question ids of a design file, in file order, and any problem reading them."""
+    if design not in QUESTIONS:
+        return [], []
+    rel, prefix = QUESTIONS[design]
+    path = root / rel
+    if not path.is_file():
+        return [], [f"{rel}: missing"]
+    row = re.compile(rf"^\|\s*({re.escape(prefix)}-\d+)\s*\|")
+    return [m.group(1) for line in path.read_text(encoding="utf-8").splitlines() if (m := row.match(line))], []
 
 
 FENCE = re.compile(r"^\s*(```|~~~)")
@@ -98,6 +118,9 @@ def choices_section(text):
 def check(root, design="core-rules.md"):
     """Return (problems, claim count, row count) for one design file, named as in DESIGNS."""
     claims, problems = spec_claims(root, DESIGNS[design])
+    questions, q_problems = question_ids(root, design)
+    claims, problems = claims + questions, problems + q_problems
+    unknown = "is not an in-scope spec claim" + (" or question" if design in QUESTIONS else "")
     rel = f"design/{design}"
     path = root / "design" / design
     if not path.is_file():
@@ -106,7 +129,7 @@ def check(root, design="core-rules.md"):
     problems += inactive_markdown(text, rel)
     rows = []
     for n, line in enumerate(text.splitlines(), 1):
-        m = CLAIM_ROW.match(line)
+        m = ROW.match(line)
         if m:
             rows.append((n, m.group(1), cells(line)))
     known = set(claims)
@@ -120,7 +143,7 @@ def check(root, design="core-rules.md"):
     for n, cid, row in rows:
         where = f"{rel}:{n}"
         if cid not in known:
-            problems.append(f"{where}: {cid} is not an in-scope spec claim")
+            problems.append(f"{where}: {cid} {unknown}")
         if len(row) != 4:
             problems.append(f"{where}: {cid} has {len(row)} cells, not 4")
             continue
