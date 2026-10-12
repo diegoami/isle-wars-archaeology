@@ -1,13 +1,16 @@
 # malpaco variants
 
-Every design choice of [core-rules.md](core-rules.md) (T50, the owner's decisions 1 to 12) and
-[variety.md](variety.md) (T51, the owner's decisions V1 to V12), with its decided option, the
-**canonical** variant malpaco builds first, and every other option kept as a named variant that a
-later version may offer as a setting. This file is a catalogue: it claims no spec rows, and the rule
-text lives in the two design files, linked from each entry. Options, recommendations and reasons are
-in each file's owner's-decisions section.
+Every design choice of [core-rules.md](core-rules.md) (T50, the owner's decisions 1 to 12),
+[variety.md](variety.md) (T51, the owner's decisions V1 to V12) and [computer.md](computer.md) (T53,
+the choices A1 to A12), with its decided option, the **canonical** variant malpaco builds first, and
+every other option kept as a named variant that a later version may offer as a setting. This file is
+a catalogue: it claims no spec rows, and the rule text lives in the design files, linked from each
+entry. Options, recommendations and reasons are in each file's owner's section. For T53 the
+canonical option is the owner's to choose; each entry names the recommended option, and the
+canonical line is filled in with the owner's decision.
 
-A variant name is the choice's number and the option's letter (for example **T50-11a**, **V2b**).
+A variant name is the choice's number and the option's letter (for example **T50-11a**, **V2b**,
+**A5c**).
 "Interacts with" names the other choices a variant changes the balance of, so that a later settings
 screen offers them together or warns.
 
@@ -57,7 +60,8 @@ screen offers them together or warns.
 - **T50-6a No handicap.** Only the computer's strength sets difficulty.
 - **T50-6c Shares by difficulty level.** Fixed shares per level, as the predecessor did: the handicap
   is hidden in the level.
-- Interacts with: T53's computer strength.
+- Interacts with: A1 to A3 (the computer's strength, a separate setting), A5 (a handicap the player
+  chose is never treated as a runaway at the deal).
 
 ### T50-7 Attack rules: the gate and the forfeit
 - **Canonical (b): one rule, at least 2 armies, no comparison, no forfeit; a failed attack does not
@@ -193,3 +197,97 @@ screen offers them together or warns.
 - **V12b Last 5 rounds.**
 - **V12c Conditional.** None in the last 5 rounds while the top two seats are within 4 countries.
 - Interacts with: T50-10, V8, V9.
+
+## T53: the computer opponent
+
+Every T53 option keeps [computer.md](computer.md)'s requirements: the same rules as a human, a human
+seat's view, its own random stream, and levels that change only decisions. No variant may relax them.
+
+### A1 The levels
+- **Canonical: the owner's choice.** Recommended (a): Easy, Normal and Hard.
+  [Difficulty levels](computer.md#difficulty-levels).
+- **A1a Three levels.** Easy, Normal and Hard.
+- **A1b Four levels.** Adds Expert: no mistakes, full card memory, the strongest leader check.
+- **A1c Slider.** A strength from 1 to 10 that moves every constant continuously.
+- Interacts with: A4, A9 (each level must separate from its neighbours in the tests), T50-6 (the human
+  share is the other difficulty control).
+
+### A2 The default level
+- **Canonical: the owner's choice.** Recommended (b): Normal. [Difficulty levels](computer.md#difficulty-levels).
+- **A2a Easy.** **A2b Normal.** **A2c Hard.**
+- Interacts with: A1, T50-6.
+
+### A3 One strength for all, or per seat
+- **Canonical: the owner's choice.** Recommended (b): per computer seat, default Normal for all.
+  [Difficulty levels](computer.md#difficulty-levels).
+- **A3a One setting.** Every computer seat at the same level.
+- **A3b Per seat.** A level beside each computer seat on the options screen.
+- Interacts with: T50-3 (seats and who plays them), A5 (mixed levels check a leader unequally).
+
+### A4 Deliberate mistakes
+- **Canonical: the owner's choice.** Recommended (b). [Difficulty levels](computer.md#difficulty-levels).
+- **A4a None.** Levels differ only in foresight, aggression, card timing and the leader check.
+- **A4b Low levels only.** Easy 25%, Normal 8% of decisions, among the three best actions; Hard none.
+- **A4c Every level.** As A4b, and Hard 3%.
+- Interacts with: A1, A9 (mistakes move win rates), A8 (mistakes draw on the seat's own stream).
+
+### A5 The leader check
+- **Canonical: the owner's choice.** Recommended (b). [The leader check](computer.md#the-leader-check).
+- **A5a None.** Each computer plays only for its own gain.
+- **A5b Seat-blind leader weight.** From 28 countries, or 1.5 times the next seat and at least 22,
+  scaled by level, none at Easy.
+- **A5c Near a win only.** As A5b, only from 31 countries, where events stop.
+- Interacts with: T50-9 (the domination threshold sets the leader count), T50-3 (in a two-seat game
+  the leader is the only opponent), A10, V3 (a Surge set near the threshold).
+
+### A6 Battles per turn
+- **Canonical: the owner's choice.** Recommended (b): at most 10. [Quick turns](computer.md#quick-turns).
+- **A6a No bound.**
+- **A6b At most 10.**
+- **A6c At most 6.**
+- Interacts with: T52's presentation speed, T50-9 (a bound can delay a domination finish by a turn).
+
+### A7 Card timing
+- **Canonical: the owner's choice.** Recommended (b). [Cards](computer.md#cards).
+- **A7a Always at once.** Every set traded the turn it is complete, at every level.
+- **A7b By level.** Army sets at once everywhere; at Normal and Hard the Surge waits for a big turn and
+  the Raid set for a target; Easy trades all at once.
+- **A7c Hard holds raids.** As A7b, and Hard keeps a Raid set for a leader close to a win.
+- Interacts with: V2 and V3 (fixed army sets give no reason to wait; the Surge grows with income), V4
+  and V11 (holding risks the Squall and the discard), A12 (the Squall's place).
+
+### A8 The computer's random streams
+- **Canonical: the owner's choice.** Recommended (a). [Randomness](computer.md#randomness).
+- **A8a A stream per computer seat**, seeded from the game seed and the seat number.
+- **A8b One computer stream** for all computer seats, seeded from the game seed.
+- Interacts with: T50-2 (a saved game replays from the action list either way), A3 and A9 (with
+  A8a, changing one seat leaves the others' random choices as they were). Either needs the proposed
+  amendment to core-rules.md's Randomness section.
+
+### A9 Strength targets
+- **Canonical: the owner's choice.** Recommended (a). [Targets](computer.md#targets).
+- **A9a The proposed ladder.** Normal 55% and Hard 70% against three scripted seats; Hard 35%
+  against three Normal.
+- **A9b Steeper.** 65%, 80% and 45%.
+- **A9c Gentler.** 45%, 60% and 30%.
+- Interacts with: A1, A4, A6 (a battle bound can cap Hard's strength).
+
+### A10 Raid targets
+- **Canonical: the owner's choice.** Recommended (b). [Cards](computer.md#cards).
+- **A10a Planned attacks only.** A stack the computer attacks this turn.
+- **A10b Planned attacks or the leader.** Also the largest stack of a leader (A5) of 8 or more.
+- **A10c Largest anywhere.** The largest enemy stack on the board.
+- Interacts with: V5 (the raid's reach and size), A5, A12 (the Shield estimate).
+
+### A11 Playing for the score
+- **Canonical: the owner's choice.** Recommended (b). [Near the end](computer.md#near-the-end).
+- **A11a No change.**
+- **A11b The last 3 rounds.** Countries valued over armies in a round-limit game.
+- Interacts with: T50-10 (only with the round limit on), V12 (no events in those rounds).
+
+### A12 Card memory
+- **Canonical: the owner's choice.** Recommended (b). [Difficulty levels](computer.md#difficulty-levels).
+- **A12a Every level remembers** every public card since the last reshuffle.
+- **A12b By level.** Easy none, Normal the Squall's place, Hard every public card.
+- **A12c None.** Only what the screen shows now.
+- Interacts with: V1 (the reshuffle resets what is known), V4 (the Squall's place), A7, A10.
