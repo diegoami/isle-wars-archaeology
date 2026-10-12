@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check each design file's decision table against its in-scope spec claims (T50, T51).
+"""Check each design file's decision table against its in-scope spec claims (T50, T51, T53).
 
 Each design file in `DESIGNS` has its own in-scope `spec/` files. For each, the check reads the
 claim tables of those spec files and the design file's decision table (every line that starts with
@@ -31,7 +31,8 @@ from pathlib import Path
 SPEC_FILES = ("board", "setup", "seats", "starting-state", "turn-sequence", "reinforcement",
               "movement", "combat", "ownership", "victory", "surrender")
 VARIETY_SPEC_FILES = ("cards", "island-bonuses", "production-centres", "hazards")
-DESIGNS = {"core-rules.md": SPEC_FILES, "variety.md": VARIETY_SPEC_FILES}
+COMPUTER_SPEC_FILES = ("computer-opponent",)
+DESIGNS = {"core-rules.md": SPEC_FILES, "variety.md": VARIETY_SPEC_FILES, "computer.md": COMPUTER_SPEC_FILES}
 # Design files with no decision table: only the fence and comment ban applies, and a clean one prints
 # nothing (T51's variants catalogue).
 BAN_ONLY = ("variants.md",)

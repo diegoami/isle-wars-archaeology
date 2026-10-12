@@ -2,8 +2,8 @@
 
 The core rules of malpaco: setup, seats, the board's shape, the deal, the turn, reinforcement,
 movement, combat, ownership, victory and leaving a game. They are written so that a TypeScript
-implementer can build them without reading `spec/`. Cards, island bonus values, production centres,
-hazards (random events) and the computer opponent's behaviour are T51's; the UI is T52's. (The
+implementer can build them without reading `spec/`. Cards, island bonus values, production centres and
+hazards (random events) are T51's; the computer opponent's behaviour is T53's; the UI is T52's. (The
 island bonus rule is settled here, because the board generator needs it; T51 may tune its constants.) Where a
 core rule touches them, it says so and stops.
 
@@ -41,7 +41,7 @@ locked option and no registration.
 | Board | generated from the game seed, a new one each game *(decision 1)* | generated |
 | Starting armies per country | 1–2, 1–3, 1–4 (range of the per-country spread, see [the deal](#the-deal)) | 1–3 |
 | Human share | −4 to +4 countries per human seat, relative to an even share *(decision 6)* | 0 |
-| Computer strength | T51 | T51 |
+| Computer strength | Easy, Normal or Hard, per computer seat; how each plays is in [computer.md](computer.md#difficulty-levels) *(computer.md, decisions A1 and A3)* | Normal for every computer seat *(computer.md, decision A2)* |
 | Event frequency | Off, Rare (1 in 21 per eligible turn change), Normal (1 in 14) or Often (1 in 8); the events are in [variety.md](variety.md#events) *(variety.md, decision V9)* | Normal |
 | Domination win | on (threshold [below](#victory)) or off *(decision 9)* | on |
 | Round limit | off, or 20 / 30 / 40 rounds *(decision 10)* | off |
@@ -50,9 +50,13 @@ locked option and no registration.
 
 ### Randomness
 
-- Every random value in a game (the board, the deal, the starting armies, the first seat, dice, card draws,
-  events, the computer's random choices) comes from **one seeded pseudo-random stream**. The seed is
-  set at setup, shown during the game, and can be typed in to replay the same board and deal.
+- Every random value of the rules (the board, the deal, the starting armies, the first seat, dice, card
+  draws, events) comes from **one seeded pseudo-random stream**, the game stream. The seed is set at
+  setup, shown during the game, and can be typed in to replay the same board and deal.
+- Each computer seat's own random choices come from a **separate stream**, seeded from the game seed and
+  the seat number; the game stream never serves them, so the computer's choices never change the game
+  stream's sequence of values. The computer's actions are recorded in the action list like a human's
+  *(computer.md, decision A8)*.
 - A draw of an integer in `[a, b]` is uniform. The engine's tests check uniformity and that the same
   seed and the same actions give the same game.
 - The engine is deterministic: a game is fully described by its settings, its seed and the list of
@@ -61,7 +65,8 @@ locked option and no registration.
 ### Stored files
 
 - **Settings**: the last options chosen, restored at the next start.
-- **Record**: wins and losses, per seat count and human-share setting, with no cap.
+- **Record**: wins and losses, per seat count, human-share setting and the computer seats' levels, with
+  no cap *(computer.md, decision A1)*.
 - **Saved game** *(decision 2)*: one slot, stored as settings + seed + action list and restored by
   replaying them, so a saved game cannot be re-rolled by reloading.
 - Every stored file carries a format version. A file that fails validation (wrong version, missing
@@ -166,7 +171,7 @@ step 4).
 - A border between islands is an ordinary border: there is no land or water rule, and every seat,
   human or computer, uses the same borders for every attack and move.
 - There are no special countries in the core rules. Any "key country" the computer prefers is the
-  computer's own policy (T51), computed on the generated board, not stored data.
+  computer's own policy (T53), computed on the generated board, not stored data.
 
 ## The deal
 
@@ -204,7 +209,7 @@ Starting cards, if any, are T51's.
 ## The turn
 
 A turn has these phases, in order. Every seat follows the same phases; the computer only chooses
-differently (T51).
+differently (T53).
 
 1. **Income**: the reinforcement pool is computed ([Reinforcement](#reinforcement)).
 2. **Cards**: a trade-in, if the seat holds a valid set (T51).
@@ -229,7 +234,7 @@ always shown. Events (T51) are not drawn in round 1.
   over, and there is no way to keep armies back.
 - There is no stack cap. A stack can hold any number of armies; the UI (T52) shows large numbers
   compactly.
-- The computer places under exactly the same rule; only its choice of countries is T51's.
+- The computer places under exactly the same rule; only its choice of countries is T53's.
 
 ## Movement
 
@@ -260,9 +265,9 @@ always shown. Events (T51) are not drawn in round 1.
 - The UI (T52) offers one exchange per action and "continue until captured, stopped, or down to N".
   The engine resolves exchanges one at a time either way, so results do not depend on pace.
 - There is no limit on attacks or battles per turn, for any seat. How often the computer attacks is
-  its policy (T51), not a rule.
+  its policy (T53), not a rule.
 - No setup option changes combat. Difficulty comes from the deal and from the computer's strength
-  (T51), never from the dice.
+  (T53), never from the dice.
 
 ## Ownership change
 
@@ -270,7 +275,7 @@ always shown. Events (T51) are not drawn in round 1.
 - The attacker moves armies in from the attacking country: at least 1, at most all but one of the
   attacker's remaining armies. The seat chooses; the default is all but one. Armies are conserved:
   no stack cap clips them.
-- The computer follows the same rule; how many it moves is its policy (T51).
+- The computer follows the same rule; how many it moves is its policy (T53).
 - A seat left with no countries is **eliminated**: it is skipped for the rest of the game. What
   happens to its cards is T51's.
 
@@ -429,7 +434,7 @@ The predecessor's human and computer played under different rules: the attack ga
 against a margin), the minimum stack (2 against 3–5), the forfeit (human only), the attack pacing
 (unlimited against drawn rounds), the concession (offered only to a human), and the dealt share
 (fixed by the human's difficulty level). malpaco has **one rule set for every seat**. The computer's
-strength is a matter of its decisions (T51), and the human's handicap is an explicit setting
+strength is a matter of its decisions (T53), and the human's handicap is an explicit setting
 (decision 6), so a player can see what is hard and why.
 
 ### Game length and the end
@@ -551,8 +556,8 @@ so.
 | C-BRD-04 | keep | [Generation](#generation): symmetric borders, 2–5 neighbours, connected, 14–18 crossings | Few crossings make island entrances chokepoints worth holding or forcing; symmetry and connectedness keep every country reachable. These are the generator's invariants. |
 | C-BRD-05 | change | [The board](#the-board): crossings are ordinary borders, and every seat uses the same borders | Kept: no land or water rule. Changed: the computer's moves no longer follow a hard-coded pair table; one border graph for everyone works on any board and hides no rule from the player. |
 | C-BRD-06 | keep | [The board](#the-board): positions are generated with the board and are display data only | A rule that reads screen positions would tie play to layout; keeping them display-only lets T52 lay out freely. |
-| C-BRD-07 | drop | [The board](#the-board): no special countries in the core rules | Per-island key lists that nothing reads are dead data. A preferred-country list is the computer's policy, T51's to design. |
-| C-SET-01 | change | [Options](#options): seats, board (generated), starting armies, human share, computer strength, events, domination, round limit, seed, speed, sound | The options are where variety comes from: player count, handicap, game length and end conditions are added; strength and events stay and are T51's. |
+| C-BRD-07 | drop | [The board](#the-board): no special countries in the core rules | Per-island key lists that nothing reads are dead data. A preferred-country list is the computer's policy, T53's to design. |
+| C-SET-01 | change | [Options](#options): seats, board (generated), starting armies, human share, computer strength, events, domination, round limit, seed, speed, sound | The options are where variety comes from: player count, handicap, game length and end conditions are added; strength stays and is T53's, events stay and are T51's. |
 | C-SET-02 | drop | [Options](#options): every option open | The locks served a registration scheme; in malpaco they would only remove variety. |
 | C-SET-04 | drop | [Options](#options): no registration; speed is presentation only | A registration check has no purpose in malpaco; the speed helpers become a UI setting (T52) that never changes a rule. |
 | C-SET-05 | change | [Stored files](#stored-files): settings, an uncapped record, one saved game restored by replay | The record's cap and cipher served registration; plain storage and saving a long game help the player (decision 2). |
@@ -560,7 +565,7 @@ so.
 | C-SET-07 | change | [Stored files](#stored-files): versioned, validated files; invalid files fall back to defaults | Unvalidated files let bad values into a game; a version and validation make old or edited files safe. |
 | C-RND-01 | change | [Randomness](#randomness): one seeded stream; the seed is shown and can be set | A visible seed lets players replay or share a deal and makes the engine testable; nothing about play changes. |
 | C-RND-02 | change | [Randomness](#randomness), [Stored files](#stored-files): deterministic engine; a saved game is restored by replay | Replay from seed and actions restores a game exactly, so reloading cannot re-roll luck. |
-| C-RND-03 | keep | [Randomness](#randomness): one stream, uniform integer draws | One stream keeps replay exact; malpaco requires uniform draws and tests them, where the predecessor's uniformity was not established. |
+| C-RND-03 | keep | [Randomness](#randomness): one game stream for the rules' draws, uniform integer draws; each computer seat's choices use a stream of its own from the same seed (computer.md, decision A8) | One stream keeps replay exact; malpaco requires uniform draws and tests them, where the predecessor's uniformity was not established. The computer's separate streams keep its choices from shifting the dice, and its actions are in the action list. |
 | C-PLY-01 | change | [Seats](#seats): 2 to 4 seats | Two- and three-seat games are shorter and play differently, which adds variety (decision 3). |
 | C-PLY-02 | change | [Seats](#seats): each seat human or computer; hot-seat and all-computer allowed | The lock served registration; several humans on one screen and watch-only games add ways to play (decision 3). |
 | C-PLY-03 | keep | [Seats](#seats): default one human, three computers | A full four-seat game against the computer is the standard single-player game and the base the balance is tuned for. |
@@ -576,22 +581,22 @@ so.
 | C-TRN-03 | change | [The turn](#the-turn): a round counter, always shown; no events in round 1 | Players judge pace and plan for a round limit by the round number; a hidden counter gave them nothing. |
 | C-REI-01 | keep | [Reinforcement](#reinforcement): countries divided by 3, rounded down, once per turn | Income that grows with land held rewards expansion; computing it once per turn keeps the turn's budget clear. Numbers in [Income](#income). |
 | C-REI-02 | keep | [Reinforcement](#reinforcement): a floor of 2 on the country part | The floor keeps a small seat playing without rescuing it, so eliminations still happen and games end. |
-| C-REI-03 | keep | [Reinforcement](#reinforcement): country part + complete-island bonuses + trade-in | Three readable sources of income, each a goal: land, islands, cards. Bonuses follow the board's rule ([Island bonuses](#island-bonuses)); trade-in values and the computer's trade choices are T51's. |
+| C-REI-03 | keep | [Reinforcement](#reinforcement): country part + complete-island bonuses + trade-in | Three readable sources of income, each a goal: land, islands, cards. Bonuses follow the board's rule ([Island bonuses](#island-bonuses)); trade-in values are T51's and the computer's trade choices T53's. |
 | C-REI-04 | change | [Reinforcement](#reinforcement): the whole pool is placed, nothing carries over, no stack cap | Kept: place everything, no carry-over (no hoarding). Changed: the 999 clamp silently destroyed armies; malpaco has no cap. |
-| C-REI-05 | change | [Reinforcement](#reinforcement): the computer places under the same rule, with exact accounting | One placement rule for every seat; the computer's leftover pool and clamp losses were accounting slips, not design. Where it places is T51's. |
+| C-REI-05 | change | [Reinforcement](#reinforcement): the computer places under the same rule, with exact accounting | One placement rule for every seat; the computer's leftover pool and clamp losses were accounting slips, not design. Where it places is T53's. |
 | C-MOV-01 | keep | [Movement](#movement): at most one move, after attacks, ending the turn | One short move makes positioning a real decision and keeps turns quick (decision 8). |
-| C-MOV-02 | keep | [Movement](#movement): at least 1 army stays; the seat chooses how many move | Every country must hold an army; letting each seat choose the number is one rule for all. How many the computer moves is T51's. |
+| C-MOV-02 | keep | [Movement](#movement): at least 1 army stays; the seat chooses how many move | Every country must hold an army; letting each seat choose the number is one rule for all. How many the computer moves is T53's. |
 | C-MOV-03 | keep | [Movement](#movement): neighbours only; a just-captured country may attack and move | Chained captures let a strong stack build momentum across a front, which is exciting and rewards concentration. |
 | C-CMB-01 | replace | [Combat](#combat): every seat attacks with at least 2 armies, no comparison with the defender | Two different gates for human and computer were unfair and hidden; one minimum for all is fair, and attrition attacks become a tactic (decision 7). |
 | C-CMB-02 | replace | [Combat](#combat): no ratio or difference gate for anyone | With no comparison gate, its form no longer matters; the dice already make a weak attack costly ([The attacker's minimum](#the-attackers-minimum-and-the-gates)) (decision 7). |
-| C-CMB-03 | replace | [Combat](#combat): minimum attacking stack 2 for every seat | The computer's larger minimums are its caution, which belongs in its policy (T51), not in a rule the human cannot see (decision 7). |
+| C-CMB-03 | replace | [Combat](#combat): minimum attacking stack 2 for every seat | The computer's larger minimums are its caution, which belongs in its policy (T53), not in a rule the human cannot see (decision 7). |
 | C-CMB-04 | keep | [Combat](#combat): one six-sided die each per exchange, no stack cap; pace is a UI choice | One die against one is easy to read, and each exchange is a visible event; batching only changed pace and becomes a UI control (T52). |
 | C-CMB-05 | change | [Combat](#combat): ties are re-rolled | With ties to the defender a defending army is worth 1.4 attacking ones and boards lock; re-rolled ties make each exchange fair, so a larger stack is favoured and upsets stay possible (decision 11). |
 | C-CMB-06 | keep | [Combat](#combat): the exchange's loser loses one army | One army per exchange keeps battles granular, so the attacker can stop at any point with a clear picture. |
 | C-CMB-07 | keep | [Combat](#combat): only the two stacks and the dice enter an exchange | No hidden modifiers: players can reason about odds. A combat card (T51) must state its effect openly. |
-| C-CMB-08 | change | [Combat](#combat): every seat resolves one exchange at a time and may stop after any | The same rule for all seats; the computer's choice when to stop is its policy (T51). The UI's continue control (T52) changes pace, not results. |
+| C-CMB-08 | change | [Combat](#combat): every seat resolves one exchange at a time and may stop after any | The same rule for all seats; the computer's choice when to stop is its policy (T53). The UI's continue control (T52) changes pace, not results. |
 | C-CMB-09 | replace | [Combat](#combat): an attacker at 1 army stops and keeps its country, for every seat | The human-only forfeit made attacking a trap (80% loss of the country at 4 against 4) and favoured waiting; no forfeit for anyone (decision 7). |
-| C-CMB-10 | change | [Combat](#combat): no limit on attacks per turn for any seat | Unlimited attacks allow momentum; the computer's drawn rounds were pacing, which becomes its policy (T51). |
+| C-CMB-10 | change | [Combat](#combat): no limit on attacks per turn for any seat | Unlimited attacks allow momentum; the computer's drawn rounds were pacing, which becomes its policy (T53). |
 | C-CMB-11 | keep | [Combat](#combat): no setup option changes combat | One set of odds to learn; difficulty comes from the deal's handicap and the computer's strength, never from the dice. |
 | C-CMB-12 | change | [Combat odds](#combat-odds): the exact model under uniform dice, with ties re-rolled | Inconclusive in the spec, so this row is a design choice: malpaco sets the odds deliberately. With ties re-rolled a coin flip needs one army more than the defender, not about twice (decision 11). |
 | C-OWN-01 | change | [Ownership change](#ownership-change): every capturing seat moves in at least 1, at most all but one; no clipping | One rule for all seats; a captured country is never empty; armies are conserved instead of clipped at 999. |
@@ -600,7 +605,7 @@ so.
 | C-VIC-03 | change | [Victory](#victory): domination and the round limit end stalled games | Nothing ended a stalled board; with domination or a round limit on, every game ends. |
 | C-VIC-04 | change | [Victory](#victory): events paused in round 1 and within 4 countries of winning (31 or 42 of 46) | Kept: no luck at the very start or end. Changed: the threshold follows malpaco's win condition. Event odds are T51's. |
 | C-VIC-05 | keep | [Ownership change](#ownership-change): a seat with no countries is eliminated and skipped | Elimination is the clear consequence of losing everything; what happens to its cards is T51's and may change there. |
-| C-VIC-06 | change | [Stored files](#stored-files): the record per seat count and share setting, no cap | The cap served registration; a record grouped by setup shows progress honestly. |
+| C-VIC-06 | change | [Stored files](#stored-files): the record per seat count, share setting and computer levels, no cap | The cap served registration; a record grouped by setup shows progress honestly. |
 | C-SUR-01 | replace | [Victory](#victory): a domination win for any seat replaces the concession | An offer only a human receives is an asymmetry; one automatic threshold for all is simpler and fair (decision 9). |
 | C-SUR-02 | replace | [Victory](#victory): no offer; a human who wants to fight on turns domination off at setup | The accept-or-refuse step is replaced by a setup option, so the choice is made once and known to all (decision 9). |
 | C-SUR-03 | replace | [Leaving a game](#leaving-a-game): an explicit resign that records a loss whatever the seat holds | Leaving through a new game, charged only at 1–9 countries and not for one seat, was unclear and uneven; an explicit resign is honest. |
