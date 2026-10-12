@@ -9,6 +9,10 @@ permission:
     "/tmp/iwa-review-*": allow
     "/tmp": allow
     "/tmp/*": allow
+    # review.mjs's per-PR worktree is under worktreeRoot from harness.json
+    # (../{repo}-work/<n>-review-<hash>/); bash from that cwd auto-rejects
+    # without this grant (rule 13 fix #208).
+    "/home/diego/projects/isle-wars-archaeology-work/*": allow
   task:
     "*": deny
   bash:
