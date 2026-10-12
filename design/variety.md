@@ -416,8 +416,22 @@ What it says:
         print(f"events {name:6} p=1/{round(1 / p)}: mean spacing {spacing:.0f} turn changes; per game:"
               f" {eligible(20, 1) / spacing:.1f} (20 rounds, domination, ~1 round paused near the end),"
               f" {eligible(20, 3) / spacing:.1f} (round limit 20, last 3 quiet), {eligible(30, 3) / spacing:.1f} (limit 30)")
+    from fractions import Fraction as F
     weights = {"storm": 4, "revolt": 2, "shift": 2, "harvest": 6}
-    print("share of events by kind:", {k: f"{100 * w / 14:.0f}%" for k, w in weights.items()})
+    p = {k: F(w, 14) for k, w in weights.items()}
+    print("raw draw weights:", {k: f"{100 * float(v):.1f}%" for k, v in p.items()})
+    # The kind after an event of kind j: draw once; a repeat of j is drawn again once (and then stands).
+    def step(j, i):
+        return p[j] * p[j] if i == j else p[i] + p[j] * p[i]
+    shares = {k: p[k] / (1 + p[k]) for k in p}              # proposed stationary shares, then normalised
+    total = sum(shares.values()); shares = {k: v / total for k, v in shares.items()}
+    assert all(sum(shares[j] * step(j, i) for j in p) == shares[i] for i in p)   # exact: pi = pi P
+    print("delivered shares of events in the long run:", {k: f"{100 * float(v):.2f}%" for k, v in shares.items()})
+    for name, rate in (("normal", 4.8), ("normal, 20-round limit", 4.3)):
+        print(f"harvests per game ({name}, {rate} events): {rate * float(shares['harvest']):.1f};"
+              f" shifts: {rate * float(shares['shift']):.1f}")
+    print("a 30-army harvest against mid income 6-12:", f"{30 / 12:.1f}-{30 / 6:.1f} turns; at the deck model's 9: {30 / 9:.2f}")
+    print("total placement with a 15-set at income 2-3:", f"{2 + 15}-{3 + 15} armies, {(3 + 15) / 3:.1f}-{(2 + 15) / 2:.1f} times normal")
 
 Its output:
 
@@ -432,16 +446,24 @@ Its output:
     events rare   p=1/21: mean spacing 22 turn changes; per game: 3.3 (20 rounds, domination, ~1 round paused near the end), 2.9 (round limit 20, last 3 quiet), 4.7 (limit 30)
     events normal p=1/14: mean spacing 15 turn changes; per game: 4.8 (20 rounds, domination, ~1 round paused near the end), 4.3 (round limit 20, last 3 quiet), 6.9 (limit 30)
     events often  p=1/8: mean spacing 9 turn changes; per game: 8.0 (20 rounds, domination, ~1 round paused near the end), 7.1 (round limit 20, last 3 quiet), 11.6 (limit 30)
-    share of events by kind: {'storm': '29%', 'revolt': '14%', 'shift': '14%', 'harvest': '43%'}
+    raw draw weights: {'storm': '28.6%', 'revolt': '14.3%', 'shift': '14.3%', 'harvest': '42.9%'}
+    delivered shares of events in the long run: {'storm': '28.78%', 'revolt': '16.19%', 'shift': '16.19%', 'harvest': '38.85%'}
+    harvests per game (normal, 4.8 events): 1.9; shifts: 0.8
+    harvests per game (normal, 20-round limit, 4.3 events): 1.7; shifts: 0.7
+    a 30-army harvest against mid income 6-12: 2.5-5.0 turns; at the deck model's 9: 3.33
+    total placement with a 15-set at income 2-3: 17-18 armies, 6.0-8.5 times normal
 
 What it says:
 
 - **A set's size depends on who trades it.** A 15-set is three to five turns of early income, one
-  turn or less of a late leader's, and **five to seven and a half turns** of the smallest seat's. A
+  turn or less of a late leader's, and **five to seven and a half turns** of the smallest seat's: those are the armies it adds.
+  Added to that seat's own income of 2 or 3, the turn's placement is 17 or 18, **6 to 8.5 times** its
+  normal placement. A
   Surge adds exactly one turn's income for anyone, so it is worth most to the seat with the largest
   pool: 15 to 25 armies for a late leader.
 - **Comebacks.** The large fixed sets and the uncapped raid help a trailing seat most: a 15-set
-  multiplies the smallest seat's placement five- to sevenfold for a turn, and a raid on the leader's main stack of 40 removes 20 to
+  adds 5 to 7.5 turns of the smallest seat's income, taking its placement to 17 or 18 armies,
+  6 to 8.5 times its normal placement, and a raid on the leader's main stack of 40 removes 20 to
   39 armies (about 30 on average). These swings can change who leads.
 - **Runaways.** The Surge set helps the leader most, and nothing in the cards is paused near a win:
   a leader at 33 countries with a Surge set can double a pool of 20 or more and finish the game. The
@@ -545,12 +567,14 @@ Its output:
 - Three centres drawn anywhere: one seat may start with two and another with none. They pay nothing
   per turn, so the start stays even in income; the difference is who stands to gain from the
   harvest.
-- The harvest is the commonest event (6 of 14, 43%): about two harvests in a 20-round game at Normal.
-  Each adds up to 10 per centre, up to 30 armies to one seat if it holds all three, two turns of mid
-  income. That is a large, lucky gift, the predecessor's character with its cap of 999 brought down to
-  10 per centre.
-- The shift (14% of events) moves all three, so holding centres is a gamble on the next harvest
-  coming before the next shift.
+- The harvest is the commonest event. Its raw draw weight is 6 of 14 (42.9%), but the redraw of a
+  repeat lowers its delivered share to **38.85%** of events in the long run (the model above computes
+  this exactly): about 1.9 harvests in a 20-round game at Normal. Each adds up to 10 per centre, up to
+  30 armies to one seat if it holds all three: **2.5 to 5 turns** of mid income (6 to 12), or 3⅓ at the
+  deck model's 9. That is a large, lucky gift, the predecessor's character with its cap of 999 brought
+  down to 10 per centre.
+- The shift (raw weight 14.3%, delivered **16.19%**, about 0.8 a game) moves all three, so holding
+  centres is a gamble on the next harvest coming before the next shift.
 
 ### Events
 
@@ -561,7 +585,9 @@ Its output:
 - **How big.** A storm strikes 3 or 4 countries and leaves each big stack at under half: from 20, a
   loss of 11 to 19 per country, so a storm can cost a seat 40 or more armies on a crowded front. A
   revolt moves one country with all its armies, which can break an island bonus. A harvest gives up
-  to 30 armies. These are the largest swings in the game after the cards.
+  to 30 armies, 2.5 to 5 turns of mid income. Of delivered events, about 29% are storms, 16% revolts,
+  16% shifts and 39% harvests (raw draw weights 29, 14, 14 and 43%, before the redraw of a repeat).
+  These are the largest swings in the game after the cards.
 - **Why none decides a game by itself.** No event zeroes a stack or eliminates a seat, none targets
   a seat, and none is drawn in round 1, within 4 countries of a win, or in a round-limit game's last 3
   rounds (V12): in a two-seat game at 24 against 22 countries before the last turn, a revolt could
