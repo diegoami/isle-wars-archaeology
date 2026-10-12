@@ -446,7 +446,7 @@ strength is a matter of its decisions (T51), and the human's handicap is an expl
 ## The owner's decisions (2026-10-12)
 
 The owner decided all twelve choices on 2026-10-12 (the twelfth, the island bonus rule, after GPT-6.1 Sol's re-review). Each entry keeps the claims it settles, the
-options offered, the recommendation and its reason, and adds the decision. Ten decisions follow the
+options offered, the recommendation and its reason, and adds the decision. Eleven decisions follow the
 recommendation; **decision 1 went against it** (a generator, not hand-made boards). The rules above
 describe the decided options.
 
