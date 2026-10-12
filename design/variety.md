@@ -153,7 +153,8 @@ How bonuses compare on a generated board is in
 - **What a centre gives.** Nothing per turn: income is countries, island bonuses and sets only. A
   centre matters through the harvest and the shift events.
 - **Ownership.** A centre belongs to whoever owns its country. Capturing the country takes the
-  centre. Centres are marked on the board for every seat.
+  centre. Centres are marked on the board for every seat while events are on *(T52 UI17, the owner,
+  2026-10-12)*.
 - **The harvest.** The harvest event doubles each centre's stack, adding **at most 10** armies per
   centre, whoever owns it.
 - **The shift.** The shift event draws the three centres again, the same way as at the start (a

@@ -68,7 +68,9 @@ locked option and no registration.
 - **Record**: wins and losses, per seat count, human-share setting and the computer seats' levels, with
   no cap *(computer.md, decision A1)*.
 - **Saved game** *(decision 2)*: one slot, stored as settings + seed + action list and restored by
-  replaying them, so a saved game cannot be re-rolled by reloading.
+  replaying them, so a saved game cannot be re-rolled by reloading. The game in play is also saved
+  automatically at the end of every turn *(T52 UI14, the owner, 2026-10-12)*; what replacing the slot's
+  game records is in [Leaving a game](#leaving-a-game).
 - Every stored file carries a format version. A file that fails validation (wrong version, missing
   field, value out of range) is ignored and the defaults are used; the player is told once.
 - Plain, readable storage; no obfuscation.
@@ -121,7 +123,8 @@ What a board must satisfy is the requirement; how to build one is malpaco's impl
   reproduces the board, including any redraws. Every board meets the invariants above (country
   count, island sizes, degree 2–5, symmetry, connectedness, 14–18 crossings) and passes the
   [fairness checks](#fairness-checks). The fairness checks are not weakened to make generation
-  easier.
+  easier. Positions keep every two countries at least `MIN_LABEL_GAP` apart in the reference frame;
+  this is display data and no rule reads it *(T52 UI15, the owner, 2026-10-12)*.
 - **What the engine's tests show.** Over many seeds, the generator finds a valid board within a
   stated, small number of attempts, and the test fixes that number. When attempts run out, the
   behaviour is defined (for example, falling back to a known-valid board for that seed), never a
@@ -310,9 +313,15 @@ A finished game adds one win or loss per human seat to the record.
 ## Leaving a game
 
 - A **resign** control is always available to a human seat. Resigning records a loss, whatever the
-  seat holds, and turns the seat over to the computer (if other humans remain) or ends the game.
+  seat holds, and turns the seat over to the computer (if other humans remain) or ends the game. A
+  seat turned over this way is played at Normal *(T52 UI18, the owner, 2026-10-12)*.
 - Starting a new game while one is in progress asks for confirmation and counts as resigning, unless
   the game is saved first *(decision 2)*.
+- Each game has an identity fixed when it starts and kept in its save; it is not drawn from the game
+  stream. Saving a game into the slot while the slot holds a different, unfinished game records a loss
+  for each human seat of that game that has no result yet, as resigning does; saving the same game
+  again records nothing. The record keeps, for each game identity, the human seats whose result it
+  holds, and never records a second result for one *(T52 UI14, the owner, 2026-10-12)*.
 - The computer seats never concede; domination (above) replaces a concession offer.
 
 ## Fun and balance, argued

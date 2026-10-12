@@ -5,15 +5,16 @@ the turn, combat, cards, events, the computer's turns, the standings and the log
 is written so that a TypeScript implementer can build the first UI, the **canonical** one, without
 reading the evidence. It presents the rules of [core-rules.md](core-rules.md) (T50),
 [variety.md](variety.md) (T51) and [computer.md](computer.md) (T53) as decided; it never changes a
-rule. Where presenting a rule well would need a rule change, the change is a proposed amendment in
-[Choices for the owner](#choices-for-the-owner).
+rule. Where presenting a rule well needed a rule change, the change was proposed in
+[The owner's decisions](#the-owners-decisions-2026-10-12) and, once decided, applied to the rule file
+(UI14, UI15, UI17).
 
 This is a set of **requirements and testable properties**, not a mockup. It says what each screen
 must show and allow, and how an automated check can tell that it does. Layout, pixels, art and sound
-design are malpaco's implementer's and the owner's: every call that changes the look or the feel is a
-choice for the owner (UI1 to UI18), with options, a recommendation and a reason. Where the text below
-depends on such a call, it describes the recommended option and names the choice, *(UI<n>)*; the
-owner's decision replaces it. Build every value behind a named constant (the names in capitals).
+design are malpaco's implementer's and the owner's: every call that changes the look or the feel was
+put to the owner (UI1 to UI18), with options, a recommendation and a reason, and the owner decided all
+eighteen on 2026-10-12, each as recommended. Where the text below depends on such a call, it describes
+the decided option and names the decision, *(UI<n>)*. Build every value behind a named constant (the names in capitals).
 Numbers that are malpaco's own proposals say so; none is a measurement of the predecessor.
 
 The bar is twofold (the owner's aim, 2026-10-02, and `questions/malpaco.md`, "User interface"): a UI
@@ -126,12 +127,12 @@ hover:
 - **Save** is in the board's menu, available whenever a human seat is to act; it stores settings,
   seed and action list and says so. **Continue** on the start screen restores the slot by replay and
   opens the board at the saved point, with the log intact.
-- **Recommended (UI14 c):** the game is also saved automatically at the end of every turn, so a crash
+- **Autosave (UI14 c):** the game is also saved automatically at the end of every turn, so a crash
   or a closed window never loses a game.
 - **The game's identity.** Every game gets an identity when it starts (a random value from outside the
   game stream, so it changes no draw), kept in its save and unchanged by saving and loading. Play
   again and replay the same seed start new games with new identities.
-- **Replacing a different game** (UI14 b and c, a proposed amendment to core-rules.md): a save whose
+- **Replacing a different game** (UI14 c, applied to core-rules.md, Leaving a game): a save whose
   game identity differs from the slot's, while the slot's game is unfinished, records a loss for each
   of that game's human seats that has no result yet, as resigning does, and then replaces it. A save
   of the same game (every autosave, every manual save of the game in play) only replaces it and
@@ -161,7 +162,7 @@ hover:
   the same seed; new setup; start screen.
 - **Resigning** (core-rules.md, Leaving a game) is in the board's menu at all times for a human seat.
   Its confirmation states that it records a loss, and that the seat is then played by the computer
-  if another human remains, at the level named in UI18, or that the game ends.
+  if another human remains, at Normal (UI18; core-rules.md, Leaving a game), or that the game ends.
 
 ## The board
 
@@ -171,7 +172,7 @@ The board is drawn from the generated board's data: countries, islands, borders 
 ### Ownership
 
 - **Two cues, always** (UW-1, UW-3). A country shows its owner by colour **and** by the owner cue
-  *(UI3; recommended: the shape of the badge that holds the army count, one shape per seat)*. With
+  *(UI3: the shape of the badge that holds the army count, one shape per seat)*. With
   colour removed entirely (greyscale), every country's owner can be read from the cue alone.
 - **The palette** *(UI2)*: one colour per seat for up to four seats. Under simulated deuteranopia,
   protanopia and tritanopia (Machado, Oliveira and Fernandes 2009, full severity), and with normal
@@ -211,11 +212,12 @@ The board is drawn from the generated board's data: countries, islands, borders 
   owner cue *(UI4)*, visible at the smallest size, with a contrast of at least 3 to 1 against every
   seat colour (the WCAG 2.x minimum for graphics). Selecting a centre shows what a harvest would add
   to it now (its stack, at most 10; variety.md, Production centres).
-- With events Off, centres do nothing; the recommended option hides their marks then *(UI17)*.
+- With events Off, centres do nothing, and their marks are hidden *(UI17; variety.md, Production
+  centres)*.
 
 ### Legibility and size
 
-- **Smallest supported window** *(UI13; recommended 800 by 540 CSS pixels, desktop and tablet in
+- **Smallest supported window** *(UI13: 800 by 540 CSS pixels, desktop and tablet in
   landscape)*: the whole board fits with every panel collapsed to its compact form, and every property
   in this section holds there.
 - **Hit areas.** Every country has a hit area at least `HIT_MIN` (40 CSS px proposed, near common
@@ -240,7 +242,7 @@ The board is drawn from the generated board's data: countries, islands, borders 
 
 ### The look
 
-*(UI1, the owner's call.)* The recommended direction is a clean sea chart: islands with drawn
+*(UI1.)* The direction is a clean sea chart: islands with drawn
 coastlines, flat seat fills, a light texture, thin borders and sea links, so the board reads as a
 place and not as a form over a map (UW-18), while every property above holds. Art assets are out of
 scope here.
@@ -346,7 +348,7 @@ once, and the legal choices are marked again. The reasons cover at least:
   tally: exchanges won by each side and ties re-rolled.
 - **The exchange's result**: the losing stack's count steps down by one in the panel and on the board,
   with its sound.
-- **Controls** *(UI5; recommended b)*: the main control fights on until the target is captured, the
+- **Controls** *(UI5 b)*: the main control fights on until the target is captured, the
   attacker is down to `N` armies, or the player stops, with `N` set beside it (default 2, remembered);
   a second control rolls a single exchange; stop ends the battle at once, at no cost. `N` runs from 1
   (fight to the end) to the attacking stack less one; a remembered value above that is lowered to it
@@ -432,7 +434,7 @@ visible as it happens and readable at a glance.
 ### What is public
 
 - Every seat's hand count, the draw pile's count and the discard pile's count are always shown; the
-  top of the discard pile is shown face up *(UI9; recommended a)*. Every public card (traded, played,
+  top of the discard pile is shown face up *(UI9 a)*. Every public card (traded, played,
   discarded, a Squall) is in the log. Another hand's kinds and the draw pile's order are never shown.
 
 ## Events and centres
@@ -492,7 +494,7 @@ victory check and before the next seat's income, never inside a turn.
 
 ### Pacing
 
-*(UI6; recommended a.)* Speed is a presentation setting (core-rules.md, Options) that scales every
+*(UI6 a.)* Speed is a presentation setting (core-rules.md, Options) that scales every
 timing constant by one factor: Slow 1.5, Normal 1, Fast 0.5, Instant 0. It can be changed during a
 game from the board.
 
@@ -527,7 +529,7 @@ seat, in turn order (so rows do not jump), each with:
 - a rank by countries, so who leads is read at once; an eliminated seat is greyed with the round it
   went out.
 
-**The leader check** *(UI11; recommended a)*: a seat the computers' leader check names (computer.md,
+**The leader check** *(UI11 a)*: a seat the computers' leader check names (computer.md,
 The leader check: 28 or more countries, or an adjusted count of at least 22 and 1.5 times the next) is
 marked in the standings, and selecting the mark gives the reason in words. A seat that the human share
 settings gave or took countries at the deal shows that number, the handicap transfer the check
@@ -567,7 +569,7 @@ subtracts. The mark is seat-blind, as the check is: a human leader is marked too
 - **No noise in bulk**: a grouped computer step plays one sound, a fast-forward step plays one summary
   sound, and the many exchanges of a long battle do not stack into a din (one roll sound per shown
   step).
-- **Music** *(UI7)*: recommended off by default, with a setting to turn it on.
+- **Music** *(UI7)*: off by default, with a setting to turn it on.
 - **Controls**: a mute toggle reachable from every screen in one action (and a key), and separate
   volumes for effects and music; sound settings persist. With mute on, nothing plays.
 - No sound plays before the player's first action in the session (browser autoplay rules).
@@ -628,7 +630,7 @@ one. malpaco's tests run in a pinned rendering environment.
   each illegal attempt of the table above changes nothing and shows its reason.
 - **Presentation never changes play**: one scripted game at every speed, with and without
   fast-forward and reduced motion, ends in the same state with the same action list.
-- **Saves and the record** (with UI14 b or c): many saves of one game leave the record unchanged; a
+- **Saves and the record** (UI14 c): many saves of one game leave the record unchanged; a
   save of a different game over an unfinished one adds one loss per human seat without a result, and
   no more on repeating it; a seat that resigned and a game that later ends add no second result.
 - **Every stop offered**: in scripted human battles at every speed but Instant, no exchange is
@@ -716,16 +718,16 @@ Where presenting a decided rule needed a reading, the nearest consistent one was
    could see and remember. If the screen showed the whole discard pile, Easy's "only what is on screen
    now" would equal Hard's memory; so the screen shows the discard pile's top and counts, and the log
    holds the history *(UI9)*.
-3. **A resigned seat's level** (core-rules.md, Leaving a game). The rules turn a resigning seat over
-   to the computer without naming a level; the UI needs one to show. UI18 proposes the default level,
-   Normal (A2).
+3. **A resigned seat's level** (core-rules.md, Leaving a game). The rules turned a resigning seat over
+   to the computer without naming a level, and the UI needs one to show. UI18 set the default level,
+   Normal (A2), and core-rules.md now says so.
 4. **Centres with events Off** (variety.md, V7 and V9). Centres act only through the harvest and the
    shift, both events; with events Off they do nothing, and marking them would leave a trace (UW-19).
-   UI17 proposes hiding them, an amendment to variety.md's "marked for every seat".
+   UI17 hides them, and variety.md's "marked for every seat" now reads "while events are on".
 5. **The overwrite of a saved unfinished game** (core-rules.md, decision 2 and Leaving a game).
    Starting a new game counts as resigning unless the game is saved first; but saving it and then
    saving the new game overwrites the one slot, so the first game is gone with no result recorded.
-   UI14 proposes closing that gap: only a save of a different game (by its identity, fixed at game
+   UI14 closes that gap, in core-rules.md's Leaving a game: only a save of a different game (by its identity, fixed at game
    start) charges the replaced game's human seats, so saving the same game, by hand or every turn,
    never does, and no seat's result is recorded twice.
 6. **The computer's draw** (variety.md, The deck). Only the count is public; the UI shows the count's
@@ -756,42 +758,49 @@ Anything that falls short is named, with the choice that settles it.
 | UW-15 hit targets, no hover | mouse clicks; hover lights buttons, cosmetically; playing by keyboard is not established | named as a need | `HIT_MIN` areas, no hover reliance, full keyboard play, touch: beats both |
 | UW-16 resolution independence | a fixed-size stage; it did not start at 640 by 480; whether it scales on larger desktops is not established | named as a need | vector drawing, reframing on resize, compact panels, a message below the minimum: beats both |
 | UW-17 legibility | army digits clear on the tints; the score-box names and the centre digits are the weakest contrast | named as a need | measured text height and contrast for every seat colour, no overlaps, at the smallest window: beats both |
-| UW-18 the board's look | a pleasant textured board, but a form-like set of panels below it | functional | a drawn sea chart with the panels kept small (UI1, the owner's call): meets the aim once the owner decides |
+| UW-18 the board's look | a pleasant textured board, but a form-like set of panels below it | functional | a drawn sea chart with the panels kept small (UI1 a): meets the aim |
 | UW-19 disabled features leave no trace | the only switchable feature, event frequency, is locked in the build studied, so its off state was not seen | a rule, not built | an absence table checked by automated games ([Disabled features](#disabled-features-leave-no-trace)): meets the requirement |
 
-**The smallest window** (UI13): the recommended 800 by 540 is no larger than the predecessor's 800 by
+**The smallest window** (UI13): the decided 800 by 540 is no larger than the predecessor's 800 by
 600 stage in either direction, so malpaco runs wherever the predecessor's stage fits in width, and in
 less height. Option (c), 1280 by 720, would fall short of the predecessor here.
 
-## Choices for the owner
+## The owner's decisions (2026-10-12)
 
-Every call that changes the look or the feel, and the one `open` row (Q-UI-21). Each has options, a
-recommendation and a reason. The text above describes the recommended options; the owner's decisions
-replace them. [variants.md](variants.md) keeps every option as a named variant.
+Every call that changes the look or the feel, and the row that was `open` (Q-UI-21, settled by UI1).
+Each entry keeps its options, the recommendation and its reason, and adds the decision. The owner
+decided all eighteen on 2026-10-12, each as recommended; the text above describes the decided options.
+[variants.md](variants.md) keeps every option as a named variant. The three amendments to the rule
+files (UI14, UI15, UI17) are applied there, citing these decisions; UI18's level is written into
+core-rules.md's Leaving a game.
 
-1. **UI1. Art direction and the board's look** (Q-UI-21, `open`; UW-1, UW-18).
+1. **UI1. Art direction and the board's look** (Q-UI-21; UW-1, UW-18).
    - (a) a clean sea chart: islands with drawn coastlines, flat seat fills, a light texture, thin
      borders, sea links for crossings; (b) an illustrated, painted map with terrain; (c) an abstract
      diagram, countries as cells or nodes.
    - Recommendation (a): it reads as a place and stays legible, it is cheap to draw at any size, and it
      keeps colour free for the seats; (b) costs art and fights the counts for attention; (c) is legible
      but is the "form over a map" the proof of concept wanted to leave.
+   - **Decided (the owner, 2026-10-12): (a), as recommended.**
 2. **UI2. The seat palette** (Q-UI-05; UW-3).
    - (a) one fixed palette of four hues that passes the three-simulation check; (b) as (a), plus a
      high-contrast palette as a setting; (c) each human picks from six checked colours, no two seats
      alike.
    - Recommendation (b): a fixed default keeps every screenshot and every game readable alike, and the
      high-contrast setting serves low vision; (c) adds a setup step and pairs to test.
+   - **Decided (the owner, 2026-10-12): (b), as recommended.**
 3. **UI3. The owner cue** (Q-UI-01; UW-1, UW-3).
    - (a) the shape of the count's badge, one per seat (for example circle, square, triangle, diamond);
      (b) a fill pattern per seat (plain, stripes, dots, cross-hatch); (c) both.
    - Recommendation (a): it sits where the eye already reads the count and survives at the smallest
      size; patterns are noisy on small countries and under the count; (c) fits a high-contrast setting.
+   - **Decided (the owner, 2026-10-12): (a), as recommended.**
 4. **UI4. The centre mark** (Q-UI-02).
    - (a) one symbol beside the count badge, the same for every owner; (b) a glow around the whole
      country; (c) as (a), with the next harvest's gain always printed on it.
    - Recommendation (a): small, owner-neutral and readable at any size, with the gain shown on
      selection; (b) competes with the ownership colour; (c) adds three more numbers to the board.
+   - **Decided (the owner, 2026-10-12): (a), as recommended.**
 5. **UI5. A human's battle controls** (Q-UI-16; UW-13).
    - (a) the main control rolls one exchange, a second fights on to a capture or down to `N`; (b) the
      main control fights on to a capture or down to `N` (default 2, remembered), a second rolls one
@@ -801,6 +810,7 @@ replace them. [variants.md](variants.md) keeps every option as a named variant.
    - Recommendation (b): with large stacks (no cap) one click per exchange is tiring, and the owner's
      sittings of the predecessor show battles stopped at 2 or 3 armies (`runs/E018`), which `N` = 2
      serves; (c) stops early more often than most battles need.
+   - **Decided (the owner, 2026-10-12): (b), as recommended.**
 6. **UI6. Pacing** (Q-UI-13, Q-UI-16; UW-10; A17's budget).
    - (a) Slow, Normal, Fast and Instant, scaling the constants of [Pacing](#pacing) by 1.5, 1, 0.5 and
      0, with `STEP_TIME` 0.5 s and `TURN_WATCH` 15 s at Normal; (b) the same with a quicker Normal,
@@ -811,16 +821,19 @@ replace them. [variants.md](variants.md) keeps every option as a named variant.
      at its slow speed, and every turn of up to 8 battles is shown whole; (b) shows a 2-battle turn in
      3.5 s, but 28 steps fit its 10 s budget, so turns of 8 battles or more (6 + 3 × 8 = 30 steps)
      are cut; (c) removes the choice of a game at full speed.
+   - **Decided (the owner, 2026-10-12): (a), as recommended.**
 7. **UI7. Sound and music** (Q-UI-17; UW-14).
    - (a) effects on, music on at a low volume, by default; (b) effects on, music off by default; (c)
      effects only, no music at all.
    - Recommendation (b): a turn-based game is often played beside other audio, so music is an opt-in,
      while the effects carry feedback; (c) gives up a mood the owner may want.
+   - **Decided (the owner, 2026-10-12): (b), as recommended.**
 8. **UI8. Hot-seat privacy** (Q-UI-15; core-rules.md decision 3).
    - (a) a hand-over screen covering the private panels whenever the next human differs from the last
      viewer; (b) the hand always hidden until its owner taps to show it, in every game; (c) no hiding.
    - Recommendation (a): privacy where it matters at the cost of one action per hand-over, and no cost
      with one human; (b) taxes the common single-player game; (c) breaks the rule that hands are hidden.
+   - **Decided (the owner, 2026-10-12): (a), as recommended.**
 9. **UI9. What the discard pile shows** (Q-UI-15; computer.md A12).
    - (a) the top card and the counts, with every public card in the log; (b) a face-up summary of the
      whole discard pile by kind since the last reshuffle; (c) the top card and counts only, and no card
@@ -828,28 +841,33 @@ replace them. [variants.md](variants.md) keeps every option as a named variant.
    - Recommendation (a): it keeps A12's levels meaningful (a summary on screen would give Easy Hard's
      memory, since a computer's view is what the screen shows), while the log lets a careful human
      remember as Hard does; (c) leaves the human worse off than Hard.
+   - **Decided (the owner, 2026-10-12): (a), as recommended.**
 10. **UI10. Showing the odds** (Q-UI-09, Q-UI-16).
     - (a) the capture chance on choosing a target; (b) on request only; (c) never.
     - Recommendation (a): the computer decides by the same public arithmetic, so showing it puts the
       human level with the computer and makes core-rules.md's "readable decision" literal; (c) hides
       what the rules call public.
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
 11. **UI11. Showing the leader check** (Q-UI-08; UW-5; computer.md A5 and A16).
     - (a) a mark on any seat the check names, with the reason on selection; (b) the numbers only
       (counts and handicap transfers), the rule in help; (c) nothing beyond counts.
     - Recommendation (a): computer.md makes the computers' behaviour readable, and a player who sees
       the mark knows why the computers turn on the leader, human or not; (c) makes that turn look like
       ganging up.
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
 12. **UI12. Helping a first game** (Q-UI-10; UW-7).
     - (a) one short hint per phase in a player's first games, dismissed by any action; (b) help screens
       only; (c) a guided tutorial game.
     - Recommendation (a): it costs no extra screen before play; (c) is a project of its own.
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
 13. **UI13. The smallest window and platforms** (Q-UI-19, Q-UI-20; UW-16, UW-17).
     - (a) desktop and tablet in landscape, at 800 by 540 CSS px or more; (b) also phones in landscape,
       at 640 by 360, with panels as overlays; (c) desktop only, at 1280 by 720 or more.
     - Recommendation (a): no larger than the predecessor's stage in either direction, and the
       hit-area property is reachable there; (b) needs the board to fill the screen with panels over it,
       a layout of its own; (c) falls short of the predecessor's smallest stage.
-14. **UI14. Saving** (core-rules.md decision 2 and Leaving a game; a proposed amendment).
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
+14. **UI14. Saving** (core-rules.md decision 2 and Leaving a game; an amendment).
     - (a) manual save only, as core-rules.md says, overwrites confirmed but recording nothing; (b)
       manual save, and a save that replaces a **different** unfinished game in the slot records a loss
       for that game's human seats that have no result yet; saving the same game again records nothing;
@@ -858,45 +876,51 @@ replace them. [variants.md](variants.md) keeps every option as a named variant.
       saving and starting over ([Reconciled](#reconciled-with-t50-t51-and-t53), item 5). With (c) the
       game is saved every turn; because only a different game's save charges a loss, the autosaves of
       one game never do ([Saving and loading](#saving-and-loading) has the identity rule).
-    - **Proposed amendment to core-rules.md** (for (b) and (c)): in [Leaving a game](core-rules.md#leaving-a-game),
+    - **Amendment to core-rules.md**, applied there: in [Leaving a game](core-rules.md#leaving-a-game),
       add "Each game has an identity fixed when it starts and kept in its save; it is not drawn from
       the game stream. Saving a game into the slot while the slot holds a different, unfinished game
       records a loss for each human seat of that game that has no result yet, as resigning does;
       saving the same game again records nothing. The record keeps, for each game identity, the human
       seats whose result it holds, and never records a second result for one."
-15. **UI15. Where country spacing is guaranteed** (UW-15, UW-17; a proposed amendment).
+    - **Decided (the owner, 2026-10-12): (c), as recommended.**
+15. **UI15. Where country spacing is guaranteed** (UW-15, UW-17; an amendment).
     - (a) the generator's positions keep every two countries' label points at least a set distance
       apart in its reference frame, so the hit areas fit at the smallest window; (b) the renderer
       spreads crowded positions itself at draw time, the generated positions unchanged.
     - Recommendation (a): the same seed then gives the same picture everywhere, and one test on the
       generator covers every screen; positions stay display data.
-    - **Proposed amendment to core-rules.md** (for (a)): in [Generation](core-rules.md#generation),
+    - **Amendment to core-rules.md**, applied there: in [Generation](core-rules.md#generation),
       the requirements gain "positions keep every two countries at least `MIN_LABEL_GAP` apart in the
       reference frame; this is display data and no rule reads it".
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
 16. **UI16. How lively** (Q-UI-16; UW-13).
     - (a) restrained: stepped counts, short tumbling dice, a capture pulse and sound, no screen shake;
       (b) full: also screen shake, particles and camera nudges; (c) minimal: instant changes with
       highlights.
     - Recommendation (a): satisfying without slowing a game of many battles; reduced motion is a
       setting in every option.
-17. **UI17. Centres when events are Off** (UW-19; variety.md V7 and V9; a proposed amendment).
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
+17. **UI17. Centres when events are Off** (UW-19; variety.md V7 and V9; an amendment).
     - (a) not shown, since they do nothing without events; (b) shown anyway.
     - Recommendation (a): a mark that does nothing is a trace of a switched-off feature.
-    - **Proposed amendment to variety.md** (for (a)): in [Production centres](variety.md#production-centres),
+    - **Amendment to variety.md**, applied there: in [Production centres](variety.md#production-centres),
       "Centres are marked on the board for every seat" gains "while events are on". The deal still
       draws them, so the game stream is unchanged.
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
 18. **UI18. The level of a resigned seat** (core-rules.md, Leaving a game).
     - (a) the default level, Normal (A2); (b) the level of the strongest computer seat in the game; (c)
       the resigning player picks it in the resign confirmation.
     - Recommendation (a): no extra question when leaving, and the default is the game the balance is
       tuned on; (c) adds a step to a moment that should be quick.
+    - **Decided (the owner, 2026-10-12): (a), as recommended.**
 
 ## Decisions, question by question
 
 One row per UI spec claim (2) and per UI question of `questions/malpaco.md` (22). `keep` means malpaco
 does as the predecessor does, and the row says why that works; `change` alters it; `replace` swaps in
-something different; `drop` removes it; `open` waits for the owner (in
-[Choices for the owner](#choices-for-the-owner)). The spec claim C-UI-02 is about the DOS game; rule
+something different; `drop` removes it; `open` would wait for the owner. No row is `open`: the
+owner's decisions of 2026-10-12 ([The owner's decisions](#the-owners-decisions-2026-10-12)) settled
+Q-UI-21 with UI1 (a). The spec claim C-UI-02 is about the DOS game; rule
 19 keeps it out of any reading of the Windows game, and its row says what that means for malpaco.
 
 | Id | Decision | malpaco's design | What the predecessor does, and why |
@@ -923,5 +947,5 @@ something different; `drop` removes it; `open` waits for the owner (in
 | Q-UI-18 | change | [Input](#input): `HIT_MIN` hit areas, no hover reliance, full keyboard play, touch | Mouse clicks; hover only lights buttons; playing by keyboard is not established; malpaco serves keyboard and touch players (UW-15). |
 | Q-UI-19 | replace | [Resolution independence](#resolution-independence): vector drawing, reframing on resize, compact panels, a message below the minimum (UI13) | A fixed-size stage that did not start at 640 by 480; a resolution-independent board replaces it (UW-16). |
 | Q-UI-20 | change | [Legibility and size](#legibility-and-size), [Army counts](#army-counts): text height and contrast measured for every seat colour at the smallest window, no overlaps | Army digits are clear, but the score-box names and the centre digits are weak; malpaco tests every pair (UW-17). |
-| Q-UI-21 | open | [The look](#the-look): recommended a clean sea chart (UI1) | Relief-textured tiles in four tints, with light straight lines across the sea between islands and form-like panels below; the board's look is the owner's call (UW-18). |
+| Q-UI-21 | change | [The look](#the-look): a clean sea chart, drawn coastlines, flat seat fills, a light texture, thin borders and sea links (UI1 a) | Relief-textured tiles in four tints, with light straight lines across the sea between islands and form-like panels below; the owner chose the sea chart (UI1 a), which keeps a drawn board but frees colour for the seats and keeps the panels small (UW-18). |
 | Q-UI-22 | change | [Disabled features leave no trace](#disabled-features-leave-no-trace): an absence table, checked by automated games | The only switchable feature, event frequency, is locked in the build studied, so its off state is not known; malpaco states and tests the absence of every switched-off feature (UW-19). |

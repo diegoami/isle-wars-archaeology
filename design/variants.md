@@ -2,7 +2,7 @@
 
 Every design choice of [core-rules.md](core-rules.md) (T50, the owner's decisions 1 to 12),
 [variety.md](variety.md) (T51, the owner's decisions V1 to V12), [computer.md](computer.md) (T53,
-the owner's decisions A1 to A17) and [ui.md](ui.md) (T52, the choices UI1 to UI18), with its decided option, the
+the owner's decisions A1 to A17) and [ui.md](ui.md) (T52, the owner's decisions UI1 to UI18), with its decided option, the
 **canonical** variant malpaco builds first, and every other option kept as a named variant that a
 later version may offer as a setting. This file is a catalogue: it claims no spec rows, and the rule
 text lives in the design files, linked from each entry. Options, recommendations and reasons are in
@@ -346,21 +346,21 @@ UI settings (speed, animations, palette, sound) are named variants of the canoni
 a setting a player can change, and none changes a rule.
 
 ### UI1 Art direction and the board's look
-- **Canonical: the owner's choice.** Recommended (a): a clean sea chart. [The look](ui.md#the-look).
+- **Canonical: (a), the owner's decision (2026-10-12).** [The look](ui.md#the-look).
 - **UI1a Sea chart.** Drawn coastlines, flat seat fills, a light texture, thin borders, sea links.
 - **UI1b Painted map.** An illustrated map with terrain.
 - **UI1c Diagram.** Countries as cells or nodes.
 - Interacts with: UI2 and UI3 (fills and cues must read on the art), UI4, UI15 (label spacing).
 
 ### UI2 The seat palette
-- **Canonical: the owner's choice.** Recommended (b). [Ownership](ui.md#ownership).
+- **Canonical: (b), the owner's decision (2026-10-12).** [Ownership](ui.md#ownership).
 - **UI2a One fixed palette**, checked under three colour-blind simulations.
 - **UI2b Fixed palette and a high-contrast setting.**
 - **UI2c Player-chosen colours** from six checked colours, no two seats alike.
 - Interacts with: UI3 (the cue carries greyscale), UI1, T50-3 (up to four seats).
 
 ### UI3 The owner cue
-- **Canonical: the owner's choice.** Recommended (a). [Ownership](ui.md#ownership).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Ownership](ui.md#ownership).
 - **UI3a Badge shape** per seat around the count.
 - **UI3b Fill pattern** per seat.
 - **UI3c Both.**
@@ -368,14 +368,14 @@ a setting a player can change, and none changes a rule.
   every cue), UI13 (the smallest window).
 
 ### UI4 The centre mark
-- **Canonical: the owner's choice.** Recommended (a). [Centres](ui.md#centres).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Centres](ui.md#centres).
 - **UI4a Symbol** beside the count badge, owner-neutral; the harvest gain on selection.
 - **UI4b Glow** around the whole country.
 - **UI4c Symbol with the gain** always printed.
 - Interacts with: V7 (three wandering centres), UI17 (hidden with events Off), UI3.
 
 ### UI5 A human's battle controls
-- **Canonical: the owner's choice.** Recommended (b). [Combat feedback](ui.md#combat-feedback).
+- **Canonical: (b), the owner's decision (2026-10-12).** [Combat feedback](ui.md#combat-feedback).
 - **UI5a One exchange first**, fight on to a capture or down to `N` as the second control.
 - **UI5b Fight on first** (to a capture or down to `N`, default 2), one exchange as the second.
 - **UI5c Fight on first, `N` half the starting stack.**
@@ -384,7 +384,7 @@ a setting a player can change, and none changes a rule.
 - Interacts with: UI6 (`EXCHANGE_TIME`, `HUMAN_BATTLE_WATCH`, Instant), T50-11 (ties re-rolled shown), UI10.
 
 ### UI6 Pacing
-- **Canonical: the owner's choice.** Recommended (a). [Pacing](ui.md#pacing).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Pacing](ui.md#pacing).
 - **UI6a Slow, Normal, Fast, Instant**, factors 1.5, 1, 0.5, 0; Normal `STEP_TIME` 0.5 s, `TURN_WATCH`
   15 s: turns of up to 8 battles shown whole.
 - **UI6b Quicker Normal**, `STEP_TIME` 0.35 s, `TURN_WATCH` 10 s: turns of 8 or more battles cut.
@@ -395,12 +395,12 @@ a setting a player can change, and none changes a rule.
   shown outside the budget).
 
 ### UI7 Sound and music
-- **Canonical: the owner's choice.** Recommended (b). [Sound](ui.md#sound).
+- **Canonical: (b), the owner's decision (2026-10-12).** [Sound](ui.md#sound).
 - **UI7a Effects and music on.** **UI7b Effects on, music off by default.** **UI7c Effects only.**
 - Interacts with: UI6 (sounds of grouped and fast-forwarded steps).
 
 ### UI8 Hot-seat privacy
-- **Canonical: the owner's choice.** Recommended (a). [Hot-seat hand-over](ui.md#hot-seat-hand-over).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Hot-seat hand-over](ui.md#hot-seat-hand-over).
 - **UI8a Hand-over screen** whenever the next human differs from the last viewer.
 - **UI8b Hand always hidden** until its owner taps to show it.
 - **UI8c No hiding.**
@@ -408,69 +408,69 @@ a setting a player can change, and none changes a rule.
   hand-over), UI9.
 
 ### UI9 What the discard pile shows
-- **Canonical: the owner's choice.** Recommended (a). [Cards](ui.md#what-is-public).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Cards](ui.md#what-is-public).
 - **UI9a Top card and counts**, every public card in the log.
 - **UI9b A face-up summary** of the discard pile by kind since the last reshuffle.
 - **UI9c Top card and counts only**, no card kinds in the log.
 - Interacts with: A12 (a summary on screen would give Easy Hard's memory), V1 (the reshuffle), A10.
 
 ### UI10 Showing the odds
-- **Canonical: the owner's choice.** Recommended (a). [Attacks](ui.md#attacks).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Attacks](ui.md#attacks).
 - **UI10a On choosing a target.** **UI10b On request.** **UI10c Never.**
 - Interacts with: T50-11 (the odds model), A5 and A15 (the computer's thresholds are on the same
   scale), UI5.
 
 ### UI11 Showing the leader check
-- **Canonical: the owner's choice.** Recommended (a). [Standings](ui.md#standings).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Standings](ui.md#standings).
 - **UI11a A mark** on any seat the check names. **UI11b Numbers only.** **UI11c Nothing.**
 - Interacts with: A5 and A16 (the check and its adjusted counts), T50-6 (handicap transfers shown).
 
 ### UI12 Helping a first game
-- **Canonical: the owner's choice.** Recommended (a).
+- **Canonical: (a), the owner's decision (2026-10-12).**
   [From launch to the first move](ui.md#from-launch-to-the-first-move).
 - **UI12a Hints per phase** in the first games. **UI12b Help only.** **UI12c A tutorial game.**
 - Interacts with: none of the rules.
 
 ### UI13 The smallest window and platforms
-- **Canonical: the owner's choice.** Recommended (a). [Legibility and size](ui.md#legibility-and-size).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Legibility and size](ui.md#legibility-and-size).
 - **UI13a Desktop and tablet landscape**, 800 by 540 or more.
 - **UI13b Also phones in landscape**, 640 by 360, panels as overlays.
 - **UI13c Desktop only**, 1280 by 720 or more.
 - Interacts with: UI15 (spacing for the hit areas), UI3, UI1.
 
 ### UI14 Saving
-- **Canonical: the owner's choice.** Recommended (c). [Saving and loading](ui.md#saving-and-loading).
+- **Canonical: (c), the owner's decision (2026-10-12).** [Saving and loading](ui.md#saving-and-loading).
 - **UI14a Manual save only**, as core-rules.md is written.
 - **UI14b Replacing a different game records a loss**: a save of a different game (by the game
   identity fixed at game start and kept in the save) over an unfinished game charges a loss to that
   game's human seats with no result yet; saving the same game again records nothing, and no seat's
   result is recorded twice (the record keys results by game identity and seat). Needs an amendment to
-  core-rules.md's Leaving a game.
+  core-rules.md's Leaving a game, applied there.
 - **UI14c As UI14b, plus an automatic save** at the end of every turn; the autosaves are saves of the
   same game and charge nothing.
 - Interacts with: T50-2 (one slot, replay), T50-2c (several slots would remove the overwrite gap).
 
 ### UI15 Where country spacing is guaranteed
-- **Canonical: the owner's choice.** Recommended (a). [Legibility and size](ui.md#legibility-and-size).
-- **UI15a In the generator's positions**; needs an amendment to core-rules.md's Generation (display
+- **Canonical: (a), the owner's decision (2026-10-12).** [Legibility and size](ui.md#legibility-and-size).
+- **UI15a In the generator's positions**; applied to core-rules.md's Generation (display
   data only).
 - **UI15b In the renderer**, generated positions unchanged.
 - Interacts with: T50-1 (generated boards), UI13, UI1.
 
 ### UI16 How lively
-- **Canonical: the owner's choice.** Recommended (a). [Combat feedback](ui.md#combat-feedback).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Combat feedback](ui.md#combat-feedback).
 - **UI16a Restrained.** **UI16b Full**, with shake and particles. **UI16c Minimal.**
 - Every option keeps a reduced-motion setting.
 - Interacts with: UI6 (effects must fit the step times).
 
 ### UI17 Centres when events are Off
-- **Canonical: the owner's choice.** Recommended (a). [Centres](ui.md#centres).
-- **UI17a Not shown**; needs an amendment to variety.md's Production centres.
+- **Canonical: (a), the owner's decision (2026-10-12).** [Centres](ui.md#centres).
+- **UI17a Not shown**; applied to variety.md's Production centres.
 - **UI17b Shown anyway.**
 - Interacts with: V7, V9 (Off), V7a (no centres at all).
 
 ### UI18 The level of a resigned seat
-- **Canonical: the owner's choice.** Recommended (a).
+- **Canonical: (a), the owner's decision (2026-10-12).**
   [The end and result screen](ui.md#the-end-and-result-screen).
 - **UI18a The default level, Normal.** **UI18b The strongest computer seat's level.** **UI18c Chosen
   when resigning.**
