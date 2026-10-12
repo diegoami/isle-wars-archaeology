@@ -49,3 +49,4 @@ status; this index carries none.
 | T45 | Model-played Session A, attacks: the human boundary cases | #143 | #141, the harness bump, #152 |
 | T48 | Wine run records name the carve-out platform, and constraint F sees the older ones | #149 | #141 |
 | T49 | Constraint F accepts run/1 objects only where records live | #154 | T48 |
+| T50 | malpaco's design, the core rules: kept from Pro, changed or new | #192 | — |

@@ -14,6 +14,22 @@ repository's reviewed findings. The research also targets what the
 game needs. Everything learned, in both repositories, is recorded so that other projects can
 learn from it too.
 
+**The goal is a fun game, not a copy** (the owner, 2026-10-11). malpaco should be fun, roughly
+balanced and varied, with the cards adding some unbalance and surprise. It need not replicate Pro's
+rules exactly: Pro's rules, as read from its code, are the starting point that the design keeps,
+changes or replaces. So the research is good enough when a rule's reading is backed by the code and
+the core of it has been seen in play:
+- Corroboration counts are nice to have. A recording or a sitting adds to them when it happens to
+  cover a question, and nobody chases a cell for its own sake (Session A stopped at 30/40 that day:
+  the open cells needed defenders of 11–21 armies, and the rule as read does not depend on size).
+- The questions and what covers each one are in `runs/coverage.md`, regenerated from the records
+  (`python3 tools/coverage.py`), so each recording or sitting covers them incrementally and the
+  owner can see what is still worth playing.
+- The owner's recordings are most useful where only a human shows it: cards in real play, how a
+  game feels (length, swings, the computers' strength), and notes after playing.
+- The next step is malpaco's design: the spec's rules marked kept, changed for fun or balance, or
+  new, with the choices listed for the owner.
+
 The process is `docs/process.md`; read it before running a task. Tasks are `docs/tasks/T<nn>.md`,
 indexed in `docs/tasks/README.md`.
 
