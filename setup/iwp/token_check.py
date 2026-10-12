@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The checks behind the iwp tokens of capabilities.json: exit 0 = verified, 1 = unavailable.
 
-Usage: token_check.py <python|wine|xvfb|xfwm4|xdotool|display|artifact|prefix>
+Usage: token_check.py <python|wine|wine10|xvfb|xfwm4|xdotool|display|artifact|prefix>
 
 These exist because the generic preflight (H3, game-archaeologist 07 §2) does not yet. When it
 lands, the generic tokens (python, wine, xvfb, xfwm4, xdotool, display, artifact) move to it and
@@ -16,10 +16,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SET_ID = "iwp-2.0-996e86c5"
 WINE = "/usr/lib/wine/wine"
+PROBE_TIMEOUT = 60
 
 
-def out(cmd):
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+class ProbeTimeout(Exception):
+    pass
+
+
+def out(cmd, env=None):
+    """(exit code, output) of a probe; a probe that outlives PROBE_TIMEOUT raises ProbeTimeout."""
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=PROBE_TIMEOUT, env=env)
+    except subprocess.TimeoutExpired:
+        raise ProbeTimeout(f"{Path(cmd[0]).name} did not answer within {PROBE_TIMEOUT} s") from None
     return result.returncode, (result.stdout + result.stderr).strip()
 
 
@@ -33,25 +42,61 @@ def python():
     return None if sys.version_info >= (3, 11) else f"python {sys.version_info[0]}.{sys.version_info[1]} is older than 3.11"
 
 
-def wine():
+def wine_version(prefix_text):
+    """None when `wine --version` at the packaged path starts with prefix_text, else a problem string."""
     if not Path(WINE).is_file():
         return "wine is not installed (apt: wine, wine32:i386)"
-    code, text = out([WINE, "--version"])
-    if code != 0 or not text.startswith("wine-9.0"):
-        return f"wine reports {text!r}, not 9.0"
+    try:
+        code, text = out([WINE, "--version"])
+    except ProbeTimeout as exc:
+        return str(exc)
+    if code != 0 or not text.startswith(prefix_text):
+        return f"wine reports {text!r}, not {prefix_text[len('wine-'):]}"
     return None
+
+
+def wine():
+    return wine_version("wine-9.0")
+
+
+def wine10():
+    return wine_version("wine-10.0")
 
 
 def xvfb():
     return need("Xvfb") or need("xdpyinfo") or need("import") or need("xprop")
 
 
+def on_own_display(binary, args):
+    """Run `binary args` against a throwaway Xvfb of its own, never the inherited DISPLAY (WSLg's :0
+    accepts connections and never answers, so a probe on it hangs). None when it exits 0, else a
+    problem string; a timeout is a problem string, never a traceback."""
+    problem = need(binary) or need("Xvfb") or need("xdpyinfo")
+    if problem:
+        return problem
+    sys.path.insert(0, str(ROOT / "setup" / "iwp"))
+    import prefix as prefix_helpers
+    try:
+        proc, display = prefix_helpers.start_xvfb("64x64x16")
+    except SystemExit as exc:
+        return str(exc)
+    try:
+        try:
+            code, _ = out([binary, *args], env={**os.environ, "DISPLAY": display})
+        except ProbeTimeout as exc:
+            return str(exc)
+        return None if code == 0 else f"{binary} does not run"
+    finally:
+        proc.terminate()
+        proc.wait(10)
+
+
 def xfwm4():
-    return need("xfwm4") or (None if out(["xfwm4", "--version"])[0] == 0 else "xfwm4 does not run")
+    return on_own_display("xfwm4", ["--version"])
 
 
 def xdotool():
-    return need("xdotool") or (None if out(["xdotool", "version"])[0] == 0 else "xdotool does not run")
+    return on_own_display("xdotool", ["version"])
 
 
 def display():
@@ -91,7 +136,7 @@ def prefix():
     return None if code == 0 else text.replace("\n", "; ")
 
 
-CHECKS = {"python": python, "wine": wine, "xvfb": xvfb, "xfwm4": xfwm4, "xdotool": xdotool,
+CHECKS = {"python": python, "wine": wine, "wine10": wine10, "xvfb": xvfb, "xfwm4": xfwm4, "xdotool": xdotool,
           "display": display, "artifact": artifact, "prefix": prefix}
 
 if __name__ == "__main__":

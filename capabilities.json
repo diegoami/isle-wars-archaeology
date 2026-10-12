@@ -9,6 +9,11 @@
     "describes": "Wine 9.0 with its 32-bit side, at the packaged path (not on PATH)",
     "cost": "cheap"
   },
+  "tool:wine@10.0": {
+    "check": "python3 setup/iwp/token_check.py wine10",
+    "describes": "Wine 10.0 with its 32-bit side, at the packaged path (not on PATH)",
+    "cost": "cheap"
+  },
   "tool:xvfb": {
     "check": "python3 setup/iwp/token_check.py xvfb",
     "describes": "Xvfb, with xdpyinfo, xprop and ImageMagick import for the screen",
