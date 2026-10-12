@@ -5,7 +5,7 @@
 commit 610f979af099f6d2922d667cd10674ba486b28d1
 profile full
 copied 2026-10-09
-adapt (2026-10-11, the owner: the main session or a Claude agent implements, one OpenCode model reviews; no chains, chooser or quota check; 2026-10-12: two questions per task, a switchable roster with a blocked list, the session family from the Anthropic environment) tools/harness/review.mjs, lib/common.mjs, lib/chain.mjs, lib/choice-selftest.mjs, lib/switch.mjs, switch-model.mjs, harness.json, CLAUDE.md, docs/process.md, docs/models.md, docs/environment.md, docs/tasks/TEMPLATE.md, the run-task, delegate and switch-model skills, .claude/agents/*.md, .claude/hooks/session-start.sh; removed: tools/harness/implement.mjs, choose.mjs, lib/choose.mjs, lib/quota.mjs, lib/unsaved.mjs, .opencode/agents/implementer.md, tests/test_implementer_permissions.py, .claude/agents/task-agent*.md
+adapt (2026-10-11, the owner: the main session or a Claude agent implements, one OpenCode model reviews; no chains, chooser or quota check; 2026-10-12: two questions per task, a switchable roster with a blocked list, the session family from the Anthropic environment) tools/harness/review.mjs, lib/common.mjs, lib/chain.mjs, lib/choice-selftest.mjs, lib/switch.mjs, lib/family.mjs (new: one family name, Sol's R2 on PR 189), switch-model.mjs, harness.json, CLAUDE.md, docs/process.md, docs/models.md, docs/environment.md, docs/tasks/TEMPLATE.md, the run-task, delegate and switch-model skills, .claude/agents/*.md, .claude/hooks/session-start.sh; removed: tools/harness/implement.mjs, choose.mjs, lib/choose.mjs, lib/quota.mjs, lib/unsaved.mjs, .opencode/agents/implementer.md, tests/test_implementer_permissions.py, .claude/agents/task-agent*.md
 adapt CLAUDE.md  (project line; conditional rules per what applies; project section; rule 6: the user decides, the owner 2026-10-11)
 adapt docs/tasks/README.md  (this repository's task index)
 adapt harness.json  (this project's keys and chains kept; luna = openai/gpt-5.6-luna, luna-6 = GPT-6 Luna outside every chain (L51); reviewer.hard/sol; zai-glm-5.3 at low; five alibaba-token-plan models; jail off, the owner 2026-10-05 (#98); seven more entries 2026-10-06, placed the same day (the owner): implementer chain + mm-m2.7 + ali-qwen-flash; reviewer.hard + ali-glm + ali-qwen-max; the rest explicit-model roles: mm-m3 (thinking), mm-m2.7 (no variant), ali-deepseek-pro (the dated -0813 id), ali-deepseek-flash, ali-qwen-max (low), ali-qwen-flash (medium), ali-glm; bump to 610f979: a chooser block with rule 6's pairs (no Alibaba model), every model entry and chain kept as ours)
@@ -44,7 +44,7 @@ b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
-718290e2c3645ebcd4944420cc877d665378ec56c4a0a24acd6bdee814c6776b  tools/harness/lib/switch.mjs
+4103361afdb5d95812775d6e96292a19d29707d0a6f36718af6a64c6aa9582b9  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-ba43f7573f27e280e103e04dabf774388adf317f28662e0ce867151a19f3adda  tools/harness/switch-model.mjs
+a778836225b6407d09220f034fe30b09018e0dc607e868eb4b3a81364164191c  tools/harness/switch-model.mjs

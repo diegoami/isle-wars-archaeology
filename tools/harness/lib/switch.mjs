@@ -10,15 +10,18 @@
 //   another; never the session's family.
 // - blocked: families or id fragments that never run (--block / --unblock).
 
+import { canonicalFamily } from './family.mjs';
+
 export const ROLES = ['implementer', 'reviewer'];
 export const IMPLEMENTER_ALIASES = ['sonnet', 'opus', 'haiku', 'fable'];
 export const IMPLEMENTER_CHOICES = ['session', ...IMPLEMENTER_ALIASES];
 
 // A model's family, from its id: the family rule (L3) compares these. "opencode-go/gpt-6-luna" and
-// "openai/gpt-6-luna" are both openai: the vendor, not the route.
+// "openai/gpt-6-luna" are both openai: the vendor, not the route. Claude models are `claude`, the
+// name sessionFamily and review.mjs use (lib/family.mjs, Sol's R2 on PR 189).
 const FAMILIES = [
   [/^deepseek/, 'deepseek'], [/^glm/, 'glm'], [/^(gpt|o\d|codex|chatgpt)/, 'openai'],
-  [/^claude/, 'anthropic'], [/^kimi/, 'kimi'], [/^qwen/, 'qwen'], [/^minimax/, 'minimax'],
+  [/^claude/, 'claude'], [/^kimi/, 'kimi'], [/^qwen/, 'qwen'], [/^minimax/, 'minimax'],
   [/^mimo/, 'mimo'], [/^grok/, 'xai'], [/^gemini/, 'google'], [/^longcat/, 'longcat'],
   [/^hy\d/, 'hunyuan'], [/^(llama|muse)/, 'meta'], [/^mistral|^devstral|^codestral/, 'mistral'],
 ];
@@ -27,7 +30,7 @@ const modelPart = (id) => String(id).split('/').slice(1).join('/').toLowerCase()
 // The model's own name decides, also behind a vendor segment that is not a family name
 // (openrouter/xiaomi/mimo-v2.6-pro is mimo, Luna's R1 on PR 150).
 export function knownFamilyOf(id) {
-  const part = modelPart(id);
+  const part = String(id).includes('/') ? modelPart(id) : String(id).toLowerCase();
   const own = part.split('/').at(-1);
   return FAMILIES.find(([re]) => re.test(part) || re.test(own))?.[1] ?? null;
 }
@@ -84,7 +87,7 @@ export function nameOf(config, id) {
  */
 export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false, sessionFamily = 'claude' }) {
   if (!ROLES.includes(role)) throw new Error(`--role must be one of ${ROLES.join(', ')}; got ${role}`);
-  if (role === 'implementer') return planImplementer(config, id);
+  if (role === 'implementer') return planImplementer(config, id, sessionFamily);
   // `variant` has no default: a model that offers no variants (MiniMax-M2.7) must switch without
   // one, not inherit 'high' (Luna's round-2 R1, PR 115). Callers pass defaultVariant's answer.
   if (!/^[\w.-]+\/[\w./-]+$/.test(String(id ?? ''))) throw new Error(`--model must be a provider/model id, e.g. openai/gpt-5.6-luna; got ${id}`);
@@ -92,15 +95,17 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
   const n = name ?? nameOf(config, id);
   const existing = config.models?.[n];
   if (existing && existing.id !== id) throw new Error(`The name ${n} already holds ${existing.id}; pass --name for ${id}.`);
+  // The family established from the id decides the family and blocked checks, whatever --family or
+  // --force say (Sol's R3 on PR 189); --force only lets a declaration stand where it is written.
   const known = knownFamilyOf(id);
-  if (family && known && family !== known && !force) {
+  if (family && known && canonicalFamily(family) !== known && !force) {
     throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; the family rule compares vendors. Drop --family, or pass --force.`);
   }
-  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: family ?? existing?.family ?? familyOf(id), ...(existing?.note ? { note: existing.note } : {}) };
-  const blocked = blockedBy(config, entry);
+  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: canonicalFamily(family ?? existing?.family ?? familyOf(id)), ...(existing?.note ? { note: existing.note } : {}) };
+  const blocked = blockedBy(config, entry) ?? (known ? blockedBy(config, { family: known }) : null);
   if (blocked) throw new Error(`Refused: ${blocked}.`);
-  const own = String(sessionFamily ?? '').toLowerCase();
-  const same = [entry.family, known].filter(Boolean).some((f) => f === own || (own === 'claude' && f === 'anthropic'));
+  const own = canonicalFamily(sessionFamily);
+  const same = [entry.family, known].map(canonicalFamily).filter(Boolean).some((f) => f === own);
   if (same) throw new Error(`Refused: ${id} is of the session's family (${own}), which implements; the reviewer is never the implementer's family. Set HARNESS_SESSION_FAMILY if the session runs elsewhere.`);
   const next = structuredClone(config);
   next.models = { ...next.models, [n]: entry };
@@ -110,14 +115,19 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
 
 // The implementer's default: the implementer subagent on a Claude Code alias or a model id the
 // session's provider serves, or `session` (the main session implements directly). A model id is
-// taken as given: the next run shows whether the provider honours it.
-function planImplementer(config, choice) {
+// taken as given: the next run shows whether the provider honours it. A blocked model is refused,
+// as for the reviewer (Sol's R4 on PR 189): by its id and the family the id names, and an alias or
+// `session` by the session's family, through whose endpoint it runs.
+function planImplementer(config, choice, sessionFamily = null) {
   const c = String(choice ?? '').trim();
   const lower = c.toLowerCase();
   if (!IMPLEMENTER_CHOICES.includes(lower) && !/^[\w.:-]+$/.test(c)) {
     throw new Error(`--model for the implementer is session, one of ${IMPLEMENTER_ALIASES.join(', ')}, or a model id the session's provider serves; got ${choice}`);
   }
   const value = IMPLEMENTER_CHOICES.includes(lower) ? lower : c;
+  const family = IMPLEMENTER_CHOICES.includes(value) ? canonicalFamily(sessionFamily) : knownFamilyOf(value);
+  const blocked = blockedBy(config, { id: value, family });
+  if (blocked) throw new Error(`Refused: ${blocked}.`);
   const next = structuredClone(config);
   next.implementer = { ...next.implementer, default: value };
   return { config: next, name: value, entry: { id: value }, before: describeImplementer(config), after: describeImplementer(next) };
@@ -127,7 +137,7 @@ function planImplementer(config, choice) {
 export function blockedBy(config, entry) {
   for (const b of config.blocked ?? []) {
     const needle = String(b).toLowerCase();
-    if (entry.family?.toLowerCase() === needle) return `${entry.family} is blocked in harness.json ("${b}"; --unblock ${b} lifts it)`;
+    if (entry.family && canonicalFamily(entry.family) === canonicalFamily(needle)) return `${entry.family} is blocked in harness.json ("${b}"; --unblock ${b} lifts it)`;
     if (entry.id?.toLowerCase().includes(needle)) return `${entry.id} matches "${b}", blocked in harness.json (--unblock ${b} lifts it)`;
   }
   return null;

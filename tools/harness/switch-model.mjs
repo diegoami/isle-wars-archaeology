@@ -61,7 +61,7 @@ if (a.block || a.unblock) {
 if (!a.role || !a.model) die(2, 'Usage: switch-model.mjs --role implementer|reviewer --model ... [--probe] [--dry-run], --block X, --unblock X, or --show');
 if (a.role === 'implementer') {
   let plan;
-  try { plan = planSwitch(config, { role: 'implementer', id: a.model }); } catch (e) { die(2, e.message); }
+  try { plan = planSwitch(config, { role: 'implementer', id: a.model, sessionFamily: own }); } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
   write(plan.config, plan.before, plan.after);
   process.exit(0);
 }

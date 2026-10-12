@@ -63,7 +63,7 @@ indexed in `docs/tasks/README.md`.
       **subagent** implements, or does the main session implement directly? The implementer is
       normally a subagent spawned inside Claude Code with the Agent tool
       (`subagent_type: "implementer"`, `.claude/agents/implementer.md`, worktree isolation) on a
-      model of its own, not the orchestrator's: Opus orchestrates and spawns Sonnet. The model is
+      model of its own, not the orchestrator's: for example, an Opus session spawns Sonnet. The model is
       a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) or any model id the session's
       provider serves; under another Anthropic-compatible provider (Z.AI's GLM, MiniMax, Kimi) the same
       alias resolves to whatever that provider maps it to (GLM-5.3 Flash for `sonnet` on Z.AI),

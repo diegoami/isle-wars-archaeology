@@ -48,7 +48,7 @@ import { planPost, publish } from './lib/post.mjs';
 import { selfTest, SAMPLES } from './lib/review-selftest.mjs';
 import { choiceSelfTest } from './lib/choice-selftest.mjs';
 import {
-  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel, familyOf, implementerFamilies,
+  sh, requireTools, repoPaths, loadConfig, parseArgs, envWith, ocArgs, prepareOpenCode, watchLine, namedModel, implementerFamilies, reviewRefusal,
 } from './lib/common.mjs';
 
 const say = (s) => console.log(s);
@@ -89,10 +89,11 @@ if (!a.reviewer && !rev.default) die(2, 'No reviewer: pass --reviewer, or set re
 const reviewer = namedModel(config, a.reviewer ?? rev.default, { family: a.family, variant: a.variant }, die);
 // Every implementer name resolves to a family, or the review is refused (Sol's R2 on PR 164); none
 // named means the session's family implemented (lib/common.mjs implementerFamilies).
+// The session's family is always excluded too (Sol's R1 on PR 189).
+const refusal = reviewRefusal(config.models, reviewer, implementedBy);
+if (refusal) die(1, `Refused: ${refusal}. Nothing posted.`);
 const fams = implementerFamilies(config.models, implementedBy);
-if (fams.refuse) die(1, `Refused: ${fams.refuse}. Nothing posted.`);
-say(`implemented by: ${implementedBy.join(', ') || `${fams.families[0]} (the session's family, from the Anthropic environment)`}`);
-if (fams.families.includes(familyOf(config.models, reviewer))) die(1, `Refused: ${reviewer} is the implementer's model family (${fams.families.join(', ')}). Nothing posted.`);
+say(`implemented by: ${fams.families.join(', ')} (the session's family from the Anthropic environment${implementedBy.length ? `, plus ${implementedBy.join(', ')}` : ''})`);
 const fallback = 'Nothing posted. Read the run\'s final message (CLAUDE.md rule 25) and fix the cause; another reviewer is the user\'s call.';
 // OpenCode is looked for only now, so that its absence is reported with the same fallback (Sol's R1 on PR 41).
 let opencode;
