@@ -14,15 +14,17 @@ goal is a fun game, not a copy", 2026-10-11).
   name or title of the original game appears here, and no quote from the findings. malpaco uses its
   own names, or none.
 - **Who decides.** Every `open` row, and every change that alters the feel of play, is listed in its
-  file's `## Choices for the owner` with options and a recommendation. The owner decides; until then
-  an implementer builds the recommended option behind a named constant.
+  file's `## Choices for the owner` with options and a recommendation. The owner decides; the section
+  then becomes `## The owner's decisions (<date>)`, keeping the options and reasons and adding each
+  decision. `core-rules.md`'s choices were all decided on 2026-10-12. An implementer builds each
+  decided value behind a named constant.
 
 ## Files
 
 | File | What | Task |
 | --- | --- | --- |
-| [core-rules.md](core-rules.md) | setup, seats, the board's shape, the deal, the turn, reinforcement, movement, combat, ownership, victory and leaving a game | T50 (#192) |
-| `extras.md` (planned) | cards, island bonuses, production centres, hazards, the computer opponent | T51 (#193) |
+| [core-rules.md](core-rules.md) | setup, seats, the board generator and island bonuses, the deal, the turn, reinforcement, movement, combat, ownership, victory and leaving a game | T50 (#192) |
+| `extras.md` (planned) | cards (and tuning the island bonus constants), production centres, hazards, the computer opponent | T51 (#193) |
 | `ui.md` (planned) | the UI, against the predecessor's and malpaco's recorded weaknesses | T52 (#194) |
 
 `python3 tools/check_design.py` checks that `core-rules.md`'s decision table has exactly one row per
