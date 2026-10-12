@@ -39,6 +39,7 @@ permission:
 
 GRANT_ALLOW = '    "/worktree-root/*": allow\n'
 GRANT_DENY = '    "/worktree-root/*": deny\n'
+GRANT_ALLOW_DEEP = '      "/worktree-root/*": allow\n'  # 6-space indent, for nested fixtures
 
 FRONTMATTER_TAIL = """  task:
     "*": deny
@@ -72,6 +73,34 @@ def _write_fixture(tmpdir: Path, *, grant_line: str) -> Path:
     reviewer.write_text(
         FRONTMATTER_HEAD
         + grant_line
+        + FRONTMATTER_TAIL
+        + REVIEWER_BODY
+    )
+    return repo
+
+
+def _write_fixture_with_marker_grant(tmpdir: Path) -> Path:
+    """Fixture where the worktreeRoot uses the project name, so the CI lenient
+    path's `<project>-work` marker matches.
+
+    worktreeRoot = `../<project>-work` resolves relative to the tmpdir, but the
+    check only matches the literal substring, so we add an explicit allow entry
+    whose key contains `<project>-work` and the tmpdir's path is the canonical
+    name. The grant marker is `Path(<tmpdir>).name + '-work'`, which the check
+    picks up directly.
+    """
+    project_name = Path(tmpdir).name
+    repo = Path(tmpdir)
+    harness = repo / "harness.json"
+    harness.write_text(json.dumps({"worktreeRoot": f"../{project_name}-work"}))
+
+    agents = repo / ".opencode" / "agents"
+    agents.mkdir(parents=True)
+    reviewer = agents / "reviewer.md"
+    grant = f'    "/home/diego/projects/{project_name}-work/*": allow\n'
+    reviewer.write_text(
+        FRONTMATTER_HEAD
+        + grant
         + FRONTMATTER_TAIL
         + REVIEWER_BODY
     )
@@ -133,17 +162,29 @@ class TestCheckReviewerGrant(unittest.TestCase):
             )
             self.assertIn("not granted", cp.stderr)
 
-    def test_passes_on_ci_with_allow_entries(self):
-        # R1: on CI the literal path is environment-specific; the check should still
-        # pass when any `allow` entry exists under permission.external_directory.
+    def test_passes_on_ci_with_marker_grant(self):
+        # R1 (round 4): CI requires an allow entry whose key contains the project's
+        # `<project>-work` marker — `/tmp/*` alone must NOT pass CI.
+        with tempfile.TemporaryDirectory() as td:
+            repo = _write_fixture_with_marker_grant(Path(td))
+            cp = self._run_check(repo, ci=True)
+            self.assertEqual(
+                cp.returncode, 0,
+                msg=f"check failed on CI when the marker grant was present; stderr={cp.stderr!r}",
+            )
+            self.assertIn("CI lenient pass", cp.stdout)
+
+    def test_fails_on_ci_without_marker_grant(self):
+        # R1: a fixture with only /tmp/* allows must fail CI: those are not the
+        # script's review worktree grant.
         with tempfile.TemporaryDirectory() as td:
             repo = _write_fixture(Path(td), grant_line=GRANT_ALLOW)
             cp = self._run_check(repo, ci=True)
             self.assertEqual(
-                cp.returncode, 0,
-                msg=f"check failed on CI when allow entries were present; stderr={cp.stderr!r}",
+                cp.returncode, 1,
+                msg=f"check passed on CI when only unrelated allows existed; "
+                    f"stdout={cp.stdout!r} stderr={cp.stderr!r}",
             )
-            self.assertIn("CI lenient pass", cp.stdout)
 
     def test_fails_on_ci_with_no_allow_entries(self):
         # CI lenient mode requires at least one allow entry overall — a completely
@@ -215,16 +256,17 @@ class TestCheckReviewerGrant(unittest.TestCase):
             agents = repo / ".opencode" / "agents"
             agents.mkdir(parents=True)
             reviewer = agents / "reviewer.md"
-            # permission -> edit -> external_directory with the grant; the user's
-            # grant is here at the wrong nesting level, so the parser must not pick
-            # it up and must report the worktree-root grant as missing.
+            # permission -> edit -> external_directory with the grant indented to
+            # two spaces below the `external_directory:` key (6-space indent); the
+            # user's grant is here at the wrong nesting level, so the parser must
+            # not pick it up and must report the worktree-root grant as missing.
             reviewer.write_text(
                 "---\n"
                 "description: nested external_directory\n"
                 "permission:\n"
                 "  edit:\n"
                 "    external_directory:\n"
-                + GRANT_ALLOW
+                + GRANT_ALLOW_DEEP
                 + "  task:\n"
                 "    \"*\": deny\n"
                 "---\n"

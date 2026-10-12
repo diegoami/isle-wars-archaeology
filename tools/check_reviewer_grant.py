@@ -28,6 +28,27 @@ import sys
 from pathlib import Path
 
 
+def _main_repo_name(repo: Path) -> str:
+    """Return the leaf name of the main checkout, even when `repo` is a worktree.
+
+    `git worktree list --porcelain` emits the main checkout first; that leaf is what
+    `{repo}` should expand to. Falls back to `repo.name` when not in a git worktree.
+    """
+    import subprocess
+    try:
+        out = subprocess.run(
+            ['git', '-C', str(repo), 'worktree', 'list', '--porcelain'],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return repo.name
+    for line in out.splitlines():
+        if line.startswith('worktree '):
+            path = line[len('worktree '):]
+            return Path(path).name
+    return repo.name
+
+
 def _worktree_root(repo: Path) -> Path:
     cfg_path = repo / 'harness.json'
     if not cfg_path.is_file():
@@ -35,7 +56,7 @@ def _worktree_root(repo: Path) -> Path:
     cfg = json.loads(cfg_path.read_text())
     rel = cfg.get('worktreeRoot', '../{repo}-work')
     if '{repo}' in rel:
-        rel = rel.replace('{repo}', repo.name)
+        rel = rel.replace('{repo}', _main_repo_name(repo))
     return (repo / rel).resolve()
 
 
@@ -51,21 +72,25 @@ def _frontmatter(path: Path) -> str:
 def _parse_external_directory(yaml_text: str) -> tuple:
     """Parse only the `permission.external_directory` block.
 
-    Tracks the indentation stack so a sibling `task:` / `bash:` block does not
-    contaminate the parse, and a stray `external_directory:` line at the wrong nesting
-    level is ignored. Returns (keys, errors) where keys is the allow/deny map and
-    errors is a list of parse problems.
+    Only the `external_directory:` key that is a *direct* child of `permission:` is
+    consumed. A stray `external_directory:` nested inside another permission child
+    (e.g., under `edit:` or `task:`) is rejected with an error.
+
+    Returns (keys, errors) where keys is the allow/deny map and errors is the list of
+    parse problems that trigger an exit-1.
     """
     keys = {}
     errors = []
 
+    # Indent tracking. The expected indent of a direct child of `permission:` is
+    # permission_indent + 2 (matching `edit:`, `task:`, `bash:`, `external_directory:`).
+    permission_indent = None
     in_permission = False
-    permission_indent = -1
+    direct_child_indent = None  # the indent of the most recent direct child
     in_ext = False
-    ext_indent = -1
+    ext_indent = None
 
     for lineno, raw in enumerate(yaml_text.splitlines(), 1):
-        # drop trailing comments; preserve leading whitespace
         s = raw.split('#', 1)[0].rstrip()
         if not s.strip():
             continue
@@ -75,28 +100,36 @@ def _parse_external_directory(yaml_text: str) -> tuple:
         if head == 'permission:':
             in_permission = True
             permission_indent = indent
+            direct_child_indent = None
             in_ext = False
-            ext_indent = -1
+            ext_indent = None
             continue
 
-        if in_permission:
-            # leaving permission: a sibling (same indent) ends the block
+        if in_permission and permission_indent is not None:
+            # leaving permission: a sibling ends the block
             if indent == permission_indent and head != 'permission:':
                 in_permission = False
                 in_ext = False
-                ext_indent = -1
-                continue  # do not re-evaluate the line as part of permission:
+                ext_indent = None
+                direct_child_indent = None
+                continue
 
-            if head == 'external_directory:':
-                in_ext = True
-                ext_indent = indent
+            if indent == permission_indent + 2 and head.endswith(':'):
+                # a direct child of permission (edit:, task:, bash:, external_directory:)
+                direct_child_indent = indent
+                if head == 'external_directory:':
+                    in_ext = True
+                    ext_indent = indent
+                else:
+                    in_ext = False
+                    ext_indent = None
                 continue
 
             if in_ext:
-                # leaving external_directory: a sibling (same indent as ext_indent) ends the block
-                if indent <= ext_indent:
+                # exiting external_directory: same indent as the key, or deeper=not here
+                if ext_indent is not None and indent <= ext_indent:
                     in_ext = False
-                    ext_indent = -1
+                    ext_indent = None
                     continue
                 stripped = s.lstrip()
                 m = re.match(r'^"([^"]+)"\s*:\s*(allow|deny)\s*$', stripped)
@@ -124,15 +157,29 @@ def check(repo: Path) -> int:
         return 1
 
     if _is_ci():
-        # CI: assert the reviewer agent declares at least one allow entry under
-        # permission.external_directory, so the whole grant is not silently removed.
-        # The literal path varies per environment; the user's local install uses
-        # /home/<user>/projects/..., GitHub Actions uses /home/runner/work/...
-        allows = sorted(k for k, v in ext.items() if v == 'allow')
-        if not allows:
-            print(f'check_reviewer_grant: no allow entries in {reviewer}', file=sys.stderr)
+        # CI: assert the reviewer agent declares an `allow` entry whose path names
+        # the project's worktree-root. The literal full path differs per environment
+        # (/home/<user>/projects/... vs /home/runner/work/<repo>/<repo>-work/), so a
+        # strict path match is not portable; a substring match on the project's leaf
+        # (`<repo>-work`) catches the structural protection regardless of environment.
+        # `/tmp/*`-only grants must NOT pass on CI: they have nothing to do with
+        # the script's review worktree.
+        repo_name = _main_repo_name(repo)
+        marker = repo_name + '-work'
+        matching = sorted(
+            k for k, v in ext.items()
+            if v == 'allow' and marker in k
+        )
+        if not matching:
+            print(
+                f'check_reviewer_grant: no allow entry covering {marker!r} (the '
+                f'script\'s review worktree) in {reviewer}',
+                file=sys.stderr,
+            )
+            print(f'  granted allow entries: {sorted(k for k, v in ext.items() if v == "allow")}',
+                  file=sys.stderr)
             return 1
-        print(f'check_reviewer_grant: CI lenient pass; allow entries: {allows}')
+        print(f'check_reviewer_grant: CI lenient pass; entries covering {marker!r}: {matching}')
         return 0
 
     # Local / non-CI: assert the worktree-root path is granted with allow.
