@@ -244,10 +244,13 @@ chooses `m` this way:
   battle needs (its stack must reach the attack threshold). With no further battle planned from either,
   the country whose loss would cost more (an island bonus completed or at stake, an entrance, a centre)
   has first claim; on a tie, the captured country.
-- **Split.** The first-claim country gets its need, or as much as the rule allows when its need is
-  larger (`P − 1` if it is the captured country, `P − 1` kept if it is the source). The other country
-  gets the rest, which is always at least the 1 the rule requires. So when both needs cannot be met,
-  the first-claim country is served first and the other is left with 1.
+- **Split.** Each country first gets its need, the first-claim country before the other, capped at
+  what the rule allows (`P − 1` moved in, or `P − 1` kept). So when both needs cannot be met, the
+  first-claim country is served first and the other is left with 1. **The surplus** (armies beyond
+  both needs) goes to the country that borders an enemy: forward into the captured country when the
+  source has no enemy neighbour, so no surplus is stranded behind the front; when both border an
+  enemy, or neither does, to the first-claim country. In Sol's case of `P = 10`, an
+  interior source and a captured country needing 1, each gets 1 and the 8 extra move in: 9 move, 1 stays.
 - **Examples.** A source left with no enemy neighbour needs 1, so all but one move in. A source of 3
   that captures a 1-army country after losing one exchange has `P = 2`: the only legal split is 1 and
   1, and the computer makes it, even if a 10-army enemy borders the source. That source is then likely
@@ -356,8 +359,9 @@ Its output:
   dealt 15, 15 and 16 with the two humans each at −4, giving 11, 11 and 24. In every one of them the
   leader is the only computer seat, so no computer seat would apply the check at the deal, but the
   lead the humans handed it would count against it for the rest of the game.
-- On adjusted counts no setup has a leader at the deal: adjusted counts are the even shares, at most
-  12 against 11.
+- On adjusted counts no setup has a leader at the deal: adjusted counts are the even shares, 23 and
+  23 for two seats (equal, so the 1.5 ratio test fails), 15, 15 and 16 for three, and 11, 11, 12 and
+  12 for four (both below the minimum of 22 adjusted countries).
 
 ### Near the end
 
