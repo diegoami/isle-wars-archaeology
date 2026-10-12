@@ -249,7 +249,7 @@ seat's view, its own random stream, and levels that change only decisions. No va
 
 ### A7 Card timing
 - **Canonical: the owner's choice.** Recommended (b). [Cards](computer.md#cards).
-- **A7a Always at once.** Every set traded the turn it is complete, at every level.
+- **A7a Always at once.** A set traded in every turn the hand makes one, at every level.
 - **A7b By level.** Army sets at once everywhere; at Normal and Hard the Surge waits for a big turn and
   the Raid set for a target; Easy trades all at once.
 - **A7c Hard holds raids.** As A7b, and Hard keeps a Raid set for a leader close to a win.

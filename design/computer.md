@@ -148,9 +148,11 @@ The computer follows T50's phases in order: income, cards, placement, attacks, t
 In the cards phase it may trade one set, or skip ([variety.md, Trade-ins](variety.md#trade-ins)).
 
 - **Army sets are traded at once, at every level.** A set of Anchors (5), Compasses (8) or Lanterns
-  (15) never grows, so holding it gains nothing and risks the Squall and the hand limit. When the hand
-  makes two sets that share Wilds, the computer trades the one adding more armies, counting a Surge
-  set as this turn's income.
+  (15) never grows, so holding it gains nothing and risks the Squall and the hand limit. A seat whose
+  hand makes an army set therefore trades a set that turn. Which one, when the hand makes several (they
+  may share Wilds, and only one is traded a turn): the army set adding most armies, unless a Surge or
+  Raid set is worth more now and its own rule below says to trade it; a Surge set is worth this turn's
+  income, a Raid set its expected saving in attacking armies.
 - **The Surge set waits for a big turn** *(A7)*. Three Surges add the turn's income once more (country
   part and island bonuses): worth exactly the income `I`, so more as the seat grows. From Normal up the
   computer trades a Surge set when any of these holds, and otherwise keeps it:
@@ -160,7 +162,8 @@ In the cards phase it may trade one set, or skip ([variety.md, Trade-ins](variet
     draw has a 1 in 15 or greater chance of emptying the hand ([the model](#a-model-of-the-choices));
   - the doubled pool lets it complete an island or reach domination this turn (foresight).
 
-  At Easy it trades every set the turn it is complete.
+  At Easy it trades a set in every turn it holds one, the one adding most armies, a Raid set last;
+  an Easy raid hits the largest enemy stack adjacent to one of its countries.
 - **The Raid set hits what it means to attack, or the leader** *(A10)*. A raid is traded in the cards
   phase, before placement, so its result shapes the rest of the turn. From Normal up the computer
   trades a Raid set when a target gives enough value:
@@ -251,7 +254,7 @@ A seat drawing into a full hand discards one of its five first, without seeing t
   cards and not all four Raids have been seen on the discard pile since the last reshuffle, as far as
   its card memory reaches, A12);
 - among the rest, it discards a card of the kind with the most copies already seen on the discard
-  pile, which is the kind least likely to complete.
+  pile (as far as its card memory reaches), which is the kind least likely to complete.
 
 ### The leader check
 
@@ -418,7 +421,7 @@ below a chance of 0.25).
 
 ### Swingy cards, played readably
 
-- **Army sets at once.** A player sees a set traded the turn it is complete, every time, at every
+- **Army sets at once.** A computer holding an army set trades a set that turn, every time, at every
   level: the sets never grow, so waiting would only risk the hand.
 - **The Surge waits, and you can see why.** Three Surges add the turn's income: about 4 early, 8 or
   more for a seat with 24 countries, or fewer countries with island bonuses. Normal and Hard keep the set until income
@@ -451,8 +454,8 @@ A requirement for T52's presentation and for the computer itself. A computer tur
 
 - The predecessor's computer, in the owner's four recorded games, made 235 attacks in 131 turns
   (about 1.8 a turn), at most 8 in a turn, and none in 16 turns (counts from `runs/E018`). A bound
-  of 10 is above every turn recorded there, so it costs malpaco's computer no play that the
-  predecessor's ever needed; a turn that reaches it stops attacking and moves.
+  of 10 is above every turn recorded there. malpaco's computer may want more battles than the
+  predecessor's, which drew its rounds; a turn that reaches the bound stops attacking and moves.
 - The exchanges inside a battle are not bounded by the policy; T52 shows them at its chosen pace.
 - Each decision takes a bounded time: the engine's tests fix a time budget per decision and fail if
   a decision over many seeds exceeds it.
@@ -529,8 +532,8 @@ It draws on no random stream, so its games differ only through the game seed.
 - **Streams**: changing a computer seat's level, or its stream's seed, leaves the game stream's
   sequence of values unchanged; re-running a turn from the same state gives the same actions; a saved
   game replays identically.
-- **Readable rules**: an army set is traded the turn it is complete, at every level; no placement on
-  an interior country; at most 3 placements, 10 battles and 1 move a turn.
+- **Readable rules**: a seat holding an army set trades a set that turn, at every level; no placement
+  on an interior country; at most 3 placements, 10 battles and 1 move a turn.
 
 ## Choices for the owner
 
@@ -571,10 +574,11 @@ decision table is `open`; these are the feel-changing calls inside the rows' new
      decided.
 6. **A6. Battles per turn** (C-AI-03).
    - (a) no bound; (b) at most 10; (c) at most 6.
-   - Recommendation (b): above every turn recorded of the predecessor's computer (at most 8), so it
-     costs little play, and it keeps a turn watchable. (c) would cut real chains of captures.
+   - Recommendation (b): above every turn recorded of the predecessor's computer (at most 8), and it
+     keeps a turn watchable; how often malpaco's computer reaches it is for the tests to report. (c)
+     would cut chains of captures more often.
 7. **A7. Card timing** (C-AI-06).
-   - (a) every set traded the turn it is complete, at every level; (b) army sets at once at every
+   - (a) a set traded in every turn the hand makes one, at every level; (b) army sets at once at every
      level; the Surge waits for a big turn and the Raid set for a target at Normal and Hard; Easy
      trades all at once; (c) as (b), and Hard also holds a Raid set for a turn when the leader is
      close to a win.
