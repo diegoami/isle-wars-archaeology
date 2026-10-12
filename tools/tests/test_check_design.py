@@ -1,10 +1,10 @@
-"""Tests for tools/check_design.py (T50 Done-when 2; T51 Done-when 2).
+"""Tests for tools/check_design.py (T50 Done-when 2; T51 Done-when 2; T53 Done-when 2).
 
 Each failure the tasks' Scope lists has one fixture that trips that failure alone: the clean
 fixture passes, and each test changes exactly one thing in it and expects exactly one problem.
-`DesignWorld` tests `design/core-rules.md`; `VarietyWorld` runs the same failures against
-`design/variety.md` and its own spec files. Both worlds write every design file clean, so `main()`
-sees a whole tree and only the file under test changes.
+`DesignWorld` tests `design/core-rules.md`; `VarietyWorld` and `ComputerWorld` run the same failures
+against `design/variety.md` and `design/computer.md`, each with its own spec files. Every world writes
+every design file clean, so `main()` sees a whole tree and only the file under test changes.
 """
 import contextlib
 import io
@@ -43,10 +43,26 @@ V_ROWS = {
 }
 V_CHOICES = "## Choices for the owner\n\n1. **Rate** (C-HAZ-03; `open`). (a) one; (b) two. Recommendation: (b).\n"
 
+# computer.md: three claims in computer-opponent.md, its only in-scope spec file.
+C_SPEC = {
+    "computer-opponent": ["C-AI-01", "C-AI-02", "C-AI-08"],
+}
+C_ROWS = {
+    "C-AI-01": "| C-AI-01 | keep | [Placement](#placement) | It serves play. |",
+    "C-AI-02": "| C-AI-02 | replace | [Attacks](#attacks) | A readable rule. |",
+    "C-AI-08": "| C-AI-08 | open | [Levels](#levels) | The owner chooses. |",
+}
+C_CHOICES = "## Choices for the owner\n\n1. **Levels** (C-AI-08; `open`). (a) one; (b) two. Recommendation: (b).\n"
+
 WORLDS = {
     "core-rules.md": (SPEC, ROWS, CHOICES),
     "variety.md": (V_SPEC, V_ROWS, V_CHOICES),
+    "computer.md": (C_SPEC, C_ROWS, C_CHOICES),
 }
+# What main() prints for each clean design file of the fixture tree, in check order.
+OK = ["design/core-rules.md ok: 3 claims, 3 rows",
+      "design/variety.md ok: 3 claims, 3 rows",
+      "design/computer.md ok: 3 claims, 3 rows"]
 
 
 def design_text(rows, choices):
@@ -102,9 +118,7 @@ class CleanTest(DesignWorld):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             code = check_design.main(["--root", str(self.root)])
-        self.assertEqual((code, out.getvalue().strip().splitlines()),
-                         (0, ["design/core-rules.md ok: 3 claims, 3 rows",
-                              "design/variety.md ok: 3 claims, 3 rows"]))
+        self.assertEqual((code, out.getvalue().strip().splitlines()), (0, OK))
 
     def test_main_exits_1_without_a_design(self):
         out = io.StringIO()
@@ -246,7 +260,7 @@ class VarietyCleanTest(VarietyWorld):
             code = check_design.main(["--root", str(self.root)])
         self.assertEqual(code, 1)
         lines = out.getvalue().strip().splitlines()
-        self.assertEqual(lines, ["design/core-rules.md ok: 3 claims, 3 rows", "design/variety.md: missing"])
+        self.assertEqual(lines, [OK[0], "design/variety.md: missing", OK[2]])
 
     def test_main_names_one_design(self):
         self.write_design()
@@ -262,8 +276,7 @@ class VarietyCleanTest(VarietyWorld):
         with contextlib.redirect_stdout(out):
             code = check_design.main(["--root", str(self.root)])
         self.assertEqual((code, out.getvalue().strip().splitlines()),
-                         (1, ["design/core-rules.md ok: 3 claims, 3 rows",
-                              "C-CRD-02: no row in design/variety.md"]))
+                         (1, [OK[0], "C-CRD-02: no row in design/variety.md", OK[2]]))
 
     def test_variety_spec_file_missing(self):
         (self.root / "spec" / "production-centres.md").unlink()
@@ -286,25 +299,24 @@ class VariantsBanTest(VarietyWorld):
         return code, out.getvalue().strip().splitlines()
 
     def test_clean_variants_prints_nothing_extra(self):
-        self.assertEqual(self.run_main("# Variants\n\nText.\n"),
-                         (0, ["design/core-rules.md ok: 3 claims, 3 rows",
-                              "design/variety.md ok: 3 claims, 3 rows"]))
+        self.assertEqual(self.run_main("# Variants\n\nText.\n"), (0, OK))
 
     def test_a_fence_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\n~~~\nx\n~~~\n")
         self.assertEqual(code, 1)
-        self.assertEqual(lines[2:], [l for l in lines[2:] if l.startswith("design/variants.md:")])
-        self.assertEqual([l.split(":")[1] for l in lines[2:]], ["3", "5"])
+        self.assertEqual(lines[:3], OK)
+        self.assertEqual(lines[3:], [l for l in lines[3:] if l.startswith("design/variants.md:")])
+        self.assertEqual([l.split(":")[1] for l in lines[3:]], ["3", "5"])
 
     def test_a_tag_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\n<div hidden>\n")
         self.assertEqual(code, 1)
-        self.assertEqual(len(lines), 3, lines)
-        self.assertTrue(lines[2].startswith("design/variants.md:3: a raw HTML tag"), lines)
+        self.assertEqual(len(lines), 4, lines)
+        self.assertTrue(lines[3].startswith("design/variants.md:3: a raw HTML tag"), lines)
 
     def test_a_comment_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\nText <!-- hidden -->.\n")
-        self.assertEqual((code, lines[2:]), (1, ["design/variants.md:3: an HTML comment; design files may not hold HTML comments"]))
+        self.assertEqual((code, lines[3:]), (1, ["design/variants.md:3: an HTML comment; design files may not hold HTML comments"]))
 
 
 class VarietyFailureTest(VarietyWorld, FailureTest):
@@ -320,6 +332,65 @@ class VarietyDecisionsHeadingTest(VarietyWorld, DecisionsHeadingTest):
     """The owner's section, both headings, in design/variety.md."""
 
 
+class ComputerWorld(DesignWorld):
+    design = "computer.md"
+    keep_id, change_id, open_id, alien_id = "C-AI-01", "C-AI-02", "C-AI-08", "C-AI-99"
+
+
+class ComputerCleanTest(ComputerWorld):
+    def test_clean_fixture_passes_and_counts(self):
+        self.write_design()
+        self.assertEqual(check_design.check(self.root, "computer.md"), ([], 3, 3))
+
+    def test_main_exits_1_without_the_computer_design(self):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        self.assertEqual((code, out.getvalue().strip().splitlines()),
+                         (1, [OK[0], OK[1], "design/computer.md: missing"]))
+
+    def test_main_names_one_design(self):
+        self.write_design()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root), "design/computer.md"])
+        self.assertEqual((code, out.getvalue().strip()), (0, OK[2]))
+
+    def test_main_fails_on_a_problem_in_the_third_file_only(self):
+        del self.rows["C-AI-02"]
+        self.write_design()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        self.assertEqual((code, out.getvalue().strip().splitlines()),
+                         (1, [OK[0], OK[1], "C-AI-02: no row in design/computer.md"]))
+
+    def test_computer_spec_file_missing(self):
+        (self.root / "spec" / "computer-opponent.md").unlink()
+        problems = self.problems()
+        # Every claim then lacks a spec source: the missing file, and each row names an unknown id.
+        self.assertEqual(problems[0], "spec/computer-opponent.md: missing")
+        self.assertEqual(problems[1:], [f"design/computer.md:{n}: {cid} is not an in-scope spec claim"
+                                        for n, cid in self.row_lines()])
+
+    def row_lines(self):
+        lines = (self.root / "design" / "computer.md").read_text().splitlines()
+        return [(n, line.split("|")[1].strip()) for n, line in enumerate(lines, 1) if line.startswith("| C-")]
+
+
+class ComputerFailureTest(ComputerWorld, FailureTest):
+    """The failures, each tripped alone, in design/computer.md."""
+
+    def test_a_variety_claim_row_in_the_computer_file_fails(self):
+        # Each file is checked against its own spec files: a card claim is foreign here.
+        self.extra_rows.append("| C-CRD-01 | keep | [Cards](#cards) | Wrong file. |")
+        self.assert_one("C-CRD-01 is not an in-scope spec claim")
+
+
+class ComputerDecisionsHeadingTest(ComputerWorld, DecisionsHeadingTest):
+    """The owner's section, both headings, in design/computer.md."""
+
+
 class RepositoryTest(unittest.TestCase):
     def test_the_repository_design_is_complete(self):
         root = Path(check_design.__file__).resolve().parents[1]
@@ -328,6 +399,10 @@ class RepositoryTest(unittest.TestCase):
     def test_the_repository_variety_design_is_complete(self):
         root = Path(check_design.__file__).resolve().parents[1]
         self.assertEqual(check_design.check(root, "variety.md"), ([], 23, 23))
+
+    def test_the_repository_computer_design_is_complete(self):
+        root = Path(check_design.__file__).resolve().parents[1]
+        self.assertEqual(check_design.check(root, "computer.md"), ([], 9, 9))
 
 
 if __name__ == "__main__":
