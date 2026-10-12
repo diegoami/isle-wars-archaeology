@@ -195,8 +195,10 @@ indexed in `docs/tasks/README.md`.
     malpaco, and no evidence ever does. Executables, data and help files, and patched builds stay
     on the user's own machines. They are never in this repository, a release, an issue or a cloud
     session. `tools/check_no_originals.py` runs in CI. Derived output (decompiled code, listings)
-    may be read by the reviewing models' APIs (Anthropic, OpenAI, Z.ai, and Alibaba since the
-    owner chose Qwen for T21 on 2026-10-06), and is never published (the owner, 2026-10-05, T29).
+    may be read by the reviewing models' APIs (Anthropic, OpenAI, Z.ai, Alibaba since the
+    owner chose Qwen for T21 on 2026-10-06, and MiniMax since 2026-10-12: it was missing only
+    because the owner did not use MiniMax when the list was written), and is never published (the
+    owner, 2026-10-05, T29).
     Free OpenRouter models never see it.
 
     **Carve-out (owner, 2026-10-08): model-driven run capture under Wine on the user's machine.**
@@ -210,7 +212,8 @@ indexed in `docs/tasks/README.md`.
       They are never in this repository, a release, an issue, a cloud session, or any tool input
       that leaves the user's machine, with one exception (the owner, 2026-10-08): the screenshots
       and frames of a model-driven sitting may be read by the same model APIs as derived output
-      (Anthropic, OpenAI, Z.ai, Alibaba), to inspect a sitting or review its records. They hold no
+      (Anthropic, OpenAI, Z.ai, Alibaba, and MiniMax since the owner's decision of 2026-10-12), to
+      inspect a sitting or review its records. They hold no
       confidential information. Free OpenRouter models never see them, and they are still never
       committed, uploaded or posted. The binary, the install, the run copy, savestates, memory
       dumps and patched builds stay under the full bar. The carve-out adds the option of a Wine

@@ -98,4 +98,4 @@ and `start_state.sha256` must match the F019 row's hash for the named set+varian
 gate enforces this. The binary, the install, the run copy, savestates, memory dumps,
 screenshots, recordings and any patched build stay on the user's machine — never in the
 repo, a release, an issue, a cloud session, or any tool input that leaves the user's
-machine. Exception (the owner, 2026-10-08): a model-driven sitting's screenshots and frames may be read by the same model APIs as derived output (Anthropic, OpenAI, Z.ai, Alibaba), never by free OpenRouter models, and are still never committed, uploaded or posted. Per-claim wording amendment is per-claim, not in bulk (constraint G).
+machine. Exception (the owner, 2026-10-08): a model-driven sitting's screenshots and frames may be read by the same model APIs as derived output (Anthropic, OpenAI, Z.ai, Alibaba, and MiniMax since 2026-10-12), never by free OpenRouter models, and are still never committed, uploaded or posted. Per-claim wording amendment is per-claim, not in bulk (constraint G).
