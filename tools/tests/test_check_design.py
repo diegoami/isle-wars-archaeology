@@ -43,7 +43,6 @@ V_ROWS = {
 }
 V_CHOICES = "## Choices for the owner\n\n1. **Rate** (C-HAZ-03; `open`). (a) one; (b) two. Recommendation: (b).\n"
 
-ROWS_OF = {"core-rules.md": ROWS, "variety.md": V_ROWS}
 WORLDS = {
     "core-rules.md": (SPEC, ROWS, CHOICES),
     "variety.md": (V_SPEC, V_ROWS, V_CHOICES),
@@ -155,26 +154,35 @@ class FailureTest(DesignWorld):
         self.rows[self.keep_id] = f"| {self.keep_id} | keep | [The board](#the-board) |"
         self.assert_one(f"{self.keep_id} has 3 cells, not 4")
 
-    def test_row_inside_a_multi_line_html_comment_is_not_a_row(self):
-        self.rows[self.change_id] = "<!--\n" + self.rows[self.change_id] + "\n-->"
-        self.assert_one(f"{self.change_id}: no row")
-
-    def test_row_inside_an_unclosed_html_comment_is_not_a_row(self):
-        # An unclosed comment hides everything after it, so the last row of the table goes.
-        last = list(self.rows)[-1]
-        self.rows[last] = "<!--\n" + self.rows[last]
+    # Inactive Markdown fails closed. The injected text starts at line 7 of the fixture file.
+    def assert_inactive(self, inject, lines, kind):
+        self.choices = inject + "\n" + self.choices
         problems = self.problems()
-        self.assertIn(f"{last}: no row in design/{self.design}", problems)
+        self.assertEqual(len(problems), len(lines), problems)
+        for problem, n in zip(problems, lines):
+            self.assertTrue(problem.startswith(f"design/{self.design}:{n}: {kind}"), problem)
 
-    def test_row_inside_a_fenced_block_is_not_a_row(self):
-        for fence in ("```", "~~~"):
-            with self.subTest(fence=fence):
-                self.rows[self.change_id] = f"{fence}text\n" + ROWS_OF[self.design][self.change_id] + f"\n{fence}"
-                self.assert_one(f"{self.change_id}: no row")
+    def test_a_backtick_fence_fails(self):
+        self.assert_inactive("```python\nx = 1\n```", [7, 9], "a code fence")
 
-    def test_open_row_named_only_in_a_comment_in_choices_fails(self):
-        self.choices = f"## Choices for the owner\n\n<!-- 1. **Choice** ({self.open_id}). -->\n"
-        self.assert_one(f"{self.open_id} is open but not in")
+    def test_a_tilde_fence_fails(self):
+        self.assert_inactive("~~~\nx = 1\n~~~", [7, 9], "a code fence")
+
+    def test_an_indented_fence_fails(self):
+        self.assert_inactive("      ```text", [7], "a code fence")
+
+    def test_an_inline_html_comment_fails(self):
+        self.assert_inactive("Some text <!-- hidden --> more text.", [7], "an HTML comment")
+
+    def test_a_multi_line_html_comment_fails(self):
+        self.assert_inactive("<!--\nhidden\n-->", [7], "an HTML comment")
+
+    def test_a_row_hidden_in_a_fence_still_fails_the_file(self):
+        # Sol's bypass of round 2: rows after a fence that never closes. The fence alone fails.
+        self.rows[self.change_id] = "````\n```\n" + self.rows[self.change_id]
+        problems = self.problems()
+        self.assertTrue(problems)
+        self.assertTrue(all("a code fence" in p for p in problems), problems)
 
     def test_open_row_named_only_outside_choices_still_fails(self):
         self.choices = f"## Choices for the owner\n\nNone yet.\n\n## Notes\n\n{self.open_id} is discussed here.\n"

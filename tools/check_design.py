@@ -11,9 +11,9 @@ claim tables of those spec files and the design file's decision table (every lin
 - an open row's id does not appear in the owner's section: the `## Choices for the owner` section
   while choices are pending, or the `## The owner's decisions (<date>)` section once they are made.
   With no open row left, neither section is required;
-- a row does not have exactly four cells.
-Inactive Markdown in a design file (HTML comments and fenced code blocks) is ignored: a row or a
-mention inside it does not count.
+- a row does not have exactly four cells;
+- a line opens a code fence (``` or ~~~, after any indentation) or holds an HTML comment (`<!--`):
+  the check fails closed on inactive Markdown rather than parsing around it.
 
 With no argument it checks every design file and prints one line per clean file,
 `design/<file> ok: N claims, N rows`, or one line per problem; it exits 1 if any file has a
@@ -56,27 +56,22 @@ def spec_claims(root, spec_files=SPEC_FILES):
     return ids, problems
 
 
-FENCE = re.compile(r"^\s{0,3}(```|~~~)")
+FENCE = re.compile(r"^\s*(```|~~~)")
+COMMENT = "<!--"
 
 
-def active_text(text):
-    """The design text with inactive Markdown blanked: HTML comments (one line or several, an
-    unclosed one running to the end) and fenced code blocks. Newlines are kept, so line numbers
-    stay those of the file. A row or an owner's-section mention inside either does not count."""
-    text = re.sub(r"<!--.*?(-->|\Z)", lambda m: "\n" * m.group(0).count("\n"), text, flags=re.S)
-    lines, fence = [], None
-    for line in text.split("\n"):
-        m = FENCE.match(line)
-        if fence is None and m:
-            fence = m.group(1)
-            lines.append("")
-        elif fence is not None:
-            if m and m.group(1) == fence:
-                fence = None
-            lines.append("")
-        else:
-            lines.append(line)
-    return "\n".join(lines)
+def inactive_markdown(text, rel):
+    """One problem per line that opens a code fence or holds an HTML comment. A design file may hold
+    neither: either could hide decision rows from a reader while the check counts them, so the check
+    fails closed instead of parsing around them. Code goes in indented blocks (four spaces)."""
+    problems = []
+    for n, line in enumerate(text.splitlines(), 1):
+        if FENCE.match(line):
+            problems.append(f"{rel}:{n}: a code fence; design files may not hold fenced blocks "
+                            "(indent code by four spaces instead)")
+        if COMMENT in line:
+            problems.append(f"{rel}:{n}: an HTML comment; design files may not hold HTML comments")
+    return problems
 
 
 def choices_section(text):
@@ -96,7 +91,8 @@ def check(root, design="core-rules.md"):
     path = root / "design" / design
     if not path.is_file():
         return problems + [f"{rel}: missing"], len(claims), 0
-    text = active_text(path.read_text(encoding="utf-8"))
+    text = path.read_text(encoding="utf-8")
+    problems += inactive_markdown(text, rel)
     rows = []
     for n, line in enumerate(text.splitlines(), 1):
         m = CLAIM_ROW.match(line)
