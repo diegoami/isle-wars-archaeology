@@ -1,0 +1,68 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0018",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 029.mp4",
+      "bytes": 103171810,
+      "sha256": "d19ad65dc161a1d3c4138fec478fd6e660300c05227979ec4e91a26feeea1d95",
+      "asset": "d19ad65dc161a1d3-IP1 029.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "event-frame.png",
+      "bytes": 2097387,
+      "sha256": "f741663308f4b1b244cfcc7c0e38a1662f1653a97af6305a4878994ef486fc52",
+      "asset": "f741663308f4b1b2-event-frame.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "concession-offer.png",
+      "bytes": 1808580,
+      "sha256": "3846e8c39fa20119fdf64a6d1d04984adac9b79ae14b12bff4921cb08dfb9361",
+      "asset": "3846e8c39fa20119-concession-offer.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "accept-pressed.png",
+      "bytes": 1808580,
+      "sha256": "3846e8c39fa20119fdf64a6d1d04984adac9b79ae14b12bff4921cb08dfb9361",
+      "asset": "3846e8c39fa20119-accept-pressed.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "winner-dialog.png",
+      "bytes": 1789246,
+      "sha256": "0c38b7d1a0ee6d6356f422dbb515b329cb54cccd396b967d5ec468035c706173",
+      "asset": "0c38b7d1a0ee6d63-winner-dialog.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scoreboard-before-update.png",
+      "bytes": 1481425,
+      "sha256": "3179e334d62fdf470a140822896dede76503f96c1ca41ae118509f7084ea2a7e",
+      "asset": "3179e334d62fdf47-scoreboard-before-update.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scoreboard-after-update.png",
+      "bytes": 1488430,
+      "sha256": "c916de51c7d686d1546835ba77310c4a3fa513654028ce2f2ed96200876111d6",
+      "asset": "c916de51c7d686d1-scoreboard-after-update.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "title-after-game.png",
+      "bytes": 1512200,
+      "sha256": "4375132c8b705cdf32ee8d4c7e35a0c3670c853f1e167d09c184c0d377c101f4",
+      "asset": "4375132c8b705cdf-title-after-game.png",
+      "class": "screenshot"
+    }
+  ]
+}
