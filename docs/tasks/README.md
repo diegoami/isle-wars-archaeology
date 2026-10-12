@@ -52,3 +52,4 @@ status; this index carries none.
 | T50 | malpaco's design, the core rules: kept from Pro, changed or new | #192 | — |
 | T51 | malpaco's design, variety: cards, island bonuses, production centres and events | #193 | T50 |
 | T53 | malpaco's design, the computer opponent: how it plays, and its difficulty levels | #196 | T51 |
+| T52 | malpaco's design, the UI: screens, the board, feedback and sound | #194 | T53 |
