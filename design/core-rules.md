@@ -42,7 +42,7 @@ locked option and no registration.
 | Starting armies per country | 1–2, 1–3, 1–4 (range of the per-country spread, see [the deal](#the-deal)) | 1–3 |
 | Human share | −4 to +4 countries per human seat, relative to an even share *(decision 6)* | 0 |
 | Computer strength | T51 | T51 |
-| Event frequency | T51 | T51 |
+| Event frequency | Off, Rare (1 in 21 per eligible turn change), Normal (1 in 14) or Often (1 in 8); the events are in [variety.md](variety.md#events) *(variety.md, decision V9)* | Normal |
 | Domination win | on (threshold [below](#victory)) or off *(decision 9)* | on |
 | Round limit | off, or 20 / 30 / 40 rounds *(decision 10)* | off |
 | Game seed | any 32-bit number, or random | random, shown in the game |
@@ -194,7 +194,12 @@ A new game makes its starting state in this order, all from the game seed:
    at random with no country above the range's top. Every seat thus starts with the same armies per
    country *(decision 4)*.
 
-Production centres and starting cards, if any, are T51's and are placed after step 5.
+6. **Production centres.** Three distinct countries are drawn uniformly as the production centres,
+   after step 5 and with no spacing, island or owner condition; what a centre does is in
+   [variety.md](variety.md#production-centres) *(variety.md, decision V7)*. The pool formula of
+   step 5 is unchanged.
+
+Starting cards, if any, are T51's.
 
 ## The turn
 
@@ -291,7 +296,9 @@ it ends by total conquest only.
 
 Events (T51) are not drawn while any seat is within 4 countries of winning: holding
 `ceil(0.75 × C) − 4` or more countries (31 of 46) when domination is on, or `C − 4` or more (42 of
-46) when it is off. The last turns are decided by play, not luck.
+46) when it is off. When the round limit is on, no events are drawn in its last 3 rounds either
+([variety.md](variety.md#when-an-event-is-drawn), decision V12). The last turns are decided by play,
+not luck.
 
 A finished game adds one win or loss per human seat to the record.
 
