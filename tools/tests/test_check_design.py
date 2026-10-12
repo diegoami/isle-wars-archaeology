@@ -1,7 +1,10 @@
-"""Tests for tools/check_design.py (T50, Done-when 2).
+"""Tests for tools/check_design.py (T50 Done-when 2; T51 Done-when 2).
 
-Each failure the task's Scope lists has one fixture that trips that failure alone: the clean
+Each failure the tasks' Scope lists has one fixture that trips that failure alone: the clean
 fixture passes, and each test changes exactly one thing in it and expects exactly one problem.
+`DesignWorld` tests `design/core-rules.md`; `VarietyWorld` runs the same failures against
+`design/variety.md` and its own spec files. Both worlds write every design file clean, so `main()`
+sees a whole tree and only the file under test changes.
 """
 import contextlib
 import io
@@ -14,7 +17,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import check_design  # noqa: E402
 
 SPEC_HEAD = "| ID | Claim | Status | Scope | Basis | Findings |\n| --- | --- | --- | --- | --- | --- |\n"
-# Two claims in board.md and one in combat.md; the other in-scope files exist with empty tables.
+TABLE_HEAD = "| Claim | Decision | malpaco's rule | Why |\n| --- | --- | --- | --- |\n"
+
+# core-rules.md: two claims in board.md and one in combat.md; the other in-scope files are empty.
 SPEC = {
     "board": ["C-BRD-01", "C-BRD-02"],
     "combat": ["C-CMB-05"],
@@ -26,36 +31,65 @@ ROWS = {
 }
 CHOICES = "## Choices for the owner\n\n1. **Ties** (C-CMB-05; `open`). (a) one; (b) two. Recommendation: (b).\n"
 
+# variety.md: two claims in cards.md and one in hazards.md; the other in-scope files are empty.
+V_SPEC = {
+    "cards": ["C-CRD-01", "C-CRD-02"],
+    "hazards": ["C-HAZ-03"],
+}
+V_ROWS = {
+    "C-CRD-01": "| C-CRD-01 | keep | [Cards](#cards) | It serves surprise. |",
+    "C-CRD-02": "| C-CRD-02 | replace | [The deck](#the-deck) | A shuffled deck. |",
+    "C-HAZ-03": "| C-HAZ-03 | open | [Events](#events) | The owner chooses. |",
+}
+V_CHOICES = "## Choices for the owner\n\n1. **Rate** (C-HAZ-03; `open`). (a) one; (b) two. Recommendation: (b).\n"
+
+WORLDS = {
+    "core-rules.md": (SPEC, ROWS, CHOICES),
+    "variety.md": (V_SPEC, V_ROWS, V_CHOICES),
+}
+
+
+def design_text(rows, choices):
+    table = TABLE_HEAD + "\n".join(rows) + "\n"
+    return "# Rules\n\n## The board\n\nText.\n\n" + choices + "\n## Decisions, claim by claim\n\n" + table
+
 
 class DesignWorld(unittest.TestCase):
+    design = "core-rules.md"
+    # The ids used by the shared failure cases, per world.
+    keep_id, change_id, open_id, alien_id = "C-BRD-01", "C-BRD-02", "C-CMB-05", "C-BRD-09"
+
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.root = Path(tmp.name)
         (self.root / "spec").mkdir()
         (self.root / "design").mkdir()
-        for name in check_design.SPEC_FILES:
-            body = "".join(f"| {cid} | a claim | supported | s | b | f |\n" for cid in SPEC.get(name, []))
-            (self.root / "spec" / f"{name}.md").write_text(f"# {name}\n\n## Claims\n\n{SPEC_HEAD}{body}")
-        self.rows = dict(ROWS)
+        for name, (spec, rows, choices) in WORLDS.items():
+            for spec_file in check_design.DESIGNS[name]:
+                body = "".join(f"| {cid} | a claim | supported | s | b | f |\n" for cid in spec.get(spec_file, []))
+                (self.root / "spec" / f"{spec_file}.md").write_text(f"# {spec_file}\n\n## Claims\n\n{SPEC_HEAD}{body}")
+            if name != self.design:   # the other design files stay clean
+                (self.root / "design" / name).write_text(design_text(rows.values(), choices))
+        _, rows, choices = WORLDS[self.design]
+        self.rows = dict(rows)
         self.extra_rows = []
-        self.choices = CHOICES
+        self.choices = choices
 
     def write_design(self):
-        table = "| Claim | Decision | malpaco's rule | Why |\n| --- | --- | --- | --- |\n"
-        table += "\n".join(list(self.rows.values()) + self.extra_rows) + "\n"
-        text = "# Rules\n\n## The board\n\nText.\n\n" + self.choices + "\n## Decisions, claim by claim\n\n" + table
-        (self.root / "design" / "core-rules.md").write_text(text)
+        text = design_text(list(self.rows.values()) + self.extra_rows, self.choices)
+        (self.root / "design" / self.design).write_text(text)
 
     def problems(self):
         self.write_design()
-        problems, _, _ = check_design.check(self.root)
+        problems, _, _ = check_design.check(self.root, self.design)
         return problems
 
     def assert_one(self, fragment):
         problems = self.problems()
         self.assertEqual(len(problems), 1, problems)
         self.assertIn(fragment, problems[0])
+        self.assertIn(f"design/{self.design}", problems[0])
 
 
 class CleanTest(DesignWorld):
@@ -68,7 +102,9 @@ class CleanTest(DesignWorld):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             code = check_design.main(["--root", str(self.root)])
-        self.assertEqual((code, out.getvalue().strip()), (0, "design ok: 3 claims, 3 rows"))
+        self.assertEqual((code, out.getvalue().strip().splitlines()),
+                         (0, ["design/core-rules.md ok: 3 claims, 3 rows",
+                              "design/variety.md ok: 3 claims, 3 rows"]))
 
     def test_main_exits_1_without_a_design(self):
         out = io.StringIO()
@@ -80,61 +116,122 @@ class CleanTest(DesignWorld):
 
 class FailureTest(DesignWorld):
     def test_claim_with_no_row(self):
-        del self.rows["C-BRD-02"]
-        self.assert_one("C-BRD-02: no row")
+        del self.rows[self.change_id]
+        self.assert_one(f"{self.change_id}: no row")
 
     def test_claim_with_two_rows(self):
-        self.extra_rows.append("| C-BRD-01 | keep | [The board](#the-board) | Again. |")
-        self.assert_one("C-BRD-01: 2 rows")
+        self.extra_rows.append(f"| {self.keep_id} | keep | [The board](#the-board) | Again. |")
+        self.assert_one(f"{self.keep_id}: 2 rows")
 
     def test_row_naming_an_id_not_in_the_spec(self):
-        self.extra_rows.append("| C-BRD-09 | keep | [The board](#the-board) | Invented. |")
-        self.assert_one("C-BRD-09 is not an in-scope spec claim")
+        self.extra_rows.append(f"| {self.alien_id} | keep | [The board](#the-board) | Invented. |")
+        self.assert_one(f"{self.alien_id} is not an in-scope spec claim")
 
     def test_decision_not_one_of_the_five_words(self):
-        self.rows["C-BRD-01"] = "| C-BRD-01 | tweak | [The board](#the-board) | It serves variety. |"
+        self.rows[self.keep_id] = f"| {self.keep_id} | tweak | [The board](#the-board) | It serves variety. |"
         self.assert_one("decision 'tweak'")
 
     def test_change_replace_drop_with_empty_why(self):
         for decision in ("change", "replace", "drop"):
             with self.subTest(decision=decision):
-                self.rows["C-BRD-02"] = f"| C-BRD-02 | {decision} | [The board](#the-board) |  |"
-                self.assert_one(f"C-BRD-02 is {decision} with an empty why")
+                self.rows[self.change_id] = f"| {self.change_id} | {decision} | [The board](#the-board) |  |"
+                self.assert_one(f"{self.change_id} is {decision} with an empty why")
 
     def test_keep_with_empty_why_is_allowed(self):
-        self.rows["C-BRD-01"] = "| C-BRD-01 | keep | [The board](#the-board) |  |"
+        self.rows[self.keep_id] = f"| {self.keep_id} | keep | [The board](#the-board) |  |"
         self.assertEqual(self.problems(), [])
 
     def test_open_row_missing_from_choices(self):
-        self.choices = "## Choices for the owner\n\n1. **Boards** (C-BRD-01). Recommendation: (a).\n"
-        self.assert_one("C-CMB-05 is open but not in")
+        self.choices = f"## Choices for the owner\n\n1. **Other** ({self.keep_id}). Recommendation: (a).\n"
+        self.assert_one(f"{self.open_id} is open but not in")
 
     def test_open_row_named_only_outside_choices_still_fails(self):
-        self.choices = "## Choices for the owner\n\nNone yet.\n\n## Notes\n\nC-CMB-05 is discussed here.\n"
-        self.assert_one("C-CMB-05 is open but not in")
+        self.choices = f"## Choices for the owner\n\nNone yet.\n\n## Notes\n\n{self.open_id} is discussed here.\n"
+        self.assert_one(f"{self.open_id} is open but not in")
 
 
 class DecisionsHeadingTest(DesignWorld):
     def test_open_row_under_the_decisions_heading_passes(self):
         self.choices = ("## The owner's decisions (2026-10-12)\n\n"
-                        "1. **Ties** (C-CMB-05). (a) one; (b) two. Decided: (b).\n")
+                        f"1. **Choice** ({self.open_id}). (a) one; (b) two. Decided: (b).\n")
         self.assertEqual(self.problems(), [])
 
     def test_open_row_missing_from_the_decisions_section_fails(self):
         self.choices = ("## The owner's decisions (2026-10-12)\n\n"
-                        "1. **Boards** (C-BRD-01). Decided: (c).\n")
-        self.assert_one("C-CMB-05 is open but not in")
+                        f"1. **Other** ({self.keep_id}). Decided: (c).\n")
+        self.assert_one(f"{self.open_id} is open but not in")
 
     def test_no_open_row_needs_no_owner_section(self):
-        self.rows["C-CMB-05"] = "| C-CMB-05 | change | [Combat](#combat) | Ties re-rolled. |"
+        self.rows[self.open_id] = f"| {self.open_id} | change | [Combat](#combat) | Ties re-rolled. |"
         self.choices = ""
         self.assertEqual(self.problems(), [])
+
+
+class VarietyWorld(DesignWorld):
+    design = "variety.md"
+    keep_id, change_id, open_id, alien_id = "C-CRD-01", "C-CRD-02", "C-HAZ-03", "C-CRD-09"
+
+
+class VarietyCleanTest(VarietyWorld):
+    def test_clean_fixture_passes_and_counts(self):
+        self.write_design()
+        self.assertEqual(check_design.check(self.root, "variety.md"), ([], 3, 3))
+
+    def test_main_exits_1_without_the_variety_design(self):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        self.assertEqual(code, 1)
+        lines = out.getvalue().strip().splitlines()
+        self.assertEqual(lines, ["design/core-rules.md ok: 3 claims, 3 rows", "design/variety.md: missing"])
+
+    def test_main_names_one_design(self):
+        self.write_design()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root), "design/variety.md"])
+        self.assertEqual((code, out.getvalue().strip()), (0, "design/variety.md ok: 3 claims, 3 rows"))
+
+    def test_main_fails_on_a_problem_in_the_second_file_only(self):
+        del self.rows["C-CRD-02"]
+        self.write_design()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_design.main(["--root", str(self.root)])
+        self.assertEqual((code, out.getvalue().strip().splitlines()),
+                         (1, ["design/core-rules.md ok: 3 claims, 3 rows",
+                              "C-CRD-02: no row in design/variety.md"]))
+
+    def test_variety_spec_file_missing(self):
+        (self.root / "spec" / "production-centres.md").unlink()
+        self.assert_one_spec_missing()
+
+    def assert_one_spec_missing(self):
+        problems = self.problems()
+        self.assertEqual(problems, ["spec/production-centres.md: missing"])
+
+
+class VarietyFailureTest(VarietyWorld, FailureTest):
+    """The five failures, each tripped alone, in design/variety.md."""
+
+    def test_a_core_claim_row_in_the_variety_file_fails(self):
+        # Each file is checked against its own spec files: a core claim is foreign here.
+        self.extra_rows.append("| C-BRD-01 | keep | [The board](#the-board) | Wrong file. |")
+        self.assert_one("C-BRD-01 is not an in-scope spec claim")
+
+
+class VarietyDecisionsHeadingTest(VarietyWorld, DecisionsHeadingTest):
+    """The owner's section, both headings, in design/variety.md."""
 
 
 class RepositoryTest(unittest.TestCase):
     def test_the_repository_design_is_complete(self):
         root = Path(check_design.__file__).resolve().parents[1]
         self.assertEqual(check_design.check(root), ([], 59, 59))
+
+    def test_the_repository_variety_design_is_complete(self):
+        root = Path(check_design.__file__).resolve().parents[1]
+        self.assertEqual(check_design.check(root, "variety.md"), ([], 23, 23))
 
 
 if __name__ == "__main__":
