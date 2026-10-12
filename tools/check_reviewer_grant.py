@@ -170,29 +170,39 @@ def check(repo: Path) -> int:
         return 1
 
     if _is_ci():
-        # CI: assert the reviewer agent declares an `allow` entry whose path names
-        # the project's worktree-root. The literal full path differs per environment
-        # (/home/<user>/projects/... vs /home/runner/work/<repo>/<repo>-work/), so a
-        # strict path match is not portable; a substring match on the project's leaf
-        # (`<repo>-work`) catches the structural protection regardless of environment.
-        # `/tmp/*`-only grants must NOT pass on CI: they have nothing to do with
-        # the script's review worktree.
+        # CI: assert the reviewer agent declares an `allow` entry with a recursive
+        # (glob) path naming the project's worktree-root. The literal full path
+        # differs per environment (/home/<user>/projects/... vs
+        # /home/runner/work/<repo>/<repo>-work/), so a strict path match is not
+        # portable; a substring match on the project's leaf (`<repo>-work`)
+        # catches the structural protection regardless of environment. The path
+        # must also include a `*` glob, otherwise a literal-only grant (e.g.,
+        # '/home/.../project-work' alone) would falsely pass — only a glob form
+        # actually opens the worktree's children to OpenCode.
+        import re as _re
         repo_name = _main_repo_name(repo)
-        marker = repo_name + '-work'
+        marker = _re.escape(repo_name + '-work')
         matching = sorted(
             k for k, v in ext.items()
-            if v == 'allow' and marker in k
+            if v == 'allow' and _re.search(marker, k) and '*' in k
         )
         if not matching:
             print(
-                f'check_reviewer_grant: no allow entry covering {marker!r} (the '
-                f'script\'s review worktree) in {reviewer}',
+                f'check_reviewer_grant: no recursive allow entry covering '
+                f'{repo_name + "-work"!r} (the script\'s review worktree) in '
+                f'{reviewer}',
                 file=sys.stderr,
             )
-            print(f'  granted allow entries: {sorted(k for k, v in ext.items() if v == "allow")}',
-                  file=sys.stderr)
+            print(
+                f'  granted allow entries: '
+                f'{sorted(k for k, v in ext.items() if v == "allow")}',
+                file=sys.stderr,
+            )
             return 1
-        print(f'check_reviewer_grant: CI lenient pass; entries covering {marker!r}: {matching}')
+        print(
+            f'check_reviewer_grant: CI lenient pass; '
+            f'entries covering {repo_name + "-work"!r}: {matching}'
+        )
         return 0
 
     # Local / non-CI: assert the worktree-root path is granted with allow.

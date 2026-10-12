@@ -16,6 +16,7 @@ Fixtures grant a worktree-root path of `/worktree-root/*` and configure `harness
 `worktreeRoot` to the absolute path `/worktree-root` so the test stays path-independent.
 """
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -122,27 +123,45 @@ class TestCheckReviewerGrant(unittest.TestCase):
         # happens to be invoked from. The test runs in the real worktree
         # (`fix-208/`), a sibling of the main checkout, and asserts the
         # computed path matches the main checkout's expectations.
+        #
+        # Skipped on CI: on CI the worktree is at /home/runner/work/... and the
+        # assertion would diverge; the CI step has its own coverage via
+        # test_passes_on_ci_with_marker_grant.
+        if os.environ.get('CI') or os.environ.get('GITHUB_ACTIONS'):
+            self.skipTest('worktree-specific path; not meaningful under CI')
         wt = _worktree_root(ROOT)
-        # canonical expected path; `isle-wars-archaeology-work` lives next to the
-        # main checkout.
-        expected = Path('/home/diego/projects/isle-wars-archaeology-work').resolve()
+        # expected path computed the same way the check does, not hard-coded.
+        cfg = json.loads((ROOT / 'harness.json').read_text())
+        rel = cfg.get('worktreeRoot', '../{repo}-work').replace(
+            '{repo}', _main_repo_name(ROOT),
+        )
+        expected = (_main_repo_path(ROOT) / rel).resolve()
         self.assertEqual(wt, expected)
 
     def test_main_repo_path_picks_first_worktree(self):
         # When `repo` is a worktree, `_main_repo_path` returns the main checkout's
         # path (git-worktree-list porcelain's first `worktree` line). Mutating
         # callers' failures on detached worktrees imply they were resolving
-        # relative paths against the wrong directory.
+        # relative paths against the wrong directory. Skipped on CI where this
+        # worktree is not a worktree of the runtime checkout.
+        if os.environ.get('CI') or os.environ.get('GITHUB_ACTIONS'):
+            self.skipTest('worktree-specific path; not meaningful under CI')
         main = _main_repo_path(ROOT)
-        self.assertEqual(main.name, 'isle-wars-archaeology')
         self.assertNotEqual(main.resolve(), ROOT.resolve(),
                              msg='_main_repo_path returned the current worktree, '
                                  'not the main checkout')
+        # the first worktree line must be the main checkout (the leaf is not
+        # a review branch like 'fix-208')
+        self.assertNotIn(main.name, ('fix-208', 'T44-task-file', 'T47-task-file'))
 
     def test_main_repo_name_expands_to_main_checkout(self):
         # `{repo}` in `harness.json`'s worktreeRoot should expand to the main
         # checkout's leaf (e.g., `isle-wars-archaeology`), regardless of which
-        # worktree the check runs from.
+        # worktree the check runs from. Skipped on CI.
+        if os.environ.get('CI') or os.environ.get('GITHUB_ACTIONS'):
+            self.skipTest('worktree-specific path; not meaningful under CI')
+        # the main checkout's name is `isle-wars-archaeology` — the resolved
+        # path's leaf, not the current worktree's.
         self.assertEqual(_main_repo_name(ROOT), 'isle-wars-archaeology')
 
     def _run_check(self, repo: Path, ci: bool = False) -> subprocess.CompletedProcess:
@@ -220,6 +239,33 @@ class TestCheckReviewerGrant(unittest.TestCase):
             self.assertEqual(
                 cp.returncode, 1,
                 msg=f"check passed on CI when only unrelated allows existed; "
+                    f"stdout={cp.stdout!r} stderr={cp.stderr!r}",
+            )
+
+    def test_fails_on_ci_with_nonrecursive_marker_grant(self):
+        # R1 (round 6): a non-recursive grant (`/path/<marker>` without /* or *)
+        # must fail CI — only recursive glob forms actually open the worktree's
+        # children to OpenCode, so accepting a literal-only grant is a bypass.
+        with tempfile.TemporaryDirectory() as td:
+            repo = Path(td)
+            project_name = Path(td).name
+            harness = repo / "harness.json"
+            harness.write_text(json.dumps({"worktreeRoot": f"../{project_name}-work"}))
+            agents = repo / ".opencode" / "agents"
+            agents.mkdir(parents=True)
+            reviewer = agents / "reviewer.md"
+            # non-recursive grant: literal directory, no /* or *
+            nonrecursive = f'    "/home/diego/projects/{project_name}-work": allow\n'
+            reviewer.write_text(
+                FRONTMATTER_HEAD
+                + nonrecursive
+                + FRONTMATTER_TAIL
+                + REVIEWER_BODY
+            )
+            cp = self._run_check(repo, ci=True)
+            self.assertEqual(
+                cp.returncode, 1,
+                msg=f"check passed on CI when the marker grant was non-recursive; "
                     f"stdout={cp.stdout!r} stderr={cp.stderr!r}",
             )
 
