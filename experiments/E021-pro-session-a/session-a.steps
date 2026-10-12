@@ -74,6 +74,32 @@ click! 307 543
 click! 497 543
 settle
 
+# --- block place-plus
+# One army of an exact stack (fix #180; the owner, 2026-10-11: "you choose the + and - button to place
+# one army or place it back"). F013 Q-REI-03 reads the placement panel as four buttons: `plus2` adds one
+# to the counter, capped at the pool's remainder; `min2` takes one off, floored at 0; `Pall2` sets the
+# counter to the whole remainder; `place2` moves the counter's armies into the selected country and
+# resets it (CastScript 85, 87, 83 and 89). The counter starts at zero after a country is selected, and
+# the loop sends this block once per army, so the counter holds min(gap, pool). The + button is a
+# plain `click`, never `click!`: at the pool's cap a click changes nothing, and that is no failure.
+# Its point is the button's centre, 373,543 (walkthroughs/coordinates.md, row PLUS): on frame
+# 17-1791738450340.png of sitting 20261011T170700Z (sha256
+# 9a3b479b44ead6647bdefe92ebdf163e9faa62b3132af5dbe3c30b9edf6a0af8, the panel after ALL with 4 armies to
+# place) the grey button spans x 355-391, y 529-556. The minus button (x 404-440, centre 422,543) is
+# not used by the loop: a count is only ever built up from zero.
+watch 262 502 276 70
+click 373 543
+
+# --- block place-only
+# PLACE alone, after the counter holds the exact size (block place-plus): the counter's armies go into
+# the selected country, and the pool is smaller by that much. A click that changes the panel (the
+# counter resets, or the row gives way to the turn menu when the pool is zero), so `click!`. The rest
+# of a pool that is not yet empty goes with block place-commit (ALL, PLACE) on another country: the
+# phase ends only when the pool is exactly zero (F013 Q-REI-03).
+watch 262 502 276 70
+click! 497 543
+settle
+
 # --- block pass
 # PASS, then CONTINUE when a card was awarded (E020's commit block, split: the Session A turn
 # attacks between the placement and the pass). Sent once the attack phase is over and the turn is

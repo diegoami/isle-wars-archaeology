@@ -53,6 +53,17 @@ come up; each row names the finding question it feeds (see `f011-questions.md`).
 | Lose some attacks | ~5 failed attacks; what happens to the turn. | Q-CMB-09 |
 | Busy turns | ~10 turns with 3+ attacks; what ends each. | Q-CMB-10 |
 
+**Placing an exact stack size (the owner, 2026-10-11; for your own sessions and for the driver).** The
+"How Many?" panel that lights when a country is selected holds four buttons, ALL, **+**, **−** and PLACE
+(F013 Q-REI-03). ALL sets the counter to the whole pool; **+** adds one army to it (never more than the pool),
+**−** takes one off (never below 0), and PLACE puts the counter's armies on the selected country. So a stack
+of an exact size N is built by selecting the country, pressing **+** for each army wanted, then PLACE. Whatever
+is left of the pool goes with ALL and PLACE on another country, one that is not needed as an attacker (an
+interior country is best): the placement phase ends only when the pool is exactly zero, and there is no done
+button. Use this for the cases that need a stack of 4, 8, 12 or 20; ALL alone would add every reinforcement to one
+country and jump past the size. The driver's `place-plus` and `place-only` blocks
+(`experiments/E021-pro-session-a/session-a.steps`) do the same, with the + point in `coordinates.md`.
+
 **Session B — let the computers fight (any length; more is better).** Place armies (`ALL`),
 `PASS`, repeat. Every computer-vs-computer attack is one exchange of data for Q-CMB-04/05/06/07
 and Q-CMB-11, and it accumulates from *any* video, Session A included.

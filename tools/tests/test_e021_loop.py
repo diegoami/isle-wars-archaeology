@@ -372,12 +372,14 @@ class GrowTowardBigStacksTest(unittest.TestCase):
         self.assertEqual(world.game.passes, 3)
 
     def test_a_stack_passing_one_open_size_and_heading_for_the_next_is_still_growing(self):
-        # 3 -> 6 -> 9 with sizes 8 and 12 open: the gaps are 5, 2, then 3 towards 12
+        # 3 -> 6 -> 8 with sizes 8 and 12 open: the gaps are 5, 2, then 4 towards 12. Since fix #180 the
+        # second turn places exactly 2 (the stack is 8, the open size), the third 4 more towards 12;
+        # with ALL it was 3 -> 6 -> 9 and gaps 5, 2, 3
         world = self.world(3, open_cells=(("even", 9), ("even", 13)))
         for number in (1, 2, 3):
             self.assertIsNone(self.turn(world, number))
         self.assertEqual([(t["cell"], t["gap"]) for t in world.driver.events("place-target")],
-                         [(9, 5), (9, 2), (13, 3)])
+                         [(9, 5), (9, 2), (13, 4)])
         self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 1, 1])
         self.assertEqual(world.driver.events("game-abandoned"), [])
 
@@ -793,8 +795,9 @@ class CardOfferTest(unittest.TestCase):
         self.assertEqual(blocks[0], "card-decline")                       # before any placement click
         self.assertEqual(world.driver.steps[0][0], "place-select")
         self.assertEqual(blocks.count("card-decline"), 1)
-        self.assertLess(blocks.index("card-decline"), blocks.index("place-commit"))
-        self.assertLess(blocks.index("place-commit"), blocks.index("attack-open"))   # the turn played on
+        # fix #180: a target with a gap is placed exactly (+ clicks, then PLACE), not with ALL
+        self.assertLess(blocks.index("card-decline"), blocks.index("place-only"))
+        self.assertLess(blocks.index("place-only"), blocks.index("attack-open"))     # the turn played on
         self.assertEqual(blocks[-1], "pass")
         self.assertEqual(world.game.declines, 1)
         self.assertFalse(world.game.offer)
@@ -927,6 +930,391 @@ class PlacementTest(unittest.TestCase):
         world.driver.run_step = refuse
         self.assertIsNone(world.loop.turn())
         self.assertEqual(world.driver.blocks[:4], ["dismiss", "quiet", "place-any", "place-commit"])
+
+
+class ExactPlacementTest(unittest.TestCase):
+    """Fix #180: a target with a gap and a named size case gets exactly that many armies, through the
+    + button (F013 Q-REI-03), and the rest of the pool goes to a second country with ALL and PLACE."""
+
+    def world(self, reinforcements, cells=None, met=None):
+        # blue 3 holds 1 next to red 4 holding 3: even cell 5 (attacker 4 vs 3) is 3 armies away
+        cells = cells or {3: (BLUE, 1), 4: (RED, 3)}
+        world = World(cells, met=only(("even", 5)) if met is None else met)
+        world.game.reinforcements = reinforcements
+        world.loop.deadline = 600
+        return world
+
+    @staticmethod
+    def selects(world):
+        """The countries the loop asked the placement row for, in order."""
+        return [fx.AT[tuple(step[2][5:7])] for step in world.driver.steps
+                if step[:2] == ("place-select", "click-until?")]
+
+    def test_gap_three_with_a_larger_pool_is_plus_three_place_then_the_rest_on_a_second_country(self):
+        world = self.world(10)
+        self.assertIsNone(world.loop.turn())
+        blocks = world.driver.blocks
+        self.assertEqual(blocks.count("place-plus"), 3)
+        self.assertEqual(blocks[:6], ["place-plus", "place-plus", "place-plus", "place-only", "place-commit",
+                                      "attack-open"])
+        self.assertEqual(self.selects(world), [3, 1])                # the target, then the second country
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["country"], line["gap"], line["plus"], line["rest_to"]), (3, 3, 3, 1))
+        self.assertEqual(world.game.board[3]["army"], 4)             # the exact size
+        self.assertEqual(world.game.board[1]["army"], 1 + 7)         # the rest of the pool
+        (landed,) = world.driver.events("place-landed")
+        self.assertEqual((landed["landed"], landed["armies"], landed["expected"], landed["pool"]), (1, 4, 4, 10))
+        self.assertEqual(world.met("even"), [5])                     # met by the attack, from the board
+
+    def test_a_pool_smaller_than_the_gap_is_plus_clicks_then_place_with_no_second_country(self):
+        world = self.world(2)
+        self.assertIsNone(world.loop.turn())
+        blocks = world.driver.blocks
+        self.assertEqual(blocks.count("place-plus"), 3)               # + clicks: the game caps them at the pool
+        self.assertEqual(blocks.count("place-only"), 1)
+        self.assertNotIn("place-commit", blocks)
+        self.assertEqual(self.selects(world), [3])
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["country"], line["gap"], line["plus"], line["rest_to"]), (3, 3, 3, None))
+        self.assertEqual(world.game.board[3]["army"], 3)              # the whole pool of 2
+        (landed,) = world.driver.events("place-landed")
+        self.assertEqual((landed["landed"], landed["pool"], landed["expected"]), (1, 2, 3))
+        self.assertFalse(world.game.panel)                            # the pool is zero: the panel is gone
+
+    def test_gap_zero_or_no_case_keeps_the_place_commit_path(self):
+        # no needed size cell above the stack: case None, gap 0 (fix #178's last answer)
+        world = self.world(3, met=only(("quit", 1)))
+        self.assertIsNone(world.loop.turn())
+        self.assertEqual(world.driver.events("place-target")[0]["gap"], 0)
+        self.assertNotIn("place-plus", world.driver.blocks)
+        self.assertNotIn("place-only", world.driver.blocks)
+        self.assertIn("place-commit", world.driver.blocks)
+        self.assertEqual(world.driver.events("place-exact"), [])
+        self.assertEqual(world.driver.events("place-landed"), [])
+        # a stack that already shows its size: the placement goes with ALL as before
+        world = World({3: (BLUE, 4), 4: (RED, 3), 5: (RED, 1)}, met=only(("even", 5)))
+        world.game.reinforcements = 2
+        world.loop.turn()
+        self.assertIn("place-commit", world.driver.blocks)
+        self.assertNotIn("place-plus", world.driver.blocks)
+
+    def test_the_exact_path_needs_both_a_gap_above_zero_and_a_named_case(self):
+        # cases.frontier never answers one without the other today; the loop's own guard is held here
+        # against a frontier that does (gap 2 with no case, a case with gap 0): both place with ALL
+        real = e021_loop.cases.frontier
+        try:
+            for answer in ((3, 4, None, None, 2), (3, 4, "even", 5, 0)):
+                with self.subTest(answer=answer):
+                    e021_loop.cases.frontier = lambda *a, _answer=answer, **k: _answer
+                    world = self.world(5)
+                    self.assertIsNone(world.loop.turn())
+                    self.assertNotIn("place-plus", world.driver.blocks)
+                    self.assertNotIn("place-only", world.driver.blocks)
+                    self.assertIn("place-commit", world.driver.blocks)
+                    self.assertEqual(world.driver.events("place-exact"), [])
+        finally:
+            e021_loop.cases.frontier = real
+
+    def test_the_fallback_placement_is_never_exact(self):
+        world = self.world(3)
+        original = world.driver.run_step
+
+        def refuse(block, step):
+            if block == "place-select" and step.op == "click-until?":
+                world.driver.steps.append((block, step.op, tuple(step.args)))
+                return {"picked": None}
+            return original(block, step)
+        world.driver.run_step = refuse
+        self.assertIsNone(world.loop.turn())
+        self.assertNotIn("place-plus", world.driver.blocks)
+        self.assertEqual(world.driver.blocks[:4], ["dismiss", "quiet", "place-any", "place-commit"])
+
+    def test_the_second_country_is_never_the_target_and_never_a_needed_attacker_showing_its_size(self):
+        # blue 1 shows 4 next to red 2 holding 3 (even cell 5 fits it now: a needed attacker); blue 5 holds 1
+        # next to red 4 holding 3 and is the stack to grow; blue 3 has no neighbour (interior)
+        adjacency = {1: {2}, 2: {1}, 4: {5, 6}, 5: {4}, 6: {4}}
+        cells = {1: (BLUE, 4), 2: (RED, 3), 4: (RED, 3), 5: (BLUE, 1), 6: (BLUE, 1)}
+        world = self.world(10, cells=cells)
+        world.game.adjacency = world.loop.adjacency = adjacency
+        self.assertIsNone(world.loop.turn())
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual(line["country"], 5)                          # not the 4-stack, which attacks as it is
+        self.assertNotIn(line["rest_to"], (5, 1))                     # never the target, never the showing attacker
+        self.assertEqual(line["rest_to"], 3)                          # an interior country first
+        self.assertEqual(self.selects(world), [5, 3])
+
+    def test_rest_choices_prefers_interior_then_frontier_and_never_a_showing_attacker(self):
+        import cases
+        adjacency = {1: {2}, 2: {1}, 4: {5, 6}, 5: {4}, 6: {4}, 7: {8}, 8: {7}}
+        board = fx.board({1: (BLUE, 4), 2: (RED, 3), 4: (RED, 3), 5: (BLUE, 1), 6: (BLUE, 1),
+                          7: (BLUE, 1), 8: (BLUE, 1), 3: (RED, 1), 9: (RED, 1), 10: (RED, 1)})
+        needed = [("even", 5)]
+        ranked = cases.rest_choices(board, needed, adjacency, 5, points=fx.POINTS)
+        self.assertEqual(ranked, [7, 8, 6])                           # interior, then frontier; the showing 1 is out
+        self.assertNotIn(5, ranked)                                   # never the target
+        self.assertEqual(cases.rest_choices(board, needed, adjacency, 5, points={1: 1, 2: 1, 4: 1, 5: 1, 6: 1}), [6])
+
+    def refuse_selects(self, world, allowed=(3,)):
+        """Make the placement row refuse every selection but the `allowed` countries'; the refused
+        countries are collected."""
+        original = world.driver.run_step
+        refused = []
+
+        def refuse(block, step):
+            country = fx.AT.get(tuple(step.args[5:7])) if step.op == "click-until?" else None
+            if block == "place-select" and country is not None and country not in allowed:
+                refused.append(country)
+                world.driver.steps.append((block, step.op, tuple(step.args)))
+                return {"picked": None}
+            return original(block, step)
+        world.driver.run_step = refuse
+        return refused
+
+    def test_a_second_country_that_cannot_be_selected_gives_way_to_the_next_candidate(self):
+        world = self.world(10)
+        refused = self.refuse_selects(world, allowed=(3, 2))
+        self.assertIsNone(world.loop.turn())
+        self.assertEqual(refused, [1])
+        self.assertEqual(self.selects(world), [3, 1, 2])
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["exact"], line["rest_to"]), (1, 2))
+        self.assertEqual(world.game.board[2]["army"], 1 + 7)
+
+    def test_a_refused_remainder_ends_the_sitting_cleanly_never_attacking_with_armies_unplaced(self):
+        # R1: every second-country selection refused, and E020's place-any would answer nothing either
+        world = self.world(10)
+        refused = self.refuse_selects(world)
+        original = world.driver.run_block
+
+        def block(name):
+            if name == "place-any":
+                world.driver.blocks.append(name)
+                return {"picked": None}
+            return original(name)
+        world.driver.run_block = block
+        self.assertEqual(world.loop.turn(), "placement-stuck")
+        self.assertEqual(world.loop.summary["ended"], "placement-stuck")
+        self.assertTrue(refused)                                      # every safe candidate was tried
+        blocks = world.driver.blocks
+        self.assertNotIn("place-commit", blocks)
+        self.assertNotIn("place-any", blocks)                         # E020's unrestricted pick is not used
+        for name in ("attack-open", "pass", "attack-cancel"):
+            self.assertNotIn(name, blocks)                            # no click after the stop
+        self.assertEqual(world.game.pool_left, 7)                     # the armies stayed unplaced
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["exact"], line["stuck"], line["rest_to"]), (1, 1, None))
+        self.assertEqual(world.driver.events("place-landed"), [])
+
+    def test_the_rest_never_goes_back_on_the_target_through_a_fallback(self):
+        # R2: countries 1 and 2 are the enemy's, the explicit choices are refused; nothing may put the
+        # remainder on country 3, the stack just sized
+        world = self.world(10, cells={1: (RED, 1), 2: (RED, 1), 3: (BLUE, 1), 4: (RED, 3)})
+        self.refuse_selects(world)
+        self.assertEqual(world.loop.turn(), "placement-stuck")
+        self.assertEqual(world.game.board[3]["army"], 4)              # the exact size, not 11
+        self.assertEqual(self.selects(world).count(3), 1)             # the target is selected once, first
+        self.assertNotIn("place-any", world.driver.blocks)
+        self.assertEqual(world.driver.blocks.count("place-commit"), 0)
+
+    def test_a_panel_still_up_after_the_rest_ends_the_sitting_cleanly(self):
+        world = self.world(10)
+        world.game.commit_leaves_panel = True
+        self.assertEqual(world.loop.turn(), "placement-stuck")
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["stuck"], line["rest_to"]), (1, 1))
+        self.assertNotIn("attack-open", world.driver.blocks)
+        self.assertNotIn("pass", world.driver.blocks)
+
+    def no_safe_world(self, reinforcements=10):
+        # R3: blue 1 shows 4 beside red 2 holding 3 (even cell 5 fits it now); the target is blue 3 at 1
+        # beside red 4 holding 3; every other country with a click point is the enemy's
+        adjacency = {1: {2}, 2: {1}, 3: {4}, 4: {3}}
+        cells = {1: (BLUE, 4), 2: (RED, 3), 3: (BLUE, 1), 4: (RED, 3)}
+        cells.update({c: (RED, 1) for c in range(5, 11)})
+        world = self.world(reinforcements, cells=cells)
+        world.game.adjacency = world.loop.adjacency = adjacency
+        return world
+
+    def test_a_needed_attacker_showing_its_size_is_excluded_from_the_rest_not_ranked_last(self):
+        import cases
+        world = self.no_safe_world()
+        needed = world.loop.needed()
+        self.assertEqual(cases.rest_choices(world.game.board, needed, world.loop.adjacency, 3,
+                                            points=fx.POINTS), [])
+
+    def test_with_no_safe_second_country_the_exact_path_is_not_taken_and_all_goes_on_the_target(self):
+        world = self.no_safe_world()
+        self.assertIsNone(world.loop.turn())
+        blocks = world.driver.blocks
+        self.assertNotIn("place-plus", blocks)
+        self.assertNotIn("place-only", blocks)
+        self.assertEqual(blocks.count("place-commit"), 1)
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["exact"], line["reason"], line["country"], line["gap"]), (0, "no-safe-rest", 3, 3))
+        self.assertEqual(world.game.board[3]["army"], 1 + 10)         # today's path: ALL on the target
+        self.assertEqual(world.game.board[1]["army"], 4)              # the showing attacker is untouched
+        self.assertEqual(world.driver.events("place-landed"), [])
+
+    def test_a_landing_the_board_does_not_confirm_is_logged_as_0_and_credits_no_cell(self):
+        world = self.world(10)
+        world.game.landing_skew = 1                                   # PLACE lands one army short of the counter
+        self.assertIsNone(world.loop.turn())
+        (landed,) = world.driver.events("place-landed")
+        self.assertEqual(landed["landed"], 0)
+        self.assertEqual((landed["armies"], landed["expected"]), (3, 4))
+        # nothing is credited from the intent: the stack shows 3, the even 5 cell needs 4, so no attack
+        self.assertEqual(world.met("even"), [])
+        self.assertEqual(world.attempts(), [])
+        self.assertNotIn("attack-open", world.driver.blocks)
+
+    def test_an_unread_target_after_the_placement_is_logged_as_not_landed(self):
+        world = self.world(10)
+        original = world.reader.read
+
+        def blind(seat=None):
+            reading = original(seat)
+            if "place-only" in world.driver.blocks:
+                reading.board[3]["army"] = None
+            return reading
+        world.reader.read = blind
+        world.loop.turn()
+        (landed,) = world.driver.events("place-landed")
+        self.assertEqual((landed["landed"], landed["armies"]), (0, None))
+
+    def test_fix_178s_bounds_hold_with_exact_placement(self):
+        # the pool is too small to move the gap after turn 1: the growing turns stop counting and the
+        # abandon fires on the fourth turn, as for ALL
+        world = self.world(0, cells={3: (BLUE, 1), 4: (RED, 8)}, met=only(("even", 10)))
+        world.game.screen = "board-menu"
+        for number in (1, 2, 3, 4):
+            world.loop.driver.context = {"game": 1, "turn": number}
+            world.loop.turn()
+        self.assertEqual([t["growing"] for t in world.driver.events("turn-end")], [1, 0, 0, 0])
+        self.assertEqual(world.driver.events("game-abandoned")[0]["turn"], 4)
+
+    def test_the_new_blocks_are_the_panels_own_buttons_and_send_no_new_game(self):
+        from driver.clicks import parse_blocks
+        blocks = parse_blocks((fx.ROOT / "experiments" / "E021-pro-session-a" / "session-a.steps").read_text())
+        for name in ("place-plus", "place-only"):
+            self.assertFalse([s for s in blocks[name] if tuple(s.args)[:2] == (100, 585)], name)
+
+        def ops(name):
+            return [(s.op, tuple(s.args)) for s in blocks[name]]
+        self.assertEqual(ops("place-plus"), [("watch", (262, 502, 276, 70)), ("click", (373, 543))])
+        self.assertEqual(ops("place-only"), [("watch", (262, 502, 276, 70)), ("click!", (497, 543)),
+                                              ("settle", ())])
+        source = (fx.ROOT / "experiments" / "E021-pro-session-a" / "e021_loop.py").read_text()
+        self.assertEqual(source.count('self.send("abandon-game")'), 1)
+        self.assertEqual(source.count('"new-game"'), 1)
+        world = self.world(10)
+        world.loop.turn()
+        self.assertNotIn("new-game", world.driver.blocks)
+        self.assertNotIn("abandon-game", world.driver.blocks)
+
+
+class PlacementPanelTest(unittest.TestCase):
+    """Fix #182: the pool is zero when the placement panel is gone, never when the screen's name says
+    `board-menu` (sitting 20261011T184210Z, game 1 turn 1: the name stayed `board-menu` with the panel up and
+    3 armies left; the loop sent PASS, which changed nothing, and the sitting aborted)."""
+
+    def world(self, reinforcements, cells=None, met=None, screen="board-menu"):
+        cells = cells or {3: (BLUE, 3), 4: (RED, 3)}
+        world = World(cells, met=only(("even", 5)) if met is None else met, screen=screen)
+        world.game.reinforcements = reinforcements
+        world.loop.deadline = 600
+        return world
+
+    def test_pool_four_gap_one_one_plus_place_then_the_rest_then_the_turn_menu_then_the_attack(self):
+        # the sitting's own sequence: even cell 5 on country 3 (3 armies, gap 1), a pool of 4
+        world = self.world(4)
+        seen = []
+        read = world.driver.read_screen
+        world.driver.read_screen = lambda: (seen.append((read(), world.game.panel)), seen[-1][0])[1]
+        self.assertIsNone(world.loop.turn())
+        # the bug's condition is on the fixture: the name is `board-menu` while the panel is up
+        self.assertIn(("board-menu", True), seen)
+        blocks = world.driver.blocks
+        self.assertEqual(blocks[:4], ["place-plus", "place-only", "place-commit", "attack-open"])
+        self.assertEqual(blocks.count("place-plus"), 1)
+        self.assertEqual(blocks[-1], "pass")
+        self.assertEqual(world.game.blocked, [])                      # nothing was clicked on a missing menu
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual((line["gap"], line["rest_to"]), (1, 1))
+        self.assertEqual(world.game.board[1]["army"], 1 + 3)          # the rest, all of it, on the second country
+        (landed,) = world.driver.events("place-landed")
+        self.assertEqual((landed["pool"], landed["landed"], landed["armies"]), (4, 1, 4))
+        self.assertEqual(world.met("even"), [5])
+
+    def test_an_all_placement_that_leaves_the_panel_up_ends_the_sitting_cleanly(self):
+        for name, world in (("no named case", self.world(3, met=only(("quit", 1)))),
+                            ("no safe second country", ExactPlacementTest().no_safe_world())):
+            with self.subTest(name):
+                world.game.commit_leaves_panel = True
+                world.game.screen = "board-menu"
+                self.assertEqual(world.loop.turn(), "placement-stuck")
+                self.assertEqual(world.loop.summary["ended"], "placement-stuck")
+                self.assertEqual(world.driver.events("place-stuck")[0]["reason"], "panel-up-after-all")
+                for name in ("pass", "attack-open"):
+                    self.assertNotIn(name, world.driver.blocks)
+                self.assertEqual(world.game.blocked, [])
+
+    def test_the_panel_going_a_reading_late_is_not_a_stuck_pool(self):
+        # pool 1 and gap 1: PLACE spends the pool, but the first reading after it still shows the panel
+        world = self.world(1)
+        original = world.reader.read
+        lag = []
+
+        def lagging(seat=None):
+            reading = original(seat)
+            if "place-only" in world.driver.blocks and not lag:
+                lag.append(1)
+                return reading._replace(panel=True)
+            return reading
+        world.reader.read = lagging
+        self.assertIsNone(world.loop.turn())
+        self.assertEqual(lag, [1])
+        self.assertEqual(ExactPlacementTest.selects(world), [3])      # no second country was asked for
+        self.assertNotIn("place-commit", world.driver.blocks)
+        (line,) = world.driver.events("place-exact")
+        self.assertEqual(line["rest_to"], None)
+
+    def test_panel_after_polls_a_bounded_number_of_times(self):
+        world = self.world(4)
+        original = world.reader.read
+        for flags, expected_reads, expected_panel in (((True, True, False), 3, False),
+                                                      ((True, False), 2, False),
+                                                      ((True,) * 9, e021_loop.PANEL_POLLS, True)):
+            with self.subTest(flags=flags):
+                queue, sleeps = list(flags), []
+                world.loop.sleep = sleeps.append
+                before = world.reader.reads
+                world.reader.read = lambda seat=None, queue=queue: original(seat)._replace(panel=queue.pop(0))
+                reading = world.loop.panel_after()
+                self.assertEqual(reading.panel, expected_panel)
+                self.assertEqual(len(flags) - len(queue), expected_reads)
+                self.assertEqual(len(sleeps), expected_reads - 1)
+                world.reader.reads = before
+
+    def test_an_unreadable_capture_while_the_panel_is_checked_ends_the_sitting_cleanly(self):
+        world = self.world(4)
+        original = world.reader.read
+        state = {"fail": False}
+
+        def read(seat=None):
+            if state["fail"]:
+                raise RuntimeError("no capture")
+            return original(seat)
+        world.reader.read = read
+        send = world.driver.run_block
+
+        def block(name):
+            if name == "place-only":
+                state["fail"] = True
+            return send(name)
+        world.driver.run_block = block
+        self.assertEqual(world.loop.turn(), "board-unreadable")
+        self.assertTrue(world.loop.summary["ended"].startswith("board-unreadable"))
+        self.assertNotIn("pass", world.driver.blocks)
 
 
 class ReadingTest(unittest.TestCase):
