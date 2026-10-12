@@ -19,7 +19,12 @@ claims. A design file fails if:
   digits (for example `Q-UI-23a`). Such a line is rejected, never skipped;
 - a line opens a code fence (``` or ~~~, after any indentation), holds an HTML comment (`<!--`), or
   starts with an HTML tag (`<` then a letter, `/` or `!`, after any indentation): the check fails
-  closed on inactive Markdown and raw HTML rather than parsing around them.
+  closed on inactive Markdown and raw HTML rather than parsing around them;
+- a table-shaped line is disguised: inside a blockquote (`> | …`), under a list bullet
+  (`- | …` or `* ` / `+ ` / numbered list `1. `), holding an HTML entity (`&#45;` etc.), or using a
+  look-alike Unicode hyphen (`U+2010` HYPHEN, `U+2011` NON-BREAKING HYPHEN, etc.) where an ASCII `-`
+  would make an id. Markdown would render any of those as a row that a strict reader would have
+  skipped (or a different id than the author intended), so the check fails closed. Fix #202.
 
 With no argument it checks every design file and prints one line per clean file,
 `design/<file> ok: N claims, N rows`, or one line per problem; it exits 1 if any file has a
@@ -94,6 +99,23 @@ FENCE = re.compile(r"^\s*(```|~~~)")
 COMMENT = "<!--"
 # A line whose first non-space character starts an HTML tag: an HTML block can hide or swallow rows.
 HTML_TAG = re.compile(r"^\s*<[A-Za-z/!]")
+# A line that is a table row inside a blockquote or list prefix. Markdown would render
+# `> | C-BRD-09 | …` as a row whose first cell the checker sees as `>` — the `>` would slip past
+# any reader and the row would not be counted. The disguise is deliberate, so the check fails
+# closed (fix #202).
+LIST_PREFIX = re.compile(r"^\s*(>|[*+\-]|\d+\.)\s+")
+# An HTML entity inside a table line: `| Q&#45;UI&#45;99 | …` looks like `Q-UI-99` to a strict
+# reader, but a permissive renderer decodes the entities. Fail closed.
+HTML_ENTITY = re.compile(r"&#?\w+;")
+# Look-alike Unicode hyphens/dashes that an ASCII `-` mirror shows up where an id needs a hyphen.
+# U+2010 HYPHEN, U+2011 NON-BREAKING HYPHEN, U+2012 FIGURE DASH, U+2013 EN DASH, U+2014 EM DASH,
+# U+2015 HORIZONTAL BAR. The look-alike id `Q‐UI‐99` is what fix #202 closes.
+LOOKALIKE_HYPHEN = re.compile(r"[‐‑‒–—―]")
+# An id may LOOK like a C-/Q- id even with look-alike hyphens; a permissive renderer would still
+# skip it because the regex `ID` (ASCII only) won't match. The check fails closed on the line
+# itself, before parsing it as a row. The character class is exactly the look-alike range
+# `U+2010..U+2015` — ASCII `-` is excluded, so a normal id like `C-BRD-02` does not match.
+LOOKS_LIKE_ID_ANY_DASH = re.compile(r"(?<![A-Za-z0-9])[CcQq][‐-―][A-Za-z0-9]")
 
 
 def inactive_markdown(text, rel):
@@ -110,6 +132,46 @@ def inactive_markdown(text, rel):
         elif HTML_TAG.match(line):
             problems.append(f"{rel}:{n}: a raw HTML tag; design files may not hold raw HTML "
                             "(write &lt; or say it in words)")
+    return problems
+
+
+def disguised_lines(text, rel):
+    """One problem per disguised table line (fix #202).
+
+    A table line is "disguised" when a strict reader would not have rendered it as a row but a
+    permissive reader would (a blockquote, a list bullet), or when the line disguises its id
+    with HTML entities or look-alike Unicode hyphens. Each closes a documented bypass
+    (`#202 R1`, `R4`); the check fails closed rather than parsing around them.
+
+    The scan is line-wise: only lines that contain `|` (a table line) are examined; unrelated
+    prose with `&` or non-ASCII hyphens is not affected.
+    """
+    problems = []
+    for n, line in enumerate(text.splitlines(), 1):
+        if "|" not in line:
+            continue
+        where = f"{rel}:{n}"
+        if LIST_PREFIX.match(line):
+            problems.append(
+                f"{where}: a table line inside a blockquote or list prefix; "
+                f"Markdown skips the prefix but the row is rendered — write the row plainly"
+            )
+            continue
+        if HTML_ENTITY.search(line):
+            problems.append(
+                f"{where}: a table line holds an HTML entity (`&#nnn;` or `&name;`); "
+                f"write the hyphen as '-' instead of &#45;"
+            )
+            continue
+        # Look-alike hyphen next to a C-/Q- prefix: a deliberate disguise for an id such as
+        # `Q‐UI‐99`. A permissive renderer skips the row (the ASCII `ID` regex
+        # misses) but a human reader sees `Q-UI-99` and may believe it's a valid id. Fail
+        # closed on the row's line before counting it.
+        if LOOKALIKE_HYPHEN.search(line) and LOOKS_LIKE_ID_ANY_DASH.search(line):
+            problems.append(
+                f"{where}: a table line uses a look-alike Unicode hyphen "
+                f"(U+2010..U+2015) next to a C-/Q- id; the row's id is not valid"
+            )
     return problems
 
 
@@ -164,6 +226,7 @@ def check(root, design="core-rules.md"):
         return problems + [f"{rel}: missing"], len(claims), 0
     text = path.read_text(encoding="utf-8")
     problems += inactive_markdown(text, rel)
+    problems += disguised_lines(text, rel)
     rows, row_problems = decision_rows(text, rel)
     problems += row_problems
     known = set(claims)
