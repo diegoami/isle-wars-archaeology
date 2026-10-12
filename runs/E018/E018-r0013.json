@@ -1,0 +1,283 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0013",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "57081c1",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@57081c1",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 22095 video frames in 1102.77 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (18:23 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+    "args": [
+      "video file name: IP1 028.mp4",
+      "video sha256: 964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "probe: 1102.77 s, 22095 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 134194220 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the event messages, the army totals over the game, the seat order, the concession offer and how the human won, the scoreboard screen and the title"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "event scan over the whole video",
+      "value": "the middle panel was scanned at 4 frames a second for the pink message text, and the hits were checked against the turn they fell in; two event messages in 47 turns, both between turns and both of one kind (the production centres moved to new locations): 03:46.75 to 03:54.50 (between turn 17 red and turn 18 green; placeholder messages in both side panels from 03:45.5) and 07:41.25 to 07:49.00 (between turn 27 blue and turn 28 yellow); none before turn 17; 2 of the 42 turn changes from turn 5 on, about 5 per cent (the setting was the middle one). A different kind from the one in IP1 026 and IP1 027 (a production-centre increase), so three events of two kinds across the three sittings, 7 of 131 changes in all. The event text said the centres were being moved; whether the centre numbers changed was not read."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "event frame at 07:47.0",
+      "ref": "sha256:28ca83fc2ffa3eb737bc0be6613de78cfc5c70509db3f648641ffc5603116ddc"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 00:30.000",
+      "value": "armies blue/yellow/red/green 19/27/32/26 (countries 9/13/11/12); largest stack 5; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 01:30.000",
+      "value": "armies blue/yellow/red/green 20/26/28/29 (countries 10/13/10/12); largest stack 6; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 02:30.000",
+      "value": "armies blue/yellow/red/green 22/27/26/28 (countries 10/13/11/11); largest stack 5; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 03:30.000",
+      "value": "armies blue/yellow/red/green 21/27/26/24 (countries 11/12/11/11); largest stack 3; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 04:30.000",
+      "value": "armies blue/yellow/red/green 17/31/24/23 (countries 10/13/10/11); largest stack 3; countries unread 2"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 05:30.000",
+      "value": "armies blue/yellow/red/green 19/37/28/19 (countries 11/13/10/11); largest stack 5; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 06:30.000",
+      "value": "armies blue/yellow/red/green 35/37/26/22 (countries 11/13/10/11); largest stack 16; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 07:30.000",
+      "value": "armies blue/yellow/red/green 25/35/19/22 (countries 15/12/7/11); largest stack 6; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 08:30.000",
+      "value": "armies blue/yellow/red/green 33/42/22/21 (countries 14/12/7/12); largest stack 14; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 09:30.000",
+      "value": "armies blue/yellow/red/green 30/42/17/19 (countries 17/12/5/11); largest stack 8; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 10:30.000",
+      "value": "armies blue/yellow/red/green 41/42/6/24 (countries 17/14/2/12); largest stack 19; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 11:30.000",
+      "value": "armies blue/yellow/red/green 34/42/3/18 (countries 21/14/1/9); largest stack 7; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 12:30.000",
+      "value": "armies blue/yellow/red/green 47/46/0/12 (countries 22/15/0/8); largest stack 16; countries unread 1"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 13:30.000",
+      "value": "armies blue/yellow/red/green 47/49/0/14 (countries 23/15/0/8); largest stack 13; countries unread 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 14:30.000",
+      "value": "armies blue/yellow/red/green 59/34/0/14 (countries 26/12/0/8); largest stack 22; countries unread 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 15:30.000",
+      "value": "armies blue/yellow/red/green 80/37/0/14 (countries 27/11/0/8); largest stack 20; countries unread 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 16:30.000",
+      "value": "armies blue/yellow/red/green 71/38/0/16 (countries 27/11/0/8); largest stack 20; countries unread 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 17:30.000",
+      "value": "armies blue/yellow/red/green 83/31/0/16 (countries 31/7/0/8); largest stack 18; countries unread 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals by colour from the map counters at video offset 18:10.000",
+      "value": "armies blue/yellow/red/green 83/30/0/14 (countries 33/6/0/7); largest stack 14; countries unread 0"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "army totals: how they are read",
+      "value": "the sum of the readable country counters of each colour at a moment between two attacks (no flash); one country (country 46) could not be assigned a colour in some frames because its colour sits between two palette entries, and is left out (its armies are at most 4 in the readings); a total is therefore a lower bound by that country; the sums are of armies on the board, not of armies in hand (the pool placed each turn is added to the board at the placement)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "the red seat eliminated and the seat order",
+      "value": "the red seat was eliminated at 11:52.4 to 11:55.1 by attack 57 (yellow; red's cards 4 to 0 at 11:55.1); from the next turn the playing seat skipped red: the sequence ran green 37, blue 38, yellow 39, green 40, blue 41, yellow 42, green 43, blue 44, yellow 45, green 46, blue 47, so the red position was skipped at each of the four later yellow-to-green changes; before the elimination the seat order ran red, green, blue, yellow without a break for 36 turns (turn 1 is the red seat after the first-seat draw). Red took its turn 33 with 3 countries and made no attack."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "territory counts: the human seat's path",
+      "value": "blue 9 at the deal; 10 to 11 until 05:36; 14 at 08:13; 17 at 10:14; 21 at 11:40; 22 at 13:05; 25 at 14:43; 27 at 16:05; 33 at 17:52 (the first frame with 33 on the scoreboard, after attack 76 took country 14 from green)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "the end: the concession offer",
+      "value": "the human seat held 33 countries from 17:52.07 (the other seats held yellow 6, red 0, green 7); the owner kept attacking and ended the turn (the action bar at 18:07.0 and 18:07.75, the card screen at 18:08.5: a draw, 3 to 4 cards, the bomb card drawn); after the card screen's continue (18:10.0) a banner of two buttons, accept the win and keep playing, came at 18:10.75 with a dialog saying the other forces concede the game to the blue army, from 18:10.75 to 18:14.5; the offer came right after the human turn that took the 33rd country, between turns, as F012 reads (Q-SUR-01: the human seat holding 33 or more countries). The threshold 33 was first met at 17:52.07, during a human turn, and the offer came at the end of that turn, not at the capture."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "the end: accept, winner dialog, scoreboard",
+      "value": "the owner pressed the accept button (it brightens at 18:14.5, the dialog changes at 18:15.27); a dialog said the blue army is the winner of the game (18:15.27 to about 18:19.0, with a continue button); the scoreboard screen came at 18:19.03 (rows for three levels with wins, losses and a percentage; read by eye at 18:20.0: the normal row 0 won and 3 lost, 0 per cent, the other rows 0 and 0) and the title screen at 18:21.03; the recording ends at 18:22.77 on the title screen. The win just accepted is not in the row (0 won): the scoreboard showed three losses (the owner's three earlier lost games, IP1 025, 026, 027, fit three losses) and no win; F012 says the file is written when the counters sum to 50 or fewer, which they did, so the missing win is not explained here (the screen may be drawn before the write, or the win not counted; one observation)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "the end: the owner won",
+      "value": "the human (blue) seat won the game by accepting the computers' concession at 33 of 46 countries (18:14.5); the game was not won by conquest, 13 countries remained to the computers (yellow 6, green 7)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "length of the game",
+      "value": "47 player-turns (13 human, 34 computer) from 00:21.3 to 18:07.75 (the last human turn ended with the card screen at 18:08.5), 18:10.75 to the offer, 18:15.27 the winner dialog; the owner's own pace: human turns lasted 21 s to 2 min 12 s (median 52 s; the last, turn 47, ran from 16:14.2 to the card screen at 18:08.5, 114 s), computer turns 3.0 to 17.7 s (median 6.5 s)"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the concession offer at 18:12.0 (accept the win, keep playing)",
+      "ref": "sha256:577c01656cf59d733c3d7ed917638f5f6d7c1979ca40acfc64a7b69321a9be25"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the accept button highlighted at 18:14.5",
+      "ref": "sha256:3c81f31b6e109363c164b2bec5efa8ec52f2d2260b55baf0c95633923feeb73b"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the winner dialog at 18:16.0",
+      "ref": "sha256:68c5abbdc4aa7396a9452e14d4da84b733164363bc7ba946d9bf60123470bb3d"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the scoreboard screen at 18:20.0 (normal 0 won, 3 lost)",
+      "ref": "sha256:248403858c35e7eac8ef1d6d2f065c99ade334d40362bde7d7a22ce3a8538ad5"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "frame: the title screen at 18:22.0",
+      "ref": "sha256:0d09ba458f7e6d71df52567837b1ff97af17548d59a5d5e4825e7d9c468e0267"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "event-production-centres-moved.png",
+      "sha256": "28ca83fc2ffa3eb737bc0be6613de78cfc5c70509db3f648641ffc5603116ddc",
+      "store": "release:E018"
+    },
+    {
+      "name": "concession-offer.png",
+      "sha256": "577c01656cf59d733c3d7ed917638f5f6d7c1979ca40acfc64a7b69321a9be25",
+      "store": "release:E018"
+    },
+    {
+      "name": "accept-pressed.png",
+      "sha256": "3c81f31b6e109363c164b2bec5efa8ec52f2d2260b55baf0c95633923feeb73b",
+      "store": "release:E018"
+    },
+    {
+      "name": "winner-dialog.png",
+      "sha256": "68c5abbdc4aa7396a9452e14d4da84b733164363bc7ba946d9bf60123470bb3d",
+      "store": "release:E018"
+    },
+    {
+      "name": "scoreboard-after-win.png",
+      "sha256": "248403858c35e7eac8ef1d6d2f065c99ade334d40362bde7d7a22ce3a8538ad5",
+      "store": "release:E018"
+    },
+    {
+      "name": "title-after-game.png",
+      "sha256": "0d09ba458f7e6d71df52567837b1ff97af17548d59a5d5e4825e7d9c468e0267",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T18:41:38Z",
+  "ended": "2026-10-11T19:00:01Z",
+  "status": "completed"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0014",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 028.mp4",
+      "bytes": 134194220,
+      "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "asset": "964272f436c11b76-IP1 028.mp4",
+      "class": "recording"
+    }
+  ]
+}

@@ -1,173 +1,79 @@
 # Models: who implements, who reviews, and how
 
-This page is the main session's working strategy for routing work to models. It covers
+This page is the main session's working strategy for routing work to models, for
 [isle-wars-archaeology](https://github.com/diegoami/isle-wars-archaeology) and
-[malpaco](https://github.com/diegoami/malpaco), which share the roster and the harness.
+[malpaco](https://github.com/diegoami/malpaco), which share the harness.
 
 - **One page, two copies.** The page is kept identical in both repositories as `docs/models.md`.
   A change goes to both in the same session.
-- **Task and issue numbers** without a repository name are isle-wars-archaeology's. malpaco's are
-  written `malpaco T02` or `malpaco#3`.
 - **No status.** The run-by-run record is the model-trials issues,
   [isle-wars-archaeology#9](https://github.com/diegoami/isle-wars-archaeology/issues/9) and
   [malpaco#3](https://github.com/diegoami/malpaco/issues/3).
-- **The binding rules** are CLAUDE.md rules 1, 6 and 21, numbered the same in both repositories.
-  Where this page and those rules differ, the rules win, and this page gets fixed.
+- **The binding rules** are CLAUDE.md rules 1, 6 and 21. Where this page and those rules differ,
+  the rules win, and this page gets fixed.
 
-**Who decides.** The owner chooses the models and switches them often, as credits and prices
-change. The main session never routes by budget. Its job is to keep a switch cheap:
-- every candidate stays probed, with a `harness.json` entry;
-- each task file names its implementer and its reviewer, one line each, and says `easy` or `hard`;
-- a switch is applied to tasks not yet started, with the owner's reason in the commit message.
+## Who does what (the owner, 2026-10-11 and 2026-10-12)
 
-## The roster
+What worked in practice, after ten days of chains, pairs and quota checks:
 
-| Name in `harness.json` | Model and route | Family | Used for |
+| Role | Who | How |
+| --- | --- | --- |
+| Orchestrator | The main session, set by the Anthropic environment variables alone (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude; or GLM-5.3 through Z.AI's Anthropic-compatible endpoint, MiniMax, or Moonshot's Kimi when Claude's tokens are out | never named by the harness; its family is read from the environment (`lib/common.mjs` `sessionFamily`, `HARNESS_SESSION_FAMILY` overrides) |
+| Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's: `sonnet` under Opus, which under Z.AI is GLM-5.3 Flash, or any model id the session's provider serves. **The main session** implements directly, in its own worktree, only where the provider cannot spawn a subagent. Asked before each implementation, `harness.json`'s `implementer.default` proposed first | `/run-task` step 2; `.claude/agents/implementer.md` |
+| Reviewer | **One OpenCode run** of another family than the session's, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; `gpt-6.1-sol` for a guard, a gate or hard research | `tools/harness/review.mjs [--reviewer <name>]`, as a systemd unit, watched |
+
+The roster is the owner's and changes often: `harness.json`'s two defaults and its `blocked` list
+change through `/switch-model`, never by a rule that names a model, and no quota, tier or
+difficulty table picks one. The fixed rules: the reviewer is never of the session's family (so no
+Claude reviewer under Claude, no GLM reviewer under Z.AI, unless the user asks for a same-family
+review); a blocked model never runs (DeepSeek today); Alibaba only when the user asks.
+
+**Why OpenCode does not implement any more.** Its implementer runs were the harness's main source
+of lost work: runs ended by a rejected path outside the worktree (T13 three times, T21 and T22,
+mm-m3 on goal2's T29), by the reset between chain attempts, by a 900 s idle kill during a long
+command, by a model ending early, and by models that did not follow the brief (`cd /abs &&`,
+scratch files in `/tmp`, scope nobody asked for). The main session and Claude agents, which run
+in the same tool with the same permissions as the session, had none of these failure classes;
+their misses were review findings, fixed in a round. `implement.mjs`, the chooser, the quota
+check and the chains were removed on 2026-10-11 (this repository's history before that commit
+holds them).
+
+**Why OpenCode still reviews.** A reviewer of another family catches what the author's family
+misses (Sol's bypass findings on T06 and T08; Luna's citation checks on T02–T04, T10), and a
+review is read-only, so a run that misbehaves costs one review, not a branch. OpenCode's models do
+not always follow the brief: `review.mjs` reads what came back, posts a review it cannot read
+whole under a note with no label (exit 4), and the main session reads it and decides rather than
+paying for another. It gets the permissions a review needs (all of `/tmp`, the static folder
+read-only) in `.opencode/agents/reviewer.md`, so a loose scratch file no longer ends the run.
+
+## The roster (`harness.json`)
+
+| Name | Model and route | Family | Use |
 | --- | --- | --- | --- |
-| `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash` | GLM | **easy implementer**, the `harness.json` default |
-| `mimo-flash` | MiMo v2.6 Flash, `opencode-go/mimo-v2.6-flash`, no variant (it offers none) | MiMo | **hard implementer** (`--model mimo-flash`); the owner's switch, 2026-10-09; probed 2026-10-09 (9 s) |
-| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, the direct OpenAI route; the `gpt-5.6-luna:7d` window of its own is gone (2026-10-09) — Luna now shares OpenAI's main quota with Sol | OpenAI | **easy reviewer**, the `harness.json` default (L51, 2026-10-05) |
-| `luna-6` | GPT-6 Luna, `openai/gpt-6-luna`, which draws on OpenAI's main pool with Sol | OpenAI | registered only, outside every chain, never the reviewer (L51); the easy reviewer until 2026-10-05 |
-| `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | **hard reviewer** (`--reviewer gpt-6.1-sol`), used sparingly; probed 2026-10-03 at `high`, PONG in 5 s |
-| `gpt-6-sol` | GPT-6 Sol, `openai/gpt-6-sol` | OpenAI | probed; the hard reviewer before 6.1 (T06, malpaco T02) |
-| `mimo-pro` | MiMo v2.6 Pro, `opencode-go/mimo-v2.6-pro`, no variant (it offers none) | MiMo | probed 2026-10-09 (11 s); **heavy**; OpenCode Go's heavy model; reviewer.hard's fourth seat, where DeepSeek V4 Pro was |
-| `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (it offers no medium; the owner, 2026-10-05) | GLM | probed; implemented T06, and was tried as a calibration reviewer |
-| `alibaba-qwen-max` | Qwen 3.8 Max, `alibaba-token-plan/qwen3.8-max`, effort `medium` | Qwen | probed 2026-10-05 (7 s), not in a pair; a new family |
-| `alibaba-qwen-flash` | Qwen 3.8 Flash, `alibaba-token-plan/qwen3.8-flash` | Qwen | probed 2026-10-05 (7 s), not in a pair |
-| `alibaba-glm-5.3` | GLM-5.3, `alibaba-token-plan/glm-5.3`, effort `low` | GLM | probed 2026-10-05 (6 s), not in a pair |
-| `mm-m3` | MiniMax-M3, `minimax/MiniMax-M3`, variant `thinking` (offers only none and thinking, live 2026-10-06) | MiniMax | probed 2026-10-06 (~19:30 CEST, 6 s); **heavy**; **placed 2026-10-06**: the L38 heavy escalation rung before Opus, and the alternate for the Sol seat when openai is exhausted (both by explicit `--model`, never a chain member) |
-| `mm-m2.7` | MiniMax-M2.7, `minimax/MiniMax-M2.7`, no variant (it offers none, live 2026-10-06; registered without the field, so no `--variant` flag is passed) | MiniMax | probed 2026-10-06 (~19:30 CEST, 6 s); **light**; **placed 2026-10-06: implementer chain, second** after the light default |
-| `ali-qwen-max` | Qwen 3.8 Max, `alibaba-token-plan/qwen3.8-max`, effort `low` (offers low/medium/xhigh, live 2026-10-06; low per the heavy-model effort rule) | Qwen | probed 2026-10-06 (~19:30 CEST, 8 s); **heavy**; **placed 2026-10-06: reviewer.hard, third seat** - a family with no implementer anywhere in this repo |
-| `ali-qwen-flash` | Qwen 3.8 Flash, `alibaba-token-plan/qwen3.8-flash`, effort `medium` (offers low/medium/xhigh) | Qwen | probed 2026-10-06 (~19:30 CEST, 7 s); **light**; **placed 2026-10-06: implementer chain, third** |
-| `ali-glm` | GLM-5.3, `alibaba-token-plan/glm-5.3`, effort `low` (offers low/high/max; low is its medium-equivalent) | GLM | probed 2026-10-06 (~19:30 CEST, 6 s); **heavy**; same id as `alibaba-glm-5.3`. **Placed 2026-10-06: reviewer.hard, second seat** - zai 3x-peak relief from 8 Oct 2026 |
-| (Claude) Sonnet | `task-agent`, `model: sonnet` | Claude | the implementer for research, the user's install and cloud sessions; the fallback implementer; the easy fallback reviewer |
-| (Claude) Opus | `task-agent-heavy`, `model: opus`, effort `medium` | Claude | the hard fallback reviewer; the cloud reviewer |
-| (Claude) Fable | `task-agent-heavy`, `model: fable`, effort `medium` | Claude | allowed, not used yet |
+| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, effort `high`, the direct OpenAI route | OpenAI | **the default reviewer** (L51): fast, proves findings by mutation |
+| `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | the adversarial reviewer for a guard, a gate or hard research; `medium` only when the task file says why, never `high` (the owner, 2026-10-03) |
+| `gpt-6-sol`, `luna-6` | GPT-6 Sol and GPT-6 Luna | OpenAI | registered for an explicit `--reviewer`; they share OpenAI's pool with Sol |
+| `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (no medium) | GLM | a credible heavy reviewer when OpenAI is out (T08 round 2); 3x in weekday peak from 8 Oct 2026 |
+| `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash`, effort `high` | GLM | a light reviewer for small PRs |
+| `mimo-flash`, `mimo-pro` | MiMo v2.6 Flash and Pro on OpenCode Go, no variant (they offer none) | MiMo | a family of its own; Go needs `opencode console login` in the scripts' data directory |
+| `mm-m3`, `mm-m2.7` | MiniMax-M3 (variant `thinking`) and M2.7 (no variant) | MiniMax | a family of its own; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`, never `opencode auth login` |
+| `ali-qwen-max`, `ali-qwen-flash`, `ali-glm` | Qwen 3.8 Max (`low`), Qwen 3.8 Flash (`medium`) and GLM-5.3 (`low`) on the Alibaba Token Plan | Qwen, GLM | only when the user asks (`--alibaba`); key `ALIBABA_TOKEN_PLAN_API_KEY` the same way |
+| (the session's provider) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku`, `fable` or a model id for the `implementer` subagent, which the orchestrator spawns on a model of its own | Claude; GLM, MiniMax or Kimi when the environment says so | implements; reviews only when the user asks |
 
-**DeepSeek is blacklisted** (the owner, 2026-10-09): DeepSeek V4 Pro and V4.1 Flash, on any route
-(OpenCode Go, Alibaba), are never used. Their six entries (`deepseek-flash`, `deepseek-pro`,
-`alibaba-deepseek-*`, `ali-deepseek-*`) were removed from `harness.json`; MiMo replaces them on Go
-(the owner tested it on implement, fix and review tasks, all passed). MiMo is a family of its own.
-What DeepSeek showed before then stays below as history.
+**DeepSeek is blocked** (the owner, 2026-10-09), on any route: `harness.json`'s `blocked` list, which
+`review.mjs` and `switch-model.mjs` refuse and `/switch-model --block` and `--unblock` change.
+Every id comes from a live list (`opencode models <provider>`), never memory; `/switch-model`
+changes a default with a probe.
 
-The three `alibaba-*` entries share one monthly credit pool (quota-tracker `alibaba`, window `month`;
-the Personal edition, so Kimi and MiniMax are not available). Their key is the environment variable
-`ALIBABA_TOKEN_PLAN_API_KEY`; in WSL it comes from `~/.config/ai-keys.env`, which `~/.bashrc` and
-`~/.profile` load. On "Provider not found" the variable is missing: restart the session or shell, and
-tell the owner if it is still missing. Never store the key with `opencode auth login` (an `auth.json`
-entry overrides the variable). A night discount applies from 22:00 to 08:00 UTC+8, read from `/quota/alibaba`'s `pricing.discount_now`
-(qwen3.8 60% off, `glm-5.3` none); prefer long alibaba runs while `discount_now` is true.
+**Effort.** A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) runs at `high`; a heavy model
+(Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro, MiniMax-M3) at `medium` at most, and at `low` when
+medium is not needed (the owner, 2026-10-05). A model that offers no medium takes its lowest
+variant at or below `high`. Never `max`: slower, with no gain (L27). `--variant` on `review.mjs`
+runs a registered model at another effort for one review.
 
-The two `mm-*` entries (registered 2026-10-06, the owner's work order) are MiniMax, a new family on its
-own quota (`/quota/minimax`, 5-hour and weekly windows; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`
-the same way). A family nothing else shares, so an `mm-*` reviewer is a genuine third family for work by
-GLM, MiMo, Qwen, OpenAI or Claude models. Alibaba's Kimi and the MiniMax models behind the Alibaba
-plan stay out (Team-edition only, they fail). Also noted (the owner, 2026-10-06): zai's GLM-5.3 costs
-3x in weekday peak from 8 Oct 2026 - prefer other providers then.
-
-A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) runs at effort `high`; a heavy model (Opus,
-GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro) at `medium` at most, and at `low` when medium is not needed
-(the owner, 2026-10-05). GLM-5.3 offers no medium and runs at `low`; the MiMo models offer no variant
-on Go and run without one; Opus runs as `task-agent-heavy` (effort `medium`). A heavy model
-switched with `switch-model.mjs` takes `--variant medium` or `--variant low`. Never `max`: it was
-slower, with no gain (L27). **GPT-6.1 Sol** (the owner, 2026-10-03) is also used sparingly:
-- only for hard reviews;
-- at effort `low` (`harness.json`'s `gpt-6.1-sol` and `gpt-6-sol` entries);
-- at `medium` only when the task file says why;
-- never at `high`.
-
-Credit is not the reason, and is not a reason to raise it.
-
-*Superseded on 2026-10-11 (the user decides; the only fixed rules are: never the implementer's
-family, never DeepSeek, Alibaba only when the user asks). Kept as history, they are no longer rules:*
-
-**Never used** (history):
-- Haiku;
-- Gemini, because of its cost;
-- Kimi and Grok.
-
-**Routes that matter** (history; a route the user names is the one that runs):
-- GLM runs only through the Z.AI Coding Plan, never through Go or pay-per-token Z.AI.
-- Luna runs only on the direct OpenAI route. Go's Luna went through a proxy that returned
-  `400 Bad Request` in long agent loops (L27).
-
-**Beyond implementing and reviewing:**
-- **Jev** (`jev-1.13` through OpenRouter): repeated yes/no decisions, after a trial (`/jev`). The
-  key is set in the interactive shell, so it is run with `bash -ic`.
-- **OpenRouter models:** images. **ElevenLabs:** audio.
-- Their ids come from live lists, never from memory (`/delegate`).
-
-## Routing: easy or hard
-
-**Since 2026-10-11 the user decides** (the owner; CLAUDE.md rule 6). Before each implementation the
-main session asks who implements (itself in its own worktree, a Claude agent, or OpenCode) and with
-which model; at every review it asks which external model reviews. `/recommend` is shown with the
-question as a suggestion only (`tier=heavy` for hard work, `tier=light` for easy). Everything below in
-this section, the roster's "placed" roles, and every chain, substitute order, tier or escalation ladder
-that names a model on this page, and every list that excludes a model or a route ("Never used", "Routes that matter", the GLM-only-via-Z.AI and Luna-only-direct rules), are **superseded**, kept as history; read "the user's choice" in their place. The only fixed rules are CLAUDE.md rule 6.4's.
-
-*Superseded on 2026-10-11:* **Since 2026-10-10, quota-tracker's `/recommend` picks the pair** (the owner, effective at once;
-CLAUDE.md rule 6). The difficulty chooses the tier, `light` for easy and `heavy` for hard. Take
-`pair.implementer` and `pair.reviewer`, which come from different families, or the rows in `rank`
-order when the pair's model cannot run. Name the rank in the brief. The family rule, the effort caps,
-the blacklist and L26 still hold. On 2026-10-10 the light pair was Luna implementing and MiniMax-M2.7
-reviewing, and the heavy pair was Sol implementing and MiniMax-M3 reviewing. The table below is the
-fallback when the service is down.
-
-The owner decided on 2026-10-03 that the pair follows the task's difficulty:
-
-| Difficulty | Implementer | If it is unavailable | Reviewer | If it is unavailable |
-| --- | --- | --- | --- | --- |
-| Easy, the default | GLM-5.3 Flash | Sonnet | GPT-5.6 Luna | Sonnet |
-| Hard | MiMo v2.6 Flash | Sonnet | GPT-6.1 Sol | Opus |
-
-**When a task is hard.** A task is hard if any of these holds:
-- it is a guard, a gate, or a tool whose failure would let an original or a copy through (in
-  malpaco: a gate or test that guards the UI or the rules core);
-- it adds a new mechanism across several files, or a new external dependency;
-- an earlier round found blocking bypasses.
-
-Everything else is easy: doc and config fixes, exact-line contracts, and single-mechanism code
-with clear tests. The main session decides, and the task file's Implementer and Reviewer lines say
-`easy` or `hard` with the reason. `harness.json` holds the easy pair as the default; a hard task
-passes `--model mimo-flash` and `--reviewer gpt-6.1-sol`, and names Opus as its Claude
-fallback.
-
-**The family rule.** The reviewer always comes from another family than the implementer.
-`review.mjs` refuses an OpenCode reviewer of the implementer's family, and
-`--exclude <implementer>` says which one that is. Both pairs, and every fallback against the
-other role's OpenCode model, keep the families apart.
-
-**The exceptions:**
-
-| Work | Implementer | Reviewer | Why | Examples |
-| --- | --- | --- | --- | --- |
-| Research, or anything that reads the user's install | **Sonnet** (`task-agent`, worktree isolation) | by difficulty, on the repository side | OpenCode cannot reach outside its worktree (L26). The main session runs the `[C3]` lines and posts their output on the PR. If no OpenCode reviewer is available, the Claude fallback would be the implementer's family: escalate | T03, T04, T10 (easy: Luna); T08, T09 (hard: GPT-6.1 Sol) |
-| A safety seal around the originals, or reverse-engineering probes (savestates, debuggers, unpacked or undocumented formats) | **Opus** from the start, with the task file saying why (rule 6) | by difficulty, usually hard | T08's seal converged only under Opus. The owner saw Sonnet struggle with reverse engineering in IC2 | T11, the DOSBox-X spike (first use, 2026-10-04) |
-| Cloud sessions | Sonnet | Opus | only Claude runs there, so the same family is forced, and the task file says so | T05 (planned for the cloud; it ran locally) |
-
-**Escalation after a heavy review** (the owner, 2026-10-03). When a review shows that the
-implementer is out of its depth, the next round goes to a stronger implementer. The task does not
-spend its last round on the same model.
-
-- **When.** Either of these:
-  - a review asks for rework with three or more blocking findings;
-  - a rework round brings new blocking findings of the same class as the last round's.
-- **The steps.** GLM-5.3 Flash → MiMo v2.6 Flash → Opus, and Sonnet → Opus. An escalated
-  implementer is always Claude Opus at the top, so the reviewer stays OpenAI. If that reviewer is
-  unavailable, the Claude fallback would be the implementer's family: escalate to the owner.
-- **The rounds.** The count does not reset: two rework rounds, then the owner (rule 7).
-- **The hand-over.** The new implementer gets the task file, every review so far, and the previous
-  implementer's unpushed work as a patch to weigh, never to apply blindly. It starts from the pushed
-  branch.
-- **First use: T08, round 2** (Opus's result is under "What each model has shown").
-  - GPT-6.1 Sol found 6 blocking findings at round 0 and 5 new ones at round 1.
-  - Both rounds were the same class: an alias or a side path at the moment of a write or a launch.
-  - Sonnet was stopped mid-round, and Opus took the branch.
-
-**Sonnet's tripwire** (the owner, 2026-10-04). Models judge their own depth poorly, so this
-works alongside the review-driven escalation, not instead of it. Every Sonnet brief ends with
-this paragraph:
+**Sonnet's tripwire** (the owner, 2026-10-04). Models judge their own depth poorly. Every Sonnet
+brief ends with this paragraph, and on an `ESCALATE` the main session answers the question itself
+or takes the task over on the pushed branch:
 
 ```text
 Out of your depth: stop and hand back, with an ESCALATE block, when any of these happens:
@@ -178,184 +84,9 @@ gives what you tried, the evidence so far, and the exact question you could not 
 guess a format or a cause.
 ```
 
-On an `ESCALATE`, the main session starts Opus on the pushed branch, with the brief and the block:
-- **consult**, for a narrow question: Opus answers it, and Sonnet resumes with the answer;
-- **takeover**, when the difficulty is the task itself: Opus finishes it.
-
-The main session also escalates when Sonnet doesn't:
-- a report hedges on a claim ("likely", "probably");
-- a reviewer finds reasoning errors, not just missing tests;
-- a rework fails on the same finding twice.
-
-Every escalation is logged on the trials issue, with whether Sonnet's call was right, so the
-tripwires can be tuned.
-
-**When GPT-6.1 Sol cannot review.** The review goes to a substitute instead of waiting, unless
-the owner says to wait.
-
-- **Diagnose first.** Read the run's `/tmp/harness-opencode/<session>.err.txt`, and probe
-  `openai/gpt-6.1-sol` with `switch-model.mjs --probe --dry-run`.
-  - `The usage limit has been reached` means OpenAI's main pool is out of quota. Since 2026-10-09
-    Luna has no pool of its own; check `/quota/openai`'s `when_exhausted.usable_models` for
-    whether `gpt-5.6-luna` is named there (L50, L51, harness L65); confirm with a probe of
-    `openai/gpt-5.6-luna`.
-  - If only Sol fails (the model is unavailable, or its cost is to be avoided), Luna is still an
-    option.
-- **Substitutes, in order,** skipping the implementer's family:
-
-  | Situation | Hard review | Easy review |
-  | --- | --- | --- |
-  | Only Sol is unavailable | GLM-5.3 (`zai-glm-5.3`), then MiMo v2.6 Pro (`mimo-pro`), then Luna, with the reason stated | Luna, as usual |
-  | The OpenAI account is out of quota | GLM-5.3, then MiMo v2.6 Pro | GLM-5.3, then MiMo v2.6 Pro |
-  | The implementer is GLM | MiMo v2.6 Pro | MiMo v2.6 Pro |
-  | The implementer is MiMo | GLM-5.3 | GLM-5.3 |
-
-  Luna stands in for Sol on a hard task only when no heavy third-family reviewer can run, and the
-  review's header says so. Never fall back to a Claude reviewer when Claude implemented the task:
-  escalate instead.
-- **How:**
-  1. Probe the substitute: `switch-model.mjs --role reviewer --model zai-coding-plan/glm-5.3 --name zai-glm-5.3 --probe --dry-run`.
-     Add `--force` only when the refusal concerns the default implementer's family, not this
-     task's.
-  2. Reuse Sol's brief unchanged, except:
-     - the header names the substitute;
-     - one sentence says it reviews in Sol's place, and why;
-     - Sol's earlier reviews are linked, so it re-takes their attacks.
-  3. Run `review.mjs --pr <n> --reviewer zai-glm-5.3 --issue <n> --apply-label --brief <file>`.
-     On exit 3, run it again with `--reviewer mimo-pro`.
-  4. Record the change on the task file's Reviewer line, with the date and reason.
-  5. Log it on the trials issue.
-- **First use: T08, round 2.** On the owner's decision of 2026-10-03, after the OpenAI quota
-  stopped Sol mid-review: GLM-5.3 reviews, and DeepSeek V4 Pro is its fallback. Both answered their
-  probe (PONG in 4 s and 5 s).
-
-**The `[C4]` re-hash can run through WSL interop** (T10, at the owner's request).
-`powershell.exe` from WSL runs Windows PowerShell's `Get-FileHash` over `\\wsl.localhost\…`.
-That gives another OS and another tool on the same copy. The one-liner must use
-`(Resolve-Path $dir).ProviderPath`: `.Path` breaks on a UNC path (#33).
-
-**Watch:** L27 records GLM-5.3 Flash stalling, and ending long implementer runs early, in IC2.
-It ran malpaco T02's round 2 cleanly. Its first runs as the easy default are watched, and a stall
-is diagnosed before any fallback (rule 21).
-
-**Jev, for easy or hard (planned).** The owner cleared sending task-file text to OpenRouter for a
-Jev trial (2026-10-03). A trial needs about 60 labelled items, and labels the main session makes
-itself measure Jev against the main session, not against the truth. So every task file records
-`easy` or `hard` with its reason, and the outcome adds the label: a hard task that went cleanly,
-or an easy one whose review found blocking bypasses, says the call was wrong. At about 60 items,
-the decision `task-hard` is defined and trialled (`/jev`). Until then, the main session decides.
-Jev would give only the decision, so the main session still writes the reason.
-
-## Superseded model-choice rules
-
-CLAUDE.md rule 6 as it stood before 2026-10-11, kept as history (the owner's 2026-10-11 rule
-replaced it; see Routing above).
-
-```text
-6. Each task file names its implementer and its reviewer, at the effort below, and says
-   whether the task is `easy` or `hard`, and why.
-   - **`/recommend` decides** (the owner, 2026-10-10, effective at once; it supersedes the fixed
-     pairs below). Before each implement or review run, ask quota-tracker
-     `curl -s 'localhost:8765/recommend?tier=<light|heavy>'`: `light` for an easy task, `heavy`
-     for a hard one. Take its `pair` (`implementer`, then `reviewer` from another family), or the
-     rows in `rank` order when the pair's model cannot run. Pass the model explicitly (`--model`,
-     `--reviewer`, the Agent's model), and write the rank used in the brief and the run's report.
-     Its `skipped` rows are never used. The rules below still hold: the family rule, the effort
-     caps, the blacklist, the exclusions, Sonnet's tripwire, the escalation ladder, and L26
-     (work on the user's install goes to Claude, the ranking's best Claude row). The table stays
-     as the fallback when the service is down.
-
-   The pairs (the owner's decision, 2026-10-03; since 2026-10-10 the fallback when `/recommend`
-   cannot be reached):
-
-   | Difficulty | Implementer | Its fallback | Reviewer | Its fallback |
-   | --- | --- | --- | --- | --- |
-   | Easy, the default | GLM-5.3 Flash (Z.AI Coding Plan only) | Sonnet | GPT-5.6 Luna (direct OpenAI) | Sonnet |
-   | Hard | MiMo v2.6 Flash (Go) | Sonnet | GPT-6.1 Sol (direct OpenAI) | Opus |
-
-   - **Hard** is any of:
-     - a guard, a gate, or a tool whose failure would let an original or a copy through (in T06
-       Sol found two bypasses that the implementer's own mutation tests missed, #9);
-     - a new mechanism across several files, or a new external dependency;
-     - a task whose earlier round found blocking bypasses.
-
-     Everything else is easy.
-   - **Family:** the reviewer comes from another family than the implementer. When a constraint
-     forces the same family, the task file names it: OpenCode cannot reach the user's install or a
-     cloud session (L26).
-   - **Research, or anything on the user's install:** Sonnet implements, because OpenCode cannot
-     reach the install (L26). The reviewer follows the difficulty and reviews the repository side.
-     The main session runs the lines that read the install, and posts their output on the PR. If
-     no OpenCode reviewer is available, the Claude fallback would be the implementer's family:
-     escalate.
-   - **Other probed models** (`harness.json`, for an explicit `--model` or a switch): MiMo v2.6
-     Pro (Go), GLM-5.3 and GPT-6 Sol, and on the Alibaba Token Plan (2026-10-05; its key is an
-     environment variable, `docs/models.md`) Qwen 3.8 Max and Flash, and GLM-5.3; Opus and Fable
-     implement only when a task file says why.
-   - **MiMo replaces DeepSeek** (the owner, 2026-10-09). OpenCode Go's heavy model is
-     `opencode-go/mimo-v2.6-pro`, its light one `opencode-go/mimo-v2.6-flash`; MiMo is a family of
-     its own for the family rule. DeepSeek (V4 Pro, V4.1 Flash, on any route, Alibaba included) is
-     blacklisted: never used, and removed from `harness.json`.
-   - **GPT-6.1 Sol, sparingly** (the owner, 2026-10-03): only for hard reviews, at effort `low`;
-     `medium` only when the task file says why; never `high`.
-   - **Effort** (the owner, 2026-10-05): a heavy model (Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro)
-     runs at `medium` at most, and at `low` when medium is not needed. A model that offers no
-     medium takes its lowest variant at or below `high`: GLM-5.3 `low`. MiMo offers no variant on
-     Go, so it runs without one. Opus runs as `task-agent-heavy` (effort `medium`). A light model
-     (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) stays at `high`.
-   - **Luna** (harness_imperial L51): the light OpenAI model, and the reviewer `luna`, is GPT-5.6
-     Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, effort `high`). As of 2026-10-09, Luna
-     shares OpenAI's main quota with Sol — the `gpt-5.6-luna:7d` window of its own is gone; its own
-     limit surfaces only as `when_exhausted.usable_models` in `/quota/openai` (harness's L65).
-     GPT-6 Luna draws on OpenAI's main pool with Sol: it stays registered as `luna-6`, outside
-     every chain, never the reviewer. Never a Luna on OpenCode Go (`opencode-go/…`).
-   - **Quota first** (harness_imperial L50; the owner, 2026-10-05, superseding every earlier limit
-     on which models may be used): before choosing, recommending or delegating to a model, check
-     its provider with quota-tracker (`docs/environment.md`). A provider that is `exhausted` is not
-     used until it is usable again: take the next model of the pair or chain whose provider has
-     quota, pass it explicitly (`--model`, `--reviewer`, the Agent's model, `opencode -m`), and say
-     so in the run's report or the PR body ("GLM skipped: zai exhausted until 21:40; reviewed by
-     Luna"). Without the service, count a usage-limit error as `exhausted`. Ids still come from the
-     live list (`opencode models <provider>`), never memory.
-   - **Sonnet's tripwire** (the owner, 2026-10-04). Every Sonnet brief carries the paragraph in
-     `docs/models.md`. Sonnet stops and hands back an `ESCALATE` block when:
-     - two hypotheses for the same question have failed;
-     - it would rely on bytes, code or behaviour it cannot explain;
-     - it is about to write a claim it cannot back;
-     - it has made three attempts at one step without progress.
-
-     The main session then brings in Opus, to answer the question (consult) or to take the task
-     (takeover), on the pushed branch.
-   - **Escalation after a heavy review** (the owner, 2026-10-03). The implementer moves up one step
-     for the next round when either holds:
-     - a review asks for rework with three or more blocking findings;
-     - a rework round brings new blocking findings of the class the last round raised.
-
-     The steps are GLM-5.3 Flash → MiMo v2.6 Flash → Opus, and Sonnet → Opus. The round count
-     does not reset (rule 7). The new implementer gets the task file, every review so far, and the
-     previous implementer's unpushed work as a patch to weigh, never to apply blindly.
-   - **Cloud sessions:** Sonnet implements, and Opus reviews. Only Claude runs there, so the same
-     family is forced. On 2026-10-03, `isolation: "remote"` silently ran T05's agents locally. A
-     cloud brief therefore starts by checking the hostname and that `/mnt/c` is absent, and stops
-     if either check fails.
-   - **Excluded:** never Haiku. Gemini (cost), Kimi and Grok are not used.
-   - **Switching** (the owner's decision, 2026-10-02): the owner decides which models are in use,
-     and switches them often, as credits and prices change. The main session does not choose
-     models by budget; it checks only whether a provider has quota (Quota first, above). It keeps
-     every switch cheap:
-     - every candidate stays probed, with a `harness.json` entry;
-     - each task file names its implementer and reviewer, one line each;
-     - when the owner calls a switch, it is applied to tasks not yet started (and to
-       `harness.json`'s defaults when asked), with the owner's reason in the commit message.
-
-   The families and switching were the owner's decisions on 2026-10-02; the difficulty pairs on
-   2026-10-03. They override the family rule in the harness copies
-   (`docs/process.md`, `TEMPLATE.md`, the `run-task` and `delegate` skills), which `harness.lock`
-   pins. `review.mjs` refuses an OpenCode reviewer of the implementer's family.
-
-   The working strategy, how runs are made, the adjustments and what each model has shown are in
-   `docs/models.md`, kept identical to malpaco's copy; the main session keeps it current.
-```
+**Beyond implementing and reviewing:** Jev (`jev-1.13` through OpenRouter) for repeated yes/no
+decisions after a trial (`/jev`); OpenRouter models for images; ElevenLabs for audio. Their ids
+come from live lists, never memory (`/delegate`).
 
 ## Faster game cycles (Isle Wars Pro)
 
@@ -404,36 +135,27 @@ implementer and reviewer time a driver costs. Measured in T08's control runs, r0
   The task file's Owns must name that tracked path, for example `runs/E<nnn>/**` or
   `experiments/E<nnn>-*/measurements/**`.
 
-- **OpenCode implementer:**
-  `node tools/harness/implement.mjs --task T<nn> --slug <slug> --issue <n> --brief <file> [--model <name>] [--env K=V]`,
-  or `--fix <issue>` for a fix.
-  - It runs in the background, and the main session waits for the completion notice, never
-    polling with sleep.
-  - The script makes the worktree under `../<repo>-work/`, and resumes a pushed branch on rework.
-  - Exit 0: a PR is open. Exit 1: read the log; the implementer stopped and reported, or ended
-    early. Exit 3: OpenCode, the model or the login is unavailable, and the Claude fallback runs.
-- **OpenCode reviewer:**
-  `node tools/harness/review.mjs --pr <n> --brief <file> --exclude <implementer> --issue <n> --apply-label [--reviewer <name>]`.
+- **The implementer**, asked before each implementation, is
+  `Agent(subagent_type: "implementer", model: <alias or id>, isolation: "worktree")` with the brief,
+  or, where the provider cannot spawn one, the main session in
+  `../isle-wars-archaeology-work/<task>` on the task's branch: the task
+  file pasted in full, then `docs/process.md` §4's block, then, on rework, the review's URL
+  (rule 15). Either keeps `RUN-NOTES.md`, pushes after every commit and opens the PR. A cloud
+  brief first checks the hostname and that `/mnt/c` is absent, and stops if either check fails.
+- **The reviewer**, asked before each review: `tools/harness/run-unit.sh review-<pr> <log> -- node
+  tools/harness/review.mjs --pr <n> --brief <file> --issue <n> --apply-label [--reviewer <name>]`, watched with
+  `tools/harness/watch.sh` (CLAUDE.md rule 6.6). The brief is §5's block, filled in with the PR,
+  its head sha and the issue, then the contract and `docs/review-brief.md`.
   - Exit 0: the review is posted and labelled.
-  - Exit 3: no review came back, so the Claude reviewer runs (Opus).
-  - Exit 4: a review was posted under a note, with no label. The main session reads it and
-    applies the label it supports, without paying for a second review.
-- **Claude implementer or reviewer:** `Agent(subagent_type: task-agent, model: sonnet, isolation: worktree)`, or `task-agent-heavy` with `model: <opus|fable>` (effort `medium`).
-  - The agent creates its branch from `origin/main`, pushes it, and opens the PR.
-  - A cloud brief first checks the hostname and that `/mnt/c` is absent, and stops if either
-    check fails.
-- **Briefs:**
-  - An implementer brief is the task file pasted in full, then `docs/process.md` §4's block, then,
-    on rework, the review's URL (rule 15).
-  - A reviewer brief is §5's block, filled in with the PR, its head sha and the issue, then the
-    contract.
-- **Reading a verdict:**
-  - `approve` maps to `status:approved`.
-  - `approve after named fixes` maps to `status:rework`, even when every finding is non-blocking.
-    At the last round the main session escalates with options. In malpaco T02 the owner chose to
-    merge, and filed the non-blocking findings as a follow-up.
-- **After every run:** one comment on the trials issue, giving the model, its role, the task, the
-  exit code, the duration, the round, and what the review caught or missed (rule 21). A failing
+  - Exit 3: no review came back; nothing posted. Read the final message (rule 25), fix the cause,
+    run again.
+  - Exit 4: a review was posted under a note, with no label. The main session reads it and applies
+    the label it supports, without paying for a second review.
+- **Reading a verdict:** `approve` maps to `status:approved`; `approve after named fixes` maps to
+  `status:rework`, even when every finding is non-blocking (at the last round the main session
+  escalates with options; in malpaco T02 the owner chose to merge and filed the findings as a
+  follow-up).
+- **After a review that taught something:** one comment on the trials issue (rule 21). A failing
   model is diagnosed and fixed before any fallback: its log, the brief, the agent file, the harness
   and the login.
 
@@ -443,26 +165,21 @@ Each of these cost at least one wasted run, or a false result, before it was in 
 
 | Adjustment | Why | Learned |
 | --- | --- | --- |
-| OpenCode runs only through `implement.mjs` and `review.mjs`, in their own data directory (`~/.local/share/harness-opencode`). Never `opencode upgrade`. | The desktop app migrates the database to a schema the 1.x CLI cannot read; an upgrade can reach for the Windows npm shim | IC2 #540; `docs/environment.md` |
-| "database is locked" from OpenCode: retry | a transient lock, not a model failure; two runs in parallel worked on 2026-10-03 | trials #9 |
-| Pass `--env PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright` to both scripts (malpaco) | the harness sets its own `XDG_CACHE_HOME`, so Playwright cannot find Chromium | malpaco, 2026-10-03 |
+| OpenCode runs only through `review.mjs`, in its own data directory (`~/.local/share/harness-opencode`). Never `opencode upgrade`. | The desktop app migrates the database to a schema the 1.x CLI cannot read; an upgrade can reach for the Windows npm shim | IC2 #540; `docs/environment.md` |
+| "database is locked" from OpenCode: retry | a transient lock, not a model failure | trials #9 |
 | In briefs and task files, cite a commit as "commit `<sha>`", never "at `<40-hex>`" | `review.mjs` reads "at <sha>" as the commit to review, and refuses | harness_imperial#32 |
+| A review brief's first line is exactly `<title> review (<model>)`; rounds are said in the body | `review.mjs`'s header parser refuses anything else, exit 2 before any model runs | T21 round 2, 2026-10-06 |
 | Dry-run every Done-when line before a task starts: it fails on `main` and passes on a mock fix | twice, a line that no implementation could pass reached an implementer | 2026-10-03 |
 | For a doc fix, name the exact lines to change and the lines that must not change, with a grep that proves the second | a repository-wide replace would rewrite claims under test and quoted sources | fix #21 |
-| Golden screenshots are made and compared only in `mcr.microsoft.com/playwright:v<lock version>-noble`, run with `--user $(id -u):$(id -g)` | fonts and anti-aliasing drift between machines; run as root, the container would leave root-owned files | malpaco T02 (the owner's choice) |
-| Keep the targeted pixel checks beside the goldens | at Playwright's default tolerance, a hidden hatch still passed the board golden | malpaco T02, Sol's R1 |
+| The `[C3]` lines (the install, the Wine prefix, the display) are run by the main session and posted on the PR | an OpenCode reviewer cannot reach outside its worktree, and a rejected tool call fails the run | L26; T03 |
+| The reviewer gets all of `/tmp` and the static folder read-only in its agent file; a run that dies on a rejected path is fixed by widening the grant, never by re-briefing | three reviews of PR 166 were refused for writing in `/tmp` before the grant (d30a137); DeepSeek and GLM runs died on quoted `cat`/`cd` paths (T13, T23) | the owner, 2026-10-11 |
+| The static-folder reading recipe is grep/sed -n/head/ls/sha256sum with the file's quoted `~` path, never `cd` or `cat` | `cd` and `cat` paths are permission-checked as raw command text, and a quoted path fails the match | T13 L57; T23 |
+| Heavy models at effort `medium` at most, `low` when medium is not needed; light models at `high` | the owner's decision | the owner, 2026-10-05 |
+| Keep a probed heavy reviewer from a third family registered (GLM-5.3, MiMo v2.6 Pro, MiniMax-M3) | both OpenAI reviewers share one quota: on T08's final round `The usage limit has been reached` stopped Sol mid-review | T08, 2026-10-03 |
 | `isolation: "remote"` may run locally without saying so: a cloud brief checks where it runs before doing anything | T05's "remote" agents ran on this machine | 2026-10-03 |
 | Node 24 on PATH for non-interactive shells | the harness needs Node 20 or later; the nvm default did not reach non-interactive shells | 2026-10-03 |
-| The `[C3]` lines (the install, the Wine prefix, the display) are run by the main session and posted on the PR | an OpenCode reviewer cannot reach outside its worktree, and a rejected tool call fails the run | L26; T03 |
-| When the implementer is Claude, keep a probed heavy reviewer from a third family ready (MiMo v2.6 Pro, GLM-5.3) | both OpenAI reviewers share one account quota: on T08's final round `The usage limit has been reached` stopped GPT-6.1 Sol mid-review and failed the probe of Luna too, and a Claude fallback was not allowed | T08, 2026-10-03 |
-| Check quota-tracker before choosing, recommending or delegating to a model; an `exhausted` provider is skipped for the next model of the chain, passed explicitly, and the skip is said in the report or PR body | a provider out of quota stopped runs mid-review (T08); the owner made the quota check the only limit on which models are used | harness_imperial L50; the owner, 2026-10-05 |
-| The easy reviewer `luna` is GPT-5.6 Luna (`openai/gpt-5.6-luna`, high); since 2026-10-09 Luna shares OpenAI's main quota with Sol, no own window; GPT-6 Luna is `luna-6`, outside the chains; never a Luna on OpenCode Go | GPT-6 Luna and Sol shared one OpenAI pool, so one exhausted quota blocked both reviewers (T08) | harness_imperial L51, 2026-10-05 |
-| Heavy models at effort `medium` at most, `low` when medium is not needed (Opus as `task-agent-heavy`; GLM-5.3 `low`, offering no medium; MiMo with no variant, offering none); light models at `high` | the owner's decision | the owner, 2026-10-05 |
-| One OpenCode model per role, then Claude: no long chains of cheap models | chains multiplied wasted attempts; one failure stopped the chain before the next model ran | L27 |
-| A review brief's first line is exactly `<title> review (<model>)` — no "round 2" in the header; rounds are said in the body | `review.mjs`'s header parser refuses anything else, exit 2 before any model runs | T21 round 2, 2026-10-06 |
-| Tests that need a TMPDIR outside every checkout cannot be run by an OpenCode implementer (its sandbox refuses every outside write, L57); the main session's external-TMPDIR suite run is part of such a task's contract, never optional | T13 round 5: 49 of 602 tests were skips in the implementer's run and failed at the main session's verification; CI was red on a pushed head | T13, 2026-10-06 |
-| While Claude's quota is out, a run whose fallback would be Claude escalates to the owner instead; the main session itself runs GLM-5.3 via Z.ai and is named as GLM-5.3 in PRs and reports | any "Sonnet"/"Opus" agent would actually run GLM-5.3 — same family as the session, not the model the ladder names | the owner, 2026-10-06 |
-| The static-folder reading recipe is grep/sed -n/head/ls/sha256sum with the file's quoted `~` path — never `cd` or `cat`, and it lives in both agent files so every run reads it | `cd` and `cat` paths are permission-checked as raw command text: a quoted path (spaces in script names force quotes) fails the match and the whole run dies as external_directory — DeepSeek V4 Pro (three T13 attempts) and GLM-5.3 Flash (T23) both hit it; no grant can absorb the quoted form without tracking a machine path | T13 L57; T23, 2026-10-06 |
+| Pass `--env PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright` to `review.mjs` (malpaco) | the harness sets its own `XDG_CACHE_HOME`, so Playwright cannot find Chromium | malpaco, 2026-10-03 |
+| Golden screenshots are made and compared only in `mcr.microsoft.com/playwright:v<lock version>-noble`, run with `--user $(id -u):$(id -g)`; keep the targeted pixel checks beside the goldens | fonts and anti-aliasing drift between machines; at Playwright's default tolerance a hidden hatch still passed the board golden | malpaco T02 |
 
 ## What each model has shown so far
 
@@ -556,10 +273,26 @@ These are observations, each with its source. The trials issues hold the full re
 - **Opus** (reviewer, T05): precise. It found a wrong date and dated the evidence, by checking
   Wayback captures itself.
 
+## Superseded model-choice rules
+
+Kept as history, no longer rules (the owner, 2026-10-11). Their full text is in this
+repository's history before the commit that removed them (`git log -1 --format=%H -- tools/harness/implement.mjs`,
+then `git show <sha>^:docs/models.md`), and in `docs/lessons.md` L68:
+- the fixed pairs by difficulty (2026-10-03: GLM-5.3 Flash and Luna for easy work, MiMo v2.6
+  Flash and GPT-6.1 Sol for hard) and the escalation ladder after a heavy review (L38);
+- quota first (L50, L52, L65): skipping an exhausted provider for the next model of a chain;
+- `/recommend` decides (2026-10-10), then "the user decides, asked before every run" (the morning
+  of 2026-10-11, L68) with `/recommend` as a suggestion;
+- the implementer and reviewer chains, `choose.mjs`, the Claude fallbacks, `--hard`, `--sol` and
+  `--second-opinion`; the afternoon of 2026-10-11's "nobody is asked" (the two questions came back
+  on 2026-10-12, with the switchable roster);
+- the exclusions by name (never Haiku, Gemini, Kimi, Grok; GLM only via Z.AI; Luna only direct),
+  which `review.mjs --reviewer` no longer enforces: DeepSeek is the one blacklist.
+
 ## Keeping this page current
 
 The main session updates this page in the same commit as any of these:
-- the owner switches a model;
+- the owner switches the default reviewer;
 - a `harness.json` entry is added or removed;
 - a run teaches a new adjustment;
 - a trial changes what a model is known to do well or badly.

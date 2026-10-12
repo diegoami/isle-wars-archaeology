@@ -1,0 +1,89 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0006",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 027.mp4",
+      "bytes": 87585120,
+      "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "asset": "aa8ed8c4f9b84d40-IP1 027.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "human-attack01-start-5-v-2.png",
+      "bytes": 2196283,
+      "sha256": "e9d81cb93bd3cd58b5dcd562bb7589895a36a02ff1d39dca281987f5947ae174",
+      "asset": "e9d81cb93bd3cd58-human-attack01-start-5-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack01-ended-quit-highlight-3-v-2.png",
+      "bytes": 2197041,
+      "sha256": "d52cd60503ccb8bdf0e5088fccdb9d318075fb7bee49ca1e90d05299f430eff7",
+      "asset": "d52cd60503ccb8bd-human-attack01-ended-quit-highlight-3-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-attack04-map-before-5-v-2.png",
+      "bytes": 2095065,
+      "sha256": "696a6c5f216982313f659f305c7232beb2572f04769f9f3c4c40cca2d1600bd8",
+      "asset": "696a6c5f21698231-computer-attack04-map-before-5-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-attack04-first-strip-4-v-2.png",
+      "bytes": 2104430,
+      "sha256": "885de1dbadee9c0c79700d78d3d35046f4afcfb65ac37385f05fecd8781c49c0",
+      "asset": "885de1dbadee9c0c-computer-attack04-first-strip-4-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-attack11-stop-3-v-1.png",
+      "bytes": 2097063,
+      "sha256": "ced454e12f9c2d3886a4ccf05571f174aaba233707dd4665d671350fe24fc366",
+      "asset": "ced454e12f9c2d38-computer-attack11-stop-3-v-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack23-start-6-v-2.png",
+      "bytes": 2194615,
+      "sha256": "314aae0bac35217bd6537b88c66c6c7146ede8f5fc8cf4c5798dec1493bd9d2c",
+      "asset": "314aae0bac35217b-human-attack23-start-6-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-attack52-12-v-3.png",
+      "bytes": 2100353,
+      "sha256": "680530603f62923a4ccf18f3dcd0fa3ddc8d8ba640f2c8d63c94e96781151d38",
+      "asset": "680530603f62923a-computer-attack52-12-v-3.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack58-start-3-v-1.png",
+      "bytes": 2200022,
+      "sha256": "c1f7a3c3a6c304150a576a3e9f992953163931fdfa04c29bfc475fcf6b630066",
+      "asset": "c1f7a3c3a6c30415-human-attack58-start-3-v-1.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack69-quit-2-v-2.png",
+      "bytes": 2204310,
+      "sha256": "1adf8008c7f2d522a8bd234a6ad8db100b6ed31bc1c674688528666b1e9ba439",
+      "asset": "1adf8008c7f2d522-human-attack69-quit-2-v-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "human-attack15-move-in-counter-3.png",
+      "bytes": 2193357,
+      "sha256": "fa747817da749121338feb46391db86265cec938546e6d32eed520c144e65609",
+      "asset": "fa747817da749121-human-attack15-move-in-counter-3.png",
+      "class": "screenshot"
+    }
+  ]
+}

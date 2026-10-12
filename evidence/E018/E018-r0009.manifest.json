@@ -1,0 +1,26 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0009",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 027.mp4",
+      "bytes": 87585120,
+      "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "asset": "aa8ed8c4f9b84d40-IP1 027.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "event-message-between-turns-15-and-16.png",
+      "bytes": 2109861,
+      "sha256": "f78c9f0a1d9c06d2757799ba84250b0b317a712bde54d06af9291385bf0526f7",
+      "asset": "f78c9f0a1d9c06d2-event-message-between-turns-15-and-16.png",
+      "class": "screenshot"
+    }
+  ]
+}

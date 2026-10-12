@@ -1,0 +1,61 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0013",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 028.mp4",
+      "bytes": 134194220,
+      "sha256": "964272f436c11b76089c4fde0f37bec0342d73dbc3b7f085b137e9df6ee13723",
+      "asset": "964272f436c11b76-IP1 028.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "event-production-centres-moved.png",
+      "bytes": 2107357,
+      "sha256": "28ca83fc2ffa3eb737bc0be6613de78cfc5c70509db3f648641ffc5603116ddc",
+      "asset": "28ca83fc2ffa3eb7-event-production-centres-moved.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "concession-offer.png",
+      "bytes": 1817258,
+      "sha256": "577c01656cf59d733c3d7ed917638f5f6d7c1979ca40acfc64a7b69321a9be25",
+      "asset": "577c01656cf59d73-concession-offer.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "accept-pressed.png",
+      "bytes": 1813486,
+      "sha256": "3c81f31b6e109363c164b2bec5efa8ec52f2d2260b55baf0c95633923feeb73b",
+      "asset": "3c81f31b6e109363-accept-pressed.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "winner-dialog.png",
+      "bytes": 1798280,
+      "sha256": "68c5abbdc4aa7396a9452e14d4da84b733164363bc7ba946d9bf60123470bb3d",
+      "asset": "68c5abbdc4aa7396-winner-dialog.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scoreboard-after-win.png",
+      "bytes": 1481632,
+      "sha256": "248403858c35e7eac8ef1d6d2f065c99ade334d40362bde7d7a22ce3a8538ad5",
+      "asset": "248403858c35e7ea-scoreboard-after-win.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "title-after-game.png",
+      "bytes": 1512272,
+      "sha256": "0d09ba458f7e6d71df52567837b1ff97af17548d59a5d5e4825e7d9c468e0267",
+      "asset": "0d09ba458f7e6d71-title-after-game.png",
+      "class": "screenshot"
+    }
+  ]
+}

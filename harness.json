@@ -1,152 +1,108 @@
 {
-  "modelChoice": "The user's choice (CLAUDE.md rule 6, the owner, 2026-10-11): implement.mjs and review.mjs require --model / --reviewer, and no longer read implementer.chain, reviewer.chain, reviewer.hard, reviewer.sol, reviewer.secondOpinion, claudeFallback or the chooser block. Those keys are kept as history.",
+  "rules": "The roster is the owner's to change (CLAUDE.md rule 6, the owner, 2026-10-11), through switch-model.mjs and the /switch-model skill: implementer.default is a Claude Code alias or a model id the session's provider serves, on which the implementer subagent is spawned inside Claude Code (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or `session`: the main session implements directly where the provider cannot spawn one; either runs through the session's Anthropic environment, so its family is the session's (ANTHROPIC_BASE_URL, or HARNESS_SESSION_FAMILY). reviewer.default is the OpenCode model that reviews unless the user names another (review.mjs --reviewer). The main session asks the user before each implementation and each review, proposing these defaults. blocked lists families or id fragments that never run. Never the session's family as reviewer; no chains, no chooser, no quota check.",
   "worktreeRoot": "../{repo}-work",
-  "jail": {
-    "enabled": false,
-    "watch": "Off, the owner 2026-10-05: HARNESS_BWRAP's path is missing on this machine (#98 made it opt-in)."
+  "implementer": {
+    "default": "sonnet",
+    "agent": "implementer",
+    "choices": [
+      "sonnet",
+      "opus",
+      "haiku",
+      "fable",
+      "<any model id the session's provider serves>",
+      "session"
+    ]
   },
+  "reviewer": {
+    "agent": "reviewer",
+    "default": "luna",
+    "startupTimeoutSec": 180,
+    "idleTimeoutSec": 600,
+    "totalTimeoutSec": 3600
+  },
+  "blocked": [
+    "deepseek"
+  ],
   "models": {
     "mimo-flash": {
       "id": "opencode-go/mimo-v2.6-flash",
       "family": "mimo",
-      "watch": "MiMo (Xiaomi) on OpenCode Go, its own family for the reviewer-family rule. The owner's switch, 2026-10-09: replaces DeepSeek on Go (DeepSeek is blacklisted on every route); the owner tested it on implement, fix and review tasks, all passed. Probed 2026-10-09: PONG in 9 s. OpenCode offers no effort variant. Quota: /quota/opencode_go."
+      "note": "MiMo v2.6 Flash on OpenCode Go, no variant (it offers none); its own family (mimo). Login: XDG_DATA_HOME=<scripts data dir> opencode console login."
     },
     "mimo-pro": {
       "id": "opencode-go/mimo-v2.6-pro",
       "family": "mimo",
-      "watch": "MiMo (Xiaomi) on OpenCode Go, its own family for the reviewer-family rule. The owner's switch, 2026-10-09: replaces DeepSeek on Go (DeepSeek is blacklisted on every route); the owner tested it on implement, fix and review tasks, all passed. Probed 2026-10-09: PONG in 11 s. OpenCode offers no effort variant. Quota: /quota/opencode_go."
+      "note": "MiMo v2.6 Pro on OpenCode Go, heavy, no variant; its own family (mimo)."
     },
     "zai-glm-5.3": {
       "id": "zai-coding-plan/glm-5.3",
+      "family": "glm",
       "variant": "low",
-      "family": "glm"
+      "note": "GLM-5.3 on the Z.AI coding plan at low (it offers no medium): a credible heavy reviewer when OpenAI is out (T08 round 2). 3x in weekday peak from 8 Oct 2026."
     },
     "zai-glm-5.3-flash": {
       "id": "zai-coding-plan/glm-5.3-flash",
+      "family": "glm",
       "variant": "high",
-      "family": "glm"
+      "note": "GLM-5.3 Flash on the Z.AI coding plan: a light reviewer for small PRs."
     },
     "luna": {
       "id": "openai/gpt-5.6-luna",
+      "family": "openai",
       "variant": "high",
-      "family": "openai"
+      "note": "GPT-5.6 Luna on the direct OpenAI route, the default reviewer: fast, proves findings by mutation (docs/models.md). Never a Luna on OpenCode Go (400 Bad Request in long loops, L27)."
     },
     "luna-6": {
       "id": "openai/gpt-6-luna",
-      "variant": "high",
       "family": "openai",
-      "watch": "GPT-6 Luna draws on OpenAI's main pool with Sol: kept registered, outside every chain, never the reviewer (L51)."
+      "variant": "high",
+      "note": "GPT-6 Luna: registered only; it shares OpenAI's pool with Sol (L51)."
     },
     "gpt-6-sol": {
       "id": "openai/gpt-6-sol",
+      "family": "openai",
       "variant": "low",
-      "family": "openai"
+      "note": "GPT-6 Sol, the hard reviewer before 6.1; kept for an explicit --reviewer."
     },
     "gpt-6.1-sol": {
       "id": "openai/gpt-6.1-sol",
+      "family": "openai",
       "variant": "low",
-      "family": "openai"
-    },
-    "alibaba-qwen-max": {
-      "id": "alibaba-token-plan/qwen3.8-max",
-      "variant": "medium",
-      "family": "qwen",
-      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
-    },
-    "alibaba-qwen-flash": {
-      "id": "alibaba-token-plan/qwen3.8-flash",
-      "variant": "high",
-      "family": "qwen",
-      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
-    },
-    "alibaba-glm-5.3": {
-      "id": "alibaba-token-plan/glm-5.3",
-      "variant": "low",
-      "family": "glm",
-      "watch": "Alibaba Token Plan (one monthly pool). Its key is the env var ALIBABA_TOKEN_PLAN_API_KEY (in WSL from ~/.config/ai-keys.env, loaded by ~/.bashrc and ~/.profile). 'Provider not found' means the variable is missing: restart the session or shell, then tell the owner. Never opencode auth login it."
+      "note": "GPT-6.1 Sol at effort low: the adversarial reviewer for a guard, a gate or a hard research task; medium only when the task file says why, never high (the owner, 2026-10-03)."
     },
     "mm-m3": {
       "id": "minimax/MiniMax-M3",
-      "variant": "thinking",
       "family": "minimax",
-      "watch": "MiniMax (new family, 2026-10-06): an independent reviewer family for work by GLM, DeepSeek, Qwen, OpenAI or Claude models. Quota: 5h + weekly windows (/quota/minimax). Key: the env var MINIMAX_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6 s). Variants offered (live): none (thinking disabled), thinking (adaptive). Heavy. Placed (the owner, 2026-10-06): the L38 heavy escalation rung before Opus, and the alternate for the Sol seat when openai is exhausted - both by explicit --model, never a chain member."
+      "variant": "thinking",
+      "note": "MiniMax-M3, variant thinking (it offers only none and thinking), heavy; a family of its own. Key: the env var MINIMAX_API_KEY (WSL: ~/.config/ai-keys.env); never opencode auth login it."
     },
     "mm-m2.7": {
       "id": "minimax/MiniMax-M2.7",
       "family": "minimax",
-      "watch": "MiniMax (new family, 2026-10-06): an independent reviewer family for work by GLM, DeepSeek, Qwen, OpenAI or Claude models. Quota: 5h + weekly windows (/quota/minimax). Key: the env var MINIMAX_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6 s). Variants offered (live): none - registered without a variant, so no --variant flag is passed. Light. Placed (the owner, 2026-10-06): implementer chain, second after the light default."
+      "note": "MiniMax-M2.7, light, no variant (it offers none). Key as mm-m3."
     },
     "ali-qwen-max": {
       "id": "alibaba-token-plan/qwen3.8-max",
-      "variant": "low",
       "family": "qwen",
-      "watch": "Alibaba Token Plan, one monthly pool shared by all its models (/quota/alibaba; resets monthly). Night discount 22:00-08:00 UTC+8 (pricing.discount_now): qwen3.8 60% off, deepseek-v4-pro-0813 and v4.1-flash 50% off, glm-5.3 none - prefer long ali runs while discount_now is true. Key: the env var ALIBABA_TOKEN_PLAN_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it: restart or source, then tell the owner). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6-8 s). Variants offered (live): low, medium, xhigh (low registered, per the heavy-model effort rule). Same id as alibaba-qwen-max (medium, 2026-10-05). Heavy. Placed (the owner, 2026-10-06): reviewer.hard, third seat - a family with no implementer anywhere in this repo."
+      "variant": "low",
+      "note": "Qwen 3.8 Max on the Alibaba Token Plan at low; heavy; a family nothing else here shares. Alibaba only when the user asks (--alibaba). Key: the env var ALIBABA_TOKEN_PLAN_API_KEY; never opencode auth login it (a stale auth.json entry overrides the variable)."
     },
     "ali-qwen-flash": {
       "id": "alibaba-token-plan/qwen3.8-flash",
-      "variant": "medium",
       "family": "qwen",
-      "watch": "Alibaba Token Plan, one monthly pool shared by all its models (/quota/alibaba; resets monthly). Night discount 22:00-08:00 UTC+8 (pricing.discount_now): qwen3.8 60% off, deepseek-v4-pro-0813 and v4.1-flash 50% off, glm-5.3 none - prefer long ali runs while discount_now is true. Key: the env var ALIBABA_TOKEN_PLAN_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it: restart or source, then tell the owner). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6-8 s). Variants offered (live): low, medium, xhigh (medium registered). Same id as alibaba-qwen-flash (high, 2026-10-05). Light. Placed (the owner, 2026-10-06): implementer chain, third."
+      "variant": "medium",
+      "note": "Qwen 3.8 Flash on the Alibaba Token Plan at medium (it offers low, medium, xhigh); light. Alibaba only when the user asks (--alibaba); key as ali-qwen-max."
     },
     "ali-glm": {
       "id": "alibaba-token-plan/glm-5.3",
-      "variant": "low",
       "family": "glm",
-      "watch": "Alibaba Token Plan, one monthly pool shared by all its models (/quota/alibaba; resets monthly). Night discount 22:00-08:00 UTC+8 (pricing.discount_now): qwen3.8 60% off, deepseek-v4-pro-0813 and v4.1-flash 50% off, glm-5.3 none - prefer long ali runs while discount_now is true. Key: the env var ALIBABA_TOKEN_PLAN_API_KEY (WSL: ~/.config/ai-keys.env via ~/.bashrc and ~/.profile; 'Provider not found' means the shell lacks it: restart or source, then tell the owner). Never opencode auth login it. Probed 2026-10-06 ~19:30 CEST (one-word probe, answered in 6-8 s). Variants offered (live): low, high, max (low registered, its medium-equivalent per the effort rule). Same id and variant as alibaba-glm-5.3 (2026-10-05): either name reaches it. Heavy. Placed (the owner, 2026-10-06): reviewer.hard, second seat - zai 3x-peak relief from 8 Oct 2026."
+      "variant": "low",
+      "note": "GLM-5.3 on the Alibaba Token Plan at low: the same model as zai-glm-5.3 on another route. Alibaba only when the user asks (--alibaba); key as ali-qwen-max."
     }
   },
-  "implementer": {
-    "agent": "implementer",
-    "chain": [
-      "zai-glm-5.3-flash",
-      "mm-m2.7",
-      "ali-qwen-flash"
-    ],
-    "claudeFallback": "sonnet",
-    "startupTimeoutSec": 180,
-    "idleTimeoutSec": 900,
-    "totalTimeoutSec": 10800
-  },
-  "reviewer": {
-    "agent": "reviewer",
-    "chain": [
-      "luna"
-    ],
-    "claudeFallback": "sonnet",
-    "startupTimeoutSec": 180,
-    "idleTimeoutSec": 600,
-    "totalTimeoutSec": 3600,
-    "hard": [
-      "zai-glm-5.3",
-      "ali-glm",
-      "ali-qwen-max",
-      "mimo-pro",
-      "luna"
-    ],
-    "sol": "gpt-6.1-sol"
-  },
-  "chooser": {
-    "watch": "Rule 6's pairs (the owner, 2026-10-03; MiMo for DeepSeek, 2026-10-09), best first; choose.mjs drops the implementer's family and any provider out of quota. No Alibaba model (the owner: only when asked).",
-    "implementer": {
-      "easy": [
-        "zai-glm-5.3-flash",
-        "mimo-flash"
-      ],
-      "hard": [
-        "mimo-flash",
-        "zai-glm-5.3-flash"
-      ]
-    },
-    "reviewer": {
-      "easy": [
-        "luna"
-      ],
-      "hard": [
-        "gpt-6.1-sol",
-        "zai-glm-5.3",
-        "luna"
-      ]
-    }
+  "jail": {
+    "enabled": false,
+    "note": "Off, the owner 2026-10-05: HARNESS_BWRAP's path is missing on this machine (#98 made it opt-in)."
   },
   "jev": {
     "model": "jev-1.13",
