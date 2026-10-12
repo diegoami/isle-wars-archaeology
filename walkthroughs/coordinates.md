@@ -27,6 +27,28 @@ Source: `experiments/E002-iwp-state-inventory/scripts/tour.steps`.
 | PASS (end turn) | 417, 530 | |
 | CONTINUE (after card awarded) | 402, 531 (`click-any?`) | |
 
+## Move and turn controls (owner videos)
+
+Source: owner videos IP1 028 and IP1 029 (E018, PRs #187 and #188), confirmed within a pixel across the two.
+Stage coordinates, as above. The button names are our own labels.
+
+| Action | Stage x, y | Comment |
+| --- | --- | --- |
+| ATTACK | 305, 530 | turn button |
+| PASS | 419, 530 | turn button |
+| CARD | 468, 531 | turn button |
+| MOVE | 369, 530 | starts a move |
+| CANCEL | 514, 528 | abandons a move |
+| move counter, ALL | 309, 539 | |
+| move counter, + | 373, 539 | |
+| move counter, - | 420, 539 | |
+| move counter, DONE | 495, 539 | commits the move |
+
+A move is: MOVE, click the source country, click the destination, set the count with ALL, + or - (the counter
+starts at 1), then DONE. CANCEL abandons it. These are positions seen in the owner's play, not the
+model-driven sitting's: the E002 rows above (ATTACK 337, 531; PASS 417, 530; the placement panel's ALL,
+PLUS, MINUS and PLACE at y 543) differ from them by a few pixels or more and are left as they are.
+
 ## The elimination notice (T38 round 4)
 
 Source: the frames of the model-driven sitting 20261008T184505Z (batch 1), measured by pixel colour:
