@@ -1,0 +1,75 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0008",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 027.mp4",
+      "bytes": 87585120,
+      "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "asset": "aa8ed8c4f9b84d40-IP1 027.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "options-screen.png",
+      "bytes": 1065057,
+      "sha256": "a6c288f0d4b2c19ae176c444dfb9cd42165cd4ff85c81af522c808a905e2e141",
+      "asset": "a6c288f0d4b2c19a-options-screen.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "placement-window1-counter-2.png",
+      "bytes": 2173938,
+      "sha256": "538eff24a54f259998bb505645479f4e63f03c4578a7ec154756b46196114084",
+      "asset": "538eff24a54f2599-placement-window1-counter-2.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "blue-first-placement-message.png",
+      "bytes": 2162861,
+      "sha256": "f7e6dabd798c8df8c5aa6723020545e0d99e047607dff017c3c3268e502a263e",
+      "asset": "f7e6dabd798c8df8-blue-first-placement-message.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-move-22-to-23.png",
+      "bytes": 2108239,
+      "sha256": "e38ecc3d0a50f70c89b39a585986383fb63c187c4a7d2003ee383420016e447a",
+      "asset": "e38ecc3d0a50f70c-computer-move-22-to-23.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "elimination-prompt.png",
+      "bytes": 1879969,
+      "sha256": "3743c7099d1c44f8c07f7d8daa8c7d2185136b3dc3833b7f8a4914149b326274",
+      "asset": "3743c7099d1c44f8-elimination-prompt.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "prompt-closed-play-out-running.png",
+      "bytes": 2131759,
+      "sha256": "f6425bd2547d91a02fadea9c25cf4fad709fef6b2694cf9aa9961b431b4d5857",
+      "asset": "f6425bd2547d91a0-prompt-closed-play-out-running.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "winner-dialog.png",
+      "bytes": 1858658,
+      "sha256": "138ce1da46a091c2971df38fea36f9f70a743e84e2dceef40dfcf46d52449efe",
+      "asset": "138ce1da46a091c2-winner-dialog.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "scoreboard.png",
+      "bytes": 1483445,
+      "sha256": "ad5abeae0f50c1de2a53050015065b7b5020f5266d4eec395252e29c4ad9afcc",
+      "asset": "ad5abeae0f50c1de-scoreboard.png",
+      "class": "screenshot"
+    }
+  ]
+}

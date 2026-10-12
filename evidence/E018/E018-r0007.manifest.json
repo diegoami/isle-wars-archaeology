@@ -1,0 +1,47 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E018-r0007",
+  "experiment": "E018",
+  "store": "release:E018",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "files": [
+    {
+      "name": "IP1 027.mp4",
+      "bytes": 87585120,
+      "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "asset": "aa8ed8c4f9b84d40-IP1 027.mp4",
+      "class": "recording"
+    },
+    {
+      "name": "card-screen-empty-hand.png",
+      "bytes": 2106424,
+      "sha256": "a107c8efe784887b4e3cf374c38ba1f165f7d379b5933d4eb7d7b94f114fa883",
+      "asset": "a107c8efe784887b-card-screen-empty-hand.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "card-draw-lose-all-hand-emptied.png",
+      "bytes": 2123568,
+      "sha256": "35bca37a60cb47df2929ee49f0f0493224ceb8d731111a08ddcb9270993a96dd",
+      "asset": "35bca37a60cb47df-card-draw-lose-all-hand-emptied.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-trade-in-bomb-match.png",
+      "bytes": 2115106,
+      "sha256": "247eb105b81e4c95058c91cfaba819394a906f3cbbc17f58dc93d4aeae3adf7a",
+      "asset": "247eb105b81e4c95-computer-trade-in-bomb-match.png",
+      "class": "screenshot"
+    },
+    {
+      "name": "computer-bomb-anti-notice.png",
+      "bytes": 2111680,
+      "sha256": "79894bd1c8a94d3aaaab1d8df578f6bb7ba9780fb129494b4adcb35c6ea4c2c9",
+      "asset": "79894bd1c8a94d3a-computer-bomb-anti-notice.png",
+      "class": "screenshot"
+    }
+  ]
+}

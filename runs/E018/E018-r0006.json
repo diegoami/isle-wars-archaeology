@@ -1,0 +1,711 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0006",
+  "experiment": "E018",
+  "arm": "video-only-bandicam-long",
+  "rep": 1,
+  "code_commit": "e805305",
+  "machine": "owner-windows-bandicam",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "walkthroughs/video-walkthrough.md@e805305",
+    "platform": "windows-native-bandicam",
+    "fingerprint": {
+      "bandicam": "8.3.0.2533 GDI Nvidia NVENC (encoder tag of the file)",
+      "container": "MP4 H.264 plus AAC",
+      "fps": "variable, 30 nominal; 12978 video frames in 662.50 s",
+      "audio": "48 kHz stereo",
+      "ffmpeg": "8.0.1 (the playbook names 6.1.1)"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "Bandicam window capture of the Isle Wars Pro game window; the owner played one game from the options screen to the end screen (11:02 recording). The video file is the only output. No scripted clicks. Counters, seats and screens were read from pixels by region comparison and template matching of glyph shapes, with no OCR pass."
+    }
+  ],
+  "start_state": {
+    "id": "iwp-fresh-game",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "restore": "Owner launched a new game on the unregistered Pro build from the options screen (seat 1 human, three computer seats, middle strength). Pro has no save file (C-SET-05), so no state was restored. The recording starts on the title screen; the opening deal is the first board."
+  },
+  "seed": null,
+  "actions": {
+    "script": "owner-play",
+    "sha256": "aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+    "args": [
+      "video file name: IP1 027.mp4",
+      "video sha256: aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d",
+      "probe: 662.50 s, 12978 video frames, variable frame rate (nominal 30), 1920x1080 H.264, AAC 48 kHz stereo, 87585120 bytes",
+      "ffmpeg 8.0.1; the panel regions were read frame by frame from the container timestamps; offsets are mm:ss.mmm video offsets",
+      "record content: the 87 attacks of the game (13 human, 74 computer; the last is inside the play-out and not resolved) with their start counters, strip states, endings and capture splits"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "file",
+      "field": "video container probe",
+      "value": "duration 662.500 s; 12978 video frames; frame timestamps irregular (largest gap 0.167 s); 1920x1080 H.264; AAC 48 kHz stereo; 87585120 bytes; creation tag 2026-10-11T17:55:47Z; sha256 aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d"
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "reading method",
+      "value": "the two-line counter strip (bottom right, the attacker's armies and the defender's armies) was read at every frame where it changed, by matching glyph shapes of the digits (no OCR); the two country counters on the map were read before and after each attack by matching the large digits at the 46 country anchors; the owner of a country was read from its colour at the anchor (a selection or capture flash changes the colour for about 0.4 s, so owners right after a capture were not trusted and the counts decide). A capture is the country changing hands with the two counters adding up to the attacker armies at the capture; the last exchange of a capture is inferred (defender 1 to 0)."
+    },
+    {
+      "step": 0,
+      "source": "screen",
+      "field": "what the strip shows first (a correction to how attack starts are read)",
+      "value": "For the human, the strip first shows the counters before any exchange (the map counters just before agree in all 13 cases). For the computer, in 46 of 73 attacks the map counters just before the strip appears are one exchange ahead of the strip's first state (the strip first appears after the first exchange): the start is taken from the map counters just before the strip (the \"before\" column), not from the strip's first state. Attacks whose before-counters were unreadable or unstable (30, 50, 71, 76, 86, 87) use the strip's first state and are marked."
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "attack 1 (Blue seat, human, turn 1): country 39 attacks country 38; strip visible from 00:43.667 to 00:47.533",
+      "value": "before 5/2 (map counters at 00:42.767); first strip state 5/2; strip states (attacker/defender) 5/2 4/2 3/2; ended by the owner with no capture at 3/2 (the quit button; its highlight is visible at 00:47.400); owners unchanged"
+    },
+    {
+      "step": 2,
+      "source": "screen",
+      "field": "attack 2 (Blue seat, human, turn 1): country 42 attacks country 41; strip visible from 00:50.667 to 00:53.267",
+      "value": "before 4/2 (map counters at 00:49.767); first strip state 4/2; strip states (attacker/defender) 4/2 3/2; ended by the owner with no capture at 3/2 (the quit button); owners unchanged"
+    },
+    {
+      "step": 3,
+      "source": "screen",
+      "field": "attack 3 (Yellow seat, computer, turn 2): country 14 attacks country 46; strip visible from 01:03.800 to 01:04.300",
+      "value": "before 6/1 (map counters at 01:03.400); first strip state 5/1; strip states (attacker/defender) 5/1 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 3, captured country gets 1 (the capture flash hides the country colour)"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "attack 4 (Red seat, computer, turn 3): country 30 attacks country 31; strip visible from 01:09.700 to 01:10.000",
+      "value": "before 5/2 (map counters at 01:08.800); first strip state 4/2; strip states (attacker/defender) 4/2 3/2; stop without capture at 3/2; owners unchanged"
+    },
+    {
+      "step": 5,
+      "source": "screen",
+      "field": "attack 5 (Green seat, computer, turn 4): country 34 attacks country 32; strip visible from 01:15.567 to 01:16.100",
+      "value": "before 6/3 (map counters at 01:14.667); first strip state 5/3; strip states (attacker/defender) 5/3 4/3 3/3; stop without capture at 3/3; owners unchanged"
+    },
+    {
+      "step": 6,
+      "source": "screen",
+      "field": "attack 6 (Green seat, computer, turn 4): country 19 attacks country 22; strip visible from 01:16.600 to 01:16.767",
+      "value": "before 3/1 (map counters at 01:16.350); first strip state 3/1; strip states (attacker/defender) 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 7,
+      "source": "screen",
+      "field": "attack 7 (Green seat, computer, turn 4): country 35 attacks country 36; strip visible from 01:18.167 to 01:18.467",
+      "value": "before 5/2 (map counters at 01:17.267); first strip state 4/2; strip states (attacker/defender) 4/2 3/2; stop without capture at 3/2; owners unchanged"
+    },
+    {
+      "step": 8,
+      "source": "screen",
+      "field": "attack 8 (Blue seat, human, turn 5): country 39 attacks country 37; strip visible from 01:35.667 to 01:38.533",
+      "value": "before 5/2 (map counters at 01:34.767); first strip state 5/2; strip states (attacker/defender) 5/2 4/2 3/2; ended by the owner with no capture at 3/2 (the quit button); owners unchanged"
+    },
+    {
+      "step": 9,
+      "source": "screen",
+      "field": "attack 9 (Yellow seat, computer, turn 6): country 18 attacks country 19; strip visible from 01:46.533 to 01:47.100",
+      "value": "before 5/2 (map counters at 01:45.633); first strip state 5/1; strip states (attacker/defender) 5/1 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 10,
+      "source": "screen",
+      "field": "attack 10 (Yellow seat, computer, turn 6): country 21 attacks country 23; strip visible from 01:48.600 to 01:48.900",
+      "value": "before 5/3 (map counters at 01:47.700); first strip state 4/3; strip states (attacker/defender) 4/3 3/3; stop without capture at 3/3; owners unchanged"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "attack 11 (Red seat, computer, turn 7): country 30 attacks country 31; strip visible from 01:53.200 to 01:53.267",
+      "value": "before 3/2 (map counters at 01:52.300); first strip state 3/1; strip states (attacker/defender) 3/1; stop without capture at 3/1; owners unchanged"
+    },
+    {
+      "step": 12,
+      "source": "screen",
+      "field": "attack 12 (Red seat, computer, turn 7): country 30 attacks country 29; strip visible from 01:53.833 to 01:53.900",
+      "value": "before 3/1 (map counters at 01:53.583); first strip state 2/1; strip states (attacker/defender) 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 13,
+      "source": "screen",
+      "field": "attack 13 (Red seat, computer, turn 7): country 33 attacks country 38; strip visible from 01:54.500 to 01:54.600",
+      "value": "before 4/2 (map counters at 01:54.250); first strip state 3/2; strip states (attacker/defender) 3/2; stop without capture at 3/2; owners unchanged"
+    },
+    {
+      "step": 14,
+      "source": "screen",
+      "field": "attack 14 (Green seat, computer, turn 8): country 35 attacks country 36; strip visible from 01:59.600 to 02:00.100",
+      "value": "before 8/2 (map counters at 01:58.700); first strip state 8/1; strip states (attacker/defender) 8/1 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 4, captured country gets 3"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "attack 15 (Blue seat, human, turn 9): country 39 attacks country 37; strip visible from 02:13.300 to 02:22.033",
+      "value": "before 5/2 (map counters at 02:12.400); first strip state 5/2; strip states (attacker/defender) 5/2 4/2 4/1; capture: attacker armies at the capture 4; the move-in counter read 1 2 3 2 (changes at 02:19.433, 02:19.800, 02:21.500), done with 2 moved in; attacker country keeps 2, captured country gets 2"
+    },
+    {
+      "step": 16,
+      "source": "screen",
+      "field": "attack 16 (Yellow seat, computer, turn 10): country 19 attacks country 20; strip visible from 02:34.967 to 02:35.367",
+      "value": "before 5/1 (map counters at 02:34.067); first strip state 4/1; strip states (attacker/defender) 4/1 3/1 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 17,
+      "source": "screen",
+      "field": "attack 17 (Yellow seat, computer, turn 10): country 17 attacks country 20; strip visible from 02:35.933 to 02:36.067",
+      "value": "before 3/1 (map counters at 02:35.683); first strip state 2/1; strip states (attacker/defender) 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 18,
+      "source": "screen",
+      "field": "attack 18 (Yellow seat, computer, turn 10): country 21 attacks country 22; strip visible from 02:36.567 to 02:36.667",
+      "value": "before 3/1 (map counters at 02:36.317); first strip state 3/1; strip states (attacker/defender) 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 19,
+      "source": "screen",
+      "field": "attack 19 (Red seat, computer, turn 11): country 30 attacks country 32; strip visible from 02:41.933 to 02:42.367",
+      "value": "before 5/3 (map counters at 02:41.033); first strip state 5/3; strip states (attacker/defender) 5/3 4/3 3/3 3/2; stop without capture at 3/2; owners unchanged"
+    },
+    {
+      "step": 20,
+      "source": "screen",
+      "field": "attack 20 (Red seat, computer, turn 11): country 30 attacks country 31; strip visible from 02:42.867 to 02:43.033",
+      "value": "before 3/1 (map counters at 02:42.617); first strip state 3/1; strip states (attacker/defender) 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 21,
+      "source": "screen",
+      "field": "attack 21 (Green seat, computer, turn 12): country 26 attacks country 24; strip visible from 02:48.767 to 02:49.400",
+      "value": "before 7/2 (map counters at 02:47.867); first strip state 7/1; strip states (attacker/defender) 7/1 6/1 5/1; capture: attacker armies at the capture 5; computer split: attacker country keeps 3, captured country gets 2"
+    },
+    {
+      "step": 22,
+      "source": "screen",
+      "field": "attack 22 (Green seat, computer, turn 12): country 34 attacks country 32; strip visible from 02:51.067 to 02:51.733",
+      "value": "before 6/2 (map counters at 02:50.167); first strip state 5/2; strip states (attacker/defender) 5/2 4/2 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 23,
+      "source": "screen",
+      "field": "attack 23 (Blue seat, human, turn 13): country 42 attacks country 40; strip visible from 03:26.367 to 03:31.967",
+      "value": "before 6/2 (map counters at 03:25.467); first strip state 6/2; strip states (attacker/defender) 6/2 5/2 5/1 4/1; capture: attacker armies at the capture 4; the move-in counter read 1 2 (changes at 03:31.067), done with 2 moved in; attacker country keeps 2, captured country gets 2"
+    },
+    {
+      "step": 24,
+      "source": "screen",
+      "field": "attack 24 (Yellow seat, computer, turn 14): country 22 attacks country 23; strip visible from 03:44.067 to 03:44.400",
+      "value": "before 4/3 (map counters at 03:43.167); first strip state 3/3; strip states (attacker/defender) 3/3 2/3; stop without capture at 2/3; owners unchanged"
+    },
+    {
+      "step": 25,
+      "source": "screen",
+      "field": "attack 25 (Red seat, computer, turn 15): country 30 attacks country 29; strip visible from 03:48.667 to 03:49.100",
+      "value": "before 5/1 (map counters at 03:47.767); first strip state 5/1; strip states (attacker/defender) 5/1 4/1 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 1, captured country gets 2"
+    },
+    {
+      "step": 26,
+      "source": "screen",
+      "field": "attack 26 (Green seat, computer, turn 16): country 26 attacks country 25; strip visible from 04:04.533 to 04:05.000",
+      "value": "before 14/2 (map counters at 04:03.633); first strip state 14/1; strip states (attacker/defender) 14/1 13/1; capture: attacker armies at the capture 13; computer split: attacker country keeps 12, captured country gets 1"
+    },
+    {
+      "step": 27,
+      "source": "screen",
+      "field": "attack 27 (Blue seat, human, turn 17): country 42 attacks country 41; strip visible from 04:19.433 to 04:22.133",
+      "value": "before 5/2 (map counters at 04:18.533); first strip state 5/2; strip states (attacker/defender) 5/2 4/2 3/2; ended by the owner with no capture at 3/2 (the quit button); owners unchanged"
+    },
+    {
+      "step": 28,
+      "source": "screen",
+      "field": "attack 28 (Yellow seat, computer, turn 18): country 21 attacks country 20; strip visible from 04:28.333 to 04:28.600",
+      "value": "before 4/1 (map counters at 04:27.433); first strip state 4/1; strip states (attacker/defender) 4/1 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 29,
+      "source": "screen",
+      "field": "attack 29 (Red seat, computer, turn 19): country 28 attacks country 27; strip visible from 04:35.600 to 04:35.667",
+      "value": "before 5/1 (map counters at 04:34.700); first strip state 5/1; strip states (attacker/defender) 5/1; capture: attacker armies at the capture 5; computer split: attacker country keeps 1, captured country gets 4"
+    },
+    {
+      "step": 30,
+      "source": "screen",
+      "field": "attack 30 (Green seat, computer, turn 20): country 43 attacks country 42; strip visible from 04:42.167 to 04:42.967",
+      "value": "before not read (start taken from the first strip state 8/3); first strip state 8/3; strip states (attacker/defender) 8/3 8/2 7/2 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 31,
+      "source": "screen",
+      "field": "attack 31 (Green seat, computer, turn 20): country 42 attacks country 39; strip visible from 04:44.467 to 04:44.633",
+      "value": "before 4/2 (map counters at 04:43.567); first strip state 3/2; strip states (attacker/defender) 3/2; stop without capture at 3/2; owners unchanged"
+    },
+    {
+      "step": 32,
+      "source": "screen",
+      "field": "attack 32 (Green seat, computer, turn 20): country 26 attacks country 27; strip visible from 04:45.100 to 04:46.667",
+      "value": "before 12/4 (map counters at 04:44.980); first strip state 11/4; strip states (attacker/defender) 11/4 10/4 10/3 10/2 9/2 9/1 8/1 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 33,
+      "source": "screen",
+      "field": "attack 33 (Blue seat, human, turn 21): country 40 attacks country 41; strip visible from 04:57.733 to 05:00.633",
+      "value": "before 4/2 (map counters at 04:56.833); first strip state 4/2; strip states (attacker/defender) 4/2 3/2; ended by the owner with no capture at 3/2 (the quit button); owners unchanged"
+    },
+    {
+      "step": 34,
+      "source": "screen",
+      "field": "attack 34 (Yellow seat, computer, turn 22): country 20 attacks country 16; strip visible from 05:07.633 to 05:07.733",
+      "value": "before 5/1 (map counters at 05:06.733); first strip state 5/1; strip states (attacker/defender) 5/1; capture: attacker armies at the capture 5; computer split: attacker country keeps 1, captured country gets 4"
+    },
+    {
+      "step": 35,
+      "source": "screen",
+      "field": "attack 35 (Yellow seat, computer, turn 22): country 22 attacks country 23; strip visible from 05:09.300 to 05:09.967",
+      "value": "before 6/3 (map counters at 05:08.400); first strip state 6/2; strip states (attacker/defender) 6/2 5/2 4/2 3/2; stop without capture at 3/2; owners unchanged"
+    },
+    {
+      "step": 36,
+      "source": "screen",
+      "field": "attack 36 (Red seat, computer, turn 23): country 30 attacks country 32; strip visible from 05:14.200 to 05:14.467",
+      "value": "before 4/2 (map counters at 05:13.300); first strip state 4/1; strip states (attacker/defender) 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 37,
+      "source": "screen",
+      "field": "attack 37 (Green seat, computer, turn 24): country 42 attacks country 39; strip visible from 05:21.100 to 05:21.700",
+      "value": "before 8/2 (map counters at 05:20.200); first strip state 8/1; strip states (attacker/defender) 8/1 7/1 6/1; capture: attacker armies at the capture 6; computer split: attacker country keeps 3, captured country gets 3"
+    },
+    {
+      "step": 38,
+      "source": "screen",
+      "field": "attack 38 (Green seat, computer, turn 24): country 41 attacks country 40; strip visible from 05:23.200 to 05:24.233",
+      "value": "before 6/3 (map counters at 05:22.300); first strip state 6/2; strip states (attacker/defender) 6/2 5/2 4/2 4/1 3/1 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 39,
+      "source": "screen",
+      "field": "attack 39 (Blue seat, human, turn 25): country 44 attacks country 46; strip visible from 05:37.733 to 05:41.933",
+      "value": "before 5/1 (map counters at 05:36.833); first strip state 5/1; strip states (attacker/defender) 5/1 4/1 3/1; capture: attacker armies at the capture 3; the move-in counter stayed at 1 and the owner pressed done; attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 40,
+      "source": "screen",
+      "field": "attack 40 (Green seat, computer, turn 28): country 39 attacks country 37; strip visible from 06:02.533 to 06:03.667",
+      "value": "before 8/2 (map counters at 06:01.633); first strip state 8/1; strip states (attacker/defender) 8/1 7/1 6/1 5/1 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 2, captured country gets 2"
+    },
+    {
+      "step": 41,
+      "source": "screen",
+      "field": "attack 41 (Green seat, computer, turn 28): country 24 attacks country 33; strip visible from 06:05.100 to 06:05.800",
+      "value": "before 5/3 (map counters at 06:04.200); first strip state 5/3; strip states (attacker/defender) 5/3 5/2 5/1 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 42,
+      "source": "screen",
+      "field": "attack 42 (Green seat, computer, turn 28): country 34 attacks country 32; strip visible from 06:07.300 to 06:07.967",
+      "value": "before 5/3 (map counters at 06:06.400); first strip state 4/3; strip states (attacker/defender) 4/3 4/2 4/1 3/1; stop without capture at 3/1; owners unchanged"
+    },
+    {
+      "step": 43,
+      "source": "screen",
+      "field": "attack 43 (Blue seat, human, turn 29): country 4 attacks country 6; strip visible from 06:28.767 to 06:32.033",
+      "value": "before 5/2 (map counters at 06:27.867); first strip state 5/2; strip states (attacker/defender) 5/2 4/2 4/1 3/1 2/1; ended by the owner with no capture at 2/1 (the quit button); owners unchanged"
+    },
+    {
+      "step": 44,
+      "source": "screen",
+      "field": "attack 44 (Yellow seat, computer, turn 30): country 16 attacks country 15; strip visible from 06:37.600 to 06:37.933",
+      "value": "before 4/3 (map counters at 06:36.700); first strip state 3/3; strip states (attacker/defender) 3/3 2/3; stop without capture at 2/3; owners unchanged"
+    },
+    {
+      "step": 45,
+      "source": "screen",
+      "field": "attack 45 (Yellow seat, computer, turn 30): country 21 attacks country 23; strip visible from 06:38.367 to 06:38.667",
+      "value": "before 10/2 (map counters at 06:38.247); first strip state 10/1; strip states (attacker/defender) 10/1; capture: attacker armies at the capture 10; computer split: attacker country keeps 3, captured country gets 7"
+    },
+    {
+      "step": 46,
+      "source": "screen",
+      "field": "attack 46 (Yellow seat, computer, turn 30): country 23 attacks country 45; strip visible from 06:40.233 to 06:41.000",
+      "value": "before 7/3 (map counters at 06:39.333); first strip state 7/2; strip states (attacker/defender) 7/2 6/2 5/2 5/1; capture: attacker armies at the capture 5; computer split: attacker country keeps 3, captured country gets 2"
+    },
+    {
+      "step": 47,
+      "source": "screen",
+      "field": "attack 47 (Yellow seat, computer, turn 30): country 14 attacks country 15; strip visible from 06:42.500 to 06:43.033",
+      "value": "before 7/3 (map counters at 06:41.600); first strip state 7/2; strip states (attacker/defender) 7/2 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 3, captured country gets 4 by the total (the capture flash hides the country colour and one counter, which is taken from the other counter and the total)"
+    },
+    {
+      "step": 48,
+      "source": "screen",
+      "field": "attack 48 (Red seat, computer, turn 31): country 28 attacks country 27; strip visible from 06:49.967 to 06:51.800",
+      "value": "before 7/4 (map counters at 06:49.067); first strip state 6/4; strip states (attacker/defender) 6/4 6/3 6/2 5/2 5/1 4/1 3/1 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 49,
+      "source": "screen",
+      "field": "attack 49 (Green seat, computer, turn 32): country 37 attacks country 40; strip visible from 06:57.067 to 06:57.200",
+      "value": "before 10/1 (map counters at 06:56.667); first strip state 10/1; strip states (attacker/defender) 10/1; capture: attacker armies at the capture 10; computer split: attacker country keeps 9 by the total, captured country gets 1 (the capture flash hides the country colour and one counter, which is taken from the other counter and the total)"
+    },
+    {
+      "step": 50,
+      "source": "screen",
+      "field": "attack 50 (Green seat, computer, turn 32): country 37 attacks country 38; strip visible from 06:58.700 to 06:59.333",
+      "value": "before not read (start taken from the first strip state 8/2); first strip state 8/2; strip states (attacker/defender) 8/2 8/1 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 51,
+      "source": "screen",
+      "field": "attack 51 (Blue seat, human, turn 33): country 4 attacks country 6; strip visible from 07:21.133 to 07:24.833",
+      "value": "before 4/1 (map counters at 07:20.233); first strip state 4/1; strip states (attacker/defender) 4/1; capture: attacker armies at the capture 4; the move-in counter stayed at 1 and the owner pressed done; attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 52,
+      "source": "screen",
+      "field": "attack 52 (Yellow seat, computer, turn 34): country 5 attacks country 4; strip visible from 07:38.033 to 07:39.533",
+      "value": "before 13/3 (map counters at 07:37.133); first strip state 12/3; strip states (attacker/defender) 12/3 12/2 12/1 11/1 10/1 9/1 8/1 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 53,
+      "source": "screen",
+      "field": "attack 53 (Yellow seat, computer, turn 34): country 14 attacks country 46; strip visible from 07:41.133 to 07:41.200",
+      "value": "before 6/1 (map counters at 07:40.733); first strip state 6/1; strip states (attacker/defender) 6/1; capture: attacker armies at the capture 6; computer split: attacker country keeps 3, captured country gets 3 (the capture flash hides the country colour)"
+    },
+    {
+      "step": 54,
+      "source": "screen",
+      "field": "attack 54 (Green seat, computer, turn 36): country 10 attacks country 9; strip visible from 07:53.467 to 07:53.533",
+      "value": "before 3/2 (map counters at 07:52.567); first strip state 3/1; strip states (attacker/defender) 3/1; stop without capture at 3/1; owners unchanged"
+    },
+    {
+      "step": 55,
+      "source": "screen",
+      "field": "attack 55 (Green seat, computer, turn 36): country 33 attacks country 31; strip visible from 07:54.000 to 07:54.133",
+      "value": "before 8/1 (map counters at 07:53.880); first strip state 8/1; strip states (attacker/defender) 8/1; capture: attacker armies at the capture 8; computer split: attacker country keeps 3, captured country gets 5"
+    },
+    {
+      "step": 56,
+      "source": "screen",
+      "field": "attack 56 (Green seat, computer, turn 36): country 31 attacks country 30; strip visible from 07:55.733 to 07:55.967",
+      "value": "before 5/1 (map counters at 07:54.833); first strip state 4/1; strip states (attacker/defender) 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 57,
+      "source": "screen",
+      "field": "attack 57 (Green seat, computer, turn 36): country 43 attacks country 44; strip visible from 07:57.467 to 07:58.300",
+      "value": "before 6/2 (map counters at 07:56.567); first strip state 6/2; strip states (attacker/defender) 6/2 5/2 5/1 4/1 3/1; stop without capture at 3/1; owners unchanged"
+    },
+    {
+      "step": 58,
+      "source": "screen",
+      "field": "attack 58 (Blue seat, human, turn 37): country 12 attacks country 13; strip visible from 08:18.100 to 08:20.200",
+      "value": "before 3/1 (map counters at 08:17.200); first strip state 3/1; strip states (attacker/defender) 3/1; capture: attacker armies at the capture 3; the move-in counter stayed at 1 and the owner pressed done; attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 59,
+      "source": "screen",
+      "field": "attack 59 (Yellow seat, computer, turn 38): country 46 attacks country 44; strip visible from 08:28.967 to 08:29.133",
+      "value": "before 15/1 (map counters at 08:28.067); first strip state 15/1; strip states (attacker/defender) 15/1; capture: attacker armies at the capture 15; computer split: attacker country keeps 3, captured country gets 12 (the capture flash hides the country colour)"
+    },
+    {
+      "step": 60,
+      "source": "screen",
+      "field": "attack 60 (Yellow seat, computer, turn 38): country 4 attacks country 6; strip visible from 08:30.600 to 08:30.667",
+      "value": "before 4/1 (map counters at 08:29.700); first strip state 4/1; strip states (attacker/defender) 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 61,
+      "source": "screen",
+      "field": "attack 61 (Yellow seat, computer, turn 38): country 23 attacks country 24; strip visible from 08:32.300 to 08:32.600",
+      "value": "before 7/6 (map counters at 08:31.400); first strip state 7/6; strip states (attacker/defender) 7/6 6/6 5/6; stop without capture at 5/6; owners unchanged"
+    },
+    {
+      "step": 62,
+      "source": "screen",
+      "field": "attack 62 (Yellow seat, computer, turn 38): country 44 attacks country 43; strip visible from 08:33.067 to 08:33.833",
+      "value": "before 12/3 (map counters at 08:32.947); first strip state 12/3; strip states (attacker/defender) 12/3 11/3 11/2 11/1; capture: attacker armies at the capture 11; computer split: attacker country keeps 3, captured country gets 8 (the capture flash hides the country colour)"
+    },
+    {
+      "step": 63,
+      "source": "screen",
+      "field": "attack 63 (Yellow seat, computer, turn 38): country 43 attacks country 41; strip visible from 08:35.400 to 08:36.367",
+      "value": "before 8/2 (map counters at 08:34.500); first strip state 7/2; strip states (attacker/defender) 7/2 6/2 5/2 5/1 4/1 3/1; stop without capture at 3/1; owners unchanged"
+    },
+    {
+      "step": 64,
+      "source": "screen",
+      "field": "attack 64 (Red seat, computer, turn 39): country 32 attacks country 30; strip visible from 08:41.767 to 08:42.200",
+      "value": "before 5/1 (map counters at 08:41.367); first strip state 4/1; strip states (attacker/defender) 4/1 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 2, captured country gets 1"
+    },
+    {
+      "step": 65,
+      "source": "screen",
+      "field": "attack 65 (Green seat, computer, turn 40): country 41 attacks country 43; strip visible from 08:48.967 to 08:49.833",
+      "value": "before 8/3 (map counters at 08:48.067); first strip state 7/3; strip states (attacker/defender) 7/3 7/2 6/2 6/1; capture: attacker armies at the capture 6; computer split: attacker country keeps 1, captured country gets 5"
+    },
+    {
+      "step": 66,
+      "source": "screen",
+      "field": "attack 66 (Green seat, computer, turn 40): country 43 attacks country 8; strip visible from 08:51.233 to 08:51.567",
+      "value": "before 5/1 (map counters at 08:50.333); first strip state 4/1; strip states (attacker/defender) 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 67,
+      "source": "screen",
+      "field": "attack 67 (Green seat, computer, turn 40): country 24 attacks country 23; strip visible from 08:53.067 to 08:53.400",
+      "value": "before 8/7 (map counters at 08:52.167); first strip state 8/7; strip states (attacker/defender) 8/7 7/7 6/7; stop without capture at 6/7; owners unchanged"
+    },
+    {
+      "step": 68,
+      "source": "screen",
+      "field": "attack 68 (Green seat, computer, turn 40): country 34 attacks country 32; strip visible from 08:53.867 to 08:54.100",
+      "value": "before 5/2 (map counters at 08:53.747); first strip state 5/1; strip states (attacker/defender) 5/1; capture: attacker armies at the capture 5; computer split: attacker country keeps 3, captured country gets 2"
+    },
+    {
+      "step": 69,
+      "source": "screen",
+      "field": "attack 69 (Blue seat, human, turn 41): country 12 attacks country 11; strip visible from 09:06.900 to 09:08.833",
+      "value": "before 4/2 (map counters at 09:06.000); first strip state 4/2; strip states (attacker/defender) 4/2 3/2 2/2; ended by the owner with no capture at 2/2 (the quit button); owners unchanged"
+    },
+    {
+      "step": 70,
+      "source": "screen",
+      "field": "attack 70 (Yellow seat, computer, turn 42): country 3 attacks country 2; strip visible from 09:15.300 to 09:15.967",
+      "value": "before 8/3 (map counters at 09:14.400); first strip state 8/2; strip states (attacker/defender) 8/2 8/1 7/1; capture: attacker armies at the capture 7; computer split: attacker country keeps 3, captured country gets 4"
+    },
+    {
+      "step": 71,
+      "source": "screen",
+      "field": "attack 71 (Yellow seat, computer, turn 42): country 6 attacks country 8; strip visible from 09:17.433 to 09:17.500",
+      "value": "before not read (start taken from the first strip state 9/1); first strip state 9/1; strip states (attacker/defender) 9/1; capture: attacker armies at the capture 9; computer split: attacker country keeps 3, captured country gets 6"
+    },
+    {
+      "step": 72,
+      "source": "screen",
+      "field": "attack 72 (Yellow seat, computer, turn 42): country 8 attacks country 7; strip visible from 09:19.167 to 09:20.067",
+      "value": "before 6/3 (map counters at 09:18.267); first strip state 5/3; strip states (attacker/defender) 5/3 5/2 4/2 4/1; capture: attacker armies at the capture 4; computer split: attacker country keeps 1, captured country gets 3"
+    },
+    {
+      "step": 73,
+      "source": "screen",
+      "field": "attack 73 (Yellow seat, computer, turn 42): country 23 attacks country 38; strip visible from 09:21.467 to 09:21.767",
+      "value": "before 7/6 (map counters at 09:20.567); first strip state 7/6; strip states (attacker/defender) 7/6 6/6 5/6; stop without capture at 5/6; owners unchanged"
+    },
+    {
+      "step": 74,
+      "source": "screen",
+      "field": "attack 74 (Yellow seat, computer, turn 42): country 2 attacks country 1; strip visible from 09:22.233 to 09:22.600",
+      "value": "before 4/3 (map counters at 09:22.113); first strip state 3/3; strip states (attacker/defender) 3/3 2/3; stop without capture at 2/3; owners unchanged"
+    },
+    {
+      "step": 75,
+      "source": "screen",
+      "field": "attack 75 (Red seat, computer, turn 43): country 29 attacks country 27; strip visible from 09:37.333 to 09:37.467",
+      "value": "before 12/1 (map counters at 09:36.433); first strip state 12/1; strip states (attacker/defender) 12/1; capture: attacker armies at the capture 12; computer split: attacker country keeps 3, captured country gets 9 by the total (the capture flash hides the country colour and one counter, which is taken from the other counter and the total)"
+    },
+    {
+      "step": 76,
+      "source": "screen",
+      "field": "attack 76 (Red seat, computer, turn 43): country 27 attacks country 26; strip visible from 09:38.967 to 09:39.900",
+      "value": "before not read (start taken from the first strip state 8/3); first strip state 8/3; strip states (attacker/defender) 8/3 7/3 6/3 6/2 6/1; capture: attacker armies at the capture 6; computer split: attacker country keeps 3, captured country gets 3"
+    },
+    {
+      "step": 77,
+      "source": "screen",
+      "field": "attack 77 (Green seat, computer, turn 44): country 31 attacks country 30; strip visible from 09:57.533 to 09:57.633",
+      "value": "before 3/1 (map counters at 09:56.633); first strip state 2/1; strip states (attacker/defender) 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 78,
+      "source": "screen",
+      "field": "attack 78 (Green seat, computer, turn 44): country 32 attacks country 30; strip visible from 09:58.167 to 09:58.267",
+      "value": "before 4/1 (map counters at 09:57.917); first strip state 3/1; strip states (attacker/defender) 3/1; stop without capture at 3/1; owners unchanged"
+    },
+    {
+      "step": 79,
+      "source": "screen",
+      "field": "attack 79 (Green seat, computer, turn 44): country 10 attacks country 11; strip visible from 09:58.833 to 09:59.167",
+      "value": "before 3/2 (map counters at 09:58.583); first strip state 3/1; strip states (attacker/defender) 3/1 2/1; stop without capture at 2/1; owners unchanged"
+    },
+    {
+      "step": 80,
+      "source": "screen",
+      "field": "attack 80 (Green seat, computer, turn 44): country 25 attacks country 26; strip visible from 09:59.667 to 10:00.500",
+      "value": "before 10/3 (map counters at 09:59.417); first strip state 10/2; strip states (attacker/defender) 10/2 9/2 9/1 8/1; capture: attacker armies at the capture 8; computer split: attacker country keeps 1, captured country gets 7"
+    },
+    {
+      "step": 81,
+      "source": "screen",
+      "field": "attack 81 (Blue seat, human, turn 45): country 12 attacks country 11; strip visible from 10:23.133 to 10:25.967",
+      "value": "before 4/1 (map counters at 10:22.233); first strip state 4/1; strip states (attacker/defender) 4/1; capture: attacker armies at the capture 4; the move-in counter stayed at 1 and the owner pressed done; attacker country keeps 3, captured country gets 1"
+    },
+    {
+      "step": 82,
+      "source": "screen",
+      "field": "attack 82 (Yellow seat, computer, turn 46): country 9 attacks country 10; strip visible from 10:34.233 to 10:34.600",
+      "value": "before 12/2 (map counters at 10:33.333); first strip state 12/2; strip states (attacker/defender) 12/2 12/1 11/1; capture: attacker armies at the capture 11; computer split: attacker country keeps 3, captured country gets 8 (the capture flash hides the country colour)"
+    },
+    {
+      "step": 83,
+      "source": "screen",
+      "field": "attack 83 (Yellow seat, computer, turn 46): country 10 attacks country 11; strip visible from 10:36.267 to 10:36.333",
+      "value": "before 8/1 (map counters at 10:35.367); first strip state 8/1; strip states (attacker/defender) 8/1; capture: attacker armies at the capture 8; computer split: attacker country keeps 3, captured country gets 5 by the total (the capture flash hides the country colour and one counter, which is taken from the other counter and the total)"
+    },
+    {
+      "step": 84,
+      "source": "screen",
+      "field": "attack 84 (Yellow seat, computer, turn 46): country 2 attacks country 1; strip visible from 10:37.867 to 10:38.867",
+      "value": "before 13/3 (map counters at 10:36.967); first strip state 12/3; strip states (attacker/defender) 12/3 12/2 11/2 11/1 10/1; capture: attacker armies at the capture 10; computer split: attacker country keeps 1, captured country gets 9 by the total (the capture flash hides the country colour and one counter, which is taken from the other counter and the total)"
+    },
+    {
+      "step": 85,
+      "source": "screen",
+      "field": "attack 85 (Yellow seat, computer, turn 46): country 11 attacks country 12; strip visible from 10:40.400 to 10:41.200",
+      "value": "before 5/3 (map counters at 10:40.000); first strip state 5/2; strip states (attacker/defender) 5/2 5/1 4/1 3/1; capture: attacker armies at the capture 3; computer split: attacker country keeps 1, captured country gets 2"
+    },
+    {
+      "step": 86,
+      "source": "screen",
+      "field": "attack 86 (Yellow seat, computer, turn 46): country 1 attacks country 13; strip visible from 10:42.700 to 10:42.833",
+      "value": "before not read (start taken from the first strip state 9/1); first strip state 9/1; strip states (attacker/defender) 9/1; capture: attacker armies at the capture 9; computer split: attacker country keeps 6 by the total, captured country gets 3 (the capture flash hides the country colour and one counter, which is taken from the other counter and the total)"
+    },
+    {
+      "step": 87,
+      "source": "screen",
+      "field": "attack 87 (Green seat, computer, play-out after the human seat was out): country 43 attacks country 44; strip visible from 10:47.867 to 10:47.867",
+      "value": "before not read (start taken from the first strip state 6/4); first strip state 6/4; strip states (attacker/defender) 6/4; not resolved: one strip state only, inside the play-out (the strip is gone within 0.1 s); the play-out ran in about 2.0 s for the rest of the board"
+    },
+    {
+      "step": 87,
+      "source": "screen",
+      "field": "attack 87 (Green seat, computer, play-out after the human seat was out): country 43 attacks country 44; strip visible from 10:47.867 to 10:47.867",
+      "value": "before not read (start taken from the first strip state 6/4); first strip state 6/4; strip states (attacker/defender) 6/4; not resolved: one strip state only, inside the play-out (the strip is gone within 0.1 s); the play-out ran in about 2.0 s for the rest of the board"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "frame: attack 1 start, human, 5 against 2 at 00:44.0",
+      "ref": "sha256:e9d81cb93bd3cd58b5dcd562bb7589895a36a02ff1d39dca281987f5947ae174"
+    },
+    {
+      "step": 1,
+      "source": "screen",
+      "field": "frame: attack 1 end, 3 against 2, quit button highlighted at 00:47.4",
+      "ref": "sha256:d52cd60503ccb8bdf0e5088fccdb9d318075fb7bee49ca1e90d05299f430eff7"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "frame: attack 4 computer, map counters 5 and 2 at 01:09.2, before the strip",
+      "ref": "sha256:696a6c5f216982313f659f305c7232beb2572f04769f9f3c4c40cca2d1600bd8"
+    },
+    {
+      "step": 4,
+      "source": "screen",
+      "field": "frame: attack 4 computer, first strip state 4 against 2 at 01:09.8",
+      "ref": "sha256:885de1dbadee9c0c79700d78d3d35046f4afcfb65ac37385f05fecd8781c49c0"
+    },
+    {
+      "step": 11,
+      "source": "screen",
+      "field": "frame: attack 11 computer, stopped at 3 against 1, counters on the map at 01:53.45",
+      "ref": "sha256:ced454e12f9c2d3886a4ccf05571f174aaba233707dd4665d671350fe24fc366"
+    },
+    {
+      "step": 23,
+      "source": "screen",
+      "field": "frame: attack 23, the largest human stack of the sitting, 6 against 2, at 03:26.4",
+      "ref": "sha256:314aae0bac35217bd6537b88c66c6c7146ede8f5fc8cf4c5798dec1493bd9d2c"
+    },
+    {
+      "step": 52,
+      "source": "screen",
+      "field": "frame: attack 52 computer, 12 against 3, at 07:38.0",
+      "ref": "sha256:680530603f62923a4ccf18f3dcd0fa3ddc8d8ba640f2c8d63c94e96781151d38"
+    },
+    {
+      "step": 58,
+      "source": "screen",
+      "field": "frame: attack 58, human, 3 against 1, at 08:18.1",
+      "ref": "sha256:c1f7a3c3a6c304150a576a3e9f992953163931fdfa04c29bfc475fcf6b630066"
+    },
+    {
+      "step": 69,
+      "source": "screen",
+      "field": "frame: attack 69, human, ended at 2 against 2, at 09:08.7",
+      "ref": "sha256:1adf8008c7f2d522a8bd234a6ad8db100b6ed31bc1c674688528666b1e9ba439"
+    },
+    {
+      "step": 15,
+      "source": "screen",
+      "field": "frame: attack 15 move-in counter at 3 (of 4 armies), at 02:20.0",
+      "ref": "sha256:fa747817da749121338feb46391db86265cec938546e6d32eed520c144e65609"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "human-attack01-start-5-v-2.png",
+      "sha256": "e9d81cb93bd3cd58b5dcd562bb7589895a36a02ff1d39dca281987f5947ae174",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-attack01-ended-quit-highlight-3-v-2.png",
+      "sha256": "d52cd60503ccb8bdf0e5088fccdb9d318075fb7bee49ca1e90d05299f430eff7",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-attack04-map-before-5-v-2.png",
+      "sha256": "696a6c5f216982313f659f305c7232beb2572f04769f9f3c4c40cca2d1600bd8",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-attack04-first-strip-4-v-2.png",
+      "sha256": "885de1dbadee9c0c79700d78d3d35046f4afcfb65ac37385f05fecd8781c49c0",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-attack11-stop-3-v-1.png",
+      "sha256": "ced454e12f9c2d3886a4ccf05571f174aaba233707dd4665d671350fe24fc366",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-attack23-start-6-v-2.png",
+      "sha256": "314aae0bac35217bd6537b88c66c6c7146ede8f5fc8cf4c5798dec1493bd9d2c",
+      "store": "release:E018"
+    },
+    {
+      "name": "computer-attack52-12-v-3.png",
+      "sha256": "680530603f62923a4ccf18f3dcd0fa3ddc8d8ba640f2c8d63c94e96781151d38",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-attack58-start-3-v-1.png",
+      "sha256": "c1f7a3c3a6c304150a576a3e9f992953163931fdfa04c29bfc475fcf6b630066",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-attack69-quit-2-v-2.png",
+      "sha256": "1adf8008c7f2d522a8bd234a6ad8db100b6ed31bc1c674688528666b1e9ba439",
+      "store": "release:E018"
+    },
+    {
+      "name": "human-attack15-move-in-counter-3.png",
+      "sha256": "fa747817da749121338feb46391db86265cec938546e6d32eed520c144e65609",
+      "store": "release:E018"
+    }
+  ],
+  "decoded": [],
+  "started": "2026-10-11T17:55:47Z",
+  "ended": "2026-10-11T18:06:49Z",
+  "status": "completed"
+}

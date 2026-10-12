@@ -636,3 +636,513 @@ These rest on the owner's videos, and on this one for the sitting's own readings
 
 A re-read of `IP1 026.mp4` writes new files beside r0003..r0005 (the next free record numbers) with their
 own frame hashes, and says which record it cross-references; these records stay as written.
+
+---
+
+# IP1 027 sitting
+
+The third owner sitting (2026-10-11, owner-driven Bandicam capture, 11:02, video sha256
+`aa8ed8c4f9b84d40ccc85c40b8198edb6e84062a89d57ee84b287f2c32f2e63d`, Bandicam 8.3.0.2533 per the file's encoder
+tag; frame timestamps are irregular, 12978 frames in 662.50 s, so offsets are container timestamps, not frame
+numbers). One game from the title screen to the title screen after the game: the options screen at 00:01, the
+deal at 00:04, 46 player-turns before the human seat was out (12 human, 34 computer), 87 attacks (13 human, 74
+computer), the human seat eliminated at 10:42.87 (by attack 86, the last human country), the owner choosing
+to keep playing at 10:46.97, the yellow seat holding all 46 countries at 10:49.00, the winner dialog at 10:49.2,
+the scoreboard screen at 10:56.2 and the title screen at 10:58.3. **The owner did not win**: the human seat was
+eliminated and the computers played the game out.
+
+Records, all immutable, `runtime.platform` `windows-native-bandicam`:
+
+- `E018-r0006`: the 87 attacks (start counters, strip states, endings, capture splits and move-ins), ten frames.
+- `E018-r0007`: the 46 turn starts (territory counts, army pools, cards), the card draws, the four computer
+  trade-ins, the bomb match and its notice, four frames.
+- `E018-r0008`: the options screen, the deal, the 12 human placements, the 7 computer moves, the elimination and
+  the end, eight frames.
+- `E018-r0009`: the three event messages and the scene changes at the end, one frame.
+
+Frames are in the bundle store by hash, listed in `evidence/E018/E018-r0006..9.manifest.json`; the video and the
+frames are never committed (rule 18). Everything was read by pixels (glyph-shape matching of the strip and the
+map digits, colour regions; no OCR). Four checks backed the readings: every one of the 139 strip steps is a single
+loss on one side (none was (1,1) or larger); for all 46 captures with both counters read (6 human, 40 computer)
+the two country counters after the capture add up to the attacker's armies at the capture (the other 6 computer
+captures had one counter hidden by the capture flash and take it from the total); the strip states of all 13
+human attacks and 6 computer attacks (4, 11, 12, 32, 44, 45) were re-read by eye on crops of the frames and
+matched; and every attack's two countries are neighbours in the F017 border tables (87 of 87).
+
+**A correction to how attack starts are read** (it also bears on the IP1 026 section above, whose `before`
+column already used the country counters). The strip of the counters appears after the computer's first
+exchange: for 46 of the 73 resolved computer attacks of this sitting the country counters just before the strip
+are one exchange ahead of its first state. Reading starts from the strip alone would have shown three
+equal-strength starts (attacks 24, 44 and 74, at 3 against 3); the country counters show them at 4 against 3.
+For the human the strip shows the counters before any exchange (13 of 13 agree with the country counters).
+
+## What the owner meant to play, and what the video shows
+
+The owner meant to build exact stacks (an even attacker of 4 against 6, 8 or 12 against N-1 to N+2, underdogs of
+12 and 20; E021's open cells). **The video shows none of them.** The human held 9 countries at the deal and
+income of 2 or 3 armies a turn; all 13 human attacks started from 3 to 6 armies against 1 or 2 (largest 6
+against 2, attack 23, at 03:26.4); no human attacker was ever below the defender at the start. The 12
+placements were of 2 or 3 armies each (r0008), so no stack could pass 6. So the sitting meets none of E021's open cells: even 4 against 6, 8
+against 7, 9, 10, and 12 against 11, 12, 13, 14 (cells 8, 9, 11 to 16 of the even row), underdog 12 and 20
+(cells 3 and 4). The E021 progress counter counts only E021 records and stays at 30 of 40.
+
+Every human attack, with its start and what it fits (E021's cells, for the main session; nothing here is
+counted in E021):
+
+| # | offset | from>to | start | strip states | ending | Session A cell it fits |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 00:43.667 | 39>38 | 5 vs 2 | 5/2 4/2 3/2 | quit at 3/2 | quit cell |
+| 2 | 00:50.667 | 42>41 | 4 vs 2 | 4/2 3/2 | quit at 3/2 | quit cell |
+| 8 | 01:35.667 | 39>37 | 5 vs 2 | 5/2 4/2 3/2 | quit at 3/2 | quit cell |
+| 15 | 02:13.300 | 39>37 | 5 vs 2 | 5/2 4/2 4/1 | capture at 4; moved in 2, kept 2 | none |
+| 23 | 03:26.367 | 42>40 | 6 vs 2 | 6/2 5/2 5/1 4/1 | capture at 4; moved in 2, kept 2 | none |
+| 27 | 04:19.433 | 42>41 | 5 vs 2 | 5/2 4/2 3/2 | quit at 3/2 | quit cell |
+| 33 | 04:57.733 | 40>41 | 4 vs 2 | 4/2 3/2 | quit at 3/2 | quit cell |
+| 39 | 05:37.733 | 44>46 | 5 vs 1 | 5/1 4/1 3/1 | capture at 3; moved in 1, kept 2 | none |
+| 43 | 06:28.767 | 4>6 | 5 vs 2 | 5/2 4/2 4/1 3/1 2/1 | quit at 2/1 | quit cell |
+| 51 | 07:21.133 | 4>6 | 4 vs 1 | 4/1 | capture at 4; moved in 1, kept 3 | none |
+| 58 | 08:18.100 | 12>13 | 3 vs 1 | 3/1 | capture at 3; moved in 1, kept 2 | tiny, attacker 3 vs 1 (met earlier in E021) |
+| 69 | 09:06.900 | 12>11 | 4 vs 2 | 4/2 3/2 2/2 | quit at 2/2 | quit cell |
+| 81 | 10:23.133 | 12>11 | 4 vs 1 | 4/1 | capture at 4; moved in 1, kept 3 | none |
+
+Reading the table: seven attacks ended by the owner (the quit button) with the attacker at 3 (five times), 2
+against 1 (once) and 2 against 2 (once); six ended in a capture. No human attack started below 3 armies, none
+at equal strength, none against a stronger defender; a human attacker was never reduced to 1 army. Cells fitted:
+**tiny, attacker 3 against 1 (attack 58)**, one cell, which E021 had already met; **quit**, seven attacks (each
+after at least one exchange the strip showed, the battle ending with owners and armies as they stood); no even
+cell, no underdog cell, no lost cell (no failed attack: the human's lowest was 2), no busy cell (the most
+attacks in one human turn was 2, turn 1; a busy cell needs 3 or more).
+
+## The attacks: every one, before and after
+
+`#` is the order in the video (`r0006`, step = `#`). `offset` is the first strip frame. `seat` is the attacking
+seat, `C` computer, `H` human. `before` is attacker/defender armies as the country counters show them just
+before the strip appeared (`(strip)` where those could not be read and the strip's first state is used);
+`after` is the last state, or, for a capture, the attacker's armies at the capture with the defender at 0, then
+the split (computer: armies kept in the attacker's country and armies placed in the captured country; human:
+the move-in the owner chose and what the attacker keeps). A `*` marks a split number taken from the total because
+the capture flash hid that counter. A stop or quit leaves both countries with their owners. Attack 87 is inside
+the play-out and not resolved.
+
+| # | offset | seat | from>to | before | after | ending |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 00:43.667 | Blue H | 39>38 | 5/2 | 3/2 | quit |
+| 2 | 00:50.667 | Blue H | 42>41 | 4/2 | 3/2 | quit |
+| 3 | 01:03.800 | Yellow C | 14>46 | 6/1 | 4/0, then keeps 3 gets 1 | capture |
+| 4 | 01:09.700 | Red C | 30>31 | 5/2 | 3/2 | stop |
+| 5 | 01:15.567 | Green C | 34>32 | 6/3 | 3/3 | stop |
+| 6 | 01:16.600 | Green C | 19>22 | 3/1 | 3/0, then keeps 2 gets 1 | capture |
+| 7 | 01:18.167 | Green C | 35>36 | 5/2 | 3/2 | stop |
+| 8 | 01:35.667 | Blue H | 39>37 | 5/2 | 3/2 | quit |
+| 9 | 01:46.533 | Yellow C | 18>19 | 5/2 | 4/0, then keeps 3 gets 1 | capture |
+| 10 | 01:48.600 | Yellow C | 21>23 | 5/3 | 3/3 | stop |
+| 11 | 01:53.200 | Red C | 30>31 | 3/2 | 3/1 | stop |
+| 12 | 01:53.833 | Red C | 30>29 | 3/1 | 2/1 | stop |
+| 13 | 01:54.500 | Red C | 33>38 | 4/2 | 3/2 | stop |
+| 14 | 01:59.600 | Green C | 35>36 | 8/2 | 7/0, then keeps 4 gets 3 | capture |
+| 15 | 02:13.300 | Blue H | 39>37 | 5/2 | 4/0, then in 2 keeps 2 | capture |
+| 16 | 02:34.967 | Yellow C | 19>20 | 5/1 | 2/1 | stop |
+| 17 | 02:35.933 | Yellow C | 17>20 | 3/1 | 2/1 | stop |
+| 18 | 02:36.567 | Yellow C | 21>22 | 3/1 | 3/0, then keeps 2 gets 1 | capture |
+| 19 | 02:41.933 | Red C | 30>32 | 5/3 | 3/2 | stop |
+| 20 | 02:42.867 | Red C | 30>31 | 3/1 | 3/0, then keeps 2 gets 1 | capture |
+| 21 | 02:48.767 | Green C | 26>24 | 7/2 | 5/0, then keeps 3 gets 2 | capture |
+| 22 | 02:51.067 | Green C | 34>32 | 6/2 | 4/0, then keeps 3 gets 1 | capture |
+| 23 | 03:26.367 | Blue H | 42>40 | 6/2 | 4/0, then in 2 keeps 2 | capture |
+| 24 | 03:44.067 | Yellow C | 22>23 | 4/3 | 2/3 | stop |
+| 25 | 03:48.667 | Red C | 30>29 | 5/1 | 3/0, then keeps 1 gets 2 | capture |
+| 26 | 04:04.533 | Green C | 26>25 | 14/2 | 13/0, then keeps 12 gets 1 | capture |
+| 27 | 04:19.433 | Blue H | 42>41 | 5/2 | 3/2 | quit |
+| 28 | 04:28.333 | Yellow C | 21>20 | 4/1 | 3/0, then keeps 2 gets 1 | capture |
+| 29 | 04:35.600 | Red C | 28>27 | 5/1 | 5/0, then keeps 1 gets 4 | capture |
+| 30 | 04:42.167 | Green C | 43>42 | 8/3 (strip) | 7/0, then keeps 3 gets 4 | capture |
+| 31 | 04:44.467 | Green C | 42>39 | 4/2 | 3/2 | stop |
+| 32 | 04:45.100 | Green C | 26>27 | 12/4 | 7/0, then keeps 3 gets 4 | capture |
+| 33 | 04:57.733 | Blue H | 40>41 | 4/2 | 3/2 | quit |
+| 34 | 05:07.633 | Yellow C | 20>16 | 5/1 | 5/0, then keeps 1 gets 4 | capture |
+| 35 | 05:09.300 | Yellow C | 22>23 | 6/3 | 3/2 | stop |
+| 36 | 05:14.200 | Red C | 30>32 | 4/2 | 4/0, then keeps 1 gets 3 | capture |
+| 37 | 05:21.100 | Green C | 42>39 | 8/2 | 6/0, then keeps 3 gets 3 | capture |
+| 38 | 05:23.200 | Green C | 41>40 | 6/3 | 2/1 | stop |
+| 39 | 05:37.733 | Blue H | 44>46 | 5/1 | 3/0, then in 1 keeps 2 | capture |
+| 40 | 06:02.533 | Green C | 39>37 | 8/2 | 4/0, then keeps 2 gets 2 | capture |
+| 41 | 06:05.100 | Green C | 24>33 | 5/3 | 4/0, then keeps 3 gets 1 | capture |
+| 42 | 06:07.300 | Green C | 34>32 | 5/3 | 3/1 | stop |
+| 43 | 06:28.767 | Blue H | 4>6 | 5/2 | 2/1 | quit |
+| 44 | 06:37.600 | Yellow C | 16>15 | 4/3 | 2/3 | stop |
+| 45 | 06:38.367 | Yellow C | 21>23 | 10/2 | 10/0, then keeps 3 gets 7 | capture |
+| 46 | 06:40.233 | Yellow C | 23>45 | 7/3 | 5/0, then keeps 3 gets 2 | capture |
+| 47 | 06:42.500 | Yellow C | 14>15 | 7/3 | 7/0, then keeps 3 gets 4* | capture |
+| 48 | 06:49.967 | Red C | 28>27 | 7/4 | 2/1 | stop |
+| 49 | 06:57.067 | Green C | 37>40 | 10/1 | 10/0, then keeps 9* gets 1 | capture |
+| 50 | 06:58.700 | Green C | 37>38 | 8/2 (strip) | 7/0, then keeps 3 gets 4 | capture |
+| 51 | 07:21.133 | Blue H | 4>6 | 4/1 | 4/0, then in 1 keeps 3 | capture |
+| 52 | 07:38.033 | Yellow C | 5>4 | 13/3 | 7/0, then keeps 3 gets 4 | capture |
+| 53 | 07:41.133 | Yellow C | 14>46 | 6/1 | 6/0, then keeps 3 gets 3 | capture |
+| 54 | 07:53.467 | Green C | 10>9 | 3/2 | 3/1 | stop |
+| 55 | 07:54.000 | Green C | 33>31 | 8/1 | 8/0, then keeps 3 gets 5 | capture |
+| 56 | 07:55.733 | Green C | 31>30 | 5/1 | 4/0, then keeps 3 gets 1 | capture |
+| 57 | 07:57.467 | Green C | 43>44 | 6/2 | 3/1 | stop |
+| 58 | 08:18.100 | Blue H | 12>13 | 3/1 | 3/0, then in 1 keeps 2 | capture |
+| 59 | 08:28.967 | Yellow C | 46>44 | 15/1 | 15/0, then keeps 3 gets 12 | capture |
+| 60 | 08:30.600 | Yellow C | 4>6 | 4/1 | 4/0, then keeps 1 gets 3 | capture |
+| 61 | 08:32.300 | Yellow C | 23>24 | 7/6 | 5/6 | stop |
+| 62 | 08:33.067 | Yellow C | 44>43 | 12/3 | 11/0, then keeps 3 gets 8 | capture |
+| 63 | 08:35.400 | Yellow C | 43>41 | 8/2 | 3/1 | stop |
+| 64 | 08:41.767 | Red C | 32>30 | 5/1 | 3/0, then keeps 2 gets 1 | capture |
+| 65 | 08:48.967 | Green C | 41>43 | 8/3 | 6/0, then keeps 1 gets 5 | capture |
+| 66 | 08:51.233 | Green C | 43>8 | 5/1 | 4/0, then keeps 3 gets 1 | capture |
+| 67 | 08:53.067 | Green C | 24>23 | 8/7 | 6/7 | stop |
+| 68 | 08:53.867 | Green C | 34>32 | 5/2 | 5/0, then keeps 3 gets 2 | capture |
+| 69 | 09:06.900 | Blue H | 12>11 | 4/2 | 2/2 | quit |
+| 70 | 09:15.300 | Yellow C | 3>2 | 8/3 | 7/0, then keeps 3 gets 4 | capture |
+| 71 | 09:17.433 | Yellow C | 6>8 | 9/1 (strip) | 9/0, then keeps 3 gets 6 | capture |
+| 72 | 09:19.167 | Yellow C | 8>7 | 6/3 | 4/0, then keeps 1 gets 3 | capture |
+| 73 | 09:21.467 | Yellow C | 23>38 | 7/6 | 5/6 | stop |
+| 74 | 09:22.233 | Yellow C | 2>1 | 4/3 | 2/3 | stop |
+| 75 | 09:37.333 | Red C | 29>27 | 12/1 | 12/0, then keeps 3 gets 9* | capture |
+| 76 | 09:38.967 | Red C | 27>26 | 8/3 (strip) | 6/0, then keeps 3 gets 3 | capture |
+| 77 | 09:57.533 | Green C | 31>30 | 3/1 | 2/1 | stop |
+| 78 | 09:58.167 | Green C | 32>30 | 4/1 | 3/1 | stop |
+| 79 | 09:58.833 | Green C | 10>11 | 3/2 | 2/1 | stop |
+| 80 | 09:59.667 | Green C | 25>26 | 10/3 | 8/0, then keeps 1 gets 7 | capture |
+| 81 | 10:23.133 | Blue H | 12>11 | 4/1 | 4/0, then in 1 keeps 3 | capture |
+| 82 | 10:34.233 | Yellow C | 9>10 | 12/2 | 11/0, then keeps 3 gets 8 | capture |
+| 83 | 10:36.267 | Yellow C | 10>11 | 8/1 | 8/0, then keeps 3 gets 5* | capture |
+| 84 | 10:37.867 | Yellow C | 2>1 | 13/3 | 10/0, then keeps 1 gets 9* | capture |
+| 85 | 10:40.400 | Yellow C | 11>12 | 5/3 | 3/0, then keeps 1 gets 2 | capture |
+| 86 | 10:42.700 | Yellow C | 1>13 | 9/1 (strip) | 9/0, then keeps 6* gets 3 | capture |
+| 87 | 10:47.867 | Green C | 43>44 | 6/4 (strip) | not resolved | play-out |
+Counts this sitting adds to the per-claim totals (constraint E): 237 exchanges (139 strip steps, 52 capture
+exchanges inferred from the defender's last army, 46 first exchanges read from the before-counters), 86 resolved
+attacks (13 human, 73 computer) plus one unresolved, 46 turn starts with the army pool, 12 human placements, 6 human
+move-ins, 4 computer trade-ins, 7 computer moves, 3 event messages, 6 human card draws.
+
+Outcome words follow `walkthroughs/f011-questions.md`: `corroborated` when the count target is met and play
+matches the static claim, `narrowed` when it matches in the part played, `unestablished` when nothing in the
+video bears on it.
+
+## Combat
+
+### Q-CMB-01 (C-CMB-01) - who may attack, human and computer
+
+- **Status:** narrowed
+- **Static claim:** a human needs at least 2 armies and at least as many as the target; the computer needs more
+  than the target by a drawn margin of 0 or 1, so never at equal strength.
+- **This sitting:** computer, 73 resolved starts: none at equal or lower strength; margins 1 (9 starts: attacks 11,
+  24, 44, 54, 61, 67, 73, 74, 79; attackers of 3, 4, 4, 3, 7, 8, 7, 4, 3), 2 (14), 3 (12), 4 (11) and up to 14.
+  Together with IP1 026 (94 starts, none at equal strength) the computer arm stands at 167 starts against a target
+  of 100 or more. Human, 13 starts: all had at least 3 armies and more than the target; no equal-strength start
+  and no refused order was shown, and the 16-case grid (N in 2, 4, 8, 12 against N-1 to N+2) was not played (no
+  cell reached, see above).
+- **Why narrowed:** the human boundary and the refusal are untested.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-02 (C-CMB-02) - equality, not a ratio
+
+- **Status:** narrowed
+- **This sitting:** the computer's margin-1 starts have attackers of 3 to 8 (the largest, 8 against 7, attack 67,
+  is a larger stack at margin 1 than IP1 026 showed, 7 against 6); the starts with 10 or more attackers (11) all
+  had margins of at least 7. A margin-1 start at 12 or more was not seen. The human boundary at N in 4, 8, 12, 20
+  was not played.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-03 (C-CMB-03) - minimum attacking stack
+
+- **Status:** narrowed (computer arm met over the two sittings; the human arm is unestablished)
+- **Static claim:** human minimum 2; computer minimum 3 or 4 before a capture this turn (4 or 5 for a country on
+  the fixed 23-country list) and 4 after one (5 on the list).
+- **This sitting:** the computer's smallest start by class, all four equal to the low end of the claim: ordinary
+  country before a capture 3 (28 starts), list country before a capture 4 (14), ordinary after a capture 4 (12),
+  list country after a capture 5 (19); no start below its class minimum in 73. The human's smallest start was 3
+  (attack 58, 3 against 1, the tiny cell of 3 against 1); no attempt with 1 or 2 armies, so the human minimum 2 is
+  not tested.
+- **Cited by:** E018-r0006 (list membership from `experiments/E015-pro-board-reading/measurements/board-tabulation-r1e.json`).
+
+### Q-CMB-04 (C-CMB-04) - one die each, one army per exchange, five-at-once batching
+
+- **Status:** narrowed
+- **This sitting:** 237 exchanges; every strip step changed exactly one counter by one (139 steps, none of (-1,-1)
+  or larger). Exchanges against a one-army defender by attacker size: 3: 17, 4: 27, 5: 20, 10: 4 (target 100 or more
+  each; 110 in all against a defender of 1; size 2: none); 6 to 9: 32, 11 and over: 10. The five-exchange pass needs
+  more than 40 against more than 15 (computer) or more than 35 against more than 15 (human); the largest pair seen
+  was 15 against 1 (computer) and 6 against 2 (human), so batching was not exercised.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-05 (C-CMB-04, defender-size half) - defender size
+
+- **Status:** narrowed
+- **This sitting:** attacker-loss share by defender size at the exchange: 1 army 58/110 (52.7%), 2 armies 39/76
+  (51.3%), 3 armies 21/40 (52.5%), 4 or more 9/11; a chi-square test across the four groups gives p = 0.29, so no
+  dependence on the defender's size is detected. Defender size 10 was not seen (largest 7).
+- **Cited by:** E018-r0006.
+
+### Q-CMB-06 (C-CMB-05) - ties go to the defender
+
+- **Status:** narrowed
+- **Static claim:** ties go to the defender, so the attacker loses an exchange 21 times in 36 (7/12, 58.3%).
+- **This sitting:** attacker lost 127 of 237 exchanges (53.6%), 95% interval 47.2% to 59.9%; 7/12 is inside the interval
+  (z = -1.48), and so is an even 50% (z = +1.10). With IP1 026 (245 of 442): 372 of 679 (54.8%), interval 51.0% to 58.5%;
+  7/12 is inside (z = -1.88), an even 50% is not (z = +2.49). Human 18 of 27 (66.7%), computer 109 of 210 (51.9%); the two
+  shares do not differ detectably (Fisher p = 0.16); at 7/12 a human share of 18 or more in 27 has probability 0.25.
+  Dice are not visible, so only the outcome share is tested.
+- **Why narrowed:** 679 of the 500 target over the two sittings, but the share is consistent with the claim, not a proof.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-07 (C-CMB-06) - exactly one army lost per exchange
+
+- **Status:** corroborated
+- **This sitting:** 139 strip steps (and 46 steps from the before-counters), every one a loss of one army on exactly one side;
+  none lost two or lost one on each side; a 5-army run could not occur (see Q-CMB-04). 52 capture exchanges end with the
+  defender's last army gone. With IP1 026 (360 steps) the count is 499 against the target of 200.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-08 (C-CMB-08) - a battle's end, quit, automatic loop
+
+- **Status:** narrowed
+- **This sitting:** human, 13 attacks: 6 ended in a capture, 7 were quit by the owner with armies as they stood (attacks 1, 2, 8,
+  27, 33, 43, 69: ending at 3, 3, 3, 3, 3, 2 and 2 armies), ownership unchanged and no cost seen. Whether one click is one exchange
+  is not established (clicks are not visible); consecutive human strip steps are 0.27 to 1.03 s apart (median 0.60 s over 21
+  intervals), computer steps 0.03 to 0.70 s (median 0.17 s over 118). Targets met on count (human 10 attacks, computer 30
+  battles). Computer, 73 battles: 46 captures, 27 stops without a capture; the attacker's armies at those stops were 2 (ten
+  times), 3 (fourteen), 5 (twice) and 6 (once), never below 2, as the static claim says.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-09 (C-CMB-09) - a failed attack
+
+- **Status:** narrowed (the computer arm met its count, 27 stops against 20; the human arm, 5 failed attacks wanted, saw none)
+- **This sitting:** computer, 27 stops without a capture: the defender's country keeps its owner and the counters equal the last strip state
+  in 25 of 27 (attacks 11 and 19 are followed by the next attack within 0.4 s, so their stop state is the last strip state, 3/1 and 3/2,
+  and the next attack's before-counters agree); the attacker's country keeps at least 2. Human: no attack was lost down to 1 army (seven
+  quits at 2 or 3), so the forfeit rule, the card cancellation and the turn change are not exercised.
+- **Cited by:** E018-r0006.
+
+### Q-CMB-10 (C-CMB-10) - attacks per turn
+
+- **Status:** narrowed
+- **This sitting:** computer attacks per turn over 34 turns: 0 in 3 (turns 26, 27, 35), 1 in 11, 2 in 8, 3 in 5, 4 in 4, 5 in 3; none of
+  the 34 turns had more than 5 attacks. Rounds are not visible, so the drawn rounds of 2 to 5 cannot be checked. Human: 12 turns, 1 attack
+  in 11 and 2 in 1; nothing stopped the human from more (the owner chose), so "no limit" is untested.
+- **Cited by:** E018-r0006, E018-r0007 (turn assignment from the scoreboard marker).
+
+### Q-CMB-11 (C-CMB-07) - nothing but counts and dice enters an exchange
+
+- **Status:** narrowed
+- **This sitting:** computer attacker-loss share by whether the attacker's country is on the fixed 23-country list: list 54/109 (49.5%),
+  not on the list 55/101 (54.5%), chi-square p = 0.48 (Pearson, no continuity correction, as in the IP1 026 section; 0.57, first written here, was the Yates-corrected value; Luna's review of PR #186, R2). A shift of about 5 points is not detectable at this count; no gross effect appears.
+- **Cited by:** E018-r0006.
+
+## Capture, moves, ownership
+
+### Q-OWN-01 (C-OWN-01) - armies moved in on a capture
+
+- **Status:** narrowed
+- **This sitting:** human, 6 captures (attacks 15, 23, 39, 51, 58, 81): the move-in counter started at 1 each time; the owner moved in 2, 2, 1, 1,
+  1 and 1 from attackers holding 4, 4, 3, 4, 3 and 4 at the capture; at attack 15 the counter went 1, 2, 3 (all but one) and back to 2 before done
+  (02:19.4, 02:19.8, 02:21.5), at attack 23 it went 1, 2 (03:31.1); the attacker always kept at least 1 (2, 2, 2, 3, 2, 3) and the captured
+  country received exactly the number chosen. Whether 0 can be chosen is not shown. Captures from stacks of 2, 3, 5 and 10: 0, 2, 0 and 0
+  (target 3 each). Computer, 46 captures: the two counters add up to the attacker's armies in all 40 with both read, both at least 1; the attacker
+  kept 1 in 10, 2 in 6, 3 in 26, 4, 6, 9 and 12 in one each. Keeping 3 is again the commonest outcome (26 of 46), which fits C-AI-07's keep-3
+  branches, but the strongest-neighbour inputs were not read, so the rule itself is not tested.
+- **Cited by:** E018-r0006.
+
+### Q-MOV-01 (C-MOV-01) - moves per turn
+
+- **Status:** narrowed
+- **This sitting:** human: no move in 12 turns (the move button was never pressed). Computer: 7 moves in 34 turns, never two in one turn, each after
+  the seat's last attack of the turn, six within 2 s of the turn's end and one 7 s before it (offsets 02:01.2, 04:29.7, 06:44.1, 07:00.5, 07:42.3, 08:36.5, 09:22.7 for the first strip frame). The target
+  (10 human turns with a move) is not met.
+- **Cited by:** E018-r0008.
+
+### Q-MOV-02 (C-MOV-02) - all but one
+
+- **Status:** narrowed
+- **This sitting:** computer: 7 of 7 moves left the source at exactly 1 (sources held 4, 5, 3, 3, 3, 3, 3). No human move, so stacks of 2, 3, 10 and the
+  all-but-two refusal were not played.
+- **Cited by:** E018-r0008.
+
+### Q-MOV-03 (C-MOV-03) - adjacency, move then attack
+
+- **Status:** narrowed
+- **This sitting:** all 7 moves were between neighbouring countries. A country captured earlier in the same turn attacked in that turn 12 times (all
+  computer; the human never did), so a just-captured country is not blocked. A second move in a turn and a destination two borders away were not tried.
+- **Cited by:** E018-r0006, E018-r0008.
+
+## Cards and bonuses
+
+### Q-BON-03 (C-CRD-01, C-CRD-02) - kinds seen
+
+- **Status:** narrowed
+- **This sitting:** seven of the eight kinds appeared: the doubling card (human hand, turns 9 and 13; a computer trade-in), the bomb card (human hand, turn 33;
+  a computer bomb match), the +5 card (human hand, turn 37; a computer trade-in), the wildcard (human hand, turn 45), the empty-the-hand card (human draw,
+  turn 25), the +8 trade-in message (a computer, turn 43) and the protection card (the yellow seat's hand, at the bomb notice). The +15 card was not seen
+  in about 31 draws.
+- **Cited by:** E018-r0007.
+
+### Q-BON-05 (C-CRD-03) - a card per capturing turn
+
+- **Status:** narrowed
+- **Why narrowed:** F014's plan asks for at least 20 human turns and 20 computer turns split by captures, and a human turn ending in a forfeited attack
+  after an earlier capture. This sitting has 12 human turns (6 with a capture, 6 without) and 34 computer turns, and no forfeited human attack; counted
+  with IP1 026 (13 human turns) the human arm is 25 turns, but the forfeit case is still not seen.
+- **This sitting:** over 45 of the 46 turns (all but turn 46, whose capture draw the elimination hides; the card counts of turns 43 to 45 are read from the card events, not from a next turn start): in the turns without a capture the seat's count did not change (6 human, 6 computer), apart from
+  one computer trade-in at the start of a turn (yellow, turn 26, 5 to 2, three cards out, no draw). In capturing turns with fewer than 5 cards and no trade-in
+  the count rose by exactly 1 (5 human, 21 computer). In the other capturing turns: three
+  draws emptied the hand (green turn 24, human turn 25, green turn 44), three had a trade-in with a capture (green 16: three out, one drawn; red 43: three out, one drawn; green 44: the bomb trade-in, three out, then the empty hand), one had 5 cards and stayed at 5 (yellow, turn 42).
+  Every one of these observations agrees with the claim. A failed human attack cancelling the draw is not tested.
+- **Cited by:** E018-r0007.
+
+### Q-BON-06 (C-CRD-04) - five cards, discard on a full hand
+
+- **Status:** narrowed
+- **This sitting:** no seat ever showed more than 5 cards. Yellow reached 5 at turn 22 and captured again with 5 at turn 42 (still 5, no sixth); the human never held
+  more than 3. At the elimination of the human seat (10:42.90) the capturing yellow seat went from 4 to 5 while the eliminated hand of 3 went to 0: the hand
+  limit held. The human discard prompt was not seen (never at 5).
+- **Cited by:** E018-r0007.
+
+### Q-BON-07 (C-CRD-05) - one set per turn, what is a set
+
+- **Status:** narrowed
+- **This sitting:** 4 trade-ins, all computer, at most one per seat-turn: plus 5 (green, turn 16), doubling (yellow, turn 26), plus 8 (red, turn 43), bomb match
+  (green, turn 44); each took 3 cards from the hand and the capture draw still followed where there was a capture. The human never traded: its hand never held a set
+  (two doubling cards at turn 13, then the empty hand; bomb, +5 and a wildcard at turn 45 is no set). The trade-in offer to the human was not seen.
+- **Cited by:** E018-r0007.
+
+### Q-BON-08 (C-CRD-06) - the bomb card
+
+- **Status:** unestablished
+- **This sitting:** the bomb match (green, turn 44) was cancelled by the protection card (see Q-BON-09), so the bomb's effect on a country was not seen; the human did
+  not play a bomb (a bomb card was in its hand from turn 33).
+- **Cited by:** E018-r0007.
+
+### Q-BON-09 (C-CRD-07) - the anti-bomb card
+
+- **Status:** narrowed
+- **This sitting:** at the bomb match (09:46.0) a notice at 09:53.4 to 09:55.9 said the defending country had the protection; the yellow seat's hand went from 5 to 4
+  at 09:55.97 (the only hand besides the trading seat's to change) and green's pool stayed 12. One case, the second after IP1 026's.
+- **Cited by:** E018-r0007.
+
+### Q-BON-10 / Q-BON-11 (C-CRD-05, C-REI-03) - trade-in effects on the pool
+
+- **Status:** narrowed
+- **This sitting:** plus 5 (green, turn 16): pool 6 became 11 (04:03.5). Doubling (yellow, turn 26, no island): pool 4 became 8 (05:52.1). Bomb match (green turn 44): pool
+  unchanged at 12. Plus 8 (red, turn 43): the new pool was not read. The doubling of an amount with an island bonus is not separated (no island at turn 26).
+- **Cited by:** E018-r0007.
+
+## Income
+
+### Q-REI-01 / Q-REI-02 (C-REI-01, C-REI-02) - income from the territory count, the floor of 2
+
+- **Status:** narrowed
+- **Static claim:** the country part is the count divided by 3, rounded down, raised to 2; the island bonus is added after; no first-turn exception.
+- **This sitting:** the 12 human turns (no island named at turns 1, 37, 41 and 45 by eye, and the others agree with a pool of exactly the formula) read, by count: 9 gave 3,
+  8 gave 2 (three turns), 9 gave 3, 10 gave 3, 7 gave 2 (two), 6 gave 2, 5 gave 2, 3 gave 2, 2 gave 2: the counts of 2, 3, 5, 6 and 7 get the floor of 2 and the first
+  turn (count 9, pool 3) is not special. Counts of 1 and 12 and 15 were not reached; the island amount of the computer turns was not read, so those turns are not separated.
+- **Cited by:** E018-r0007.
+
+### Q-REI-03 (C-REI-04) - placing the pool
+
+- **Status:** narrowed
+- **This sitting:** the human places through a counter that starts at 0 with an all button, plus and minus buttons and a place button, after clicking a country; 12
+  placements, the whole pool each time, in one go except turn 1 (2, then 1); the pool message counts down; the counter never exceeded the pool. The over-pool and 999
+  cases are untested.
+- **Cited by:** E018-r0008.
+
+### Q-REI-05 - army growth over a game
+
+- **Status:** unestablished
+- **This sitting:** territory counts and card counts of all four seats at each of 46 turn starts are recorded (r0007); the map counters of the human seat's stacks are in r0006
+  and r0008, but armies per seat are not shown on the panel, so growth is not read. One game.
+
+## Setup, turns, events, ending
+
+### Q-SET-04 (C-SET-01) - the options screen
+
+- **Status:** corroborated (a second visit; the first target was one)
+- **This sitting:** the options screen at 00:01.0 to 00:03.0 shows the same groups and defaults as IP1 026 (four seat toggles with one human and three computers, a
+  five-entry starting-armies dial with the second entry highlighted, a three-entry strength dial, a four-entry event dial, a three-entry speed dial, a sound icon, a
+  save-as-default and a play button).
+- **Cited by:** E018-r0008.
+
+### Q-STA-01 / Q-STA-03 (C-STA-03, C-STA-05) - the deal
+
+- **Status:** narrowed
+- **This sitting:** a second deal: counts blue 9, yellow 11, red 10, green 16 (sum 46), the human at 9 with the middle strength (level 2, claim: 9); the first seat to play was
+  the human seat (IP1 026: yellow). Two deals of the target 10.
+- **Cited by:** E018-r0008.
+
+### Q-TRN-02 (C-TRN-02) - seat order
+
+- **Status:** narrowed
+- **This sitting:** the playing seat followed blue, yellow, red, green for all 46 turns before the human seat was out (11 full rounds and 2 more); after the elimination the
+  marker skipped the human seat for every turn of the play-out, and after red reached 0 (10:48.4) it alternated yellow and green: the skip of an eliminated seat is seen
+  twice. The play-out's turns are too fast (0.03 to 0.2 s) to count one by one.
+- **Cited by:** E018-r0007.
+
+### Q-TRN-05 - game length
+
+- **Status:** unestablished
+- **This sitting:** one game: 46 player-turns (12 human) to the human's elimination at 10:42.9 and 10:49.0 to the end, at the owner's own pace. Two games in two sittings
+  (55 and 46 turns) are not a distribution.
+- **Cited by:** E018-r0007, E018-r0008.
+
+### Q-HAZ-01 / Q-HAZ-02 / C-VIC-04 - event messages
+
+- **Status:** narrowed
+- **This sitting:** three event messages in 46 turns, all between turns and all of one kind (a production-centre increase): 03:52.0 to 03:57.0 (between turns 15 and 16), 09:26.0
+  to 09:31.0 (42 and 43) and 10:03.25 to 10:08.25 (44 and 45); none before turn 16; 3 of the 40 turn changes from turn 6 on, about 7.5 per cent (the claim's range is 1 in 8
+  to 1 in 21 by setting; the setting was the middle one). With IP1 026 (2 of 49): 5 of 89. No seat held 39 or more countries before the play-out.
+- **Cited by:** E018-r0009.
+
+### Q-VIC-01 / Q-SUR-05 (C-VIC-01, the elimination prompt) - the end
+
+- **Status:** narrowed
+- **This sitting:** the human seat was eliminated by a computer capture (attack 86, strip from 10:42.70; the seat at 0 countries at 10:42.87, with its 3 cards moving to the capturer);
+  the prompt with an accept-the-loss button and a keep-playing button came at 10:42.97; the owner's reply was to keep playing (the prompt closed at 10:46.97, the stop-playing
+  control stayed on the bottom bar and was not pressed); the remaining conquests ran at 0.03 to 0.2 s per attack with no per-attack screen, the yellow seat held 46 at 10:49.00 and the winner
+  dialog came at 10:49.2. The attack-round bonus after the elimination (C-AI-03) cannot be read in a play-out that short.
+- **Cited by:** E018-r0008, E018-r0009.
+
+## Computer opponent
+
+### C-AI-03 / C-AI-04 (Q-AI-01, Q-AI-04) - attacks and turns with none
+
+- **Status:** narrowed
+- **This sitting:** 74 computer attacks in 34 computer turns recorded with counts before and after (table above); the gates of Q-CMB-01 and Q-CMB-03 hold in all 73 resolved. Three computer
+  turns had no attack at all (turn 26, yellow seat, 12 countries; turn 27, red, 10; turn 35, red, 8), 3 of 34, about 9 per cent (the static reading gives about 1 in 22 for a seat
+  with 18 or fewer countries, expected 1.5); the cause (the skip draw or no qualifying pair) is not visible. The target is 20 games.
+- **Cited by:** E018-r0006, E018-r0007.
+
+### Q-AI-05 / Q-AI-02 / C-AI-06 - placement and cards
+
+- **Status:** unestablished for placement (the computer places with no screen); the computer's trade-in priority is only partly visible (see Q-BON-07).
+
+### Q-AI-07 - strength against scripted opponents
+
+- **Status:** unestablished (one game with an unscripted human; a win rate needs many games).
+
+### C-AI-05 (Q-AI-04's move half) - the computer's end-of-turn move
+
+- **Status:** narrowed
+- **This sitting:** 7 moves; every source was off the 23-country list (the claim excludes key sources), six of the seven destinations were on it (the move 19 to 22 was not); each moved all
+  but one army and the destination was a neighbour. Whether the source was the seat's largest eligible country was not checked.
+- **Cited by:** E018-r0008.
+
+## What only a human sitting shows (constraint E)
+
+These rest on the owner's videos, and on this one for the sitting's own readings; none is a rule claim.
+
+- The owner did not build the stacks the sitting was meant to test: the largest human stack was 6, and the owner quit seven of 13 battles at 3 or 2 armies (attacks 1, 2, 8, 27, 33, 43, 69),
+  five of them from a 3 against 2 position after starting with 4 or 5.
+- At the capture of attack 15 the owner moved the counter up to all but one (3 of 4) and then back to 2 before pressing done; at attack 23 it moved in 2 of 3 possible; in the other four captures it
+  left the counter at 1.
+- The human seat shrank from 9 countries to 3 by turn 41 and 2 by turn 43, and was eliminated at turn 46 by attack 86; the owner chose to keep playing at 10:46.97 and did not stop the play-out.
+- The owner pressed the card button with an empty hand at 02:24.6 and the card screen showed five empty slots.
+- The owner placed the whole pool every turn on one country (once split over two), and in all 12 turns the country it placed on (or, in turn 1, the two) was the attacker of that turn's attack or attacks (13 of 13 attacks).
+- The computer's answer to the owner's play is not separable from its own policy here; the data above is the computer's play, with no model-driven sitting to compare.
+
+## Re-reads (rule 20)
+
+A re-read of `IP1 027.mp4` writes new files beside r0006..r0009 (the next free record numbers) with their own frame hashes, and says which record it cross-references; these records stay as written.
+
+**Correction note (Luna's review of PR #186, R1):** E018-r0006 lists attack 87 twice: two identical `step: 87` observations, a copy made while writing. It is one attack (the unresolved play-out attack at 10:47.867), and every count above treats it as one: 87 attacks, 86 resolved plus one unresolved. The record stays as written. Anyone reading r0006 counts its step-87 observations once.
