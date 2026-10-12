@@ -73,8 +73,8 @@ that empties its drawer's hand *(choice V4)*.
 
 - A hand holds at most **five** cards.
 - A seat that draws while holding five looks at the drawn card, then discards one of its six cards,
-  any one, its own choice. Every seat follows this rule; which card the computer discards is its
-  policy (T53).
+  any one, its own choice *(choice V11: the owner decides between this and discarding before the
+  draw)*. Every seat follows this rule; which card the computer discards is its policy (T53).
 
 ### Trade-ins
 
@@ -141,12 +141,19 @@ How bonuses compare on a generated board is in
 
 *(choice V7: whether malpaco has centres at all, and in which form.)* The recommended form:
 
-- **How many and where.** One centre per seat (2 to 4). After the deal ([core-rules.md, The deal](core-rules.md#the-deal),
-  step 5), each seat's centre is drawn from the game stream among that seat's own countries, so every
-  seat starts with exactly one. No two centres are on the same island, and no two are neighbours. The
-  placement satisfies these from the seed; the engine's tests show that every generated board and deal
-  admits a valid placement within a stated number of draws, and define what happens when draws run
-  out (for example, relaxing the island condition before the neighbour one), never a hang.
+- **How many and where.** One centre per seat (2 to 4), placed after the deal
+  ([core-rules.md, The deal](core-rules.md#the-deal), step 5). A **placement** gives each seat one
+  centre on one of its own countries. The rules on placements, in order of strength:
+  1. **Always:** every seat gets exactly one centre, on its own country.
+  2. **Whenever some placement allows it:** no two centres are neighbours.
+  3. **Whenever some placement allows both 2 and this:** no two centres are on the same island.
+
+  The game's placement is drawn uniformly, from the game stream, among the placements that keep the
+  most of these rules: those keeping 1, 2 and 3 if any exists; else those keeping 1 and 2; else any
+  placement keeping 1. This is a rule about which placements are allowed and how likely each is; it
+  sets no number of draws. (The placements can be listed outright: at most about 17,500 for four
+  seats, 23 × 23 for two.) How often the second or third tier is needed is not modelled; it needs a
+  seat with few countries, all near the others' centres or on their islands.
 - **What a centre gives.** Its owner adds **1 army** to its pool at income for each centre it holds.
   (This needs a proposed amendment to core-rules.md's pool formula, stated in choice V7.)
 - **What a centre costs.** Nothing to build: a centre is a country worth holding and worth taking.
@@ -175,6 +182,9 @@ How bonuses compare on a generated board is in
 - A turn change is **not eligible** in round 1, while any seat is within 4 countries of winning
   ([core-rules.md, Victory](core-rules.md#victory)), after the game has ended, or right after a turn
   change that had an event (so two events never come back to back).
+- **The round limit** *(choice V12)*. When the round limit is on, no turn change in the last **3**
+  rounds is eligible (rounds 18 to 20 of a 20-round limit), so every seat has at least three turns
+  to answer the last event before the game is scored.
 - The check is the same at every turn change, whoever has played and whoever plays next. No route
   skips it for one kind of seat.
 - When an event happens, its kind is drawn by weight *(choice V8)*: Storm 2, Revolt 1, Harvest 2
@@ -201,7 +211,8 @@ How bonuses compare on a generated board is in
 - No event chooses a seat, by rank, by count or by being human or computer: storms and revolts draw
   countries, and every country is equally likely to be the storm's centre. A seat with more countries
   is struck more often only because it has more countries.
-- No event can end a game: events stop within 4 countries of a win, and a revolt moves one country.
+- No event can end a game or settle its scoring: events stop within 4 countries of a win, stop for
+  the last 3 rounds of a round-limit game (choice V12), and a revolt moves one country.
 
 ## Fairness between seats
 
@@ -345,7 +356,8 @@ What it says:
 ```python
 SET = 6                                    # the usual set (one of each kind)
 INCOME = {"early (rounds 1-5)": (3, 5), "mid (rounds 6-12)": (6, 12),
-          "late, leader": (15, 25), "late, trailing seat": (3, 6)}
+          "late, leader": (15, 25), "late, trailing seat": (3, 6),
+          "smallest seat (floor)": (2, 3)}
 for stage, (lo, hi) in INCOME.items():
     print(f"{stage:22} income {lo:2}-{hi:2}: a set of {SET} is {SET / hi:.2f}-{SET / lo:.2f} turns of income;"
           f" a set of 8 is {8 / hi:.2f}-{8 / lo:.2f}")
@@ -362,22 +374,38 @@ early (rounds 1-5)     income  3- 5: a set of 6 is 1.20-2.00 turns of income; a 
 mid (rounds 6-12)      income  6-12: a set of 6 is 0.50-1.00 turns of income; a set of 8 is 0.67-1.33
 late, leader           income 15-25: a set of 6 is 0.24-0.40 turns of income; a set of 8 is 0.32-0.53
 late, trailing seat    income  3- 6: a set of 6 is 1.00-2.00 turns of income; a set of 8 is 1.33-2.67
+smallest seat (floor)  income  2- 3: a set of 6 is 2.00-3.00 turns of income; a set of 8 is 2.67-4.00
 escalating, the game's trade-ins: [4, 6, 8, 10, 12, 15, 20, 25, 30, 35, 40, 45, 50, 55]
 ```
 
 The income bands are invented from core-rules.md's income table plus a few bonus armies; they are a
-model.
+model. The smallest seat's band is the floor itself: a seat with 1 to 11 countries, no complete island
+and no centre earns 2 or 3.
 
-- **A swing, not a decider.** A set is worth one to two turns of income early (when few seats have
-  one: a trade-in in 6% of turns before round 6), about one turn mid-game, and a third of a turn for a
-  late leader. After the opening, a set is worth at most about one turn's income (1.33 turns at worst:
-  a set of 8 against an income of 6).
+- **What a set is worth, honestly.** Measured against the trader's own income, a set is worth one to
+  two turns early, about one turn mid-game, a third of a turn to a late leader, and **one to four
+  turns to a trailing or smallest seat** (an 8-set at an income of 2 to 3 is 2.7 to 4 turns). So a set
+  is not small for everyone: for the smallest seats it is the largest single gain in the game, by
+  design (it is the comeback lean below).
+- **A swing, not a decider: the right yardstick.** Whether a set decides a game depends on what it is
+  set against, the leader's strength, not on the trader's own income. Eight armies are a third to a
+  half of a late leader's single turn (income 15 to 25). For a seat holding 6 to 11 countries, 8
+  armies buy two or three captures with ties re-rolled (about 3 armies a capture early,
+  [core-rules.md, Game length](core-rules.md#game-length-and-the-end)): enough to retake an island or
+  survive a few more rounds, not enough to climb from 11 countries to 35. One set lets a small seat
+  answer; it does not let it win on its own. That is the claim, and it rests on the gap between seats,
+  not on a bound on the ratio.
 - **Why the value does not grow.** With escalating sets, the game's later trade-ins are worth 30 to 55
-  armies, two or three times even a leader's income, so the game is decided by who holds a set when
-  the counter is high. That is a game decided by the deck, which the owner's direction rules out.
-  Fixed values keep a set's worth tied to its cards (choice V2).
-- **Why sets are small.** The predecessor's largest set added 15 armies, three to five turns of
-  early income, and a doubling set added the whole pool (C-CRD-05). malpaco's largest set is 8.
+  armies, two or three times even a leader's income and 10 to 27 turns of a smallest seat's, so the
+  game is decided by who holds a set when the counter is high. That is a game decided by the deck,
+  which the owner's direction rules out. Fixed values keep a set's worth tied to its cards (choice V2).
+- **Why sets are small.** The predecessor's largest set added 15 armies (C-CRD-05): three to five
+  turns of early income, and 5 to 7.5 turns at an income of 2 to 3. A doubling set added the whole
+  pool. malpaco's largest set is 8.
+- **Does this change V2's recommendation?** No. The smallest-seat case makes fixed values look
+  larger than the opening and mid-game figures suggest, but it makes the alternatives look worse by
+  more: (b)'s late sets are 10 to 27 turns of a small seat's income and (c)'s 15-set is 5 to 7.5. V2
+  says so.
 
 ### The raid and the shield
 
@@ -403,7 +431,7 @@ raid (left, lost): {2: (1, 1), 3: (2, 1), 4: (2, 2), 6: (3, 3), 9: (5, 4), 15: (
 
 - **Cards lean slightly to the trailing seat.** A card comes per capturing turn, not per capture, so a
   leader that takes six countries earns what a small seat earns for one. A set is a fixed number of
-  armies, worth one to two turns of income to a seat with 3 to 6 income and a third of a turn to a
+  armies, worth one to four turns of income to a seat with 2 to 6 income and a third of a turn to a
   leader with 15 to 25 (above).
 - **The rule that stops a runaway on cards:** one card per turn, one card action per turn, fixed set
   values, and an eliminated seat's cards discarded rather than taken (choice V6; in the classic game,
@@ -417,6 +445,8 @@ raid (left, lost): {2: (1, 1), 3: (2, 1), 4: (2, 2), 6: (3, 3), 9: (5, 4), 15: (
 
 ### Island bonuses on a generated board
 
+The bonus of one island, by size and entrances:
+
 ```python
 def bonus(size, e): return max(size // 2 + e, 2)
 print("bonus by size (rows) and entrances (columns 1-5); * = rejected by the fairness checks")
@@ -427,11 +457,6 @@ for size in (3, 5, 7, 10):
         bad = b > size or (size >= 7 and e == 1)
         row.append(f"{b}{'*' if bad else ''}")
     print(size, row)
-base = sum(s // 2 for s in (3, 3, 3, 3, 5, 5, 7, 7, 10))
-print("sum of floor(size/2):", base, "; total bonuses = that + entrance countries:",
-      {E: base + E for E in (14, 20, 26, 30, 36)})
-print("alternative floor(size/2) + ceil(e/2), same entrance counts:",
-      {E: base + -(-E // 2) for E in (14, 20, 26, 30, 36)}, "(per island ceil; the total is approximate)")
 ```
 
 ```text
@@ -440,22 +465,69 @@ bonus by size (rows) and entrances (columns 1-5); * = rejected by the fairness c
 5 ['3', '4', '5', '6*', '7*']
 7 ['4*', '5', '6', '7', '8*']
 10 ['6*', '7', '8', '9', '10']
-sum of floor(size/2): 19 ; total bonuses = that + entrance countries: {14: 33, 20: 39, 26: 45, 30: 49, 36: 55}
-alternative floor(size/2) + ceil(e/2), same entrance counts: {14: 26, 20: 29, 26: 32, 30: 34, 36: 37} (per island ceil; the total is approximate)
 ```
 
-- **Value against size and entrances.** After the fairness checks, every island pays 0.6 to 1.0 armies
-  per country (3 countries pay 2 or 3; 5 pay 3 to 5; 7 pay 5 to 7; 10 pay 7 to 10), and among islands
-  of one size, the one with more entrances, harder to hold, pays more.
-- **How the generator keeps bonuses comparable.** Within a board, the checks of
-  [core-rules.md, Fairness checks](core-rules.md#fairness-checks) (no bonus above the size, no fortress,
-  easy bonuses at most a quarter of the total) keep every island's bonus within that band. Across
-  boards, the total is 19 plus the number of entrance countries: with 14 to 18 crossings and at most
-  2 crossings per country, between 33 and 55, likely in the middle. That is more than the
-  predecessor's 35 (C-BON-02), so islands weigh a little more in malpaco; choice V10 asks whether to
-  tune that before play-tests.
+The board's total bonus, over every vector of entrance counts (one count per island) that passes
+the island-level fairness checks of [core-rules.md, Fairness checks](core-rules.md#fairness-checks):
+
+```python
+# Board bonus totals over admissible entrance counts (a model of the checks, not of the generator).
+from itertools import product
+SIZES = (3, 3, 3, 3, 5, 5, 7, 7, 10)
+
+def rule_a(s, e): return max(s // 2 + e, 2)                 # decision 12
+def rule_b(s, e): return max(s // 2 + -(-e // 2), 2)        # the alternative, rounded per island
+
+def admissible(es):
+    """core-rules.md's island-level fairness checks, as far as entrance counts decide them."""
+    if any(rule_a(s, e) > s for s, e in zip(SIZES, es)):      # no bonus above the size
+        return False
+    if any(s >= 7 and e == 1 for s, e in zip(SIZES, es)):     # fortress: 7+ countries, one entrance
+        return False
+    singles = [i for i, e in enumerate(es) if e == 1]
+    if len(singles) > 3:                                      # more than 3 single-entrance islands
+        return False
+    total = sum(rule_a(s, e) for s, e in zip(SIZES, es))
+    if 4 * sum(rule_a(SIZES[i], 1) for i in singles) > total: # easy bonuses over a quarter
+        return False
+    return 14 <= sum(es) <= 36                                # entrance countries: 14-18 crossings, <= 2 per country
+
+ok = [es for es in product(*(range(1, s + 1) for s in SIZES)) if admissible(es)]
+for name, rule in (("(a) floor(size/2) + entrances", rule_a), ("(b) floor(size/2) + ceil(entrances/2)", rule_b)):
+    totals = sorted({sum(rule(s, e) for s, e in zip(SIZES, es)) for es in ok})
+    print(f"{name}: totals {totals[0]} to {totals[-1]}; every value between occurs: {totals == list(range(totals[0], totals[-1] + 1))}")
+print("entrance countries on admissible vectors:", min(map(sum, ok)), "to", max(map(sum, ok)))
+print("most entrances per island under the checks:", [max(es[i] for es in ok) for i in range(len(SIZES))])
+print("bonus per country, (a):", round(min(rule_a(s, e) / s for es in ok for s, e in zip(SIZES, es)), 2), "to",
+      round(max(rule_a(s, e) / s for es in ok for s, e in zip(SIZES, es)), 2))
+```
+
+```text
+(a) floor(size/2) + entrances: totals 34 to 46; every value between occurs: True
+(b) floor(size/2) + ceil(entrances/2): totals 28 to 34; every value between occurs: True
+entrance countries on admissible vectors: 15 to 27
+most entrances per island under the checks: [2, 2, 2, 2, 3, 3, 4, 4, 5]
+bonus per country, (a): 0.6 to 1.0
+```
+
+- **Bounds, not achieved boards.** These are bounds over entrance vectors that pass the checks an
+  entrance count decides (no bonus above the size, no fortress, at most 3 single-entrance islands, easy
+  bonuses at most a quarter, 14 to 36 entrance countries). Every total in each range occurs for some
+  such vector. Whether a generated board reaches every one also depends on the island-graph checks
+  (an island touching at most 4 others, at most 4 crossings apart, at most 2 crossings per country),
+  which this model does not build; the achieved range can only be the same or narrower.
+- **Value against size and entrances.** After the checks, every island pays 0.6 to 1.0 armies per
+  country (3 countries pay 2 or 3; 5 pay 3 to 5; 7 pay 5 to 7; 10 pay 7 to 10), and among islands of
+  one size, the one with more entrances, harder to hold, pays more. The most entrances an island can
+  have under the checks are 2, 3, 4 and 5 for sizes 3, 5, 7 and 10.
+- **How the generator keeps bonuses comparable.** Within a board, those checks keep every island's
+  bonus in that band. Across boards, decision 12's total lies between **34 and 46** (19 plus 15 to 27
+  entrance countries), against the predecessor's 35 (C-BON-02): the same at the low end, a third more
+  at the top. The halved entrance term of choice V10 (b), rounded per island, gives **28 to 34** on
+  the same vectors.
 - **Against income.** A small island (2 or 3) matches the country part of the income of a seat with
-  up to 11 countries, a cheap first goal; the 10-country island (7 to 10) is a late prize worth a set every turn.
+  up to 11 countries, a cheap first goal; the 10-country island (7 to 10) is a late prize worth a set
+  every turn.
 
 ### Production centres
 
@@ -467,28 +539,32 @@ alternative floor(size/2) + ceil(e/2), same entrance counts: {14: 26, 20: 29, 26
   them, up to 999 (C-CEN-02): a doubled 60 is +60, three to six turns of a 10- to 20-army income in one
   event, given to whoever stood there. The harvest's +3 per centre is a fixed, small gift, the same for every centre.
 - The predecessor's centres were placed anywhere and moved by an event (C-CEN-01, C-CEN-03, C-CEN-04),
-  so one seat could start with none, or with two side by side. Dealing one per seat on different
-  islands removes that luck; fixed centres can be planned around.
+  so one seat could start with none, or with two side by side. Dealing one per seat removes that luck;
+  apart and on different islands whenever the deal allows it; fixed centres can be planned around.
 
 ### Events
 
 ```python
-eligible = 20 * 4 - 4 - 4                  # 20 rounds of 4 seats, no events in round 1 nor in the last round (model)
+def eligible(rounds, quiet_rounds):        # turn changes of 4 seats, none in round 1 nor in the quiet rounds at the end
+    return (rounds - 1 - quiet_rounds) * 4
 for name, p in (("rare", 1 / 32), ("normal", 1 / 16), ("often", 1 / 8)):
     spacing = 1 + 1 / p                    # one forced empty transition after an event, then geometric waiting
-    print(f"events {name:6} p=1/{round(1 / p)}: mean spacing {spacing:.0f} turn changes, about {eligible / spacing:.1f} per 20-round game")
+    print(f"events {name:6} p=1/{round(1 / p)}: mean spacing {spacing:.0f} turn changes; per game:"
+          f" {eligible(20, 1) / spacing:.1f} (20 rounds, domination, ~1 round paused near the end),"
+          f" {eligible(20, 3) / spacing:.1f} (round limit 20, last 3 quiet), {eligible(30, 3) / spacing:.1f} (limit 30)")
 def storm(stack): return min(stack // 2, 5)
 print("storm loss per country:", {s: storm(s) for s in (1, 2, 3, 4, 6, 10, 20)}, "at most 3 countries, 15 armies")
 ```
 
 ```text
-events rare   p=1/32: mean spacing 33 turn changes, about 2.2 per 20-round game
-events normal p=1/16: mean spacing 17 turn changes, about 4.2 per 20-round game
-events often  p=1/8: mean spacing 9 turn changes, about 8.0 per 20-round game
+events rare   p=1/32: mean spacing 33 turn changes; per game: 2.2 (20 rounds, domination, ~1 round paused near the end), 1.9 (round limit 20, last 3 quiet), 3.2 (limit 30)
+events normal p=1/16: mean spacing 17 turn changes; per game: 4.2 (20 rounds, domination, ~1 round paused near the end), 3.8 (round limit 20, last 3 quiet), 6.1 (limit 30)
+events often  p=1/8: mean spacing 9 turn changes; per game: 8.0 (20 rounds, domination, ~1 round paused near the end), 7.1 (round limit 20, last 3 quiet), 11.6 (limit 30)
 storm loss per country: {1: 0, 2: 1, 3: 1, 4: 2, 6: 3, 10: 5, 20: 5} at most 3 countries, 15 armies
 ```
 
-- **How often.** Normal gives about one event every four rounds, four or so a game: enough to be
+- **How often.** Normal gives about one event every four rounds, four or so a game (a little under
+  four with a 20-round limit and its quiet last 3 rounds, six with a 30-round limit): enough to be
   remembered, not enough to steer. (In the owner's recordings of the predecessor at its default
   setting, 8 of 157 turn changes had an event, about one in twenty, `runs/coverage.md` and
   `runs/E018`.)
@@ -499,6 +575,13 @@ storm loss per country: {1: 0, 2: 1, 3: 1, 4: 2, 6: 3, 10: 5, 20: 5} at most 3 c
 - **Why none decides a game.** No event zeroes a stack or eliminates a seat (C-HAZ-07 kept), none
   targets a seat, and none is drawn in round 1 or within 4 countries of a win. The predecessor's
   flood could take a 20-army stack to 1 to 9 (C-HAZ-05); malpaco's storm takes it to 15.
+- **The round limit.** A round-limit game is scored by countries, then armies, at the end of the last
+  round, so a late event could settle it with no time to answer: in a two-seat game at 24 against 22
+  countries before the last turn, a revolt makes it 23 against 23 and the tie-break goes to armies,
+  which the last seat's placement then decides. Neither seat is near the domination pause. The quiet
+  last 3 rounds (choice V12) leave every seat at least three turns after the last event, time to
+  retake a country or two (a revolt moves one, a storm takes at most 15 armies). An event before them
+  can still matter, as any event does, but it no longer settles the score by itself.
 - **Who they hit.** Storms and revolts draw countries, so they fall on seats in proportion to what
   they hold: the leader is hit most often in absolute terms, without any rule that aims at it.
 
@@ -520,9 +603,15 @@ above describe the recommended option. When the owner decides, this section beco
    - (a) fixed: three Anchors 4, three Compasses 6, three Lanterns 8, one of each 6, at most one Wild
      per set; (b) escalating with the game's trade-in count: 4, 6, 8, 10, 12, 15, then 5 more each;
      (c) larger fixed values like the predecessor's (5, 8 and 15 by kind), with up to two Wilds per set.
-   - Recommendation (a): a set is a swing of one to two turns of income early and less later; (b) makes
-     late sets worth 30 to 55 armies, so the deck decides; (c) makes an early 15-set worth three to
-     five turns of income.
+   - Recommendation (a): a set is one to two turns of the trader's income early, less later, and up
+     to four turns for the smallest seats (an 8-set at income 2); against the leader it stays a third
+     to a half of one turn, so it lets a small seat answer without winning on its own
+     ([Trade-ins against income](#trade-ins-against-income)). (b) makes late sets worth 30 to 55
+     armies, 10 to 27 turns of a small seat's income, so the deck decides; (c) makes a 15-set worth
+     three to five turns of early income and 5 to 7.5 of a small seat's. The smallest-seat case
+     makes (a)'s sets look larger than the opening and mid-game figures suggest; it does not change the
+     recommendation, because it makes (b) and (c) look worse by more. If the owner wants small seats
+     helped less, lower the Lantern set to 6 (every set then 4 or 6).
 3. **V3. A pool-doubling card** (C-CRD-01, C-CRD-05).
    - (a) none; (b) a Surge kind whose set adds the seat's country income again, at most 8; (c) a set
      that doubles the whole pool, as the predecessor's did.
@@ -549,12 +638,21 @@ above describe the recommended option. When the owner decides, this section beco
    - Recommendation (a): taking a beaten seat's cards is the classic runaway, rewarding the leader for
      being the leader; (b) and (c) add a reason to finish a seat off, at that cost.
 7. **V7. Production centres** (C-CEN-01, C-CEN-02, C-CEN-03, C-CEN-04, C-HAZ-08).
-   - (a) no centres, and no harvest event; (b) one centre per seat, dealt one each, on different
-     islands and not neighbours, paying 1 army a turn to its owner, never moved; the harvest adds 3 to
-     each centre's stack; (c) three centres drawn anywhere, paying nothing; the harvest doubles each
-     centre's stack, adding at most 10, and a further event moves all three.
+   - (a) no centres, and no harvest event. Promises nothing to place.
+   - (b) one centre per seat, paying 1 army a turn to its owner, never moved; the harvest adds 3 to
+     each centre's stack. Placement as in [Production centres](#production-centres): drawn uniformly
+     among the placements that keep the most of the tiers. It **promises** one centre per seat on its
+     own country, always; no two centres neighbours whenever any placement allows that; and different
+     islands as well whenever any placement allows both. It does **not** promise the two spacing
+     rules on every deal: when no placement keeps them, the rule says which is given up first (the
+     island rule, then the neighbour rule).
+   - (c) three centres drawn uniformly as three distinct countries anywhere, paying nothing; the
+     harvest doubles each centre's stack, adding at most 10, and a further event moves all three
+     (drawn again the same way). Promises only three distinct countries: a seat may hold none, or
+     all three side by side.
    - Recommendation (b): centres give each seat a home to defend and every board extra places worth
-     fighting for, at a size that never decides a game; (a) is simpler; (c) keeps the predecessor's
+     fighting for, at a size that never decides a game, and the tiers make the placement defined on
+     every deal without a promise the deal cannot keep; (a) is simpler; (c) keeps the predecessor's
      luck of placement and moving.
    - **Proposed amendments to core-rules.md**, if (b) is chosen: in
      [Reinforcement](core-rules.md#reinforcement), the pool becomes `max(floor(countries / 3), 2) + the
@@ -582,12 +680,39 @@ above describe the recommended option. When the owner decides, this section beco
      (b) its row reads: Off, Rare, Normal, Often; default Normal (a) or Rare (b).
 10. **V10. Tuning the island bonus constants** (C-BON-02; the owner's decision 12 in core-rules.md).
     - (a) keep decision 12 as it is: `floor(size / 2) + entrances`, at least 2, no island above its
-      size; (b) halve the entrance term, `floor(size / 2) + ceil(entrances / 2)`, for board totals near
-      the predecessor's (26 to 37 instead of 33 to 55); (c) keep (a) and add a fairness check that a
-      board's total bonus lies in a band (for example 38 to 50).
-    - Recommendation (a): the owner chose it on 2026-10-12, and its total is only a model until
+      size: board totals between 34 and 46 over the admissible entrance vectors; (b) halve the entrance
+      term, rounded per island, `floor(size / 2) + ceil(entrances / 2)`: totals 28 to 34, at or below
+      the predecessor's 35; (c) keep (a) and add a fairness check that a board's total bonus lies in a
+      band inside 34 to 46 (for example 37 to 43). All ranges are bounds from
+      [the model](#island-bonuses-on-a-generated-board); a generated board's island-graph checks can
+      only narrow them.
+    - Recommendation (a): the owner chose it on 2026-10-12; its total starts at the predecessor's
+      level and reaches a third more, which is a modest weight for islands, and only a model until
       play-tests; (b) and (c) are the levers if play-tests show islands dominate income or boards differ
       too much. Either would be an amendment to core-rules.md, Island bonuses or Fairness checks.
+11. **V11. A draw into a full hand** (C-CRD-04).
+    - (a) draw first: the seat sees the new card, then discards any one of its six (it may discard
+      the new card); (b) discard first, as the predecessor: the seat discards one of its five without
+      seeing the new card, then draws; (c) no draw: a seat with five cards earns no card for its
+      capturing turn.
+    - Recommendation (a): the seat decides with all the facts, so the discard is a real choice and
+      never a blind loss of the card it wanted; it also keeps a Raid or Shield drawn into a full hand
+      from being lost by bad timing. (b) adds a small gamble and a reason to trade before the hand
+      fills, and hides the new card one moment longer; (c) is the strongest push to trade early, but
+      it takes the capture reward away from a seat that is saving for a set. The rules above describe
+      (a); the owner decides.
+12. **V12. Events near the end of a round-limit game** (C-HAZ-03, C-HAZ-07).
+    - (a) when the round limit is on, no events in the last 3 rounds; (b) the same, in the last 5
+      rounds; (c) when the round limit is on, no events in the last 5 rounds while the two seats with
+      the most countries are within 4 countries of each other.
+    - Recommendation (a): every seat keeps at least three turns after the last event, enough to retake
+      the one country a revolt moves or rebuild what a storm took, so no event settles the score by
+      itself; it is a fixed, visible rule. (b) is safer but removes events from a quarter of a
+      20-round game; (c) keeps more events but is harder to read, and a race between the third and
+      fourth seats is not protected.
+    - **Proposed amendment to core-rules.md** (all options): in [Victory](core-rules.md#victory), the
+      sentence on events not drawn near a win gains "and, when the round limit is on, in its last 3
+      rounds" (or the chosen option's words).
 
 ## Decisions, claim by claim
 
@@ -600,7 +725,7 @@ changes the feel of play names its choice; the rule it links is the recommended 
 | C-CRD-01 | change | [The kinds](#the-kinds): six kinds of malpaco's own (three army kinds, Wild, Raid, Shield), hands of five, empty at game start (choices V1, V3, V4) | Kept: cards, a hand of five, empty hands at start. Changed: no doubling card and no hand-emptying card, so every card is either armies, a tactical strike or a defence; the card screen is T52's. |
 | C-CRD-02 | replace | [The deck](#the-deck): a finite 40-card deck, shuffled from the seed, discards reshuffled (choice V1) | A fixed list never shuffled is the same sequence of chances every game; a shuffled deck gives a new order each game, limits streaks and can be counted. |
 | C-CRD-03 | change | [Earning a card](#earning-a-card): one card per capturing turn for every seat, never cancelled | Kept: a card for a turn with a capture, which rewards attacking without rewarding the leader per capture. Changed: the failed-attack cancel belonged to the forfeit, dropped in core-rules.md (decision 7). |
-| C-CRD-04 | change | [The hand](#the-hand): limit five; on a full hand every seat discards one of six of its choice; no hand-emptying card (choice V4) | Kept: the limit of five, which stops hoarding. Changed: one discard rule for every seat (the computer's fixed priority goes), and the hand-emptying card is gone, because it punished with no counter-play. |
+| C-CRD-04 | change | [The hand](#the-hand): limit five; on a full hand every seat draws, then discards one of six of its choice (choice V11); no hand-emptying card (choice V4) | Kept: the limit of five, which stops hoarding. Changed: one discard rule for every seat (the computer's fixed priority goes); the draw comes before the discard, so the choice is made with all the facts (the owner's, V11); and the hand-emptying card is gone, because it punished with no counter-play. |
 | C-CRD-05 | change | [Trade-ins](#trade-ins): one optional set per turn at the cards phase; three alike or one of each, one Wild at most; fixed 4, 6, 8 or 6 (choices V2, V3) | Kept: one set per turn, after income and before placement. Changed: smaller fixed values and no doubling, so a set is a swing and not a decider; every seat may skip; the computer's fixed priority and uncapped Wild use go. |
 | C-CRD-06 | replace | [The raid](#the-raid-and-the-shield): a Raid card takes half of a bordering enemy stack, at most 10 (choice V5) | The predecessor's bomb could leave a 40-army stack at 1, and the computer's targeting was mis-indexed; a capped raid next to the raider is a readable tactic, the same for every seat. |
 | C-CRD-07 | change | [The shield](#the-raid-and-the-shield): a Shield cancels one raid automatically and is discarded, with no other effect | Kept: a held defence that cancels one strike. Changed: the side effect on the bomber's hand was a defect, not a rule. |
@@ -610,11 +735,11 @@ changes the feel of play names its choice; the rule it links is the recommended 
 | C-CEN-01 | open | [Production centres](#production-centres): one per seat, dealt one each, recommended (choice V7) | Whether malpaco has centres, and how many, changes the feel of play; the owner decides. Three centres drawn anywhere can leave a seat with none. |
 | C-CEN-02 | open | [Production centres](#production-centres): +1 army a turn per centre held; the harvest adds 3, no doubling (choice V7) | A doubling up to 999 could add three to six turns of income in one event; a small, steady income and a fixed harvest make centres worth fighting for without deciding games. The owner decides. |
 | C-CEN-03 | open | [Production centres](#production-centres): centres never move (choice V7) | Moving every centre at random undoes the planning around them; fixed centres can be attacked and defended. The owner decides. |
-| C-CEN-04 | open | [Production centres](#production-centres): no two centres on one island or neighbours (choice V7) | Unconstrained placement can bunch centres; spacing them keeps the start even. The owner decides. |
+| C-CEN-04 | open | [Production centres](#production-centres): one per seat, apart and on different islands whenever a placement allows it (choice V7) | Unconstrained placement can bunch centres; spacing them, in stated tiers, keeps the start even on every deal. The owner decides. |
 | C-CEN-05 | keep | [Production centres](#production-centres): a centre belongs to whoever owns its country, survives capture, and is marked for every seat | Capturing a centre is the reason to attack it; marking it for everyone removes the predecessor's computer-only use of the list (T53 values it for the computer). |
 | C-HAZ-01 | change | [Events](#events): storm, revolt and harvest, weights 2, 1, 2; a repeat redrawn once (choice V8) | Kept: a few kinds and the redraw of a repeat. Changed: earthquake and flood were one effect under two names; the centre move goes with fixed centres. |
 | C-HAZ-02 | change | [When an event is drawn](#when-an-event-is-drawn): one eligibility rule at every turn change, for every seat | Kept: one dispatch and one set of effects for every seat. Changed: no route that depends on human seats can pre-empt a draw, so events are seat-blind. |
-| C-HAZ-03 | change | [When an event is drawn](#when-an-event-is-drawn): 1 in 32, 16 or 8 by setting, Normal default; none in round 1, near a win or right after an event (choice V9) | Kept: a frequency setting, no events at the start or the end, no two in a row. Changed: the near-win pause follows malpaco's win rule (core-rules.md), and the rates are malpaco's. |
+| C-HAZ-03 | change | [When an event is drawn](#when-an-event-is-drawn): 1 in 32, 16 or 8 by setting, Normal default; none in round 1, near a win, in a round-limit game's last 3 rounds, or right after an event (choices V9, V12) | Kept: a frequency setting, no events at the start or the end, no two in a row. Changed: the near-win pause follows malpaco's win rule (core-rules.md), a pause before a round limit's scoring is added, and the rates are malpaco's. |
 | C-HAZ-04 | replace | [Storm](#the-kinds-of-event): a drawn country and up to two neighbours on its island (choice V8) | A block of consecutively numbered countries means nothing on a generated board, and excluding one country was an artefact; neighbours on one island are a place on the map. |
 | C-HAZ-05 | change | [Storm](#the-kinds-of-event): each struck stack loses half, at most 5, never below 1 (choice V8) | Kept: a storm thins stacks and never empties one. Changed: the loss is capped, so a storm costs at most a mid-game turn's income instead of most of a big stack. |
 | C-HAZ-06 | change | [Revolt](#the-kinds-of-event): one country of 1 to 3 armies, of a seat with 3 or more, passes to a bordering seat (choice V8) | Kept: a revolt turns one country and changes no armies, and draws without regard to rank. Changed: only small stacks revolt and they go to a neighbour, so the swing is about one capture. |
