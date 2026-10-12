@@ -18,9 +18,8 @@ decision rules and the properties they must have; how to compute them well is ma
 work, and malpaco's tests measure the result ([Measuring strength](#measuring-strength)). The owner
 decided the feel-changing calls A1 to A12 on 2026-10-12
 ([The owner's decisions](#the-owners-decisions-2026-10-12)); values marked *(A1)* to *(A12)* below are
-those decisions. The calls A13 to A17, raised by the first review, are listed in
-[Choices for the owner](#choices-for-the-owner) with options and a recommendation; the text below
-describes their recommended options, marked *(A13)* to *(A17)*. Build every value behind a named
+those decisions. The calls A13 to A17, raised by the first review, the owner decided the same day (the
+recommended option in each); values marked *(A13)* to *(A17)* are those decisions. Build every value behind a named
 constant (the names in capitals below).
 
 ## Terms
@@ -752,24 +751,20 @@ the rows' new rules.
 
 The amendments to core-rules.md that A1, A3 and A8 call for are applied there, citing these
 decisions.
-
-## Choices for the owner
-
-The first review raised five more feel-changing calls. Each entry names the claims it touches, the
-options, a recommendation and its reason; the text above describes the recommended option. None of
-them reopens a row of the decision table: no option brings back the predecessor's rule, so each row's
-decision stands whichever option is chosen.
-
 13. **A13. Where the computer places** (C-AI-01).
     - (a) front countries only; (b) front countries, and an interior country one border from the front
       when its stack would reach the front by the end-of-turn move; (c) any own country, by value.
     - Recommendation (a): an interior army cannot attack or defend this turn, and the move already
       brings interior armies forward; (b) and (c) add stacks a player must track for little gain.
+    - **Decided: (a).**
+
 14. **A14. How many countries receive armies** (C-AI-01).
     - (a) at most 3 a turn; (b) at most 5, as many as the predecessor's top-five split; (c) no limit,
       by value.
     - Recommendation (a): concentration wins battles under one-die combat, and three placements are
       quick to watch; (c) lets a cautious level spread thin, which stalls.
+    - **Decided: (a).**
+
 15. **A15. The anti-stall drop** (C-AI-03, C-AI-04).
     - (a) after 2 own turns without a capture, the attack threshold drops by 0.10 a turn to a floor of
       0.40; (b) the same drop to a floor of 0.45; (c) no drop: each level keeps its threshold, and
@@ -778,6 +773,8 @@ decision stands whichever option is chosen.
       and 0.40 breaks it in 2 turns at an even trade of armies; (b) breaks it only once both stacks
       reach 33 (6 turns in the model's mirrored border; equal stacks of 20 capture 43.6%), and (c) can stall a game of
       computers until the round cap.
+    - **Decided: (a).**
+
 16. **A16. Starting handicaps and the leader check** (C-AI-03, C-AI-04).
     - (a) real counts in both tests: a seat dealt extra countries by the humans' share settings can
       count as a leader from the start; (b) the ratio test on adjusted counts (countries minus the
@@ -787,6 +784,8 @@ decision stands whichever option is chosen.
       28 real countries is checked however it got there. (c) would let a seat handed 8 or more
       countries (up to 12) reach the domination win at 35 before its adjusted count reached 28. All three are one formula
       for every seat.
+    - **Decided: (b).**
+
 17. **A17. What a player watches of a computer turn** (C-AI-03).
     - (a) each battle shown in at most 3 steps, and a watch budget per turn (15 seconds at normal speed
       proposed) after which the rest of the turn is fast-forwarded, play unchanged; (b) exchanges
@@ -795,13 +794,13 @@ decision stands whichever option is chosen.
     - Recommendation (a): at most 36 steps a turn whatever the stacks, and the budget shortens only the
       showing; (b) leaves a battle of large stacks long to watch, and (c) lets the presentation change
       the play.
+    - **Decided: (a).**
 
 ## Decisions, claim by claim
 
 One row per in-scope spec claim (9). `keep` serves fun or balance as it is; `change` alters it;
 `replace` swaps in a different rule; `drop` removes it; `open` would wait for the owner. No row is
-`open`: A1 to A12 are decided, and none of A13 to A17 can bring back the predecessor's rule, so each
-row's decision stands whichever option the owner picks. A claim that is not
+`open`: the owner decided A1 to A17. A claim that is not
 `supported` or `corroborated` still gets a row; its decision is a design choice and the row says so.
 
 | Claim | Decision | malpaco's rule | Why |

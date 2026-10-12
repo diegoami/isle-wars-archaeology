@@ -2,12 +2,11 @@
 
 Every design choice of [core-rules.md](core-rules.md) (T50, the owner's decisions 1 to 12),
 [variety.md](variety.md) (T51, the owner's decisions V1 to V12) and [computer.md](computer.md) (T53,
-the owner's decisions A1 to A12, and the choices A13 to A17), with its decided option, the
+the owner's decisions A1 to A17), with its decided option, the
 **canonical** variant malpaco builds first, and every other option kept as a named variant that a
 later version may offer as a setting. This file is a catalogue: it claims no spec rows, and the rule
 text lives in the design files, linked from each entry. Options, recommendations and reasons are in
-each file's owner's sections. For A13 to A17 the canonical line names the owner's choice and the
-recommended option; it gives the decided option once the owner decides.
+each file's owner's sections.
 
 A variant name is the choice's number and the option's letter (for example **T50-11a**, **V2b**,
 **A5c**).
@@ -297,7 +296,7 @@ seat's view, its own random stream, and levels that change only decisions. No va
 - Interacts with: V1 (the reshuffle resets what is known), V4 (the Squall's place), A7, A10.
 
 ### A13 Where the computer places
-- **Canonical: the owner's choice.** Recommended (a). [Placement](computer.md#placement).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Placement](computer.md#placement).
 - **A13a Front only.**
 - **A13b Front and one behind.** Also an interior country one border from the front, when the move can
   bring its stack forward.
@@ -306,14 +305,14 @@ seat's view, its own random stream, and levels that change only decisions. No va
   storms hit front stacks; a reserve behind the front is safer from neither).
 
 ### A14 How many countries receive armies
-- **Canonical: the owner's choice.** Recommended (a). [Placement](computer.md#placement).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Placement](computer.md#placement).
 - **A14a At most 3.**
 - **A14b At most 5.**
 - **A14c No limit.**
 - Interacts with: A13, A17 (each placement is one shown step), A15 (spreading thin slows captures).
 
 ### A15 The anti-stall drop
-- **Canonical: the owner's choice.** Recommended (a). [Attacks](computer.md#attacks).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Attacks](computer.md#attacks).
 - **A15a Floor 0.40.** After 2 own turns without a capture, the threshold drops by 0.10 a turn to 0.40.
 - **A15b Floor 0.45.** The same drop, to 0.45: a mirrored border breaks only once both stacks reach 33.
 - **A15c No drop.** Stalls are left to raids, storms, the domination win and the round limit.
@@ -321,7 +320,7 @@ seat's view, its own random stream, and levels that change only decisions. No va
   (what ends a stalled game), V5 and V8, A1 (each level's own threshold).
 
 ### A16 Starting handicaps and the leader check
-- **Canonical: the owner's choice.** Recommended (b). [The leader check](computer.md#the-leader-check).
+- **Canonical: (b), the owner's decision (2026-10-12).** [The leader check](computer.md#the-leader-check).
 - **A16a Real counts.** A seat dealt extra countries by the share settings can be a leader from the
   start.
 - **A16b Adjusted ratio test.** The ratio test reads countries minus the deal's handicap transfer; the
@@ -331,7 +330,7 @@ seat's view, its own random stream, and levels that change only decisions. No va
   threshold).
 
 ### A17 What a player watches of a computer turn
-- **Canonical: the owner's choice.** Recommended (a). [Quick turns](computer.md#quick-turns).
+- **Canonical: (a), the owner's decision (2026-10-12).** [Quick turns](computer.md#quick-turns).
 - **A17a Grouped steps and a watch budget.** At most 3 steps a battle and a per-turn budget, then
   fast-forward; play unchanged.
 - **A17b Batches of five.** Exchanges shown five at a time, no turn budget.
