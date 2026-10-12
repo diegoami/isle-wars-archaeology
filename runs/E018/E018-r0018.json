@@ -163,13 +163,13 @@
       "step": 0,
       "source": "screen",
       "field": "the end: the concession offer and the order of events",
-      "value": "the human held 33 countries from 13:34.03 and went on attacking for 75 more seconds in the same turn (turn 29, 12:56.7 to 14:48.8), taking 8 more countries; the turn ended with the card screen (14:54.5 hand with the protection card, a draw); the offer came at the turn transition, a banner of two buttons (accept the win, keep playing) with a dialog saying the other forces concede the game to the blue army, from about 14:55.0 to 15:01.2 (scene changes at 14:54.93 and 14:55.03); as in IP1 028 the offer came at the end of the human turn that held 33 or more, not at the 33rd capture (here 75 s and 8 countries later); the owner pressed the accept button, which brightens at 15:01.0, and both buttons were gone by 15:01.4."
+      "value": "the human held 33 countries from 13:34.03 and went on attacking for 75 more seconds in the same turn (turn 29, 12:56.7 to 14:48.8), taking 8 more countries; the turn ended with the draw screen (14:54.5 hand with the shield card, a draw); the offer came at the turn transition, a banner of two buttons (accept, play on) with a dialog saying that the computer seats concede to the blue seat, from about 14:55.0 to 15:01.2 (scene changes at 14:54.93 and 14:55.03); as in IP1 028 the offer came at the end of the human turn that held 33 or more, not at the 33rd capture (here 75 s and 8 countries later); the owner pressed the accept button, which brightens at 15:01.0, and both buttons were gone by 15:01.4."
     },
     {
       "step": 0,
       "source": "screen",
       "field": "the end: winner dialog, scoreboard, title",
-      "value": "a dialog said the blue army is the winner of the game from 15:01.47 (scene change at 15:01.47) to 15:03.77; the scoreboard screen came at 15:03.77 (rows for three levels: won, lost, percent) and read, for the three rows, easy 0 won 0 lost 0 %, normal 1 won 3 lost 0 % at 15:04.0; at 15:06.13 the screen changed: easy 1 won 0 lost 100 %, normal 1 won 3 lost 25 % (frame at 15:06.0 already shows the new numbers within a rounding of the scene-change time, the frame at 15:06.1 to 15:06.2 is the first with them); the title screen at about 15:08.0; the recording ends at 15:10.4 on the title screen. The game just won was played on the easy level and appears in the easy row (1 won, 0 lost); the normal row is 1 won, 3 lost: the three earlier losses (IP1 025 to 027) and one win, which fits IP1 028's accepted win (a normal-level game). So the win of a concession is recorded; the scoreboard first shows the old numbers and updates 2.4 s after it appears."
+      "value": "a dialog named the blue seat the winner from 15:01.47 (scene change at 15:01.47) to 15:03.77; the scoreboard screen came at 15:03.77 (rows for three levels: won, lost, percent) and read, for the three rows, easy 0 won 0 lost 0 %, normal 1 won 3 lost 0 % at 15:04.0; at 15:06.13 the screen changed: easy 1 won 0 lost 100 %, normal 1 won 3 lost 25 % (frame at 15:06.0 already shows the new numbers within a rounding of the scene-change time, the frame at 15:06.1 to 15:06.2 is the first with them); the title screen at about 15:08.0; the recording ends at 15:10.4 on the title screen. The game just won was played on the easy level and appears in the easy row (1 won, 0 lost); the normal row is 1 won, 3 lost: the three earlier losses (IP1 025 to 027) and one win, which fits IP1 028's accepted win (a normal-level game). So the win of a concession is recorded; the scoreboard first shows the old numbers and updates 2.4 s after it appears."
     },
     {
       "step": 0,
@@ -186,7 +186,7 @@
     {
       "step": 0,
       "source": "screen",
-      "field": "frame: the concession offer at 14:57.0 (accept the win, keep playing)",
+      "field": "frame: the concession offer at 14:57.0 (accept, play on)",
       "ref": "sha256:3846e8c39fa20119fdf64a6d1d04984adac9b79ae14b12bff4921cb08dfb9361"
     },
     {

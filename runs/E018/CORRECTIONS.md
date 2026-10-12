@@ -1675,7 +1675,7 @@ A re-read of `IP1 028.mp4` writes new files beside r0010..r0014 (the next free r
   - *Finding, question or static-list references* (a lookup, not something the screen showed):
     - r0011 obs[86]: "not inherited (F012, Q-SUR-03)";
     - r0013 obs[24]: "as F012 reads (Q-SUR-01…)";
-    - r0013 obs[25]: the F012 clause and the reading of "0 won" (IP1 029's note shows the result is added about 1.7 s after the screen appears);
+    - r0013 obs[25]: the F012 clause and the reading of "0 won" (IP1 029's note shows the result is added about 2.2 to 2.4 s after the screen appears);
     - r0012 obs[18]–[23] and r0014 obs[1]–[5]: "neighbours (F017 border tables)";
     - r0014 obs[1]–[6]: on or off "the fixed 23-country list".
   - *Formulas and rule readings fitted to the counts:*
@@ -1735,7 +1735,7 @@ were re-read by eye on crops of the frames and matched; and every attack's two c
 **Notes that correct earlier readings, written here and not in the records (rule 20).**
 
 - E018-r0013 (IP1 028), the scoreboard: it records that no win was shown at the end of IP1 028. Here the scoreboard screen first shows the counts from before the
-  game and, about 1.7 s after it appears, adds the result (easy 0/0 became 1/0 at 15:05.2 to 15:05.6); the normal row at the start of this video already reads 1 won 3 lost,
+  game and, about 2.2 to 2.4 s after it appears, adds the result (screen at 15:03.77; easy 0/0 became 1/0 at the scene change of 15:06.13, first seen in the frame at 15:06.0, E018-r0018; "about 1.7 s" and "15:05.2 to 15:05.6", first written here, do not follow from the record: Luna's review of PR #188, R4); the normal row at the start of this video already reads 1 won 3 lost,
   so IP1 028's win was recorded. IP1 028's screen was up for 2.0 s without an update in its last frame, so the win was recorded but not yet shown. The concession win counts
   on the scoreboard (C-SUR-02's "scored win"); E018-r0013's wording stands as written and this note is the correction.
 - E018-r0018 (this sitting), the last observation's turn durations are wrong: human turns lasted 34 s to 198 s (median 68 s; turn 21, with a trade-in offer open for about 90 s and a
@@ -1899,9 +1899,14 @@ Outcome words follow `walkthroughs/f011-questions.md`: `corroborated` when the c
 - **Status:** narrowed
 - **Static claim:** ties go to the defender, so the attacker loses an exchange 21 times in 36 (7/12, 58.3%).
 - **This sitting:** attacker lost 125 of 210 exchanges (59.5%), 95% interval 52.9% to 66.2%; 7/12 is inside the interval (z = +0.35); an even 50% is not (z = +2.76). Over the four sittings: 680 of 1208 (56.3%), interval 53.5% to 59.1%; 7/12 is inside (z = -1.44), an even 50% is not (z = +4.37).
-  Human 75 of 138 (54.3%), computer 50 of 72 (69.4%); in this sitting the two shares differ (Fisher p = 0.04), the first time in the four sittings (earlier p: 0.39, 0.16, 0.14), with four comparisons made and no correction; the computer's loss share of 69% over 72 exchanges is above 7/12 (z = +1.9) and
+  Human 75 of 138 (54.3%), computer 50 of 72 (69.4%); in this sitting the two shares differ (Pearson chi-square p = 0.034, no continuity correction, the convention of these sections; Fisher's exact p = 0.04 agrees; Luna's review of PR #188, R3), the first time in the four sittings (earlier p: 0.39, 0.16, 0.14), with four comparisons made and no correction; the computer's loss share of 69% over 72 exchanges is above 7/12 (z = +1.9) and
   the sitting is one game, so this is a thing to watch, not a claim. Dice are not visible, so only the outcome share is tested.
 - **Why narrowed:** 1208 of the 500 target over the four sittings, but the share is consistent with the claim, not a proof.
+- **Other explanations (Luna's review of PR #188, R5):**
+  - *The 59.5%, and the computer's 69.4%: missed exchanges.* Mostly excluded. The 151 strip steps are all single losses and reconcile with the counters, so a missed step would show as a two-army jump. The inferred capture exchanges are attacker wins, so they pull the loss share down.
+  - *Selection.* At the easy level the computer attacks with its own gates and stops (C-CMB-01, C-CMB-08). A per-exchange share can move only if exchanges depended on stack sizes, and no defender-size effect is detected (p = 0.75). The human/computer gap could still come from which stacks each side chose: not excluded.
+  - *Chance across several comparisons.* Four sittings, four comparisons, no correction. A Bonferroni threshold of 0.0125 is not met by p = 0.034, so chance is not excluded.
+  - *Dice that depend on the level or the seat.* Not excluded: the dice are never shown, and C-CMB-07 reads only the counts and dice into an exchange. This one game at the easy level is the only sitting where the shares differ.
 - **Cited by:** E018-r0015.
 
 ### Q-CMB-07 (C-CMB-06) - exactly one army lost per exchange
@@ -2098,8 +2103,12 @@ One addition: the CANCEL of the destination prompt, pressed after choosing a sou
 
 - **Status:** narrowed
 - **Static claim:** the computers concede collectively to the only human seat when it holds 33 or more of 46 countries, checked once per turn transition by country count; accepting ends the game at once as a scored win.
-- **This sitting:** the human seat held 33 countries from 13:34.03 and attacked on for 75 s and 8 more countries (to 41, 14:48.8) in the same turn; the offer came at the turn transition (about 14:55.0), not at the 33rd capture, as in IP1 028 (there 33 was reached and the offer came at the end of the same turn); two cases now, both with the offer at the end of the turn that reached 33. The offer was two buttons (accept the win, keep playing) and a dialog; the owner pressed accept (15:01.0 to 15:01.2) and the game ended at once with a winner dialog (15:01.47), the scoreboard (15:03.77) and the title screen (15:06.13). The previous transitions had the human at 31 or fewer (13:23 to 13:34: 32, 33 during the turn): the boundary 32 against 33 at a transition is not isolated. The refuse path was not taken.
-  **The win is on the scoreboard**: after the screen's update (about 1.7 s after it appears) the easy row reads 1 won 0 lost and the normal row, which held IP1 028's win, reads 1 won 3 lost; this answers IP1 028's open observation (see the note at the top of this section).
+- **This sitting:** the human seat held 33 countries from 13:34.03 and attacked on for 75 s and 8 more countries (to 41, 14:48.8) in the same turn; the offer came at the turn transition (about 14:55.0), not at the 33rd capture, as in IP1 028 (there 33 was reached and the offer came at the end of the same turn); two cases now, both with the offer at the end of the turn that reached 33. The offer was two buttons (accept the win, keep playing) and a dialog; the owner pressed accept (15:01.0 to 15:01.2) and the game ended at once with a winner dialog (15:01.47), the scoreboard (15:03.77, updated at 15:06.13) and the title screen (about 15:08.0). The previous transitions had the human at 31 or fewer (13:23 to 13:34: 32, 33 during the turn): the boundary 32 against 33 at a transition is not isolated. The refuse path was not taken.
+  **The win is on the scoreboard**: after the screen's update (about 2.2 to 2.4 s after it appears, at 15:06.13) the easy row reads 1 won 0 lost and the normal row, which held IP1 028's win, reads 1 won 3 lost; this answers IP1 028's open observation (see the note at the top of this section).
+  **Other explanations of the delayed update (Luna's review of PR #188, R5):**
+  - *A redraw or animation, not a late write.* The screen may draw the new counts as an animation after showing the stored ones. The record shows one change at 15:06.13 and nothing about how it is drawn, so this is not excluded; either way the result is counted.
+  - *A frame-timing artefact.* The video's frame timestamps are irregular. Still, the change is seen in consecutive frames (15:06.0 to 15:06.2), and 2.2 to 2.4 s is far beyond a frame interval, so this is excluded.
+  - *A count from somewhere else, such as a second game.* Excluded for this sitting: the easy row went from 0/0 to 1/0, and this was the only easy game.
 - **Cited by:** E018-r0018.
 
 ### Q-SUR-03 (C-SUR-03) - what an eliminated seat's cards do
@@ -2147,3 +2156,11 @@ These rest on the owner's videos, and on this one for the sitting's own readings
 ## Re-reads (rule 20)
 
 A re-read of `IP1 029.mp4` writes new files beside r0015..r0018 (the next free record numbers) with their own frame hashes, and says which record it cross-references; these records stay as written.
+
+**Correction notes (Luna's review of PR #188):**
+- **R1, rule 18 D: the records were reworded before merge** (the owner's decision, 2026-10-12, as with 8274ccd for IP1 027). r0016–r0018 named the original's cards, buttons and dialogs in its own words. Those were replaced with our own role words, and no count, offset or value changed: a script compared the digits of every changed field. The role words are: the five-army and fifteen-army cards, the joker, the strike card, the shield card; the draw screen and the tally screen; the accept and decline buttons of the trade-in offer; the all-but-one, up, down and confirm buttons of the counter; the accept and play-on buttons of the concession; a dialog announcing the concession, and a dialog naming the winner. Evidence file names in the manifests are unchanged.
+- **R2, readings inside observations.** Read these clauses as interpretation, not observation. They come from a full read of every non-routine observation in r0015–r0018:
+  - *finding, question or E021 references:* r0017 obs[12] ("no even or underdog cell of E021"); r0016 obs[53] ("not inherited");
+  - *formulas and rule readings:* r0016 obs[54] (the pool formula and the island amounts); r0016 obs[51] (the pool rise read as +5 armies);
+  - *comparisons with other sittings or sources:* r0016 obs[1] (the deal against the earlier sittings, the first seats so far); r0016 obs[49] (the fifteen-army card first seen in four sittings); r0016 obs[50] (the first declined offer); r0016 obs[53] ("for a human capturer", against IP1 028); r0017 obs[0] ("as in the three earlier sittings"); r0017 obs[17] ("the largest so far", the template that found moves in 027 and 028); r0017 obs[18] (the rows confirmed against IP1 028); r0018 obs[0] (the event rate against the setting and the four sittings); r0018 obs[19] ("as in IP1 028"); r0018 obs[20] (which games the normal row "fits", and "so the win of a concession is recorded"); r0018 obs[21] (IP1 028's note "explained by the timing");
+  - *derivations and method notes:* r0015 obs[1] (the last exchange of a capture inferred); r0015 obs[2] (the computer's start taken from the counters); r0018 obs[17] (totals as lower bounds); r0018 obs[18] (the scoreboard "not yet clearing" yellow's cards); r0016 obs[0] (the card count lagging the draw screen).

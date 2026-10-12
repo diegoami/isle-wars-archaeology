@@ -49,7 +49,7 @@
       "step": 0,
       "source": "screen",
       "field": "reading method",
-      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message read for the army pool. Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them. The same readers as for IP1 027 and IP1 028 (E018-r0007, E018-r0011). The scoreboard's card count lags the card screen at the end of a turn (turn 29: the card screen showed five cards at 14:54.5 and the scoreboard still read four at 14:58)."
+      "value": "the scoreboard (top left: four rows with territory count and card count, a marker on the seat whose turn it is) read at every frame where it changed, by matching glyph shapes of its digits (no OCR); a turn starts when the marker moves to the seat; the placement message read for the army pool. Card counts at a turn start are read at the first frame of the marker, so a trade-in made a few seconds into the turn is not yet in them. The same readers as for IP1 027 and IP1 028 (E018-r0007, E018-r0011). The scoreboard's card count lags the draw screen at the end of a turn (turn 29: the draw screen showed five cards at 14:54.5 and the scoreboard still read four at 14:58)."
     },
     {
       "step": 0,
@@ -342,26 +342,26 @@
     {
       "step": 0,
       "source": "screen",
-      "field": "human card draws (card screen at the end of each capturing turn), in order",
-      "value": "eight draws in the eight human turns, all of which had a capture: turn 1 the +5 card (card screen 01:20.6 with the slots empty while it is selected, the +5 card in the hand at 02:21.5), turn 5 the wildcard (card screen 02:21.5 with the new card still being selected; the wildcard is in the hand at 03:44.6), turn 9 a bomb card (the card screen was not extracted; the hand is +5, wild, bomb at the scoreboard count of 3 and +5, wild, bomb, bomb at turn 13), turn 13 a second bomb card (05:13.8), turn 17 a second +5 card (07:24.6; hand +5, wild, bomb, bomb, +5), turn 21 the +15 card (11:08.0; hand bomb, bomb, +15, after the trade-in took +5, +5 and the wildcard), turn 25 a +5 card (12:37.4; hand bomb, bomb, +15, +5), turn 29 the protection card (14:54.5; hand bomb, bomb, +15, +5, protection). The +15 card is seen for the first time in the four sittings (IP1 026: not seen in 45 draws), and the protection card was drawn by the human at the end of the game and held; no bomb was ever played against the human."
+      "field": "human card draws (draw screen at the end of each capturing turn), in order",
+      "value": "eight draws in the eight human turns, all of which had a capture: turn 1 the five-army card (draw screen 01:20.6 with the slots empty while it is selected, the five-army card in the hand at 02:21.5), turn 5 the joker (draw screen 02:21.5 with the new card still being selected; the joker is in the hand at 03:44.6), turn 9 a strike card (the draw screen was not extracted; the hand is five, joker, strike at the scoreboard count of 3 and five, joker, strike, strike at turn 13), turn 13 a second strike card (05:13.8), turn 17 a second five-army card (07:24.6; hand five, joker, strike, strike, five), turn 21 the fifteen-army card (11:08.0; hand strike, strike, fifteen, after the trade-in took five, five and the joker), turn 25 a five-army card (12:37.4; hand strike, strike, fifteen, five), turn 29 the shield card (14:54.5; hand strike, strike, fifteen, five, shield). The fifteen-army card is seen for the first time in the four sittings (IP1 026: not seen in 45 draws), and the shield card was drawn by the human at the end of the game and held; no strike was ever played against the human."
     },
     {
       "step": 0,
       "source": "screen",
       "field": "human trade-in offer 1, turn 17, declined (05:45.6 to 05:59.3)",
-      "value": "the hand held four cards: +5, wildcard, bomb, bomb (count 4 at the turn start). The offer (two buttons, trade in or do not trade in, with a text asking to click three matching cards) came after income and before placement. The set bomb, bomb and wildcard was available (a bomb match with a wildcard). The owner kept the offer open about 13 s, clicked no card (no card border in any frame), and pressed the do-not-trade button; the placement panel followed at 06:00.0 with the pool unchanged at 10 (one island named in the message, as at the turn start), and the turn went on (attacks 23 to 26, four captures; cards 5 at the next turn start). A declined offer: the first one seen in the owner's sittings (IP1 028: two offers, both accepted)."
+      "value": "the hand held four cards: five, joker, strike, strike (count 4 at the turn start). The offer (two buttons, accept or decline, with a text asking to click three matching cards) came after income and before placement. The set strike, strike and joker was available (a strike match with a joker). The owner kept the offer open about 13 s, clicked no card (no card border in any frame), and pressed the decline button; the placement panel followed at 06:00.0 with the pool unchanged at 10 (one island named in the message, as at the turn start), and the turn went on (attacks 23 to 26, four captures; cards 5 at the next turn start). A declined offer: the first one seen in the owner's sittings (IP1 028: two offers, both accepted)."
     },
     {
       "step": 0,
       "source": "screen",
       "field": "human trade-in offer 2, turn 21, accepted (07:55.6 to 09:32.5)",
-      "value": "the hand held five cards: +5, wildcard, bomb, bomb, +5 (count 5 at the turn start). The owner clicked three cards, the two +5 cards and the wildcard (borders on the first, second and fifth slots at 08:08.0, none at 08:00.0), left the two bomb cards in the hand, kept the offer open for a further 80 s, and pressed the trade-in button (the offer is gone by 09:32.5); the placement pool was then 23 against 18 before (the counting screen at 07:52.0, pool 18 read at 07:54.1 and 07:55.5, and 23 read at 09:32.6 and in the panel at 09:36.0 and 09:37.0): +5 armies. Cards 5 to 2 at 09:31.1; the capture draw at the end of the turn took it to 3. Set: two +5 cards and a wildcard (mixed, with a wildcard)."
+      "value": "the hand held five cards: five, joker, strike, strike, five (count 5 at the turn start). The owner clicked three cards, the two five-army cards and the joker (borders on the first, second and fifth slots at 08:08.0, none at 08:00.0), left the two strike cards in the hand, kept the offer open for a further 80 s, and pressed the accept button (the offer is gone by 09:32.5); the placement pool was then 23 against 18 before (the tally screen at 07:52.0, pool 18 read at 07:54.1 and 07:55.5, and 23 read at 09:32.6 and in the panel at 09:36.0 and 09:37.0): +5 armies. Cards 5 to 2 at 09:31.1; the capture draw at the end of the turn took it to 3. Set: two five-army cards and a joker (mixed, with a joker)."
     },
     {
       "step": 0,
       "source": "screen",
       "field": "offers: complete list",
-      "value": "the trade-in offer appeared in exactly two human turns (17 and 21); one declined, one accepted. In turn 25 the hand held bomb, bomb, +15 (no set) and in turn 29 bomb, bomb, +15, +5 (no set), so no offer. No bomb was played by anyone in this game and no computer made a trade-in (no computer hand lost three cards at a turn start); the computer hands rose by one on capturing turns only."
+      "value": "the trade-in offer appeared in exactly two human turns (17 and 21); one declined, one accepted. In turn 25 the hand held strike, strike, fifteen (no set) and in turn 29 strike, strike, fifteen, five (no set), so no offer. No strike was played by anyone in this game and no computer made a trade-in (no computer hand lost three cards at a turn start); the computer hands rose by one on capturing turns only."
     },
     {
       "step": 0,
@@ -378,7 +378,7 @@
     {
       "step": 0,
       "source": "screen",
-      "field": "frame: the offer of turn 17 at 05:46.0 (+5, wild, bomb, bomb), declined",
+      "field": "frame: the offer of turn 17 at 05:46.0 (five, joker, strike, strike), declined",
       "ref": "sha256:cf07878d0e240da32648b435e39e70bb16458214717874f82d9dba224d0dfb19"
     },
     {
@@ -390,7 +390,7 @@
     {
       "step": 0,
       "source": "screen",
-      "field": "frame: the offer of turn 21 at 08:08.0 with the three cards selected (+5, wild, +5)",
+      "field": "frame: the offer of turn 21 at 08:08.0 with the three cards selected (five, joker, five)",
       "ref": "sha256:afc5035acbc9af6206ae654816cb92c8cf4f5069a159844759df9ce1296a45eb"
     },
     {
@@ -402,13 +402,13 @@
     {
       "step": 0,
       "source": "screen",
-      "field": "frame: the card screen at 11:08.0, hand bomb, bomb, +15",
+      "field": "frame: the draw screen at 11:08.0, hand strike, strike, fifteen",
       "ref": "sha256:1a72da93b66de78455144f74d551f9d8a7f4a0d3297a0deae83611fb9b550616"
     },
     {
       "step": 0,
       "source": "screen",
-      "field": "frame: the last card screen at 14:54.5, hand bomb, bomb, +15, +5, protection",
+      "field": "frame: the last draw screen at 14:54.5, hand strike, strike, fifteen, five, shield",
       "ref": "sha256:e4b16857b7d0d11273f088add6c9f65978082422023d4b9d8f43ac9013f43333"
     }
   ],
