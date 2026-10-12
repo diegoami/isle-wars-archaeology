@@ -1,17 +1,25 @@
 #!/usr/bin/env python3
-"""Check design/core-rules.md's decision table against the in-scope spec claims (T50).
+"""Check each design file's decision table against its in-scope spec claims (T50, T51).
 
-It reads the claim tables of the eleven in-scope `spec/` files and the decision table of
-`design/core-rules.md` (every line that starts with `| C-`). It fails if:
+Each design file in `DESIGNS` has its own in-scope `spec/` files. For each, the check reads the
+claim tables of those spec files and the design file's decision table (every line that starts with
+`| C-`). A design file fails if:
 - an in-scope claim has no row, or more than one;
-- a row names an id that is not in the spec;
+- a row names an id that is not in its own in-scope spec files;
 - a decision is not one of keep, change, replace, drop, open;
 - a change, replace or drop row has an empty "why";
 - an open row's id does not appear in the owner's section: the `## Choices for the owner` section
   while choices are pending, or the `## The owner's decisions (<date>)` section once they are made.
-  With no open row left, neither section is required.
+  With no open row left, neither section is required;
+- a row does not have exactly four cells;
+- a line opens a code fence (``` or ~~~, after any indentation), holds an HTML comment (`<!--`), or
+  starts with an HTML tag (`<` then a letter, `/` or `!`, after any indentation): the check fails
+  closed on inactive Markdown and raw HTML rather than parsing around them.
 
-Exit 0 and `design ok: N claims, N rows` when clean; exit 1 and one line per problem otherwise.
+With no argument it checks every design file and prints one line per clean file,
+`design/<file> ok: N claims, N rows`, or one line per problem; it exits 1 if any file has a
+problem. It also applies the fence and comment ban to the design files without a decision table
+(`BAN_ONLY`), printing only their problems. Naming design files (`variety.md` or `design/variety.md`) checks only those.
 `--root` points at another tree (the tests use it).
 """
 import argparse
@@ -22,6 +30,11 @@ from pathlib import Path
 
 SPEC_FILES = ("board", "setup", "seats", "starting-state", "turn-sequence", "reinforcement",
               "movement", "combat", "ownership", "victory", "surrender")
+VARIETY_SPEC_FILES = ("cards", "island-bonuses", "production-centres", "hazards")
+DESIGNS = {"core-rules.md": SPEC_FILES, "variety.md": VARIETY_SPEC_FILES}
+# Design files with no decision table: only the fence and comment ban applies, and a clean one prints
+# nothing (T51's variants catalogue).
+BAN_ONLY = ("variants.md",)
 DECISIONS = {"keep", "change", "replace", "drop", "open"}
 NEED_WHY = {"change", "replace", "drop"}
 CLAIM_ROW = re.compile(r"^\|\s*(C-[A-Z]+-\d+)\s*\|")
@@ -33,10 +46,10 @@ def cells(line):
     return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
-def spec_claims(root):
-    """The claim ids of the in-scope spec files, in file order."""
+def spec_claims(root, spec_files=SPEC_FILES):
+    """The claim ids of the given spec files, in file order."""
     ids, problems = [], []
-    for name in SPEC_FILES:
+    for name in spec_files:
         path = root / "spec" / f"{name}.md"
         if not path.is_file():
             problems.append(f"spec/{name}.md: missing")
@@ -46,6 +59,29 @@ def spec_claims(root):
             if m:
                 ids.append(m.group(1))
     return ids, problems
+
+
+FENCE = re.compile(r"^\s*(```|~~~)")
+COMMENT = "<!--"
+# A line whose first non-space character starts an HTML tag: an HTML block can hide or swallow rows.
+HTML_TAG = re.compile(r"^\s*<[A-Za-z/!]")
+
+
+def inactive_markdown(text, rel):
+    """One problem per line that opens a code fence, holds an HTML comment, or starts with an HTML tag.
+    A design file may hold none of them: either could hide decision rows from a reader while the check counts them, so the check
+    fails closed instead of parsing around them. Code goes in indented blocks (four spaces)."""
+    problems = []
+    for n, line in enumerate(text.splitlines(), 1):
+        if FENCE.match(line):
+            problems.append(f"{rel}:{n}: a code fence; design files may not hold fenced blocks "
+                            "(indent code by four spaces instead)")
+        if COMMENT in line:
+            problems.append(f"{rel}:{n}: an HTML comment; design files may not hold HTML comments")
+        elif HTML_TAG.match(line):
+            problems.append(f"{rel}:{n}: a raw HTML tag; design files may not hold raw HTML "
+                            "(write &lt; or say it in words)")
+    return problems
 
 
 def choices_section(text):
@@ -58,13 +94,15 @@ def choices_section(text):
     return rest[:end.start()] if end else rest
 
 
-def check(root):
-    """Return (problems, claim count, row count)."""
-    claims, problems = spec_claims(root)
-    design = root / "design" / "core-rules.md"
-    if not design.is_file():
-        return problems + ["design/core-rules.md: missing"], len(claims), 0
-    text = design.read_text(encoding="utf-8")
+def check(root, design="core-rules.md"):
+    """Return (problems, claim count, row count) for one design file, named as in DESIGNS."""
+    claims, problems = spec_claims(root, DESIGNS[design])
+    rel = f"design/{design}"
+    path = root / "design" / design
+    if not path.is_file():
+        return problems + [f"{rel}: missing"], len(claims), 0
+    text = path.read_text(encoding="utf-8")
+    problems += inactive_markdown(text, rel)
     rows = []
     for n, line in enumerate(text.splitlines(), 1):
         m = CLAIM_ROW.match(line)
@@ -74,12 +112,12 @@ def check(root):
     counts = Counter(cid for _, cid, _ in rows)
     for cid in claims:
         if counts[cid] == 0:
-            problems.append(f"{cid}: no row in design/core-rules.md")
+            problems.append(f"{cid}: no row in {rel}")
         elif counts[cid] > 1:
-            problems.append(f"{cid}: {counts[cid]} rows in design/core-rules.md")
+            problems.append(f"{cid}: {counts[cid]} rows in {rel}")
     section = choices_section(text)
     for n, cid, row in rows:
-        where = f"design/core-rules.md:{n}"
+        where = f"{rel}:{n}"
         if cid not in known:
             problems.append(f"{where}: {cid} is not an in-scope spec claim")
         if len(row) != 4:
@@ -97,14 +135,30 @@ def check(root):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("designs", nargs="*", help="design files to check (default: all of them)")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args(argv)
-    problems, n_claims, n_rows = check(args.root)
-    if problems:
-        print("\n".join(problems))
+    names = [Path(d).name for d in args.designs] or list(DESIGNS)
+    unknown = [n for n in names if n not in DESIGNS]
+    if unknown:
+        print(f"not a design file: {', '.join(unknown)} (known: {', '.join(DESIGNS)})")
         return 1
-    print(f"design ok: {n_claims} claims, {n_rows} rows")
-    return 0
+    failed = False
+    for name in names:
+        problems, n_claims, n_rows = check(args.root, name)
+        if problems:
+            failed = True
+            print("\n".join(problems))
+        else:
+            print(f"design/{name} ok: {n_claims} claims, {n_rows} rows")
+    if not args.designs:
+        for name in BAN_ONLY:
+            path = args.root / "design" / name
+            problems = inactive_markdown(path.read_text(encoding="utf-8"), f"design/{name}") if path.is_file() else []
+            if problems:
+                failed = True
+                print("\n".join(problems))
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

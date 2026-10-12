@@ -316,20 +316,18 @@ the attacker can lose `A − 1` exchanges (one army stays behind) and must win `
 pasted, prints the two tables below (percent chance to capture, rounded); the equal-stack figures
 quoted after them are `cap(n, n, p)` from the same function.
 
-```python
-from fractions import Fraction as F
-from functools import lru_cache
-def cap(A, D, p):
-    @lru_cache(None)
-    def P(a, d):
-        if d == 0: return F(1)
-        if a == 1: return F(0)
-        return p * P(a, d - 1) + (1 - p) * P(a - 1, d)
-    return P(A, D)
-for p in (F(5, 12), F(1, 2)):
-    for A in [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30]:
-        print(A, [round(100 * float(cap(A, d, p))) for d in [1, 2, 3, 4, 5, 6, 8, 10, 15]])
-```
+    from fractions import Fraction as F
+    from functools import lru_cache
+    def cap(A, D, p):
+        @lru_cache(None)
+        def P(a, d):
+            if d == 0: return F(1)
+            if a == 1: return F(0)
+            return p * P(a, d - 1) + (1 - p) * P(a - 1, d)
+        return P(A, D)
+    for p in (F(5, 12), F(1, 2)):
+        for A in [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30]:
+            print(A, [round(100 * float(cap(A, d, p))) for d in [1, 2, 3, 4, 5, 6, 8, 10, 15]])
 
 **Ties to the defender** (attacker wins an exchange with p = 5/12):
 
