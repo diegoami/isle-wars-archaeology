@@ -127,9 +127,22 @@ hover:
   seed and action list and says so. **Continue** on the start screen restores the slot by replay and
   opens the board at the saved point, with the log intact.
 - **Recommended (UI14 c):** the game is also saved automatically at the end of every turn, so a crash
-  or a closed window never loses a game, and overwriting the slot while it holds an unfinished game
-  records a loss for that game's human seats, as resigning does (a proposed amendment to core-rules.md,
-  in UI14). The confirmation before an overwrite says so.
+  or a closed window never loses a game.
+- **The game's identity.** Every game gets an identity when it starts (a random value from outside the
+  game stream, so it changes no draw), kept in its save and unchanged by saving and loading. Play
+  again and replay the same seed start new games with new identities.
+- **Replacing a different game** (UI14 b and c, a proposed amendment to core-rules.md): a save whose
+  game identity differs from the slot's, while the slot's game is unfinished, records a loss for each
+  of that game's human seats that has no result yet, as resigning does, and then replaces it. A save
+  of the same game (every autosave, every manual save of the game in play) only replaces it and
+  records nothing. A finished game in the slot is replaced without a charge. The confirmation before a
+  charging save names the game it replaces and the loss; with UI14 c that save is the new game's first
+  autosave, so the new-game confirmation says so.
+- **Never counted twice.** The record keeps, for each game identity, the human seats whose result it
+  holds (a win, a loss, a resignation, a charge for a replaced game). Every result is written under
+  its game identity and seat, and a seat that already has one gets no second: a seat that resigned
+  gets nothing more when the game ends, and a game already charged when replaced can no longer be
+  loaded, since its save is gone.
 - Loading never re-rolls anything: the restored game continues exactly as it would have.
 
 ### The end and result screen
@@ -615,6 +628,9 @@ one. malpaco's tests run in a pinned rendering environment.
   each illegal attempt of the table above changes nothing and shows its reason.
 - **Presentation never changes play**: one scripted game at every speed, with and without
   fast-forward and reduced motion, ends in the same state with the same action list.
+- **Saves and the record** (with UI14 b or c): many saves of one game leave the record unchanged; a
+  save of a different game over an unfinished one adds one loss per human seat without a result, and
+  no more on repeating it; a seat that resigned and a game that later ends add no second result.
 - **Every stop offered**: in scripted human battles at every speed but Instant, no exchange is
   resolved before the previous one has been shown, unless the player picked finish now; a stop sent at
   any moment takes effect before the next exchange; a battle past `HUMAN_BATTLE_WATCH` waits at the
@@ -709,7 +725,9 @@ Where presenting a decided rule needed a reading, the nearest consistent one was
 5. **The overwrite of a saved unfinished game** (core-rules.md, decision 2 and Leaving a game).
    Starting a new game counts as resigning unless the game is saved first; but saving it and then
    saving the new game overwrites the one slot, so the first game is gone with no result recorded.
-   UI14 proposes closing that gap.
+   UI14 proposes closing that gap: only a save of a different game (by its identity, fixed at game
+   start) charges the replaced game's human seats, so saving the same game, by hand or every turn,
+   never does, and no seat's result is recorded twice.
 6. **The computer's draw** (variety.md, The deck). Only the count is public; the UI shows the count's
    rise and nothing else, unless the card is the Squall, which every seat sees.
 
@@ -833,13 +851,19 @@ replace them. [variants.md](variants.md) keeps every option as a named variant.
       a layout of its own; (c) falls short of the predecessor's smallest stage.
 14. **UI14. Saving** (core-rules.md decision 2 and Leaving a game; a proposed amendment).
     - (a) manual save only, as core-rules.md says, overwrites confirmed but recording nothing; (b)
-      manual save, and overwriting the slot while it holds an unfinished game records a loss for its
-      human seats; (c) as (b), plus an automatic save at the end of every turn.
+      manual save, and a save that replaces a **different** unfinished game in the slot records a loss
+      for that game's human seats that have no result yet; saving the same game again records nothing;
+      (c) as (b), plus an automatic save at the end of every turn.
     - Recommendation (c): no game is lost to a crash or a closed window, and no loss can be dodged by
-      saving and starting over ([Reconciled](#reconciled-with-t50-t51-and-t53), item 5).
+      saving and starting over ([Reconciled](#reconciled-with-t50-t51-and-t53), item 5). With (c) the
+      game is saved every turn; because only a different game's save charges a loss, the autosaves of
+      one game never do ([Saving and loading](#saving-and-loading) has the identity rule).
     - **Proposed amendment to core-rules.md** (for (b) and (c)): in [Leaving a game](core-rules.md#leaving-a-game),
-      add "Overwriting the save slot while it holds an unfinished game records a loss for that game's
-      human seats, as resigning does."
+      add "Each game has an identity fixed when it starts and kept in its save; it is not drawn from
+      the game stream. Saving a game into the slot while the slot holds a different, unfinished game
+      records a loss for each human seat of that game that has no result yet, as resigning does;
+      saving the same game again records nothing. The record keeps, for each game identity, the human
+      seats whose result it holds, and never records a second result for one."
 15. **UI15. Where country spacing is guaranteed** (UW-15, UW-17; a proposed amendment).
     - (a) the generator's positions keep every two countries' label points at least a set distance
       apart in its reference frame, so the hit areas fit at the smallest window; (b) the renderer

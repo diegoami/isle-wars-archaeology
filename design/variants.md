@@ -441,9 +441,13 @@ a setting a player can change, and none changes a rule.
 ### UI14 Saving
 - **Canonical: the owner's choice.** Recommended (c). [Saving and loading](ui.md#saving-and-loading).
 - **UI14a Manual save only**, as core-rules.md is written.
-- **UI14b Overwrite records a loss** for the slot's unfinished game; needs an amendment to
+- **UI14b Replacing a different game records a loss**: a save of a different game (by the game
+  identity fixed at game start and kept in the save) over an unfinished game charges a loss to that
+  game's human seats with no result yet; saving the same game again records nothing, and no seat's
+  result is recorded twice (the record keys results by game identity and seat). Needs an amendment to
   core-rules.md's Leaving a game.
-- **UI14c As UI14b, plus an automatic save** at the end of every turn.
+- **UI14c As UI14b, plus an automatic save** at the end of every turn; the autosaves are saves of the
+  same game and charge nothing.
 - Interacts with: T50-2 (one slot, replay), T50-2c (several slots would remove the overwrite gap).
 
 ### UI15 Where country spacing is guaranteed
