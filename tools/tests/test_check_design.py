@@ -114,6 +114,23 @@ class FailureTest(DesignWorld):
         self.assert_one("C-CMB-05 is open but not in")
 
 
+class DecisionsHeadingTest(DesignWorld):
+    def test_open_row_under_the_decisions_heading_passes(self):
+        self.choices = ("## The owner's decisions (2026-10-12)\n\n"
+                        "1. **Ties** (C-CMB-05). (a) one; (b) two. Decided: (b).\n")
+        self.assertEqual(self.problems(), [])
+
+    def test_open_row_missing_from_the_decisions_section_fails(self):
+        self.choices = ("## The owner's decisions (2026-10-12)\n\n"
+                        "1. **Boards** (C-BRD-01). Decided: (c).\n")
+        self.assert_one("C-CMB-05 is open but not in")
+
+    def test_no_open_row_needs_no_owner_section(self):
+        self.rows["C-CMB-05"] = "| C-CMB-05 | change | [Combat](#combat) | Ties re-rolled. |"
+        self.choices = ""
+        self.assertEqual(self.problems(), [])
+
+
 class RepositoryTest(unittest.TestCase):
     def test_the_repository_design_is_complete(self):
         root = Path(check_design.__file__).resolve().parents[1]

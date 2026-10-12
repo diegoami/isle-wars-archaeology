@@ -7,7 +7,9 @@ It reads the claim tables of the eleven in-scope `spec/` files and the decision 
 - a row names an id that is not in the spec;
 - a decision is not one of keep, change, replace, drop, open;
 - a change, replace or drop row has an empty "why";
-- an open row's id does not appear in the `## Choices for the owner` section.
+- an open row's id does not appear in the owner's section: the `## Choices for the owner` section
+  while choices are pending, or the `## The owner's decisions (<date>)` section once they are made.
+  With no open row left, neither section is required.
 
 Exit 0 and `design ok: N claims, N rows` when clean; exit 1 and one line per problem otherwise.
 `--root` points at another tree (the tests use it).
@@ -23,7 +25,8 @@ SPEC_FILES = ("board", "setup", "seats", "starting-state", "turn-sequence", "rei
 DECISIONS = {"keep", "change", "replace", "drop", "open"}
 NEED_WHY = {"change", "replace", "drop"}
 CLAIM_ROW = re.compile(r"^\|\s*(C-[A-Z]+-\d+)\s*\|")
-CHOICES = "## Choices for the owner"
+CHOICES = "the owner's section ('## Choices for the owner' or '## The owner's decisions')"
+OWNER_HEADING = re.compile(r"^## (Choices for the owner|The owner's decisions\b.*)$", re.M)
 
 
 def cells(line):
@@ -46,10 +49,11 @@ def spec_claims(root):
 
 
 def choices_section(text):
-    start = text.find("\n" + CHOICES + "\n")
-    if start < 0:
+    """The text under the owner's heading, up to the next `## ` heading, or None."""
+    m = OWNER_HEADING.search(text)
+    if not m:
         return None
-    rest = text[start + len(CHOICES) + 2:]
+    rest = text[m.end():]
     end = re.search(r"^## ", rest, re.M)
     return rest[:end.start()] if end else rest
 
@@ -87,7 +91,7 @@ def check(root):
         elif decision in NEED_WHY and not why:
             problems.append(f"{where}: {cid} is {decision} with an empty why")
         elif decision == "open" and (section is None or not re.search(rf"\b{re.escape(cid)}\b", section)):
-            problems.append(f"{where}: {cid} is open but not in '{CHOICES}'")
+            problems.append(f"{where}: {cid} is open but not in {CHOICES}")
     return problems, len(claims), len(rows)
 
 
