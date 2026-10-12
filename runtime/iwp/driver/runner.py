@@ -205,7 +205,7 @@ def parser():
 
 
 def confined(args):
-    return spike.confined_locations(argparse.Namespace(explore=False, experiment=EXPERIMENT))
+    return spike.confined_locations(argparse.Namespace(explore=False, experiment=args.experiment))
 
 
 def check_args(args):
