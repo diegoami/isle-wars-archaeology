@@ -27,8 +27,8 @@ goal is a fun game, not a copy", 2026-10-11).
 | --- | --- | --- |
 | [core-rules.md](core-rules.md) | setup, seats, the board generator and island bonuses, the deal, the turn, reinforcement, movement, combat, ownership, victory and leaving a game | T50 (#192) |
 | [variety.md](variety.md) | cards, island bonuses on a generated board, production centres and events | T51 (#193) |
-| [variants.md](variants.md) | every T50 and T51 choice: the canonical option and each alternative as a named variant, with its interactions; no spec rows | T51 (#193) |
-| T53's file | the computer opponent's policy: how it values cards, trade-ins, targets and centres | T53 (#196) |
+| [variants.md](variants.md) | every T50, T51 and T53 choice: the canonical option and each alternative as a named variant, with its interactions; no spec rows | T51 (#193), T53 (#196) |
+| [computer.md](computer.md) | the computer opponent: what it may know, how it plays each phase of the turn under the T50 and T51 rules, its difficulty levels, and how malpaco measures its strength | T53 (#196) |
 | `ui.md` (planned) | the UI, against the predecessor's and malpaco's recorded weaknesses | T52 (#194) |
 
 `python3 tools/check_design.py` checks that each design file's decision table has exactly one row per
