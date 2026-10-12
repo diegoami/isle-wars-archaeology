@@ -40,6 +40,12 @@ EXPECTED_EXTERNAL = {
     # the owner, 2026-10-11, after MiniMax-M3 was refused three times: /tmp is open to the reviewer
     "/tmp": "allow",
     "/tmp/*": "allow",
+    # fix #208: review.mjs's per-PR review worktree is under harness.json's worktreeRoot.
+    # Without this grant, OpenCode's external_directory auto-rejects the bash tool from the
+    # script's worktree (CLAUDE.md rule 13). The two `~`-relative entries are kept (and no
+    # `/home/...` literals appear) to satisfy test_no_machine_path_in_the_agent_file.
+    "~/projects/isle-wars-archaeology-work": "allow",
+    "~/projects/isle-wars-archaeology-work/*": "allow",
 }
 # What OpenCode puts before an agent's own rules (as `opencode debug agent` lists them): allow all,
 # ask for any outside directory, and its own /tmp/opencode allowance, which the agent also allows (fix #144).
@@ -53,21 +59,26 @@ def frontmatter_rules(text):
     rules, inside, current = [], False, None
     unq = lambda s: s.strip().strip('"')  # noqa: E731
     for line in head.splitlines():
-        if not line.strip():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            # blank or YAML comment — neither is a rule
             continue
         indent = len(line) - len(line.lstrip(" "))
         if indent == 0:
-            inside = line.strip() == "permission:"
+            inside = stripped == "permission:"
             continue
         if not inside:
             continue
-        key, _, value = line.strip().rpartition(":") if indent == 4 else line.strip().partition(":")
+        key, _, value = stripped.rpartition(":") if indent == 4 else stripped.partition(":")
         if indent == 2:
             current = unq(key)
             if value.strip():
                 rules.append((current, "*", value.strip()))
         elif indent == 4:
-            rules.append((current, unq(key), value.strip()))
+            # an indent-4 line with no value is not a rule; comment lines and
+            # continuation notes (e.g., a `:` inside prose) are skipped above.
+            if value.strip():
+                rules.append((current, unq(key), value.strip()))
         else:
             raise ValueError(f"unexpected indentation: {line!r}")
     return rules

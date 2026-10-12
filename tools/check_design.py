@@ -102,8 +102,9 @@ HTML_TAG = re.compile(r"^\s*<[A-Za-z/!]")
 # A line that is a table row inside a blockquote or list prefix. Markdown would render
 # `> | C-BRD-09 | …` as a row whose first cell the checker sees as `>` — the `>` would slip past
 # any reader and the row would not be counted. The disguise is deliberate, so the check fails
-# closed (fix #202).
-LIST_PREFIX = re.compile(r"^\s*(>|[*+\-]|\d+\.)\s+")
+# closed (fix #202). The trailing `\|` requires the prefix to be followed by a `|` so prose
+# like `- prose | not a table` (which has a `|` further in) does not falsely trigger.
+LIST_PREFIX = re.compile(r"^\s*(>|[*+\-]|\d+\.)\s+\|")
 # An HTML entity inside a table line: `| Q&#45;UI&#45;99 | …` looks like `Q-UI-99` to a strict
 # reader, but a permissive renderer decodes the entities. Fail closed.
 HTML_ENTITY = re.compile(r"&#?\w+;")

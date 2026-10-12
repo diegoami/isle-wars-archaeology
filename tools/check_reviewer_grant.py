@@ -169,6 +169,13 @@ def check(repo: Path) -> int:
             print(f'check_reviewer_grant: {err}', file=sys.stderr)
         return 1
 
+    # Expand `~/` and `~user/` in every grant key (the project keeps no `/home/`
+    # literals in reviewer.md per tests/test_reviewer_permissions.py ::
+    # test_no_machine_path_in_the_agent_file — fix #208's grant is `~`-relative).
+    # After expansion, `/home/<user>/projects/<repo>-work/` and the bare `~/...`
+    # resolve to the same path and match the local check's absolute `pattern`.
+    ext = {os.path.expanduser(k): v for k, v in ext.items()}
+
     if _is_ci():
         # CI: assert the reviewer agent declares an `allow` entry with a recursive
         # (glob) path naming the project's worktree-root. The literal full path
