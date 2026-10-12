@@ -52,4 +52,4 @@ step strip-links
 step sync-game
 step baseline
 
-python3 setup/iwp/tokens.py --tokens 'tool:python@>=3.11,tool:wine@9.0,tool:xvfb,tool:xfwm4,tool:xdotool,facility:display,artifact:iwp-2.0-996e86c5,facility:iwp-prefix'
+python3 setup/iwp/tokens.py --tokens 'tool:python@>=3.11,tool:wine@10.0,tool:xvfb,tool:xfwm4,tool:xdotool,facility:display,artifact:iwp-2.0-996e86c5,facility:iwp-prefix'
