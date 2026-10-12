@@ -813,7 +813,6 @@ the play-out and not resolved.
 | 85 | 10:40.400 | Yellow C | 11>12 | 5/3 | 3/0, then keeps 1 gets 2 | capture |
 | 86 | 10:42.700 | Yellow C | 1>13 | 9/1 (strip) | 9/0, then keeps 6* gets 3 | capture |
 | 87 | 10:47.867 | Green C | 43>44 | 6/4 (strip) | not resolved | play-out |
-| 87 | 10:47.867 | Green C | 43>44 | 6/4 (strip) | not resolved | play-out |
 Counts this sitting adds to the per-claim totals (constraint E): 237 exchanges (139 strip steps, 52 capture
 exchanges inferred from the defender's last army, 46 first exchanges read from the before-counters), 86 resolved
 attacks (13 human, 73 computer) plus one unresolved, 46 turn starts with the army pool, 12 human placements, 6 human
@@ -930,7 +929,7 @@ video bears on it.
 
 - **Status:** narrowed
 - **This sitting:** computer attacker-loss share by whether the attacker's country is on the fixed 23-country list: list 54/109 (49.5%),
-  not on the list 55/101 (54.5%), chi-square p = 0.57. A shift of about 5 points is not detectable at this count; no gross effect appears.
+  not on the list 55/101 (54.5%), chi-square p = 0.48 (Pearson, no continuity correction, as in the IP1 026 section; 0.57, first written here, was the Yates-corrected value; Luna's review of PR #186, R2). A shift of about 5 points is not detectable at this count; no gross effect appears.
 - **Cited by:** E018-r0006.
 
 ## Capture, moves, ownership
@@ -1145,3 +1144,5 @@ These rest on the owner's videos, and on this one for the sitting's own readings
 ## Re-reads (rule 20)
 
 A re-read of `IP1 027.mp4` writes new files beside r0006..r0009 (the next free record numbers) with their own frame hashes, and says which record it cross-references; these records stay as written.
+
+**Correction note (Luna's review of PR #186, R1):** E018-r0006 lists attack 87 twice: two identical `step: 87` observations, a copy made while writing. It is one attack (the unresolved play-out attack at 10:47.867), and every count above treats it as one: 87 attacks, 86 resolved plus one unresolved. The record stays as written. Anyone reading r0006 counts its step-87 observations once.
