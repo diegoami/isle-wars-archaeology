@@ -177,6 +177,30 @@ class FailureTest(DesignWorld):
     def test_a_multi_line_html_comment_fails(self):
         self.assert_inactive("<!--\nhidden\n-->", [7], "an HTML comment")
 
+    def test_a_script_tag_fails(self):
+        self.assert_inactive("<script>\nx = 1\n</script>", [7, 9], "a raw HTML tag")
+
+    def test_a_hidden_div_around_a_row_fails(self):
+        # Sol's round-3 bypass: a row inside <div hidden> renders as nothing but was counted.
+        self.rows[self.change_id] = "<div hidden>\n\n" + self.rows[self.change_id] + "\n\n</div>"
+        problems = self.problems()
+        self.assertEqual(len(problems), 2, problems)
+        self.assertTrue(all("a raw HTML tag" in p for p in problems), problems)
+
+    def test_a_closing_tag_fails(self):
+        self.assert_inactive("</details>", [7], "a raw HTML tag")
+
+    def test_an_indented_tag_fails(self):
+        self.assert_inactive("   <details open>", [7], "a raw HTML tag")
+
+    def test_a_declaration_fails(self):
+        self.assert_inactive("<!DOCTYPE html>", [7], "a raw HTML tag")
+
+    def test_a_less_than_in_text_is_allowed(self):
+        # A line may start with "<" when no tag follows: a comparison, not HTML.
+        self.choices = "< 3 armies is too few.\n<= 2 as well.\n" + self.choices
+        self.assertEqual(self.problems(), [])
+
     def test_a_row_hidden_in_a_fence_still_fails_the_file(self):
         # Sol's bypass of round 2: rows after a fence that never closes. The fence alone fails.
         self.rows[self.change_id] = "````\n```\n" + self.rows[self.change_id]
@@ -271,6 +295,12 @@ class VariantsBanTest(VarietyWorld):
         self.assertEqual(code, 1)
         self.assertEqual(lines[2:], [l for l in lines[2:] if l.startswith("design/variants.md:")])
         self.assertEqual([l.split(":")[1] for l in lines[2:]], ["3", "5"])
+
+    def test_a_tag_in_variants_fails(self):
+        code, lines = self.run_main("# Variants\n\n<div hidden>\n")
+        self.assertEqual(code, 1)
+        self.assertEqual(len(lines), 3, lines)
+        self.assertTrue(lines[2].startswith("design/variants.md:3: a raw HTML tag"), lines)
 
     def test_a_comment_in_variants_fails(self):
         code, lines = self.run_main("# Variants\n\nText <!-- hidden -->.\n")

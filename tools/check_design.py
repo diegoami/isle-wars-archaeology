@@ -12,8 +12,9 @@ claim tables of those spec files and the design file's decision table (every lin
   while choices are pending, or the `## The owner's decisions (<date>)` section once they are made.
   With no open row left, neither section is required;
 - a row does not have exactly four cells;
-- a line opens a code fence (``` or ~~~, after any indentation) or holds an HTML comment (`<!--`):
-  the check fails closed on inactive Markdown rather than parsing around it.
+- a line opens a code fence (``` or ~~~, after any indentation), holds an HTML comment (`<!--`), or
+  starts with an HTML tag (`<` then a letter, `/` or `!`, after any indentation): the check fails
+  closed on inactive Markdown and raw HTML rather than parsing around them.
 
 With no argument it checks every design file and prints one line per clean file,
 `design/<file> ok: N claims, N rows`, or one line per problem; it exits 1 if any file has a
@@ -62,11 +63,13 @@ def spec_claims(root, spec_files=SPEC_FILES):
 
 FENCE = re.compile(r"^\s*(```|~~~)")
 COMMENT = "<!--"
+# A line whose first non-space character starts an HTML tag: an HTML block can hide or swallow rows.
+HTML_TAG = re.compile(r"^\s*<[A-Za-z/!]")
 
 
 def inactive_markdown(text, rel):
-    """One problem per line that opens a code fence or holds an HTML comment. A design file may hold
-    neither: either could hide decision rows from a reader while the check counts them, so the check
+    """One problem per line that opens a code fence, holds an HTML comment, or starts with an HTML tag.
+    A design file may hold none of them: either could hide decision rows from a reader while the check counts them, so the check
     fails closed instead of parsing around them. Code goes in indented blocks (four spaces)."""
     problems = []
     for n, line in enumerate(text.splitlines(), 1):
@@ -75,6 +78,9 @@ def inactive_markdown(text, rel):
                             "(indent code by four spaces instead)")
         if COMMENT in line:
             problems.append(f"{rel}:{n}: an HTML comment; design files may not hold HTML comments")
+        elif HTML_TAG.match(line):
+            problems.append(f"{rel}:{n}: a raw HTML tag; design files may not hold raw HTML "
+                            "(write &lt; or say it in words)")
     return problems
 
 
