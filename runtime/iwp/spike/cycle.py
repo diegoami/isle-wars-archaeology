@@ -215,8 +215,77 @@ def confined_locations(args):
     return found
 
 
+def parse_mount_fstype(path, mountinfo_text):
+    """The fstype of the mount covering `path`, given the text of `/proc/self/mountinfo`.
+
+    Each line is `id parent_id major:minor root mount_point options - fstype source super_opts`
+    (the `-` separator is omitted when there are no optional fields; we still cope by splitting).
+    The match is the most specific mount point that is `path` itself or an ancestor of it; that
+    covers both a path *on* a mount (e.g. `/mnt/c/Program Files/...`) and a path that *is* the
+    mount point (e.g. `/mnt/c`). None when no line matches — the only absolute path that matches
+    the root `/` line is one whose first segment is non-empty, which is every absolute path, so
+    the root line is a match whenever it appears and the longest-prefix rule picks a more
+    specific mount point when one is present.
+    """
+    p = os.path.abspath(path)
+    best_len = -1
+    best_fstype = None
+    for line in mountinfo_text.splitlines():
+        parts = line.split()
+        if len(parts) < 5:
+            continue
+        mount_point = parts[4]
+        sep = len(parts)                       # default: no `-` separator (no optional fields)
+        try:
+            sep = parts.index("-")
+        except ValueError:
+            pass
+        fstype = parts[sep + 1] if sep + 1 < len(parts) else ""
+        mp = mount_point.rstrip("/") or "/"     # treat "" (a bare `/` after strip) as the root
+        if mp == "/":
+            match = p.startswith("/")
+        else:
+            match = p == mp or p.startswith(mp + "/")
+        if match and len(mp) > best_len:
+            best_len = len(mp)
+            best_fstype = fstype
+    return best_fstype
+
+
+def mount_fstype_for(path):
+    """The fstype of the mount covering `path`, or None when the path is not covered by a mount
+    (or `/proc/self/mountinfo` cannot be read). The mount point is `/` when nothing covers it."""
+    try:
+        with open("/proc/self/mountinfo") as handle:
+            text = handle.read()
+    except OSError:
+        return None
+    return parse_mount_fstype(path, text)
+
+
+def is_9p_mount(path):
+    """True iff `path` is on a 9p filesystem (e.g. WSL `drvfs` for /mnt/c).
+
+    On 9p, `mount --bind; mount -o remount,bind,ro` succeeds at the syscall level but has no
+    effect on the upstream — the read-only-or-not lives in the host ACL. The kernel's
+    `statvfs(...).f_flag` and `os.access(path, W_OK)` cannot answer the question either: the
+    f_flag carries no `ST_RDONLY`, and the access probe returns True through 9p's relay, so
+    `install_writable` would refuse the run despite the bind/remount having succeeded. We defer
+    to the bind/remount having succeeded at the syscall level (the caller's check).
+    """
+    return mount_fstype_for(path) == "9p"
+
+
 def install_writable(path):
-    """True unless the install is on a read-only mount for this process (checked, never written)."""
+    """True unless the install is on a read-only mount for this process (checked, never written).
+
+    On a real read-only mount (`f_flag & ST_RDONLY`, no `os.access` write), the verdict is False.
+    On a writable mount, the verdict is True. On a 9p mount, the verdict is False regardless of
+    access / f_flag, because the upstream host ACL is the seal — `protect_install` still aborts the
+    run if `mount --bind` or `mount -o remount,bind,ro` errored at the syscall level.
+    """
+    if is_9p_mount(path):
+        return False
     return os.access(path, os.W_OK) or not (os.statvfs(path).f_flag & os.ST_RDONLY)
 
 
