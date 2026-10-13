@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+"""check_recorded_plays.py: validate E018 records for F011.
+
+The records are `run/1` documents (formats/run-1.schema.json; the recorder's own
+fields — question_id, claim_id, count_target, per_arm_counts, outcome — are
+observations, written by record_f011.e018_observation_fields; the older
+`e018-record/1` documents were migrated value-preserving, see
+runs/E018/CORRECTIONS.md).
+
+Exit 0 when:
+1. Every recorded file in runs/E018/*/ has a run_id and a claim_id observation.
+2. Every claim_id in findings/F020-pro-corroboration.md has at least one record.
+3. No record's outcome is 'corroborated' without meeting the per-arm count target.
+
+Run from the repository root::
+
+    python3 experiments/E018-pro-corroboration/check_recorded_plays.py
+"""
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+RUNS = ROOT / "runs" / "E018"
+FINDING = ROOT / "findings" / "F020-pro-corroboration.md"
+
+
+def observation_field(record, name):
+    """One recorder field of a run/1 record, as text, or None when it carries none.
+
+    The recorder writes its flat fields as observations (step 0, the field's name
+    as `field`, the value as text — `null` for None, JSON text for dicts and
+    numbers); this reads them back exactly as e018_observation_fields writes them.
+    """
+    for ob in record.get("observations", []):
+        if ob.get("field") == name:
+            return ob.get("value")
+    return None
+
+
+def as_value(text):
+    """A field's text back to its value: "null" is None, JSON text is parsed, a string is itself."""
+    if text is None or text == "null":
+        return None
+    try:
+        return json.loads(text)
+    except ValueError:
+        return text
+
+# Per-question count targets from F011's T28 plan
+COUNT_TARGETS = {
+    "Q-CMB-01": 16,    # 16 attacker/target combos, deterministic, once each
+    "Q-CMB-02": 4,     # 4 boundary cases (N=4,8,12,20), once each
+    "Q-CMB-03": 3,     # 3 cases (attacker 1,2,3 vs defender 1)
+    "Q-CMB-04": 500,   # 100 per attacker size x 5 sizes
+    "Q-CMB-05": 500,   # 100 per defender size x 5 sizes
+    "Q-CMB-06": 500,   # 500 exchanges total
+    "Q-CMB-07": 200,   # 200 exchanges
+    "Q-CMB-08": 10,    # 10 human attacks
+    "Q-CMB-09": 5,     # 5 failed attacks
+    "Q-CMB-10": 10,    # 10 turns with 3+ attacks
+    "Q-CMB-11": 500,   # 500 exchanges split by condition
+    "Q-CMB-12": 100,   # 100 attacks per ratio band + 20 games
+    "Q-MOV-01": 10,    # 10 human turns with move
+    "Q-MOV-02": 6,     # stacks 2,3,10 x 2 tries each
+    "Q-MOV-03": 10,    # 10 turns with second move/attack
+    "Q-OWN-01": 12,    # 4 stack sizes x 3+ each
+    "Q-SET-04": 1,     # one visit
+}
+
+# Per-arm minimums from the F011 plan. The plan names the count PER arm
+# (per attacker size, per defender size, per ratio band), so a 'corroborated'
+# record must clear that minimum on every arm it tracks. A question with no
+# per-arm floor (Q-CMB-06 totals, Q-CMB-09 failures) is absent here.
+PER_ARM_MINIMUMS = {
+    "Q-CMB-04": 100,   # 100 exchanges per attacker size
+    "Q-CMB-05": 100,   # 100 exchanges per defender size
+    "Q-CMB-12": 100,   # 100 attacks per ratio band
+}
+
+
+def load_records():
+    """Load all E018 records from runs/E018/*/. Returns dict claim_id -> list of records."""
+    records = {}
+    if not RUNS.is_dir():
+        print(f"ERROR: runs/E018/ not found", file=sys.stderr)
+        return records
+    for batch_dir in RUNS.iterdir():
+        if not batch_dir.is_dir():
+            continue
+        for record_file in batch_dir.glob("*.json"):
+            try:
+                with open(record_file) as f:
+                    rec = json.load(f)
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"ERROR: could not read {record_file}: {e}", file=sys.stderr)
+                continue
+            run_id = rec.get("run_id")
+            if not run_id:
+                print(f"ERROR: {record_file} has no run_id", file=sys.stderr)
+                continue
+            claim_id = observation_field(rec, "claim_id")
+            if not claim_id:
+                print(f"ERROR: {record_file} has no claim_id observation", file=sys.stderr)
+                continue
+            records.setdefault(claim_id, []).append(rec)
+    return records
+
+
+def get_claim_ids_from_finding():
+    """Extract claim_ids from F020-pro-corroboration.md."""
+    claim_ids = set()
+    if not FINDING.is_file():
+        print(f"WARNING: {FINDING} not found; cannot check claim coverage", file=sys.stderr)
+        return claim_ids
+    text = FINDING.read_text()
+    # Match C-CMB-*, C-MOV-*, C-OWN-*, C-SET-* patterns
+    for m in re.finditer(r'\b(C-[A-Z]+-\d+)\b', text):
+        claim_ids.add(m.group(1))
+    return claim_ids
+
+
+def check_record_coverage(records):
+    """Check 1: every record has a run_id (already done in load_records)."""
+    errors = []
+    total = sum(len(recs) for recs in records.values())
+    print(f"CHECK 1: records loaded: {total} records across {len(records)} claim_ids")
+    if total == 0:
+        errors.append("No records found in runs/E018/")
+    return errors
+
+
+def check_claim_coverage(records):
+    """Check 2: every claim_id in F020 has at least one record."""
+    errors = []
+    claim_ids = get_claim_ids_from_finding()
+    print(f"CHECK 2: claim_ids in F020: {sorted(claim_ids)}")
+    for cid in sorted(claim_ids):
+        if cid not in records:
+            errors.append(f"ERROR: {cid} has no record in runs/E018/")
+        else:
+            print(f"  {cid}: {len(records[cid])} record(s)")
+    return errors
+
+
+def check_corroborated_outcomes(records):
+    """Check 3: no 'corroborated' without meeting the per-arm count target."""
+    errors = []
+    for claim_id, recs in sorted(records.items()):
+        # Extract question id from claim_id (e.g. C-CMB-04 -> Q-CMB-04).
+        # Preserve the numeric suffix: "C-CMB-04" must become "Q-CMB-04",
+        # not "Q-CMB" (which is not a key in COUNT_TARGETS and used to
+        # silently floor the target to 0, letting every record pass).
+        parts = claim_id.split("-")
+        if len(parts) >= 3:
+            qid = "Q-" + "-".join(parts[1:])  # Q-CMB-04
+        elif len(parts) >= 2:
+            qid = "Q-" + "-".join(parts[1:])
+        else:
+            qid = claim_id
+        target = COUNT_TARGETS.get(qid, 0)
+        per_arm_min = PER_ARM_MINIMUMS.get(qid, 0)
+        for rec in recs:
+            outcome = as_value(observation_field(rec, "outcome"))
+            if outcome == "corroborated":
+                per_arm = as_value(observation_field(rec, "per_arm_counts")) or {}
+                total = sum(v for v in per_arm.values() if isinstance(v, (int, float)))
+                if total < target:
+                    errors.append(
+                        f"ERROR: {claim_id} record {rec.get('run_id')} is 'corroborated' "
+                        f"but total {total} < target {target}"
+                    )
+                # Per-arm floor: every arm in the dict must clear it (when set).
+                if per_arm_min > 0:
+                    for arm, count in per_arm.items():
+                        if isinstance(count, (int, float)) and count < per_arm_min:
+                            errors.append(
+                                f"ERROR: {claim_id} record {rec.get('run_id')} is 'corroborated' "
+                                f"but arm {arm!r} count {count} < per-arm minimum {per_arm_min}"
+                            )
+    if not errors:
+        print(f"CHECK 3: no 'corroborated' without per-arm count target violations")
+    return errors
+
+
+def main():
+    print("=== E018 F011 record validation ===\n")
+    records = load_records()
+    all_errors = []
+    all_errors.extend(check_record_coverage(records))
+    all_errors.extend(check_claim_coverage(records))
+    all_errors.extend(check_corroborated_outcomes(records))
+
+    if all_errors:
+        print("\nERRORS:")
+        for e in all_errors:
+            print(f"  {e}")
+        return 1
+    print("\nAll checks passed.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

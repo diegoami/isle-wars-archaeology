@@ -1,0 +1,103 @@
+{
+  "schema": "run/1",
+  "run_id": "E018-r0010",
+  "experiment": "E018",
+  "arm": "combat",
+  "rep": 10,
+  "code_commit": "3fa3947",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "experiments/E018-pro-corroboration/record_f011.py@3fa3947",
+    "platform": "wine-on-user-machine-iwp-2.0",
+    "fingerprint": {}
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "the driver's cycle seal (read-only install bind, prefix baseline checks) and read-only /proc reads; no game input was sent and no screenshot was kept in this attempt (the session aborted)"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+    "restore": "attempted launch from the sealed prefix through the T13 driver (the e018-record/1 document this migrates carried no start state); start_state.sha256 is the F019-pinned Islepro.exe hash of the artifact set named above, not a hash this run measured \u2014 see runs/E018/CORRECTIONS.md"
+  },
+  "seed": null,
+  "actions": {
+    "script": "experiments/E018-pro-corroboration/record_f011.py",
+    "sha256": "2e4d9892fb1bcee4514771d6b39771295b20f91cc09576d16ff90c1b11e9d72a",
+    "args": [
+      "Q-SET-04"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "question_id",
+      "value": "Q-SET-04"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "claim_id",
+      "value": "C-SET-04"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "count_target",
+      "value": "1"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "per_arm_counts",
+      "value": "{\"controls_listed\": 0}"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "screenshot_path",
+      "value": "null"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "screenshot_sha256",
+      "value": "null"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "seal_ok",
+      "value": "true"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "elapsed_seconds",
+      "value": "304.69"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "outcome",
+      "value": "null"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "extra",
+      "value": "{}"
+    }
+  ],
+  "outputs": [],
+  "started": "2026-10-13T15:04:32+02:00",
+  "ended": "2026-10-13T15:04:32+02:00",
+  "status": "aborted: launch: no Islepro window within 300 s"
+}
