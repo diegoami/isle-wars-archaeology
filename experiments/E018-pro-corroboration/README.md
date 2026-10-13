@@ -68,6 +68,12 @@ not have. Both defects are fixed in T28 R3 (the recorder re-execs itself
 through the driver's inner wrapper, and the Q-SET-04 body uses real steps);
 the runs themselves are the C3 main session's.
 
+Of the bodies, only Q-SET-04's is written in real E002 steps so far
+(`--dry-run` prints its plan, and a test asserts every printed step resolves
+in runtime/iwp/spike/steps.py); the other questions' bodies are still the R2
+protocol placeholders, to be made step-real in their own batch before their
+C3 runs.
+
 ## Check
 
 ```bash

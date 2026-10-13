@@ -13,7 +13,9 @@ when build_record writes any other schema (checked with a saved-copy mutation
 of the "schema" line), and the committed-records tests fail when a combat record
 is not a run/1 document or no longer carries a field's original value.
 """
+import contextlib
 import importlib.util
+import io
 import json
 import os
 import shutil
@@ -225,6 +227,40 @@ class ReexecTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(ran, ["mounted", "bound", "run", "write"])
         self.assertFalse(self.log.exists(), "unshare must not run when the flag is set")
+
+
+class DryRunPlanTest(unittest.TestCase):
+    """--dry-run for Q-SET-04 prints a plan whose every step exists in the E002 step language
+    (T28 R3, defect 3: r0013 aborted on 'unknown step open_options'). Rule 9: adding a
+    made-up step name to the plan fails this test.
+    """
+
+    def plan_of(self, question_id):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(record_f011.main([question_id, "--dry-run"]), 0)
+        lines = [line.strip() for line in out.getvalue().splitlines()]
+        start = lines.index("plan (E002 steps):")
+        steps = lines[start + 1:]
+        self.assertTrue(steps, "the plan printed no steps")
+        return steps
+
+    def test_every_q_set_04_plan_step_resolves_in_the_step_language(self):
+        sys.path.insert(0, str(ROOT / "runtime" / "iwp" / "spike"))
+        import steps as stepslib
+        for text in self.plan_of("Q-SET-04"):
+            with self.subTest(step=text):
+                try:
+                    step = stepslib.parse_line(text)
+                except stepslib.StepError as exc:
+                    self.fail(f"{text!r} is not a step the E002 language knows: {exc}")
+                self.assertIsNotNone(step, f"{text!r} is not a step")
+                self.assertEqual(step.op, text.split()[0])
+
+    def test_the_plan_opens_the_options_screen_the_way_e004_does(self):
+        steps = self.plan_of("Q-SET-04")
+        self.assertIn("click! 320 585", steps)      # spike.OPTIONS_CLICK, runner.py's OPTIONS_STEP
+        self.assertTrue(any(s.startswith("shot ") for s in steps), "no screenshot step")
 
 
 if __name__ == "__main__":

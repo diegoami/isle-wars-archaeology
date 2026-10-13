@@ -73,6 +73,9 @@ INNER_BOUND = 1800                    # s, one recorder attempt at most: every w
                                       # session carries its own bound (session.py), the R2 launch
                                       # window was 300 s, and this bound only ends a hang
 SCRIPT = "experiments/E018-pro-corroboration/record_f011.py"
+# The Options button of the title screen's bottom bar: the same input E004's cycle sends
+# (runner.py's OPTIONS_STEP; spike.OPTIONS_CLICK measured it).
+OPTIONS_STEP = "click! {} {}".format(*driver_runner.spike.OPTIONS_CLICK)
 RESTORE_TEXT = ("the T13 driver's session seal: the private user, mount and PID namespaces of the "
                 "command, the install bound read-only once, the prefix sealed and equal to its "
                 "baseline before anything starts and again immediately before launch, and reset "
@@ -681,23 +684,38 @@ class OWNCaptureRecorder(F011Recorder):
 
 
 class SETOptionsRecorder(F011Recorder):
-    """Q-SET-04: list the controls on the options screen (one visit)."""
+    """Q-SET-04: list the controls on the options screen (one visit).
+
+    The body uses only real E002 steps (runtime/iwp/spike/steps.py): the title screen
+    waited for by its pixels, the Options button of the title screen's bottom bar —
+    the same input E004's cycle sends (runner.OPTIONS_STEP; spike.OPTIONS_CLICK) —
+    then the options screen, and a screenshot the controls are counted from by
+    pixels at C3. `controls_listed` stays 0 here: the count is read from the
+    screenshot, never assumed (r0013 aborted on a made-up step named open_options).
+    """
 
     def __init__(self, question_id, claim_id, count_target, params=None):
         super().__init__(question_id, claim_id, count_target, params)
         self.per_arm_counts = {"controls_listed": 0}
 
+    def plan(self):
+        """The steps the body sends, in the E002 step language (--dry-run prints them)."""
+        return [OPTIONS_STEP, "shot options-controls"]
+
     def _body(self, session):
         session.expect("title", "options")
-        session.wait_for_screen("title")
+        session.known_screen()                       # the title screen, waited for by its pixels
         self._step = 1
         session.observe(self._step, "static", "question_id", self.question_id)
-        # Open the options screen and observe every control by name.
-        session.perform("open_options")
-        session.wait_for_screen("options")
-        session.observe(self._step, "static", "controls",
+        session.observe(self._step, "static", "claim_id", self.claim_id)
+        session.observe(self._step, "static", "count_target", str(self.count_target))
+        session.observe(self._step, "static", "controls_to_list",
                         "starting_armies,seats,level,frequency,speed,sound")
-        self.per_arm_counts["controls_listed"] = 1
+        session.observe_screenshot("before.png", 3)
+        session.perform(OPTIONS_STEP)                # open the options screen, as E004's cycle does
+        session.wait_for_screen("options")
+        session.perform("shot options-controls")     # the screenshot the count is read from
+        session.observe_screenshot("after.png", 7)
 
 
 def make_recorder(question_id, params=None):
@@ -790,6 +808,11 @@ def main(argv=None):
     print(f"  recorder: {type(rec).__name__}")
     print(f"  per_arm seed: {rec.per_arm_counts}")
     print("  [C3] This script is the recorder. The main session runs the game cycles.")
+    plan = rec.plan() if hasattr(rec, "plan") else None
+    if plan is not None:
+        print("  plan (E002 steps):")
+        for step_text in plan:
+            print(f"    {step_text}")
 
     if args.dry_run:
         return 0
