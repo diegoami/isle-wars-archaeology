@@ -1,0 +1,11 @@
+# The E022 batch list (T44). One batch: the synthetic single-exchange record under
+# runs/E022/synthetic/. `tools/check_counts.py --accept-single` counts a single-die observation
+# (its `single:rank` marker); without the flag the marker's kind is unknown and the observation is
+# refused, so it is never counted as an exchange.
+[batch synthetic]
+event = exchange
+event_fields = counter:attacker-before counter:attacker-after counter:defender-before counter:defender-after country:attacker country:defender owner:attacker owner:defender single:rank
+events_min = 1
+games_min = 1
+claims =
+questions = T44 synthetic: one single exchange read from two close frames.
