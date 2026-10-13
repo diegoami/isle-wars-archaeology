@@ -2179,8 +2179,9 @@ Wine-driven visit of the options screen after four Bandicam visits
 - **Status:** corroborated (a fifth visit; the first on wine; a sixth
   source for the claim, with the four Bandicam sittings and the C3 cycle
   read)
-- **This sitting:** the options screen, opened by `click! 320 585` from
-  the title screen, reached at 8.2 s after launch; the recorder's
+- **This sitting:** the title screen reached and stable at 8.2 s after
+  launch; the options screen then opened by `click! 320 585` from the
+  title screen; the recorder's
   `options-controls.png` (raw RGB8 pixels sha256
   `e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3`,
   PNG first 16 `426d77e724d793dd`) shows the six controls the static
