@@ -16,6 +16,9 @@ permission:
     # install the expanded path matches the script's review worktree.
     "~/projects/isle-wars-archaeology-work": allow
     "~/projects/isle-wars-archaeology-work/*": allow
+    # fix #212 round 2 R3 (rule 13): the Done-when that rebuilds the Wine prefix writes to ~/iwp-prefix; without this grant the reviewer cannot run it.
+    "~/iwp-prefix": allow
+    "~/iwp-prefix/*": allow
   task:
     "*": deny
   bash:

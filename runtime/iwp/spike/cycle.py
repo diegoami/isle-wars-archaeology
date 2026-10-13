@@ -65,6 +65,10 @@ SUCCESSOR_ID = "iwp-2.0-3694a782"   # the same files with xtras/Isledft.dat decl
 SUCCESSOR2_ID = "iwp-2.0-de5a82a2"  # ... and xtras/Islepro.skr too (E002: the scoreboard file)
 WINE = "/usr/lib/x86_64-linux-gnu/wine/wine"          # wine64, on Wine 10 / Ubuntu 26.04 (issue #212)
 WINESERVER = "/usr/lib/x86_64-linux-gnu/wine/wineserver"  # ditto
+# Blast radius (issue #212, PR #213 round 2 R1): runtime/iwp/driver/session.py imports this
+# module as `spike` (`import cycle as spike`, session.py:77), so the E020/E021 sitting path
+# inherits these constants and Cycle.start_game. The wine64 migration is authorized for both
+# paths (the owner's decision of 2026-10-13); do not split constants for the sitting path.
 DISPLAY = ":77"
 MARK = "IWP_CYCLE_RUN"               # env marker on every child, to find strays from outside
 
@@ -512,6 +516,8 @@ class Cycle:
         self.size = (width, height, depth)
         self.env = dict(os.environ, DISPLAY=DISPLAY, WINEPREFIX=str(prefix),
                         WINEDEBUG="fixme-all", **{MARK: run_id})
+        # issue #212, PR #213 round 2 R2: an inherited WINEARCH=win32 must not leak into the wow64 launch.
+        self.env.pop("WINEARCH", None)
         self.env["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d"
         if args.audio == "off":
             # audio drivers disabled: no sound reaches the host. F002 compares E001-r0005 (drivers
