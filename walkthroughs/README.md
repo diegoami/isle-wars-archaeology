@@ -133,27 +133,16 @@ E002 tour was recorded with the window at the stage's origin.
 
 The poller returns screenshots (PNG). The main session saves them at
 `evidence/E018/combat/<run-id>/<state>.png` with a record at
-`runs/E018/combat/<run-id>.json` shaped like:
-
-```json
-{
-  "schema": "e018-record/1",
-  "run_id": "E018-r0001",
-  "experiment": "E018",
-  "batch": "combat",
-  "question_id": "Q-CMB-01",
-  "claim_id": "C-CMB-01",
-  "count_target": 16,
-  "per_arm_counts": {},
-  "screenshot_path": "C:\\Temp\\iwp-shots\\E018-r0001-after-attack.png",
-  "screenshot_sha256": "<sha256>",
-  "seal_ok": true,
-  "elapsed_seconds": 12.3,
-  "outcome": "pending",
-  "status": "completed",
-  "extra": {"attacker_armies": [2,4,8,12], "defender_armies": [1,3,5,6,10,14]}
-}
-```
+`runs/E018/combat/<run-id>.json` — a `run/1` document
+(formats/run-1.schema.json), shaped like runs/E020's records. The recorder's
+per-question fields are observations in it, written by
+`record_f011.e018_observation_fields`: `question_id`, `claim_id`,
+`count_target`, `per_arm_counts`, `screenshot_path`, `screenshot_sha256`,
+`seal_ok`, `elapsed_seconds`, `outcome`, `extra` (a string is itself, `null`
+the text "null", a number or dict its JSON text). The earlier
+`e018-record/1` shape these folders started with was migrated
+value-preserving on 2026-10-13; runs/E018/CORRECTIONS.md records the mapping
+and where the original bytes live.
 
 The `outcome` and `per_arm_counts` are filled by the main session from the
 screenshots. The poller only writes the structure; the analysis is the main

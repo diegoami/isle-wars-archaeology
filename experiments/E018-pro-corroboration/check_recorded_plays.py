@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """check_recorded_plays.py: validate E018 records for F011.
 
+The records are `run/1` documents (formats/run-1.schema.json; the recorder's own
+fields — question_id, claim_id, count_target, per_arm_counts, outcome — are
+observations, written by record_f011.e018_observation_fields; the older
+`e018-record/1` documents were migrated value-preserving, see
+runs/E018/CORRECTIONS.md).
+
 Exit 0 when:
-1. Every recorded file in runs/E018/*/ has a run_id.
+1. Every recorded file in runs/E018/*/ has a run_id and a claim_id observation.
 2. Every claim_id in findings/F020-pro-corroboration.md has at least one record.
 3. No record's outcome is 'corroborated' without meeting the per-arm count target.
 
@@ -18,6 +24,29 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 RUNS = ROOT / "runs" / "E018"
 FINDING = ROOT / "findings" / "F020-pro-corroboration.md"
+
+
+def observation_field(record, name):
+    """One recorder field of a run/1 record, as text, or None when it carries none.
+
+    The recorder writes its flat fields as observations (step 0, the field's name
+    as `field`, the value as text — `null` for None, JSON text for dicts and
+    numbers); this reads them back exactly as e018_observation_fields writes them.
+    """
+    for ob in record.get("observations", []):
+        if ob.get("field") == name:
+            return ob.get("value")
+    return None
+
+
+def as_value(text):
+    """A field's text back to its value: "null" is None, JSON text is parsed, a string is itself."""
+    if text is None or text == "null":
+        return None
+    try:
+        return json.loads(text)
+    except ValueError:
+        return text
 
 # Per-question count targets from F011's T28 plan
 COUNT_TARGETS = {
@@ -71,9 +100,9 @@ def load_records():
             if not run_id:
                 print(f"ERROR: {record_file} has no run_id", file=sys.stderr)
                 continue
-            claim_id = rec.get("claim_id")
+            claim_id = observation_field(rec, "claim_id")
             if not claim_id:
-                print(f"ERROR: {record_file} has no claim_id", file=sys.stderr)
+                print(f"ERROR: {record_file} has no claim_id observation", file=sys.stderr)
                 continue
             records.setdefault(claim_id, []).append(rec)
     return records
@@ -133,9 +162,9 @@ def check_corroborated_outcomes(records):
         target = COUNT_TARGETS.get(qid, 0)
         per_arm_min = PER_ARM_MINIMUMS.get(qid, 0)
         for rec in recs:
-            outcome = rec.get("outcome")
+            outcome = as_value(observation_field(rec, "outcome"))
             if outcome == "corroborated":
-                per_arm = rec.get("per_arm_counts", {}) or {}
+                per_arm = as_value(observation_field(rec, "per_arm_counts")) or {}
                 total = sum(v for v in per_arm.values() if isinstance(v, (int, float)))
                 if total < target:
                     errors.append(

@@ -2164,3 +2164,58 @@ A re-read of `IP1 029.mp4` writes new files beside r0015..r0018 (the next free r
   - *formulas and rule readings:* r0016 obs[54] (the pool formula and the island amounts); r0016 obs[51] (the pool rise read as +5 armies);
   - *comparisons with other sittings or sources:* r0016 obs[1] (the deal against the earlier sittings, the first seats so far); r0016 obs[49] (the fifteen-army card first seen in four sittings); r0016 obs[50] (the first declined offer); r0016 obs[53] ("for a human capturer", against IP1 028); r0017 obs[0] ("as in the three earlier sittings"); r0017 obs[17] ("the largest so far", the template that found moves in 027 and 028); r0017 obs[18] (the rows confirmed against IP1 028); r0018 obs[0] (the event rate against the setting and the four sittings); r0018 obs[19] ("as in IP1 028"); r0018 obs[20] (which games the normal row "fits", and "so the win of a concession is recorded"); r0018 obs[21] (IP1 028's note "explained by the timing");
   - *derivations and method notes:* r0015 obs[1] (the last exchange of a capture inferred); r0015 obs[2] (the computer's start taken from the counters); r0018 obs[17] (totals as lower bounds); r0018 obs[18] (the scoreboard "not yet clearing" yellow's cards); r0016 obs[0] (the card count lagging the draw screen).
+
+## Record migration: e018-record/1 to run/1 (T28 R3, 2026-10-13)
+
+The R2 recorder (`experiments/E018-pro-corroboration/record_f011.py`) wrote its
+combat records as `e018-record/1` documents; the suite requires every
+`runs/**/*.json` to validate as schema `run/1` (tests/test_runs.py), so CI was
+red on them. On 2026-10-13 the thirteen records r0001–r0013 under `combat/`
+were migrated in place into `run/1` documents by
+`experiments/E018-pro-corroboration/migrate_to_run1.py`, which re-derives every
+migrated document from the original bytes in git (`--check` compares the
+committed files with that derivation).
+
+**The original bytes** stay in git history at the commit that added each
+record: r0001 at `b65ed08`, r0002–r0003 at `4645f59`, r0004–r0006 at `77edd7e`,
+r0007–r0008 at `73bb666`, r0009–r0013 at `3fa3947`. Nothing measured was
+deleted or changed.
+
+**What was preserved verbatim** (the recorder's flat fields are now
+observations, written by `record_f011.e018_observation_fields` — a string is
+itself, `null` the text "null", a number or dict its JSON text):
+
+| e018-record/1 field | run/1 place |
+| --- | --- |
+| `run_id`, `experiment`, `status` | the same fields |
+| `batch` | `arm` |
+| `question_id`, `claim_id`, `count_target`, `per_arm_counts`, `screenshot_path`, `screenshot_sha256`, `seal_ok`, `elapsed_seconds`, `outcome`, `extra` | observations (step 0, the field's name, the value as text) |
+
+**What the original documents never carried**, and what the migration pinned it
+to (each addition is the best available evidence, not a measurement by these
+runs):
+
+- `code_commit`, `started`, `ended`: the commit that recorded each run (the
+  commit's hash and committer timestamp). The original documents carried no
+  timestamps; the recording commit is the only time evidence, and
+  `elapsed_seconds` is preserved verbatim beside them.
+- `actions.args`: `[question_id]` — the one argument the recorder takes for
+  these runs (`record_f011.py Q-SET-04`, the command the R2 commits name);
+  `actions.sha256` is the recorder script's hash at that commit.
+- `start_state.sha256`: the F019-pinned `Islepro.exe` hash of
+  `iwp-2.0-996e86c5` / `unregistered`
+  (`c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`) — **not
+  a hash these runs measured** (the R2 recorder bypassed the driver's record
+  writer); the restore text says so, and the value is the one the rule 18 wine
+  gate checks such a record against.
+- `runtime.fingerprint`: `{}` — the original documents recorded no versions.
+- `machine`: `local` (the driver's default; the original documents carried no
+  machine id).
+- `interventions`: one I1 row naming the seal and /proc reads that did happen;
+  no game input was sent and no screenshot was kept in any of the thirteen
+  attempts (every one aborted: twelve at the seal or the launch, r0013 at the
+  first step, which named a step the E002 language does not have).
+
+The migration is a format correction only: no count, hash, status, elapsed
+value or outcome changed. The recorder itself now writes `run/1` documents
+directly (T28 R3 commit 1), so no new `e018-record/1` document can appear.

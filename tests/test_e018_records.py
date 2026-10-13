@@ -93,5 +93,58 @@ class BuiltRecordTest(unittest.TestCase):
         self.assertEqual(doc["start_state"]["sha256"], F019_BINARY_SHA)
 
 
+class CommittedRecordsTest(unittest.TestCase):
+    """The migrated combat records: run/1, and still carrying every original field's value."""
+
+    def test_every_combat_record_is_a_valid_run_1(self):
+        for path in sorted(COMBAT.glob("E018-r*.json")):
+            with self.subTest(path=path.name):
+                self.assertEqual(test_runs.run_record_errors(path), [],
+                                 f"{path.name} is not a valid run/1 record")
+
+    def test_every_combat_record_carries_the_recorder_fields(self):
+        for path in sorted(COMBAT.glob("E018-r*.json")):
+            with self.subTest(path=path.name):
+                doc = json.loads(path.read_text(encoding="utf-8"))
+                self.assertEqual(doc["schema"], "run/1")
+                self.assertEqual(doc["arm"], "combat")
+                self.assertEqual(doc["experiment"], "E018")
+                seen = {o["field"]: o["value"] for o in doc["observations"]}
+                for field in ("question_id", "claim_id", "count_target", "per_arm_counts",
+                              "screenshot_path", "screenshot_sha256", "seal_ok",
+                              "elapsed_seconds", "outcome", "extra"):
+                    self.assertIn(field, seen, f"{path.name} lost the {field} observation")
+                self.assertEqual(seen["question_id"], "Q-SET-04")
+                self.assertEqual(seen["claim_id"], "C-SET-04")
+
+    def test_r0013_keeps_its_measured_values(self):
+        """Spot pins (rule 9): values the original e018-record/1 documents held, kept as text."""
+        doc = json.loads((COMBAT / "E018-r0013.json").read_text(encoding="utf-8"))
+        seen = {o["field"]: o["value"] for o in doc["observations"]}
+        self.assertEqual(doc["status"],
+                         "aborted: step-failed: the steps are not usable: line 1: unknown step "
+                         "'open_options'")
+        self.assertEqual(json.loads(seen["per_arm_counts"]), {"controls_listed": 0})
+        self.assertEqual(json.loads(seen["elapsed_seconds"]), 10.19)
+        self.assertEqual(seen["seal_ok"], "true")
+
+    def test_r0004_keeps_its_measured_values(self):
+        doc = json.loads((COMBAT / "E018-r0004.json").read_text(encoding="utf-8"))
+        seen = {o["field"]: o["value"] for o in doc["observations"]}
+        self.assertTrue(doc["status"].startswith("aborted: seal: the prefix is not safe to launch from"))
+        self.assertEqual(seen["seal_ok"], "false")
+        self.assertEqual(json.loads(seen["elapsed_seconds"]), 0.22)
+
+    def test_the_start_state_hash_is_the_f019_pin_not_a_measured_value(self):
+        """The wine gate matches start_state.sha256 against F019; the restore text must say the
+        migration pinned it (these runs never hashed the binary), so a reader cannot mistake
+        it for a measurement."""
+        for path in sorted(COMBAT.glob("E018-r*.json")):
+            with self.subTest(path=path.name):
+                doc = json.loads(path.read_text(encoding="utf-8"))
+                self.assertEqual(doc["start_state"]["sha256"], F019_BINARY_SHA)
+                self.assertIn("not a hash this run measured", doc["start_state"]["restore"])
+
+
 if __name__ == "__main__":
     unittest.main()
