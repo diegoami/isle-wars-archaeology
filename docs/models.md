@@ -20,13 +20,13 @@ What worked in practice, after ten days of chains, pairs and quota checks:
 | --- | --- | --- |
 | Orchestrator | The main session, set by the Anthropic environment variables alone (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude; or GLM-5.3 through Z.AI's Anthropic-compatible endpoint, MiniMax, or Moonshot's Kimi when Claude's tokens are out | never named by the harness; its family is read from the environment (`lib/common.mjs` `sessionFamily`, `HARNESS_SESSION_FAMILY` overrides) |
 | Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's: `sonnet` under Opus, which under Z.AI is GLM-5.3 Flash, or any model id the session's provider serves. **The main session** implements directly, in its own worktree, only where the provider cannot spawn a subagent. Asked before each implementation, `harness.json`'s `implementer.default` proposed first | `/run-task` step 2; `.claude/agents/implementer.md` |
-| Reviewer | **One OpenCode run** of another family than the session's, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first; `gpt-6.1-sol` for a guard, a gate or hard research | `tools/harness/review.mjs [--reviewer <name>]`, as a systemd unit, watched |
+| Reviewer | **One review run** of a different model than the implementer's, on the model the user names at the question before the review; `harness.json`'s `reviewer.default` is the proposal when the user does not pick, and any reviewer tool the user has may stand in (OpenCode via `tools/harness/review.mjs [--reviewer <name>]` is the harness-provided path; an agent without it can review inline or via any tool that reads the diff and posts a comment) | as a systemd unit if OpenCode, watched |
 
 The roster is the owner's and changes often: `harness.json`'s two defaults and its `blocked` list
 change through `/switch-model`, never by a rule that names a model, and no quota, tier or
 difficulty table picks one. The fixed rules: the reviewer is never of the session's family (so no
 Claude reviewer under Claude, no GLM reviewer under Z.AI, unless the user asks for a same-family
-review); a blocked model never runs (DeepSeek today); Alibaba only when the user asks.
+review). No model-choice rule binds on the implementer or the reviewer; the owner lifted the family / blocked / Alibaba gates on 2026-10-13.
 
 **Why OpenCode does not implement any more.** Its implementer runs were the harness's main source
 of lost work: runs ended by a rejected path outside the worktree (T13 three times, T21 and T22,
@@ -38,7 +38,7 @@ their misses were review findings, fixed in a round. `implement.mjs`, the choose
 check and the chains were removed on 2026-10-11 (this repository's history before that commit
 holds them).
 
-**Why OpenCode still reviews.** A reviewer of another family catches what the author's family
+**Why a second model reviews.** A reviewer of a different model catches what the author's model
 misses (Sol's bypass findings on T06 and T08; Luna's citation checks on T02–T04, T10), and a
 review is read-only, so a run that misbehaves costs one review, not a branch. OpenCode's models do
 not always follow the brief: `review.mjs` reads what came back, posts a review it cannot read
@@ -50,25 +50,16 @@ read-only) in `.opencode/agents/reviewer.md`, so a loose scratch file no longer 
 
 | Name | Model and route | Family | Use |
 | --- | --- | --- | --- |
-| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, effort `high`, the direct OpenAI route | OpenAI | **the default reviewer** (L51): fast, proves findings by mutation |
+| `luna` | GPT-5.6 Luna, `openai/gpt-5.6-luna`, effort `high`, the direct OpenAI route | OpenAI | fast, proves findings by mutation (harness.json's proposed reviewer default) |
 | `gpt-6.1-sol` | GPT-6.1 Sol, `openai/gpt-6.1-sol`, effort `low` | OpenAI | the adversarial reviewer for a guard, a gate or hard research; `medium` only when the task file says why, never `high` (the owner, 2026-10-03) |
 | `gpt-6-sol`, `luna-6` | GPT-6 Sol and GPT-6 Luna | OpenAI | registered for an explicit `--reviewer`; they share OpenAI's pool with Sol |
 | `zai-glm-5.3` | GLM-5.3, `zai-coding-plan/glm-5.3`, effort `low` (no medium) | GLM | a credible heavy reviewer when OpenAI is out (T08 round 2); 3x in weekday peak from 8 Oct 2026 |
 | `zai-glm-5.3-flash` | GLM-5.3 Flash, `zai-coding-plan/glm-5.3-flash`, effort `high` | GLM | a light reviewer for small PRs |
 | `mimo-flash`, `mimo-pro` | MiMo v2.6 Flash and Pro on OpenCode Go, no variant (they offer none) | MiMo | a family of its own; Go needs `opencode console login` in the scripts' data directory |
 | `mm-m3`, `mm-m2.7` | MiniMax-M3 (variant `thinking`) and M2.7 (no variant) | MiniMax | a family of its own; key `MINIMAX_API_KEY` from `~/.config/ai-keys.env`, never `opencode auth login` |
-| `ali-qwen-max`, `ali-qwen-flash`, `ali-glm` | Qwen 3.8 Max (`low`), Qwen 3.8 Flash (`medium`) and GLM-5.3 (`low`) on the Alibaba Token Plan | Qwen, GLM | only when the user asks (`--alibaba`); key `ALIBABA_TOKEN_PLAN_API_KEY` the same way |
+| `ali-qwen-max`, `ali-qwen-flash`, `ali-glm` | Qwen 3.8 Max (`low`), Qwen 3.8 Flash (`medium`) and GLM-5.3 (`low`) on the Alibaba Token Plan | Qwen, GLM | key `ALIBABA_TOKEN_PLAN_API_KEY` the same way |
 | (the session's provider) | the orchestrator's model from the Anthropic environment; `sonnet`, `opus`, `haiku`, `fable` or a model id for the `implementer` subagent, which the orchestrator spawns on a model of its own | Claude; GLM, MiniMax or Kimi when the environment says so | implements; reviews only when the user asks |
 
-**DeepSeek is blocked** (the owner, 2026-10-09), on any route: `harness.json`'s `blocked` list, which
-`review.mjs` and `switch-model.mjs` refuse and `/switch-model --block` and `--unblock` change.
-Every id comes from a live list (`opencode models <provider>`), never memory; `/switch-model`
-changes a default with a probe.
-
-**Effort.** A light model (Sonnet, GPT-5.6 Luna, GLM-5.3 Flash) runs at `high`; a heavy model
-(Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro, MiniMax-M3) at `medium` at most, and at `low` when
-medium is not needed (the owner, 2026-10-05). A model that offers no medium takes its lowest
-variant at or below `high`. Never `max`: slower, with no gain (L27). `--variant` on `review.mjs`
 runs a registered model at another effort for one review.
 
 **Sonnet's tripwire** (the owner, 2026-10-04). Models judge their own depth poorly. Every Sonnet
@@ -287,7 +278,7 @@ then `git show <sha>^:docs/models.md`), and in `docs/lessons.md` L68:
   `--second-opinion`; the afternoon of 2026-10-11's "nobody is asked" (the two questions came back
   on 2026-10-12, with the switchable roster);
 - the exclusions by name (never Haiku, Gemini, Kimi, Grok; GLM only via Z.AI; Luna only direct),
-  which `review.mjs --reviewer` no longer enforces: DeepSeek is the one blacklist.
+  which `review.mjs --reviewer` no longer enforces; no model-choice rule binds (family / blocked / Alibaba gates lifted 2026-10-13).
 
 ## Keeping this page current
 
