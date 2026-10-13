@@ -46,6 +46,11 @@ EXPECTED_EXTERNAL = {
     # `/home/...` literals appear) to satisfy test_no_machine_path_in_the_agent_file.
     "~/projects/isle-wars-archaeology-work": "allow",
     "~/projects/isle-wars-archaeology-work/*": "allow",
+    # fix #212 round 2 R3 (rule 13): the Done-when that rebuilds the Wine prefix writes to
+    # ~/iwp-prefix; without this grant the reviewer cannot run it. Same `~`-relative
+    # convention as the #208 grant above.
+    "~/iwp-prefix": "allow",
+    "~/iwp-prefix/*": "allow",
 }
 # What OpenCode puts before an agent's own rules (as `opencode debug agent` lists them): allow all,
 # ask for any outside directory, and its own /tmp/opencode allowance, which the agent also allows (fix #144).

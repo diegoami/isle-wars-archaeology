@@ -2,7 +2,8 @@
 """The Wine prefix of the iwp-runtime profile (W3a): build it, fill it, clean it, check it.
 
 Commands (machine-local values come from the environment, never from this file):
-    build          create the prefix (WINEARCH=win32, the PE header's machine type) when it is absent
+    build          create the prefix (WINEARCH is actively evicted from the environment, so wine
+                   defaults to win64 and the 32-bit Islepro.exe runs in wow64) when it is absent
     sync-game      make <prefix>/drive_c/iwp equal to the registered set, copied from IWP_DIR
     strip-links    remove the Z: drive, the COM port links and every link that leaves the prefix,
                    and give every file with a second name (a hard link) a file of its own
@@ -39,8 +40,8 @@ import safeio  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 SET_ID = "iwp-2.0-996e86c5"
-WINE = "/usr/lib/wine/wine"
-WINESERVER = "/usr/lib/wine/wineserver"
+WINE = "/usr/lib/x86_64-linux-gnu/wine/wine"          # wine64, on Wine 10 / Ubuntu 26.04 (issue #212)
+WINESERVER = "/usr/lib/x86_64-linux-gnu/wine/wineserver"  # ditto
 GAME_DIR = "iwp"                 # <prefix>/drive_c/iwp, the game's copy
 REG_FILES = ("system.reg", "user.reg", "userdef.reg", ".update-timestamp")
 
@@ -184,7 +185,9 @@ def verify_game_copy(game, install=None):
 
 
 def wine_env(prefix, display=None):
-    env = dict(os.environ, WINEPREFIX=str(prefix), WINEARCH="win32", WINEDEBUG="-all")
+    env = dict(os.environ, WINEPREFIX=str(prefix), WINEDEBUG="-all")
+    # issue #212, PR #213 round 2 R2: an inherited WINEARCH=win32 must not leak into the wow64 launch.
+    env.pop("WINEARCH", None)
     # no menu entries or file associations on the host; no Mono or Gecko download prompts
     env["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d;mscoree=d;mshtml=d"
     if display:
