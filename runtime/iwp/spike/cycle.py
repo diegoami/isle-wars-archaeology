@@ -636,7 +636,7 @@ class Cycle:
         self.verify_isolation()
         waited = poll(lambda: probe(["xdotool", "search", "--name", "^Islepro$"], env=self.env)[1].strip(), 300)
         if waited is None:
-            self.fail("no Islepro window within 90 s")
+            self.fail("no Islepro window within 300 s")
         wid = must(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.split()[0].decode()
         geometry = must(["xdotool", "getwindowgeometry", wid], env=self.env).stdout.decode().replace("\n", " ")
         pos = re.search(r"Position: (\S+)", geometry).group(1)
