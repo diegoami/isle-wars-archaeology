@@ -4,9 +4,17 @@ Run one question::
 
     python3 experiments/E018-pro-corroboration/record_f011.py Q-CMB-04 --count-target 500 --attacker-sizes 2 3 4 5 10 --defender-size 1
 
-Each run writes one JSON record to runs/E018/combat/ with:
-    run_id, question_id, claim_id, per_arm_counts, screenshot_path, screenshot_sha256,
-    seal_ok, elapsed_seconds, outcome.
+Each run writes one `run/1` record (formats/run-1.schema.json) to runs/E018/combat/.
+The run/1 document carries the session's own observations plus the recorder's
+fields, mapped by `e018_observation_fields` (a non-string original value is
+written as its JSON text, `null` as "null"); the mapping and where the older
+`e018-record/1` documents went are recorded in runs/E018/CORRECTIONS.md.
+
+With `--dry-run` the recorder prints its plan (the steps its body will perform,
+in the E002 step language) and writes nothing. Without the flag, and unless
+IWP_CYCLE_INNER is "1", it re-executes itself through the driver's inner
+namespace wrapper first (see `outer`); the game runs only inside that private
+environment (the same one runtime/iwp/driver/runner.py builds).
 
 The [C3] cycles are run by the main session on the install; this script is the
 recorder only — it writes the records, it does not run the game. The bodies
@@ -45,6 +53,7 @@ Q-SET-04: Screen: list the controls on the options screen (one visit).
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -53,10 +62,18 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "runtime"))
 from iwp.driver.session import Session
 from iwp.driver import runner as driver_runner
+from iwp.driver import session as driver_session
 from iwp.driver import errors as driver_errors
 
 EXPERIMENT = "E018"
 BATCH = "combat"
+INNER_FLAG = "IWP_CYCLE_INNER"        # "1" inside the private namespaces (runner.py sets it too)
+SCRIPT = "experiments/E018-pro-corroboration/record_f011.py"
+RESTORE_TEXT = ("the T13 driver's session seal: the private user, mount and PID namespaces of the "
+                "command, the install bound read-only once, the prefix sealed and equal to its "
+                "baseline before anything starts and again immediately before launch, and reset "
+                "after the session; start_state.sha256 is the sha256 of the install's Islepro.exe "
+                "hashed when the record is written (T48, constraint C)")
 
 # Question metadata: claim_id, count_target, description. The count_target is
 # the F011 plan's total; per-arm minimums (where the plan names one) live in
@@ -122,6 +139,66 @@ def sha256_file(path):
     return h.hexdigest()
 
 
+def _as_text(value):
+    """One original field value as the text a run/1 observation carries.
+
+    A string is itself, `None` the text "null", and any other JSON value its JSON
+    text (so a number or dict round-trips: the value is preserved verbatim, only
+    stringified — runs/E018/CORRECTIONS.md records the mapping).
+    """
+    if value is None:
+        return "null"
+    if isinstance(value, str):
+        return value
+    return json.dumps(value, sort_keys=True)
+
+
+def e018_observation_fields(fields):
+    """The recorder's own fields as run/1 observations.
+
+    `fields` is the recorder's flat document (the keys the older `e018-record/1`
+    records carried): question_id, claim_id, count_target, per_arm_counts,
+    screenshot_path, screenshot_sha256, seal_ok, elapsed_seconds, outcome, extra.
+    Every value is preserved verbatim as text (see `_as_text`); nothing is
+    dropped. The migration of the old records (migrate_to_run1.py) writes these
+    same observations, so a migrated record and a fresh one read the same way.
+    """
+    plan = (("static", "question_id"), ("static", "claim_id"), ("static", "count_target"),
+            ("static", "per_arm_counts"), ("static", "screenshot_path"), ("static", "screenshot_sha256"),
+            ("process", "seal_ok"), ("process", "elapsed_seconds"), ("static", "outcome"),
+            ("static", "extra"))
+    return [{"step": 0, "source": source, "field": name, "value": _as_text(fields.get(name))}
+            for source, name in plan]
+
+
+def record_context(argv=None):
+    """The run/1 context a record is written with: commit, machine, fingerprint, binary sha.
+
+    Gathered where the recorder runs; the inner re-exec (`inner`) provides the same
+    fields from inside the private namespaces, where the install is bound read-only.
+    A field that cannot be pinned is a clear refusal, never a guess: a record that
+    cannot name its code commit or its start state is not written.
+    """
+    commit = os.environ.get("IWP_CYCLE_COMMIT")
+    if not commit:
+        try:
+            commit = driver_runner.spike.must(["git", "rev-parse", "--short=12", "HEAD"],
+                                              cwd=ROOT).stdout.decode().strip()
+        except driver_runner.spike.CommandFailed as exc:
+            raise SystemExit(f"no code commit could be pinned: {exc}; nothing was started")
+    machine = os.environ.get("IWP_MACHINE", "local")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", machine):
+        raise SystemExit("IWP_MACHINE is not a machine id (lowercase letters, digits, dashes); "
+                         "nothing was started")
+    locs = driver_runner.spike.confined_locations(argparse.Namespace(experiment=EXPERIMENT, explore=False))
+    try:
+        binary_sha = driver_runner.binary_sha256(locs["IWP_DIR"])
+    except OSError as exc:
+        raise SystemExit(f"the install's Islepro.exe could not be hashed ({exc}); nothing was started")
+    return {"commit": commit, "machine": machine, "fingerprint": driver_runner.spike.versions(),
+            "binary_sha": binary_sha, "argv": list(argv or []), "restore": RESTORE_TEXT}
+
+
 def _seed_per_arm(per_arm, arms):
     """Initialise per_arm_counts with zero for every named arm."""
     for a in arms:
@@ -148,6 +225,9 @@ class F011Recorder:
         self.screenshot_sha256 = None
         self.outcome = None
         self._step = 0
+        self.obs = []                  # the session's run/1 observations, kept when it ends
+        self.started = None
+        self.ended = None
 
     def run(self):
         """Run one session for this question.
@@ -175,6 +255,9 @@ class F011Recorder:
         finally:
             self.elapsed = round(time.monotonic() - t0, 2)
             self.seal_ok = session.recovered
+            self.obs = [dict(o) for o in session.obs]
+            self.started = session.started or driver_session.now()
+            self.ended = session.ended or driver_session.now()
 
     def _body(self, session):
         """Override in subclass for each question type.
@@ -191,16 +274,47 @@ class F011Recorder:
         session.observe(self._step, "static", "claim_id", self.claim_id)
         session.observe(self._step, "static", "count_target", str(self.count_target))
 
-    def write_record(self):
-        """Write the JSON record to runs/E018/combat/."""
-        out_dir = ROOT / "runs" / EXPERIMENT / BATCH
-        out_dir.mkdir(parents=True, exist_ok=True)
-        path = out_dir / f"{self.run_id}.json"
-        record = {
-            "schema": "e018-record/1",
+    def build_record(self, ctx):
+        """One run/1 document for this attempt (formats/run-1.schema.json).
+
+        `ctx` is `record_context()`'s answer: code commit, machine, fingerprint,
+        the install binary's sha256 and the argv. The session's own observations
+        come first, then the recorder's fields (`e018_observation_fields`). The
+        status is the session's, verbatim ("completed" or "aborted: ...").
+        """
+        return {
+            "schema": "run/1",
             "run_id": self.run_id,
             "experiment": EXPERIMENT,
-            "batch": BATCH,
+            "arm": BATCH,
+            "rep": int(self.run_id.split("-r")[1]),
+            "code_commit": ctx["commit"],
+            "machine": ctx["machine"],
+            "artifact": {"set": driver_runner.spike.SET_ID, "variant": driver_runner.VARIANT},
+            "runtime": {
+                "driver": f"{SCRIPT}@{ctx['commit']}",
+                "platform": driver_runner.PLATFORM,
+                "fingerprint": ctx["fingerprint"],
+            },
+            "interventions": [{"level": "I1", "what":
+                               "the driver's cycle seal (the install bound read-only, the prefix "
+                               "sealed and reset), read-only reads of /proc, the planned input "
+                               "steps and screenshots; no memory read, no modified file"}],
+            "start_state": {"id": "S-cold-prefix-title", "sha256": ctx["binary_sha"],
+                            "restore": ctx["restore"]},
+            "seed": None,
+            "actions": {"script": SCRIPT, "sha256": sha256_file(Path(__file__).resolve()),
+                        "args": ctx["argv"]},
+            "observations": self.obs + e018_observation_fields(self.recorder_fields()),
+            "outputs": [],
+            "started": self.started,
+            "ended": self.ended,
+            "status": self.status,
+        }
+
+    def recorder_fields(self):
+        """The recorder's own flat document — the fields a run/1 record carries as observations."""
+        return {
             "question_id": self.question_id,
             "claim_id": self.claim_id,
             "count_target": self.count_target,
@@ -210,11 +324,22 @@ class F011Recorder:
             "seal_ok": self.seal_ok,
             "elapsed_seconds": self.elapsed,
             "outcome": self.outcome,
-            "status": self.status,
             "extra": self.extra,
         }
+
+    def write_record(self, ctx=None):
+        """Write the run/1 record to runs/E018/combat/ (never over one that exists)."""
+        ctx = ctx or record_context()
+        out_dir = ROOT / "runs" / EXPERIMENT / BATCH
+        out_dir.mkdir(parents=True, exist_ok=True)
+        path = out_dir / f"{self.run_id}.json"
+        if path.exists():
+            raise SystemExit(f"no record written: {path} already exists; records are never "
+                             "overwritten (rule 20)")
+        record = self.build_record(ctx)
         with open(path, "w") as f:
             json.dump(record, f, indent=2)
+            f.write("\n")
         return path
 
 
