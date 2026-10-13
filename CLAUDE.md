@@ -86,12 +86,12 @@ indexed in `docs/tasks/README.md`.
       only, or the Agent tool's model is not honoured), the main session implements directly, in
       its own git worktree (never the main checkout). Propose `harness.json`'s
       `implementer.default` first. Whatever the model, a subagent runs through the session's
-      endpoint, so its family for the reviewer rule is the session's (6.0). The implementer is
-      whatever the user names for the run: a Claude Code subagent, the main session directly,
-      or an OpenCode model invoked as `opencode run --agent implementer --model <id>`.
-      OpenCode models are a normal implementer pick whenever the user names one — no
-      provider-route or quota gate applies, and there is no current prohibition. The
-      earlier `implement.mjs` (a wrapper around that same OpenCode invocation) was
+      endpoint. The implementer is whatever the user names for the run: a Claude Code
+      subagent on any model the user picks, the main session directly, or an OpenCode
+      model invoked as `opencode run --agent implementer --model <id>`. No
+      model-choice rule applies — same-model implementations, same-family reviews,
+      blocked-model bypasses, and "Alibaba only when the user asks" are all lifted
+      by the owner on 2026-10-13. The earlier `implement.mjs` (a wrapper around that same OpenCode invocation) was
       retired on 2026-10-11 because runs died on rejected paths and early ends; the
       historical note lives in `docs/models.md`, not in this rule. Whoever implements keeps `RUN-NOTES.md` in their worktree (the plan, a progress line
       per commit, an END block), pushes after every commit, and opens the PR. When a subagent
@@ -99,17 +99,21 @@ indexed in `docs/tasks/README.md`.
       on the issue.
    2. **Before each review, ask the user ONE question:** which OpenCode model reviews? Propose
       `harness.json`'s `reviewer.default` first (GPT-5.6 Luna today; GPT-6.1 Sol at `low` for a
-      guard, a gate or hard research), and list the registered models that are neither of the
-      session's family nor blocked. Then `tools/harness/review.mjs --pr <n> --brief <file>
+      guard, a gate or hard research); the candidate list is any registered model — no
+      family / blocked / provider-route filter, owner 2026-10-13. Then `tools/harness/review.mjs --pr <n> --brief <file>
       --issue <n> --apply-label [--reviewer <name>]`, one review per PR unless the user asks for
       more; its findings are relayed in full (rule 8). OpenCode's models do not always follow the
       brief: the script posts what came back, flags what it cannot read (exit 4), and the main
       session reads a flagged review and decides rather than paying for another. Record the
       answers to both questions on the issue or PR.
-   3. **The fixed rules:** the reviewer is never of the session's family (`review.mjs` refuses it
-      from the environment; a `/code-review` or the `reviewer` agent, which are that family, run
-      only when the user asks); a model on `harness.json`'s `blocked` list never runs (DeepSeek
-      today; `/switch-model --block` and `--unblock` change it); Alibaba only when the user asks.
+   3. **The fixed rules (the owner, 2026-10-13):** no model-choice restriction on
+      implementer or reviewer. The reviewer may be of the same family as the
+      implementer; a model previously on the harness `blocked` list may run;
+      Alibaba runs without an extra question. The owner still names the
+      implementer and the reviewer at the rule 6.1 / 6.2 questions — the
+      questions stay, the choice is unrestricted. Data-flow guards still bind:
+      rule 18's originals bar; private code never to providers that train on
+      prompts (`docs/models.md`'s Free-models caveat).
    4. **Permissions, not briefs** (the owner, 2026-10-11): an agent gets the permissions its work
       needs, in its agent file (`.opencode/agents/reviewer.md`: all of `/tmp`, the static folder
       read-only; `.claude/agents/*.md`: the guard hook refuses only a force-push, `git stash`,
