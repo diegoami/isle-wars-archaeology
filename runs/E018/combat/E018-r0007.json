@@ -1,0 +1,19 @@
+{
+  "schema": "e018-record/1",
+  "run_id": "E018-r0007",
+  "experiment": "E018",
+  "batch": "combat",
+  "question_id": "Q-SET-04",
+  "claim_id": "C-SET-04",
+  "count_target": 1,
+  "per_arm_counts": {
+    "controls_listed": 0
+  },
+  "screenshot_path": null,
+  "screenshot_sha256": null,
+  "seal_ok": false,
+  "elapsed_seconds": 0.24,
+  "outcome": null,
+  "status": "aborted: seal: the prefix is not safe to launch from (before anything starts): dosdevices/com1 is mapped; only c: may be; dosdevices/com2 is mapped; only c: may be; dosdevices/com3 is mapped; only c: may be; dosdevices/com4 is mapped; only c: may be; dosdevices/com5 is mapped; only c: may be; dosdevices/com6 is mapped; only c: may be; dosdevices/com7 is mapped; only c: may be;",
+  "extra": {}
+}
