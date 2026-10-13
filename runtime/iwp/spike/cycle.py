@@ -63,8 +63,8 @@ EXPERIMENT = "E001"                  # the default of --experiment; E002 is W4a'
 SET_ID = "iwp-2.0-996e86c5"
 SUCCESSOR_ID = "iwp-2.0-3694a782"   # the same files with xtras/Isledft.dat declared a runtime write
 SUCCESSOR2_ID = "iwp-2.0-de5a82a2"  # ... and xtras/Islepro.skr too (E002: the scoreboard file)
-WINE = "/usr/lib/wine/wine"          # not on PATH on this machine (T08 task file)
-WINESERVER = "/usr/lib/wine/wineserver"
+WINE = "/usr/lib/x86_64-linux-gnu/wine/wine"          # wine64, on Wine 10 / Ubuntu 26.04 (issue #212)
+WINESERVER = "/usr/lib/x86_64-linux-gnu/wine/wineserver"  # ditto
 DISPLAY = ":77"
 MARK = "IWP_CYCLE_RUN"               # env marker on every child, to find strays from outside
 
@@ -510,7 +510,7 @@ class Cycle:
         self.workdir = locations.real(tempfile.mkdtemp(prefix="iwp-cycle-"))
         width, height, depth = (int(v) for v in args.size.split("x"))
         self.size = (width, height, depth)
-        self.env = dict(os.environ, DISPLAY=DISPLAY, WINEPREFIX=str(prefix), WINEARCH="win32",
+        self.env = dict(os.environ, DISPLAY=DISPLAY, WINEPREFIX=str(prefix),
                         WINEDEBUG="fixme-all", **{MARK: run_id})
         self.env["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d"
         if args.audio == "off":

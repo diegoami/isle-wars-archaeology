@@ -39,8 +39,8 @@ import safeio  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 SET_ID = "iwp-2.0-996e86c5"
-WINE = "/usr/lib/wine/wine"
-WINESERVER = "/usr/lib/wine/wineserver"
+WINE = "/usr/lib/x86_64-linux-gnu/wine/wine"          # wine64, on Wine 10 / Ubuntu 26.04 (issue #212)
+WINESERVER = "/usr/lib/x86_64-linux-gnu/wine/wineserver"  # ditto
 GAME_DIR = "iwp"                 # <prefix>/drive_c/iwp, the game's copy
 REG_FILES = ("system.reg", "user.reg", "userdef.reg", ".update-timestamp")
 
@@ -184,7 +184,7 @@ def verify_game_copy(game, install=None):
 
 
 def wine_env(prefix, display=None):
-    env = dict(os.environ, WINEPREFIX=str(prefix), WINEARCH="win32", WINEDEBUG="-all")
+    env = dict(os.environ, WINEPREFIX=str(prefix), WINEDEBUG="-all")
     # no menu entries or file associations on the host; no Mono or Gecko download prompts
     env["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d;mscoree=d;mshtml=d"
     if display:
