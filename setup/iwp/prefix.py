@@ -3,7 +3,8 @@
 
 Commands (machine-local values come from the environment, never from this file):
     build          create the prefix (WINEARCH is actively evicted from the environment, so wine
-                   defaults to win64 and the 32-bit Islepro.exe runs in wow64) when it is absent
+                   defaults to win64 and the 32-bit Islepro.exe runs in wow64) when it is absent;
+                   complete wineboot before a new baseline is kept
     sync-game      make <prefix>/drive_c/iwp equal to the registered set, copied from IWP_DIR
     strip-links    remove the Z: drive, the COM port links and every link that leaves the prefix,
                    and give every file with a second name (a hard link) a file of its own
@@ -229,16 +230,20 @@ def start_xvfb(size="800x600x16"):
 
 def build():
     prefix = prefix_path()
-    if (prefix / "system.reg").is_file():
+    exists = (prefix / "system.reg").is_file()
+    if exists and (locations.locations(need_prefix=True)["IWP_PREFIX.baseline"] / "system.reg").is_file():
         print(f"prefix exists: {prefix.name}")
         return 0
     prefix.parent.mkdir(parents=True, exist_ok=True)
     xvfb, display = start_xvfb()
     try:
         env = wine_env(prefix, display)
-        # `wineboot -u` as the user, as the IC2 notes say it was required
-        subprocess.run([WINE, "wineboot", "-u"], env=env, check=True, timeout=300)
-        subprocess.run([WINESERVER, "-w"], env=env, timeout=120)
+        if not exists:
+            # `wineboot -u` as the user, as the IC2 notes say it was required
+            subprocess.run([WINE, "wineboot", "-u"], env=env, check=True, timeout=300)
+        # Issue #215: finish the wow64 bootstrap before strip-links and the write-once baseline.
+        subprocess.run([WINE, "wineboot", "-e"], env=env, check=True, timeout=300)
+        subprocess.run([WINESERVER, "-w"], env=env, check=True, timeout=120)
     finally:
         subprocess.run([WINESERVER, "-k"], env=wine_env(prefix), check=False)
         xvfb.terminate()
