@@ -284,9 +284,10 @@ class Engine(spike.Cycle):
     SPIKE_ONLY = ("complete_script", "run_script", "load_script", "session", "input", "hover_click",
                   "protect_install", "execute")
 
-    def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24"):
+    def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24",
+                 experiment=None):
         args = argparse.Namespace(size=size, audio="off", wm="xfwm4", click="hover", terminate="kill", script=None,
-                                  session=False, input="options", arm=arm, experiment=EXPERIMENT,
+                                  session=False, input="options", arm=arm, experiment=experiment or EXPERIMENT,
                                   may_write_saved_files=False, explore=False)
         super().__init__(args, run_id, prefix, bundles, install)
         self.env["DISPLAY"] = display
@@ -891,8 +892,10 @@ class Session:
     guard's process, quiet its dead-game check or substitute the reset's target; expect() is the one way
     to name the screens a body will reach."""
 
-    def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24"):
-        object.__setattr__(self, "_engine", Engine(run_id, prefix, bundles, install, display, arm, size))
+    def __init__(self, run_id, prefix, bundles, install, display, arm="control", size="800x600x24",
+                 experiment=None):
+        object.__setattr__(self, "_engine", Engine(run_id, prefix, bundles, install, display, arm, size,
+                                                   experiment=experiment))
         object.__setattr__(self, "_hooks", {})
 
     def __setattr__(self, name, value):

@@ -164,6 +164,7 @@ class F011Recorder:
             locs[f"{EXPERIMENT}_BUNDLES"],
             locs["IWP_DIR"],
             display,
+            experiment=EXPERIMENT,
         )
         try:
             self.status = session.execute(self._body)
