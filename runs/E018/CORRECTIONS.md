@@ -2165,6 +2165,47 @@ A re-read of `IP1 029.mp4` writes new files beside r0015..r0018 (the next free r
   - *comparisons with other sittings or sources:* r0016 obs[1] (the deal against the earlier sittings, the first seats so far); r0016 obs[49] (the fifteen-army card first seen in four sittings); r0016 obs[50] (the first declined offer); r0016 obs[53] ("for a human capturer", against IP1 028); r0017 obs[0] ("as in the three earlier sittings"); r0017 obs[17] ("the largest so far", the template that found moves in 027 and 028); r0017 obs[18] (the rows confirmed against IP1 028); r0018 obs[0] (the event rate against the setting and the four sittings); r0018 obs[19] ("as in IP1 028"); r0018 obs[20] (which games the normal row "fits", and "so the win of a concession is recorded"); r0018 obs[21] (IP1 028's note "explained by the timing");
   - *derivations and method notes:* r0015 obs[1] (the last exchange of a capture inferred); r0015 obs[2] (the computer's start taken from the counters); r0018 obs[17] (totals as lower bounds); r0018 obs[18] (the scoreboard "not yet clearing" yellow's cards); r0016 obs[0] (the card count lagging the draw screen).
 
+## Wine-driven Q-SET-04 visit (E018-r0014)
+
+A model-driven sitting on the user's machine (the carve-out at rule 18's
+"A–F", `runtime.platform: wine-on-user-machine-iwp-2.0`; the binary's
+sha256 `c4d7a248…` is the F019-pinned `Islepro.exe` hash). The first
+Wine-driven visit of the options screen after four Bandicam visits
+(IP1 025–029). Counts add to the same per-claim totals as the videos
+(rule 18 E); no reading restates a Bandicam reading.
+
+### Q-SET-04 (C-SET-01) — the options screen
+
+- **Status:** corroborated (a fifth visit; the first on wine; a sixth
+  source for the claim, with the four Bandicam sittings and the C3 cycle
+  read)
+- **This sitting:** the title screen reached and stable at 8.2 s after
+  launch; the options screen then opened by `click! 320 585` from the
+  title screen; the recorder's
+  `options-controls.png` (raw RGB8 pixels sha256
+  `e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3`,
+  PNG first 16 `426d77e724d793dd`) shows the six controls the static
+  claim lists, in the same positions and with the same defaults as the
+  four Bandicam visits: four seat toggles (one human, three computers),
+  a five-entry starting-armies dial (3 highlighted), a three-entry
+  strength dial with the middle entry highlighted, a four-entry
+  event-frequency dial with the middle highlighted, a three-entry speed
+  dial with the middle highlighted, a sound icon (the orange `ear1` /
+  `ear2` glyph from `CastScript 591` / `592`) between SAVE AS DEFAULT
+  and RETURN; SAVE AS DEFAULT on the left and RETURN on the right. The
+  recorder's `controls_to_list` named the same six
+  (`starting_armies,seats,level,frequency,speed,sound`); the screenshot
+  from this run was not kept in the E018 bundles (the Session-based
+  recorder does not store screenshots; the same options screen at the
+  same pixel and PNG sha256 is in
+  `~/.local/share/isle-wars-archaeology/E019-bundles/426d77e724d793dd-options.png`,
+  captured by an E019 cycle at the same wine/xfwm4/xvfb settings, with
+  identical content). The record's `per_arm_counts.controls_listed`
+  stays 0 (the recorder's sentinel for "the count is read from the
+  screenshot, never assumed", record_f011.py SETOptionsRecorder);
+  this entry carries the 6.
+- **Cited by:** E018-r0014.
+
 ## Record migration: e018-record/1 to run/1 (T28 R3, 2026-10-13)
 
 The R2 recorder (`experiments/E018-pro-corroboration/record_f011.py`) wrote its
