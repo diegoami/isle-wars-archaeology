@@ -40,7 +40,14 @@ known and split by the fixed VIPC list, which `vipc_countries` names), and the b
 batch 2's claims. A claim with no rule is never corroborated. Shortfalls are printed per arm.
 
 Usage: `python3 tools/check_counts.py experiments/E020-wine-first-run/scenarios.txt`.
+
+T44 adds `--accept-single`, `--experiment` and `--records-root`: with `--accept-single` the checker
+accepts the `single:rank` kind (a single die read from two close frames, T44) and counts the
+observation as an exchange; without it the kind is unknown and the observation is refused, so it is
+never counted. `--experiment`/`--records-root` point the checker at another experiment's batch list
+and records (default E020/runs/E020), which keeps the E020 behaviour unchanged.
 """
+import argparse
 import configparser
 import json
 import re
@@ -52,6 +59,14 @@ ROOT = Path(__file__).resolve().parent.parent
 RECORDS = ROOT / "runs" / "E020"
 SCENARIOS = ROOT / "experiments" / "E020-wine-first-run" / "scenarios.txt"
 EXPERIMENT = "E020"
+EXPERIMENT_IN_PATH = re.compile(r"E[0-9]{3,}")   # a batch list under experiments/E<nnn>-... names its own
+
+
+def experiment_of_path(path):
+    """The experiment a batch list belongs to, taken from its path (`experiments/E022-...` → E022);
+    EXPERIMENT when the path names none, which keeps the E020 default for a bare file name."""
+    match = EXPERIMENT_IN_PATH.search(Path(path).as_posix())
+    return match.group(0) if match else EXPERIMENT
 
 # --- the field vocabulary and the value each role may carry (constraint D; R6) ----------------
 
@@ -65,18 +80,19 @@ OUTCOMES = ("corroborated", "narrowed", "unestablished", "pending")
 SHA = re.compile(r"^sha256:([0-9a-f]{64})$")
 
 
-def value_problem(field, value):
+def value_problem(field, value, accept_single=False):
     """Why `value` may not stand under `field`, or "" when it may. A field is a structural
     `kind:role` name; a counter, hand, game, event, country or sitting value is a plain
     non-negative integer as read (a country is the board's country number, 1 to 46, F017; a game
-    or an event ordinal starts at 1); an owner is one of the four seat colour words. Any
+    or an event ordinal starts at 1); an owner is one of the four seat colour words. A `single`
+    kind (a single-die marker, T44) is in the vocabulary only with `accept_single`; any
     other kind, and any other value (text from the screen included), is refused."""
     if not isinstance(field, str) or not FIELD.fullmatch(field):
         return f"field {field!r} is not a structural kind:role name"
     kind = field.split(":", 1)[0]
     if not isinstance(value, str):
         return f"{field}: the value is not a string"
-    if kind in INTEGER_KINDS:
+    if kind in INTEGER_KINDS or (accept_single and kind == "single"):
         if not INTEGER.fullmatch(value):
             return f"{field}: {value!r} is not a plain non-negative integer"
         number = int(value)
@@ -89,8 +105,9 @@ def value_problem(field, value):
         if value not in COLOURS:
             return f"{field}: {value!r} is not a colour word ({', '.join(sorted(COLOURS))})"
         return ""
+    hint = "; pass --accept-single for a single-die marker" if kind == "single" else ""
     return f"field {field!r}: the kind {kind!r} is not in the vocabulary " \
-           f"({', '.join(sorted(INTEGER_KINDS | COLOUR_KINDS))})"
+           f"({', '.join(sorted(INTEGER_KINDS | COLOUR_KINDS))}{hint})"
 
 
 # --- the batch list -----------------------------------------------------------------------------
@@ -139,16 +156,16 @@ def records_of(batch, records_root=RECORDS):
     return out
 
 
-def observations_of(doc, name, batch):
+def observations_of(doc, name, batch, experiment=EXPERIMENT, accept_single=False):
     """({identity: values} of events, {identity: values} of net observations, problems) for one
     record: its complete events and its complete net observations, each once. A net observation is
     never among the events (R1)."""
     problems = []
     if not isinstance(doc, dict) or doc.get("schema") != "run/1":
         return {}, {}, ["not a run/1 document"]
-    if doc.get("experiment") != EXPERIMENT or doc.get("arm") != name:
+    if doc.get("experiment") != experiment or doc.get("arm") != name:
         problems.append(f"experiment {doc.get('experiment')!r} arm {doc.get('arm')!r} is not "
-                        f"{EXPERIMENT} {name!r}")
+                        f"{experiment} {name!r}")
     held = {o.get("sha256") for o in doc.get("outputs", []) if isinstance(o, dict)}
     allowed = set(vocabulary(batch))
     sittings = []
@@ -161,7 +178,7 @@ def observations_of(doc, name, batch):
             if obs["field"] not in allowed:
                 problems.append(f"observations[{i}]: field {obs['field']!r} is not in the batch vocabulary")
                 continue
-            problem = value_problem(obs["field"], obs.get("value"))
+            problem = value_problem(obs["field"], obs.get("value"), accept_single)
             if problem:
                 problems.append(f"observations[{i}]: {problem}")
                 continue
@@ -208,14 +225,14 @@ def observations_of(doc, name, batch):
     return events, nets, problems
 
 
-def events_of(doc, name, batch):
+def events_of(doc, name, batch, experiment=EXPERIMENT, accept_single=False):
     """({identity: values}, problems) for one record: its complete events, each once (never its
     net observations)."""
-    events, _nets, problems = observations_of(doc, name, batch)
+    events, _nets, problems = observations_of(doc, name, batch, experiment, accept_single)
     return events, problems
 
 
-def batch_observations(name, batch, records_root=RECORDS):
+def batch_observations(name, batch, records_root=RECORDS, experiment=EXPERIMENT, accept_single=False):
     """({identity: values} of events, {identity: values} of net observations, problems) over every
     record of the batch, each counted once."""
     merged = {"event": {}, "net observation": {}}
@@ -224,7 +241,7 @@ def batch_observations(name, batch, records_root=RECORDS):
         if isinstance(doc, Exception):
             problems.append(f"{path.name}: not JSON ({doc})")
             continue
-        events, nets, record_problems = observations_of(doc, name, batch)
+        events, nets, record_problems = observations_of(doc, name, batch, experiment, accept_single)
         problems += [f"{path.name}: {p}" for p in record_problems]
         for kind, found in (("event", events), ("net observation", nets)):
             for key, values in found.items():
@@ -237,10 +254,10 @@ def batch_observations(name, batch, records_root=RECORDS):
     return merged["event"], merged["net observation"], problems
 
 
-def batch_events(name, batch, records_root=RECORDS):
+def batch_events(name, batch, records_root=RECORDS, experiment=EXPERIMENT, accept_single=False):
     """({identity: values}, problems) over every record of the batch, each event counted once
     (net observations are never among them)."""
-    events, _nets, problems = batch_observations(name, batch, records_root)
+    events, _nets, problems = batch_observations(name, batch, records_root, experiment, accept_single)
     return events, problems
 
 
@@ -355,10 +372,10 @@ def declared_outcomes(scenarios):
 
 # --- the check ----------------------------------------------------------------------------------
 
-def check_batch(name, batch, outcomes=None, records_root=RECORDS):
+def check_batch(name, batch, outcomes=None, records_root=RECORDS, experiment=EXPERIMENT, accept_single=False):
     """(problems, lines) for one batch."""
     outcomes = outcomes or {}
-    events, nets, problems = batch_observations(name, batch, records_root)
+    events, nets, problems = batch_observations(name, batch, records_root, experiment, accept_single)
     noun = "exchanges" if batch.get("event") == "exchange" else f"{batch.get('event', 'event')} plays"
     games = {(s, g) for s, g, _ in events}
     floor, games_floor = int(batch.get("events_min", 0)), int(batch.get("games_min", 0))
@@ -387,8 +404,13 @@ def check_batch(name, batch, outcomes=None, records_root=RECORDS):
     return problems, lines
 
 
-def check(scenarios=SCENARIOS, records_root=RECORDS):
-    """(problems, lines) for every batch of the scenarios file."""
+def check(scenarios=SCENARIOS, records_root=None, experiment=None, accept_single=False):
+    """(problems, lines) for every batch of the scenarios file. `experiment` defaults to the one
+    the batch list's path names (so `--accept-single experiments/E022-pro-fast-capture/scenarios.txt`
+    checks E022 without a flag); `records_root` defaults to `runs/<experiment>`."""
+    scenarios = Path(scenarios)
+    experiment = experiment or experiment_of_path(scenarios)
+    records_root = Path(records_root) if records_root else ROOT / "runs" / experiment
     batches = load_batches(scenarios)
     if not batches:
         return [f"{scenarios}: no [batch ...] block found"], []
@@ -397,18 +419,26 @@ def check(scenarios=SCENARIOS, records_root=RECORDS):
     problems += [f"outcomes.json names {c}, which no batch carries" for c in outcomes if c not in known]
     lines = []
     for name, batch in batches.items():
-        batch_problems, batch_lines = check_batch(name, batch, outcomes, records_root)
+        batch_problems, batch_lines = check_batch(name, batch, outcomes, records_root, experiment, accept_single)
         problems += batch_problems
         lines += batch_lines
     return problems, lines
 
 
 def main(argv=None):
-    argv = sys.argv[1:] if argv is None else list(argv)
-    if len(argv) != 1:
-        print("usage: check_counts.py <scenarios.txt>")
-        return 2
-    problems, lines = check(Path(argv[0]))
+    parser = argparse.ArgumentParser(description="Check an experiment's sitting counts against its batch list.")
+    parser.add_argument("scenarios", nargs="?", default=str(SCENARIOS),
+                        help="the batch list (default: E020's scenarios.txt)")
+    parser.add_argument("--experiment", default=None,
+                        help="the experiment id the batch list belongs to (default: the one its path "
+                             "names, else E020)")
+    parser.add_argument("--records-root", default=None,
+                        help="the records root (default: runs/<experiment>)")
+    parser.add_argument("--accept-single", action="store_true",
+                        help="accept the single:rank marker (a single die, T44) and count the observation "
+                             "as an exchange; without it the marker is refused, so it is never counted")
+    args = parser.parse_args(sys.argv[1:] if argv is None else list(argv))
+    problems, lines = check(Path(args.scenarios), args.records_root, args.experiment, args.accept_single)
     print("\n".join(lines))
     for problem in problems:
         print(f"FAIL {problem}")

@@ -1,0 +1,136 @@
+{
+  "actions": {
+    "args": [],
+    "script": "experiments/E022-pro-fast-capture/build_record.py",
+    "sha256": "5d9731994e1dc55c93679da68ac8804c900d2a7ea1584ec65be00430577087fd"
+  },
+  "arm": "synthetic",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "code_commit": "0000000",
+  "ended": "2026-10-13T00:00:00Z",
+  "experiment": "E022",
+  "interventions": [
+    {
+      "level": "I0",
+      "what": "none"
+    }
+  ],
+  "machine": "local",
+  "observations": [
+    {
+      "field": "sitting:epoch",
+      "source": "process",
+      "step": 0,
+      "value": "1791460800"
+    },
+    {
+      "field": "game:ordinal",
+      "source": "screen",
+      "step": 1,
+      "value": "1"
+    },
+    {
+      "field": "event:seq",
+      "source": "screen",
+      "step": 1,
+      "value": "1"
+    },
+    {
+      "field": "counter:attacker-after",
+      "source": "screen",
+      "step": 1,
+      "value": "9"
+    },
+    {
+      "field": "counter:attacker-before",
+      "source": "screen",
+      "step": 1,
+      "value": "9"
+    },
+    {
+      "field": "counter:defender-after",
+      "source": "screen",
+      "step": 1,
+      "value": "3"
+    },
+    {
+      "field": "counter:defender-before",
+      "source": "screen",
+      "step": 1,
+      "value": "4"
+    },
+    {
+      "field": "country:attacker",
+      "source": "screen",
+      "step": 1,
+      "value": "1"
+    },
+    {
+      "field": "country:defender",
+      "source": "screen",
+      "step": 1,
+      "value": "2"
+    },
+    {
+      "field": "owner:attacker",
+      "source": "screen",
+      "step": 1,
+      "value": "red"
+    },
+    {
+      "field": "owner:defender",
+      "source": "screen",
+      "step": 1,
+      "value": "blue"
+    },
+    {
+      "field": "single:rank",
+      "source": "screen",
+      "step": 1,
+      "value": "1"
+    },
+    {
+      "ref": "sha256:b1ff9c8ea3a780bad09b346c423d2d0e46815926879b18e841d928376a946640",
+      "source": "screen",
+      "step": 1
+    },
+    {
+      "ref": "sha256:fce481932ea5d07a91c7991c09fdadb4bf78f9b4cc8f927188384231f9d12679",
+      "source": "screen",
+      "step": 1
+    }
+  ],
+  "outputs": [
+    {
+      "name": "frame-before.png",
+      "sha256": "b1ff9c8ea3a780bad09b346c423d2d0e46815926879b18e841d928376a946640",
+      "store": "release:E022"
+    },
+    {
+      "name": "frame-after.png",
+      "sha256": "fce481932ea5d07a91c7991c09fdadb4bf78f9b4cc8f927188384231f9d12679",
+      "store": "release:E022"
+    }
+  ],
+  "rep": 1,
+  "run_id": "E022-r0001",
+  "runtime": {
+    "driver": "experiments/E022-pro-fast-capture/single_exchange.py@0000000",
+    "fingerprint": {
+      "python": "3"
+    },
+    "platform": "synthetic"
+  },
+  "schema": "run/1",
+  "seed": null,
+  "start_state": {
+    "id": "synthetic-board-after-one-die",
+    "restore": "none (synthetic frames; no game was run)",
+    "sha256": "07baf7071a667e60253d99f51fa37399af3216073e389c3b7b0416511e492e32"
+  },
+  "started": "2026-10-13T00:00:00Z",
+  "status": "completed"
+}
