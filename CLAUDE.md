@@ -86,12 +86,16 @@ indexed in `docs/tasks/README.md`.
       only, or the Agent tool's model is not honoured), the main session implements directly, in
       its own git worktree (never the main checkout). Propose `harness.json`'s
       `implementer.default` first. Whatever the model, a subagent runs through the session's
-      endpoint, so its family for the reviewer rule is the session's (6.0). OpenCode never
-      implements: `implement.mjs` was removed on 2026-10-11 because its runs died on rejected
-      paths, resets and early ends and did not follow the brief (`docs/models.md`). Whoever
-      implements keeps `RUN-NOTES.md` in its worktree (the plan, a progress line per commit, an
-      END block), pushes after every commit, and opens the PR. When a subagent ends, the main
-      session reads its final report before acting (rule 25), and posts its notes on the issue.
+      endpoint, so its family for the reviewer rule is the session's (6.0). The implementer is
+      whatever the user names for the run (a Claude Code subagent, the main session, or an
+      OpenCode model invoked directly via `opencode run --agent implementer --model ...` when
+      openai quota is the available pool); `implement.mjs` was removed on 2026-10-11 because
+      its runs died on rejected paths, resets and early ends and did not follow the brief
+      (`docs/models.md`), but the prohibition is harness-history prose, not a hard repository
+      rule. Whoever implements keeps `RUN-NOTES.md` in their worktree (the plan, a progress line
+      per commit, an END block), pushes after every commit, and opens the PR. When a subagent
+      ends, the main session reads its final report before acting (rule 25), and posts its notes
+      on the issue.
    2. **Before each review, ask the user ONE question:** which OpenCode model reviews? Propose
       `harness.json`'s `reviewer.default` first (GPT-5.6 Luna today; GPT-6.1 Sol at `low` for a
       guard, a gate or hard research), and list the registered models that are neither of the
