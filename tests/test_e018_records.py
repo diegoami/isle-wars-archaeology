@@ -263,5 +263,55 @@ class DryRunPlanTest(unittest.TestCase):
         self.assertTrue(any(s.startswith("shot ") for s in steps), "no screenshot step")
 
 
+class EntryPointTest(ReexecTest):
+    """The executable entry point calls main() with no argument (Sol's R1, T28 R4).
+
+    main() must normalize argv from sys.argv when it is omitted: with the local argv left
+    None, the documented command crashed at list(argv) in the outer re-exec, and the inner
+    process silently recorded [] as the record's actions.args — losing the command that
+    actually ran. These tests call main() exactly as __main__ does; rule 9: removing the
+    normalization line in main() fails both.
+    """
+
+    CLI = ["record_f011.py", "Q-SET-04", "--count-target", "7"]
+
+    def test_entry_point_forwards_the_command_line_to_the_wrapper(self):
+        env = {"PATH": str(self.bin), "IWP_CYCLE_DISPLAY": ":77"}
+        base = {k: v for k, v in os.environ.items() if k != record_f011.INNER_FLAG}
+        with mock.patch.dict(os.environ, {**base, **env}, clear=True), \
+                mock.patch.object(sys, "argv", self.CLI):
+            code = record_f011.main()
+        self.assertEqual(code, 7)
+        lines = self.log_lines()
+        script = str(ROOT / "experiments" / "E018-pro-corroboration" / "record_f011.py")
+        self.assertEqual(lines[lines.index(script) + 1:], ["Q-SET-04", "--count-target", "7",
+                                                           "flag=1", "commit=0123456789ab"])
+
+    def test_entry_point_records_the_command_line_it_ran_with(self):
+        empty = self.tmp / "empty-bin"
+        empty.mkdir()
+        wrote = []
+        locs = {"IWP_PREFIX": str(self.tmp / "prefix"), "E018_BUNDLES": str(self.tmp / "bundles"),
+                "IWP_DIR": str(self.tmp / "install")}
+        env = {"PATH": str(empty), record_f011.INNER_FLAG: "1", "IWP_CYCLE_COMMIT": "0123456789ab",
+               "IWP_CYCLE_DISPLAY": ":77", "IWP_MACHINE": "local"}
+        base = dict(os.environ)
+        with mock.patch.dict(os.environ, {**base, **env}, clear=True), \
+                mock.patch.object(sys, "argv", self.CLI), \
+                mock.patch.object(record_f011, "mount_private_tmpfs", lambda: None), \
+                mock.patch.object(record_f011, "confined", lambda *a, **k: locs), \
+                mock.patch.object(record_f011.driver_session, "bind_install_readonly",
+                                  lambda install: None), \
+                mock.patch.object(record_f011.driver_runner.spike, "versions", lambda: {}), \
+                mock.patch.object(record_f011.driver_runner, "binary_sha256",
+                                  lambda install: F019_BINARY_SHA), \
+                mock.patch.object(record_f011.F011Recorder, "run", lambda self: None), \
+                mock.patch.object(record_f011.F011Recorder, "write_record",
+                                  lambda self, ctx=None: wrote.append(ctx)):
+            code = record_f011.main()
+        self.assertEqual(code, 0)
+        self.assertEqual([ctx["argv"] for ctx in wrote], [["Q-SET-04", "--count-target", "7"]])
+
+
 if __name__ == "__main__":
     unittest.main()

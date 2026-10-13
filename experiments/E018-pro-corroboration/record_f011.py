@@ -783,6 +783,10 @@ def build_recorder(args):
 
 
 def main(argv=None):
+    # Normalize argv before anything uses it: parse_args(None) would read sys.argv while the
+    # local argv stayed None, so the outer re-exec crashed (list(None)) and the inner process
+    # silently recorded [] as actions.args (Sol's R1, T28 R4). The driver does the same.
+    argv = sys.argv[1:] if argv is None else list(argv)
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("question_id", choices=sorted(QUESTIONS.keys()))
     parser.add_argument("--count-target", type=int, default=None,
