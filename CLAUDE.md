@@ -76,22 +76,19 @@ indexed in `docs/tasks/README.md`.
       its model, runs through the same endpoint and is of that provider's family.
    1. **Before each implementation, ask the user ONE question** with the question tool: which
       **subagent** implements, or does the main session implement directly? The implementer is
-      normally a subagent spawned inside Claude Code with the Agent tool
-      (`subagent_type: "implementer"`, `.claude/agents/implementer.md`, worktree isolation) on a
-      model of its own, not the orchestrator's: for example, an Opus session spawns Sonnet. The model is
-      a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) or any model id the session's
-      provider serves; under another Anthropic-compatible provider (Z.AI's GLM, MiniMax, Kimi) the same
-      alias resolves to whatever that provider maps it to (GLM-5.3 Flash for `sonnet` on Z.AI),
-      or the id names its model outright. When the provider cannot spawn a subagent (one model
-      only, or the Agent tool's model is not honoured), the main session implements directly, in
-      its own git worktree (never the main checkout). Propose `harness.json`'s
-      `implementer.default` first. Whatever the model, a subagent runs through the session's
-      endpoint. The implementer is whatever the user names for the run: a Claude Code
-      subagent on any model the user picks, the main session directly, or an OpenCode
-      model invoked as `opencode run --agent implementer --model <id>`. No
-      model-choice rule applies — same-model implementations, same-family reviews,
-      blocked-model bypasses, and "Alibaba only when the user asks" are all lifted
-      by the owner on 2026-10-13. The earlier `implement.mjs` (a wrapper around that same OpenCode invocation) was
+      a subagent spawned inside Claude Code with the Agent tool
+      (`subagent_type: "implementer"`, `.claude/agents/implementer.md`, worktree isolation), an
+      OpenCode model invoked as `opencode run --agent implementer --model <id>`, or the main
+      session directly in its own worktree (never the main checkout). The model is whatever
+      the user names: a Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`), any model id
+      the session's provider serves, or any OpenCode id the user has. Under another
+      Anthropic-compatible provider (Z.AI's GLM, MiniMax, Kimi) the same alias resolves to
+      whatever that provider maps it to, or the id names its model outright. Propose
+      `harness.json`'s `implementer.default` first as a starting point, but any model the user
+      names is acceptable. No model-choice rule binds: same-model implementations, same-family
+      reviews, a model previously on the harness `blocked` list, and "Alibaba only when the
+      user asks" are all lifted by the owner on 2026-10-13 (rule 6.3). The earlier
+      `implement.mjs` (a wrapper around that same OpenCode invocation) was
       retired on 2026-10-11 because runs died on rejected paths and early ends; the
       historical note lives in `docs/models.md`, not in this rule. Whoever implements keeps `RUN-NOTES.md` in their worktree (the plan, a progress line
       per commit, an END block), pushes after every commit, and opens the PR. When a subagent
@@ -105,7 +102,7 @@ indexed in `docs/tasks/README.md`.
       implementer and the reviewer at the rule 6.1 / 6.2 questions — the
       questions stay, the choice is unrestricted. Data-flow guards still bind:
       rule 18's originals bar; private code never to providers that train on
-      prompts (`docs/models.md`'s Free-models caveat).
+      prompts.
    4. **Permissions, not briefs** (the owner, 2026-10-11): an agent gets the permissions its work
       needs, in its agent file (`.opencode/agents/reviewer.md`: all of `/tmp`, the static folder
       read-only; `.claude/agents/*.md`: the guard hook refuses only a force-push, `git stash`,
@@ -134,8 +131,9 @@ indexed in `docs/tasks/README.md`.
       Sonnet's tripwire (`docs/models.md`) in every Sonnet brief; reach (L26: an OpenCode reviewer
       cannot reach the user's install or a cloud session, so the main session runs those lines
       and posts their output on the PR); a cloud brief starts by checking the hostname and that
-      `/mnt/c` is absent, and stops if either check fails; every model id comes from a live list
-      (`opencode models <provider>`), never memory.
+      `/mnt/c` is absent, and stops if either check fails; every model id comes from a live
+      source when one is reachable — `opencode models <provider>` where OpenCode is installed,
+      the provider's own model list otherwise — never memory.
 
    The roster, how a run is made and what each model has shown are in `docs/models.md`; the main
    session keeps it current.
