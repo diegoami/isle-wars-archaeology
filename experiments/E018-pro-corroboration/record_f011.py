@@ -54,6 +54,7 @@ import argparse
 import json
 import os
 import re
+import secrets
 import sys
 import time
 from pathlib import Path
@@ -68,6 +69,9 @@ from iwp.driver import errors as driver_errors
 EXPERIMENT = "E018"
 BATCH = "combat"
 INNER_FLAG = "IWP_CYCLE_INNER"        # "1" inside the private namespaces (runner.py sets it too)
+INNER_BOUND = 1800                    # s, one recorder attempt at most: every wait inside the
+                                      # session carries its own bound (session.py), the R2 launch
+                                      # window was 300 s, and this bound only ends a hang
 SCRIPT = "experiments/E018-pro-corroboration/record_f011.py"
 RESTORE_TEXT = ("the T13 driver's session seal: the private user, mount and PID namespaces of the "
                 "command, the install bound read-only once, the prefix sealed and equal to its "
@@ -190,13 +194,82 @@ def record_context(argv=None):
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", machine):
         raise SystemExit("IWP_MACHINE is not a machine id (lowercase letters, digits, dashes); "
                          "nothing was started")
-    locs = driver_runner.spike.confined_locations(argparse.Namespace(experiment=EXPERIMENT, explore=False))
+    locs = confined()
     try:
         binary_sha = driver_runner.binary_sha256(locs["IWP_DIR"])
     except OSError as exc:
         raise SystemExit(f"the install's Islepro.exe could not be hashed ({exc}); nothing was started")
     return {"commit": commit, "machine": machine, "fingerprint": driver_runner.spike.versions(),
             "binary_sha": binary_sha, "argv": list(argv or []), "restore": RESTORE_TEXT}
+
+
+def confined(args=None):
+    """The confined machine-local locations (a thin wrapper over the spike's own, patchable)."""
+    return driver_runner.spike.confined_locations(
+        args or argparse.Namespace(experiment=EXPERIMENT, explore=False))
+
+
+def mount_private_tmpfs():
+    """The private /tmp of the inner environment — the same mount runner.py's inner makes.
+
+    Without it /tmp/.X11-unix is WSLg's read-only mount, the Session's Xvfb can only
+    listen on an abstract socket, and the game — inside its own network namespace —
+    can never reach it: that is why r0001..r0012 aborted at the launch while r0013,
+    launched with this wrapper by hand, found the window in 0.42 s.
+    """
+    driver_runner.spike.must(["mount", "-t", "tmpfs", "-o", "mode=1777", "tmpfs", "/tmp"],
+                             require_output=False)
+
+
+def outer(argv):
+    """Re-exec this recorder through the driver's inner namespace wrapper, and wait for it.
+
+    The same wrapper runtime/iwp/driver/runner.py's outer() builds — `unshare -r -m -p -f
+    --kill-child --mount-proc`, a fresh display, the code commit and this command's own
+    invocation token in the environment — and the same bounded wait and reaping
+    (launch_inner, reap_invocation: reused, not duplicated), so a recorder that runs
+    past INNER_BOUND is killed with its namespace and nothing of it survives.
+    """
+    try:
+        commit = driver_runner.spike.must(["git", "rev-parse", "--short=12", "HEAD"],
+                                          cwd=ROOT).stdout.decode().strip()
+    except driver_runner.spike.CommandFailed as exc:
+        print(f"no code commit could be pinned: {exc}; nothing was started", file=sys.stderr)
+        return 1
+    token = secrets.token_hex(16)
+    env = dict(os.environ, IWP_CYCLE_COMMIT=commit, IWP_CYCLE_DISPLAY=driver_session.free_display(),
+               **{INNER_FLAG: "1", driver_session.INVOCATION: token})
+    cmd = ["unshare", "-r", "-m", "-p", "-f", "--kill-child", "--mount-proc",
+           sys.executable, str(Path(__file__).resolve())] + list(argv)
+    code = driver_runner.launch_inner(cmd, env, INNER_BOUND)
+    left = driver_runner.reap_invocation(token)
+    if left:
+        print(f"processes of this command survived its namespace and were killed: {sorted(left)}",
+              file=sys.stderr)
+        return 1
+    return code
+
+
+def inner(args, argv):
+    """The recorder inside the private namespaces: the private /tmp, the install bound
+    read-only, then one session and its run/1 record (runner.py's inner does the same
+    for its repeats)."""
+    mount_private_tmpfs()
+    locs = confined()
+    machine = os.environ.get("IWP_MACHINE", "local")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", machine):
+        print("IWP_MACHINE is not a machine id (lowercase letters, digits, dashes); "
+              "nothing was started", file=sys.stderr)
+        return 1
+    driver_session.bind_install_readonly(locs["IWP_DIR"])
+    rec = build_recorder(args)
+    ctx = record_context(argv)          # commit from IWP_CYCLE_COMMIT, machine, fingerprint,
+                                        # the binary sha of the bound install
+    rec.run()
+    rec.write_record(ctx)
+    print(f"  wrote record: runs/{EXPERIMENT}/{BATCH}/{rec.run_id}.json")
+    print(f"  status: {rec.status}")
+    return 0
 
 
 def _seed_per_arm(per_arm, arms):
@@ -234,9 +307,8 @@ class F011Recorder:
 
         Uses the driver Session API. The main session has the install (C3 lines).
         """
-        import argparse as ap
-        locs = driver_runner.confined(ap.Namespace(experiment=EXPERIMENT, explore=False))
-        display = os.environ.get("IWP_CYCLE_DISPLAY") or " :77".lstrip()
+        locs = confined()
+        display = os.environ.get("IWP_CYCLE_DISPLAY") or driver_session.free_display()
         t0 = time.monotonic()
         session = Session(
             self.run_id,
@@ -675,6 +747,23 @@ def make_recorder(question_id, params=None):
         return F011Recorder(question_id, claim_id, count_target, params)
 
 
+def build_recorder(args):
+    """The recorder for parsed CLI args, with its count target resolved."""
+    params = {}
+    if args.attacker_sizes:
+        params["attacker_sizes"] = args.attacker_sizes
+    if args.defender_size and args.attacker_sizes:
+        params["defender_size"] = args.defender_size
+    if args.attacker_armies:
+        params["attacker_armies"] = args.attacker_armies
+    if args.defender_armies:
+        params["defender_armies"] = args.defender_armies
+    _, default_count, _ = QUESTIONS[args.question_id]
+    rec = make_recorder(args.question_id, params)
+    rec.count_target = args.count_target if args.count_target is not None else default_count
+    return rec
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("question_id", choices=sorted(QUESTIONS.keys()))
@@ -690,27 +779,11 @@ def main(argv=None):
                         help="Defender armies (for boundary questions)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Construct the recorder and print its plan; do not "
-                             "drive a session. Used by the implementer to verify "
-                             "the wiring without the install.")
+                             "drive a session and enter no namespace. Used by the "
+                             "implementer to verify the wiring without the install.")
     args = parser.parse_args(argv)
 
-    params = {}
-    if args.attacker_sizes:
-        params["attacker_sizes"] = args.attacker_sizes
-    if args.defender_size and args.attacker_sizes:
-        params["defender_size"] = args.defender_size
-    if args.attacker_armies:
-        params["attacker_armies"] = args.attacker_armies
-    if args.defender_armies:
-        params["defender_armies"] = args.defender_armies
-
-    claim_id, default_count, _ = QUESTIONS[args.question_id]
-    count_target = args.count_target if args.count_target is not None else default_count
-
-    rec = make_recorder(args.question_id, params)
-    # Override count_target if explicitly set
-    rec.count_target = count_target
-
+    rec = build_recorder(args)
     print(f"E018 recorder: {args.question_id} (claim {rec.claim_id})")
     print(f"  count_target: {rec.count_target}")
     print(f"  run_id: {rec.run_id}")
@@ -721,12 +794,12 @@ def main(argv=None):
     if args.dry_run:
         return 0
 
-    # Wire the CLI: run the session, then write the record.
-    rec.run()
-    rec.write_record()
-    print(f"  wrote record: runs/{EXPERIMENT}/{BATCH}/{rec.run_id}.json")
-    print(f"  status: {rec.status}")
-    return 0
+    # Without the inner flag this process is the outer one: re-exec through the driver's
+    # namespace wrapper, and the game runs only inside it (see outer).
+    if os.environ.get(INNER_FLAG) != "1":
+        print(f"  re-exec through the driver's inner wrapper ({INNER_FLAG} unset)")
+        return outer(argv)
+    return inner(args, argv)
 
 
 if __name__ == "__main__":

@@ -15,10 +15,13 @@ is not a run/1 document or no longer carries a field's original value.
 """
 import importlib.util
 import json
+import os
+import shutil
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
@@ -144,6 +147,84 @@ class CommittedRecordsTest(unittest.TestCase):
                 doc = json.loads(path.read_text(encoding="utf-8"))
                 self.assertEqual(doc["start_state"]["sha256"], F019_BINARY_SHA)
                 self.assertIn("not a hash this run measured", doc["start_state"]["restore"])
+
+
+class ReexecTest(unittest.TestCase):
+    """The recorder re-execs itself through the driver's inner wrapper when IWP_CYCLE_INNER is
+    unset, and runs directly when it is set (T28 R3, defect 2).
+
+    unshare and git are stubs on the PATH, the way tools/tests' profile tests stub the
+    helper commands: the stub unshare logs its argv and the two environment pins, then
+    exits 7, so the test sees exactly what the recorder would have run. Rule 9: the
+    first test fails when the IWP_CYCLE_INNER check in main() is removed (the stub is
+    then not called); the second fails when inner() is reached through unshare anyway
+    (an empty PATH with no unshare at all, and the session patched out).
+    """
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="e018-reexec-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.bin = self.tmp / "stubs"
+        self.bin.mkdir()
+        self.log = self.tmp / "unshare.log"
+        self.stub_unshare()
+        self.stub(self.bin / "git", "printf 0123456789ab")
+
+    @staticmethod
+    def stub(path, body):
+        path.write_text("#!/bin/sh\n" + body + "\n", encoding="utf-8")
+        path.chmod(0o755)
+
+    def stub_unshare(self, status=7):
+        self.stub(self.bin / "unshare",
+                  "printf '%s\\n' \"$@\" >> " + str(self.log) + "\n"
+                  "printf 'flag=%s\\n' \"$IWP_CYCLE_INNER\" >> " + str(self.log) + "\n"
+                  "printf 'commit=%s\\n' \"$IWP_CYCLE_COMMIT\" >> " + str(self.log) + "\n"
+                  "exit " + str(status))
+
+    def log_lines(self):
+        return self.log.read_text().splitlines() if self.log.exists() else []
+
+    def test_without_the_inner_flag_it_reexecs_through_the_wrapper(self):
+        env = {"PATH": str(self.bin), "IWP_CYCLE_DISPLAY": ":77"}
+        base = {k: v for k, v in os.environ.items() if k != record_f011.INNER_FLAG}
+        with mock.patch.dict(os.environ, {**base, **env}, clear=True):
+            code = record_f011.main(["Q-SET-04"])
+        self.assertEqual(code, 7)                       # the stub's exit, propagated
+        lines = self.log_lines()
+        self.assertEqual(lines[0:8], ["-r", "-m", "-p", "-f", "--kill-child", "--mount-proc",
+                                      sys.executable,
+                                      str(ROOT / "experiments" / "E018-pro-corroboration" / "record_f011.py")])
+        self.assertEqual(lines[8], "Q-SET-04")
+        self.assertIn("flag=1", lines)
+        self.assertIn("commit=0123456789ab", lines)
+
+    def test_with_the_inner_flag_it_runs_directly(self):
+        empty = self.tmp / "empty-bin"                  # no unshare anywhere: nothing may exec it
+        empty.mkdir()
+        ran = []
+        locs = {"IWP_PREFIX": str(self.tmp / "prefix"), "E018_BUNDLES": str(self.tmp / "bundles"),
+                "IWP_DIR": str(self.tmp / "install")}
+        env = {"PATH": str(empty), record_f011.INNER_FLAG: "1", "IWP_CYCLE_COMMIT": "0123456789ab",
+               "IWP_CYCLE_DISPLAY": ":77", "IWP_MACHINE": "local"}
+        base = dict(os.environ)
+        with mock.patch.dict(os.environ, {**base, **env}, clear=True), \
+                mock.patch.object(record_f011, "mount_private_tmpfs",
+                                  lambda: ran.append("mounted")), \
+                mock.patch.object(record_f011, "confined", lambda *a, **k: locs), \
+                mock.patch.object(record_f011.driver_session, "bind_install_readonly",
+                                  lambda install: ran.append("bound")), \
+                mock.patch.object(record_f011.driver_runner.spike, "versions", lambda: {}), \
+                mock.patch.object(record_f011.driver_runner, "binary_sha256",
+                                  lambda install: F019_BINARY_SHA), \
+                mock.patch.object(record_f011.F011Recorder, "run",
+                                  lambda self: ran.append("run")), \
+                mock.patch.object(record_f011.F011Recorder, "write_record",
+                                  lambda self, ctx=None: ran.append("write")):
+            code = record_f011.main(["Q-SET-04"])
+        self.assertEqual(code, 0)
+        self.assertEqual(ran, ["mounted", "bound", "run", "write"])
+        self.assertFalse(self.log.exists(), "unshare must not run when the flag is set")
 
 
 if __name__ == "__main__":

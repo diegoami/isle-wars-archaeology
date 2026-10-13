@@ -85,6 +85,16 @@ The recorder is written by the implementer (this experiment). The actual game ru
 are performed by the main session on the install (the C3 lines). The implementer
 processes the records into the F020 per-claim outcome table.
 
+The recorder runs the driver's inner environment itself (T28 R3): with
+`IWP_CYCLE_INNER` unset it re-execs through the same namespace wrapper
+`runtime/iwp/driver/runner.py`'s outer() builds (`unshare -r -m -p -f
+--kill-child --mount-proc`, a private tmpfs `/tmp`, the install bound read-only,
+`IWP_CYCLE_INNER=1`), reusing runner.py's `launch_inner`/`reap_invocation` for
+the bounded wait and the reaping. Without the private `/tmp` the Session's Xvfb
+can only listen on an abstract socket on WSLg, which the game (inside its own
+network namespace) can never reach — the root cause of the r0001–r0012 launch
+aborts. `--dry-run` enters no namespace and runs nothing.
+
 ## Per-batch push order
 
 1. F011 (combat) — this push
