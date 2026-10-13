@@ -85,13 +85,13 @@ class RecordAndCheckerTest(unittest.TestCase):
 
     def run_check(self, *extra):
         return subprocess.run([sys.executable, str(ROOT / "tools" / "check_counts.py"),
-                               "--experiment", "E022", *extra, str(SCENARIOS)],
-                              cwd=ROOT, capture_output=True, text=True)
+                               *extra, str(SCENARIOS)], cwd=ROOT, capture_output=True, text=True)
 
     def test_accept_single_counts_the_single_exchange(self):
         done = self.run_check("--accept-single")
         self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
         self.assertIn("observed 1", done.stdout)
+        self.assertIn("batch synthetic", done.stdout)
 
     def test_without_the_flag_the_single_exchange_is_refused(self):
         done = self.run_check()

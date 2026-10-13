@@ -8,32 +8,42 @@ die into a counted exchange. The live sitting is T55 (#222).
 
 ## The static-first reading (rule 24, carve-out B)
 
-Read from the decompiled Pro Lingo (machine-local, read-only; `iwp-2.0-996e86c5`, the unregistered
-set). The handlers, by name, and what they do:
+The artifact this reading pins (F019): set `iwp-2.0-996e86c5`, variant `unregistered`, file
+`Islepro.exe`, **sha256 `c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e`**. The
+sitting (T55) names that hash in its record's `start_state.sha256` (constraint F); it is the
+executable's identity, distinct from the set id above it.
+
+Read from the decompiled Pro Lingo (machine-local, read-only):
 
 - The game's **speed** is a user option, not a patch: `BehaviorScript 500 - SPEEDbehavior` sets a
   global from a click on one of three labelled buttons (fast / normal / slow), `MovieScript 458 -
-  getdefaults` defaults it to normal, and it is persisted with the settings. `MovieScript 1 -
-  Startmovie` defines the six wait handlers `count1/count2/count3/count5/count10/count15/count30/count60`,
+  getdefaults` defaults it to normal, and it is persisted with the settings.
+- **SPD** is a separate flag the movie sets to 0 (`MovieScript 1 - Startmovie`, `BehaviorScript
+  463`/`474`); no handler in the extracted casts sets it to 1, so it stays 0.
+- `MovieScript 1 - Startmovie` defines the wait handlers `count1/count2/count3/count5/count10/count15/count30/count60`,
   each a busy loop until the Director tick timer passes a *fixed multiple of the speed setting* for
   the speed-sensitive ones (`count10` = 5×speed ticks, `count60` = 30×speed ticks, …; the Director
-  tick is 1/60 s). `count1`, `count2` and `count3` are fixed.
-- The computer's per-die path is `MovieScript 337 - computerrolldice`: the outer loop rolls **one
-  die** per iteration, writes both countries' counters each die, calls `updateStage()` and then
-  `count10()` between iterations. Its only five-dice branch (a large attacker against a large
-  defender) rolls five dice separated by a fixed `count1()`.
+  tick is 1/60 s). Each returns at once when SPD=1; `count1`, `count2` and `count3` are fixed.
+- The computer's per-die path is `MovieScript 337 - computerrolldice`. Its outer loop rolls **R
+  dice** (R=1; R=5 when the attacker has more than 40 armies and the defender more than 15), and each
+  die writes both counters and calls `updateStage()`. Between outer iterations it calls `count10()`
+  **only when SPD=0 and the attacker's remaining count is below 51**; it calls `count1()` when SPD=1.
+  Within an R=5 iteration the five dice are separated by a fixed `count1()`.
 
-**Candidate 1 (the slow speed setting) is dropped.** The per-die wait is `count10()` = 5×speed ticks:
-250 ms at slow, 166 ms at normal — the slow setting buys only 1.5×, and the five-dice branch's fixed
-`count1()` (~17 ms) is speed-independent. Slow speed alone cannot separate the dice from a ~1.4 s
-capture.
+**Candidate 1 (the slow speed setting) is dropped, and candidate 2's guarantee is bounded (not
+"every die is a frame").** The inter-iteration wait is `count10()` = 5×speed ticks **only under
+SPD=0 and an attacker below 51 armies**: ~83 ms at fast, 166 ms at normal, 250 ms at slow. At
+normal or slow speed with the attacker below 51, that wait exceeds the fast watcher's ~125 ms
+(`runtime/iwp/driver/watcher.py`, T42: up to 8 fps), so each die is a frame. But at fast speed
+(83 ms), when the attacker reaches 51 armies (no wait at all), or in the R=5 branch (~17 ms per
+die), the dice can outrun the watcher and one frame can hold several — so a frame is *not* known to
+be a single exchange there.
 
-**Candidate 2 (a faster capture) is picked.** `count10()` is below the interval a fast watcher can
-reach: `runtime/iwp/driver/watcher.py` (T42) captures at up to 8 fps (125 ms), so each `updateStage()`
-— each die — is a frame. The remaining gap is the reader, not the capture.
-
-Candidate 3 (reading the army counts from process memory, rule 18 B) is not needed once candidate 2
-lands and is left unbuilt.
+So the reading's conclusion is a **conditioned** one: a sitting must run at normal or slow speed and
+keep the attacking countries below 51 armies for the capture to be known single, and an exchange on
+a larger stack may still be missed. The remaining gap the mechanism fills is the reader, not the
+capture. T55 runs the sitting under these conditions. Candidate 3 (reading the army counts from
+process memory, rule 18 B) is not needed and is left unbuilt.
 
 ## The mechanism
 

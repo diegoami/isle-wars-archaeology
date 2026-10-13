@@ -59,6 +59,14 @@ ROOT = Path(__file__).resolve().parent.parent
 RECORDS = ROOT / "runs" / "E020"
 SCENARIOS = ROOT / "experiments" / "E020-wine-first-run" / "scenarios.txt"
 EXPERIMENT = "E020"
+EXPERIMENT_IN_PATH = re.compile(r"E[0-9]{3,}")   # a batch list under experiments/E<nnn>-... names its own
+
+
+def experiment_of_path(path):
+    """The experiment a batch list belongs to, taken from its path (`experiments/E022-...` → E022);
+    EXPERIMENT when the path names none, which keeps the E020 default for a bare file name."""
+    match = EXPERIMENT_IN_PATH.search(Path(path).as_posix())
+    return match.group(0) if match else EXPERIMENT
 
 # --- the field vocabulary and the value each role may carry (constraint D; R6) ----------------
 
@@ -396,10 +404,12 @@ def check_batch(name, batch, outcomes=None, records_root=RECORDS, experiment=EXP
     return problems, lines
 
 
-def check(scenarios=SCENARIOS, records_root=None, experiment=EXPERIMENT, accept_single=False):
-    """(problems, lines) for every batch of the scenarios file. `records_root` defaults to
-    `runs/<experiment>`."""
+def check(scenarios=SCENARIOS, records_root=None, experiment=None, accept_single=False):
+    """(problems, lines) for every batch of the scenarios file. `experiment` defaults to the one
+    the batch list's path names (so `--accept-single experiments/E022-pro-fast-capture/scenarios.txt`
+    checks E022 without a flag); `records_root` defaults to `runs/<experiment>`."""
     scenarios = Path(scenarios)
+    experiment = experiment or experiment_of_path(scenarios)
     records_root = Path(records_root) if records_root else ROOT / "runs" / experiment
     batches = load_batches(scenarios)
     if not batches:
@@ -419,8 +429,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Check an experiment's sitting counts against its batch list.")
     parser.add_argument("scenarios", nargs="?", default=str(SCENARIOS),
                         help="the batch list (default: E020's scenarios.txt)")
-    parser.add_argument("--experiment", default=EXPERIMENT,
-                        help="the experiment id the batch list belongs to (default: E020)")
+    parser.add_argument("--experiment", default=None,
+                        help="the experiment id the batch list belongs to (default: the one its path "
+                             "names, else E020)")
     parser.add_argument("--records-root", default=None,
                         help="the records root (default: runs/<experiment>)")
     parser.add_argument("--accept-single", action="store_true",
