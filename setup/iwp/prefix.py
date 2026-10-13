@@ -2,7 +2,8 @@
 """The Wine prefix of the iwp-runtime profile (W3a): build it, fill it, clean it, check it.
 
 Commands (machine-local values come from the environment, never from this file):
-    build          create the prefix (WINEARCH=win32, the PE header's machine type) when it is absent
+    build          create the prefix (no WINEARCH; wine defaults to win64, the 32-bit Islepro.exe
+                   runs in wow64) when it is absent
     sync-game      make <prefix>/drive_c/iwp equal to the registered set, copied from IWP_DIR
     strip-links    remove the Z: drive, the COM port links and every link that leaves the prefix,
                    and give every file with a second name (a hard link) a file of its own
