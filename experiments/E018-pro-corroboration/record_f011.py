@@ -79,8 +79,8 @@ OPTIONS_STEP = "click! {} {}".format(*driver_runner.spike.OPTIONS_CLICK)
 RESTORE_TEXT = ("the T13 driver's session seal: the private user, mount and PID namespaces of the "
                 "command, the install bound read-only once, the prefix sealed and equal to its "
                 "baseline before anything starts and again immediately before launch, and reset "
-                "after the session; start_state.sha256 is the sha256 of the install's Islepro.exe "
-                "hashed when the record is written (T48, constraint C)")
+                "after the session; start_state.sha256 is the F019-pinned Islepro.exe hash of the "
+                "artifact set named above, not a hash this run measured (T48, constraint C)")
 
 # Question metadata: claim_id, count_target, description. The count_target is
 # the F011 plan's total; per-arm minimums (where the plan names one) live in

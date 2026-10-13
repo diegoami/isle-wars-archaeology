@@ -33,7 +33,7 @@
   "start_state": {
     "id": "S-cold-prefix-title",
     "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
-    "restore": "the T13 driver's session seal: the private user, mount and PID namespaces of the command, the install bound read-only once, the prefix sealed and equal to its baseline before anything starts and again immediately before launch, and reset after the session; start_state.sha256 is the sha256 of the install's Islepro.exe hashed when the record is written (T48, constraint C)"
+    "restore": "the T13 driver's session seal: the private user, mount and PID namespaces of the command, the install bound read-only once, the prefix sealed and equal to its baseline before anything starts and again immediately before launch, and reset after the session; start_state.sha256 is the F019-pinned Islepro.exe hash of the artifact set named above, not a hash this run measured (T48, constraint C)"
   },
   "seed": null,
   "actions": {
