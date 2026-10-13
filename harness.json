@@ -48,7 +48,7 @@
       "id": "openai/gpt-5.6-luna",
       "family": "openai",
       "variant": "high",
-      "note": "GPT-5.6 Luna on the direct OpenAI route, the default reviewer: fast, proves findings by mutation (docs/models.md). Never a Luna on OpenCode Go (400 Bad Request in long loops, L27)."
+      "note": "GPT-5.6 Luna on the direct OpenAI route: fast, proves findings by mutation (docs/models.md). Never a Luna on OpenCode Go (400 Bad Request in long loops, L27)."
     },
     "luna-6": {
       "id": "openai/gpt-6-luna",
@@ -83,19 +83,19 @@
       "id": "alibaba-token-plan/qwen3.8-max",
       "family": "qwen",
       "variant": "low",
-      "note": "Qwen 3.8 Max on the Alibaba Token Plan at low; heavy; a family nothing else here shares. Alibaba only when the user asks (--alibaba). Key: the env var ALIBABA_TOKEN_PLAN_API_KEY; never opencode auth login it (a stale auth.json entry overrides the variable)."
+      "note": "Qwen 3.8 Max on the Alibaba Token Plan at low; heavy; a family nothing else here shares.. Key: the env var ALIBABA_TOKEN_PLAN_API_KEY; never opencode auth login it (a stale auth.json entry overrides the variable)."
     },
     "ali-qwen-flash": {
       "id": "alibaba-token-plan/qwen3.8-flash",
       "family": "qwen",
       "variant": "medium",
-      "note": "Qwen 3.8 Flash on the Alibaba Token Plan at medium (it offers low, medium, xhigh); light. Alibaba only when the user asks (--alibaba); key as ali-qwen-max."
+      "note": "Qwen 3.8 Flash on the Alibaba Token Plan at medium (it offers low, medium, xhigh); light.; key as ali-qwen-max."
     },
     "ali-glm": {
       "id": "alibaba-token-plan/glm-5.3",
       "family": "glm",
       "variant": "low",
-      "note": "GLM-5.3 on the Alibaba Token Plan at low: the same model as zai-glm-5.3 on another route. Alibaba only when the user asks (--alibaba); key as ali-qwen-max."
+      "note": "GLM-5.3 on the Alibaba Token Plan at low: the same model as zai-glm-5.3 on another route.; key as ali-qwen-max."
     }
   },
   "jail": {

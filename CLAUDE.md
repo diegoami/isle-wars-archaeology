@@ -97,15 +97,7 @@ indexed in `docs/tasks/README.md`.
       per commit, an END block), pushes after every commit, and opens the PR. When a subagent
       ends, the main session reads its final report before acting (rule 25), and posts its notes
       on the issue.
-   2. **Before each review, ask the user ONE question:** which OpenCode model reviews? Propose
-      `harness.json`'s `reviewer.default` first (GPT-5.6 Luna today; GPT-6.1 Sol at `low` for a
-      guard, a gate or hard research); the candidate list is any registered model — no
-      family / blocked / provider-route filter, owner 2026-10-13. Then `tools/harness/review.mjs --pr <n> --brief <file>
-      --issue <n> --apply-label [--reviewer <name>]`, one review per PR unless the user asks for
-      more; its findings are relayed in full (rule 8). OpenCode's models do not always follow the
-      brief: the script posts what came back, flags what it cannot read (exit 4), and the main
-      session reads a flagged review and decides rather than paying for another. Record the
-      answers to both questions on the issue or PR.
+   2. **Before each review, ask the user ONE question:** which reviewer (and, if they care, by which tool / harness) reviews this PR? The user picks a model — there is no family, blocked, or provider-route filter (owner 2026-10-13). The harness proposes `harness.json`'s `reviewer.default` first as a starting point, but any reviewer the user names is acceptable; the main session records the answer on the PR. The harness's own tool path is `tools/harness/review.mjs --pr <n> --brief <file> --issue <n> --apply-label [--reviewer <name>]`, run as a watched systemd unit (`run-unit.sh` + `watch.sh`); a reviewer that does not have OpenCode installed may review inline or via any other tool that reads the diff and posts a comment, with the same relayed-in-full expectation (rule 8). The script and OpenCode-side tooling do not always follow the brief: a flagged review (exit 4) is read by the main session, not paid for again. One review per PR unless the user asks for more.
    3. **The fixed rules (the owner, 2026-10-13):** no model-choice restriction on
       implementer or reviewer. The reviewer may be of the same family as the
       implementer; a model previously on the harness `blocked` list may run;
