@@ -634,7 +634,7 @@ class Cycle:
             self.procs["game"] = spawn(cmd, cwd=self.game, env=self.env, stdout=log, stderr=log)
         self.say("launched: " + " ".join(cmd[:-1] + ["<game>"]))
         self.verify_isolation()
-        waited = poll(lambda: probe(["xdotool", "search", "--name", "^Islepro$"], env=self.env)[1].strip(), 90)
+        waited = poll(lambda: probe(["xdotool", "search", "--name", "^Islepro$"], env=self.env)[1].strip(), 300)
         if waited is None:
             self.fail("no Islepro window within 90 s")
         wid = must(["xdotool", "search", "--name", "^Islepro$"], env=self.env).stdout.split()[0].decode()

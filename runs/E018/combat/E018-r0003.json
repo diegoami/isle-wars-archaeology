@@ -1,0 +1,19 @@
+{
+  "schema": "e018-record/1",
+  "run_id": "E018-r0003",
+  "experiment": "E018",
+  "batch": "combat",
+  "question_id": "Q-SET-04",
+  "claim_id": "C-SET-04",
+  "count_target": 1,
+  "per_arm_counts": {
+    "controls_listed": 0
+  },
+  "screenshot_path": null,
+  "screenshot_sha256": null,
+  "seal_ok": true,
+  "elapsed_seconds": 303.8,
+  "outcome": null,
+  "status": "aborted: launch: no Islepro window within 90 s",
+  "extra": {}
+}
