@@ -46,7 +46,7 @@ status; this index carries none.
 | T40 | E020 reader and counts: read the sittings' frames by pixels | #119 | T38 |
 | T41 | E020 driver: play each game to its end, and the Scoreboard | #123 | T38 |
 | T42 | E020 watcher: capture fast enough to see single exchanges | #128 | T41 |
-| T44 | Fast capture: single computer-vs-computer exchanges from a model sitting | #142 | #141, the harness bump, T45 |
+| T44 | Single computer-vs-computer exchanges: the offline reader (split from the sitting) | #142 | #141, the harness bump, T45 |
 | T45 | Model-played Session A, attacks: the human boundary cases | #143 | #141, the harness bump, #152 |
 | T47 | Model-played Session A, moves and captures: small stacks | #147 | T45, T44 if it lands, #152 |
 | T48 | Wine run records name the carve-out platform, and constraint F sees the older ones | #149 | #141 |
@@ -55,3 +55,4 @@ status; this index carries none.
 | T51 | malpaco's design, variety: cards, island bonuses, production centres and events | #193 | T50 |
 | T53 | malpaco's design, the computer opponent: how it plays, and its difficulty levels | #196 | T51 |
 | T52 | malpaco's design, the UI: screens, the board, feedback and sound | #194 | T53 |
+| T55 | The single-exchange sitting: 20+ computer-vs-computer exchanges from a model sitting | #222 | T44 |
