@@ -178,12 +178,17 @@ def build_record(run_id, spec, argv, commit, machine, state_sha, binary_sha, fin
 
 
 def build_manifest(run_id, outputs, set_id):
-    """The evidence manifest of one walk: every bundle file named by hash (its release asset name)."""
+    """The evidence manifest of one walk: every bundle file named by hash (its release asset name).
+
+    E019's engine labels image frames ``screenshot``; model-run frames are evidence ``recording``.
+    Other output classes are passed through unchanged.
+    """
     files = []
     for name, path, klass in outputs:
         digest = sha256_file(path)
+        evidence_class = "recording" if klass == "screenshot" else klass
         files.append({"name": name, "bytes": Path(path).stat().st_size, "sha256": digest,
-                      "asset": f"{digest[:16]}-{name}", "class": klass})
+                      "asset": f"{digest[:16]}-{name}", "class": evidence_class})
     return {"schema": "evidence-manifest/1", "run_id": run_id, "experiment": EXPERIMENT,
             "store": f"release:{EXPERIMENT}", "artifact": {"set": set_id, "variant": None},
             "files": files}
