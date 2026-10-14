@@ -25,7 +25,7 @@ adapt tools/harness/choose.mjs  (CLAUDE.md rule 6, the owner 2026-10-11: the use
 adapt tools/harness/lib/choice-selftest.mjs  (new, PR 164: the model-choice and resume self-test, run by review.mjs --self-test)
 adapt docs/lessons.md  (L68 appended: the user decides models, the owner 2026-10-11, PR 164)
 adapt .claude/agents/implementer.md  (the owner 2026-10-11: never undo uncommitted work with git checkout/restore/reset, L69)
-4bbe60c3b8311ac82956fc5309d69e7b57addd9c05a78bc9b54ba40eaf000859  .claude/hooks/session-start.sh
+0d98430d2256a4d52af7f7ed82253c9d85ba03433167bee866ada101324ab517  .claude/hooks/session-start.sh
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
 c93ede2e554bdf4e3b4cfd2f93d42776351a5df5c119ef63ea76dbba3e1f2f1d  .claude/skills/switch-model/SKILL.md
@@ -36,7 +36,7 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
-4fe177771b1e387af7dc013e29a4d03102416ffcb27bbf5cdf3e830c4170e15d  tools/harness/lib/chain.mjs
+92b1bfdb94cdf85b9f67db13794ad3744439d8698f352a24213e2fb66f81397d  tools/harness/lib/chain.mjs
 b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/lib/claim.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
@@ -44,7 +44,9 @@ b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
-1547be03d1330dbef06ef3010437f93eaae80a905d771b9771211b88b8cc3565  tools/harness/lib/switch.mjs
+0128c4b4edbcede1f9a437c2de4fbe8c1f8073b3625b0f8ceabb2c4d0e236991  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-a778836225b6407d09220f034fe30b09018e0dc607e868eb4b3a81364164191c  tools/harness/switch-model.mjs
+b79f0f221b4f54a4a2922ca03d21fd7c6c06b434decf47523eb2a5343046d337  tools/harness/switch-model.mjs
+
+adapt tools/harness/opencode.mjs, lib/opencode.mjs, lib/common.mjs, review.mjs, switch-model.mjs, peek.sh, .claude/hooks/session-start.sh, CLAUDE.md, docs/process.md (Codex session detection and supported CLI backup selection; model runs never automatically replayed)

@@ -19,7 +19,7 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 
 | Role | Who | Does |
 | --- | --- | --- |
-| Main session | Claude, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
+| Main session | Claude or Codex, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
 | Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on any model the user names at the rule 6.1 question (a Claude Code alias like `sonnet`, an OpenCode id, or whatever the session's provider serves), an **OpenCode model** invoked as `opencode run --agent implementer --model <id>`, or **the main session** directly in its own worktree when the provider cannot spawn one — no model-choice rule applies (the owner lifts the family / blocked / Alibaba gates on 2026-10-13); asked before each implementation (CLAUDE.md rule 6). *History: an earlier `implement.mjs` wrapper around that OpenCode path was retired 2026-10-11 (runs died on rejected paths); `opencode run` directly is the current path, named in CLAUDE.md rule 6.1. Superseded chains: GLM/MiMo/Sonnet chains (L42).* | One task, one branch, one PR, in its own worktree |
 | Reviewer | **One review run** of a different model than the implementer's (the family / blocked gates are gone, owner 2026-10-13), on the model the user names at the question before the review. `harness.json`'s `reviewer.default` is the proposal when the user does not pick; **any reviewer tool** the user has may stand in. The harness-provided default is one OpenCode run via `tools/harness/review.mjs [--reviewer <name>]`; agents without OpenCode can review inline or via any tool that reads the diff and posts a comment. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the reviewer chains, the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
@@ -27,10 +27,13 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 
 Before each implementation and each review the main session asks the user one question, with
 `harness.json`'s default proposed first (CLAUDE.md rule 6); no quota, tier or chain picks a model, and the
-roster changes through `/switch-model`. The implementer's family is the session's, read from the
-Anthropic environment variables (`lib/common.mjs` `sessionFamily`; the orchestrator is Claude, or GLM
-through Z.AI, MiniMax or Kimi when Claude's tokens are out), and the reviewer is never of it. Model ids come
-from `harness.json`, `models.mjs` or `opencode models`, never memory (L25).
+roster changes through `/switch-model`. The implementer's family is the session's: native Codex markers or
+`HARNESS_CLIENT=codex` identify OpenAI; Claude retains Anthropic endpoint detection.
+`HARNESS_SESSION_FAMILY` overrides that detection. Carry `HARNESS_CLIENT` into detached
+jobs. Reviewer selection follows CLAUDE.md rule 6. Model ids come from `harness.json`,
+`models.mjs` or `node tools/harness/opencode.mjs models`, never memory (L25).
+See CLAUDE.md's Codex compatibility section for tool mapping and backup selection.
+
 
 ## 2. Task files
 

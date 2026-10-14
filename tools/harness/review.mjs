@@ -41,7 +41,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
-import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
+import { runOpenCodeWatched, selectOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
 import { credentialJail, OFF_WARNING } from './lib/jail.mjs';
 import { readReview, doneWhenCount, briefTargets } from './lib/chain.mjs';
 import { planPost, publish } from './lib/post.mjs';
@@ -93,11 +93,11 @@ const reviewer = namedModel(config, a.reviewer ?? rev.default, { family: a.famil
 const refusal = reviewRefusal(config.models, reviewer, implementedBy);
 if (refusal) die(1, `Refused: ${refusal}. Nothing posted.`);
 const fams = implementerFamilies(config.models, implementedBy);
-say(`implemented by: ${fams.families.join(', ')} (the session's family from the Anthropic environment${implementedBy.length ? `, plus ${implementedBy.join(', ')}` : ''})`);
+say(`implemented by: ${fams.families.join(', ')} (the detected session's family${implementedBy.length ? `, plus ${implementedBy.join(', ')}` : ''})`);
 const fallback = 'Nothing posted. Read the run\'s final message (CLAUDE.md rule 25) and fix the cause; another reviewer is the user\'s call.';
 // OpenCode is looked for only now, so that its absence is reported with the same fallback (Sol's R1 on PR 41).
 let opencode;
-try { opencode = resolveOpenCode(); } catch (e) {
+try { opencode = await selectOpenCode(process.env, { cwd: top, log: say }); } catch (e) {
   if (e instanceof OpenCodeInfraError) die(3, `OpenCode unavailable: ${e.message} ${fallback}`);
   throw e;
 }

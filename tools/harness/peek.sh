@@ -23,8 +23,7 @@ H=${HARNESS_OPENCODE_HOME:-$HOME/.local/share/harness-opencode}
 # The harness's own binary (review.mjs logs it), never whichever `opencode` comes
 # first on PATH: in a WSL shell that can be the Windows install (/mnt/c/…/npm/opencode), which
 # cannot read this database and answers "Session not found".
-oc=${OPENCODE_BIN:-$HOME/.opencode/bin/opencode}
-[ -x "$oc" ] || { echo "peek.sh: no OpenCode binary at $oc (set OPENCODE_BIN)" >&2; exit 1; }
+oc_wrapper=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/opencode.mjs
 out=$(mktemp) err=$(mktemp)
 trap 'rm -f -- "$out" "$err"' EXIT
 # To a file: a large session read through a pipe came back cut short. Retried: while the run
@@ -32,7 +31,7 @@ trap 'rm -f -- "$out" "$err"' EXIT
 ok=0
 for try in 1 2 3 4 5; do
   if (cd /tmp && XDG_DATA_HOME=$H/data XDG_CACHE_HOME=$H/cache XDG_STATE_HOME=$H/state \
-      "$oc" export "$sid" > "$out" 2> "$err") && jq -e .info.id "$out" > /dev/null 2>&1; then
+      node "$oc_wrapper" export "$sid" > "$out" 2> "$err") && jq -e .info.id "$out" > /dev/null 2>&1; then
     ok=1; break
   fi
   sleep 2

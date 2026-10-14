@@ -179,7 +179,7 @@ export function showRoles(config, { sessionFamily = null } = {}) {
   const d = config.reviewer?.default;
   const others = Object.entries(config.models ?? {}).filter(([m]) => m !== d).map(([m, x]) => `${m} = ${x.id}`);
   return [
-    `session: family ${sessionFamily ?? 'unknown (set HARNESS_SESSION_FAMILY)'}, from the Anthropic environment`,
+    `session: family ${sessionFamily ?? 'unknown (set HARNESS_SESSION_FAMILY)'}, from the detected client and provider environment`,
     describeImplementer(config), describeReviewer(config),
     `blocked: ${(config.blocked ?? []).join(', ') || 'nothing'}`,
     ...(others.length ? [`also registered, for --reviewer: ${others.join(', ')}`] : []),
