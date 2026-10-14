@@ -1,0 +1,96 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0026",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286896,
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "asset": "f4897d8caa5a22ee-before.png",
+      "class": "recording"
+    },
+    {
+      "name": "place-selected.png",
+      "bytes": 283584,
+      "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+      "asset": "480ec09a4122b12d-place-selected.png",
+      "class": "recording"
+    },
+    {
+      "name": "place-all.png",
+      "bytes": 284264,
+      "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+      "asset": "fc13a7505e755551-place-all.png",
+      "class": "recording"
+    },
+    {
+      "name": "place-done.png",
+      "bytes": 284729,
+      "sha256": "8b4b45428393e5b5ead7f2ae298a1f49d75a84d1b2d51a2a046d47fd66789bc4",
+      "asset": "8b4b45428393e5b5-place-done.png",
+      "class": "recording"
+    },
+    {
+      "name": "attack-ready.png",
+      "bytes": 284618,
+      "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+      "asset": "ecd0ce15458e533f-attack-ready.png",
+      "class": "recording"
+    },
+    {
+      "name": "status-attack-result.png",
+      "bytes": 284580,
+      "sha256": "2944f60e1ee969ae4086b0508157d87b4294273e370545c0bc613d00a165f94d",
+      "asset": "2944f60e1ee969ae-status-attack-result.png",
+      "class": "recording"
+    },
+    {
+      "name": "status-turn-menu.png",
+      "bytes": 284719,
+      "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+      "asset": "40c2a0ef169bc360-status-turn-menu.png",
+      "class": "recording"
+    },
+    {
+      "name": "status-after-pass.png",
+      "bytes": 278580,
+      "sha256": "980953ca5a9d651060cc4f732506cdce48dd92bc96755ebe72b07d1b997420fc",
+      "asset": "980953ca5a9d6510-status-after-pass.png",
+      "class": "recording"
+    },
+    {
+      "name": "after.png",
+      "bytes": 278299,
+      "sha256": "208867e3c3804b485b3914b31c598140a7aea6d204000a1da61d61b3921fc4c0",
+      "asset": "208867e3c3804b48-after.png",
+      "class": "recording"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2849,
+      "sha256": "d1221efe17fb2b53d036d176b0e38876290480c7f671010a8cc3539238e42487",
+      "asset": "d1221efe17fb2b53-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 627,
+      "sha256": "1a33739f24626d3c38119e161ec9938eab386cf12fe6597ed960a8e320e9a2d2",
+      "asset": "1a33739f24626d3c-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 4491,
+      "sha256": "8d8345b99618d4345303f1efc25595757ce49c0d724927eeaa9d703400d43f52",
+      "asset": "8d8345b99618d434-run.log",
+      "class": "log"
+    }
+  ]
+}
