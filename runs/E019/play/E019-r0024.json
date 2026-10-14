@@ -1,0 +1,255 @@
+{
+  "schema": "run/1",
+  "run_id": "E019-r0024",
+  "experiment": "E019",
+  "arm": "q-ui-08",
+  "rep": 1,
+  "code_commit": "96c41e68c05f",
+  "machine": "local",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "unregistered"
+  },
+  "runtime": {
+    "driver": "experiments/E019-pro-ui/run_walk.py@96c41e68c05f",
+    "platform": "wine-on-user-machine-iwp-2.0",
+    "fingerprint": {
+      "wine": "wine-10.0 (Ubuntu 10.0~repack-12ubuntu1)",
+      "fonts": "fonts-dejavu-core=2.37-8build1, fonts-dejavu-mono=2.37-8build1, fonts-droid-fallback=1:8.1.0r7-1~1.gbp36536bbuild1, fonts-noto-mono=20201225-2build1, fonts-ubuntu=0.869+git20240321-0ubuntu2, fonts-urw-base35=20200910-8build1, fonts-wine=10.0~repack-12ubuntu1",
+      "xvfb": "2:21.1.22-1ubuntu1.2",
+      "xfwm4": "4.20.0-1build1",
+      "xdotool": "3.20160805.1",
+      "imagemagick": "7.1.2-18",
+      "python": "3.14.4",
+      "kernel": "6.18.54.1-microsoft-standard-WSL2"
+    }
+  },
+  "interventions": [
+    {
+      "level": "I1",
+      "what": "screenshots of the display and read-only reads of /proc and of the game copy; no memory read, no modified file"
+    }
+  ],
+  "start_state": {
+    "id": "S-cold-prefix-title",
+    "sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+    "restore": "fresh private user, mount and PID namespaces, the install bound read-only once for the command and checked at the start of every walk; the prefix sealed and its registry files equal to their baseline before anything starts and again immediately before the launch; the prefix is reset to that state after every walk; T48: start_state.sha256 is the sha256 of the install's Islepro.exe, the binary that ran, and the prefix listing it held until T48 is here at sha256 2715313c4dfdd15c057bf27f18217929911a0e203ee9f8b9d62656df457dba27"
+  },
+  "seed": null,
+  "actions": {
+    "script": "experiments/E019-pro-ui/run_walk.py",
+    "sha256": "02871e6898f80fa08a79d227bdae1ce6095763cc6de9aa7b3a299419a60eeb57",
+    "args": [
+      "--question",
+      "Q-UI-08"
+    ]
+  },
+  "observations": [
+    {
+      "step": 0,
+      "source": "static",
+      "field": "walk question",
+      "value": "Q-UI-08"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "walk batch",
+      "value": "play"
+    },
+    {
+      "step": 0,
+      "source": "static",
+      "field": "speed setting",
+      "value": "normal (the unlocked default; every timing is a wall-clock reading at it)"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "DBUS_SESSION_BUS_ADDRESS in the driver's environment",
+      "value": "set: unset for the run"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "install read-only inside the run (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "prefix seal before anything starts: problems found",
+      "value": "0"
+    },
+    {
+      "step": 0,
+      "source": "file",
+      "field": "registry files equal their baseline (before anything starts)",
+      "value": "yes"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xvfb ready (s)",
+      "value": "0.13"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "root window",
+      "value": "800x600x24"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "X display held by this run's Xvfb (attempt)",
+      "value": "1"
+    },
+    {
+      "step": 0,
+      "source": "process",
+      "field": "xfwm4 registered (s)",
+      "value": "0.22"
+    },
+    {
+      "step": 3,
+      "source": "process",
+      "field": "snapshot of the prefix before the launch took (s)",
+      "value": "1.68"
+    },
+    {
+      "step": 1,
+      "source": "process",
+      "field": "install read-only inside the run (immediately before launch)",
+      "value": "yes"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "prefix seal immediately before launch: problems found",
+      "value": "0"
+    },
+    {
+      "step": 1,
+      "source": "file",
+      "field": "registry files equal their baseline (immediately before launch)",
+      "value": "yes"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "wineserver -k exit status",
+      "value": "non-zero (no server left; the game side is what is relied on)"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game process exit status",
+      "value": "1"
+    },
+    {
+      "step": 9,
+      "source": "process",
+      "field": "game side gone after terminate (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'terminate' took (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "display side gone after the display was stopped (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 10,
+      "source": "process",
+      "field": "processes of this run still alive after terminate",
+      "value": "0"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'stopping the display' took (s)",
+      "value": "0.02"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "game copy: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "prefix: added/removed/changed entries",
+      "value": "0/0/0"
+    },
+    {
+      "step": 8,
+      "source": "file",
+      "field": "registry keys: added/removed/value-changed",
+      "value": "0/0/0"
+    },
+    {
+      "step": 11,
+      "source": "file",
+      "field": "prefix after reset equals prefix before launch",
+      "value": "yes"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'snapshot and reset' took (s)",
+      "value": "2.09"
+    },
+    {
+      "step": 11,
+      "source": "process",
+      "field": "clean-up stage 'keeping the logs' took (s)",
+      "value": "0.0"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "reset and restoration of the prefix performed",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "clean-up: every stage succeeded and the prefix was reset (the next session may start)",
+      "value": "yes"
+    },
+    {
+      "step": 12,
+      "source": "process",
+      "field": "session seconds, from the first seal to the end of the reset",
+      "value": "24.72"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "changes.log",
+      "sha256": "15e8f0977daa224ef0b1801c4b0b1b19f5d1e4ad9ce740b2380c70639738fefb",
+      "store": "release:E019"
+    },
+    {
+      "name": "wine.log",
+      "sha256": "b3ce2859e12d9b33b83e3028b050f69dbccb75d35bce3535a74a6ce2557bf1e2",
+      "store": "release:E019"
+    },
+    {
+      "name": "run.log",
+      "sha256": "1060002655b081b8bc93a9006e059f64b0dfa6ba5804ec8824d3b3784dcf9045",
+      "store": "release:E019"
+    }
+  ],
+  "started": "2026-10-14T12:14:06Z",
+  "ended": "2026-10-14T12:14:31Z",
+  "status": "aborted: launch: the game process was not found, so its network isolation could not be verified"
+}
