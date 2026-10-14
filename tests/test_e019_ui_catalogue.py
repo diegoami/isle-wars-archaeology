@@ -1189,6 +1189,22 @@ class F020CitationRuleRoundTwoTest(unittest.TestCase):
 
 
 class RecorderUnitTest(unittest.TestCase):
+    def test_manifest_maps_engine_frame_class_to_recording_without_changing_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            frame = Path(tmp) / "frame.png"
+            log = Path(tmp) / "walk.log"
+            frame.write_bytes(b"frame bytes")
+            log.write_bytes(b"walk log bytes")
+            outputs = [("frame.png", frame, "screenshot"), ("walk.log", log, "measurement")]
+
+            manifest = e019_records.build_manifest("E019-r9902", outputs, e019_records.ARTIFACT_SET)
+            expected = [{"name": name, "bytes": path.stat().st_size,
+                         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                         "asset": f"{hashlib.sha256(path.read_bytes()).hexdigest()[:16]}-{name}",
+                         "class": expected_class}
+                       for (name, path, _), expected_class in zip(outputs, ("recording", "measurement"))]
+        self.assertEqual(manifest["files"], expected)
+
     def test_a_shot_step_increments_the_live_screenshot_count(self):
         ctx = run_walk.Ctx(dict(walks.WALKS["Q-UI-14"], qid="Q-UI-14"))
         session = mock.Mock()
