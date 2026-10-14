@@ -1,0 +1,96 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0028",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286896,
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "asset": "f4897d8caa5a22ee-before.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-1.png",
+      "bytes": 285190,
+      "sha256": "25308edaf4263718a09d6d0edccba17eb87dc01f2b0e2646fc83012d347daccd",
+      "asset": "25308edaf4263718-computer-turn-1.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-2.png",
+      "bytes": 284194,
+      "sha256": "825f2bbeda538c8470520d77a82d7e427e052054f3d841757ad3c95651ce6a08",
+      "asset": "825f2bbeda538c84-computer-turn-2.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-3.png",
+      "bytes": 276001,
+      "sha256": "285473017bb684c3bcb57ea8797f8c26b393ef8b332f2fb5cfedb3859ccb01b7",
+      "asset": "285473017bb684c3-computer-turn-3.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-4.png",
+      "bytes": 276515,
+      "sha256": "ef17c074f321eff6e09fcc3c6a1272cc5d91f7419292a03698319435e8c5140b",
+      "asset": "ef17c074f321eff6-computer-turn-4.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-5.png",
+      "bytes": 277548,
+      "sha256": "adb623c87857bb24acd3f89c4f528e30b51eaf5ac9bb98a83a8d430d9dc048e3",
+      "asset": "adb623c87857bb24-computer-turn-5.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-6.png",
+      "bytes": 276935,
+      "sha256": "7ddb3b333890a0db68f71bcd5e884715994a2ac59c116676c190fa74db852608",
+      "asset": "7ddb3b333890a0db-computer-turn-6.png",
+      "class": "recording"
+    },
+    {
+      "name": "computer-turn-7.png",
+      "bytes": 277103,
+      "sha256": "bb9a253beb52648788778f8d770dbeedd4dd190fe98870d4d216587e75260f53",
+      "asset": "bb9a253beb526487-computer-turn-7.png",
+      "class": "recording"
+    },
+    {
+      "name": "after.png",
+      "bytes": 280440,
+      "sha256": "52bb075e4710f5488f21c675b1ea897615aeba78b53bd5511adaf05a8e4a97b9",
+      "asset": "52bb075e4710f548-after.png",
+      "class": "recording"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2849,
+      "sha256": "d1221efe17fb2b53d036d176b0e38876290480c7f671010a8cc3539238e42487",
+      "asset": "d1221efe17fb2b53-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 627,
+      "sha256": "1a33739f24626d3c38119e161ec9938eab386cf12fe6597ed960a8e320e9a2d2",
+      "asset": "1a33739f24626d3c-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 16472,
+      "sha256": "8f5b11f2e86276f5d5d99abb00755d2d619d27ba918af4d93294cfc843e82923",
+      "asset": "8f5b11f2e86276f5-run.log",
+      "class": "log"
+    }
+  ]
+}
