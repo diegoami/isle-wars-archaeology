@@ -312,15 +312,21 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
 
 
 def leave_attack_and_pass(session, ctx):
-    """QUIT ATTACK or DONE (whichever the panel shows), then PASS; a refusal is an observation."""
+    """QUIT ATTACK or DONE (whichever the panel shows), then PASS; return its clock origin.
+
+    The origin is taken after the attack panel has closed and immediately before the accepted PASS
+    click, so setup time is not included in the computer-turn watch. A refusal is an observation and
+    returns None.
+    """
     try:
         perform(session, ctx, "watch 262 502 276 70")
         perform(session, ctx, walks.QUIT_ATTACK_CLICKS)
+        begun = CLOCK()
         perform(session, ctx, f"click! {walks.PASS_CLICK[0]} {walks.PASS_CLICK[1]}")
     except StepFailed as exc:
         ctx.obs(session, "turn note", f"the turn could not be passed: {exc}")
-        return False
-    return True
+        return None
+    return begun
 
 
 def composite_title_options_rounds(session, ctx, rounds=3):
@@ -343,16 +349,19 @@ def composite_title_options_rounds(session, ctx, rounds=3):
 
 def composite_computer_turns(session, ctx, passes=7, watch=("message-strip",), seconds=25,
                              interval=WATCH_INTERVAL, shots=True):
-    """Q-UI-13 and the long half of Q-UI-14: PASS, then watch the regions together while the
-    computer players take their turns; every change of every watched region is timestamped from the
-    PASS click, so the pauses show as the gaps. The recorder counts its own PASS clicks that the game
-    took; the computer turns are derived from them (three computer seats by default, F003), never
-    identified on the screen."""
+    """Q-UI-13 and the long half of Q-UI-14: play and close the human turn, PASS, then watch the
+    regions together while the computer players take their turns. Every change of every watched
+    region is timestamped from the accepted PASS click, so the pauses show as the gaps. The recorder
+    counts its own PASS clicks that the game took; the computer turns are derived from them (three
+    computer seats by default, F003), never identified on the screen."""
     taken = 0
     for i in range(1, passes + 1):
         perform(session, ctx, f"click-any? {walks.CONTINUE_CLICK[0]} {walks.CONTINUE_CLICK[1]}")
-        begun = CLOCK()
-        perform(session, ctx, f"click! {walks.PASS_CLICK[0]} {walks.PASS_CLICK[1]}")
+        if not place_and_attack(session, ctx, exchanges=0):
+            break
+        begun = leave_attack_and_pass(session, ctx)
+        if begun is None:
+            break
         taken += 1
         watch_regions(session, ctx, watch, seconds, interval, begun=begun,
                       field="timing: computer turn change", extra={"pass": i})
@@ -378,7 +387,7 @@ def composite_attack_exchanges(session, ctx, turns=8, exchanges=3, need=20, watc
         total = ctx.counts.get("attacks", 0)
         if total == before:
             ctx.obs(session, "turn note", f"turn {t} gave no exchange")
-        if not leave_attack_and_pass(session, ctx):
+        if leave_attack_and_pass(session, ctx) is None:
             break
     ctx.count("attacks", 0)     # ensure the count exists even when every turn was refused
     ctx.obs(session, "attacks note", "an attack counted here is a click on the ATTACK button that "
@@ -419,7 +428,7 @@ def composite_card_turns(session, ctx, turns=10):
     strip = region_rect("message-strip")
     for t in range(1, turns + 1):
         place_and_attack(session, ctx, exchanges=1)
-        if not leave_attack_and_pass(session, ctx):
+        if leave_attack_and_pass(session, ctx) is None:
             break
         perform(session, ctx, f"watch {strip[0]} {strip[1]} {strip[2]} {strip[3]}")
         before = read_region(session, strip)

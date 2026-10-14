@@ -212,7 +212,8 @@ class StatefulTurnSession(FakeSession):
     def perform(self, text):
         super().perform(text)
         words = text.split()
-        if words[0] in run_walk.sessionlib.INPUT_OPS or words[0] == "move":
+        is_pass = words[0] == "click!" and tuple(int(value) for value in words[-2:]) == walks.PASS_CLICK
+        if (words[0] in run_walk.sessionlib.INPUT_OPS or words[0] == "move") and not is_pass:
             self.clock.now += 0.5
 
         if words[0] == "click-any?":
@@ -767,7 +768,7 @@ class RoundTwoRegressionTest(unittest.TestCase):
 
         self.assertEqual(session.pass_attempt_phases, [])
         self.assertEqual(session.accepted_pass_times, [])
-        self.assertNotIn("passes", ctx.counts)
+        self.assertEqual(ctx.counts.get("passes", 0), 0)
 
     # R5: the display sizes are measured, and distinct sizes are required
     def test_r5_q_ui_19s_records_carry_each_measured_display_size(self):
