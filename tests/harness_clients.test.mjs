@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { sessionFamily } from '../tools/harness/lib/common.mjs';
-import { selectOpenCode } from '../tools/harness/lib/opencode.mjs';
+import { runOpenCodeWatched, OpenCodeInfraError, selectOpenCode } from '../tools/harness/lib/opencode.mjs';
 
 test('Codex markers and explicit client preserve Claude endpoint routing', () => {
   assert.equal(sessionFamily({ CODEX_THREAD_ID: 'thread' }), 'openai');
@@ -74,5 +74,18 @@ test('direct read failure retries without corrupt output; model run never replay
     const run = spawnSync(process.execPath, [wrapper, 'run'], { env, encoding: 'utf8', timeout: 10000 });
     assert.equal(run.status, 1);
     assert.equal(fs.existsSync(marker), false);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('provider/model review titles create flat files before CLI startup', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'iwa-title-test-'));
+  try {
+    await assert.rejects(runOpenCodeWatched({
+      args: ['run'], prompt: 'synthetic test; no model', workDir: dir,
+      title: 'pr226-kimi-code-plan-global/kimi-for-coding', logDir: dir,
+      opencode: { exe: path.join(dir, 'absent-cli'), prefix: [] },
+      startupTimeoutMs: 100, totalTimeoutMs: 100, pollMs: 10,
+    }), error => error instanceof OpenCodeInfraError && error.reason === 'opencode not found');
+    assert.ok(fs.readdirSync(dir).some(name => name.endsWith('.brief.md')));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

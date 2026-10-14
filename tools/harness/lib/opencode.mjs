@@ -435,7 +435,7 @@ export async function runOpenCodeWatched({
   if (args[0] !== 'run') throw new Error(`runOpenCodeWatched runs 'opencode run'; got '${args[0]}'.`);
   const cmd = opencode ?? resolveOpenCode(env);
   workDir = fs.realpathSync(workDir);
-  title = `${title}-${randomBytes(6).toString('hex')}`;
+  title = `${String(title).replace(/[^a-zA-Z0-9_.-]/g, '-')}-${randomBytes(6).toString('hex')}`;
   fs.mkdirSync(logDir, { recursive: true });
   const outFile = path.join(logDir, `${title}.out.txt`);
   const errFile = path.join(logDir, `${title}.err.txt`);
