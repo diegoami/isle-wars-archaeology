@@ -189,6 +189,59 @@ class FakeSession:
         self._engine.obs.append({"step": step, "source": source, "field": field, "value": str(value)})
 
 
+class StatefulTurnSession(FakeSession):
+    """A synthetic turn state machine for the computer-turn composite.
+
+    It refuses PASS unless the placement and attack panels have been closed to the turn menu. Its
+    screen also changes on each fake-clock tick, so the timing observations expose an origin taken
+    before setup rather than immediately before the accepted PASS.
+    """
+
+    def __init__(self, *args, refuse_placement=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.phase = "placement"
+        self.refuse_placement = refuse_placement
+        self.pass_attempt_phases = []
+        self.accepted_pass_times = []
+        self._engine.screen.raw = self._stateful_raw
+
+    def _stateful_raw(self, rect):
+        key = (self.phase, int(self.clock.now * 4), tuple(rect) if rect is not None else None)
+        return hashlib.sha256(repr(key).encode()).digest()[:12]
+
+    def perform(self, text):
+        super().perform(text)
+        words = text.split()
+        if words[0] in run_walk.sessionlib.INPUT_OPS or words[0] == "move":
+            self.clock.now += 0.5
+
+        if words[0] == "click-any?":
+            # CONTINUE is allowed to be refused on a normal placement screen.
+            if self.phase == "award":
+                self.phase = "placement"
+            return
+        if words[0] == "click-until":
+            if self.phase == "placement":
+                if self.refuse_placement:
+                    raise run_walk.StepFailed("synthetic placement transition refused")
+                self.phase = "placement-selected"
+            elif self.phase == "attack":
+                self.phase = "menu"
+            return
+        if words[0] == "click!":
+            point = tuple(int(value) for value in words[-2:])
+            if point == walks.ALL_CLICK and self.phase == "placement-selected":
+                self.phase = "placement-all"
+            elif point == walks.PLACE_DONE_CLICK and self.phase == "placement-all":
+                self.phase = "attack"
+            elif point == walks.PASS_CLICK:
+                self.pass_attempt_phases.append(self.phase)
+                if self.phase != "menu":
+                    raise run_walk.StepFailed(f"synthetic PASS refused during {self.phase}")
+                self.accepted_pass_times.append(self.clock.now)
+                self.phase = "award"
+
+
 FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"
 
 
@@ -676,6 +729,45 @@ class RoundTwoRegressionTest(unittest.TestCase):
         regions = {json.loads(o["value"])["region"] for o in record["observations"]
                    if o["field"] == "timing: computer turn change"}
         self.assertEqual(regions, {"message-strip", "phase-panel", "board-area"})
+
+    def test_q_ui_13_reaches_the_turn_menu_before_pass_and_starts_watch_at_pass(self):
+        clock = FakeClock()
+        session = StatefulTurnSession("E019-r0001", None, None, None, ":99", "q-ui-13", "800x600x24",
+                                      clock=clock, workdir=tempfile.mkdtemp(prefix="e019-q-ui-13-"))
+        ctx = run_walk.Ctx(dict(walks.WALKS["Q-UI-13"], qid="Q-UI-13"))
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_computer_turns(session, ctx, passes=1,
+                                                  watch=["message-strip"], seconds=0.5, interval=0.25,
+                                                  shots=False)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.pass_attempt_phases, ["menu"])
+        self.assertEqual(len(session.accepted_pass_times), 1)
+        self.assertEqual(ctx.counts["passes"], 1)
+        timings = [json.loads(o["value"])["at_s"] for o in session.obs
+                    if o["field"] == "timing: computer turn change"]
+        self.assertTrue(timings)
+        self.assertEqual(timings[0], 0.25)
+
+    def test_q_ui_13_refused_placement_stops_without_counting_a_pass(self):
+        clock = FakeClock()
+        session = StatefulTurnSession("E019-r0001", None, None, None, ":99", "q-ui-13", "800x600x24",
+                                      clock=clock, workdir=tempfile.mkdtemp(prefix="e019-q-ui-13-refused-"),
+                                      refuse_placement=True)
+        ctx = run_walk.Ctx(dict(walks.WALKS["Q-UI-13"], qid="Q-UI-13"))
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_computer_turns(session, ctx, passes=1,
+                                                  watch=["message-strip"], seconds=0.5, interval=0.25,
+                                                  shots=False)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertEqual(session.accepted_pass_times, [])
+        self.assertNotIn("passes", ctx.counts)
 
     # R5: the display sizes are measured, and distinct sizes are required
     def test_r5_q_ui_19s_records_carry_each_measured_display_size(self):
