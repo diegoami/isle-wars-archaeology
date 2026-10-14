@@ -614,15 +614,22 @@ class RecorderEndToEndTest(unittest.TestCase):
         every question with no completed record yet."""
         errors = check_ui_catalogue.run_checks(ROOT, questions_path=QUESTIONS, inventory_path=INVENTORY)
         walked = set()
-        for path in (ROOT / "runs" / "E019").glob("*/*.json"):
-            record = json.loads(path.read_text())
+        records = [json.loads(path.read_text()) for path in (ROOT / "runs" / "E019").glob("*/*.json")]
+        for record in records:
             if record.get("status") == "completed":
                 walked |= {o["value"] for o in record["observations"] if o["field"] == "walk question"}
         pending = [qid for qid in catalogue_ids() if qid not in walked]
         if not pending:
             self.skipTest("every walk has a completed record")
         for qid in pending:
-            self.assertTrue(any(qid in e and "has not run" in e for e in errors), (qid, errors))
+            aborted = any(
+                record.get("status", "").startswith("aborted")
+                and any(o["field"] == "walk question" and o["value"] == qid
+                        for o in record.get("observations", []))
+                for record in records
+            )
+            expected = "aborted" if aborted else "has not run"
+            self.assertTrue(any(qid in e and expected in e for e in errors), (qid, errors))
 
 
 def walk_order_first(qid):
