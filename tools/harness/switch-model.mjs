@@ -31,7 +31,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
-import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, modelVariants } from './lib/opencode.mjs';
+import { runOpenCodeWatched, selectOpenCode, OpenCodeInfraError, modelVariants } from './lib/opencode.mjs';
 import { planSwitch, planBlock, showRoles, defaultVariant } from './lib/switch.mjs';
 import { sh, repoPaths, loadConfig, parseArgs, prepareOpenCode, sessionFamily } from './lib/common.mjs';
 
@@ -76,7 +76,7 @@ try {
 say(`${a.role}: ${plan.name} = ${plan.entry.id} (${plan.entry.variant ?? 'no variant'}, family ${plan.entry.family})`);
 
 let opencode;
-try { opencode = resolveOpenCode(); } catch (e) {
+try { opencode = await selectOpenCode(process.env, { cwd: top, log: say }); } catch (e) {
   if (e instanceof OpenCodeInfraError) die(3, `OpenCode unavailable: ${e.message} Nothing written.`);
   throw e;
 }

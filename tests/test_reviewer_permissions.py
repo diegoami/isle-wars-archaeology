@@ -216,7 +216,7 @@ class ReviewerPermissions(unittest.TestCase):
             env = {k: v for k, v in os.environ.items() if not k.startswith("OPENCODE_")}
             env.update(OPENCODE_CONFIG_DIR=str(ROOT / ".opencode"), OPENCODE_DISABLE_PROJECT_CONFIG="1",
                        XDG_DATA_HOME=f"{tmp}/data", XDG_CACHE_HOME=f"{tmp}/cache", XDG_STATE_HOME=f"{tmp}/state")
-            out = subprocess.run(["opencode", "debug", "agent", "reviewer"], cwd=tmp, env=env,
+            out = subprocess.run(["node", str(ROOT / "tools/harness/opencode.mjs"), "debug", "agent", "reviewer"], cwd=tmp, env=env,
                                  capture_output=True, text=True, timeout=180)
         self.assertEqual(out.returncode, 0, out.stderr[-500:])
         agent = json.loads(out.stdout[out.stdout.index("{"):])

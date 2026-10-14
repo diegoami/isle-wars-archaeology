@@ -146,6 +146,49 @@ export function resolveOpenCode(env = process.env) {
   throw new OpenCodeInfraError('opencode not found', 'opencode is not on PATH (set HARNESS_OPENCODE_EXE to the real executable).');
 }
 
+// Backups are explicit or siblings of the selected CLI and the owner's installer location.
+// Versioned backups are sorted so discovery is deterministic. Never select a Windows shim in WSL.
+export function backupOpenCodes(env = process.env, primary = null) {
+  const candidates = env.HARNESS_OPENCODE_BAK ? [env.HARNESS_OPENCODE_BAK] : [];
+  if (!env.HARNESS_OPENCODE_BAK) {
+    const dirs = new Set([primary?.prefix?.[0] ? path.dirname(primary.prefix[0]) : primary?.exe && path.dirname(primary.exe),
+      env.HOME && path.join(env.HOME, '.opencode', 'bin'),
+      ...(env.PATH || env.Path || '').split(path.delimiter)].filter(Boolean));
+    for (const dir of dirs) {
+      candidates.push(path.join(dir, 'opencode.bak'));
+      try {
+        for (const name of fs.readdirSync(dir).filter(n => /^opencode\.\d+\.\d+\.\d+\.bak$/.test(n)).sort().reverse())
+          candidates.push(path.join(dir, name));
+      } catch { /* absent directory */ }
+    }
+  }
+  return [...new Set(candidates)].filter(file => fs.existsSync(file) &&
+    (process.platform === 'win32' || !isWindowsShim(file))).map(file =>
+      /\.m?js$/.test(file) ? { exe: process.execPath, prefix: [file] } : { exe: file, prefix: [] });
+}
+
+// Diagnose CLI startup before billing. A model run is never replayed automatically.
+export async function selectOpenCode(env = process.env, { cwd, log = () => {}, timeoutMs = 5000 } = {}) {
+  let primary;
+  const problems = [];
+  try { primary = resolveOpenCode(env); } catch (e) {
+    if (!(e instanceof OpenCodeInfraError)) throw e;
+    problems.push(e.message);
+    log(`opencode: ${e.message}`);
+  }
+  for (const cmd of [primary, ...backupOpenCodes(env, primary)].filter(Boolean)) {
+    const version = await openCodeVersion(cmd, { env, cwd, timeoutMs });
+    const problem = versionProblem(version, cmd.prefix[0] || cmd.exe);
+    if (!problem) {
+      log(`opencode: ${cmd === primary ? 'selected' : 'backup selected'} ${cmd.prefix[0] || cmd.exe} (${version})`);
+      return cmd;
+    }
+    problems.push(problem);
+    log(`opencode: ${problem}`);
+  }
+  throw new OpenCodeInfraError('opencode unavailable', problems.join('; '));
+}
+
 // The scripts' own OpenCode data directory: XDG_DATA_HOME, XDG_CACHE_HOME and XDG_STATE_HOME, each
 // a folder of one root (HARNESS_OPENCODE_HOME, else ~/.local/share/harness-opencode). OpenCode's
 // desktop app (2.x) shares the default ~/.local/share/opencode and migrated its opencode.db to a

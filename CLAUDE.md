@@ -33,6 +33,31 @@ the core of it has been seen in play:
 The process is `docs/process.md`; read it before running a task. Tasks are `docs/tasks/T<nn>.md`,
 indexed in `docs/tasks/README.md`.
 
+## Codex compatibility
+
+`AGENTS.md` remains a pointer to this file: Claude and Codex share these rules.
+Codex may be the main session and implement directly in its own worktree after the
+rule 6.1 question. Claude's Agent tool, hooks and slash commands are Claude-specific;
+Codex follows the same process with its available tools and reads the corresponding
+`.claude/skills/<name>/SKILL.md` when needed. Do not invoke unavailable Claude tools.
+Codex does not load Claude's hooks or agent permission grants; its own sandbox and
+approval rules apply. Never disable them to imitate a Claude grant.
+
+The harness identifies Codex through `CODEX_THREAD_ID` or `CODEX_SESSION_ID`, or
+`HARNESS_CLIENT=codex` for detached jobs. Codex's family is `openai`; explicit
+`HARNESS_SESSION_FAMILY` overrides retain precedence. `HARNESS_CLIENT=claude`
+preserves Claude endpoint detection even when inherited Codex markers exist.
+`CODEX_HOME` alone does not identify the current client.
+
+Use `node tools/harness/opencode.mjs <arguments>` for direct OpenCode calls.
+The harness checks the selected CLI before a model run and reports fallback to a
+supported `opencode.bak` or `opencode.<version>.bak` beside the CLI, on PATH or in
+`~/.opencode/bin`. `HARNESS_OPENCODE_BAK` selects a backup explicitly;
+`HARNESS_OPENCODE_EXE` selects the primary. The fallback changes the executable,
+never the model or credentials. Read-only commands (`models`, `export`, `--version`)
+may retry with the backup after failure; model runs are never replayed automatically.
+Read their final messages and diagnose failures under rule 25.
+
 ## Rules
 1. The main session plans, runs `/run-task`, triages and talks to the user. A subagent it spawns
    implements (or it does itself), and OpenCode reviews, asking the user before each (rule 6). It delegates repeated decisions to Jev
@@ -66,7 +91,7 @@ indexed in `docs/tasks/README.md`.
    family reviews. The roster is the owner's, and changes often: the defaults and the blocked list
    live in `harness.json` and change through `/switch-model`, never by a rule that names a model.
    No quota, tier or difficulty table picks a model.
-   0. **The orchestrator is set by the Anthropic environment variables alone** (`ANTHROPIC_BASE_URL`,
+   0. **For Claude, the orchestrator is set by the Anthropic environment variables alone** (`ANTHROPIC_BASE_URL`,
       `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude by default; when Claude's tokens are out, another
       Anthropic-compatible provider such as Z.AI, MiniMax or Moonshot, which then works like Claude.
       The harness never names the orchestrator's model. It reads the orchestrator's **family**

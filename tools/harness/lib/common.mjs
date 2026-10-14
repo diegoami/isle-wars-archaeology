@@ -119,7 +119,7 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
 }
 
 // The family of the main session, and so of every Claude Code agent it spawns (an agent runs through
-// the same endpoint). The session is set only by the Anthropic environment variables: with
+// the same endpoint). Claude sessions use the Anthropic environment variables: with
 // ANTHROPIC_BASE_URL unset or at anthropic.com it is Claude; when Claude's tokens are out the owner
 // points it at another provider that speaks the same API: Z.AI's GLM, MiniMax, or Moonshot's Kimi
 // (the owner, 2026-10-12), and the family rule must then keep that family out of the reviewer's
@@ -134,8 +134,21 @@ const ENDPOINT_FAMILIES = [['anthropic.com', 'claude'], ['z.ai', 'glm'], ['bigmo
   ['minimax.io', 'minimax'], ['minimaxi.com', 'minimax'], ['minimax.chat', 'minimax'],
   ['moonshot.ai', 'kimi'], ['moonshot.cn', 'kimi'], ['kimi.com', 'kimi'], ['deepseek.com', 'deepseek'],
   ['aliyuncs.com', 'qwen'], ['aliyun.com', 'qwen'], ['xiaomimimo.com', 'mimo'], ['xiaomi.com', 'mimo']];
+// Explicit client selection also survives detached systemd jobs. A config directory alone
+// does not identify an active Codex session. Explicit family overrides retain their precedence.
+export function sessionClient(env = process.env) {
+  if (env.HARNESS_CLIENT) {
+    const client = env.HARNESS_CLIENT.trim().toLowerCase();
+    return ['codex', 'claude'].includes(client) ? client : null;
+  }
+  return env.CODEX_THREAD_ID || env.CODEX_SESSION_ID ? 'codex' : 'claude';
+}
+
 export function sessionFamily(env = process.env) {
   if (env.HARNESS_SESSION_FAMILY) return canonicalFamily(env.HARNESS_SESSION_FAMILY);
+  const client = sessionClient(env);
+  if (!client) return null;
+  if (client === 'codex') return 'openai';
   const url = String(env.ANTHROPIC_BASE_URL || '').trim();
   if (!url) return 'claude';
   let host;

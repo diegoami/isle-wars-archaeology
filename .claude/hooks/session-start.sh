@@ -13,6 +13,10 @@ fi
 OPENCODE_VERSION="1.18"
 notes=()
 
+# Use the same supported CLI and backup selection as the review harness.
+oc_wrapper="${CLAUDE_PROJECT_DIR:-$PWD}/tools/harness/opencode.mjs"
+opencode() { node "$oc_wrapper" "$@"; }
+
 node_major=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
 if [ "$node_major" -lt 20 ]; then
   notes+=("Node $node_major is too old for tools/harness (needs 20+).")

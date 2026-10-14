@@ -221,7 +221,7 @@ function checkReviewRunner(failures) {
   try {
     const brief = path.join(dir, 'brief.md');
     fs.writeFileSync(brief, 'PR 1 review (self-test)\n');
-    const env = { ...process.env, ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_OPENCODE_EXE: path.join(dir, 'no-opencode') };
+    const env = { ...process.env, HARNESS_CLIENT: 'claude', ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_OPENCODE_EXE: path.join(dir, 'no-opencode') };
     delete env.HARNESS_SESSION_FAMILY;
     const r = spawnSync(process.execPath, [script, '--pr', '1', '--brief', brief, '--reviewer', 'zai-coding-plan/glm-5.3', '--exclude', 'claude'],
       { cwd: path.dirname(script), env, encoding: 'utf8', timeout: 60_000 });
