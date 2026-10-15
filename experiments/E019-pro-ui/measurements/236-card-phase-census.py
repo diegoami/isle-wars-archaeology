@@ -47,7 +47,7 @@ def main(argv):
     print(json.dumps({
         "method": "Main-session ImageMagick RGB8 census using unchanged measured screen tests; "
                   "800x600 stage. No OCR, no new thresholds. Positive visual reading is r0030 "
-                  "settled-before-continue and identical after; one unique positive only. Other "
+                  "settled-before-continue and identical after; one unique positive only. Other136-"
                   "population frames include title/options/board/placement/attack/computers; "
                   "absence here is bounded, not universal.",
         "positive_raw_rgb8_sha256": "16a84dc21a66a6cbb12f52302133bd3963bf5819b66d9b0c5903b55432ee6776",
