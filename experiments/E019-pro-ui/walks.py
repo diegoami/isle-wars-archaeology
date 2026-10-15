@@ -468,10 +468,12 @@ WALKS = {
             "one attack is counted only after a measured human attack-ready probe, a successful input, "
             "and a changed watched attack-panel rectangle; the timing records the panel change around "
             "each click",
-            "the walk stops before a refused next click when combat ends, a capture/move-in or terminal "
-            "state appears, or the phase is unsupported. After PASS it requires an observed departure, "
-            "the existing quiet settle, and a fresh human board-menu reading before another placement; "
-            "it continues over at most 8 turns toward the unchanged target of 20",
+            "the walk preserves earlier valid attacks but stops before QUIT ATTACK, PASS or another "
+            "placement when a later click is refused, its input/panel change is unproved, combat ends, "
+            "a capture/move-in or terminal state appears, or the phase is unsupported. After PASS it "
+            "requires an observed departure, the existing quiet settle, and a fresh human board-menu "
+            "reading before another placement; it continues over at most 8 turns toward the unchanged "
+            "target of 20",
             "timings are wall-clock readings at speed = normal (the unlocked default, F003)",
         ],
     },

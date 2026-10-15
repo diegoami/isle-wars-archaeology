@@ -448,13 +448,16 @@ class StatefulAttackPhaseSession(FakeSession):
 
     def __init__(self, *args, placement_refused=False, attack_ready=True, panel_changes=True,
                  fail_attack_input=False, terminal_before_attack=None, capture_after=None,
-                 departure=True, settle_timeout=False, initial_phase=None, **kwargs):
+                 fail_attack_after=None, panel_changes_after=None, departure=True, settle_timeout=False,
+                 initial_phase=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.phase = initial_phase or "placement"
         self.placement_refused = placement_refused
         self.attack_ready_signal = attack_ready
         self.panel_changes = panel_changes
         self.fail_attack_input = fail_attack_input
+        self.fail_attack_after = fail_attack_after
+        self.panel_changes_after = panel_changes_after
         self.terminal_before_attack = terminal_before_attack
         self.capture_after = capture_after
         self.departure = departure
@@ -507,12 +510,14 @@ class StatefulAttackPhaseSession(FakeSession):
         elif point == walks.ATTACK_PANEL_CLICK:
             if self.phase != "attack-ready":
                 raise run_walk.StepFailed("synthetic attack input outside attack-ready")
-            if self.fail_attack_input:
+            if self.fail_attack_input or (self.fail_attack_after is not None
+                                          and self.attack_calls + 1 >= self.fail_attack_after):
                 raise run_walk.StepFailed("synthetic refused attack input")
             self.attack_calls += 1
             if self.capture_after is not None and self.attack_calls >= self.capture_after:
                 self.phase = "capture"
-            elif self.panel_changes:
+            elif self.panel_changes and (self.panel_changes_after is None
+                                         or self.attack_calls <= self.panel_changes_after):
                 self.panel_epoch += 1
             else:
                 self.outside_epoch += 1
@@ -651,6 +656,30 @@ class QUi16AttackPhaseRegressionTest(unittest.TestCase):
         finally:
             self.tear(session)
         self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0), session.pass_attempt_phases), (0, 0, []))
+
+    def test_later_attack_refusal_preserves_prior_count_and_stops_before_pass(self):
+        clock, session = self.session("e019-q16-late-refusal", fail_attack_after=2)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=3, need=3, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (1, 1))
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertTrue(any(o["field"] == "attacks stop" and "strict attack input refused" in o["value"]
+                            for o in session._engine.obs))
+
+    def test_later_unproved_panel_change_preserves_prior_count_and_stops_before_pass(self):
+        clock, session = self.session("e019-q16-late-panel", panel_changes_after=1)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=3, need=3, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (2, 1))
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertTrue(any(o["field"] == "attacks stop" and "panel changed" in o["value"]
+                            for o in session._engine.obs))
 
 
 FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"

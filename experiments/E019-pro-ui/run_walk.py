@@ -306,6 +306,7 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
                     "result": "unsupported attack phase", "screen": screen,
                 }))
                 return False
+        attack_ok = True
         try:
             perform(session, ctx, f"watch {watch[0]} {watch[1]} {watch[2]} {watch[3]}")
             for _ in range(exchanges):
@@ -315,11 +316,13 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
                     screen = session.screen_name()
                     if screen in {"eliminated", "game-over", "scoreboard"}:
                         ctx.obs(session, "attacks stop", json.dumps({"result": f"terminal {screen}"}))
+                        attack_ok = False
                         break
                     if screen != "board-menu" or not session.screen_attack_ready():
                         ctx.obs(session, "attacks stop", json.dumps({
                             "result": "unsupported attack phase", "screen": screen,
                         }))
+                        attack_ok = False
                         break
                 inputs_before = ctx.counts.get("inputs", 0) if strict_attack_ready else None
                 perform(session, ctx, f"click! {attack_click[0]} {attack_click[1]}")
@@ -335,6 +338,7 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
                             "result": "attack input or watched panel change unproved",
                             "input proved": input_proved, "panel changed": panel_changed,
                         }))
+                        attack_ok = False
                         break
                 else:
                     ctx.obs(session, "timing: attack exchange",
@@ -343,7 +347,12 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
         except StepFailed as exc:
             ctx.obs(session, "turn note", f"the attacks stopped after {ctx.counts.get('attacks', 0)} "
                           f"in this walk: {exc}")
-    return True
+            if strict_attack_ready:
+                ctx.obs(session, "attacks stop", json.dumps({
+                    "result": "strict attack input refused", "count preserved": ctx.counts.get("attacks", 0),
+                }))
+                attack_ok = False
+    return attack_ok if strict_attack_ready else True
 
 
 def leave_attack_and_pass(session, ctx):

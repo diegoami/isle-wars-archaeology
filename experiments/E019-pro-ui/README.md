@@ -113,8 +113,11 @@ the bounded red population in the existing phase panel), after a successful inpu
 watched attack-panel rectangle changed. A generic screen change elsewhere is not enough.
 
 Placement refusal, capture or move-in, early combat end, terminal screens, and unsupported states
-stop the walk before another attack or PASS. After an accepted PASS, the walk requires an observed
-departure, the existing quiet settle, and a fresh human board-menu reading before another placement.
+stop the walk before another attack or PASS. If a later attack input is refused or its watched panel
+does not change, earlier valid attacks remain counted but the strict helper returns failure, so the
+composite stops before QUIT ATTACK, PASS, or another placement. After an accepted PASS, the walk
+requires an observed departure, the existing quiet settle, and a fresh human board-menu reading
+before another placement.
 The probe is a bounded measured population, not a universal phase classifier; no Q-UI-16 run record
 or F020 observation is fabricated by this repair.
 
