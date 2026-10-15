@@ -26,6 +26,23 @@ class QUi16SamplingContractTest(unittest.TestCase):
                 batch="play", f020=f020,
             )
 
+    @staticmethod
+    def make_valid_zero(path):
+        def zero(record):
+            for obs in record["observations"]:
+                if obs["field"] == "count: attacks":
+                    obs["value"] = "0"
+                elif obs["field"] == "timing: attack exchange":
+                    timing = json.loads(obs["value"])
+                    timing["input proved"] = False
+                    timing["panel changed"] = False
+                    obs["value"] = json.dumps(timing)
+                elif obs["field"] == "observation":
+                    summary = json.loads(obs["value"])
+                    summary["counts"]["attacks"] = 0
+                    obs["value"] = json.dumps(summary)
+        rewrite(path, zero)
+
     def test_one_high_count_run_does_not_replace_twenty_completed_runs(self):
         with tempfile.TemporaryDirectory() as root:
             self.make(root, 1)
@@ -58,6 +75,21 @@ class QUi16SamplingContractTest(unittest.TestCase):
                         obs["value"] = "0"
             rewrite(path, zero)
             self.assertTrue(self.errors(root), "a zero-attack completed run cannot contribute")
+
+    def test_valid_zero_attack_sample_is_accepted_as_raw_noncontributor(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root, 21)
+            path, _ = records_of(root, "Q-UI-16")[-1]
+            self.make_valid_zero(path)
+            self.assertEqual(self.errors(root), [], "a valid zero sample must not poison the pool")
+
+    def test_nineteen_positive_runs_plus_valid_zero_sample_are_not_twenty(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root, 19)
+            drive_one(root, "Q-UI-16", None)
+            path, _ = records_of(root, "Q-UI-16")[-1]
+            self.make_valid_zero(path)
+            self.assertTrue(self.errors(root), "a valid zero sample cannot satisfy the twentieth run")
 
     def test_unproved_timing_twentieth_run_cannot_help(self):
         with tempfile.TemporaryDirectory() as root:
@@ -109,6 +141,23 @@ class QUi16SamplingContractTest(unittest.TestCase):
 
             rewrite(path, nonfinite)
             self.assertTrue(self.errors(root), "a non-finite timing cannot contribute")
+
+    def test_negative_timing_cannot_help(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root, 19)
+            drive_one(root, "Q-UI-16", None)
+            path, _ = records_of(root, "Q-UI-16")[-1]
+
+            def negative(record):
+                for obs in record["observations"]:
+                    if obs["field"] == "timing: attack exchange":
+                        timing = json.loads(obs["value"])
+                        timing["at_s"] = -1
+                        obs["value"] = json.dumps(timing)
+                        break
+
+            rewrite(path, negative)
+            self.assertTrue(self.errors(root), "a negative timing cannot contribute")
 
     def test_twenty_runs_but_only_one_citation_cannot_pass_f020(self):
         with tempfile.TemporaryDirectory() as root:

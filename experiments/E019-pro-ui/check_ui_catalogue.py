@@ -280,7 +280,8 @@ def q16_timing_count(by_field, where):
 
     The recorder emits one timing object per attempted attack.  A run contributes only the
     entries that prove both the input and the watched-panel change; ``at_s`` remains a required
-    finite measurement even for an unsuccessful attempt.  This deliberately stays local to Q16:
+    finite, non-negative measurement even for an unsuccessful attempt.  This deliberately stays
+    local to Q16:
     the other questions retain their existing count policy.
     """
     timings = by_field.get("timing: attack exchange", [])
@@ -298,11 +299,12 @@ def q16_timing_count(by_field, where):
             errors.append(f"{where}: Q-UI-16 attack timing is not an object")
             continue
         at_s = timing.get("at_s")
+        numeric = not isinstance(at_s, bool) and isinstance(at_s, (int, float))
         try:
-            finite = math.isfinite(at_s) if not isinstance(at_s, bool) else False
+            finite = numeric and math.isfinite(at_s) and at_s >= 0
         except (TypeError, OverflowError):
             finite = False
-        if not isinstance(at_s, (int, float)) or not finite:
+        if not numeric or not finite:
             errors.append(f"{where}: Q-UI-16 attack timing has invalid at_s {at_s!r}")
         if not isinstance(timing.get("input proved"), bool):
             errors.append(f"{where}: Q-UI-16 attack timing has no boolean input proved value")
@@ -346,8 +348,14 @@ def q16_run_measurements(record, by_field, where):
 
     proved, timing_errors = q16_timing_count(by_field, where)
     errors.extend(timing_errors)
-    if count is not None and proved is not None and (count < 1 or count != proved):
+    # A completed zero-attack run with no proved attack is valid raw data, but it is deliberately a
+    # noncontributor.  A positive count that disagrees with its timing proof remains an invalid run
+    # and must not be made harmless by this exception.
+    if count is not None and proved is not None and ((count == 0 and proved > 0)
+                                                     or (count > 0 and count != proved)):
         errors.append(f"{where}: Q-UI-16 count attacks {count} does not match {proved} proved timing entries")
+    if count == 0 and proved == 0 and not timing_errors:
+        return None, []
 
     artifact = record.get("artifact") if isinstance(record.get("artifact"), dict) else {}
     runtime = record.get("runtime") if isinstance(record.get("runtime"), dict) else {}
@@ -362,7 +370,7 @@ def q16_run_measurements(record, by_field, where):
         errors.append(f"{where}: Q-UI-16 contribution has no valid binary identity")
     key = (artifact.get("set"), binary, runtime.get("platform"),
            speed[0] if speed == [Q16_SPEED] else None, requested, measured)
-    return (key if not errors else None), errors
+    return (key if not errors and count > 0 and proved > 0 else None), errors
 
 
 def q16_output_hashes(root, path):
