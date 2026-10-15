@@ -85,7 +85,12 @@ class FakeScreen:
         self.fake = fake
 
     def state(self):
-        return (self.fake.events, int(self.fake.clock.now // 2))
+        # Event walks expose a late post-PASS candidate so the fake exercises the continuous
+        # observer, not the removed quiet-settle interval. Direct watch tests have no accepted
+        # PASS and retain the ordinary two-second redraw cadence.
+        step = (20 if self.fake.arm in {"q-ui-06", "q-ui-07"} and
+                self.fake.event_pass_at is not None else 2)
+        return (self.fake.events, int(self.fake.clock.now // step))
 
     def raw(self, rect):
         if rect is None:
@@ -118,6 +123,7 @@ class FakeSession:
     def __init__(self, run_id, prefix, bundles, install, display, arm, size, *, clock, workdir,
                  drop=(), drop_outputs=(), snapshot=True):
         self.run_id, self.size, self.clock = run_id, size, clock
+        self.arm = arm
         self.workdir = Path(workdir) / run_id
         self.workdir.mkdir(parents=True)
         self.events = 0
@@ -126,6 +132,7 @@ class FakeSession:
         # attack path.  Keep the fake stateful for both event questions so the recorder's ordinary
         # end-to-end fixture still exercises its candidate/count semantics.
         self.strict_attack_phase = arm in {"q-ui-06", "q-ui-07", "q-ui-16"}
+        self.event_pass_at = None
         self.drop, self.drop_outputs = list(drop), set(drop_outputs)
         self._engine = FakeEngine(self)
         self.snap_before = ("fake", {"drive_c": ("dir",)}) if snapshot else None
@@ -164,6 +171,9 @@ class FakeSession:
     def screen_name(self):
         if not self.strict_attack_phase:
             return "board"
+        if (self.arm in {"q-ui-06", "q-ui-07"} and self.synthetic_phase == "computer"
+                and self.event_pass_at is not None and self.clock.now - self.event_pass_at >= 21):
+            self.synthetic_phase = "menu"
         return {"menu": "board-menu", "attack": "board-menu", "computer": "board"}[self.synthetic_phase]
 
     def screen_attack_ready(self):
@@ -191,6 +201,8 @@ class FakeSession:
             point = tuple(int(value) for value in words[-2:])
             if point == walks.PASS_CLICK:
                 self.synthetic_phase = "computer"
+                if self.arm in {"q-ui-06", "q-ui-07"}:
+                    self.event_pass_at = self.clock.now
         elif words[0] == "settle" and self.synthetic_phase == "computer":
             self.synthetic_phase = "menu"
 
