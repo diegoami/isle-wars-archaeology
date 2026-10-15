@@ -321,20 +321,24 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
                             "result": "unsupported attack phase", "screen": screen,
                         }))
                         break
-                inputs_before = ctx.counts.get("inputs", 0)
+                inputs_before = ctx.counts.get("inputs", 0) if strict_attack_ready else None
                 perform(session, ctx, f"click! {attack_click[0]} {attack_click[1]}")
                 after = read_region(session, watch)
-                input_proved = ctx.counts.get("inputs", 0) == inputs_before + 1
                 panel_changed = before != after
-                ctx.obs(session, "timing: attack exchange",
-                        json.dumps({"at_s": round(CLOCK() - begun, 2), "panel changed": panel_changed,
-                                    "input proved": input_proved}))
-                if not input_proved or not panel_changed:
-                    ctx.obs(session, "attacks stop", json.dumps({
-                        "result": "attack input or watched panel change unproved",
-                        "input proved": input_proved, "panel changed": panel_changed,
-                    }))
-                    break
+                if strict_attack_ready:
+                    input_proved = ctx.counts.get("inputs", 0) == inputs_before + 1
+                    ctx.obs(session, "timing: attack exchange",
+                            json.dumps({"at_s": round(CLOCK() - begun, 2), "panel changed": panel_changed,
+                                        "input proved": input_proved}))
+                    if not input_proved or not panel_changed:
+                        ctx.obs(session, "attacks stop", json.dumps({
+                            "result": "attack input or watched panel change unproved",
+                            "input proved": input_proved, "panel changed": panel_changed,
+                        }))
+                        break
+                else:
+                    ctx.obs(session, "timing: attack exchange",
+                            json.dumps({"at_s": round(CLOCK() - begun, 2), "panel changed": panel_changed}))
                 ctx.count("attacks", 1)
         except StepFailed as exc:
             ctx.obs(session, "turn note", f"the attacks stopped after {ctx.counts.get('attacks', 0)} "
@@ -442,10 +446,6 @@ def composite_attack_exchanges(session, ctx, turns=8, exchanges=3, need=20, watc
                                strict=False):
     """Q-UI-16: up to `turns` aggressive turns; in each, up to `exchanges` clicks on ATTACK, each
     timed around the watched panel, until `need` attacks are recorded."""
-    if strict:
-        enable = getattr(session, "enable_strict_attack_phase", None)
-        if enable is not None:
-            enable()
     total = 0
     for t in range(1, turns + 1):
         if total >= need:

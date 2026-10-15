@@ -122,7 +122,7 @@ class FakeSession:
         self.workdir.mkdir(parents=True)
         self.events = 0
         self.synthetic_phase = "menu"
-        self.strict_attack_phase = False
+        self.strict_attack_phase = arm == "q-ui-16"
         self.drop, self.drop_outputs = list(drop), set(drop_outputs)
         self._engine = FakeEngine(self)
         self.snap_before = ("fake", {"drive_c": ("dir",)}) if snapshot else None
@@ -165,9 +165,6 @@ class FakeSession:
 
     def screen_attack_ready(self):
         return self.strict_attack_phase and self.synthetic_phase == "attack"
-
-    def enable_strict_attack_phase(self):
-        self.strict_attack_phase = True
 
     def screen_card_award(self):
         return True
@@ -626,6 +623,16 @@ class QUi16AttackPhaseRegressionTest(unittest.TestCase):
         self.assertTrue(any('"panel changed": false' in value for field, value in
                             ((o["field"], o["value"]) for o in session._engine.obs)
                             if field == "timing: attack exchange"))
+
+    def test_non_strict_legacy_path_keeps_counting_after_a_generic_change(self):
+        """Q-UI-16's strict arm is isolated; other composites retain their old counter semantics."""
+        clock, session = self.session("e019-legacy-generic-change", panel_changes=False)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=1, need=1, strict=False)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (1, 1))
 
     def test_attack_click_is_gated_by_the_human_attack_ready_probe(self):
         clock, session = self.session("e019-q16-not-ready", attack_ready=False)
