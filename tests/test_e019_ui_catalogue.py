@@ -122,7 +122,10 @@ class FakeSession:
         self.workdir.mkdir(parents=True)
         self.events = 0
         self.synthetic_phase = "menu"
-        self.strict_attack_phase = arm == "q-ui-16"
+        # The event composite now uses the same measured turn/attack phase probes as the strict
+        # attack path.  Keep the fake stateful for both event questions so the recorder's ordinary
+        # end-to-end fixture still exercises its candidate/count semantics.
+        self.strict_attack_phase = arm in {"q-ui-06", "q-ui-07", "q-ui-16"}
         self.drop, self.drop_outputs = list(drop), set(drop_outputs)
         self._engine = FakeEngine(self)
         self.snap_before = ("fake", {"drive_c": ("dir",)}) if snapshot else None

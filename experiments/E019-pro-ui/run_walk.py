@@ -502,13 +502,50 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
     area, where the centre flash is drawn; Q-UI-06 counts either)."""
     countable = tuple(count_regions) if count_regions else tuple(watch)
     candidates = 0
-    for _ in range(1, turns + 1):
+    for turn in range(1, turns + 1):
         if candidates >= need:
             break
-        place_and_attack(session, ctx)
-        leave_attack_and_pass(session, ctx)
+
+        screen = session.screen_name()
+        if screen != "board-menu":
+            ctx.obs(session, "event path stop", json.dumps({
+                "turn": turn, "result": "unsupported pre-placement state",
+                "screen": screen,
+            }))
+            break
+
+        if not place_and_attack(session, ctx, exchanges=0):
+            ctx.obs(session, "event path stop", json.dumps({
+                "turn": turn, "result": "placement or attack setup refused",
+            }))
+            break
+
+        screen = session.screen_name()
+        if screen in {"eliminated", "game-over", "scoreboard"}:
+            ctx.obs(session, "event path stop", json.dumps({
+                "turn": turn, "result": f"terminal {screen}",
+            }))
+            break
+        if screen != "board-menu" or not session.screen_attack_ready():
+            ctx.obs(session, "event path stop", json.dumps({
+                "turn": turn, "result": "unsupported attack phase", "screen": screen,
+            }))
+            break
+
+        begun = leave_attack_and_pass(session, ctx)
+        if begun is None:
+            ctx.obs(session, "event path stop", json.dumps({
+                "turn": turn, "result": "PASS refused",
+            }))
+            break
+
         candidates += watch_regions(session, ctx, watch, 15, WATCH_INTERVAL, flashes=True,
-                                    countable=countable, stop_at=need - candidates, shoot=True)
+                                    countable=countable, stop_at=need - candidates, shoot=True,
+                                    begun=begun)
+        if candidates >= need:
+            break
+        if not wait_human_ready_after_pass(session, ctx, turn):
+            break
     ctx.count(word, candidates)
     ctx.obs(session, f"{word} note",
             "a candidate is a poll tick in which a counted region changed over a large share of its "
