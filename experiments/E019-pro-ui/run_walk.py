@@ -474,6 +474,8 @@ def composite_card_turns(session, ctx, turns=10):
     Placement refusal ends the composite. After an accepted PASS, the recorder waits for quiet and
     then accepts only the existing measured human-menu or green prompt probe. The prompt candidate
     is shot before the measured CONTINUE click; the screenshot's meaning remains for F020 to read.
+    The walk stops after the first captured candidate: its target is one screenshot, and the next
+    turn could begin while the computers are still acting after CONTINUE.
     """
     candidates = 0
     for t in range(1, turns + 1):
@@ -492,6 +494,10 @@ def composite_card_turns(session, ctx, turns=10):
             except StepFailed as exc:
                 ctx.obs(session, "card path stop", f"turn {t}: measured CONTINUE was refused: {exc}")
                 break
+            ctx.obs(session, "cards note",
+                    "walk stops after the first captured candidate and its measured CONTINUE",
+                    "static")
+            break
     ctx.count("card-path candidate screenshots", candidates)
     ctx.obs(session, "cards note",
             "the turn menu's CARD button has no measured point (F003), so the hand screen is not "

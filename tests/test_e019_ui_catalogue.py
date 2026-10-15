@@ -258,13 +258,14 @@ class StatefulCardPhaseSession(StatefulTurnSession):
     """
 
     def __init__(self, *args, refusal_after_menu=False, award_after_settle=True,
-                 settle_timeout=False, terminal_state=None, **kwargs):
+                 settle_timeout=False, terminal_state=None, after_continue_phase=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.phase = "placement"
         self.refusal_after_menu = refusal_after_menu
         self.award_after_settle = award_after_settle
         self.settle_timeout = settle_timeout
         self.terminal_state = terminal_state
+        self.after_continue_phase = after_continue_phase
         self.actions = []
         self.shots = []
         self.continue_phases = []
@@ -306,7 +307,7 @@ class StatefulCardPhaseSession(StatefulTurnSession):
                 # regression can prove its removal.  The repaired path must never reach it.
                 self.phase = "placement"
                 return
-            self.phase = "placement"
+            self.phase = self.after_continue_phase or "placement"
 
     def screen_name(self):
         """Expose only the states a future gate is allowed to query in this regression."""
@@ -363,6 +364,22 @@ class QUi15PhaseRegressionTest(unittest.TestCase):
         self.assertLess(shot_indices[-1], continue_index)
         self.assertFalse(any(phase == "computer" and text.startswith(("click", "click!", "click-any"))
                              for phase, text in session.actions))
+
+    def test_q_ui_15_stops_after_first_candidate_before_computer_phase_can_restart(self):
+        clock, session = self.session("e019-q15-one-candidate", after_continue_phase="computer")
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_card_turns(session, card_ctx(), turns=2)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        continue_index = next(i for i, (_, text) in enumerate(session.actions) if text == "click! 402 531")
+        self.assertEqual(session.pass_attempt_phases, ["menu"])
+        self.assertEqual(session.continue_phases, ["award"])
+        self.assertEqual(sum(text == walks.PLACE_WATCH for _, text in session.actions), 1)
+        self.assertEqual(session.actions[continue_index + 1:], [])
+        self.assertTrue(any(o["field"] == "cards note" and "first captured candidate" in o["value"]
+                            and o["source"] == "static" for o in session._engine.obs))
 
     def test_q_ui_15_no_award_stops_at_observed_human_readiness_without_continue(self):
         clock, session = self.session("e019-q15-no-award", award_after_settle=False)
