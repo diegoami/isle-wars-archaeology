@@ -598,6 +598,11 @@ class Engine(spike.Cycle):
         self.require_alive("reading the card prompt")
         return screens.card_award_green(self.screen.raw((0, 0) + spike.STAGE))
 
+    def screen_attack_ready(self):
+        """The bounded measured human attack-ready probe; sends nothing."""
+        self.require_alive("reading the attack-ready phase")
+        return screens.human_attack_ready(self.screen.raw((0, 0) + spike.STAGE))
+
     def screen_winner(self):
         """The winning seat's colour word on the winner notice, by pixels on the score panel
         (screens.winner_of; T38 round 6), or None. Reads the stage; sends nothing."""
@@ -1004,6 +1009,11 @@ class Session:
     def screen_card_award(self):
         """True only for the bounded measured green card-prompt population; sends nothing."""
         return self._engine.screen_card_award()
+
+    @guarded("an attack-ready reading")
+    def screen_attack_ready(self):
+        """True only for the bounded measured human attack-ready population; sends nothing."""
+        return self._engine.screen_attack_ready()
 
     @guarded("a winner reading")
     def screen_winner(self):

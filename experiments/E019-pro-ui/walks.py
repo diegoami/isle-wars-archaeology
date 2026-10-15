@@ -462,14 +462,18 @@ WALKS = {
         "actions": [
             *_REACH_BOARD,
             ("composite", "attack_exchanges", {"turns": 8, "exchanges": 3, "need": 20,
-                                               "watch": "attack-panel"}),
+                                               "watch": "attack-panel", "strict": True}),
         ],
         "notes": [
-            "one attack is one click on the ATTACK button (F011's reading); the watch records the "
-            "battle panel's change with its timestamp around each click",
-            "the exchanges a turn can give end when the target dies or the attacker is down to 1 "
-            "(the game stops accepting); the walk continues over up to 8 turns until 20 are "
-            "recorded",
+            "one attack is counted only after a measured human attack-ready probe, a successful input, "
+            "and a changed watched attack-panel rectangle; the timing records the panel change around "
+            "each click",
+            "the walk preserves earlier valid attacks but stops before QUIT ATTACK, PASS or another "
+            "placement when a later click is refused, its input/panel change is unproved, combat ends, "
+            "a capture/move-in or terminal state appears, or the phase is unsupported. After PASS it "
+            "requires an observed departure, the existing quiet settle, and a fresh human board-menu "
+            "reading before another placement; it continues over at most 8 turns toward the unchanged "
+            "target of 20",
             "timings are wall-clock readings at speed = normal (the unlocked default, F003)",
         ],
     },

@@ -1,0 +1,9 @@
+# Bounded attack readiness measurement
+
+Main session inspected the preserved E019-r0026 attack-ready frame and E002-r0020 capture-result frame. The former shows the human blue active row, bottom menu, red attack control and yellow quit control in the measured centre panel; the latter shows move-in controls instead, so must not be treated as attack-ready. The existing reviewed F003/F020 visual readings also identify E002 attack-ready/continuing result and E019 attack-ready/result outputs.
+
+The census has138files. Eight attack-ready/continuing result files form the positive set: four attack-ready files (hash prefixes7ca1db9ca3019e7a,865937d28607e468,36494cf78e3a15cf,ecd0ce15458e533f) and four continuing result files (84b4b1f44ff09610 twice,2944f60e1ee969ae,6c6802ee018d457b). These are seven unique files by PNG hash (one continuing result image appears twice). Centre red counts are2296or2553.
+
+Other human board-menu frames have centre red at most1974; non-human or unknown notice frames can have more red (notice3479), so the count is never used alone. Require existing score+menu/no terminal/notice classification as well. The remaining130files include placement, menus, computer states, card prompts, and capture/move-in. The measured midpoint between1974and2296is2135; it is a designed conservative threshold inside this observed gap, not a universal classifier or a claim about unmeasured animations. Unsupported states must stop. Human-ready board-menu alone does not identify attack-ready.
+
+Original census bytes are immutable; reproduce exact metadata text rather than editing raw results. No original PNG, pixel bytes, or game text is included. Counts/hashes only. Raw filenames identify immutable source assets locally, not links or committed images. New game runs remain the main session’s responsibility.

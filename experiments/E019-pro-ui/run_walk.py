@@ -276,7 +276,8 @@ def hover_map(session, ctx, label, step, ys):
 
 # --- the composites (the multi-turn plans) ----------------------------------------------------
 
-def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", attack_click=None):
+def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", attack_click=None,
+                     strict_attack_ready=False):
     """The tour's turn up to the attack panel: place every army on the first Blue country that
     reacts, then open the attack panel. Returns whether the attack panel was reached. A refusal
     anywhere (the game ignored a country, no pair was accepted) is an observation, never a crash:
@@ -295,20 +296,63 @@ def place_and_attack(session, ctx, exchanges=0, attack_watch="attack-panel", att
     if exchanges:
         watch = walks.REGIONS[attack_watch]["rect"]
         attack_click = attack_click or walks.ATTACK_PANEL_CLICK
+        if strict_attack_ready:
+            screen = session.screen_name()
+            if screen in {"eliminated", "game-over", "scoreboard"}:
+                ctx.obs(session, "attacks stop", json.dumps({"result": f"terminal {screen}"}))
+                return False
+            if screen != "board-menu" or not session.screen_attack_ready():
+                ctx.obs(session, "attacks stop", json.dumps({
+                    "result": "unsupported attack phase", "screen": screen,
+                }))
+                return False
+        attack_ok = True
         try:
             perform(session, ctx, f"watch {watch[0]} {watch[1]} {watch[2]} {watch[3]}")
             for _ in range(exchanges):
                 begun = CLOCK()
                 before = read_region(session, watch)
+                if strict_attack_ready:
+                    screen = session.screen_name()
+                    if screen in {"eliminated", "game-over", "scoreboard"}:
+                        ctx.obs(session, "attacks stop", json.dumps({"result": f"terminal {screen}"}))
+                        attack_ok = False
+                        break
+                    if screen != "board-menu" or not session.screen_attack_ready():
+                        ctx.obs(session, "attacks stop", json.dumps({
+                            "result": "unsupported attack phase", "screen": screen,
+                        }))
+                        attack_ok = False
+                        break
+                inputs_before = ctx.counts.get("inputs", 0) if strict_attack_ready else None
                 perform(session, ctx, f"click! {attack_click[0]} {attack_click[1]}")
                 after = read_region(session, watch)
-                ctx.obs(session, "timing: attack exchange",
-                        json.dumps({"at_s": round(CLOCK() - begun, 2), "panel changed": before != after}))
+                panel_changed = before != after
+                if strict_attack_ready:
+                    input_proved = ctx.counts.get("inputs", 0) == inputs_before + 1
+                    ctx.obs(session, "timing: attack exchange",
+                            json.dumps({"at_s": round(CLOCK() - begun, 2), "panel changed": panel_changed,
+                                        "input proved": input_proved}))
+                    if not input_proved or not panel_changed:
+                        ctx.obs(session, "attacks stop", json.dumps({
+                            "result": "attack input or watched panel change unproved",
+                            "input proved": input_proved, "panel changed": panel_changed,
+                        }))
+                        attack_ok = False
+                        break
+                else:
+                    ctx.obs(session, "timing: attack exchange",
+                            json.dumps({"at_s": round(CLOCK() - begun, 2), "panel changed": panel_changed}))
                 ctx.count("attacks", 1)
         except StepFailed as exc:
             ctx.obs(session, "turn note", f"the attacks stopped after {ctx.counts.get('attacks', 0)} "
                           f"in this walk: {exc}")
-    return True
+            if strict_attack_ready:
+                ctx.obs(session, "attacks stop", json.dumps({
+                    "result": "strict attack input refused", "count preserved": ctx.counts.get("attacks", 0),
+                }))
+                attack_ok = False
+    return attack_ok if strict_attack_ready else True
 
 
 def leave_attack_and_pass(session, ctx):
@@ -327,6 +371,38 @@ def leave_attack_and_pass(session, ctx):
         ctx.obs(session, "turn note", f"the turn could not be passed: {exc}")
         return None
     return begun
+
+
+def wait_human_ready_after_pass(session, ctx, turn):
+    """Require a real post-PASS departure, the existing quiet settle, and the human turn menu.
+
+    This is deliberately separate from the Q-UI-15 card-path helper.  Q-UI-16 has no supported
+    award probe: terminal, capture/move-in, unknown and any other unsupported state all stop the
+    walk rather than receiving a stale placement or PASS input.
+    """
+    departure = poll(lambda: session.screen_name() != "board-menu", 4, WATCH_INTERVAL)
+    if departure is None:
+        ctx.obs(session, "attack path stop", f"turn {turn}: no observed post-PASS departure before timeout")
+        return False
+    ctx.obs(session, "attack path departure", json.dumps({"turn": turn, "after_s": departure}))
+    try:
+        perform(session, ctx, "watch all")
+        perform(session, ctx, "settle 4")
+    except StepFailed as exc:
+        ctx.obs(session, "attack path stop", f"turn {turn}: settle4 timeout or refusal: {exc}")
+        return False
+
+    screen = session.screen_name()
+    if screen == "board-menu":
+        ctx.obs(session, "attack path probe", json.dumps({"turn": turn, "result": "human-ready board-menu"}))
+        return True
+    if screen in {"eliminated", "game-over", "scoreboard"}:
+        ctx.obs(session, "attack path stop", json.dumps({"turn": turn, "result": f"terminal {screen}"}))
+        return False
+    ctx.obs(session, "attack path stop", json.dumps({
+        "turn": turn, "result": "unsupported post-PASS state", "screen": screen,
+    }))
+    return False
 
 
 def composite_title_options_rounds(session, ctx, rounds=3):
@@ -375,19 +451,40 @@ def composite_computer_turns(session, ctx, passes=7, watch=("message-strip",), s
             "table)", "static")
 
 
-def composite_attack_exchanges(session, ctx, turns=8, exchanges=3, need=20, watch="attack-panel"):
+def composite_attack_exchanges(session, ctx, turns=8, exchanges=3, need=20, watch="attack-panel",
+                               strict=False):
     """Q-UI-16: up to `turns` aggressive turns; in each, up to `exchanges` clicks on ATTACK, each
     timed around the watched panel, until `need` attacks are recorded."""
     total = 0
     for t in range(1, turns + 1):
         if total >= need:
             break
+        if strict:
+            screen = session.screen_name()
+            if screen in {"eliminated", "game-over", "scoreboard"}:
+                ctx.obs(session, "attack path stop", json.dumps({"turn": t, "result": f"terminal {screen}"}))
+                break
+            if screen != "board-menu":
+                ctx.obs(session, "attack path stop", json.dumps({
+                    "turn": t, "result": "unsupported pre-placement state", "screen": screen,
+                }))
+                break
         before = ctx.counts.get("attacks", 0)
-        place_and_attack(session, ctx, exchanges=exchanges, attack_watch=watch)
+        place_ok = place_and_attack(session, ctx, exchanges=exchanges, attack_watch=watch,
+                                    strict_attack_ready=strict)
+        if strict and not place_ok:
+            break
         total = ctx.counts.get("attacks", 0)
         if total == before:
             ctx.obs(session, "turn note", f"turn {t} gave no exchange")
+        if strict and total == before:
+            break
+        if strict and not session.screen_attack_ready():
+            ctx.obs(session, "attacks stop", json.dumps({"result": "combat ended before PASS", "turn": t}))
+            break
         if leave_attack_and_pass(session, ctx) is None:
+            break
+        if strict and total < need and not wait_human_ready_after_pass(session, ctx, t):
             break
     ctx.count("attacks", 0)     # ensure the count exists even when every turn was refused
     ctx.obs(session, "attacks note", "an attack counted here is a click on the ATTACK button that "

@@ -121,6 +121,8 @@ class FakeSession:
         self.workdir = Path(workdir) / run_id
         self.workdir.mkdir(parents=True)
         self.events = 0
+        self.synthetic_phase = "menu"
+        self.strict_attack_phase = arm == "q-ui-16"
         self.drop, self.drop_outputs = list(drop), set(drop_outputs)
         self._engine = FakeEngine(self)
         self.snap_before = ("fake", {"drive_c": ("dir",)}) if snapshot else None
@@ -157,7 +159,12 @@ class FakeSession:
         return 0.0
 
     def screen_name(self):
-        return "board"
+        if not self.strict_attack_phase:
+            return "board"
+        return {"menu": "board-menu", "attack": "board-menu", "computer": "board"}[self.synthetic_phase]
+
+    def screen_attack_ready(self):
+        return self.strict_attack_phase and self.synthetic_phase == "attack"
 
     def screen_card_award(self):
         return True
@@ -171,6 +178,18 @@ class FakeSession:
             self._shot(f"{words[1]}.png")
         elif words[0] in run_walk.sessionlib.INPUT_OPS or words[0] == "move":
             self.events += 1
+        if not self.strict_attack_phase:
+            return
+        if words[0] == "attack-picked":
+            self.synthetic_phase = "attack"
+        elif words[0] == "click-until" and self.synthetic_phase == "attack":
+            self.synthetic_phase = "menu"
+        elif words[0] == "click!" and len(words) >= 3:
+            point = tuple(int(value) for value in words[-2:])
+            if point == walks.PASS_CLICK:
+                self.synthetic_phase = "computer"
+        elif words[0] == "settle" and self.synthetic_phase == "computer":
+            self.synthetic_phase = "menu"
 
     def observe_screenshot(self, name, step=None):
         self._shot(name)
@@ -415,6 +434,252 @@ class QUi15PhaseRegressionTest(unittest.TestCase):
 
         self.assertEqual(session.continue_phases, [])
         self.assertEqual(session.screen_name(), "game-over")
+
+
+class StatefulAttackPhaseSession(FakeSession):
+    """Synthetic state machine for the repaired Q-UI-16 composite.
+
+    It exposes the same narrow public reads as the real session: screen name, attack-ready probe,
+    and region pixels.  No original frame or install is involved.  The panel and outside epochs are
+    separate so a generic screen change cannot accidentally count as an attack.
+    """
+
+    ATTACK_RECT = tuple(walks.REGIONS["attack-panel"]["rect"])
+
+    def __init__(self, *args, placement_refused=False, attack_ready=True, panel_changes=True,
+                 fail_attack_input=False, terminal_before_attack=None, capture_after=None,
+                 fail_attack_after=None, panel_changes_after=None, departure=True, settle_timeout=False,
+                 initial_phase=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.phase = initial_phase or "placement"
+        self.placement_refused = placement_refused
+        self.attack_ready_signal = attack_ready
+        self.panel_changes = panel_changes
+        self.fail_attack_input = fail_attack_input
+        self.fail_attack_after = fail_attack_after
+        self.panel_changes_after = panel_changes_after
+        self.terminal_before_attack = terminal_before_attack
+        self.capture_after = capture_after
+        self.departure = departure
+        self.settle_timeout = settle_timeout
+        self.panel_epoch = 0
+        self.outside_epoch = 0
+        self.placements = 0
+        self.attack_calls = 0
+        self.pass_attempt_phases = []
+        self.actions = []
+        self._engine.screen.raw = self._stateful_raw
+
+    def _stateful_raw(self, rect):
+        rect = tuple(rect) if rect is not None else None
+        epoch = self.panel_epoch if rect == self.ATTACK_RECT else self.outside_epoch
+        key = (self.phase, epoch, rect, int(self.clock.now * 4))
+        return hashlib.sha256(repr(key).encode()).digest()[:12]
+
+    def perform(self, text):
+        words = text.split()
+        self.actions.append((self.phase, text))
+        if words[0] == "settle":
+            if self.settle_timeout and self.phase == "computer":
+                raise run_walk.StepFailed("synthetic settle4 timeout")
+            if self.phase == "computer":
+                self.phase = "menu" if self.departure else "computer"
+            return
+
+        FakeSession.perform(self, text)
+        point = tuple(int(value) for value in words[-2:]) if len(words) >= 3 else None
+        if words[0] == "click-until":
+            if self.phase in {"placement", "menu"}:
+                if self.placement_refused:
+                    self.phase = "menu"
+                    raise run_walk.StepFailed("synthetic placement refusal")
+                self.placements += 1
+                self.phase = "placement-selected"
+            elif self.phase == "attack-ready":
+                self.phase = "menu"
+            return
+        if words[0] == "attack-picked":
+            self.phase = self.terminal_before_attack or "attack-ready"
+            return
+        if words[0] != "click!":
+            return
+        if point == walks.ALL_CLICK and self.phase == "placement-selected":
+            self.phase = "placement-all"
+        elif point == walks.PLACE_DONE_CLICK and self.phase == "placement-all":
+            self.phase = "attack-opening"
+        elif point == walks.ATTACK_PANEL_CLICK:
+            if self.phase != "attack-ready":
+                raise run_walk.StepFailed("synthetic attack input outside attack-ready")
+            if self.fail_attack_input or (self.fail_attack_after is not None
+                                          and self.attack_calls + 1 >= self.fail_attack_after):
+                raise run_walk.StepFailed("synthetic refused attack input")
+            self.attack_calls += 1
+            if self.capture_after is not None and self.attack_calls >= self.capture_after:
+                self.phase = "capture"
+            elif self.panel_changes and (self.panel_changes_after is None
+                                         or self.attack_calls <= self.panel_changes_after):
+                self.panel_epoch += 1
+            else:
+                self.outside_epoch += 1
+        elif point == walks.PASS_CLICK:
+            self.pass_attempt_phases.append(self.phase)
+            if self.phase != "menu":
+                raise run_walk.StepFailed(f"synthetic PASS during {self.phase}")
+            self.phase = "computer" if self.departure else "menu"
+
+    def screen_name(self):
+        if self.phase in {"menu", "placement", "placement-selected", "placement-all", "attack-ready"}:
+            return "board-menu"
+        if self.phase in {"computer", "capture", "attack-opening", "placement", "placement-selected",
+                          "placement-all"}:
+            return "board"
+        if self.phase in {"game-over", "eliminated", "scoreboard"}:
+            return self.phase
+        return "unknown"
+
+    def screen_attack_ready(self):
+        return self.phase == "attack-ready" and self.attack_ready_signal
+
+
+def attack_ctx():
+    return run_walk.Ctx(dict(walks.WALKS["Q-UI-16"], qid="Q-UI-16"))
+
+
+class QUi16AttackPhaseRegressionTest(unittest.TestCase):
+    """#239: Q-UI-16 cannot turn refused, stale, or unrelated screen changes into attacks."""
+
+    def session(self, name, **options):
+        clock = FakeClock()
+        session = StatefulAttackPhaseSession(
+            "E019-r0001", None, None, None, ":99", "q-ui-16", "800x600x24",
+            clock=clock, workdir=tempfile.mkdtemp(prefix=name + "-"), **options,
+        )
+        return clock, session
+
+    @staticmethod
+    def drive(clock, session, ctx, **kwargs):
+        with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+            run_walk.composite_attack_exchanges(session, ctx, **kwargs)
+
+    def tear(self, session):
+        shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+    def test_placement_refusal_never_leads_to_attack_or_pass(self):
+        clock, session = self.session("e019-q16-placement-refused", placement_refused=True)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=2, exchanges=1, need=2, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.placements, session.attack_calls, session.pass_attempt_phases), (0, 0, []))
+        self.assertNotIn(walks.PASS_CLICK, [tuple(int(v) for v in text.split()[-2:])
+                                             for _, text in session.actions if text.startswith("click!")])
+
+    def test_repeated_cycles_require_departure_quiet_settle_and_human_ready_before_placement(self):
+        clock, session = self.session("e019-q16-cycles")
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=3, exchanges=1, need=3, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.placements, session.attack_calls, ctx.counts["attacks"]), (3, 3, 3))
+        self.assertEqual(session.pass_attempt_phases, ["menu", "menu", "menu"])
+        placement_indexes = [i for i, (_, text) in enumerate(session.actions) if text == walks.PLACE_WATCH]
+        settle_indexes = [i for i, (_, text) in enumerate(session.actions) if text == "settle 4"]
+        self.assertEqual(len(placement_indexes), len(settle_indexes) + 1)
+        self.assertTrue(all(any(settle < place for settle in settle_indexes[:i])
+                            for i, place in enumerate(placement_indexes[1:], start=1)))
+
+    def test_terminal_and_capture_states_get_no_stale_attack_or_pass_input(self):
+        for label, options, expected_attacks in (
+                ("terminal", {"terminal_before_attack": "game-over"}, 0),
+                ("capture", {"capture_after": 1}, 1)):
+            with self.subTest(label=label):
+                clock, session = self.session("e019-q16-" + label, **options)
+                try:
+                    ctx = attack_ctx()
+                    self.drive(clock, session, ctx, turns=2, exchanges=2, need=2, strict=True)
+                finally:
+                    self.tear(session)
+                self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)),
+                                 (expected_attacks, expected_attacks))
+                self.assertEqual(session.pass_attempt_phases, [])
+
+    def test_computer_or_terminal_before_placement_gets_no_input(self):
+        for phase in ("computer", "unknown", "game-over"):
+            with self.subTest(phase=phase):
+                clock, session = self.session("e019-q16-before-" + phase, initial_phase=phase)
+                try:
+                    ctx = attack_ctx()
+                    self.drive(clock, session, ctx, turns=1, exchanges=1, need=1, strict=True)
+                finally:
+                    self.tear(session)
+                self.assertEqual((session.placements, session.attack_calls, session.pass_attempt_phases), (0, 0, []))
+
+    def test_generic_change_outside_watched_panel_does_not_count(self):
+        clock, session = self.session("e019-q16-outside-change", panel_changes=False)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=1, need=1, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (1, 0))
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertTrue(any('"panel changed": false' in value for field, value in
+                            ((o["field"], o["value"]) for o in session._engine.obs)
+                            if field == "timing: attack exchange"))
+
+    def test_non_strict_legacy_path_keeps_counting_after_a_generic_change(self):
+        """Q-UI-16's strict arm is isolated; other composites retain their old counter semantics."""
+        clock, session = self.session("e019-legacy-generic-change", panel_changes=False)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=1, need=1, strict=False)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (1, 1))
+
+    def test_attack_click_is_gated_by_the_human_attack_ready_probe(self):
+        clock, session = self.session("e019-q16-not-ready", attack_ready=False)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=1, need=1, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0), session.pass_attempt_phases), (0, 0, []))
+
+    def test_an_unproved_attack_input_cannot_create_a_count(self):
+        clock, session = self.session("e019-q16-input-refused", fail_attack_input=True)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=1, need=1, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0), session.pass_attempt_phases), (0, 0, []))
+
+    def test_later_attack_refusal_preserves_prior_count_and_stops_before_pass(self):
+        clock, session = self.session("e019-q16-late-refusal", fail_attack_after=2)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=3, need=3, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (1, 1))
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertTrue(any(o["field"] == "attacks stop" and "strict attack input refused" in o["value"]
+                            for o in session._engine.obs))
+
+    def test_later_unproved_panel_change_preserves_prior_count_and_stops_before_pass(self):
+        clock, session = self.session("e019-q16-late-panel", panel_changes_after=1)
+        try:
+            ctx = attack_ctx()
+            self.drive(clock, session, ctx, turns=1, exchanges=3, need=3, strict=True)
+        finally:
+            self.tear(session)
+        self.assertEqual((session.attack_calls, ctx.counts.get("attacks", 0)), (2, 1))
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertTrue(any(o["field"] == "attacks stop" and "panel changed" in o["value"]
+                            for o in session._engine.obs))
 
 
 FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"

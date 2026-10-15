@@ -1202,7 +1202,7 @@ class GuardSweepTest(DriverWorld):
     method of the spike's Cycle is reachable on a Session (R1 and R3: complete_script, run_step, ...)."""
 
     GAME_FACING = {"wait_for_screen", "known_screen", "perform", "observe_screenshot", "observe_region",
-                   "observe_file", "complete"}
+                   "observe_file", "complete", "screen_attack_ready"}
     UNGUARDED = {"start", "finish", "execute", "checkpoint", "on", "observe", "expect", "game_alive", "find_game_pid"}
 
     def interface(self):

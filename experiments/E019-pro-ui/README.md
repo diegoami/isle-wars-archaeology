@@ -104,6 +104,23 @@ file is append-only. A changed design is a new experiment, or `v2/`.
   fields of `required_fields()`, the outputs of `required_outputs()`, the observation summary,
   the measured display size, one count per record), then the coverage, the targets and F020.
 
+## #239 — bounded Q-UI-16 attack phase
+
+The Q-UI-16 walk keeps its unchanged target of 20 attacks and its existing eight-turn / three-
+exchange bounds. Its strict path is separate from the other composites: it accepts an attack only
+after the measured human attack-ready probe (the existing human board-menu and score signals plus
+the bounded red population in the existing phase panel), after a successful input, and after the
+watched attack-panel rectangle changed. A generic screen change elsewhere is not enough.
+
+Placement refusal, capture or move-in, early combat end, terminal screens, and unsupported states
+stop the walk before another attack or PASS. If a later attack input is refused or its watched panel
+does not change, earlier valid attacks remain counted but the strict helper returns failure, so the
+composite stops before QUIT ATTACK, PASS, or another placement. After an accepted PASS, the walk
+requires an observed departure, the existing quiet settle, and a fresh human board-menu reading
+before another placement.
+The probe is a bounded measured population, not a universal phase classifier; no Q-UI-16 run record
+or F020 observation is fabricated by this repair.
+
 ## Division of work (the task file's)
 
 The implementer writes the recorder, the walk table and the check (T24); the main session runs
