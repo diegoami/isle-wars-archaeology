@@ -243,6 +243,105 @@ class StatefulTurnSession(FakeSession):
                 self.phase = "award"
 
 
+class StatefulCardPhaseSession(StatefulTurnSession):
+    """Synthetic Q-UI-15 phases used to pin the unsafe old ordering.
+
+    The phase names are test fixtures, not detector names.  ``computer`` is deliberately quiet
+    until the fixture exposes ``award``; a real repair must establish that transition through
+    measured repository-supported probes rather than a sleep or a generic pixel change.
+    """
+
+    def __init__(self, *args, refusal_after_menu=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.phase = "placement"
+        self.refusal_after_menu = refusal_after_menu
+        self.actions = []
+        self.shots = []
+        self.continue_phases = []
+
+    def perform(self, text):
+        words = text.split()
+        self.actions.append((self.phase, text))
+        if words[0] == "shot":
+            self.shots.append((self.phase, words[1]))
+        FakeSession.perform(self, text)
+        is_pass = words[0] == "click!" and tuple(int(value) for value in words[-2:]) == walks.PASS_CLICK
+        if words[0] == "click-until" and self.phase == "placement":
+            if self.refusal_after_menu:
+                self.phase = "menu"
+                raise run_walk.StepFailed("synthetic placement refusal")
+            self.phase = "placement-selected"
+        elif words[0] == "click!" and tuple(int(value) for value in words[-2:]) == walks.ALL_CLICK:
+            self.phase = "placement-all"
+        elif words[0] == "click!" and tuple(int(value) for value in words[-2:]) == walks.PLACE_DONE_CLICK:
+            self.phase = "attack"
+        elif words[0] == "click-until" and self.phase == "attack":
+            self.phase = "menu"
+        elif is_pass:
+            self.pass_attempt_phases.append(self.phase)
+            if self.phase != "menu":
+                raise run_walk.StepFailed(f"synthetic PASS during {self.phase}")
+            self.accepted_pass_times.append(self.clock.now)
+            self.phase = "computer"
+        elif words[0] in ("click", "click!") and tuple(int(value) for value in words[-2:]) == walks.CONTINUE_CLICK:
+            self.continue_phases.append(self.phase)
+            if self.phase != "award":
+                # The old composite is intentionally allowed to make this unsafe input so the
+                # regression can prove its removal.  The repaired path must never reach it.
+                self.phase = "placement"
+                return
+            self.phase = "placement"
+
+    def screen_name(self):
+        """Expose only the states a future gate is allowed to query in this regression."""
+        return {"menu": "board-menu", "award": "board", "computer": "board"}.get(self.phase, "unknown")
+
+
+def card_ctx():
+    return run_walk.Ctx(dict(walks.WALKS["Q-UI-15"], qid="Q-UI-15"))
+
+
+class QUi15PhaseRegressionTest(unittest.TestCase):
+    """#236: card-path actions are gated by an observed phase, not by pixel change or time."""
+
+    def session(self, name, **options):
+        clock = FakeClock()
+        session = StatefulCardPhaseSession(
+            "E019-r0001", None, None, None, ":99", "q-ui-15", "800x600x24",
+            clock=clock, workdir=tempfile.mkdtemp(prefix=name + "-"), **options,
+        )
+        return clock, session
+
+    def test_q_ui_15_stops_after_placement_refusal_without_pass_or_continue(self):
+        clock, session = self.session("e019-q15-refused", refusal_after_menu=True)
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_card_turns(session, card_ctx(), turns=1)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.pass_attempt_phases, [])
+        self.assertEqual(session.continue_phases, [])
+        self.assertFalse(any(" 417 530" in text or " 402 531" in text for _, text in session.actions))
+
+    def test_q_ui_15_captures_before_continue_and_never_inputs_during_computer_phase(self):
+        clock, session = self.session("e019-q15-order")
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_card_turns(session, card_ctx(), turns=1)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.pass_attempt_phases, ["menu"])
+        self.assertEqual(session.continue_phases, ["computer"])
+        continue_index = next(i for i, (_, text) in enumerate(session.actions) if text == "click 402 531")
+        shot_indices = [i for i, (_, text) in enumerate(session.actions) if text.startswith("shot ")]
+        self.assertTrue(shot_indices)
+        self.assertLess(shot_indices[-1], continue_index)
+        self.assertFalse(any(phase == "computer" and text.startswith(("click", "click!", "click-any"))
+                             for phase, text in session.actions))
+
+
 FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"
 
 
