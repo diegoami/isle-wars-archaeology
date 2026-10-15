@@ -1,0 +1,2224 @@
+{
+  "method": "Main-session RGB8 census over preserved E002/E019 frames. Centre phase-panel rectangle from measured E002/E019. Candidate red predicate r>150,g<60,b<60 searched to separate red human ATTACK control from human menus/placement, computer play, capture move-in and card prompts. A predicate alone identifies no state; main must attest positive visual frames and bounded population; no new runtime threshold yet.",
+  "rect": [
+    262,
+    502,
+    276,
+    70
+  ],
+  "predicate": {
+    "r_gt": 150,
+    "g_lt": 60,
+    "b_lt": 60
+  },
+  "frames": [
+    {
+      "bundle": "E002-bundles",
+      "asset": "007689c252d918a2-board-loading.png",
+      "file_sha256": "007689c252d918a2b217a7b30033ea8020b413425618caef1665833908678136",
+      "raw_rgb8_sha256": "1a1e25a0094ef12d92794b289f543dcacae854cb5705958f4b796c895e23a376",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "01d8f8be166b3ec5-board-human-turn.png",
+      "file_sha256": "01d8f8be166b3ec5575c3c326024021cd0c8b4d2082f17e22bacc76f143b5d1c",
+      "raw_rgb8_sha256": "9e2e54e3d710bd867190106c33678c4bd6c05cdbb65f566fd605574e6f1fc936",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "10842580b609d049-help-02.png",
+      "file_sha256": "10842580b609d049b7290bc3b9e016bb938d5d7728e2d2a044d2a74031a121bd",
+      "raw_rgb8_sha256": "6f987809dc68ea38c114e7050629d354e22d8a6f6598475ffc176b0b9d079fe2",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "11098950c70c269d-attack-result-1.png",
+      "file_sha256": "11098950c70c269d2fbb5cd4545e4e4d974110b4313590800dc4a71786ec97f0",
+      "raw_rgb8_sha256": "7b9f5cec533d26957a6d409c2c4a37b2b0f8eb185be82fe3812f8d4b6b5156ec",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "11098950c70c269d-attack-result-2.png",
+      "file_sha256": "11098950c70c269d2fbb5cd4545e4e4d974110b4313590800dc4a71786ec97f0",
+      "raw_rgb8_sha256": "7b9f5cec533d26957a6d409c2c4a37b2b0f8eb185be82fe3812f8d4b6b5156ec",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "119f1982f264fcfe-help-10.png",
+      "file_sha256": "119f1982f264fcfe20e19e36191ca807f6feb2ef1fd32c0ceac65a632501e22f",
+      "raw_rgb8_sha256": "050cb6e2c3c168b357df5efe891c7127ff9bb31867477592ea61824942b5452c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "154143a1bd739503-newgame-setup.png",
+      "file_sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "raw_rgb8_sha256": "908ec68b213724bca95216ee55fddb138ae826df7b663a0a4e9cafe57dd09387",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "154143a1bd739503-setup.png",
+      "file_sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "raw_rgb8_sha256": "908ec68b213724bca95216ee55fddb138ae826df7b663a0a4e9cafe57dd09387",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "167a03913bae4dbc-turn-menu.png",
+      "file_sha256": "167a03913bae4dbc568994d9acbd0a0d1d71bb0e0043bd795a279bfeb219ace6",
+      "raw_rgb8_sha256": "ef44a7a3899d3c629b9cc8d302c2a5985fbe0f5039e137dd3ac146c65c9a1ced",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "1cceb5b18427a7d4-turn-menu.png",
+      "file_sha256": "1cceb5b18427a7d4bca07d0084b461e1959b55b3d5b02fa1d36450b4b91ef72a",
+      "raw_rgb8_sha256": "4198407c82735d33c9e14e59167257a21d393c1ac568e79b32fb03319ff295e6",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "2088424b236a2607-help-12.png",
+      "file_sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "raw_rgb8_sha256": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "2088424b236a2607-help-13.png",
+      "file_sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "raw_rgb8_sha256": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "2088424b236a2607-help-14.png",
+      "file_sha256": "2088424b236a2607f566826ffd7ff27f6aa03e28548ddbed4d79ac883bdc1da8",
+      "raw_rgb8_sha256": "a36bcff0283758bd4098bab9978ba574d5f3746375e978b018b14dff6807eb96",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "21ec1cc6a5b27ea0-human-turn.png",
+      "file_sha256": "21ec1cc6a5b27ea064d8b84fc3720c67c098156d9bb3e00d541b3124fb55fdc0",
+      "raw_rgb8_sha256": "680113174f695eb85b93b191d7579fae3de221bbbae038a0613708ceddf677d6",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "26a839a2b8888a56-pass-1.png",
+      "file_sha256": "26a839a2b8888a56bca9cd2167d728770defe558d98c27291dbb96f981d45c1c",
+      "raw_rgb8_sha256": "e742c3183caad5568c2f1a6c18c8352382a457a4ee1e169445397d328691a849",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "33d3f3474c8b1e84-help-05.png",
+      "file_sha256": "33d3f3474c8b1e84e1c2e691ac7e6700455ee0213aadd690318fe4d28fb54ded",
+      "raw_rgb8_sha256": "ce1d2fd6d1526732868eb96fd3fa4265efd4d21296da4c48a978b513ac489ac9",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "390756985586a01d-help-01.png",
+      "file_sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+      "raw_rgb8_sha256": "7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "3d404526ba3d60a6-help-03.png",
+      "file_sha256": "3d404526ba3d60a66af0f7ab9c71e76f9a8a13fae436b09790a678a83340c9c3",
+      "raw_rgb8_sha256": "c36fcfd19ae1e1d049843771a9f629ba44da7f5c263d35fd82dd23bc18d0a080",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "426d77e724d793dd-options-defaults.png",
+      "file_sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "raw_rgb8_sha256": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "426d77e724d793dd-options.png",
+      "file_sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "raw_rgb8_sha256": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "448ea9478fd85814-board-human-turn.png",
+      "file_sha256": "448ea9478fd8581406940cf059759336c12f5afc2f72e1fb321e0d696fd69a0d",
+      "raw_rgb8_sha256": "2b0556d41da3ac528b70eff9f24fcbfc55bcba3a9591c2d40f29424b90141981",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "47afc4d33b5450f9-notice.png",
+      "file_sha256": "47afc4d33b5450f9d48ae734f571a3eee326255b6f36034c772e2cdfdd2494cc",
+      "raw_rgb8_sha256": "f14f30a26ce8214f0dfe23275a83997f44c74c5a65e20854e148b427ea72b5a9",
+      "centre_red": 3479,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "4aeaab7828c3bd97-saved.png",
+      "file_sha256": "4aeaab7828c3bd97588b47b71862975e35b1625278b2816add4f1759e1fc07d1",
+      "raw_rgb8_sha256": "0b6c285a3328053d7346467049223d43ad52bba92f8ad4a3c51ebc308e65d72a",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "4e201bf31a1009c8-human-turn.png",
+      "file_sha256": "4e201bf31a1009c84ebe2c1b65484bbdad13f3dee2c4d55257672725ade40763",
+      "raw_rgb8_sha256": "0b8e2f294b61a11412917879506c2d5fc5c74589d47ac3bf2e496009154605e5",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "55067d5ed102d7d9-locked-human.png",
+      "file_sha256": "55067d5ed102d7d92bfdce7e2d3d5507904a68f0410a1e25b3b621a9abd32e92",
+      "raw_rgb8_sha256": "443c9dc8357ff206d7bafec3adf78040ee70672d45169b9d7b60728706603d8d",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "594facb79b49b81c-saved.png",
+      "file_sha256": "594facb79b49b81c1b0195dfac516dc047b8a6aa2c2db757a09140c89da8cfc7",
+      "raw_rgb8_sha256": "32007be5e4b7b784d82d91e9929f12418c8b1efd09db033f8435b380b1b16c59",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "59c1753667d72c5e-place-all.png",
+      "file_sha256": "59c1753667d72c5eaca51d69c0c92d24e9d0149d957aa3b15bef1e8afda7552f",
+      "raw_rgb8_sha256": "9065d10e87187f8e965ec04cb52fcac02b2a85b0230018962d8c659fd9683991",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "5ad6d9012cdce6b9-loss-notice.png",
+      "file_sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "raw_rgb8_sha256": "108b6db3403806c32910c68d9c32352da6e07dcc3114c95ee0d06083833ee80f",
+      "centre_red": 0,
+      "screen": "scoreboard",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "5b7bc5f1b990e051-help-08.png",
+      "file_sha256": "5b7bc5f1b990e0517da14b5847976696181f9598a057e869d46deb33a742de8a",
+      "raw_rgb8_sha256": "a8dc2c2ab4f18b2140c7c147883e00db23765c66318dbab00790dab02b243a12",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "5ea959aad5c8b98a-help-07.png",
+      "file_sha256": "5ea959aad5c8b98a0a87ccfbf4cf28b6caa91d03019bebba37a6f33b18b087d5",
+      "raw_rgb8_sha256": "2591ee9761b13fa40303579450d0472a6b6c7521c276cb39d892a30b0c55e0b3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "656fee581b8cd58e-place-all.png",
+      "file_sha256": "656fee581b8cd58ef102fdc2e82df152d5a8474c79c53884db5c854b1286388e",
+      "raw_rgb8_sha256": "0e5b412ab3ee1076e5b9edcf10b7210fd7f984155f26eeeec3b24be429a21ae5",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "6706102e9d25b862-human-turn.png",
+      "file_sha256": "6706102e9d25b86295b940cd9fb26ea3e9f9fc946c9e78e4464de1b229d53cc6",
+      "raw_rgb8_sha256": "a837f4750fcee285dbf29f3d8fe8b00b15fef2aefe0fc3bcea95e0ef919132e9",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "694651bede62cb5d-scores.png",
+      "file_sha256": "694651bede62cb5dd7e9ccca8b1c42840162290b4c1579832c98c7f263998f8c",
+      "raw_rgb8_sha256": "a4b323d3b75bc524324dc7093c4a8a4cf256dc4ecfe1c59810b0a63f2252a350",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "6d19de17c09af434-pass-1.png",
+      "file_sha256": "6d19de17c09af434ea29f27bdf13506163a509d7671aba6aa4aed1c34f1d7280",
+      "raw_rgb8_sha256": "e4682087ef88e172b17d7430dfc17c34bfce9c361ff08c0dc45a31bf949a3e49",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "6d3a0f7b702bae2e-ai-turn.png",
+      "file_sha256": "6d3a0f7b702bae2e81526a05a7eb1f26a18a1bc7f1333d750f7b87dcb457abdd",
+      "raw_rgb8_sha256": "0df1dec348ca03812a174f6de8c93481d860ebd3471e6446ea79d7b3f143e78d",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "7ca1db9ca3019e7a-attack-ready.png",
+      "file_sha256": "7ca1db9ca3019e7a21d6a90900ec2d9476e7c030ba4e570493164b62633cccc1",
+      "raw_rgb8_sha256": "c0bf78ead7d1de360292fe6eca797599a7a464370a91b99fdc42af6723b34f7a",
+      "centre_red": 2296,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "7d8641e48977a632-human-turn.png",
+      "file_sha256": "7d8641e48977a6327b698ca3604c5d226e75e460ad46581e6bcd9cd2ad898751",
+      "raw_rgb8_sha256": "bcd4538a8119c26f894d1ba52c7ec32d795edec211433328b25c2516059652f9",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "7d87a3bf93b30dd0-help-09.png",
+      "file_sha256": "7d87a3bf93b30dd0df4f67c65fd3b9bd5765209caaee7703b18430608750ec38",
+      "raw_rgb8_sha256": "64c42943bc99178134c7c011b84e85e6cab7cd4f05d4067276146eb44186bbce",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "84b4b1f44ff09610-attack-result-1.png",
+      "file_sha256": "84b4b1f44ff096106455f7f9ffc321af51a858e4d0139d4cb26192e60b4c21a8",
+      "raw_rgb8_sha256": "cd83728723774e2cd88839edeca15bb7b3561935433d9cc78c0e42d23239cb45",
+      "centre_red": 2553,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "84b4b1f44ff09610-attack-result-2.png",
+      "file_sha256": "84b4b1f44ff096106455f7f9ffc321af51a858e4d0139d4cb26192e60b4c21a8",
+      "raw_rgb8_sha256": "cd83728723774e2cd88839edeca15bb7b3561935433d9cc78c0e42d23239cb45",
+      "centre_red": 2553,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "865937d28607e468-attack-ready.png",
+      "file_sha256": "865937d28607e468fdcc45bd821666ae6fb1eb2b229942330f71aa848e3ce2dc",
+      "raw_rgb8_sha256": "5fdd295955a367d277de3793cdb75c9befd2dece9467855f0e7e7af835c6fe8d",
+      "centre_red": 2296,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "8ff170974272705e-after-pass.png",
+      "file_sha256": "8ff170974272705e86a5d33ed8145bde4a15934d6a72a8691c00cc9456f58add",
+      "raw_rgb8_sha256": "22ab21492318124308b356d881b35a49d6d44c86a0b446362322b0ad39cf302e",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "8ff170974272705e-ai-turn.png",
+      "file_sha256": "8ff170974272705e86a5d33ed8145bde4a15934d6a72a8691c00cc9456f58add",
+      "raw_rgb8_sha256": "22ab21492318124308b356d881b35a49d6d44c86a0b446362322b0ad39cf302e",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "9160a38dd7b6cd83-after-choice.png",
+      "file_sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "raw_rgb8_sha256": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "9160a38dd7b6cd83-locked-armies.png",
+      "file_sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "raw_rgb8_sha256": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "9160a38dd7b6cd83-locked-frequency.png",
+      "file_sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "raw_rgb8_sha256": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "959305f64a31c366-saved.png",
+      "file_sha256": "959305f64a31c366079190fce4d01f614c7181b27546af4082885d71e3036d9a",
+      "raw_rgb8_sha256": "5605b25a462273fd9e5e5f9b8a3ec0fbb45fa74221c01f8f8e74876fa9bbb885",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "999ff7d4f4a7dc2d-human-turn.png",
+      "file_sha256": "999ff7d4f4a7dc2d8291d9819b4b7522d763da65a86e51042da9bb3a9d4ee54b",
+      "raw_rgb8_sha256": "01e0c8c634c268ebb014f193d652962fb7061f9b52203308dc937a7a69342f69",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "99f47a518cb3b7b4-place-done.png",
+      "file_sha256": "99f47a518cb3b7b4402dd3354fe9762f9a1942a76923ccfa0da47fa20c505533",
+      "raw_rgb8_sha256": "e8cbe23aa1b83fd8a9dd3c57adfe6860b9c59870ea543823328c4968bd663bf1",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "a9323b1d6db25343-place-done.png",
+      "file_sha256": "a9323b1d6db25343ba1b2ec7e5ee2689c62b7cb461db6295cf10ca9a6b736a27",
+      "raw_rgb8_sha256": "7c5057c185d09047199b0ed41f97df8269768da3a339174d69afef263b810b36",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "ab2c2210616113b0-saved.png",
+      "file_sha256": "ab2c2210616113b0d4e620634d1c9a05e830f38aa2fe2293172321d7039989bd",
+      "raw_rgb8_sha256": "744b8fab005e6c29c6d38dc391e4a2268c21060fac99b1a5a9a5059bd461fc58",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "abf0427833780aca-human-turn-2.png",
+      "file_sha256": "abf0427833780aca269d7c0df59fad3ac6f55522e2c9160625704b35f27a543c",
+      "raw_rgb8_sha256": "3df8caa4091204b1c3ab9c8d88674479adf5b1318ab4db9f182228315aedb2c0",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "file_sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "raw_rgb8_sha256": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "ae6e98d28d379bb4-title.png",
+      "file_sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "raw_rgb8_sha256": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "b823fdd7df3d4259-saved.png",
+      "file_sha256": "b823fdd7df3d4259bf02367a29803d696ec77b095ac4d7f099b5fc6e08daacf8",
+      "raw_rgb8_sha256": "01e22718014faf903ccbfde3d0b38b5830288553ccbacbbec6a853c4b5684ccb",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "bb3cd7f07be529a0-human-turn-2.png",
+      "file_sha256": "bb3cd7f07be529a024ebcf9b4268528f6a2cd6d4aaa543505bbe80fe7d6f31fe",
+      "raw_rgb8_sha256": "2f77c55eb2b13949dc67344ef4735c4b2e840d753761e1c83210f7787139b578",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "c84434ef3cb45451-help-06.png",
+      "file_sha256": "c84434ef3cb454516fe8128b6c453b2c7a472857f5503093ee6f2b64a77902ef",
+      "raw_rgb8_sha256": "86d63eb9e3ae652102de32787e8b07ae737b115445c0d69c72ea576fc605f999",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "ca366d06aa602247-help-04.png",
+      "file_sha256": "ca366d06aa6022474f98e95cb30d58281e1609f9308e50f9643a2500617553f5",
+      "raw_rgb8_sha256": "a4f4b662442abf6a5e081ba45481e394a1074a7f66c732df39c58d8872b00ad7",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "d816d6fb3ee277b0-scores-before.png",
+      "file_sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+      "raw_rgb8_sha256": "d5da077410f2c4730cea5b8bf2ddcf87f0a286fc5c743c65c5ff72b8792fe258",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "e295da28e2309171-setup.png",
+      "file_sha256": "e295da28e23091717b94987e0d9ba8ffc96814d2f618f2bed738ebd2699c1469",
+      "raw_rgb8_sha256": "2c62b8933d4479e37c10fd59caa238dfe8a62fda31e3536ce64a718d5b281488",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "e7b08d2235c3346d-saved.png",
+      "file_sha256": "e7b08d2235c3346dbed4f10a6986793991d5ce777f26e3462e3b5bb72803c432",
+      "raw_rgb8_sha256": "6a8f597c22a32a6713db057c404efdfab558485aa0a8d35d071c9afbbd121798",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "f2429dea842182a2-after-pass.png",
+      "file_sha256": "f2429dea842182a219b9391faac09c496dd66401475da7048d5c78248a6a9110",
+      "raw_rgb8_sha256": "7791bc91f8b744a57c807cc726bb884381c7a44b722d03256aff85e39afd78e8",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "f30ee66289086dc6-scores-after.png",
+      "file_sha256": "f30ee66289086dc69896155c6adc99d70eb8b121b1a46caf2059189c6d8cf55c",
+      "raw_rgb8_sha256": "c7eb3b89a73cdfea8ab6849b9f31b1d598e831312c13fc55a6a14eb108078ad8",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "f30ee66289086dc6-scores.png",
+      "file_sha256": "f30ee66289086dc69896155c6adc99d70eb8b121b1a46caf2059189c6d8cf55c",
+      "raw_rgb8_sha256": "c7eb3b89a73cdfea8ab6849b9f31b1d598e831312c13fc55a6a14eb108078ad8",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "f6e50ae4b150b387-board.png",
+      "file_sha256": "f6e50ae4b150b3876775d99ed4305bb56591325953845c34bb0400099bf7d77d",
+      "raw_rgb8_sha256": "b3d6e14821861760a8d7335f56dde46798c7cc3968e2027309905aaa6c2ccabd",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "f8ea313311c1876b-place-selected.png",
+      "file_sha256": "f8ea313311c1876b1d69dab3c63f651e183f347c6adf4e9f5d523081352566ba",
+      "raw_rgb8_sha256": "6339debb030dac2abe4e3f1579e57f02b80e3ab1c15006d69c79066cde7630a5",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "f8f40b47e089614a-board.png",
+      "file_sha256": "f8f40b47e089614a1020742d1721c475c1a8742e1603dae37011a82d4b8986c2",
+      "raw_rgb8_sha256": "a7c78348dc31d980e86ce967998230e9910cf0d70bbaaaf86da87e52a4f30d7c",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "fb60d739d297f86d-human-turn.png",
+      "file_sha256": "fb60d739d297f86d2b419af2e64b14c4647ddb6e960db1daccc9b0c08cde6af9",
+      "raw_rgb8_sha256": "2f674a1a0388a6f952db08647c6e55a0cc6ded2582b8ebe3da1d76da7db8455a",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "fc16ec81edd4a681-loss-notice.png",
+      "file_sha256": "fc16ec81edd4a681e2734d764b59710b358ee3e03b864ed29fb157ecfc95cbb5",
+      "raw_rgb8_sha256": "606403903ebd61a6a7612af53ab0b81e6a9aea71a9efe3a093950374f98611b3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "fc16ec81edd4a681-setup.png",
+      "file_sha256": "fc16ec81edd4a681e2734d764b59710b358ee3e03b864ed29fb157ecfc95cbb5",
+      "raw_rgb8_sha256": "606403903ebd61a6a7612af53ab0b81e6a9aea71a9efe3a093950374f98611b3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "fd1480253c2908f3-place-selected.png",
+      "file_sha256": "fd1480253c2908f3f729c6a774771f771a1ebab8f852011cb1ca69c6e73fc71a",
+      "raw_rgb8_sha256": "c428abe82c0da8db9a2af7879594d2f452c087526c330bdf781c573152af38bf",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E002-bundles",
+      "asset": "fdc269c5d5fc243f-help-11.png",
+      "file_sha256": "fdc269c5d5fc243f15d3cb29d496d34fdc7e27f6ce7cf87cf70cb12f87736992",
+      "raw_rgb8_sha256": "e649f3e4e7b93a96f66c4c4825a82241d38aca42f8fdf243321f658700e9e57f",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "10842580b609d049-help-page-2.png",
+      "file_sha256": "10842580b609d049b7290bc3b9e016bb938d5d7728e2d2a044d2a74031a121bd",
+      "raw_rgb8_sha256": "6f987809dc68ea38c114e7050629d354e22d8a6f6598475ffc176b0b9d079fe2",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "136c4c8046448ea0-after.png",
+      "file_sha256": "136c4c8046448ea0e96968eca4c9ffb5d29a648cfd281878e683798cb4029638",
+      "raw_rgb8_sha256": "d0237805a385018f3d3eaf200fef12949d79d86659f6c8ef89465e50f7b60c7a",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "152b665b5f321197-after.png",
+      "file_sha256": "152b665b5f321197dfd80d1b5c1ad8e09ae980a72a6b1d2c6af7acaaf2fcad4e",
+      "raw_rgb8_sha256": "16a84dc21a66a6cbb12f52302133bd3963bf5819b66d9b0c5903b55432ee6776",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": true
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "152b665b5f321197-probe-settled-before-continue.png",
+      "file_sha256": "152b665b5f321197dfd80d1b5c1ad8e09ae980a72a6b1d2c6af7acaaf2fcad4e",
+      "raw_rgb8_sha256": "16a84dc21a66a6cbb12f52302133bd3963bf5819b66d9b0c5903b55432ee6776",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": true
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "154143a1bd739503-newgame-setup.png",
+      "file_sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "raw_rgb8_sha256": "908ec68b213724bca95216ee55fddb138ae826df7b663a0a4e9cafe57dd09387",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "15e194a5c6c9b0bb-board-with-centres-2.png",
+      "file_sha256": "15e194a5c6c9b0bb8ec77f118f77b44bd1b84057610a4503b9df780f47669c7b",
+      "raw_rgb8_sha256": "913fc21a0d61e1089841f4ea003883af957a331af4a06a36eff399947df3b2ee",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "1b7a6a3059ed089b-board-colours.png",
+      "file_sha256": "1b7a6a3059ed089bd0256c96cc6f4d2705273455cd9b64856a9ebeb426147cbf",
+      "raw_rgb8_sha256": "951c562c6d1a14923fd6bcaad09c7dea75807150a8a66a6ccba8b0ab3608fa39",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "208867e3c3804b48-after.png",
+      "file_sha256": "208867e3c3804b485b3914b31c598140a7aea6d204000a1da61d61b3921fc4c0",
+      "raw_rgb8_sha256": "e88ec672e00a5a7889ce04ad21e4ac306f9b90beb5179bffd818b275359aed4e",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "25308edaf4263718-computer-turn-1.png",
+      "file_sha256": "25308edaf4263718a09d6d0edccba17eb87dc01f2b0e2646fc83012d347daccd",
+      "raw_rgb8_sha256": "326d63c264775960a328880cbf975f5032bd89d315021a891267f6f9ce31c5d0",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "285473017bb684c3-computer-turn-3.png",
+      "file_sha256": "285473017bb684c3bcb57ea8797f8c26b393ef8b332f2fb5cfedb3859ccb01b7",
+      "raw_rgb8_sha256": "d5fbad8b51a5f3182b44ebe158915c347acf5d3b58062c146eafb35a9ffd1c10",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "2944f60e1ee969ae-status-attack-result.png",
+      "file_sha256": "2944f60e1ee969ae4086b0508157d87b4294273e370545c0bc613d00a165f94d",
+      "raw_rgb8_sha256": "dcd59be747f2a942e86f74ca9d461adda0ea711f6a5c655de34213a5c3662524",
+      "centre_red": 2553,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "34775bc4d7595235-board-with-centres-1.png",
+      "file_sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+      "raw_rgb8_sha256": "f50475f6fd7862bc72bfa1d9372eaa14caa94aae719af370ad601440bb468fd8",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "36494cf78e3a15cf-attack-ready.png",
+      "file_sha256": "36494cf78e3a15cf1ba729b4820a4de8ad2a071634cb72e92aaead93c4f40749",
+      "raw_rgb8_sha256": "8ca92ab20e09eadb03d211815020b471c1260a8ea029ec7ccf50a5f53f09e6e6",
+      "centre_red": 2296,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "390756985586a01d-help-page-1.png",
+      "file_sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+      "raw_rgb8_sha256": "7ed3947a4b3d7f13cee11746bd446190440b5090db4a0a8d3dee8d5464e8134c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "3b5dc5a76fdb1a9e-place-selected.png",
+      "file_sha256": "3b5dc5a76fdb1a9ef15115a84721173362bf039633b3d470d53967790ad69cf8",
+      "raw_rgb8_sha256": "86c5e7dda94cf42b51a2ac9f8940368525c7d9cfb9fea1af8f29ea76e2ec4a28",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "3d404526ba3d60a6-help-page-3.png",
+      "file_sha256": "3d404526ba3d60a66af0f7ab9c71e76f9a8a13fae436b09790a678a83340c9c3",
+      "raw_rgb8_sha256": "c36fcfd19ae1e1d049843771a9f629ba44da7f5c263d35fd82dd23bc18d0a080",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "40c2a0ef169bc360-status-turn-menu.png",
+      "file_sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+      "raw_rgb8_sha256": "c5e9ae4ad9307aaac4b695af983990b383b676260dcc5367abf58d3a44278cd2",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "426d77e724d793dd-after.png",
+      "file_sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "raw_rgb8_sha256": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "426d77e724d793dd-frequency-default.png",
+      "file_sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "raw_rgb8_sha256": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "426d77e724d793dd-options-at-this-size.png",
+      "file_sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "raw_rgb8_sha256": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "426d77e724d793dd-options.png",
+      "file_sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "raw_rgb8_sha256": "e5f2ab05e7e280f4ba38d4aac79db18940c00cc8c8b8103a85539600fce4eac3",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "46b25ddd741c8d4d-probe-before-pass.png",
+      "file_sha256": "46b25ddd741c8d4d9eaa10ef6961f9bfe14554d843bc6a3ebc8833696bd53a39",
+      "raw_rgb8_sha256": "377904f64b2a0782b97e4a97f2c59b3042e7ad4b9760ff67b743e3af826bb3c7",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "480ec09a4122b12d-place-selected.png",
+      "file_sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+      "raw_rgb8_sha256": "34b4834280669f290d3b34c5fa2fdeee471d782485f9a43c1747d04e45b8f817",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "4c2f45b6e356e994-place-done.png",
+      "file_sha256": "4c2f45b6e356e9944aad6be8f27475af68107d460db5ea9a4a0d4dc5d6555389",
+      "raw_rgb8_sha256": "5a362688fd49f9e38a2a578620566789a99be2abc39ad24a334070b04e62bcbd",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "5171eb4dfe2c867d-after.png",
+      "file_sha256": "5171eb4dfe2c867df711edef25512c574c1b7c4f89ddf554fa6d6354e2b116cd",
+      "raw_rgb8_sha256": "1db4b28dd80e13d85008b6e3e6aaaafd5474b0510b927fcc21ced5ff4fbd81a6",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "52bb075e4710f548-after.png",
+      "file_sha256": "52bb075e4710f5488f21c675b1ea897615aeba78b53bd5511adaf05a8e4a97b9",
+      "raw_rgb8_sha256": "26f4cf97e8adc4df10ac4f1b93e045ce5188c3bebcf53b1ece7d669a4aae3d40",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "5ad6d9012cdce6b9-after.png",
+      "file_sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "raw_rgb8_sha256": "108b6db3403806c32910c68d9c32352da6e07dcc3114c95ee0d06083833ee80f",
+      "centre_red": 0,
+      "screen": "scoreboard",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "5ad6d9012cdce6b9-loss-notice.png",
+      "file_sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "raw_rgb8_sha256": "108b6db3403806c32910c68d9c32352da6e07dcc3114c95ee0d06083833ee80f",
+      "centre_red": 0,
+      "screen": "scoreboard",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "6c6802ee018d457b-panel-attack-result.png",
+      "file_sha256": "6c6802ee018d457b2aad7891b02bc199934a07f7cc240e4bca2e0702f23654b4",
+      "raw_rgb8_sha256": "60534a0587a4ff268a5ceb0ae3fd8c858c5aff3ebf0340ae7e985d22d26c1a4a",
+      "centre_red": 2553,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "7ddb3b333890a0db-computer-turn-6.png",
+      "file_sha256": "7ddb3b333890a0db68f71bcd5e884715994a2ac59c116676c190fa74db852608",
+      "raw_rgb8_sha256": "13f281a797db381f12b94bc64b5b15d3350599e4c592a0327b56e0577738ca86",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "825f2bbeda538c84-computer-turn-2.png",
+      "file_sha256": "825f2bbeda538c8470520d77a82d7e427e052054f3d841757ad3c95651ce6a08",
+      "raw_rgb8_sha256": "5622dfeaf4a37ad340e58591e01faba437ec37b233e5f9ac64f55473e4c5a083",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "8b0cfe8d6a85d82f-after.png",
+      "file_sha256": "8b0cfe8d6a85d82f18cd8a8aef8e7763ae09d09b2fcf760eecbf058680570661",
+      "raw_rgb8_sha256": "0a75162ca636f90b6d775189e295a39c36e81761e4b0de6684ee5369c6e0816f",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "8b4b45428393e5b5-place-done.png",
+      "file_sha256": "8b4b45428393e5b5ead7f2ae298a1f49d75a84d1b2d51a2a046d47fd66789bc4",
+      "raw_rgb8_sha256": "a3074f5744246b6c722540298178ec44c125aff6b377aa7f4dc76b019b68772e",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "8d4366fa55af7c05-after.png",
+      "file_sha256": "8d4366fa55af7c05a0137103d0b4f03922af254a83e1c5c49be2670470c15bc3",
+      "raw_rgb8_sha256": "7fd7b08bc5ac7df94f6237854d1901fdd6aa9db3e4a8a1028becba59ac28157e",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "9160a38dd7b6cd83-after.png",
+      "file_sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "raw_rgb8_sha256": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "9160a38dd7b6cd83-frequency-locked.png",
+      "file_sha256": "9160a38dd7b6cd83f40d7af0e78284c69290d16acb13b2818a16f1e9a62bffa8",
+      "raw_rgb8_sha256": "4d5bd0f711739086adb0f3bd6b080d5b3e1f6d82556e1c4e6dfa6c6e98412e7c",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "97c26acddb43d158-board-1.png",
+      "file_sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+      "raw_rgb8_sha256": "9d1f1ed8c1c703ebaf6223fb6db17b5ac04fa62c016316ecba5ac594103499af",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "980953ca5a9d6510-status-after-pass.png",
+      "file_sha256": "980953ca5a9d651060cc4f732506cdce48dd92bc96755ebe72b07d1b997420fc",
+      "raw_rgb8_sha256": "c6167277df2ad34ff5cb2baca576e5b9a1394d7b47b51605877d06ed63bf9230",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "9dadb971397f3b6b-after.png",
+      "file_sha256": "9dadb971397f3b6b2f42e9e487f85068d749c2f09f161742afa91cb3b57cf643",
+      "raw_rgb8_sha256": "f277192d6ef4ea0c16d3d92b69941c8955f8336f007738773171d736fc58f4e3",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "a15e6d0b696aeff1-board-contrast.png",
+      "file_sha256": "a15e6d0b696aeff1976c63381c49e29924594668b2ffeddd6ec1d9d7c7acf8b6",
+      "raw_rgb8_sha256": "3caf8e6d449e4591d18d45e8d42d8de36bcc1e6b53f2becefa6676ca51dfa406",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "a1a40e993435c799-after.png",
+      "file_sha256": "a1a40e993435c79980dbc3ae02703f6ff326f3c3d455632b9b15215302d1ff1c",
+      "raw_rgb8_sha256": "60c13f4bbc3b3cfc2696ed72324d98b8daf80cbd0df06be823fdbac27e69c8bf",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "a82a4164cda79cf1-board.png",
+      "file_sha256": "a82a4164cda79cf1ef8d4ade63ca66101d6dbfcd886269e9abc127f1e4eb0391",
+      "raw_rgb8_sha256": "9805eaae228ff70d5ba848880b21ff96f5be04f1d100894314ea543816946e8e",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ad27fef69c201713-after.png",
+      "file_sha256": "ad27fef69c201713c8c9252fa42e07d7e041d99775584edca9728a64ac5ab9d7",
+      "raw_rgb8_sha256": "82e6e4c82744a090c86f86deebfcf5756f0725d6f318627526c14b0b907cf7cc",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "adb623c87857bb24-computer-turn-5.png",
+      "file_sha256": "adb623c87857bb24acd3f89c4f528e30b51eaf5ac9bb98a83a8d430d9dc048e3",
+      "raw_rgb8_sha256": "4bb73adbba8dd986847206fb5ab3de1ab197a1c8c73cbb62923ebc2003a7422b",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ae6e98d28d379bb4-after.png",
+      "file_sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "raw_rgb8_sha256": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ae6e98d28d379bb4-before.png",
+      "file_sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "raw_rgb8_sha256": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ae6e98d28d379bb4-title-at-this-size.png",
+      "file_sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "raw_rgb8_sha256": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ae6e98d28d379bb4-title.png",
+      "file_sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "raw_rgb8_sha256": "fecd0a984e0d2f36d0c91f1ab2504a335bfdd059907a2622ba2d40804c983753",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "b0beadc318158ad8-after.png",
+      "file_sha256": "b0beadc318158ad8f848142b1343fc6d2b44b7059302e7f4ea9a826c8cccbd77",
+      "raw_rgb8_sha256": "80657d9f3c820403ce05722a2ded2e8e32051dfa6bfa92f6462d773b01ec9d94",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "b0beadc318158ad8-panel-turn-menu.png",
+      "file_sha256": "b0beadc318158ad8f848142b1343fc6d2b44b7059302e7f4ea9a826c8cccbd77",
+      "raw_rgb8_sha256": "80657d9f3c820403ce05722a2ded2e8e32051dfa6bfa92f6462d773b01ec9d94",
+      "centre_red": 1974,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "b34ef6c2c72d4bda-board-1.png",
+      "file_sha256": "b34ef6c2c72d4bda02b199b87724567b6ed80c650cdbc87ccc28785d5092ea87",
+      "raw_rgb8_sha256": "b394c25cfedc3c551453327bfed83aa0e8742e25bc299a59b7beeab803e06299",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "bb9a253beb526487-computer-turn-7.png",
+      "file_sha256": "bb9a253beb52648788778f8d770dbeedd4dd190fe98870d4d216587e75260f53",
+      "raw_rgb8_sha256": "7160449074c52e811e5d5a2066b12fa00c6622b42547a586203f02472b57a443",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "c882697dd8881214-board-armies.png",
+      "file_sha256": "c882697dd8881214728f450cfdc4600f209121a352c746e1766017bddd44e024",
+      "raw_rgb8_sha256": "35bc8654e57a127dfb8ec1eb70ac5f44956ff15599f545a2338771c97a540534",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "c8c8f1f7745f0943-after.png",
+      "file_sha256": "c8c8f1f7745f0943175267d5398721c78975888d9b88e2c1b823d619f62ffd28",
+      "raw_rgb8_sha256": "f86b67e932ad866fb15303db697ac820161d3c75ad81940aec97d77c97f4facd",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "c92e1be9a29cb0d8-board-for-colour-count.png",
+      "file_sha256": "c92e1be9a29cb0d86b304a238e1789ba95ae099be2f89c2d47f4f17adbfe0a8a",
+      "raw_rgb8_sha256": "decf02e3b7976483984bbdf6319d1985a03b6bf6ee9b4593b982ccd70caa5bd3",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "cbe97bf2c065c4d3-board.png",
+      "file_sha256": "cbe97bf2c065c4d3730f2c8a90abfad55e38be61a7b1a61a4c03a4af384beb53",
+      "raw_rgb8_sha256": "4e5a309f136392d37d513dc70c1f221f8f8c26a3a7d49906594fc32225409f06",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "d6ed35dcf0c1ff1e-card-path-candidate-2.png",
+      "file_sha256": "d6ed35dcf0c1ff1e24cd96eeec87a9fc674ca83605593d64ee0176eb2aa85575",
+      "raw_rgb8_sha256": "3dec70e9c811600e4e8ae4f19f061627631bab6f8d42bac15caba2086436712e",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": true
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "d816d6fb3ee277b0-scores.png",
+      "file_sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+      "raw_rgb8_sha256": "d5da077410f2c4730cea5b8bf2ddcf87f0a286fc5c743c65c5ff72b8792fe258",
+      "centre_red": 0,
+      "screen": "unknown",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "e4c4617fc0469f89-after.png",
+      "file_sha256": "e4c4617fc0469f89a275c959bd4a5648b59db1c4daeacd06306b4662b2836689",
+      "raw_rgb8_sha256": "7b45e4bdad44ad3c720b0cbd20d7d865a99cad6fcb1668f09a36d2b6130d7f52",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ea0dcd13f48c7a8d-probe-immediate-after-pass.png",
+      "file_sha256": "ea0dcd13f48c7a8df3777459e197339d549a439593290707b1212141442f6764",
+      "raw_rgb8_sha256": "1c9e24a3bd6e0b57a32de6417424d6c9196cb202ff80ba1280c0a1e42931cee5",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ecd0ce15458e533f-attack-ready.png",
+      "file_sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+      "raw_rgb8_sha256": "f524c68eac466f0fc0cefc65014343a7466a960ce88dba1d9a14aebcd5eca701",
+      "centre_red": 2296,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "ef17c074f321eff6-computer-turn-4.png",
+      "file_sha256": "ef17c074f321eff6e09fcc3c6a1272cc5d91f7419292a03698319435e8c5140b",
+      "raw_rgb8_sha256": "548dd607132b7d97b4845c50c9231caaf1c6e1901edc54cdf37f1e57552c2255",
+      "centre_red": 0,
+      "screen": "board",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": false,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "f4897d8caa5a22ee-after.png",
+      "file_sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "raw_rgb8_sha256": "2f5835dc826acc748d856c253f92ce785f6c93407eb48b5cb9d8f6ed12661fd4",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "f4897d8caa5a22ee-before.png",
+      "file_sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "raw_rgb8_sha256": "2f5835dc826acc748d856c253f92ce785f6c93407eb48b5cb9d8f6ed12661fd4",
+      "centre_red": 0,
+      "screen": "title",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": false,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "f7e1a13fe100d389-place-all.png",
+      "file_sha256": "f7e1a13fe100d389855d88099ad18dfd2e3ef76f0352ebc301a3769e3e990f09",
+      "raw_rgb8_sha256": "68af35567787210453f5329a0d80cfdeb3a13ada1e41707b1cce65e5225447d5",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    },
+    {
+      "bundle": "E019-bundles",
+      "asset": "fc13a7505e755551-place-all.png",
+      "file_sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+      "raw_rgb8_sha256": "ee3564c50f70fe0a587a3f46046309771f53484e4b5b26c13d9389e4e0ea82d7",
+      "centre_red": 0,
+      "screen": "board-menu",
+      "signals": {
+        "keep-playing": false,
+        "accept-loss": false,
+        "notice-panel": false,
+        "score-panel": true,
+        "menu": true,
+        "continue-green": false
+      }
+    }
+  ]
+}
