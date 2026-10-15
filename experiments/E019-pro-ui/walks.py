@@ -444,9 +444,12 @@ WALKS = {
             "the hand screen is not walked: the turn menu's CARD button has no measured point "
             "(E002's tour never used it; F003's Screens table says so), and it stays unmeasured "
             "rather than guessed",
-            "the walk plays up to 10 aggressive turns, clicks CONTINUE after each pass and shots "
-            "the message strip each time it changed; whether a shot shows a card award is the "
-            "catalogue's reading of it, not the recorder's",
+            "the walk plays up to 10 aggressive turns, waits for an observed post-PASS departure "
+            "and settled supported phase, and captures a candidate only for the bounded measured "
+            "green CONTINUE population before clicking CONTINUE; grey, unknown, terminal, refused "
+            "or timed-out phases stop conservatively",
+            "whether a candidate shot shows a card award is the catalogue's reading of it, not the "
+            "recorder's",
         ],
     },
     "Q-UI-16": {

@@ -11,6 +11,7 @@ against all 693 frames of sitting 20261008T184505Z when they were set (walkthrou
 - each minimum is a real bound: one pixel below it, the test is false.
 """
 import sys
+import json
 import unittest
 from pathlib import Path
 
@@ -60,6 +61,31 @@ class ScreenNameTest(unittest.TestCase):
                 parts = [p for p in ("score-panel", "notice-panel", "continue") if p != missing]
                 self.assertNotEqual(screens.name_of(stage_frame(*parts)), "game-over")
         self.assertEqual(screens.name_of(stage_frame("score-panel", "menu", "continue")), "board-menu")
+
+    def test_the_measured_green_card_probe_excludes_terminal_and_human_menu_states(self):
+        self.assertTrue(screens.card_award_green(stage_frame("score-panel", "continue-green")))
+        self.assertFalse(screens.card_award_green(stage_frame("score-panel", "notice-panel",
+                                                              "continue-green")))
+        self.assertFalse(screens.card_award_green(stage_frame("score-panel", "menu",
+                                                              "continue-green")))
+        self.assertFalse(screens.card_award_green(stage_frame("score-panel")))
+
+    def test_the_committed_census_separates_green_prompt_population(self):
+        path = Path(__file__).resolve().parents[2] / "experiments" / "E019-pro-ui" / "measurements" \
+            / "236-card-phase-census.json"
+        census = json.loads(path.read_text(encoding="utf-8"))
+        rows = census["frames"]
+        positive_hash = census["positive_raw_rgb8_sha256"]
+        positive = [row for row in rows if row["raw_rgb8_sha256"] == positive_hash]
+        negative = [row for row in rows if row["raw_rgb8_sha256"] != positive_hash]
+        self.assertEqual(len(positive), 2)
+        self.assertEqual(len({row["raw_rgb8_sha256"] for row in positive}), 1)
+        self.assertTrue(all(row["signals"]["score-panel"] for row in positive))
+        self.assertTrue(all(row["signals"]["continue-green"] for row in positive))
+        self.assertTrue(all(not row["signals"][name] for name in ("notice-panel", "menu")
+                            for row in positive))
+        self.assertLess(max(row["counts"]["continue-green"] for row in negative),
+                        screens.TESTS["continue-green"].minimum)
 
     def test_the_continue_minimum_sits_between_the_measured_populations(self):
         """Round 6: 2958 grey pixels on the winner notice; at most 1603 on any other frame (a card
