@@ -16,6 +16,12 @@
 * `title`: the title screen;
 * `unknown`: anything else.
 
+`card_award_green(frame)` is a narrower phase probe, not a new screen name. It is validated only
+against the #236 census population: the supplied positive card-prompt frame has the measured green
+CONTINUE signal, a score panel, no notice or terminal buttons, and no menu row; the 134 other census
+frames have at most 37 green CONTINUE pixels against the existing 1300 minimum. The grey award phase
+was not measured and therefore never matches this probe.
+
 Every region and threshold of round 4 was measured from the frames of sitting 20261008T184505Z
 (batch 1, the first model-driven sitting; the frames stay on the user's machine, constraint A),
 decoded to RGB and counted over all 693 indexed frames. The source frames, by step: the notice in
@@ -204,6 +210,20 @@ def signals(frame):
     """{test name: True when its count reaches its minimum}."""
     check_stage(frame)
     return {name: count(frame, t.rect, t.predicate) >= t.minimum for name, t in TESTS.items()}
+
+
+def card_award_green(frame):
+    """True for the measured green card-prompt population, conservatively only.
+
+    This is not a universal award classifier: the positive/negative separation is bounded to
+    `experiments/E019-pro-ui/measurements/236-card-phase-census.json`. The score panel and the
+    absence of both terminal notice buttons retain the existing terminal-state exclusions; the
+    absent menu row prevents a stale human-turn reading from being treated as the prompt. A grey
+    award frame is unsupported and returns False.
+    """
+    s = signals(frame)
+    return (s["score-panel"] and s["continue-green"] and not s["notice-panel"]
+            and not s["keep-playing"] and not s["accept-loss"] and not s["menu"])
 
 
 def name_from(s, scoreboard=True):

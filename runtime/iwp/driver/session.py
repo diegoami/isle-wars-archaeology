@@ -593,6 +593,11 @@ class Engine(spike.Cycle):
         self.require_alive("reading the screen")
         return screens.name_of(self.screen.raw((0, 0) + spike.STAGE))
 
+    def screen_card_award(self):
+        """The bounded measured green card-prompt probe, or False for grey/unknown/terminal states."""
+        self.require_alive("reading the card prompt")
+        return screens.card_award_green(self.screen.raw((0, 0) + spike.STAGE))
+
     def screen_winner(self):
         """The winning seat's colour word on the winner notice, by pixels on the score panel
         (screens.winner_of; T38 round 6), or None. Reads the stage; sends nothing."""
@@ -994,6 +999,11 @@ class Session:
         """The screen the game shows (screens.name_of): eliminated, game-over, board-menu, board, title or
         unknown."""
         return self._engine.screen_name()
+
+    @guarded("a card-prompt reading")
+    def screen_card_award(self):
+        """True only for the bounded measured green card-prompt population; sends nothing."""
+        return self._engine.screen_card_award()
 
     @guarded("a winner reading")
     def screen_winner(self):
