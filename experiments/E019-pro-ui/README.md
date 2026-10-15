@@ -121,6 +121,19 @@ before another placement.
 The probe is a bounded measured population, not a universal phase classifier; no Q-UI-16 run record
 or F020 observation is fabricated by this repair.
 
+## #241 — Q-UI-16 sampling exception
+
+The catalogue check keeps the existing record, seal, manifest, field, output and timing guards, but
+Q-UI-16 coverage is the sole multi-record exception: it needs 20 distinct completed valid records,
+each with at least one attack whose count exactly equals the finite timing entries proving both the
+input and the watched attack-panel change. The 20 selected records must share the unregistered
+artifact set, binary hash, `wine-on-user-machine-iwp-2.0` platform, normal speed and a measured
+`800x600x24` display. Aborted, zero-attack, malformed, unproved, mismatched, duplicate or other-
+question records cannot contribute; raw records and counts are not changed. When Q-UI-16 is later
+marked observed or narrowed in F020, the section must cite 20 distinct qualifying record paths with
+their record hashes and at least one PNG recording hash for each. Other questions retain their
+single-record count rules.
+
 ## Division of work (the task file's)
 
 The implementer writes the recorder, the walk table and the check (T24); the main session runs

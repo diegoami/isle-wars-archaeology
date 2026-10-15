@@ -20,8 +20,9 @@ Exits 0 when every piece holds:
   required_outputs(); its observation is the recorder's summary and names only screenshots the
   record holds; its display size was measured equal to the size it asked for;
 - a count target is met by one completed record (the row's "at least N <word>" when the row names
-  one, else the walk table's), never by adding records; Q-UI-19 has a completed record at every
-  display size its walk names;
+  one, else the walk table's), never by adding records; the sole exception is Q-UI-16's #241
+  policy, which requires twenty distinct completed valid matching runs; Q-UI-19 has a completed
+  record at every display size its walk names;
 - findings/F020-pro-ui-observations.md has a section per question with an Observation line whose
   status is one of observed, narrowed, static-only, unestablished (a pending section fails);
 - no record's observations, and no F020 section, cites a script or handler that the E008
@@ -48,6 +49,7 @@ The check reads recorded files; it does not run the game.
 import argparse
 import hashlib
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -90,6 +92,11 @@ CITED_TOKEN = re.compile(r"`([^`\n]+)`")
 # so the field ends at its closing backtick, not at the parenthesis
 SHA_AFTER_PATH = re.compile(r"\s*\(sha256 `([0-9a-f]{8,64})…`")
 HASH_CITE = re.compile(r"`([0-9a-f]{8,64})…`")
+Q16 = "Q-UI-16"
+Q16_SPEED = "normal (the unlocked default; every timing is a wall-clock reading at it)"
+Q16_SIZE = "800x600x24"
+Q16_DISPLAY_PIXELS = 800 * 600
+Q16_RUN_TARGET = 20
 
 
 def catalogue_ids(rows):
@@ -268,6 +275,159 @@ def size_pixels(size):
     return int(m.group(1)) * int(m.group(2)) if m else None
 
 
+def q16_timing_count(by_field, where):
+    """Return Q-UI-16's proved attack count, refusing malformed timing measurements.
+
+    The recorder emits one timing object per attempted attack.  A run contributes only the
+    entries that prove both the input and the watched-panel change; ``at_s`` remains a required
+    finite, non-negative measurement even for an unsuccessful attempt.  This deliberately stays
+    local to Q16:
+    the other questions retain their existing count policy.
+    """
+    timings = by_field.get("timing: attack exchange", [])
+    if not timings:
+        return None, [f"{where}: no Q-UI-16 attack timing observations"]
+    proved = 0
+    errors = []
+    for value in timings:
+        try:
+            timing = json.loads(value)
+        except (TypeError, ValueError) as exc:
+            errors.append(f"{where}: Q-UI-16 attack timing is not JSON: {exc}")
+            continue
+        if not isinstance(timing, dict):
+            errors.append(f"{where}: Q-UI-16 attack timing is not an object")
+            continue
+        at_s = timing.get("at_s")
+        numeric = not isinstance(at_s, bool) and isinstance(at_s, (int, float))
+        try:
+            finite = numeric and math.isfinite(at_s) and at_s >= 0
+        except (TypeError, OverflowError):
+            finite = False
+        if not numeric or not finite:
+            errors.append(f"{where}: Q-UI-16 attack timing has invalid at_s {at_s!r}")
+        if not isinstance(timing.get("input proved"), bool):
+            errors.append(f"{where}: Q-UI-16 attack timing has no boolean input proved value")
+        if not isinstance(timing.get("panel changed"), bool):
+            errors.append(f"{where}: Q-UI-16 attack timing has no boolean panel changed value")
+        if timing.get("input proved") is True and timing.get("panel changed") is True:
+            proved += 1
+    return proved, errors
+
+
+def q16_run_measurements(record, by_field, where):
+    """Validate the Q-UI-16-only contribution contract for one completed record.
+
+    This is called after the unchanged record/schema/seal/manifest/field checks.  It returns the
+    configuration key and never changes the raw count stored in the record.
+    """
+    errors = []
+    speed = by_field.get("speed setting", [])
+    if speed != [Q16_SPEED]:
+        errors.append(f"{where}: Q-UI-16 contribution is not at normal speed")
+
+    display = by_field.get("display size", [])
+    requested = measured = None
+    if len(display) != 1:
+        errors.append(f"{where}: Q-UI-16 contribution needs one display size measurement")
+    else:
+        try:
+            shown = json.loads(display[0])
+            requested, measured = shown["requested"], shown["display pixels"]
+        except (TypeError, ValueError, KeyError) as exc:
+            errors.append(f"{where}: Q-UI-16 display size is not a measurement: {exc!r}")
+        if requested != Q16_SIZE or measured != Q16_DISPLAY_PIXELS:
+            errors.append(f"{where}: Q-UI-16 contribution is not measured at {Q16_SIZE}")
+
+    counts = by_field.get("count: attacks", [])
+    count = None
+    if len(counts) != 1 or not re.fullmatch(r"[0-9]+", counts[0] or ""):
+        errors.append(f"{where}: Q-UI-16 contribution needs one numeric attack count")
+    else:
+        count = int(counts[0])
+
+    proved, timing_errors = q16_timing_count(by_field, where)
+    errors.extend(timing_errors)
+    # A completed zero-attack run with no proved attack is valid raw data, but it is deliberately a
+    # noncontributor.  A positive count that disagrees with its timing proof remains an invalid run
+    # and must not be made harmless by this exception.
+    if count is not None and proved is not None and ((count == 0 and proved > 0)
+                                                     or (count > 0 and count != proved)):
+        errors.append(f"{where}: Q-UI-16 count attacks {count} does not match {proved} proved timing entries")
+    if count == 0 and proved == 0 and not timing_errors:
+        return None, []
+
+    artifact = record.get("artifact") if isinstance(record.get("artifact"), dict) else {}
+    runtime = record.get("runtime") if isinstance(record.get("runtime"), dict) else {}
+    start_state = record.get("start_state") if isinstance(record.get("start_state"), dict) else {}
+    if artifact.get("set") != e019_records.ARTIFACT_SET or artifact.get("variant") != e019_records.VARIANT:
+        errors.append(f"{where}: Q-UI-16 contribution has the wrong artifact")
+    if runtime.get("platform") != e019_records.PLATFORM:
+        errors.append(f"{where}: Q-UI-16 contribution has the wrong platform")
+
+    binary = start_state.get("sha256")
+    if not HEX64.fullmatch(str(binary or "")) or binary == "0" * 64:
+        errors.append(f"{where}: Q-UI-16 contribution has no valid binary identity")
+    key = (artifact.get("set"), binary, runtime.get("platform"),
+           speed[0] if speed == [Q16_SPEED] else None, requested, measured)
+    return (key if not errors and count > 0 and proved > 0 else None), errors
+
+
+def q16_output_hashes(root, path):
+    """Output hashes that are PNG recordings for one record, according to its manifest."""
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    batch = path.parent.name
+    manifest = Path(root) / "evidence" / "E019" / batch / f"{path.stem}.manifest.json"
+    try:
+        doc = json.loads(manifest.read_text(encoding="utf-8"))
+        files = {item["sha256"]: item for item in doc["files"]
+                 if isinstance(item, dict) and isinstance(item.get("sha256"), str)}
+    except (OSError, ValueError, KeyError, TypeError):
+        return set()
+    return {out["sha256"] for out in record.get("outputs", [])
+            if isinstance(out, dict) and isinstance(out.get("sha256"), str)
+            and str(out.get("name", "")).lower().endswith(".png")
+            and files.get(out["sha256"], {}).get("class") == "recording"}
+
+
+def q16_f020_citation_errors(body, root, qualifying):
+    """Require twenty distinct cited Q16 runs in one configuration and one PNG per run."""
+    errors = []
+    cited = {}
+    cited_hashes = [m.group(1) for m in HASH_CITE.finditer(body)]
+    qualifying = {Path(path): details for path, details in qualifying.items()}
+    for token in CITED_TOKEN.finditer(body):
+        text = token.group(1)
+        if not RECORD_NAME.search(text) or not STRICT_PATH.fullmatch(text):
+            continue
+        path = Path(root) / text
+        if path not in qualifying:
+            continue
+        after = SHA_AFTER_PATH.match(body, token.end())
+        sha = after.group(1) if after else None
+        if not sha:
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest.startswith(sha):
+            cited[path] = (digest, qualifying[path][1])
+
+    cited_groups = {}
+    for path, (_digest, config) in cited.items():
+        cited_groups.setdefault(config, {})[path] = cited[path]
+    matching = max(cited_groups.values(), key=len, default={})
+    if len(matching) < Q16_RUN_TARGET:
+        errors.append(f"Q-UI-16: F020 cites {len(matching)} distinct qualifying records in one configuration, "
+                      f"at least {Q16_RUN_TARGET} required")
+    for path in matching:
+        outputs = q16_output_hashes(root, path)
+        if not any(any(output.startswith(h) for h in cited_hashes) for output in outputs):
+            errors.append(f"Q-UI-16: F020 cites {path.relative_to(root)} without a PNG recording hash")
+    return errors
+
+
 def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None, f020=True,
                 batch=None):
     """Every failure of the catalogue as a line; [] when the catalogue is complete. With f020=False
@@ -310,11 +470,13 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
     sizes = {}                          # qid -> the display sizes its completed records showed
     present = {}                        # qid -> [paths of any record, any status]
     seen = {}                           # qid -> [completed records] (only these cover a question)
+    q16_candidates = []                 # (path, record, configuration key), after all record gates
     record_dirs = sorted((root / "runs" / "E019").glob("*") if (root / "runs" / "E019").is_dir() else [])
     for folder in record_dirs:
         if not folder.is_dir():
             continue
         for path in sorted(folder.glob("*.json")):
+            record_errors_before = len(errors)
             try:
                 record = json.loads(path.read_text(encoding="utf-8"))
             except ValueError as exc:
@@ -469,12 +631,32 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                     continue
                 sizes.setdefault(qid, set()).add(requested)
 
+            # Q-UI-16 is the one sampling exception.  A completed record contributes only after
+            # every existing record-level check above has passed and its own timing/count/config
+            # evidence proves at least one matching attack.  Other questions retain the old
+            # one-record ``best`` policy below.
+            if qid == Q16 and len(errors) == record_errors_before:
+                config, q16_errors = q16_run_measurements(record, by_field, where)
+                errors.extend(q16_errors)
+                if config is not None and not q16_errors:
+                    q16_candidates.append((path, record, config))
+
     # coverage and the targets, over the completed records only
+    q16_groups = {}
+    for path, record, config in q16_candidates:
+        q16_groups.setdefault(config, {})[path] = record
+    q16_matching = max(q16_groups.values(), key=len, default={})
+    q16_all_qualifying = {path: (record, config) for path, record, config in q16_candidates}
     for qid in ids:
         spec = walks.WALKS.get(qid, {})
         if qid not in seen:
             why = "its records were aborted" if qid in present else "the walk has not run"
             errors.append(f"{qid}: no completed record under runs/E019 ({why})")
+            continue
+        if qid == Q16:
+            if len(q16_matching) < Q16_RUN_TARGET:
+                errors.append(f"{qid}: only {len(q16_matching)} distinct completed valid matching runs, "
+                              f"at least {Q16_RUN_TARGET} required")
             continue
         word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
         if word and best.get(qid, 0) < minimum:
@@ -510,6 +692,8 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             errors.extend(citation_errors(body, scripts, f"F020 {qid}"))
             if m.group(1) in CITED_STATUSES:
                 errors.extend(f020_citation_errors(body, root, f"{qid}: F020"))
+                if qid == Q16:
+                    errors.extend(q16_f020_citation_errors(body, root, q16_all_qualifying))
             declared = (walks.WALKS.get(qid) or {}).get("count") or {}
             if (declared.get("measured") and declared["measured"] != declared.get("word")
                     and m.group(1) == "observed"):
