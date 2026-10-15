@@ -34,9 +34,9 @@ class EventPhaseTest(unittest.TestCase):
         p,q,w,h=self.drive(passed=None)
         self.assertEqual(p.call_count,1); w.assert_not_called(); h.assert_not_called()
 
-    def test_unfinished_computer_turn_has_no_next_placement(self):
+    def test_unfinished_computer_turn_uses_continuous_watch_without_settle_helper(self):
         p,q,w,h=self.drive(ready=False)
-        self.assertEqual(p.call_count,1); h.assert_called_once()
+        self.assertEqual(p.call_count,1); w.assert_called_once(); h.assert_not_called()
 
     def test_target_reached_requires_no_further_input(self):
         p,q,w,h=self.drive(candidates=5)

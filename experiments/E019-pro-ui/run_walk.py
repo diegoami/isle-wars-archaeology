@@ -57,6 +57,10 @@ REAP_BOUND = 10          # s, for a killed command to be reaped
 WATCH_INTERVAL = 0.25    # s, the timed watches' default poll
 HOVER_POLL = 0.6         # s, how long a hover map waits for a label to react
 FLASH_SHARE = 0.25       # a change over this share of the watched pixels is a flash candidate
+# Q-UI-06/07's measured protocol bound: the original 15 s watch, the 4 s departure
+# observation, then the measured 30 s tail plus two 4 s allowances.  This is a recorder
+# protocol bound, not a claim about game timing.
+EVENT_WATCH_SECONDS = 15 + 4 + (30 + 2 * 4)
 # The title screen's bottom-bar labels, for Q-UI-18's count: the measured click points and the
 # band (+/- 40 px) each name. The Soleau label between Options and Scores is refused (steps.py).
 LABEL_BANDS = (("new-game", 100), ("help", 215), ("options", 320), ("scores", 620), ("quit", 712))
@@ -183,7 +187,8 @@ def display_size_action(session, ctx):
 
 
 def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashes=False, countable=None,
-                  begun=None, field="timing: watch change", extra=None, stop_at=None, shoot=False):
+                  begun=None, field="timing: watch change", extra=None, stop_at=None, shoot=False,
+                  stop_when=None):
     """Timestamped reads of one or more regions, **polled together in one timed loop** (R4, round 2:
     one budget shared by sequential per-region loops starved every region but the first). Each tick
     reads every region once; every change of every region is a timing observation (wall clock,
@@ -194,6 +199,10 @@ def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashe
     changing together are one tick, never two); with `shoot` each counted tick gets its own screenshot,
     the evidence the catalogue inspects. A candidate is a large change, nothing more: an ordinary
     redraw or either transition of a flash makes one, and the recorder never names its kind.
+    ``stop_when``, when supplied, is called after every complete tick (after all regions have
+    been read and counted).  A truthy return stops the watch.  Keeping the callback at the end
+    preserves the existing positional API and lets a phase observer retain the candidate frame
+    before stopping safely.
     Returns the counted candidate ticks."""
     labels = list(labels)
     countable = set(labels if countable is None else countable)
@@ -204,6 +213,7 @@ def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashe
     changes = {label: 0 for label in labels}
     candidates = {label: 0 for label in labels}
     ticks = counted = 0
+    stop_reason = None
     while CLOCK() - begun < seconds:
         if stop_at is not None and counted >= stop_at:
             break
@@ -230,11 +240,17 @@ def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashe
             if shoot:
                 ctx.candidate_shots += 1
                 perform(session, ctx, f"shot flash-candidate-{ctx.candidate_shots}")
+        if stop_when is not None:
+            stop_reason = stop_when()
+            if stop_reason:
+                break
     result = {**extra, "regions": labels, "seconds": seconds, "interval": interval, "ticks": ticks,
               "changes": changes}
     if flashes:
         result["flash candidates"] = candidates
         result["counted candidate ticks"] = counted
+    if stop_reason:
+        result["stopped"] = stop_reason
     ctx.obs(session, "read: timed-watch", json.dumps(result))
     return counted
 
@@ -405,6 +421,67 @@ def wait_human_ready_after_pass(session, ctx, turn):
     return False
 
 
+def watch_event_turn_after_pass(session, ctx, turn, watch, countable, need, candidates, begun):
+    """Keep the candidate watch live while the accepted PASS is resolved.
+
+    The event path cannot use the generic quiet-settle helper: a candidate may arrive after its
+    first 15 seconds, and a settle call would hide that interval.  The existing measured
+    ``screen_name`` reading is sampled after each complete pixel tick.  A departure from the
+    stale board menu must be observed before a later board-menu reading is accepted as the human
+    turn; ``board`` is the supported computer-turn observation.  Terminal, unknown and every
+    other unsupported state stop without input.  Returning the stop reason keeps the caller from
+    treating a timeout as a quiet settlement.
+    """
+    state = {"departed": False, "result": None}
+    departure_deadline = begun + 15 + 4
+
+    def observe_phase():
+        screen = session.screen_name()
+        elapsed = CLOCK() - begun
+
+        if not state["departed"]:
+            if screen == "board-menu":
+                if elapsed >= 15 + 4:
+                    state["result"] = "departure-timeout"
+                    ctx.obs(session, "event path stop",
+                            f"turn {turn}: no observed post-PASS departure before the measured "
+                            f"{round(departure_deadline - begun, 2)} s departure bound; no quiet-settle claim")
+                    return state["result"]
+                return None
+            state["departed"] = True
+            ctx.obs(session, "event path departure",
+                    json.dumps({"turn": turn, "after_s": round(elapsed, 2), "screen": screen}))
+
+        if screen == "board":
+            return None
+        if screen == "board-menu":
+            state["result"] = "human-ready"
+            ctx.obs(session, "event path probe",
+                    json.dumps({"turn": turn, "result": "human-ready board-menu"}))
+            return state["result"]
+        if screen in {"eliminated", "game-over", "scoreboard"}:
+            state["result"] = f"terminal {screen}"
+            ctx.obs(session, "event path stop",
+                    json.dumps({"turn": turn, "result": state["result"]}))
+            return state["result"]
+
+        state["result"] = "unsupported post-PASS state"
+        ctx.obs(session, "event path stop",
+                json.dumps({"turn": turn, "result": state["result"], "screen": screen}))
+        return state["result"]
+
+    counted = watch_regions(session, ctx, watch, EVENT_WATCH_SECONDS, WATCH_INTERVAL, flashes=True,
+                            countable=countable, stop_at=need - candidates, shoot=True, begun=begun,
+                            stop_when=observe_phase,
+                            extra={"turn": turn, "phase protocol": "post-PASS candidate observation"})
+    if state["result"] is None and counted < need - candidates:
+        state["result"] = "observation-timeout"
+        ctx.obs(session, "event path stop",
+                f"turn {turn}: post-PASS candidate observation reached its measured "
+                f"{EVENT_WATCH_SECONDS} s protocol bound; no quiet-settle claim")
+    return counted, state["result"]
+
+
 def composite_title_options_rounds(session, ctx, rounds=3):
     """Q-UI-10: title -> Options -> title, timed, `rounds` times, the inputs counted."""
     ctx.count("walkthroughs", 0)
@@ -539,12 +616,12 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
             }))
             break
 
-        candidates += watch_regions(session, ctx, watch, 15, WATCH_INTERVAL, flashes=True,
-                                    countable=countable, stop_at=need - candidates, shoot=True,
-                                    begun=begun)
+        observed, phase_result = watch_event_turn_after_pass(
+            session, ctx, turn, watch, countable, need, candidates, begun)
+        candidates += observed
         if candidates >= need:
             break
-        if not wait_human_ready_after_pass(session, ctx, turn):
+        if phase_result != "human-ready":
             break
     ctx.count(word, candidates)
     ctx.obs(session, f"{word} note",
