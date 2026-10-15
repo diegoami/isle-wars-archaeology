@@ -156,6 +156,12 @@ class FakeSession:
     def wait_for_screen(self, name, timeout=None, stable=True):
         return 0.0
 
+    def screen_name(self):
+        return "board"
+
+    def screen_card_award(self):
+        return True
+
     def game_alive(self):
         return True
 
@@ -246,18 +252,23 @@ class StatefulTurnSession(FakeSession):
 class StatefulCardPhaseSession(StatefulTurnSession):
     """Synthetic Q-UI-15 phases used to pin the unsafe old ordering.
 
-    The phase names are test fixtures, not detector names.  ``computer`` is deliberately quiet
-    until the fixture exposes ``award``; a real repair must establish that transition through
-    measured repository-supported probes rather than a sleep or a generic pixel change.
+    The phase names are test fixtures, not detector names. ``computer`` is deliberately quiet until
+    the existing settle-4 machinery exposes ``award``; the fixture's detector hook stands in for
+    the measured screen signal and never changes the game state.
     """
 
-    def __init__(self, *args, refusal_after_menu=False, **kwargs):
+    def __init__(self, *args, refusal_after_menu=False, award_after_settle=True,
+                 settle_timeout=False, terminal_state=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.phase = "placement"
         self.refusal_after_menu = refusal_after_menu
+        self.award_after_settle = award_after_settle
+        self.settle_timeout = settle_timeout
+        self.terminal_state = terminal_state
         self.actions = []
         self.shots = []
         self.continue_phases = []
+        self.departure_observed = False
 
     def perform(self, text):
         words = text.split()
@@ -266,7 +277,12 @@ class StatefulCardPhaseSession(StatefulTurnSession):
             self.shots.append((self.phase, words[1]))
         FakeSession.perform(self, text)
         is_pass = words[0] == "click!" and tuple(int(value) for value in words[-2:]) == walks.PASS_CLICK
-        if words[0] == "click-until" and self.phase == "placement":
+        if words[0] == "settle":
+            if self.settle_timeout and self.phase == "computer":
+                raise run_walk.StepFailed("synthetic settle4 timeout")
+            if self.phase == "computer":
+                self.phase = self.terminal_state or ("award" if self.award_after_settle else "menu")
+        elif words[0] == "click-until" and self.phase == "placement":
             if self.refusal_after_menu:
                 self.phase = "menu"
                 raise run_walk.StepFailed("synthetic placement refusal")
@@ -294,7 +310,13 @@ class StatefulCardPhaseSession(StatefulTurnSession):
 
     def screen_name(self):
         """Expose only the states a future gate is allowed to query in this regression."""
-        return {"menu": "board-menu", "award": "board", "computer": "board"}.get(self.phase, "unknown")
+        if self.phase != "menu":
+            self.departure_observed = True
+        return {"menu": "board-menu", "award": "board", "computer": "board",
+                "game-over": "game-over", "eliminated": "eliminated"}.get(self.phase, "unknown")
+
+    def screen_card_award(self):
+        return self.phase == "award"
 
 
 def card_ctx():
@@ -333,13 +355,49 @@ class QUi15PhaseRegressionTest(unittest.TestCase):
             shutil.rmtree(session.workdir.parent, ignore_errors=True)
 
         self.assertEqual(session.pass_attempt_phases, ["menu"])
-        self.assertEqual(session.continue_phases, ["computer"])
-        continue_index = next(i for i, (_, text) in enumerate(session.actions) if text == "click 402 531")
+        self.assertTrue(session.departure_observed)
+        self.assertEqual(session.continue_phases, ["award"])
+        continue_index = next(i for i, (_, text) in enumerate(session.actions) if text == "click! 402 531")
         shot_indices = [i for i, (_, text) in enumerate(session.actions) if text.startswith("shot ")]
         self.assertTrue(shot_indices)
         self.assertLess(shot_indices[-1], continue_index)
         self.assertFalse(any(phase == "computer" and text.startswith(("click", "click!", "click-any"))
                              for phase, text in session.actions))
+
+    def test_q_ui_15_no_award_stops_at_observed_human_readiness_without_continue(self):
+        clock, session = self.session("e019-q15-no-award", award_after_settle=False)
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_card_turns(session, card_ctx(), turns=1)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.continue_phases, [])
+        self.assertFalse(session.shots)
+        self.assertEqual(session.screen_name(), "board-menu")
+
+    def test_q_ui_15_stops_on_settle_timeout_without_input(self):
+        clock, session = self.session("e019-q15-timeout", settle_timeout=True)
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_card_turns(session, card_ctx(), turns=1)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.continue_phases, [])
+        self.assertTrue(any(o["field"] == "card path stop" and "timeout" in o["value"]
+                            for o in session._engine.obs))
+
+    def test_q_ui_15_stops_on_terminal_state_without_input(self):
+        clock, session = self.session("e019-q15-terminal", terminal_state="game-over")
+        try:
+            with mock.patch.object(run_walk, "CLOCK", clock.clock), mock.patch.object(run_walk, "SLEEP", clock.sleep):
+                run_walk.composite_card_turns(session, card_ctx(), turns=1)
+        finally:
+            shutil.rmtree(session.workdir.parent, ignore_errors=True)
+
+        self.assertEqual(session.continue_phases, [])
+        self.assertEqual(session.screen_name(), "game-over")
 
 
 FAKE_BINARY = b"Isle Wars Pro, the bytes of a fake install's Islepro.exe (T48)"

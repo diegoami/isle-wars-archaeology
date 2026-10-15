@@ -417,29 +417,86 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
             "a candidate is a poll tick in which a counted region changed over a large share of its "
             "pixels; an ordinary redraw or either transition of a flash makes one; which event, if "
             "any, it was is not decided here; each one's shot and timestamp are the evidence",
-            "static")
+             "static")
+
+
+def wait_card_path(session, ctx, turn):
+    """Wait for a post-PASS human turn or the measured green card-path probe.
+
+    The existing settle-4 machinery is the only wait here: it establishes quiet pixels, then the
+    measured screen probes decide whether an input is safe. A quiet board, a grey card prompt, an
+    unknown state, a terminal state, or a failed settle is unsupported and stops the composite;
+    none permits a game input. A candidate shot is deliberately named and recorded as unidentified
+    evidence for the catalogue to read later.
+    """
+    # A board-menu reading immediately after PASS may be stale.  Require one observed departure
+    # before the settle-4 result can be interpreted as human readiness or an award prompt.
+    departure = poll(lambda: session.screen_name() != "board-menu", 4, WATCH_INTERVAL)
+    if departure is None:
+        ctx.obs(session, "card path stop", f"turn {turn}: no observed post-PASS departure before timeout")
+        return None
+    ctx.obs(session, "card path departure", json.dumps({"turn": turn, "after_s": departure}))
+
+    try:
+        perform(session, ctx, "watch all")
+        perform(session, ctx, "settle 4")
+    except StepFailed as exc:
+        ctx.obs(session, "card path stop", f"turn {turn}: settle4 timeout or refusal: {exc}")
+        return None
+
+    screen = session.screen_name()
+    if screen == "board-menu":
+        ctx.obs(session, "card path probe", json.dumps({"turn": turn, "result": "human-ready board-menu"}))
+        return "human"
+    if screen in {"eliminated", "game-over", "scoreboard"}:
+        ctx.obs(session, "card path stop", json.dumps({"turn": turn, "result": f"terminal {screen}"}))
+        return None
+    if screen == "board" and session.screen_card_award():
+        ctx.obs(session, "card path probe", json.dumps({
+            "turn": turn,
+            "result": "measured green prompt population",
+            "reading": "none: candidate screenshot remains unidentified",
+        }))
+        return "candidate"
+
+    ctx.obs(session, "card path stop", json.dumps({
+        "turn": turn,
+        "result": "unsupported post-PASS state",
+        "screen": screen,
+        "reading": "no award or human phase identified",
+    }))
+    return None
 
 
 def composite_card_turns(session, ctx, turns=10):
-    """Q-UI-15: up to `turns` aggressive turns; after each PASS the recorder clicks CONTINUE and
-    records whether the message strip changed, with a shot when it did. What the shot shows (an
-    award notice or not) is the catalogue's reading."""
-    changed = 0
-    strip = region_rect("message-strip")
+    """Q-UI-15: up to `turns` aggressive turns with conservative post-PASS phase handling.
+
+    Placement refusal ends the composite. After an accepted PASS, the recorder waits for quiet and
+    then accepts only the existing measured human-menu or green prompt probe. The prompt candidate
+    is shot before the measured CONTINUE click; the screenshot's meaning remains for F020 to read.
+    """
+    candidates = 0
     for t in range(1, turns + 1):
-        place_and_attack(session, ctx, exchanges=1)
+        if not place_and_attack(session, ctx, exchanges=1):
+            break
         if leave_attack_and_pass(session, ctx) is None:
             break
-        perform(session, ctx, f"watch {strip[0]} {strip[1]} {strip[2]} {strip[3]}")
-        before = read_region(session, strip)
-        perform(session, ctx, f"click {walks.CONTINUE_CLICK[0]} {walks.CONTINUE_CLICK[1]}")
-        if read_region(session, strip) != before:
-            changed += 1
-            perform(session, ctx, f"shot strip-changed-{t}")
-    ctx.count("strip changes after continue", changed)
+        phase = wait_card_path(session, ctx, t)
+        if phase is None:
+            break
+        if phase == "candidate":
+            candidates += 1
+            perform(session, ctx, f"shot card-path-candidate-{t}")
+            try:
+                perform(session, ctx, f"click! {walks.CONTINUE_CLICK[0]} {walks.CONTINUE_CLICK[1]}")
+            except StepFailed as exc:
+                ctx.obs(session, "card path stop", f"turn {t}: measured CONTINUE was refused: {exc}")
+                break
+    ctx.count("card-path candidate screenshots", candidates)
     ctx.obs(session, "cards note",
             "the turn menu's CARD button has no measured point (F003), so the hand screen is not "
-            "walked; the strip-changed shots are what this walk took", "static")
+            "walked; candidate screenshots are taken only after the bounded green prompt probe and "
+            "remain unidentified for the catalogue", "static")
 
 
 COMPOSITES = {
