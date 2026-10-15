@@ -1,0 +1,68 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0030",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286896,
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "asset": "f4897d8caa5a22ee-before.png",
+      "class": "recording"
+    },
+    {
+      "name": "probe-before-pass.png",
+      "bytes": 285442,
+      "sha256": "46b25ddd741c8d4d9eaa10ef6961f9bfe14554d843bc6a3ebc8833696bd53a39",
+      "asset": "46b25ddd741c8d4d-probe-before-pass.png",
+      "class": "recording"
+    },
+    {
+      "name": "probe-immediate-after-pass.png",
+      "bytes": 275795,
+      "sha256": "ea0dcd13f48c7a8df3777459e197339d549a439593290707b1212141442f6764",
+      "asset": "ea0dcd13f48c7a8d-probe-immediate-after-pass.png",
+      "class": "recording"
+    },
+    {
+      "name": "probe-settled-before-continue.png",
+      "bytes": 278404,
+      "sha256": "152b665b5f321197dfd80d1b5c1ad8e09ae980a72a6b1d2c6af7acaaf2fcad4e",
+      "asset": "152b665b5f321197-probe-settled-before-continue.png",
+      "class": "recording"
+    },
+    {
+      "name": "after.png",
+      "bytes": 278404,
+      "sha256": "152b665b5f321197dfd80d1b5c1ad8e09ae980a72a6b1d2c6af7acaaf2fcad4e",
+      "asset": "152b665b5f321197-after.png",
+      "class": "recording"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2849,
+      "sha256": "d1221efe17fb2b53d036d176b0e38876290480c7f671010a8cc3539238e42487",
+      "asset": "d1221efe17fb2b53-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 627,
+      "sha256": "1a33739f24626d3c38119e161ec9938eab386cf12fe6597ed960a8e320e9a2d2",
+      "asset": "1a33739f24626d3c-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 4547,
+      "sha256": "a57d7ab467c5b8fb53853b95770193fa657911333ad8f59c3f9ccf41add1cf83",
+      "asset": "a57d7ab467c5b8fb-run.log",
+      "class": "log"
+    }
+  ]
+}
