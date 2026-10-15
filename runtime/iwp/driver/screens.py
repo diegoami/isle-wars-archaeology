@@ -16,11 +16,14 @@
 * `title`: the title screen;
 * `unknown`: anything else.
 
-`card_award_green(frame)` is a narrower phase probe, not a new screen name. It is validated only
-against the #236 census population: the supplied positive card-prompt frame has the measured green
+`card_award_green(frame)` and `human_attack_ready(frame)` are narrower phase probes, not new screen
+names. `card_award_green` is validated only against the #236 census population: the supplied
+positive card-prompt frame has the measured green
 CONTINUE signal, a score panel, no notice or terminal buttons, and no menu row; the 134 other census
 frames have at most 37 green CONTINUE pixels against the existing 1300 minimum. The grey award phase
 was not measured and therefore never matches this probe.
+
+`human_attack_ready` is validated only against the bounded #239 census population described below.
 
 Every region and threshold of round 4 was measured from the frames of sitting 20261008T184505Z
 (batch 1, the first model-driven sitting; the frames stay on the user's machine, constraint A),
@@ -78,6 +81,13 @@ SUBTITLE = (180, 335, 440, 25)
 CONTINUE_BOX = (327, 522, 149, 25)
 CONTINUE_CLICK = (401, 534)
 
+# The centre panel used by the bounded attack-ready probe.  The panel is the existing E002/F003
+# phase-panel rectangle; only its measured red population is new here.  The positive population's
+# lowest red count is 2296 and the other human board-menu population's highest is 1974 (E019
+# measurement 239).  2135 is the deliberately conservative midpoint, not a universal classifier.
+ATTACK_READY_PANEL = (262, 502, 276, 70)
+ATTACK_READY_RED_MINIMUM = 2135
+
 
 # The Scoreboard's CONTINUE button (T41), light grey like the winner notice's, but higher: x 327-474,
 # y 514-538, centre 401,526 (E002's "Continue (after loss)" is 400,526). Its top rows only, which the
@@ -132,6 +142,11 @@ def continue_green(r, g, b):
     (192,192,192) 351 counts 0 here, its green spread at most 15 against the more than 24 asked
     below. The bounds hold every measured bin: red and blue inside 111..175, green inside 192..223."""
     return 100 < r < 190 and 180 < g < 240 and 100 < b < 190 and g - r > 24 and g - b > 24
+
+
+def attack_red(r, g, b):
+    """The measured candidate predicate for the human attack-ready panel."""
+    return r > 150 and g < 60 and b < 60
 
 
 TESTS = {
@@ -224,6 +239,25 @@ def card_award_green(frame):
     s = signals(frame)
     return (s["score-panel"] and s["continue-green"] and not s["notice-panel"]
             and not s["keep-playing"] and not s["accept-loss"] and not s["menu"])
+
+
+def human_attack_ready(frame):
+    """True only for the bounded, measured human attack-ready population.
+
+    This deliberately combines the existing human board-menu/score reading with the measured
+    centre-panel red population.  It is not a general phase classifier: a notice or any other
+    unsupported state is refused, and an ordinary board-menu frame is not enough.
+    """
+    s = signals(frame)
+    human_menu = s["score-panel"] and s["menu"]
+    terminal = (s["notice-panel"] or s["keep-playing"] or s["accept-loss"] or s["continue"]
+                or s["continue-green"] or all(s[name] for name in SCOREBOARD_TESTS))
+    return (human_menu and not terminal
+            and count(frame, ATTACK_READY_PANEL, attack_red) >= ATTACK_READY_RED_MINIMUM)
+
+
+# Short name for callers that already scope the probe to a human turn.
+attack_ready = human_attack_ready
 
 
 def name_from(s, scoreboard=True):

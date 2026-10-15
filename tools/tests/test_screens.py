@@ -221,5 +221,64 @@ class ScreenNameTest(unittest.TestCase):
         self.assertTrue(x <= cx < x + w and y <= cy < y + h)
 
 
+class AttackReadyProbeTest(unittest.TestCase):
+    """#239: the attack probe is a bounded human-menu plus watched-panel measurement."""
+
+    @staticmethod
+    def frame(red_pixels, *parts):
+        frame = bytearray(stage_frame("score-panel", "menu", *parts))
+        x, y, w, h = screens.ATTACK_READY_PANEL
+        left = red_pixels
+        for row in range(y, y + h):
+            n = min(w, left)
+            if n <= 0:
+                break
+            start = (row * 800 + x) * 3
+            frame[start:start + n * 3] = bytes((200, 0, 0)) * n
+            left -= n
+        return bytes(frame)
+
+    def test_the_measured_red_midpoint_is_a_bound(self):
+        at = self.frame(screens.ATTACK_READY_RED_MINIMUM)
+        below = self.frame(screens.ATTACK_READY_RED_MINIMUM - 1)
+        self.assertTrue(screens.human_attack_ready(at))
+        self.assertFalse(screens.human_attack_ready(below))
+        self.assertEqual(screens.count(at, screens.ATTACK_READY_PANEL, screens.attack_red),
+                         screens.ATTACK_READY_RED_MINIMUM)
+
+    def test_the_probe_requires_the_human_menu_and_excludes_terminal_notice(self):
+        self.assertFalse(screens.human_attack_ready(self.frame(screens.ATTACK_READY_RED_MINIMUM, "notice-panel")))
+        self.assertFalse(screens.human_attack_ready(
+            stage_frame("score-panel", "menu")))
+        no_menu = self.frame(screens.ATTACK_READY_RED_MINIMUM)
+        # Remove only the existing human-menu signal while preserving the measured red population.
+        x, y, w, h = screens.MENU_LABEL
+        clean = bytearray(no_menu)
+        for row in range(y, y + h):
+            start = (row * 800 + x) * 3
+            clean[start:start + w * 3] = bytes((128, 128, 128)) * w
+        self.assertFalse(screens.human_attack_ready(bytes(clean)))
+
+    def test_the_probe_threshold_is_derived_from_the_committed_census_populations(self):
+        path = Path(__file__).resolve().parents[2] / "experiments" / "E019-pro-ui" / "measurements" \
+            / "239-attack-phase-census.json"
+        census = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(census["rect"], list(screens.ATTACK_READY_PANEL))
+        self.assertEqual(census["predicate"], {"r_gt": 150, "g_lt": 60, "b_lt": 60})
+        positives = {"7ca1db9ca3019e7a", "865937d28607e468", "36494cf78e3a15cf",
+                     "ecd0ce15458e533f", "84b4b1f44ff09610", "2944f60e1ee969ae",
+                     "6c6802ee018d457b"}
+        rows = census["frames"]
+        positive_rows = [row for row in rows if row["file_sha256"].startswith(tuple(positives))]
+        negative_board_rows = [row for row in rows
+                               if row["screen"] == "board-menu"
+                               and not row["file_sha256"].startswith(tuple(positives))]
+        self.assertEqual(len(positive_rows), 8)       # one positive file is indexed twice
+        self.assertEqual(min(row["centre_red"] for row in positive_rows), 2296)
+        self.assertEqual(max(row["centre_red"] for row in negative_board_rows), 1974)
+        self.assertEqual(screens.ATTACK_READY_RED_MINIMUM,
+                         (2296 + 1974) // 2)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
