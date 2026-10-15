@@ -83,11 +83,49 @@ class QUi16SamplingContractTest(unittest.TestCase):
             rewrite(path, speed)
             self.assertTrue(self.errors(root), "twentieth run at a different speed cannot contribute")
 
+    def test_mismatched_binary_platform_or_artifact_cannot_help(self):
+        for label, mutate in (
+                ("binary", lambda r: r["start_state"].update(sha256="f" * 64)),
+                ("platform", lambda r: r["runtime"].update(platform="other-platform")),
+                ("artifact", lambda r: r["artifact"].update(set="other-artifact"))):
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as root:
+                self.make(root, 20)
+                path, _ = records_of(root, "Q-UI-16")[-1]
+                rewrite(path, mutate)
+                self.assertTrue(self.errors(root), f"a mismatched {label} cannot contribute")
+
+    def test_nonfinite_timing_cannot_help(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root, 20)
+            path, _ = records_of(root, "Q-UI-16")[-1]
+
+            def nonfinite(record):
+                for obs in record["observations"]:
+                    if obs["field"] == "timing: attack exchange":
+                        timing = json.loads(obs["value"])
+                        timing["at_s"] = float("nan")
+                        obs["value"] = json.dumps(timing)
+                        break
+
+            rewrite(path, nonfinite)
+            self.assertTrue(self.errors(root), "a non-finite timing cannot contribute")
+
     def test_twenty_runs_but_only_one_citation_cannot_pass_f020(self):
         with tempfile.TemporaryDirectory() as root:
             self.make(root, 20)
-            write_f020(root)
+            write_f020(root, q16_all=False)
             self.assertTrue(self.errors(root, f020=True), "all twenty contributing runs need citations")
+
+    def test_citation_needs_a_png_recording_class_for_each_run(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root, 20)
+            write_f020(root)
+            path, _ = records_of(root, "Q-UI-16")[-1]
+            manifest = Path(root) / "evidence" / "E019" / "play" / f"{path.stem}.manifest.json"
+            doc = json.loads(manifest.read_text(encoding="utf-8"))
+            doc["files"][0]["class"] = "other"
+            manifest.write_text(json.dumps(doc), encoding="utf-8")
+            self.assertTrue(self.errors(root, f020=True), "a non-recording PNG cannot satisfy the citation gate")
 
 
 if __name__ == "__main__":

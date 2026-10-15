@@ -720,12 +720,12 @@ def drive(root, qids=None, **fake_options):
     return results
 
 
-def write_f020(root, status_of=None):
+def write_f020(root, status_of=None, *, q16_all=True):
     """A minimal F020 (the catalogue is T39's; this is the shape check_ui_catalogue reads): one
     section per question, the proxied ones narrowed, the none-found ones static-only. Every
-    section the citation rule reads (observed or narrowed, #140) cites its question's first
-    record by full path with that file's sha256, and one of that record's outputs by hash, so
-    the catalogue the check passes on carries the evidence T39's DW2 asks for."""
+    section the citation rule reads (observed or narrowed, #140) cites each Q-UI-16 record by full
+    path with that file's sha256 and one of its outputs by hash (or only the first record when
+    ``q16_all`` is false); the catalogue the check passes on carries T39's DW2 evidence."""
     lines = ["# F020 UI observations catalogue (structure)", "", "## Observations", ""]
     for qid in catalogue_ids():
         if status_of and qid in status_of:
@@ -740,8 +740,11 @@ def write_f020(root, status_of=None):
                   f"- **Observation**: {status}: described from the records."]
         if status in CITED_STATUSES:
             found = records_of(root, qid)
-            if found:
-                record_path, record = found[0]
+            if qid == "Q-UI-16" and q16_all:
+                cited = found
+            else:
+                cited = found[:1]
+            for record_path, record in cited:
                 rel = record_path.relative_to(Path(root)).as_posix()
                 sha = hashlib.sha256(record_path.read_bytes()).hexdigest()
                 line = f"- **Run**: `{rel}` (sha256 `{sha[:16]}\u2026`)"
@@ -781,6 +784,12 @@ def recorded_tree():
         tmp = tempfile.mkdtemp(prefix="e019-e2e-")
         _BASE["dir"] = tmp
         _BASE["results"] = drive(tmp)
+        # #241 changes only Q-UI-16's catalogue coverage. Keep the ordinary walk-order fixture
+        # results above, then add nineteen recorder-written Q16 reruns rather than hand-made data.
+        for _ in range(19):
+            status, recovered = drive_one(tmp, "Q-UI-16", None)
+            if (status, recovered) != ("completed", True):
+                raise AssertionError((status, recovered))
     return Path(_BASE["dir"])
 
 
@@ -1268,7 +1277,8 @@ class RoundTwoRegressionTest(unittest.TestCase):
             manifest = Path(tmp) / "evidence" / "E019" / "play"
             shutil.copy(manifest / f"{path.stem}.manifest.json", manifest / "E019-r9999.manifest.json")
             errors = check(tmp)
-            self.assertTrue(any(e.startswith("Q-UI-16: count attacks reached 10") for e in errors), errors)
+            self.assertTrue(any(e.startswith("Q-UI-16: only 19 distinct completed valid matching runs")
+                                for e in errors), errors)
 
     # R6: citations are checked on every record, aborted ones included
     def test_r6_an_aborted_record_citing_a_script_outside_the_inventory_is_refused(self):

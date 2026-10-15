@@ -465,6 +465,11 @@ WALKS = {
                                                "watch": "attack-panel", "strict": True}),
         ],
         "notes": [
+            "sampling exception #241: the catalogue check requires 20 distinct completed runs with "
+            "at least one attack per run; a run contributes only when its attack count equals the "
+            "number of finite timing entries proving both input and watched-panel change, and all "
+            "contributing runs match the unregistered artifact, binary, platform, normal speed and "
+            "800x600x24 display",
             "one attack is counted only after a measured human attack-ready probe, a successful input, "
             "and a changed watched attack-panel rectangle; the timing records the panel change around "
             "each click",
