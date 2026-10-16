@@ -109,6 +109,9 @@ class Ctx:
     def __init__(self, spec, size=None):
         self.spec = spec
         self.size = size or DEFAULT_SIZE
+        # The event budget starts when the walk context is created, before Session.execute() starts
+        # the driver.  This deliberately includes launch/seal/startup time in the cooperative budget.
+        self.started_at = CLOCK()
         self.step = 50                     # the recorder's own observations start past the driver's
         self.counts = {}                   # count word -> value
         self.labels = set()                # bottom-bar bands whose hover map reacted
@@ -130,6 +133,31 @@ class Ctx:
 
     def count(self, word, value):
         self.counts[word] = self.counts.get(word, 0) + int(value)
+
+
+def event_budget_remaining(ctx):
+    """Seconds left in this walk's ordinary bound for one complete event watch."""
+    started_at = getattr(ctx, "started_at", None)
+    # Older focused phase fixtures pass a mock context because they only exercise phase ordering;
+    # they do not represent a timed walk and therefore retain the full allowance.
+    if not isinstance(started_at, (int, float)):
+        return WALK_BOUND
+    return WALK_BOUND - (CLOCK() - started_at)
+
+
+def stop_for_event_budget(session, ctx, turn, where):
+    """Record a cooperative event-budget stop and return whether another event phase may start."""
+    remaining = event_budget_remaining(ctx)
+    if remaining >= EVENT_WATCH_SECONDS:
+        return False
+    ctx.obs(session, "event path stop", json.dumps({
+        "turn": turn,
+        "result": "event watch budget insufficient",
+        "where": where,
+        "remaining_s": round(remaining, 2),
+        "required_s": EVENT_WATCH_SECONDS,
+    }))
+    return True
 
 
 def perform(session, ctx, line):
@@ -432,6 +460,8 @@ def watch_event_turn_after_pass(session, ctx, turn, watch, countable, need, cand
     other unsupported state stop without input.  Returning the stop reason keeps the caller from
     treating a timeout as a quiet settlement.
     """
+    if stop_for_event_budget(session, ctx, turn, "before event watch"):
+        return 0, "event-watch-budget"
     state = {"departed": False, "result": None}
     departure_deadline = begun + 15 + 4
 
@@ -583,6 +613,11 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
         if candidates >= need:
             break
 
+        # A placement starts a turn that must still have the complete measured watch allowance.
+        # This is cooperative accounting: no asynchronous signal interrupts a driver action.
+        if stop_for_event_budget(session, ctx, turn, "turn boundary"):
+            break
+
         screen = session.screen_name()
         if screen != "board-menu":
             ctx.obs(session, "event path stop", json.dumps({
@@ -607,6 +642,11 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
             ctx.obs(session, "event path stop", json.dumps({
                 "turn": turn, "result": "unsupported attack phase", "screen": screen,
             }))
+            break
+
+        # Placement/setup can consume enough of the ordinary walk bound that the event watch no
+        # longer fits.  Preserve the setup observations and candidates, but do not PASS.
+        if stop_for_event_budget(session, ctx, turn, "after setup before PASS"):
             break
 
         begun = leave_attack_and_pass(session, ctx)
@@ -922,6 +962,8 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=
     size = size or DEFAULT_SIZE
     session = session_factory(run_id, locs["IWP_PREFIX"], locs[f"{EXPERIMENT}_BUNDLES"], locs["IWP_DIR"],
                               display, records.arm_of_question(qid), size)
+    # Construct the recorder context before Session.execute(): its recorder CLOCK timestamp includes
+    # the driver's startup and lifecycle overhead in the event walk's operational budget.
     ctx = Ctx(spec, size)
     session.observe(0, "static", "walk question", qid)
     session.observe(0, "static", "walk batch", spec["batch"])
@@ -968,9 +1010,25 @@ def inner(args, argv):
     return 0
 
 
+def event_turn_allowance(qid):
+    """Configured maximum event-watch turns for one question, or zero for ordinary walks."""
+    for action in walks.WALKS[qid].get("actions", []):
+        if action[0] == "composite" and action[1] == "event_watch":
+            return int(action[2].get("turns", 0))
+    return 0
+
+
+def outer_bound(questions):
+    """Hard watchdog allowance for the selected walks, including each selected display size."""
+    total = 0
+    for qid in questions:
+        per_walk = WALK_BOUND + event_turn_allowance(qid) * EVENT_WATCH_SECONDS
+        total += len(walks.WALKS[qid].get("sizes") or [None]) * per_walk
+    return total
+
+
 def outer(args, argv):
     questions = questions_of(args)
-    walks_planned = sum(len(walks.WALKS[qid].get("sizes") or [None]) for qid in questions)
     locs = spike.confined_locations(argparse.Namespace(explore=False, experiment=EXPERIMENT))
     prefix = locs["IWP_PREFIX"]
     strays = spike.marked_processes() + spike.prefix_processes(prefix)
@@ -995,7 +1053,7 @@ def outer(args, argv):
                **{sessionlib.INVOCATION: token})
     cmd = ["unshare", "-r", "-m", "-p", "-f", "--kill-child", "--mount-proc", sys.executable,
            str(LAUNCHER)] + argv
-    code = launch_inner(cmd, env, walks_planned * WALK_BOUND)
+    code = launch_inner(cmd, env, outer_bound(questions))
     left = reap_invocation(token)
     if left:
         print(f"processes of this command survived its namespace and were killed: {sorted(left)}",
