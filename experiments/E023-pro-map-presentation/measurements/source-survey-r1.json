@@ -1,0 +1,375 @@
+{
+  "schema": "E023-source-survey/1",
+  "recorded_utc": "2026-10-16T10:24:46.073500+00:00",
+  "observer": "main session (OpenAI)",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": "none",
+    "binary_sha256": "c4d7a248646454adeb48232e3ac7b3d2c0f08b290051a79d6fe6e47bb76b594e",
+    "platform": "wine-on-user-machine-iwp-2.0",
+    "scope": "unregistered Pro; reused E019 model captures, no new run"
+  },
+  "static_sources": [
+    {
+      "id": "S01",
+      "kind": "static:decompile",
+      "script": "MovieScript 1 - Startmovie",
+      "sha256": "0fc9f873bab321a9d765d567aeb091891d8e9e9f01990995df7b738a93240bd1",
+      "lines": 217,
+      "inspection": "current hash verification against existing F017/E015 reading"
+    },
+    {
+      "id": "S02",
+      "kind": "static:decompile",
+      "script": "MovieScript 23 - Newgame",
+      "sha256": "f3b8cec9b54e5cd731307553b4e81e15d7fb72e6d56ecf5c399020651d140939",
+      "lines": 53,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S03",
+      "kind": "static:decompile",
+      "script": "MovieScript 5 - Putinboard",
+      "sha256": "1d2dcabfe8612b551eee237664f8f0aefc15516bce185498717f76d1386efaab",
+      "lines": 176,
+      "inspection": "current hash verification against existing F017/E015 reading"
+    },
+    {
+      "id": "S04",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 400",
+      "sha256": "720b1ba104a19acc1fe2e77ad4f8c9c83d79deb6b7538beabd5231d15ca5e095",
+      "lines": 401,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S05",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 12",
+      "sha256": "551032c47793deecad93383f4ae39adca45b711539103508a87278770213a6ad",
+      "lines": 11,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S06",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 13",
+      "sha256": "6b86066153c8fdb73490ca0bba5352048958d827bab31e8a1df8cd9ee78b0d16",
+      "lines": 14,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S07",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 41",
+      "sha256": "281a362e1fca2c3f1e4b71f0de4bc0617a3d67b5506416511b109e3d92c8688b",
+      "lines": 11,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S08",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 43",
+      "sha256": "590e9d5af4717dae0864115205d991da10d6162e771d10425e30a652a4b88107",
+      "lines": 9,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S09",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 44",
+      "sha256": "c1c9d86b9a3ef728f6778a52e8661115f008659fb0f549fa3a2eea6644746254",
+      "lines": 12,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S10",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 45",
+      "sha256": "c22d8bf8e892c3f6a2e8e001c78332ef296aedb7239872ca4b66f8f7c8b247a9",
+      "lines": 11,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S11",
+      "kind": "static:decompile",
+      "script": "BehaviorScript 47",
+      "sha256": "e0c9aede3c6ca94a5fe0dee0c0d041765e28025234c63ba6216ec8c2325f86e6",
+      "lines": 25,
+      "inspection": "current full main-session reading"
+    },
+    {
+      "id": "S12",
+      "kind": "static:decompile",
+      "script": "MovieScript 49 - Showstrength",
+      "sha256": "4ef4c546c7a7bf5aaf0e32c9c57961731e9c9e2411f4c5c8da4a02a70b46982e",
+      "lines": 4,
+      "inspection": "current full main-session reading"
+    }
+  ],
+  "static_search": {
+    "corpus_files": 213,
+    "corpus_manifest_sha256": "f9e8c5849016f26bda5e113d852c303353038308fc92188363492c031d859ebc",
+    "terms_regex_case_insensitive": {
+      "\\bdrawLine\\b": [],
+      "\\blineSize\\b": [],
+      "\\blineDirection\\b": [],
+      "\\bshapeType\\b": [],
+      "\\bmoveTo\\b": [],
+      "\\blineTo\\b": []
+    },
+    "limit": "bounded graphics-command search over decompiled scripts; not a proof about score shapes, embedded graphics, implicit Director behaviour or unreferenced code"
+  },
+  "cast_metadata": {
+    "source_identifier": "E008 pro-r1 ProjectorRays decompile stdout",
+    "source_sha256": "453642556bf437afe72ef56174934d5e13a325f1d872f4ac81be0e8e988aa6e2",
+    "observations": [
+      "The existing extraction log lists numbered named cast members, including empty-country and colour variants. It does not expose a verified association from a visible crossing stroke to a typed shape/bitmap or score channel.",
+      "No score/bitmap decoder was run. Whether crossing strokes are baked into artwork or independent score/shape objects remains unknown."
+    ],
+    "limit": "cast names are not proof of asset type or construction"
+  },
+  "frames": [
+    {
+      "id": "V01",
+      "record": "runs/E019/board-pieces/E019-r0014.json",
+      "record_sha256": "b1e03cfc0e3cf79b9f7d7b63c8e2e863822a3d8563358cb84c6ad570c76c1892",
+      "manifest": "evidence/E019/board-pieces/E019-r0014.manifest.json",
+      "manifest_sha256": "09382b8666956960da869a4fd817b1fa91275ed9d7c91e4a63e729a9029ee868",
+      "output_name": "board-1.png",
+      "output_sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+      "display_px": [
+        800,
+        600
+      ],
+      "inspection": "main-session visual inspection of preserved local frame; output bytes verified against record hash"
+    },
+    {
+      "id": "V02",
+      "record": "runs/E019/play/E019-r0025.json",
+      "record_sha256": "3a0880efbb8080e8379cb1120184921e41e1cfd6eb91e97be31a627a89decebe",
+      "manifest": "evidence/E019/play/E019-r0025.manifest.json",
+      "manifest_sha256": "099c986c0bb84dcab84808a3e68d18d8c62203e86671bdf4eb75ab8a49c9762e",
+      "output_name": "place-selected.png",
+      "output_sha256": "3b5dc5a76fdb1a9ef15115a84721173362bf039633b3d470d53967790ad69cf8",
+      "display_px": [
+        800,
+        600
+      ],
+      "inspection": "main-session visual inspection of preserved local frame; output bytes verified against record hash"
+    },
+    {
+      "id": "V03",
+      "record": "runs/E019/play/E019-r0025.json",
+      "record_sha256": "3a0880efbb8080e8379cb1120184921e41e1cfd6eb91e97be31a627a89decebe",
+      "manifest": "evidence/E019/play/E019-r0025.manifest.json",
+      "manifest_sha256": "099c986c0bb84dcab84808a3e68d18d8c62203e86671bdf4eb75ab8a49c9762e",
+      "output_name": "place-done.png",
+      "output_sha256": "4c2f45b6e356e9944aad6be8f27475af68107d460db5ea9a4a0d4dc5d6555389",
+      "display_px": [
+        800,
+        600
+      ],
+      "inspection": "main-session visual inspection of preserved local frame; output bytes verified against record hash"
+    },
+    {
+      "id": "V04",
+      "record": "runs/E019/play/E019-r0025.json",
+      "record_sha256": "3a0880efbb8080e8379cb1120184921e41e1cfd6eb91e97be31a627a89decebe",
+      "manifest": "evidence/E019/play/E019-r0025.manifest.json",
+      "manifest_sha256": "099c986c0bb84dcab84808a3e68d18d8c62203e86671bdf4eb75ab8a49c9762e",
+      "output_name": "attack-ready.png",
+      "output_sha256": "36494cf78e3a15cf1ba729b4820a4de8ad2a071634cb72e92aaead93c4f40749",
+      "display_px": [
+        800,
+        600
+      ],
+      "inspection": "main-session visual inspection of preserved local frame; output bytes verified against record hash"
+    },
+    {
+      "id": "V05",
+      "record": "runs/E019/play/E019-r0025.json",
+      "record_sha256": "3a0880efbb8080e8379cb1120184921e41e1cfd6eb91e97be31a627a89decebe",
+      "manifest": "evidence/E019/play/E019-r0025.manifest.json",
+      "manifest_sha256": "099c986c0bb84dcab84808a3e68d18d8c62203e86671bdf4eb75ab8a49c9762e",
+      "output_name": "panel-attack-result.png",
+      "output_sha256": "6c6802ee018d457b2aad7891b02bc199934a07f7cc240e4bca2e0702f23654b4",
+      "display_px": [
+        800,
+        600
+      ],
+      "inspection": "main-session visual inspection of preserved local frame; output bytes verified against record hash"
+    },
+    {
+      "id": "V06",
+      "record": "runs/E019/play/E019-r0025.json",
+      "record_sha256": "3a0880efbb8080e8379cb1120184921e41e1cfd6eb91e97be31a627a89decebe",
+      "manifest": "evidence/E019/play/E019-r0025.manifest.json",
+      "manifest_sha256": "099c986c0bb84dcab84808a3e68d18d8c62203e86671bdf4eb75ab8a49c9762e",
+      "output_name": "panel-turn-menu.png",
+      "output_sha256": "b0beadc318158ad8f848142b1343fc6d2b44b7059302e7f4ea9a826c8cccbd77",
+      "display_px": [
+        800,
+        600
+      ],
+      "inspection": "main-session visual inspection of preserved local frame; output bytes verified against record hash"
+    }
+  ],
+  "topology_reference": {
+    "path": "experiments/E015-pro-board-reading/measurements/board-tabulation-r1e.json",
+    "sha256": "d850c40185beb01e215adafe6d4c9783c1f085471a591c6ab46731d3723c3548",
+    "inter_island_edge_count": 16,
+    "purpose": "identify sampled endpoints by country index; does not infer visible geometry from the adjacency table"
+  },
+  "observations": [
+    {
+      "id": "O01",
+      "sources": [
+        "V01"
+      ],
+      "statement": "The full board view shows pale, approximately straight strokes spanning water gaps between the country-bearing island silhouettes. Ownership tint changes country fills; strokes are distinguishable against blue water. Relief texture and contrasting borders help land/water separation.",
+      "confidence": "high for this inspected image; not a general perceptual study"
+    },
+    {
+      "id": "O02",
+      "sources": [
+        "V01"
+      ],
+      "statement": "Short crossing 26\u201327 is isolated at the upper right; the two small country-index circles beside the contacts disambiguate its ends. Diagonal 1\u201313 contacts the upper country of the middle-left island, above neighbouring country 12; country labels and stroke continuation to shore support the reading.",
+      "confidence": "high visual interpretation with F017 adjacency cross-check; not evidence that players always perceive it correctly"
+    },
+    {
+      "id": "O03",
+      "sources": [
+        "V01"
+      ],
+      "statement": "The lower cluster has a longer slanted 43\u201344 link with endpoints near textured country margins. The nearly vertical 23\u201338 stroke ends beside a multi-country island; without country labels/table context, nearby countries are plausible visual alternatives. The view is a fixed layout, not a demonstrated general routing algorithm.",
+      "confidence": "moderate visual interpretation; ambiguity is an observer judgment, not measured player error"
+    },
+    {
+      "id": "O04",
+      "sources": [
+        "V01"
+      ],
+      "statement": "No crossing in the selected examples needs a curved detour across the visible water span. Exact full-path endpoints under land artwork, minimum clearance to all unrelated coasts, line-shape construction, and any coastline midpoint rule are not established.",
+      "confidence": "high for visible sampled straight spans; unknown beyond them"
+    },
+    {
+      "id": "O05",
+      "sources": [
+        "V02",
+        "S04",
+        "S05",
+        "S06"
+      ],
+      "statement": "The placement frame has an arrow beside country 2 and a bottom-panel selected-country identifier. BehaviorScript 400 placement/move branches position sprite 130 at fixed country coordinates; the phase scripts show/hide/reset it. This is selected-country feedback, not proof of a legal-neighbour overlay.",
+      "confidence": "high bounded static/visual correspondence"
+    },
+    {
+      "id": "O06",
+      "sources": [
+        "V03",
+        "V04",
+        "V05",
+        "V06",
+        "S04",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "statement": "The same-run combat-ready/result images identify defender country 1 and attacking country 2 in the bottom panel, with counts updated after exchange. They do not show a newly highlighted set of legal neighbours or altered crossing strokes. The examined click handler checks ownership and adjacency and writes identifiers/refusals; it contains no neighbour-wide highlighting loop in those branches.",
+      "confidence": "high for sampled same-island exchange; general absence remains unestablished"
+    },
+    {
+      "id": "O07",
+      "sources": [
+        "V04",
+        "V05"
+      ],
+      "statement": "This recorded attack is within one island. It does not establish runtime feedback when selecting across water, target-selection intermediate frames, all legal/illegal inputs, keyboard behaviour, or all UI phases.",
+      "confidence": "explicit scope limit"
+    }
+  ],
+  "measurements": {
+    "frame_id": "V01",
+    "units": "native screenshot pixels; optional normalization divides by 800-pixel stage width",
+    "samples": [
+      {
+        "edge_reference": [
+          26,
+          27
+        ],
+        "water_span_endpoints_px": [
+          [
+            633,
+            77
+          ],
+          [
+            666,
+            80
+          ]
+        ],
+        "water_span_px": 33.1,
+        "stage_width_fraction": 0.0414,
+        "method": "manual centreline picks at the visually judged shore contacts in V01; Euclidean distance; approximate, not coastline-segment midpoints",
+        "span_uncertainty_px": 4
+      },
+      {
+        "edge_reference": [
+          23,
+          38
+        ],
+        "water_span_endpoints_px": [
+          [
+            517,
+            255
+          ],
+          [
+            517,
+            309
+          ]
+        ],
+        "water_span_px": 54.0,
+        "stage_width_fraction": 0.0675,
+        "method": "manual centreline picks at the visually judged shore contacts in V01; Euclidean distance; approximate, not coastline-segment midpoints",
+        "span_uncertainty_px": 4
+      },
+      {
+        "edge_reference": [
+          43,
+          44
+        ],
+        "water_span_endpoints_px": [
+          [
+            306,
+            390
+          ],
+          [
+            319,
+            329
+          ]
+        ],
+        "water_span_px": 62.4,
+        "stage_width_fraction": 0.078,
+        "method": "manual centreline picks at the visually judged shore contacts in V01; Euclidean distance; approximate, not coastline-segment midpoints",
+        "span_uncertainty_px": 4
+      }
+    ],
+    "interpretation": "three manually selected visible water spans, not a complete-board min/max, full route length, clearance threshold, or exported replacement map geometry",
+    "unestablished": [
+      "minimum clearance to unrelated coastlines: no decoded coastline polygons or defined exhaustive pixel segmentation",
+      "detour ratio relative to a coastline midpoint baseline: no verified baseline or hidden full-path geometry",
+      "coastline midpoint placement rule: no segmentation/algorithm or score evidence"
+    ]
+  },
+  "question_outcomes": {
+    "Q1": "unknown artwork-versus-score construction; searched handlers have no direct drawing primitive hits",
+    "Q2": "shore contacts, straight continuation and country-index labels are observed cues; midpoint rule unknown",
+    "Q3": "three approximate water spans recorded, plus isolated and clustered examples; complete clearance and detour guarantees unknown",
+    "Q4": "selected placement marker and combat panel identifiers observed; cross-water and complete legal-neighbour feedback unknown"
+  },
+  "data_boundary": "Only identifiers, hashes, numeric observations and own-word summaries; no original/decompiled excerpts, image bytes or local install paths. Kimi repository-only review must not receive or inspect original material."
+}
