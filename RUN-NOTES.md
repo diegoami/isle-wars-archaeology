@@ -62,3 +62,16 @@
 
 - Implementation is ready for the final non-`[skip ci]` commit and PR. No game run, install, prefix,
   bundle, capture, review, subagent, merge, or worktree removal was performed.
+
+## Progress
+
+- Final implementation commit `799a6b2` was pushed without `[skip ci]`.
+- Code-only PR #251 was opened with `Closes #250` and `Refs #117` (the parent remains non-closing),
+  attributed to OpenCode Luna 5.6 high; no review or subagent was run.
+- Exact-head CI passed: checks and GitGuardian Security Checks both passed.
+
+## END
+
+- PR: https://github.com/diegoami/isle-wars-archaeology/pull/251
+- Working tree remains clean. No game run, install, prefix, bundle, capture, review, subagent, merge,
+  or worktree removal was performed; raw measurements remain unchanged.
