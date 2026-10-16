@@ -97,3 +97,21 @@
 - Added the Q06-only bounded configuration/sample and provenance gates, append-only README policy,
   and focused zero-candidate/duplicate-citation tests. Raw records and measured metadata were not
   changed.
+
+## Progress
+
+- Checkpoint commit `f3c5745` was pushed to `origin/fix/q06-bounded-result`.
+- Focused Q06 tests passed: 12 tests. The focused E019 checker/recorder suite passed: 159 tests.
+- Independently mutated the bounded exception away; the positive bounded test failed with the
+  unchanged five-candidate diagnostic. The exact checker bytes were restored and matched the
+  checkpoint byte-for-byte.
+- `tools/check_no_originals.py`, `tools/check_links.py`, `git diff --check`, and the forbidden
+  machine-path grep passed. No raw measurements, run records, manifests or failure metadata were
+  changed.
+
+## END
+
+- Implementation is ready for the required final CI-triggering head commit and code-only PR.
+- No game run, install, prefix, bundle, screenshot capture, review, subagent, merge or worktree
+  removal was performed. Main alone performed the repository checks; unreviewed tests used the
+  6G/no-swap memory cap.
