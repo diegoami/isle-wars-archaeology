@@ -75,3 +75,83 @@
 - PR: https://github.com/diegoami/isle-wars-archaeology/pull/251
 - Working tree remains clean. No game run, install, prefix, bundle, capture, review, subagent, merge,
   or worktree removal was performed; raw measurements remain unchanged.
+
+# RUN-NOTES — #252
+
+## Plan
+
+- Implement only the owner-approved Q-UI-06 bounded `unestablished` checker exception.
+- Require three distinct valid completed runs with shared artifact/configuration identity, exact
+  record and manifest-backed PNG citations, and validated interrupted-attempt provenance.
+- Preserve the positive count gate, records-only gate, Q-UI-07/Q16 policies, global integrity checks,
+  raw measurements and existing metadata; add focused zero-count and duplicate-citation coverage.
+- Run focused E019 tests, mutation verification, safety/link/diff checks, and record all results here.
+
+## Progress
+
+- Read `CLAUDE.md`, `docs/process.md`, the complete #252 brief, the seeded Q06 tests, checker,
+  recorder helpers, README and existing RUN-NOTES. No original install, prefix, bundle, screenshot,
+  game run or machine-local capture was accessed.
+- Seeded baseline on `5b33b09`: the ten seeded Q06 tests had exactly one failure, the positive
+  bounded-result case; all rejection cases passed.
+- Added the Q06-only bounded configuration/sample and provenance gates, append-only README policy,
+  and focused zero-candidate/duplicate-citation tests. Raw records and measured metadata were not
+  changed.
+
+## Progress
+
+- Checkpoint commit `f3c5745` was pushed to `origin/fix/q06-bounded-result`.
+- Focused Q06 tests passed: 12 tests. The focused E019 checker/recorder suite passed: 159 tests.
+- Independently mutated the bounded exception away; the positive bounded test failed with the
+  unchanged five-candidate diagnostic. The exact checker bytes were restored and matched the
+  checkpoint byte-for-byte.
+- `tools/check_no_originals.py`, `tools/check_links.py`, `git diff --check`, and the forbidden
+  machine-path grep passed. No raw measurements, run records, manifests or failure metadata were
+  changed.
+
+## END
+
+- Implementation is ready for the required final CI-triggering head commit and code-only PR.
+- No game run, install, prefix, bundle, screenshot capture, review, subagent, merge or worktree
+  removal was performed. Main alone performed the repository checks; unreviewed tests used the
+  6G/no-swap memory cap.
+
+# RUN-NOTES — #252 rework
+
+## Plan
+
+- Fix only the reproduced duplicate-Q06-section status/parser mismatch in PR253.
+- Explicitly reject duplicate Q-UI-06 F020 sections, preserving the existing parser and all
+  positive-status, no-F020, Q-UI-07, Q-UI-16, integrity and target gates.
+- Run both seeded duplicate-section orderings before and after the fix, the 13-test Q06 suite, the
+  160-test focused E019 suite, safety/link/diff checks, and an independent reverse mutation with
+  exact byte restoration.
+- Append progress and END notes, push checkpoint and final commits, and update PR253 only.
+
+## Progress
+
+- Read the complete rework brief, the independent M3 review, the main reproduction, current
+  checker/tests/RUN-NOTES, and the new seeded regression commit `5b01257`. No original install,
+  prefix, bundle, screenshot or game evidence was accessed.
+- Before the fix, the seeded duplicate-section test failed for the first=`unestablished`,
+  last=`narrowed` ordering because the checker returned `[]`; the opposite ordering was also
+  covered by the seed and remains part of the rework verification.
+
+## Progress
+
+- Added the narrow fail-closed duplicate-Q06-section guard; no parser-wide rewrite or policy,
+  runtime, raw-data, catalogue, target, task or CI change was made.
+- After the fix, both seeded duplicate-section orderings pass, the Q06 suite passes 13 tests, and
+  the focused E019 suite passes 160 tests.
+- Independently reversed the duplicate-section guard; the seeded duplicate regression failed with
+  the reproduced empty-error result. The exact saved checker bytes were restored in `finally`.
+
+## END
+
+- Checkpoint `32d21e6` was pushed to `origin/fix/q06-bounded-result`.
+- Final post-check verification passed: Q06 focused tests 13, focused E019 tests 160, no-originals,
+  links/JSON, diff-check and forbidden machine-path grep. The final commit below is the sole
+  rework commit without `[skip ci]` and will trigger CI once.
+- No original install, prefix, bundle, screenshot, game run, capture, review, subagent, merge or
+  worktree removal was performed. Raw measurements, records, manifests and failure metadata remain
+  unchanged. Unreviewed tests used the 6G/no-swap memory cap.
