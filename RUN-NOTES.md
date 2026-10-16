@@ -75,3 +75,25 @@
 - PR: https://github.com/diegoami/isle-wars-archaeology/pull/251
 - Working tree remains clean. No game run, install, prefix, bundle, capture, review, subagent, merge,
   or worktree removal was performed; raw measurements remain unchanged.
+
+# RUN-NOTES — #252
+
+## Plan
+
+- Implement only the owner-approved Q-UI-06 bounded `unestablished` checker exception.
+- Require three distinct valid completed runs with shared artifact/configuration identity, exact
+  record and manifest-backed PNG citations, and validated interrupted-attempt provenance.
+- Preserve the positive count gate, records-only gate, Q-UI-07/Q16 policies, global integrity checks,
+  raw measurements and existing metadata; add focused zero-count and duplicate-citation coverage.
+- Run focused E019 tests, mutation verification, safety/link/diff checks, and record all results here.
+
+## Progress
+
+- Read `CLAUDE.md`, `docs/process.md`, the complete #252 brief, the seeded Q06 tests, checker,
+  recorder helpers, README and existing RUN-NOTES. No original install, prefix, bundle, screenshot,
+  game run or machine-local capture was accessed.
+- Seeded baseline on `5b33b09`: the ten seeded Q06 tests had exactly one failure, the positive
+  bounded-result case; all rejection cases passed.
+- Added the Q06-only bounded configuration/sample and provenance gates, append-only README policy,
+  and focused zero-candidate/duplicate-citation tests. Raw records and measured metadata were not
+  changed.

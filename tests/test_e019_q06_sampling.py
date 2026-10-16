@@ -13,19 +13,19 @@ FAILURE = 'experiments/E019-pro-ui/measurements/q06-outer-timeout-20261015.json'
 
 
 class Q06BoundedContractTest(unittest.TestCase):
-    def make(self, root, count=3, qid='Q-UI-06'):
+    def make(self, root, count=3, qid='Q-UI-06', candidate_count=1):
         for _ in range(count):
             self.assertEqual(drive_one(root, qid, None), ('completed', True))
         for path, _ in records_of(root, qid):
             def below(record):
                 for obs in record['observations']:
                     if obs['field'] == 'count: flash candidates':
-                        obs['value'] = '1'
+                        obs['value'] = str(candidate_count)
                     elif obs['field'] == 'count: centre-flash candidates':
-                        obs['value'] = '1'
+                        obs['value'] = str(candidate_count)
                     elif obs['field'] == 'observation':
                         summary = json.loads(obs['value'])
-                        summary['counts'] = {k: 1 for k in summary['counts']}
+                        summary['counts'] = {k: candidate_count for k in summary['counts']}
                         obs['value'] = json.dumps(summary)
             rewrite(path, below)
         path = Path(root) / FAILURE
@@ -66,6 +66,11 @@ class Q06BoundedContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             self.make(root, 2)
             self.assertTrue(self.errors(root))
+
+    def test_zero_candidate_runs_are_valid_raw_contributors(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root, candidate_count=0)
+            self.assertEqual(self.errors(root), [])
 
     def test_positive_pending_and_static_statuses_retain_target(self):
         with tempfile.TemporaryDirectory() as root:
@@ -115,6 +120,18 @@ class Q06BoundedContractTest(unittest.TestCase):
                 self.make(root)
                 self.cite(root, omit=omit)
                 self.assertTrue(self.errors(root))
+
+    def test_duplicate_run_citations_do_not_count_as_distinct_runs(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.make(root)
+            f020 = self.cite(root, omit=('run', 1))
+            path, record = records_of(root, 'Q-UI-06')[0]
+            sha = hashlib.sha256(path.read_bytes()).hexdigest()
+            f020.write_text(f020.read_text() +
+                            f'\n- Duplicate run: `{path.relative_to(root).as_posix()}` '
+                            f'(sha256 `{sha}`)\n'
+                            f"- Duplicate screenshot: `{record['outputs'][0]['sha256']}`\n")
+            self.assertTrue(self.errors(root))
 
     def test_wrong_record_output_and_failure_hash_rejected(self):
         for kind in ('record', 'output', 'failure'):

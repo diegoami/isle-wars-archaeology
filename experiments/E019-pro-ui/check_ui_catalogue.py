@@ -97,6 +97,14 @@ Q16_SPEED = "normal (the unlocked default; every timing is a wall-clock reading 
 Q16_SIZE = "800x600x24"
 Q16_DISPLAY_PIXELS = 800 * 600
 Q16_RUN_TARGET = 20
+Q06 = "Q-UI-06"
+Q06_SPEED = Q16_SPEED
+Q06_SIZE = Q16_SIZE
+Q06_DISPLAY_PIXELS = Q16_DISPLAY_PIXELS
+Q06_RUN_TARGET = 3
+Q06_FAILURE_RELATIVE = "experiments/E019-pro-ui/measurements/q06-outer-timeout-20261015.json"
+Q06_FAILURE_SHA = re.compile(r"\s*\(sha256 `([0-9a-f]{8,64})(?:…)?`")
+Q06_HASH_CITE = re.compile(r"sha256 `([0-9a-f]{8,64})(?:…)?`")
 
 
 def catalogue_ids(rows):
@@ -428,6 +436,153 @@ def q16_f020_citation_errors(body, root, qualifying):
     return errors
 
 
+def q06_run_measurements(record, by_field, where):
+    """Return Q06's shared configuration key, without changing its raw measurements.
+
+    The bounded result accepts zero candidates as raw data.  It therefore validates only the
+    configuration identity needed to select a comparable completed run; the unchanged record
+    fields, seal, manifest, outputs and count shape are checked by the main record loop.
+    """
+    errors = []
+    speed = by_field.get("speed setting", [])
+    if speed != [Q06_SPEED]:
+        errors.append(f"{where}: Q-UI-06 contribution is not at normal speed")
+
+    display = by_field.get("display size", [])
+    requested = measured = None
+    if len(display) != 1:
+        errors.append(f"{where}: Q-UI-06 contribution needs one display size measurement")
+    else:
+        try:
+            shown = json.loads(display[0])
+            requested, measured = shown["requested"], shown["display pixels"]
+        except (TypeError, ValueError, KeyError) as exc:
+            errors.append(f"{where}: Q-UI-06 display size is not a measurement: {exc!r}")
+        if requested != Q06_SIZE or measured != Q06_DISPLAY_PIXELS:
+            errors.append(f"{where}: Q-UI-06 contribution is not measured at {Q06_SIZE}")
+
+    counts = by_field.get("count: flash candidates", [])
+    if len(counts) != 1 or not re.fullmatch(r"[0-9]+", counts[0] or ""):
+        errors.append(f"{where}: Q-UI-06 contribution needs one numeric flash-candidate count")
+
+    artifact = record.get("artifact") if isinstance(record.get("artifact"), dict) else {}
+    runtime = record.get("runtime") if isinstance(record.get("runtime"), dict) else {}
+    start_state = record.get("start_state") if isinstance(record.get("start_state"), dict) else {}
+    if artifact.get("set") != e019_records.ARTIFACT_SET:
+        errors.append(f"{where}: Q-UI-06 contribution has the wrong artifact")
+    if runtime.get("platform") != e019_records.PLATFORM:
+        errors.append(f"{where}: Q-UI-06 contribution has the wrong platform")
+
+    binary = start_state.get("sha256")
+    if not HEX64.fullmatch(str(binary or "")) or binary == "0" * 64:
+        errors.append(f"{where}: Q-UI-06 contribution has no valid binary identity")
+    key = (artifact.get("set"), binary, runtime.get("platform"),
+           speed[0] if speed == [Q06_SPEED] else None, requested, measured)
+    return (key if not errors else None), errors
+
+
+def q06_output_hashes(root, path):
+    """Return manifest-backed PNG recording hashes for one Q06 record."""
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    batch = path.parent.name
+    manifest = Path(root) / "evidence" / "E019" / batch / f"{path.stem}.manifest.json"
+    try:
+        doc = json.loads(manifest.read_text(encoding="utf-8"))
+        files = {item["sha256"]: item for item in doc["files"]
+                 if isinstance(item, dict) and isinstance(item.get("sha256"), str)}
+    except (OSError, ValueError, KeyError, TypeError):
+        return set()
+    return {out["sha256"] for out in record.get("outputs", [])
+            if isinstance(out, dict) and isinstance(out.get("sha256"), str)
+            and str(out.get("name", "")).lower().endswith(".png")
+            and files.get(out["sha256"], {}).get("class") == "recording"}
+
+
+def q06_failure_errors(body, root, where):
+    """Require the preserved interrupted-attempt provenance and its matching file hash."""
+    errors = []
+    path = Path(root) / Q06_FAILURE_RELATIVE
+    cited = [m for m in CITED_TOKEN.finditer(body) if m.group(1) == Q06_FAILURE_RELATIVE]
+    if not cited:
+        return [f"{where} does not cite interrupted-attempt metadata {Q06_FAILURE_RELATIVE}"]
+    if not path.is_file():
+        errors.append(f"{where} cites {Q06_FAILURE_RELATIVE}, which does not exist")
+        return errors
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    for token in cited:
+        after = Q06_FAILURE_SHA.match(body, token.end())
+        if not after:
+            errors.append(f"{where} cites {Q06_FAILURE_RELATIVE} without its sha256")
+            continue
+        if not digest.startswith(after.group(1)):
+            errors.append(f"{where} cites {Q06_FAILURE_RELATIVE} with sha256 {after.group(1)}…, "
+                          "which is not a prefix of the file's sha256")
+    try:
+        metadata = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        errors.append(f"{where}: interrupted-attempt metadata is not JSON: {exc}")
+        return errors
+    if not isinstance(metadata, dict):
+        return errors + [f"{where}: interrupted-attempt metadata is not an object"]
+    if metadata.get("question") != Q06:
+        errors.append(f"{where}: interrupted-attempt metadata has question "
+                      f"{metadata.get('question')!r}, not {Q06}")
+    if metadata.get("kind") != "capture-attempt-failure":
+        errors.append(f"{where}: interrupted-attempt metadata has kind "
+                      f"{metadata.get('kind')!r}, not capture-attempt-failure")
+    if metadata.get("formal_run_record_written") is not False:
+        errors.append(f"{where}: interrupted-attempt metadata says a formal run record was written")
+    if not isinstance(metadata.get("reason"), str) or not metadata["reason"].strip():
+        errors.append(f"{where}: interrupted-attempt metadata has no nonempty reason")
+    limitations = metadata.get("limitations")
+    if not isinstance(limitations, list) or not limitations or not all(
+            isinstance(item, str) and item.strip() for item in limitations):
+        errors.append(f"{where}: interrupted-attempt metadata has no nonempty limitations")
+    return errors
+
+
+def q06_f020_citation_errors(body, root, qualifying):
+    """Require three distinct valid Q06 runs and one manifest-backed PNG hash per run."""
+    errors = q06_failure_errors(body, root, "Q-UI-06: F020")
+    qualifying = {Path(path): details for path, details in qualifying.items()}
+    cited = {}
+    hashes = []
+    for m in Q06_HASH_CITE.finditer(body):
+        hashes.append(m.group(1))
+    for m in CITED_TOKEN.finditer(body):
+        text = m.group(1)
+        if not STRICT_PATH.fullmatch(text):
+            continue
+        path = Path(root) / text
+        if path not in qualifying:
+            continue
+        after = Q06_FAILURE_SHA.match(body, m.end())
+        if not after:
+            errors.append(f"Q-UI-06: F020 cites {text} without its sha256")
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if not digest.startswith(after.group(1)):
+            errors.append(f"Q-UI-06: F020 cites {text} with sha256 {after.group(1)}…, "
+                          "which is not a prefix of the file's sha256")
+            continue
+        cited[path] = qualifying[path]
+    groups = {}
+    for path, (_record, config) in cited.items():
+        groups.setdefault(config, {})[path] = cited[path]
+    matching = max(groups.values(), key=len, default={})
+    if len(matching) < Q06_RUN_TARGET:
+        errors.append(f"Q-UI-06: F020 cites {len(matching)} distinct qualifying records in one configuration, "
+                      f"at least {Q06_RUN_TARGET} required")
+    for path in matching:
+        outputs = q06_output_hashes(root, path)
+        if not any(any(output.startswith(h) for h in hashes) for output in outputs):
+            errors.append(f"Q-UI-06: F020 cites {path.relative_to(root)} without a PNG recording hash")
+    return errors
+
+
 def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_path=None, f020=True,
                 batch=None):
     """Every failure of the catalogue as a line; [] when the catalogue is complete. With f020=False
@@ -441,6 +596,14 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
     root = Path(root)
     f020_path = Path(f020_path) if f020_path else root / "findings" / "F020-pro-ui-observations.md"
     errors = []
+    q06_unestablished = False
+    if f020 and f020_path.is_file():
+        f020_text = f020_path.read_text(encoding="utf-8")
+        q06_section = next((m.group(2) for m in re.finditer(
+            r"^#### (Q-[A-Z]+-\d+).*?\n(.*?)(?=^#{2,4} |\Z)",
+            f020_text, re.S | re.M) if m.group(1) == Q06), None)
+        q06_status = re.search(r"-\s*\*\*Observation\*\*:\s*([a-z-]+)", q06_section or "")
+        q06_unestablished = bool(q06_status and q06_status.group(1) == "unestablished")
 
     rows = walks.question_rows(questions_path)
     all_ids = catalogue_ids(rows)
@@ -471,6 +634,7 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
     present = {}                        # qid -> [paths of any record, any status]
     seen = {}                           # qid -> [completed records] (only these cover a question)
     q16_candidates = []                 # (path, record, configuration key), after all record gates
+    q06_candidates = []                 # (path, record, configuration key), after all record gates
     record_dirs = sorted((root / "runs" / "E019").glob("*") if (root / "runs" / "E019").is_dir() else [])
     for folder in record_dirs:
         if not folder.is_dir():
@@ -640,6 +804,11 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                 errors.extend(q16_errors)
                 if config is not None and not q16_errors:
                     q16_candidates.append((path, record, config))
+            if qid == Q06 and len(errors) == record_errors_before:
+                config, q06_errors = q06_run_measurements(record, by_field, where)
+                errors.extend(q06_errors)
+                if config is not None and not q06_errors:
+                    q06_candidates.append((path, record, config))
 
     # coverage and the targets, over the completed records only
     q16_groups = {}
@@ -647,6 +816,11 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
         q16_groups.setdefault(config, {})[path] = record
     q16_matching = max(q16_groups.values(), key=len, default={})
     q16_all_qualifying = {path: (record, config) for path, record, config in q16_candidates}
+    q06_groups = {}
+    for path, record, config in q06_candidates:
+        q06_groups.setdefault(config, {})[path] = record
+    q06_matching = max(q06_groups.values(), key=len, default={})
+    q06_all_qualifying = {path: (record, config) for path, record, config in q06_candidates}
     for qid in ids:
         spec = walks.WALKS.get(qid, {})
         if qid not in seen:
@@ -657,6 +831,8 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
             if len(q16_matching) < Q16_RUN_TARGET:
                 errors.append(f"{qid}: only {len(q16_matching)} distinct completed valid matching runs, "
                               f"at least {Q16_RUN_TARGET} required")
+            continue
+        if qid == Q06 and q06_unestablished and len(q06_matching) >= Q06_RUN_TARGET:
             continue
         word, minimum, _ = count_target(spec, rows[qid]["corroboration"])
         if word and best.get(qid, 0) < minimum:
@@ -694,6 +870,8 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
                 errors.extend(f020_citation_errors(body, root, f"{qid}: F020"))
                 if qid == Q16:
                     errors.extend(q16_f020_citation_errors(body, root, q16_all_qualifying))
+            elif qid == Q06 and m.group(1) == "unestablished":
+                errors.extend(q06_f020_citation_errors(body, root, q06_all_qualifying))
             declared = (walks.WALKS.get(qid) or {}).get("count") or {}
             if (declared.get("measured") and declared["measured"] != declared.get("word")
                     and m.group(1) == "observed"):
