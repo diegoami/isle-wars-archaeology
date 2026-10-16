@@ -121,6 +121,8 @@ class Ctx:
         self.reads = {}                    # read kind -> how many were recorded
         self.timings = 0                   # timing observations recorded
         self.candidate_shots = 0           # the flash candidates' own shots
+        self.calibration_shots = 0         # opt-in event calibration frames, separate from candidates
+        self.calibration_names = []        # their names, in order
 
     def obs(self, session, field, value, source="screen"):
         session.observe(self.step, source, field, str(value))
@@ -169,8 +171,14 @@ def perform(session, ctx, line):
     if first in sessionlib.INPUT_OPS:
         ctx.count("inputs", 1)
     if first == "shot":
+        name = f"{words[1]}.png"
+        # Calibration captures are retained outputs, but are deliberately not part of the walk's
+        # ordinary screenshot count or candidate-shot count. Their own counter is allocated by
+        # watch_regions before the capture, so a capture failure cannot reuse a name.
+        if name.startswith("event-calibration-"):
+            return
         ctx.shots += 1
-        ctx.shot_names.append(f"{words[1]}.png")
+        ctx.shot_names.append(name)
     if first in ("click-any?", "click-any"):
         ctx.attempts += 1
 
@@ -216,7 +224,7 @@ def display_size_action(session, ctx):
 
 def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashes=False, countable=None,
                   begun=None, field="timing: watch change", extra=None, stop_at=None, shoot=False,
-                  stop_when=None):
+                  stop_when=None, capture_changes=False):
     """Timestamped reads of one or more regions, **polled together in one timed loop** (R4, round 2:
     one budget shared by sequential per-region loops starved every region but the first). Each tick
     reads every region once; every change of every region is a timing observation (wall clock,
@@ -249,6 +257,8 @@ def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashe
         ticks += 1
         now = round(CLOCK() - begun, 2)
         tick_counts = False
+        changed_labels = []
+        shares = {}
         for label in labels:
             data = read_region(session, rects[label])
             if data == last[label]:
@@ -256,6 +266,8 @@ def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashe
             share = round(pixels.changed_fraction(last[label], data), 3)
             ctx.obs(session, field, json.dumps({**extra, "region": label, "at_s": now, "share": share}))
             changes[label] += 1
+            changed_labels.append(label)
+            shares[label] = share
             if flashes and share >= FLASH_SHARE:
                 candidates[label] += 1
                 ctx.obs(session, "flash candidate",
@@ -263,6 +275,29 @@ def watch_regions(session, ctx, labels, seconds, interval=WATCH_INTERVAL, flashe
                 if label in countable:
                     tick_counts = True
             last[label] = data
+        if changed_labels and capture_changes:
+            ctx.calibration_shots += 1
+            frame = f"event-calibration-{ctx.calibration_shots}.png"
+            ctx.calibration_names.append(frame)
+            capture_started = round(CLOCK() - begun, 2)
+            # Keep this synchronous and inside the complete tick. The driver's reviewed `shot`
+            # operation captures the full stage and propagates failures into normal session
+            # abort/recovery handling; there is no best-effort or background capture here.
+            perform(session, ctx, f"shot {frame[:-4]}")
+            capture_finished = round(CLOCK() - begun, 2)
+            ctx.obs(session, "read: event calibration frame", json.dumps({
+                **extra,
+                "frame": frame,
+                "turn": extra.get("turn"),
+                "tick": ticks,
+                "changed_regions": changed_labels,
+                "shares": shares,
+                "observed_at_s": now,
+                "capture_started_at_s": capture_started,
+                "capture_finished_at_s": capture_finished,
+                "limitation": "region reads and screenshot are sequential, not the identical sampled "
+                               "frame; this does not establish animation duration or absence",
+            }))
         if tick_counts:
             counted += 1
             if shoot:
@@ -449,7 +484,8 @@ def wait_human_ready_after_pass(session, ctx, turn):
     return False
 
 
-def watch_event_turn_after_pass(session, ctx, turn, watch, countable, need, candidates, begun):
+def watch_event_turn_after_pass(session, ctx, turn, watch, countable, need, candidates, begun,
+                                capture_changes=False):
     """Keep the candidate watch live while the accepted PASS is resolved.
 
     The event path cannot use the generic quiet-settle helper: a candidate may arrive after its
@@ -503,7 +539,8 @@ def watch_event_turn_after_pass(session, ctx, turn, watch, countable, need, cand
     counted = watch_regions(session, ctx, watch, EVENT_WATCH_SECONDS, WATCH_INTERVAL, flashes=True,
                             countable=countable, stop_at=need - candidates, shoot=True, begun=begun,
                             stop_when=observe_phase,
-                            extra={"turn": turn, "phase protocol": "post-PASS candidate observation"})
+                            extra={"turn": turn, "phase protocol": "post-PASS candidate observation"},
+                            capture_changes=capture_changes)
     if state["result"] is None and counted < need - candidates:
         state["result"] = "observation-timeout"
         ctx.obs(session, "event path stop",
@@ -656,8 +693,11 @@ def composite_event_watch(session, ctx, turns=30, need=5, watch=("message-strip"
             }))
             break
 
+        event_calibration = (isinstance(getattr(ctx, "spec", None), dict)
+                             and bool(ctx.spec.get("event_calibration", False)))
         observed, phase_result = watch_event_turn_after_pass(
-            session, ctx, turn, watch, countable, need, candidates, begun)
+            session, ctx, turn, watch, countable, need, candidates, begun,
+            capture_changes=event_calibration)
         candidates += observed
         if candidates >= need:
             break
@@ -927,6 +967,8 @@ def parse_args(argv):
     group.add_argument("--question", action="append", default=[],
                        help="a catalogue question id (Q-UI-04), repeatable, in the table's order")
     group.add_argument("--batch", help="every question of one batch, in the table's order")
+    ap.add_argument("--event-calibration", action="store_true",
+                    help="retain full-stage frames for any changed Q-UI-06/Q-UI-07 watch tick")
     return ap.parse_args(argv)
 
 
@@ -935,14 +977,20 @@ def questions_of(args):
         batches = dict(walks.BATCHES)
         if args.batch not in batches:
             sys.exit(f"unknown batch {args.batch!r}; the batches are {sorted(batches)}; nothing was started")
-        return batches[args.batch]
-    for qid in args.question:
-        if qid not in walks.WALKS:
-            sys.exit(f"unknown question {qid!r}; nothing was started")
-    return list(args.question)
+        questions = batches[args.batch]
+    else:
+        for qid in args.question:
+            if qid not in walks.WALKS:
+                sys.exit(f"unknown question {qid!r}; nothing was started")
+        questions = list(args.question)
+    if args.event_calibration and any(qid not in {"Q-UI-06", "Q-UI-07"} for qid in questions):
+        sys.exit("--event-calibration is allowed only for selections containing Q-UI-06/Q-UI-07; "
+                 "nothing was started")
+    return questions
 
 
-def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=ROOT, session_factory=Session):
+def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=ROOT, session_factory=Session,
+             event_calibration=False):
     """One walk: one session, one record. (status, recovered)
 
     `root` is where the records go and `session_factory` makes the session (the driver's Session);
@@ -960,6 +1008,7 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=
     except OSError as exc:
         sys.exit(f"the walk was not started: the install's {records.BINARY} could not be hashed ({exc})")
     size = size or DEFAULT_SIZE
+    spec["event_calibration"] = bool(event_calibration)
     session = session_factory(run_id, locs["IWP_PREFIX"], locs[f"{EXPERIMENT}_BUNDLES"], locs["IWP_DIR"],
                               display, records.arm_of_question(qid), size)
     # Construct the recorder context before Session.execute(): its recorder CLOCK timestamp includes
@@ -969,6 +1018,10 @@ def run_walk(qid, size, locs, display, commit, machine, argv, fingerprint, root=
     session.observe(0, "static", "walk batch", spec["batch"])
     session.observe(0, "static", "speed setting",
                     "normal (the unlocked default; every timing is a wall-clock reading at it)")
+    if event_calibration:
+        session.observe(0, "static", "event calibration policy",
+                        "opt-in full-stage captures for Q-UI-06/Q-UI-07 event-watch changes only; "
+                        "calibration frames are not candidates or event identifications")
     session.execute(walk_body(spec, ctx))
     # no snapshot (the session stopped before the seal): the prefix listing's hash is zeros, which
     # start_state.restore names, as the field itself did before T48 (#149). start_state.sha256 is
@@ -1002,7 +1055,8 @@ def inner(args, argv):
     for qid in questions:
         sizes = walks.WALKS[qid].get("sizes") or [None]
         for size in sizes:
-            _, recovered = run_walk(qid, size, locs, display, commit, machine, argv, fingerprint)
+            _, recovered = run_walk(qid, size, locs, display, commit, machine, argv, fingerprint,
+                                    event_calibration=args.event_calibration)
             if not recovered:
                 print(f"the {qid} walk was not recovered; stopping, so that no wrong state is carried on",
                       file=sys.stderr)
