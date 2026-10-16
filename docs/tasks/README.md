@@ -57,3 +57,4 @@ status; this index carries none.
 | T52 | malpaco's design, the UI: screens, the board, feedback and sound | #194 | T53 |
 | T55 | The single-exchange sitting: 20+ computer-vs-computer exchanges from a model sitting | #222 | T44 |
 | T56 | Accept exploration and decompilation requests from malpaco | #256 | — |
+| T57 | Pro map presentation: crossing endpoints and interaction cues | #255 | — |
