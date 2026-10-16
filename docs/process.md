@@ -168,6 +168,64 @@ run, or the owner's decision with its basis. Plausible rules without either stay
   repository holding the whole corpus; tests find fixtures by name; local tests skip without them. (L17) A *model-driven run* of the original is a carve-out of this (§10): a known-good hash table in a finding, a gate that refuses any run record off that table, then a `model-driven` task (`docs/tasks/TEMPLATE.md`); it corroborates the owner's runs, never replaces them, and what it shows amends `spec/` and `findings/` one claim at a time, never in bulk. (L63)
   Here: CLAUDE.md rule 18's carve-out (the owner, 2026-10-08; table F019, gate T36, platform `wine-on-user-machine-iwp-2.0`, evidence `class: recording`). Since 2026-10-09, constraint E counts model sittings on their own, beside the owner's videos.
 
+### 11.1 Accepting upstream investigations
+
+Owner-defined handoff, 2026-10-16 (L71): malpaco requests exploration or
+decompilation through an issue in this repository. The issue is the durable
+record; research answers questions, never decides malpaco's design.
+
+The receiving main session checks that the request includes:
+
+- **Question:** bounded questions, separating observed behaviour from hypotheses.
+- **Consumer and impact:** the malpaco issue/task and decision the answer informs;
+  whether implementation is blocked or can continue independently.
+- **Prior evidence and gap:** existing findings and related issues, and what remains
+  unanswered.
+- **Proposed method:** static/decompiled evidence first under CLAUDE.md rule 24;
+  controlled exploration or recorded play only for gaps or corroboration. A fixed
+  table or bitmap may be the answer; do not assume a procedural algorithm exists.
+- **Expected result and bound:** per-question answers, source identifiers,
+  confidence, reproducible commands or run provenance, measured results where
+  applicable, explicit unknowns, and bounded completion criteria including relevant
+  negative cases.
+- **Originals boundary:** CLAUDE.md rules 18–20 apply. Originals stay on the owner's
+  machine; no original code, assets, screenshots or decompiled excerpts pass to
+  malpaco. Only permitted behavioural/design conclusions and citations return.
+
+The receiving main session acknowledges on the request issue, checks existing
+findings and duplicate requests, and records one of these dispositions in a comment:
+
+| Disposition | Issue record and next owner | Return rule |
+| --- | --- | --- |
+| Answered by existing evidence | Receiver links reviewed, merged findings and explains which questions they answer; malpaco checks applicability and any remaining gap. | Return stable commit/section citations, confidence and limitations; no new research is implied. |
+| Folded into existing work | Receiver cross-links the covering issue/task, identifies the added question or duplicate, and names the existing task's responsible session. | That work's reviewed, merged findings return to the request; an uncovered gap is explicitly retained. |
+| Accepted new work | Receiver creates a T-numbered task issue and contract through §2 and CLAUDE.md rules 23 and 26, cross-linked to the request and consumer. The research main session owns scheduling and dispatch under the existing process. | Return only reviewed, merged findings; acceptance alone is not a result or a start. |
+| Clarification needed | Receiver states missing fields or unresolved questions; the requester owns the next clarification. | No answer is implied; re-triage on the issue when clarified. |
+| Deferred / out of scope | Receiver records the reason, any dependency or reconsideration condition, and who owns the next action (requester or research main session). | Explicitly return unanswered questions and limitations, not a research conclusion; re-triage if conditions change. |
+
+Record difficulty, priority, dependencies, local-machine needs and explicit unknowns
+in the triage comment and, for accepted work, its contract. Identify which steps
+require the owner's machine; the main session alone captures local game evidence.
+Acceptance does not bypass task splitting, static-first, originals, review or
+model-selection rules. No new service or label is required: status stays in existing
+issue labels, while comments retain reasons, acknowledgments and links. Documents
+never duplicate live status.
+
+Filing a request or contacting a session does not start work. Direct session messages
+are notifications carrying the issue URL and bounded request, backed by explicit
+receiving-session acknowledgment recorded on the issue; never blindly dispatch or
+claim a run has started from a message alone. Execution uses the existing task process.
+Use `Refs` for incoming and consumer issues in research/process PRs; closing a task
+must not accidentally close the request or the consumer issue.
+
+For the return handoff, the research main session comments on the request with
+reviewed, merged findings at stable commit/section links, per-question confidence
+(`confirmed`, `derived`, or still unknown), limitations and remaining gaps. Research
+provenance stays here under rules 18–20, with raw measurements immutable; it is not
+copied to malpaco. Malpaco owns adoption, design decisions, claim updates and consumer
+closure under its own §11 process. An unanswered request is never evidence, and an
+unknown is never silently promoted to confirmed behaviour.
+
 ## 12. Delegating decisions to Jev
 
 Jev takes a decision only when it recurs over many items, its answers are known up front, and a
