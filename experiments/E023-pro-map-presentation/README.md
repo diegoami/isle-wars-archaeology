@@ -17,7 +17,7 @@ and committed run/manifest identifiers. A repository-only reader can check those
 citations, but cannot turn a manifest hash into a fresh visual observation.
 
 The main session owns the local survey and its immutable
-`measurements/source-survey-r1.json`: checked source identifiers and hashes, committed
+[source-survey-r1.json](measurements/source-survey-r1.json): checked source identifiers and hashes, committed
 record/manifest/output hashes for reused captures, own-word observations, display geometry,
 and any measurement method. Do not create a placeholder survey, copy original bytes or
 include local install paths. Later survey batches get new filenames, never overwrite r1.
@@ -48,6 +48,13 @@ not water distances. Reliable visual measures require identified shores and rout
 known capture geometry and a stated tracing/error method in main's survey. If these
 cannot be supplied, the measures stay unestablished; no universal threshold follows.
 An occluded or unidentified line is not a negative adjacency observation.
+
+The supplied r1 survey reports three manually picked visible water spans in V01,
+with 4-pixel span uncertainty and optional normalization by the 800-pixel stage width.
+They are approximate Euclidean shore-contact distances, not full routes. O02 supplies
+isolated/clear examples; O03 supplies a clustered ambiguous case. O04 and `measurements`
+explicitly leave unrelated-coast clearance, hidden path geometry and midpoint-based
+detour ratios unestablished. No new decoder or run is justified by this bounded return.
 
 ## Validation
 
