@@ -145,3 +145,13 @@
   the focused E019 suite passes 160 tests.
 - Independently reversed the duplicate-section guard; the seeded duplicate regression failed with
   the reproduced empty-error result. The exact saved checker bytes were restored in `finally`.
+
+## END
+
+- Checkpoint `32d21e6` was pushed to `origin/fix/q06-bounded-result`.
+- Final post-check verification passed: Q06 focused tests 13, focused E019 tests 160, no-originals,
+  links/JSON, diff-check and forbidden machine-path grep. The final commit below is the sole
+  rework commit without `[skip ci]` and will trigger CI once.
+- No original install, prefix, bundle, screenshot, game run, capture, review, subagent, merge or
+  worktree removal was performed. Raw measurements, records, manifests and failure metadata remain
+  unchanged. Unreviewed tests used the 6G/no-swap memory cap.
