@@ -29,3 +29,49 @@
 - PR: https://github.com/diegoami/isle-wars-archaeology/pull/249
 - No game run, install, prefix, bundle, capture, review, subagent, merge, or worktree removal was
   performed. Raw measurements were not changed.
+
+# RUN-NOTES — #250
+
+## Plan
+
+- Implement only opt-in Q-UI-06/Q-UI-07 event calibration in the E019 recorder, with CLI gating,
+  provenance, diagnostic brackets, and unchanged candidate/count/lifecycle semantics.
+- Add focused regression coverage for small/non-countable changes, per-tick retention, CLI and inner
+  forwarding, capture failure recovery, defaults, and no-input behavior.
+- Prove the added tests fail against the saved pre-fix recorder, run the focused E019 suite and safety
+  checks under the 6G/no-swap cap, and restore every mutation byte-for-byte.
+
+## Progress
+
+- Read the repository `CLAUDE.md`, `docs/process.md`, existing #248 recorder/tests, and the complete
+  #250 brief. No original install, prefix, bundle, game, or capture was accessed.
+- The seeded pre-fix calibration suite failed with 9 tests and 10 errors on the baseline recorder:
+  missing `capture_changes`, CLI flag, and `run_walk` forwarding contract.
+- Added synchronous full-stage calibration retention for any changed shared event-watch tick,
+  separate calibration names/counters, turn/tick and accepted-PASS capture brackets, explicit
+  sequential-read limitation, opt-in policy observation, and CLI rejection before launch.
+- Added tests for defaults without the keyword, mixed event batches, event-helper forwarding,
+  capture-failure lifecycle, and no-input behavior. The expanded pre-fix suite failed as expected
+  (12 tests, 12 errors/failures); the exact saved recorder bytes were restored in `finally`.
+- Focused E019 validation passed: 147 tests. Independent capture-retention and CLI-forwarding
+  mutations both failed their seeded tests and the exact saved bytes were restored.
+- `check_no_originals.py`, `check_links.py`, `git diff --check`, and the forbidden machine-path grep
+  passed. No raw measurements or evidence records were changed.
+
+## END
+
+- Implementation is ready for the final non-`[skip ci]` commit and PR. No game run, install, prefix,
+  bundle, capture, review, subagent, merge, or worktree removal was performed.
+
+## Progress
+
+- Final implementation commit `799a6b2` was pushed without `[skip ci]`.
+- Code-only PR #251 was opened with `Closes #250` and `Refs #117` (the parent remains non-closing),
+  attributed to OpenCode Luna 5.6 high; no review or subagent was run.
+- Exact-head CI passed: checks and GitGuardian Security Checks both passed.
+
+## END
+
+- PR: https://github.com/diegoami/isle-wars-archaeology/pull/251
+- Working tree remains clean. No game run, install, prefix, bundle, capture, review, subagent, merge,
+  or worktree removal was performed; raw measurements remain unchanged.
