@@ -1,0 +1,4387 @@
+{
+  "schema": "evidence-manifest/1",
+  "run_id": "E019-r0054",
+  "experiment": "E019",
+  "store": "release:E019",
+  "artifact": {
+    "set": "iwp-2.0-996e86c5",
+    "variant": null
+  },
+  "files": [
+    {
+      "name": "before.png",
+      "bytes": 286896,
+      "sha256": "f4897d8caa5a22ee017247256c2c23d0a87f4e0d99a40edda966a6a6af9ee628",
+      "asset": "f4897d8caa5a22ee-before.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-1.png",
+      "bytes": 275319,
+      "sha256": "8d8299f6bbd23e026b35b2ce0bdbd5c38ad307b497e205b7372e00abc2370ef2",
+      "asset": "8d8299f6bbd23e02-event-calibration-1.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-2.png",
+      "bytes": 277489,
+      "sha256": "78a5ccd91a3e0b23b2d7adb145a041323d117b84bf60fb9b61fa0514f0b684b1",
+      "asset": "78a5ccd91a3e0b23-event-calibration-2.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-3.png",
+      "bytes": 276574,
+      "sha256": "6c9181bf6f5f14c93417eaa6a5b17286516c9d4774e7122f3d5619125c54fddd",
+      "asset": "6c9181bf6f5f14c9-event-calibration-3.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-4.png",
+      "bytes": 273282,
+      "sha256": "4819744f23e594a45440e85e09b2aebba34efe5481ccd7a8c50c4e64e4405525",
+      "asset": "4819744f23e594a4-event-calibration-4.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-5.png",
+      "bytes": 273282,
+      "sha256": "4819744f23e594a45440e85e09b2aebba34efe5481ccd7a8c50c4e64e4405525",
+      "asset": "4819744f23e594a4-event-calibration-5.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-6.png",
+      "bytes": 273902,
+      "sha256": "80014092423feadbf918d158b16951d33de3307c1b2854b71f34a03c5ab8111f",
+      "asset": "80014092423feadb-event-calibration-6.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-7.png",
+      "bytes": 277879,
+      "sha256": "24ae8eb423a0d7adda3ed01cc20d7a9f1d629cb4f225ccfa1cf73652a278d0ca",
+      "asset": "24ae8eb423a0d7ad-event-calibration-7.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-8.png",
+      "bytes": 273699,
+      "sha256": "b9fe0948e51230ebb7c46bc0f9dfa04b0e06d371b50d0451be08e7a8a8f4c973",
+      "asset": "b9fe0948e51230eb-event-calibration-8.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-9.png",
+      "bytes": 273109,
+      "sha256": "5a2b15fe1309cf2c4e3cd1a78f09739c41e0a8dc747b558c7ba5de5197c5e1d8",
+      "asset": "5a2b15fe1309cf2c-event-calibration-9.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-10.png",
+      "bytes": 273109,
+      "sha256": "5a2b15fe1309cf2c4e3cd1a78f09739c41e0a8dc747b558c7ba5de5197c5e1d8",
+      "asset": "5a2b15fe1309cf2c-event-calibration-10.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-11.png",
+      "bytes": 275555,
+      "sha256": "59a52d33291d040560314b8d727c955a4b01558583121f62c417ceafef65ac14",
+      "asset": "59a52d33291d0405-event-calibration-11.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-12.png",
+      "bytes": 275217,
+      "sha256": "772ad5e0692a0c07aca3c12c9548f47d93439ddd74048edb9d75d80fcdf9b0ea",
+      "asset": "772ad5e0692a0c07-event-calibration-12.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-13.png",
+      "bytes": 275779,
+      "sha256": "95773a5295d5431f2eb02d1bff51cd309f1298df1ac801b5abce83233ccac44c",
+      "asset": "95773a5295d5431f-event-calibration-13.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-14.png",
+      "bytes": 272955,
+      "sha256": "9affc5923b0f18ef45b65d5d09f16a05c20091d84cbc0e075384df77dacdbc7d",
+      "asset": "9affc5923b0f18ef-event-calibration-14.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-15.png",
+      "bytes": 273707,
+      "sha256": "6857d9c475a4d29f8d6213787f8425eefb6157c3a8a8a9e0b756d593dc66a39e",
+      "asset": "6857d9c475a4d29f-event-calibration-15.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-16.png",
+      "bytes": 277601,
+      "sha256": "17c5516626077a057280ae667eb3fff2e8f7f4ce1eb0e43495aaa703bd743e9f",
+      "asset": "17c5516626077a05-event-calibration-16.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-17.png",
+      "bytes": 273646,
+      "sha256": "6e4c744cc8934f1e6983a6ee62c4169d51c8b1cb23c5dcc1297a6852350dd816",
+      "asset": "6e4c744cc8934f1e-event-calibration-17.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-18.png",
+      "bytes": 273626,
+      "sha256": "c6dd4982965dda622f39ee925a03771d04931f3e70db2d3e520cbb013945b1ec",
+      "asset": "c6dd4982965dda62-event-calibration-18.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-19.png",
+      "bytes": 276865,
+      "sha256": "e14a294b46b9e95acd47df2af89b62cb40792a98354a9a1830267ed5f8a877ae",
+      "asset": "e14a294b46b9e95a-event-calibration-19.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-20.png",
+      "bytes": 275696,
+      "sha256": "0f16edfcb9072e4a5a0cc7daeb3caee82edd19a816d51903657115320f7f661d",
+      "asset": "0f16edfcb9072e4a-event-calibration-20.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-21.png",
+      "bytes": 278636,
+      "sha256": "3fece6d15aa49fcbadef774ecb61e51411ca80bb82b9c1ea3ab76366acea35c2",
+      "asset": "3fece6d15aa49fcb-event-calibration-21.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-22.png",
+      "bytes": 276340,
+      "sha256": "0e3a43a5eeb266d23b951ded87b6176ea77bccff073c1430ad7ed8e2ac982e1a",
+      "asset": "0e3a43a5eeb266d2-event-calibration-22.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-23.png",
+      "bytes": 272581,
+      "sha256": "6cfaa91af309c6dd8965aa3555844b64c2330e6592ea8b47e4548253814c548d",
+      "asset": "6cfaa91af309c6dd-event-calibration-23.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-24.png",
+      "bytes": 273262,
+      "sha256": "f564481940db9f9babc2f30231e4acce57d9734a121cdefda12b9fbcc0c15df6",
+      "asset": "f564481940db9f9b-event-calibration-24.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-25.png",
+      "bytes": 273228,
+      "sha256": "7978a261e408f9db8c0ffc01acfcdfc32c164ebaee1f152408138ae9871acd2d",
+      "asset": "7978a261e408f9db-event-calibration-25.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-26.png",
+      "bytes": 275746,
+      "sha256": "3988b109e51113209c4c0d2bea45d28431bdd45e0ef95859178defb9a37c2ee8",
+      "asset": "3988b109e5111320-event-calibration-26.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-27.png",
+      "bytes": 273102,
+      "sha256": "2830b5d8112115e626a3ed03b7cbf88909425d5ba7727ad9bf9cc89238efe1c6",
+      "asset": "2830b5d8112115e6-event-calibration-27.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-28.png",
+      "bytes": 275764,
+      "sha256": "3c0043de3e7187053b7e0543a2d1ae8aa98fceefab6cc142aa9bbbf6e30b8d60",
+      "asset": "3c0043de3e718705-event-calibration-28.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-29.png",
+      "bytes": 279880,
+      "sha256": "7cab148bb704244c3b3394412e0f5f3ac9e238197fe1de26b825e0b5854b889e",
+      "asset": "7cab148bb704244c-event-calibration-29.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-30.png",
+      "bytes": 273134,
+      "sha256": "d3e74b5a5c7ad3864266d806fb79bdf64141f9c5a2becabbae0bd35647bc63a4",
+      "asset": "d3e74b5a5c7ad386-event-calibration-30.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-31.png",
+      "bytes": 273138,
+      "sha256": "184deeb86f3747295c0dcaea313b8500d701de24b079ae7c238f6ad13a0ff320",
+      "asset": "184deeb86f374729-event-calibration-31.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-32.png",
+      "bytes": 276639,
+      "sha256": "6e736db4bc26627fc5ebc451d1348f16c9821480f4cea844cad5c5d199604d67",
+      "asset": "6e736db4bc26627f-event-calibration-32.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-33.png",
+      "bytes": 273137,
+      "sha256": "b70e0151f398c63a3dd3c9ceddbdaf3ab8bcd37e84998f4efda3ce95d4c99907",
+      "asset": "b70e0151f398c63a-event-calibration-33.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-34.png",
+      "bytes": 277012,
+      "sha256": "8c7e45c69074fb8e142c6451a33a56cc76a71cfb9b262d4cfd4188e2077ee48d",
+      "asset": "8c7e45c69074fb8e-event-calibration-34.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-35.png",
+      "bytes": 273137,
+      "sha256": "a88672bb4b7f14d72e690a464322f8edabfd4457bceb8f7f619fb37ed849d4e1",
+      "asset": "a88672bb4b7f14d7-event-calibration-35.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-36.png",
+      "bytes": 273015,
+      "sha256": "4a97cbc4d00919a1c8e9b66eb4a6914882924b54c749becd4df4065aa85a485c",
+      "asset": "4a97cbc4d00919a1-event-calibration-36.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-37.png",
+      "bytes": 276127,
+      "sha256": "c2305536f4251e8bfacfa65d24945d3765c020030508f6821c13f62ba851a69b",
+      "asset": "c2305536f4251e8b-event-calibration-37.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-38.png",
+      "bytes": 276997,
+      "sha256": "bb81b5f968c43dc6c8de6a72b148c76cb11793ecd5ddeb4496dfe501af3aa784",
+      "asset": "bb81b5f968c43dc6-event-calibration-38.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-39.png",
+      "bytes": 275595,
+      "sha256": "b288ae5a50937fb5bf99538574f9643982aa228789a609b62f381306f6708c74",
+      "asset": "b288ae5a50937fb5-event-calibration-39.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-40.png",
+      "bytes": 272798,
+      "sha256": "eae790fd3c3fd73ab8beeb033a39e89473f1ee698bb24881372a443cad7fe7fb",
+      "asset": "eae790fd3c3fd73a-event-calibration-40.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-41.png",
+      "bytes": 275249,
+      "sha256": "3a6b8b39d2ef44b65b2a56dd19a21c6f3368843183466b9c9c4cb672ecee41b1",
+      "asset": "3a6b8b39d2ef44b6-event-calibration-41.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-42.png",
+      "bytes": 275985,
+      "sha256": "ce568eef15f0a8304208e8dd862dd9582ad8c21d3ca9fd85e27c2d04ef9b0edd",
+      "asset": "ce568eef15f0a830-event-calibration-42.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-43.png",
+      "bytes": 277080,
+      "sha256": "5d5ee257e64b096bb71e2a8ae2846e770e4db9df3becfa047f79b164560402b3",
+      "asset": "5d5ee257e64b096b-event-calibration-43.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-44.png",
+      "bytes": 273211,
+      "sha256": "53d20e0de3837873cb17994ac79284e8a37f3905f8f999eecbd28ac2a1a78de9",
+      "asset": "53d20e0de3837873-event-calibration-44.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-45.png",
+      "bytes": 273875,
+      "sha256": "9773e7b057acde0a7c0aac8352c30abf32c090b4624272c40524d183ea98c9b6",
+      "asset": "9773e7b057acde0a-event-calibration-45.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-46.png",
+      "bytes": 273876,
+      "sha256": "cb95cb2198d713e2e4eb711faabad635a21e109054ddf13473c0fa52d7bdb957",
+      "asset": "cb95cb2198d713e2-event-calibration-46.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-47.png",
+      "bytes": 273901,
+      "sha256": "e0c798c40186cd4e0266c9d083d61ed49ea855014786f9dd5f864a1dfda2cfb3",
+      "asset": "e0c798c40186cd4e-event-calibration-47.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-48.png",
+      "bytes": 277458,
+      "sha256": "ea74be52fcac9a629cef59e1fe83079aba1cddfe76df2545fb4e884c510125d0",
+      "asset": "ea74be52fcac9a62-event-calibration-48.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-49.png",
+      "bytes": 273757,
+      "sha256": "ffb492b445fc28e9093255c1b145b0221a9ea1bb6e2d8be37afeb13f9b6ec8e3",
+      "asset": "ffb492b445fc28e9-event-calibration-49.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-50.png",
+      "bytes": 278482,
+      "sha256": "aa9261cef7f37390efa8fed719d8d8841b8a5181f2b58e8e2c18caca94f0c4b7",
+      "asset": "aa9261cef7f37390-event-calibration-50.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-51.png",
+      "bytes": 273794,
+      "sha256": "98ce75013a1f0fd952c655ed96b1d17529efa1b634d1f691ae920ed134a5d512",
+      "asset": "98ce75013a1f0fd9-event-calibration-51.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-52.png",
+      "bytes": 273350,
+      "sha256": "34def87b402666148674cd10fb88834235e4f3fcfce50a802d52ceeeb9140746",
+      "asset": "34def87b40266614-event-calibration-52.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-53.png",
+      "bytes": 276885,
+      "sha256": "3dce9988de75fb8be5014c6f3e9a246ec45dd79b2b6deacf11ffe6f5edb9e85a",
+      "asset": "3dce9988de75fb8b-event-calibration-53.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-54.png",
+      "bytes": 277554,
+      "sha256": "fd89d00a87dfa15c09a3572a7136e7bc26545e6bfe1e234211ead553efb6440a",
+      "asset": "fd89d00a87dfa15c-event-calibration-54.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-55.png",
+      "bytes": 277670,
+      "sha256": "c05258c87048fcdd792e813c57dd58d73b84fbdad46b367c4a9c5584d16a5599",
+      "asset": "c05258c87048fcdd-event-calibration-55.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-56.png",
+      "bytes": 273310,
+      "sha256": "429efe8e17ca99ea983aed7f78b8bbea9d79917126634b96fc6bd4776116f8ba",
+      "asset": "429efe8e17ca99ea-event-calibration-56.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-57.png",
+      "bytes": 274039,
+      "sha256": "1555c3eacd7c820953afee17a03b75ec6d5c8ec864ed3611d71e35ea8c1589f3",
+      "asset": "1555c3eacd7c8209-event-calibration-57.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-58.png",
+      "bytes": 277298,
+      "sha256": "6f01712a3515e3ebfd307dd98a315f20aba9b76032a7246a822222c8435496a5",
+      "asset": "6f01712a3515e3eb-event-calibration-58.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-59.png",
+      "bytes": 273975,
+      "sha256": "f62f9dbc5021ecd5d556714c35773c6684edbb6d8e9d8dae02a6c655678a7212",
+      "asset": "f62f9dbc5021ecd5-event-calibration-59.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-60.png",
+      "bytes": 277218,
+      "sha256": "7aaba27a0607340adb72b2d181ac082f1ec7f401774647eeb6a6ba19d9dfa0a6",
+      "asset": "7aaba27a0607340a-event-calibration-60.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-61.png",
+      "bytes": 276861,
+      "sha256": "f1ffbf594a1d515b884f5eea9515a247abeb23f72d6ce41dc9ac454c55aca18c",
+      "asset": "f1ffbf594a1d515b-event-calibration-61.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-62.png",
+      "bytes": 276821,
+      "sha256": "d386252f5db1b7de5724802e95979c356577f72a57df6c8587836ef83aedb462",
+      "asset": "d386252f5db1b7de-event-calibration-62.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-63.png",
+      "bytes": 276791,
+      "sha256": "06feca5bc31a1d7a59d0e95758a54c32d08eb312694a7f1535e50a133493d6de",
+      "asset": "06feca5bc31a1d7a-event-calibration-63.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-64.png",
+      "bytes": 272947,
+      "sha256": "5a1b6b793a91d787424e08e6fad0244d66702e6d65ac1897a02cc79ff3dc26ff",
+      "asset": "5a1b6b793a91d787-event-calibration-64.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-65.png",
+      "bytes": 273382,
+      "sha256": "a800b8201a1b02d6913af2ba9109039e6938bffa1d26817492c8c77c62adbaea",
+      "asset": "a800b8201a1b02d6-event-calibration-65.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-66.png",
+      "bytes": 273797,
+      "sha256": "49532d7b869061ca89f09ee2e5bbf6c1b376ccfef1a7c32140ca5bfaccda96f4",
+      "asset": "49532d7b869061ca-event-calibration-66.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-67.png",
+      "bytes": 273610,
+      "sha256": "26d78081b6f1435811c9ac8ad8a87169f3b83f19b18ec3c5fa8287cfb916bb5f",
+      "asset": "26d78081b6f14358-event-calibration-67.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-68.png",
+      "bytes": 275897,
+      "sha256": "8a62117f60f93b0af5d14a38a8521cc8507dec3df318721ac51e56a10877bc6f",
+      "asset": "8a62117f60f93b0a-event-calibration-68.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-69.png",
+      "bytes": 273478,
+      "sha256": "2617470fc963e407293c53483060adf2039424b650c4a3c9d5a07366660ccec8",
+      "asset": "2617470fc963e407-event-calibration-69.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-70.png",
+      "bytes": 274020,
+      "sha256": "38833443f9c6c2ae93287d1b6618a79ab96a71534e8e0f13fe002ef9c3302b6f",
+      "asset": "38833443f9c6c2ae-event-calibration-70.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-71.png",
+      "bytes": 279518,
+      "sha256": "974b300451c703b8994d75d273bfd2ed28402a75063ece58e64734631c0be09e",
+      "asset": "974b300451c703b8-event-calibration-71.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-72.png",
+      "bytes": 272683,
+      "sha256": "2f036109f516e3f20afde1ac73780f6001c7ebb52fda6a045c265dd53657ded2",
+      "asset": "2f036109f516e3f2-event-calibration-72.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-73.png",
+      "bytes": 277657,
+      "sha256": "20b3b53d4e8d47f147833f5112d4cb53ddee919c56c7b381d553e332444c5a18",
+      "asset": "20b3b53d4e8d47f1-event-calibration-73.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-74.png",
+      "bytes": 276621,
+      "sha256": "46228728ab60e7af3f19d40336ea8b857870306f39dc4d8acd95dfb4040697ef",
+      "asset": "46228728ab60e7af-event-calibration-74.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-75.png",
+      "bytes": 273978,
+      "sha256": "4a0a96e48da3d3719be7af62cd74c40284d2acd68515501479f66c2c8888c8e1",
+      "asset": "4a0a96e48da3d371-event-calibration-75.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-76.png",
+      "bytes": 278301,
+      "sha256": "139a569a055deb4044a8a703214c8adcbee1038b60cdde0ebd12909156b6f358",
+      "asset": "139a569a055deb40-event-calibration-76.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-77.png",
+      "bytes": 277136,
+      "sha256": "5af166ff55c3352cc321c3c7df82436512b5a24eed7dd532142a2dbe894b8345",
+      "asset": "5af166ff55c3352c-event-calibration-77.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-78.png",
+      "bytes": 278186,
+      "sha256": "797e49491860fe6b9529fdcba5933801b32e478310f91b654c97f265960e91e2",
+      "asset": "797e49491860fe6b-event-calibration-78.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-79.png",
+      "bytes": 274394,
+      "sha256": "46b6d5633411f71c49c2d0c86c210edc02738fab413b07ae2dcf84f1f0accd7a",
+      "asset": "46b6d5633411f71c-event-calibration-79.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-80.png",
+      "bytes": 275055,
+      "sha256": "60dff2e1930bb0f1afca8553d2500eaddea115830db7bf706421ab3ae8a825aa",
+      "asset": "60dff2e1930bb0f1-event-calibration-80.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-81.png",
+      "bytes": 275081,
+      "sha256": "dfeb7b41c1f20772ba1df19dcc849dda4d87e21ea252cc84a6134cc275a0d42c",
+      "asset": "dfeb7b41c1f20772-event-calibration-81.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-82.png",
+      "bytes": 275077,
+      "sha256": "0581e49204718995c0d0f1fc27b876cacfe5669afeb4fb96b3f0edd97b74c01f",
+      "asset": "0581e49204718995-event-calibration-82.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-83.png",
+      "bytes": 277085,
+      "sha256": "454971920852b2c1df6167bb51a068bece5938a391f4c322085ea9073c0dca3e",
+      "asset": "454971920852b2c1-event-calibration-83.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-84.png",
+      "bytes": 273934,
+      "sha256": "e9cebd94afda12d667e186ccf198fab600dc544d486582824d72b66bfedc9cca",
+      "asset": "e9cebd94afda12d6-event-calibration-84.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-85.png",
+      "bytes": 273934,
+      "sha256": "e9cebd94afda12d667e186ccf198fab600dc544d486582824d72b66bfedc9cca",
+      "asset": "e9cebd94afda12d6-event-calibration-85.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-86.png",
+      "bytes": 278099,
+      "sha256": "4742d9bfc3319b7a319e016a4f9491db55f7b529bae460b49607b43bdb13a2e3",
+      "asset": "4742d9bfc3319b7a-event-calibration-86.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-87.png",
+      "bytes": 274368,
+      "sha256": "d42d210017624e96be4c1cfd34b8849df4adb42577a4d3509c2ca79453225ffe",
+      "asset": "d42d210017624e96-event-calibration-87.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-88.png",
+      "bytes": 279413,
+      "sha256": "15593badd1cbb15a59e97af50e11bec7b3bd2af1d1bf76b9c44eca96e9f7d74c",
+      "asset": "15593badd1cbb15a-event-calibration-88.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-89.png",
+      "bytes": 273826,
+      "sha256": "72731168045b982d535f3a062ee6f1d0c8cbc8c02d0b6c122e5a628b45a0d449",
+      "asset": "72731168045b982d-event-calibration-89.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-90.png",
+      "bytes": 276103,
+      "sha256": "27e14189546ec7d976757ac653943653cc828a41a48caf3fc3a5835e8e97f95f",
+      "asset": "27e14189546ec7d9-event-calibration-90.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-91.png",
+      "bytes": 277983,
+      "sha256": "1a3aa530558af13941efa0b20f58df9326529f36d1965a0ee3dc115da885dcf0",
+      "asset": "1a3aa530558af139-event-calibration-91.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-92.png",
+      "bytes": 278097,
+      "sha256": "ca625003e56ba4b23e1992cd3834015e9b8b8819e89c1ebebf903f51b7945e31",
+      "asset": "ca625003e56ba4b2-event-calibration-92.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-93.png",
+      "bytes": 273754,
+      "sha256": "84f51dd2ad0d0cbdcd8b39cb2a81d25b8c33bffea36bf9b83302d20031ee983a",
+      "asset": "84f51dd2ad0d0cbd-event-calibration-93.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-94.png",
+      "bytes": 274481,
+      "sha256": "4abbbbf98125b66623d35eea560ee6c6d47ad772384a7b2bc72e4ed262a1a1f7",
+      "asset": "4abbbbf98125b666-event-calibration-94.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-95.png",
+      "bytes": 278040,
+      "sha256": "04cf66fd6de5a90734efa4743d6340d58b3880d85b23e50ff9cad0c1d5b71240",
+      "asset": "04cf66fd6de5a907-event-calibration-95.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-96.png",
+      "bytes": 274011,
+      "sha256": "ff883bc20d8ad22eef1c9f1b20f5392c28cfdf347765c7da4cc4a0efc41bc4bd",
+      "asset": "ff883bc20d8ad22e-event-calibration-96.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-97.png",
+      "bytes": 274443,
+      "sha256": "67ccf2c1cbeb6374b3baa5294abfafdf3f897445220830cf626a9dfede9569ce",
+      "asset": "67ccf2c1cbeb6374-event-calibration-97.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-98.png",
+      "bytes": 278275,
+      "sha256": "eebbdd5cd118298f66fe1069dcee331e0de2836aee38d7c4d5d30eb8b9ffe178",
+      "asset": "eebbdd5cd118298f-event-calibration-98.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-99.png",
+      "bytes": 274856,
+      "sha256": "470424e874b40343a89f246d6a5ca175b7e317d471b19a4a7f19b536b582d2ce",
+      "asset": "470424e874b40343-event-calibration-99.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-100.png",
+      "bytes": 274860,
+      "sha256": "3fbbbf48605fe6d86b94460df93289149b886e5fbc8fc37d6c842e63d3eb80df",
+      "asset": "3fbbbf48605fe6d8-event-calibration-100.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-101.png",
+      "bytes": 277992,
+      "sha256": "5275681a1ea0b71c9c47aacf0828c36ae7d2376489b95cd5b5a16438ace3bdaf",
+      "asset": "5275681a1ea0b71c-event-calibration-101.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-102.png",
+      "bytes": 277622,
+      "sha256": "af5074fbda10cd0a167277ed7218044810542e410de21307696d68f1ba957bbd",
+      "asset": "af5074fbda10cd0a-event-calibration-102.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-103.png",
+      "bytes": 277592,
+      "sha256": "b78df857f698a34def5e5a5c54af2d7f60b2b31dfcc40507d9026574f3507862",
+      "asset": "b78df857f698a34d-event-calibration-103.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-104.png",
+      "bytes": 276909,
+      "sha256": "21954ccc17acf277fbbed59c13751db43dd741fd9176936177723480558b1258",
+      "asset": "21954ccc17acf277-event-calibration-104.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-105.png",
+      "bytes": 273747,
+      "sha256": "edf01a66cc116c7cc5b2e78bdfc067ddabfc0a1d6b2e6a78ad77cc0eaee1b6fa",
+      "asset": "edf01a66cc116c7c-event-calibration-105.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-106.png",
+      "bytes": 274482,
+      "sha256": "785502453c6e973f0c7b45dd7b8243c3318cc2ec78a6c79372a929d4d6c0327d",
+      "asset": "785502453c6e973f-event-calibration-106.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-107.png",
+      "bytes": 274437,
+      "sha256": "15e6c8bdfbd5b3eba2768f30fdb674bda7c606532c1f6f24956f903a4add37fe",
+      "asset": "15e6c8bdfbd5b3eb-event-calibration-107.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-108.png",
+      "bytes": 278311,
+      "sha256": "014db683f3cc8ae493593e413737dee092fd335d9884a07535d8e8ec920d6ef9",
+      "asset": "014db683f3cc8ae4-event-calibration-108.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-109.png",
+      "bytes": 274307,
+      "sha256": "863b9467e29533f362d6c4a62ae44dde609a58c4f82d3ea201b05207c6e6c386",
+      "asset": "863b9467e29533f3-event-calibration-109.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-110.png",
+      "bytes": 278666,
+      "sha256": "bdb54c87cec21772161119f6dfdf8b06c3eb14646301045ac325feb0a8f8f630",
+      "asset": "bdb54c87cec21772-event-calibration-110.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-111.png",
+      "bytes": 274523,
+      "sha256": "1dd2e4017f022d19ec05e0f650d20d0c0e7b09d1e9eeba70e53bd9908c166e3d",
+      "asset": "1dd2e4017f022d19-event-calibration-111.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-112.png",
+      "bytes": 278506,
+      "sha256": "a8a6ebec52b58205578da789415201b0c511f757f8ee0c8f3c071d7e4810b690",
+      "asset": "a8a6ebec52b58205-event-calibration-112.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-113.png",
+      "bytes": 274890,
+      "sha256": "5185e6346ce3a94c87d722c5e17d1e867ca4e6a34710f90d33ea626f0bad25c4",
+      "asset": "5185e6346ce3a94c-event-calibration-113.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-114.png",
+      "bytes": 273108,
+      "sha256": "a4d596a04a3584deeabe2426c41c66ccde5a1c50b65a049cfb83544c99b39d7e",
+      "asset": "a4d596a04a3584de-event-calibration-114.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-115.png",
+      "bytes": 278372,
+      "sha256": "62ff5980cd2874bb51c14e8a4cd932374f65796a9b461ec3a42118762a1a81a2",
+      "asset": "62ff5980cd2874bb-event-calibration-115.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-116.png",
+      "bytes": 274396,
+      "sha256": "251dac3059a806c4b05b3acad2efa49fe788b8dced44c3b7b043bf0e0c7e5036",
+      "asset": "251dac3059a806c4-event-calibration-116.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-117.png",
+      "bytes": 276814,
+      "sha256": "551cdb55ea4fedfb23052118b7466e054c52af50697aa6e288e9ab0d6d7ca515",
+      "asset": "551cdb55ea4fedfb-event-calibration-117.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-118.png",
+      "bytes": 277812,
+      "sha256": "68eb8c2e2ee3d80eca5cef986828242444eab1615994239d1be2b6e408a03264",
+      "asset": "68eb8c2e2ee3d80e-event-calibration-118.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-119.png",
+      "bytes": 278488,
+      "sha256": "e924288232babd6772e9979a375f80563aa0eff5ed531726014782a831fbb2b8",
+      "asset": "e924288232babd67-event-calibration-119.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-120.png",
+      "bytes": 274828,
+      "sha256": "587458d547002091df4a171c70562c80d345ecfb53222b7100343b93faf970f3",
+      "asset": "587458d547002091-event-calibration-120.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-121.png",
+      "bytes": 274828,
+      "sha256": "587458d547002091df4a171c70562c80d345ecfb53222b7100343b93faf970f3",
+      "asset": "587458d547002091-event-calibration-121.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-122.png",
+      "bytes": 275483,
+      "sha256": "8234153c7523b5dc28a5df28e23565af0bc6b7a0a3cc334e5a1203fd7a2e54e7",
+      "asset": "8234153c7523b5dc-event-calibration-122.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-123.png",
+      "bytes": 277749,
+      "sha256": "80066fede2120b4fb57b09bdcd74c9dc01cd40a18bbb705c315a1c4109fb6062",
+      "asset": "80066fede2120b4f-event-calibration-123.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-124.png",
+      "bytes": 275332,
+      "sha256": "12bcf1b720b14f42f6d481ec5dedc36ab539e1dd342f136d16c6e412859eccb7",
+      "asset": "12bcf1b720b14f42-event-calibration-124.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-125.png",
+      "bytes": 274707,
+      "sha256": "a921afe7792a17d9d70376d2ed6e2debc84ab7d55f0335cb50aeded21ff02fc0",
+      "asset": "a921afe7792a17d9-event-calibration-125.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-126.png",
+      "bytes": 274707,
+      "sha256": "a921afe7792a17d9d70376d2ed6e2debc84ab7d55f0335cb50aeded21ff02fc0",
+      "asset": "a921afe7792a17d9-event-calibration-126.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-127.png",
+      "bytes": 278597,
+      "sha256": "065348637c8ad870d145a41468f4968a73dcc5c6aeb771cfb18b5b0ba8f10352",
+      "asset": "065348637c8ad870-event-calibration-127.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-128.png",
+      "bytes": 275152,
+      "sha256": "9dde33fa11467d0db99537fdf8f74bb70c80d1ad295f3164badcd1c4924714f5",
+      "asset": "9dde33fa11467d0d-event-calibration-128.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-129.png",
+      "bytes": 280033,
+      "sha256": "8a162dcd5b0c2b82cce1bfe756c46aa6628ba778b91788259b7c6f2bb58d9456",
+      "asset": "8a162dcd5b0c2b82-event-calibration-129.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-130.png",
+      "bytes": 273330,
+      "sha256": "e988dfda39d05b4691c2efe2a1cb007655febf914315a0635b63112eee21e0df",
+      "asset": "e988dfda39d05b46-event-calibration-130.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-131.png",
+      "bytes": 278047,
+      "sha256": "9aa4fb88dd83f21acfeb0563837ca954de2d6ad39576ab6e0b7f379d43e4e53a",
+      "asset": "9aa4fb88dd83f21a-event-calibration-131.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-132.png",
+      "bytes": 278802,
+      "sha256": "02a88583b6c2ec5c6eadcadbb39d211733a5cc1440c87269a88d28a213558953",
+      "asset": "02a88583b6c2ec5c-event-calibration-132.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-133.png",
+      "bytes": 278830,
+      "sha256": "85e6fef22feb44521cfbe6b540a44e6d7e139356c76c4486bbe70b981c9b2206",
+      "asset": "85e6fef22feb4452-event-calibration-133.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-134.png",
+      "bytes": 274503,
+      "sha256": "704454766ac8159a8342a16abbe347bf0877beca8244041e1c7133dbb6d8d3e7",
+      "asset": "704454766ac8159a-event-calibration-134.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-135.png",
+      "bytes": 275232,
+      "sha256": "722b2bab78c9155a69ffda26c408d3dba22faf3b46eea38314b82d3f36fc6223",
+      "asset": "722b2bab78c9155a-event-calibration-135.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-136.png",
+      "bytes": 278439,
+      "sha256": "5f1cb924e73a72e17c98ca59efa6648d23864aeeb206154edd1d1207b2713c2a",
+      "asset": "5f1cb924e73a72e1-event-calibration-136.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-137.png",
+      "bytes": 275162,
+      "sha256": "1c7b7afcf0ad70d6761ae56360811dc46cb1bf04a0dcb69cac24823f609f8512",
+      "asset": "1c7b7afcf0ad70d6-event-calibration-137.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-138.png",
+      "bytes": 274525,
+      "sha256": "490e52ac1e8988a6be1185519d9cbd106d5a327772c5b2a27fe74e20976e0b0d",
+      "asset": "490e52ac1e8988a6-event-calibration-138.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-139.png",
+      "bytes": 277639,
+      "sha256": "ed3e6d4f7ddfb9d3aa72df0608adf7f520f937dc0a0dcb6a93fe47793bf1dde1",
+      "asset": "ed3e6d4f7ddfb9d3-event-calibration-139.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-140.png",
+      "bytes": 277941,
+      "sha256": "fb1db9833417f45b6314814db2a825904ce15b6b32f7a1f575ed504d1b93811f",
+      "asset": "fb1db9833417f45b-event-calibration-140.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-141.png",
+      "bytes": 277954,
+      "sha256": "336ffd3d23d1e80b5172d4b218bc50544162a5089e3c98a28910af1ae7367aef",
+      "asset": "336ffd3d23d1e80b-event-calibration-141.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-142.png",
+      "bytes": 277427,
+      "sha256": "5a67a7c821def801499a5f45046a77ff270464b4392146104dfeed4abd95e1b5",
+      "asset": "5a67a7c821def801-event-calibration-142.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-143.png",
+      "bytes": 274087,
+      "sha256": "9008a86f20c6825fb54b132b4e9c92f7d048f0346f327b00b475454360fdbf9a",
+      "asset": "9008a86f20c6825f-event-calibration-143.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-144.png",
+      "bytes": 274275,
+      "sha256": "96806022c04a264a2751f1b63eb1f9289afb92b18368ef67da64ff720b70e2fe",
+      "asset": "96806022c04a264a-event-calibration-144.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-145.png",
+      "bytes": 274868,
+      "sha256": "49a5ceaa8ec28c055ec6f2feef19dd7a25e0379adc1d4700d7fb3e7002e066ad",
+      "asset": "49a5ceaa8ec28c05-event-calibration-145.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-146.png",
+      "bytes": 274769,
+      "sha256": "a76a87ca5b7f96153785c04caafdc30e6e2c7616e325047ace835a58dc28fb81",
+      "asset": "a76a87ca5b7f9615-event-calibration-146.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-147.png",
+      "bytes": 274777,
+      "sha256": "189e1070adf929f241e6ee5b78b50d05156c60c4843b08795c38ffb63481fb1a",
+      "asset": "189e1070adf929f2-event-calibration-147.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-148.png",
+      "bytes": 274777,
+      "sha256": "189e1070adf929f241e6ee5b78b50d05156c60c4843b08795c38ffb63481fb1a",
+      "asset": "189e1070adf929f2-event-calibration-148.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-149.png",
+      "bytes": 274777,
+      "sha256": "f378bfa0344d7e3d159bee07251d24fccf6640b0d132b3beb966ec69da7d2551",
+      "asset": "f378bfa0344d7e3d-event-calibration-149.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-150.png",
+      "bytes": 274771,
+      "sha256": "23fcca80d6bb30b03604479478473cd602b2aeaa693b881f1d2c078a83a1113f",
+      "asset": "23fcca80d6bb30b0-event-calibration-150.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-151.png",
+      "bytes": 277215,
+      "sha256": "ad92fdb7cb55020e40e0079790d9a69800ed34289aa1136b8e38ac81b0b29872",
+      "asset": "ad92fdb7cb55020e-event-calibration-151.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-152.png",
+      "bytes": 274576,
+      "sha256": "7a96ef0d09306487005739abbe02d68b5f81cebab5362657dd3d4ae307f0494e",
+      "asset": "7a96ef0d09306487-event-calibration-152.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-153.png",
+      "bytes": 274545,
+      "sha256": "d6d03dcd81a7b06d0adce2dc2a3ee9cb1a3ddc737e0c326f86d605e2404f2dce",
+      "asset": "d6d03dcd81a7b06d-event-calibration-153.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-154.png",
+      "bytes": 274351,
+      "sha256": "4f3efd3bff51e68c57a3ae243958d7b1d1083c6a93d3f5de3781c6c9e40949d8",
+      "asset": "4f3efd3bff51e68c-event-calibration-154.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-155.png",
+      "bytes": 274351,
+      "sha256": "4f3efd3bff51e68c57a3ae243958d7b1d1083c6a93d3f5de3781c6c9e40949d8",
+      "asset": "4f3efd3bff51e68c-event-calibration-155.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-156.png",
+      "bytes": 278127,
+      "sha256": "2ae665ab848c6a73b27d0cac5b5bf8eefc613e5015b4c18d9a4aafcbba09fe5e",
+      "asset": "2ae665ab848c6a73-event-calibration-156.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-157.png",
+      "bytes": 274693,
+      "sha256": "ce3369f620f12e766aa5bb13fee7d9384752d06e8ee7fd7fc8e6c09d086cb693",
+      "asset": "ce3369f620f12e76-event-calibration-157.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-158.png",
+      "bytes": 274734,
+      "sha256": "143b2eadcda94a18793dd9dffd75b9c441f08903a085225739a863870f4e9c8e",
+      "asset": "143b2eadcda94a18-event-calibration-158.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-159.png",
+      "bytes": 274466,
+      "sha256": "b63981443583304b645e9cdd127be000f9e14f3a06cc685f0f6ff1d52408eb43",
+      "asset": "b63981443583304b-event-calibration-159.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-160.png",
+      "bytes": 277465,
+      "sha256": "bc6b2161f453936ae23df1278d32559326aef68a657ae2fd512d6e1c08db5a69",
+      "asset": "bc6b2161f453936a-event-calibration-160.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-161.png",
+      "bytes": 274457,
+      "sha256": "6f43eba16f6d3cb8bb1c1e474be4639266f403c80b41be18e38abe499d4e187e",
+      "asset": "6f43eba16f6d3cb8-event-calibration-161.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-162.png",
+      "bytes": 280658,
+      "sha256": "b32a5923d1c142b42177ff4eb1b602dcab7135254f144e4eedf77525516975d5",
+      "asset": "b32a5923d1c142b4-event-calibration-162.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-163.png",
+      "bytes": 274447,
+      "sha256": "b0a70eba3d6a17fbea1bacce4160eeae9cdd9e3a225c370db8b97a35dee62387",
+      "asset": "b0a70eba3d6a17fb-event-calibration-163.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-164.png",
+      "bytes": 274353,
+      "sha256": "8600c6852dbc0ff3e74e6aa57171a80c214b93aacdc222ef04a8494d8ca633af",
+      "asset": "8600c6852dbc0ff3-event-calibration-164.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-165.png",
+      "bytes": 277371,
+      "sha256": "ff660ed19f0e1bda680c16db0da1702f09777f72593017b6a374ddd7fae7ffdb",
+      "asset": "ff660ed19f0e1bda-event-calibration-165.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-166.png",
+      "bytes": 274331,
+      "sha256": "61ca8263538f428bda19c99e471f9af6f0004a441942e5c5c2f4930f6e87a44f",
+      "asset": "61ca8263538f428b-event-calibration-166.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-167.png",
+      "bytes": 276749,
+      "sha256": "c45a0da5fbf5a189667432544cd44a9eeb714665a70bbb227d25e7a03352cde6",
+      "asset": "c45a0da5fbf5a189-event-calibration-167.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-168.png",
+      "bytes": 277381,
+      "sha256": "da7197e1f3b4543f4de502880521f79b944e6ed83ba94dae0f167cff84ff053c",
+      "asset": "da7197e1f3b4543f-event-calibration-168.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-169.png",
+      "bytes": 279768,
+      "sha256": "9ec9191329a29061adb84f32e10ff4258e1dcb08c1c7b6facff30fa3e924fa25",
+      "asset": "9ec9191329a29061-event-calibration-169.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-170.png",
+      "bytes": 277567,
+      "sha256": "cee6fb1ca4df74d0469e8f6c12760703a3c39fe291e2be27468397f7d13df7e9",
+      "asset": "cee6fb1ca4df74d0-event-calibration-170.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-171.png",
+      "bytes": 274768,
+      "sha256": "9243ece897b99068b59e49f7d780ed2e7b664f4a841046b59fb7a78507dba5c2",
+      "asset": "9243ece897b99068-event-calibration-171.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-172.png",
+      "bytes": 274891,
+      "sha256": "8944dc090fc691d1930275b05b9330e148e066a00be6014841436280be182f38",
+      "asset": "8944dc090fc691d1-event-calibration-172.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-173.png",
+      "bytes": 275379,
+      "sha256": "d9826e26db37da32819a5e38f4ba0d88d3f53d3b819a4409684ccca6a319060a",
+      "asset": "d9826e26db37da32-event-calibration-173.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-174.png",
+      "bytes": 278619,
+      "sha256": "ea003fa77fa7f1ed97c69220293fa061a8c88ceaf571b6303711c69645e6c4d6",
+      "asset": "ea003fa77fa7f1ed-event-calibration-174.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-175.png",
+      "bytes": 275278,
+      "sha256": "fde912a86fb0402128b3df1d23cb6e1d9ab4b558bba341c1ba7a9f5f509caf6f",
+      "asset": "fde912a86fb04021-event-calibration-175.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-176.png",
+      "bytes": 274466,
+      "sha256": "f9e5b6766dd1846792070f90491308630901ff8325a056cc9952e8bc95c1b4da",
+      "asset": "f9e5b6766dd18467-event-calibration-176.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-177.png",
+      "bytes": 278360,
+      "sha256": "512dd9b8c318a509fb3139580fef0852d3d1506aabc1708024ab384301792a48",
+      "asset": "512dd9b8c318a509-event-calibration-177.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-178.png",
+      "bytes": 274914,
+      "sha256": "2e3386145864f0d2e17adc59df1e7ae2e149d293079f76fdc3c9be5b5b0959a4",
+      "asset": "2e3386145864f0d2-event-calibration-178.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-179.png",
+      "bytes": 274237,
+      "sha256": "97549101a8f726a8023412c20c9a5c6d33ca5b06351eca74888625eead00e914",
+      "asset": "97549101a8f726a8-event-calibration-179.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-180.png",
+      "bytes": 278596,
+      "sha256": "70ce222d2af189d68736a98306f8695b6c5afa81a386ad199da532339ac77d00",
+      "asset": "70ce222d2af189d6-event-calibration-180.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-181.png",
+      "bytes": 274684,
+      "sha256": "1505d814902adf106e05d4c8fb4a685d97d4e0d2484dab3c528c8204f61f1874",
+      "asset": "1505d814902adf10-event-calibration-181.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-182.png",
+      "bytes": 274688,
+      "sha256": "894ca75a8e8cc7fb50689d4d98905a783d953d3df4cd3f945c74350090f8fe51",
+      "asset": "894ca75a8e8cc7fb-event-calibration-182.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-183.png",
+      "bytes": 278280,
+      "sha256": "d91cb0132a7063eac98a63f4fead4eb55bb52411fe02dd06529ebb2f63d590c0",
+      "asset": "d91cb0132a7063ea-event-calibration-183.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-184.png",
+      "bytes": 278401,
+      "sha256": "fdcf35320e727b63f1c4ce41105498b9ac0fddd595868031ab0ff72a07e2172a",
+      "asset": "fdcf35320e727b63-event-calibration-184.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-185.png",
+      "bytes": 274196,
+      "sha256": "96fe15441f5b002e1b7adea7b6abaf4879f97f62173c93bcfecd7b8ef6efc42f",
+      "asset": "96fe15441f5b002e-event-calibration-185.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-186.png",
+      "bytes": 274922,
+      "sha256": "51a9d22010bdfe009fb4946a39944b8138144a0cd0819b216d70a5f306b5adfd",
+      "asset": "51a9d22010bdfe00-event-calibration-186.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-187.png",
+      "bytes": 277761,
+      "sha256": "413039c38c146504a165420ec7f7a28e7c5207f1203f42b2c97cbd8ae1e5972b",
+      "asset": "413039c38c146504-event-calibration-187.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-188.png",
+      "bytes": 274867,
+      "sha256": "27e63a21993f5f2d3a4f8d681eccfcdd36e16b54879726c3989327897d00f7be",
+      "asset": "27e63a21993f5f2d-event-calibration-188.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-189.png",
+      "bytes": 273005,
+      "sha256": "c45f481fa2bfa945ca902939881f0ed7eb357df0aa59d582ff7b06c6c30cf265",
+      "asset": "c45f481fa2bfa945-event-calibration-189.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-190.png",
+      "bytes": 273305,
+      "sha256": "1415d58c639c758457d00d6c6a319f307d6ddd8930fcfb15a6ddef6ba069fe51",
+      "asset": "1415d58c639c7584-event-calibration-190.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-191.png",
+      "bytes": 273509,
+      "sha256": "5c9d0e21f6175d7b39ac93a6541e64ef43096774d4a99e3c9b73953f74083268",
+      "asset": "5c9d0e21f6175d7b-event-calibration-191.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-192.png",
+      "bytes": 273724,
+      "sha256": "6f491779457292c0ecf51a736fb1bba1ea33104e74f09e7106b23efd5f2fd355",
+      "asset": "6f491779457292c0-event-calibration-192.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-193.png",
+      "bytes": 273726,
+      "sha256": "834cc42d81c0f60fbc6a8d05bbf15c0fcb9e46475c80ecf77efa532dbb50a750",
+      "asset": "834cc42d81c0f60f-event-calibration-193.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-194.png",
+      "bytes": 273726,
+      "sha256": "834cc42d81c0f60fbc6a8d05bbf15c0fcb9e46475c80ecf77efa532dbb50a750",
+      "asset": "834cc42d81c0f60f-event-calibration-194.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-195.png",
+      "bytes": 276679,
+      "sha256": "9a70a82b7bbd21e91d9e1e5b537cccdc125edb7b417cb48f2f424e0e34fe8b80",
+      "asset": "9a70a82b7bbd21e9-event-calibration-195.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-196.png",
+      "bytes": 273718,
+      "sha256": "7540e5c6f86f88237a319968ba89d7163d40bb4780de80af01846f12e595a36d",
+      "asset": "7540e5c6f86f8823-event-calibration-196.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-197.png",
+      "bytes": 273712,
+      "sha256": "2dd86d4bfd157f9e019a595fdf28efc2dbbac632fe04ed17fd92a623ee8cb3fd",
+      "asset": "2dd86d4bfd157f9e-event-calibration-197.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-198.png",
+      "bytes": 279333,
+      "sha256": "8bcf070a0892d22973d4b89d425998dc7176b234c79aeedbcfafff80694e33ad",
+      "asset": "8bcf070a0892d229-event-calibration-198.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-199.png",
+      "bytes": 276921,
+      "sha256": "8cf12172078c1e76cca4de9dbcfd53f914cee298c25455d3ab802f55dc487ab7",
+      "asset": "8cf12172078c1e76-event-calibration-199.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-200.png",
+      "bytes": 277663,
+      "sha256": "d78abf1ebc9f51701be5dfc6695350a1a05db3311270474c86d81c63f8e9657a",
+      "asset": "d78abf1ebc9f5170-event-calibration-200.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-201.png",
+      "bytes": 279090,
+      "sha256": "36573e0b81d6a1fba6ecff593ecac01c61fcec35e87cd9568ed62c2c1112ab57",
+      "asset": "36573e0b81d6a1fb-event-calibration-201.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-202.png",
+      "bytes": 273820,
+      "sha256": "fa2bb7e1e87e05ea01abff03981379ea1f14c4983995d01a4aa0dcaa8030d9af",
+      "asset": "fa2bb7e1e87e05ea-event-calibration-202.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-203.png",
+      "bytes": 274506,
+      "sha256": "79a623e62b35d7f941c28a9840717cd3d64f9d13f07338d2b36b8c0791ce1e7b",
+      "asset": "79a623e62b35d7f9-event-calibration-203.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-204.png",
+      "bytes": 274518,
+      "sha256": "02217a4c37212b4e93f681f48e51fc2305b6677c69a5ba3f23a8261e200aabb9",
+      "asset": "02217a4c37212b4e-event-calibration-204.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-205.png",
+      "bytes": 274499,
+      "sha256": "d55c46c6198db5cb686c9ae38906da1d47a2050926cbe41a5d836def8cc98f5d",
+      "asset": "d55c46c6198db5cb-event-calibration-205.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-206.png",
+      "bytes": 276900,
+      "sha256": "75a1159dd4c871d8e129ce39bb7ca1cfda288a30904e32e8da020d72f6b36b00",
+      "asset": "75a1159dd4c871d8-event-calibration-206.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-207.png",
+      "bytes": 274327,
+      "sha256": "9a70c47b40afa19a3b3d011aed7477f9bef642e9c5b6ab938551846be4acc46f",
+      "asset": "9a70c47b40afa19a-event-calibration-207.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-208.png",
+      "bytes": 274329,
+      "sha256": "8654b32f0ae00cfa8a5073fe3f6cb55368e17b56d1e43f9e83264925fa42594f",
+      "asset": "8654b32f0ae00cfa-event-calibration-208.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-209.png",
+      "bytes": 273699,
+      "sha256": "27d3c8244af5674b920ad5fbfdc0633be895cca24212bfcd2aac37437e405089",
+      "asset": "27d3c8244af5674b-event-calibration-209.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-210.png",
+      "bytes": 279386,
+      "sha256": "b91bb4a60968c8b77c2f314e5205f8e2a342887651acc814a0eded202c1a1418",
+      "asset": "b91bb4a60968c8b7-event-calibration-210.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-211.png",
+      "bytes": 274059,
+      "sha256": "476ce95db385dbd83e38f00d33870061b75717229e6114a6116a474001a5a3d2",
+      "asset": "476ce95db385dbd8-event-calibration-211.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-212.png",
+      "bytes": 274056,
+      "sha256": "55ab4e6b51ed1f0c2b9a7436e0b67124049b07be256a7986233e301b7e66a342",
+      "asset": "55ab4e6b51ed1f0c-event-calibration-212.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-213.png",
+      "bytes": 274067,
+      "sha256": "f969c536c0894b3861da760c7ac17c4af32b7b69c765e1fd8211ceec6728c74c",
+      "asset": "f969c536c0894b38-event-calibration-213.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-214.png",
+      "bytes": 278044,
+      "sha256": "17586077205dec23085aad26b69b01ccfa5ba07bd72103d208bd1e5da374724d",
+      "asset": "17586077205dec23-event-calibration-214.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-215.png",
+      "bytes": 273567,
+      "sha256": "ede96018bc26884c1e67a1e2788679554c70ef587acf860ae98fc7d2a5f51595",
+      "asset": "ede96018bc26884c-event-calibration-215.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-216.png",
+      "bytes": 275837,
+      "sha256": "317068c0caee7f198f6155631fa2636e450e02bc1c5159def84d5574d29ea270",
+      "asset": "317068c0caee7f19-event-calibration-216.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-217.png",
+      "bytes": 273685,
+      "sha256": "745393f0fda8a6319541aa06c4f69eba8068c2b2695a007a2d384271c6c39852",
+      "asset": "745393f0fda8a631-event-calibration-217.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-218.png",
+      "bytes": 276151,
+      "sha256": "06f34b200c1c36f3da5f6417d9d25ce0d65eb03c5a7eeba198d0135bb60c8169",
+      "asset": "06f34b200c1c36f3-event-calibration-218.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-219.png",
+      "bytes": 276744,
+      "sha256": "5f28fe72a9930de763d796441261f1ffe8b2bc6c3c47e7c2e598e28f0be5df3d",
+      "asset": "5f28fe72a9930de7-event-calibration-219.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-220.png",
+      "bytes": 278950,
+      "sha256": "1f8d0206dd36aeea978d04a5cc4b620afaecf9014fb7a9bca8e7e3f37540537e",
+      "asset": "1f8d0206dd36aeea-event-calibration-220.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-221.png",
+      "bytes": 277581,
+      "sha256": "e712a709f372d86f760edb0b34baa8e5ac60d30fb4ffcf6145f0f9d1d1ef70a4",
+      "asset": "e712a709f372d86f-event-calibration-221.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-222.png",
+      "bytes": 274153,
+      "sha256": "e4b27807225e57106fcfe5929bcd53ee614edf5a1789d8b922cf2a1ed1d9fa48",
+      "asset": "e4b27807225e5710-event-calibration-222.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-223.png",
+      "bytes": 275106,
+      "sha256": "278ec7a40b80df6f0f01f9435909873aa877543a6e49b0067a17e46e864d74ac",
+      "asset": "278ec7a40b80df6f-event-calibration-223.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-224.png",
+      "bytes": 275098,
+      "sha256": "3ce90d8f5fcc18c338a7808d50ac7dfb3a2d0f80d5854fa70d862b76ce6a5bc8",
+      "asset": "3ce90d8f5fcc18c3-event-calibration-224.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-225.png",
+      "bytes": 274864,
+      "sha256": "3bf6561e7ba2f38c0013e1782e582d5b2ceed704a353a7f4535dea8ca2c735cd",
+      "asset": "3bf6561e7ba2f38c-event-calibration-225.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-226.png",
+      "bytes": 276617,
+      "sha256": "67ab655bcb42f0e77767394ed1566c4b508cabbe7080e7b57f386025a0d601cd",
+      "asset": "67ab655bcb42f0e7-event-calibration-226.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-227.png",
+      "bytes": 276219,
+      "sha256": "04a285c121bcf4fdf6e9f5abee435a2ce30f49b0c5b552d118e4e5bbefef04d3",
+      "asset": "04a285c121bcf4fd-event-calibration-227.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-228.png",
+      "bytes": 274600,
+      "sha256": "8a3591b7b24466ae9faac5dd6ad596bd8acc43382db08f659e802632cf2688d9",
+      "asset": "8a3591b7b24466ae-event-calibration-228.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-229.png",
+      "bytes": 276627,
+      "sha256": "64464a910b3690b750312467598080cce66b280a34f3e738afe1f5f390c38caf",
+      "asset": "64464a910b3690b7-event-calibration-229.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-230.png",
+      "bytes": 276209,
+      "sha256": "c3674b25eca067d38a92d9b6c61fb089bc5f2f6c1154f78c2912f59fbe5e68cf",
+      "asset": "c3674b25eca067d3-event-calibration-230.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-231.png",
+      "bytes": 274600,
+      "sha256": "cbe4fa5d6405d0ec78e5e7d673a2182ea67fc4e9ab376f6d1d21f9e988af5155",
+      "asset": "cbe4fa5d6405d0ec-event-calibration-231.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-232.png",
+      "bytes": 276701,
+      "sha256": "03475fd168d028aca93fd367325fc612320ad30a4a38e3b2523f96d4bd033666",
+      "asset": "03475fd168d028ac-event-calibration-232.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-233.png",
+      "bytes": 273418,
+      "sha256": "2e7779c96ae6ce7648827a6289e7987dec89c63cb79adc2dbf89abe4a003de05",
+      "asset": "2e7779c96ae6ce76-event-calibration-233.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-234.png",
+      "bytes": 275628,
+      "sha256": "5656ef171e6adf77251780ea5f3047073ce964dbe968138bf62f674790c8a991",
+      "asset": "5656ef171e6adf77-event-calibration-234.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-235.png",
+      "bytes": 277589,
+      "sha256": "e7d3c9517162f303fa075a844706c645d18c50d7cd8eff44c05e30c5653f4c8a",
+      "asset": "e7d3c9517162f303-event-calibration-235.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-236.png",
+      "bytes": 276780,
+      "sha256": "4195ba0d0e84ff2b7ecbc9a85ba3b7111a512c98ce03a4cc00d65de6e854fc0f",
+      "asset": "4195ba0d0e84ff2b-event-calibration-236.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-237.png",
+      "bytes": 273288,
+      "sha256": "9f30abf1fdf90f837d4e298dcf3d9d5ed67203e951823456b22c62df99ea6bb3",
+      "asset": "9f30abf1fdf90f83-event-calibration-237.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-238.png",
+      "bytes": 274026,
+      "sha256": "05144b983b4b78f126c207d63b46e7694839cf7423ca6a7f17ecdd31d1909731",
+      "asset": "05144b983b4b78f1-event-calibration-238.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-239.png",
+      "bytes": 277261,
+      "sha256": "762084605818c491af754e5c89d75050260a0fd0e6fe1c831d625ce5dda11f86",
+      "asset": "762084605818c491-event-calibration-239.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-240.png",
+      "bytes": 276870,
+      "sha256": "fbccb10fccb68eefc70c5ef804aae96a39cd4b18e671bba8f98afd7f2aa4060e",
+      "asset": "fbccb10fccb68eef-event-calibration-240.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-241.png",
+      "bytes": 277809,
+      "sha256": "5d680597a0bffbcb78da9ff3df9fcbb4a9ca1f0408eac4a2418727265443ec65",
+      "asset": "5d680597a0bffbcb-event-calibration-241.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-242.png",
+      "bytes": 272912,
+      "sha256": "2bf415ef5c163c4b438531466367121d8fcbbd684ff7b1b3860ed17dd2ad22fd",
+      "asset": "2bf415ef5c163c4b-event-calibration-242.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-243.png",
+      "bytes": 273278,
+      "sha256": "fe87df33e34b98a36d209bff5bc37e68e704c1b7e600d262becdbbb010e81c14",
+      "asset": "fe87df33e34b98a3-event-calibration-243.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-244.png",
+      "bytes": 273610,
+      "sha256": "630c040ac476f577c2ea9d2aa096723bdc58727d6ef83a5f1f77d39e936ebb74",
+      "asset": "630c040ac476f577-event-calibration-244.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-245.png",
+      "bytes": 277825,
+      "sha256": "00901db42f2b1ec7078aec63f4b252fc0a8d4e4722d55cc82dc1181bcf73a362",
+      "asset": "00901db42f2b1ec7-event-calibration-245.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-246.png",
+      "bytes": 272736,
+      "sha256": "5556bb14f472b2ebb67e04a7ad59052ccca9aa9d2b8ee0f8258ab6b70fbe4618",
+      "asset": "5556bb14f472b2eb-event-calibration-246.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-247.png",
+      "bytes": 277616,
+      "sha256": "8a338463b8ae27eff9f53b055570e611e54064d1534360d7be4e7faf87e77b47",
+      "asset": "8a338463b8ae27ef-event-calibration-247.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-248.png",
+      "bytes": 273258,
+      "sha256": "77a52c8ca750aa083e6021241aedbdab529569f4020db9375b175de15eade450",
+      "asset": "77a52c8ca750aa08-event-calibration-248.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-249.png",
+      "bytes": 272590,
+      "sha256": "13496aaa27321303b263298ed96cc5f810853199dfbb561dd38421447fcadea6",
+      "asset": "13496aaa27321303-event-calibration-249.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-250.png",
+      "bytes": 277080,
+      "sha256": "f87b23c4f4f23f98f5e8b99cbe93d236b2abf047c73522c1c38b43f40d2770c2",
+      "asset": "f87b23c4f4f23f98-event-calibration-250.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-251.png",
+      "bytes": 273009,
+      "sha256": "0764377331316232dc40a219a294c8de8eff3ff531a1f2e8ac3800182bdd931a",
+      "asset": "0764377331316232-event-calibration-251.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-252.png",
+      "bytes": 273028,
+      "sha256": "4284259d0dd1c8935e2941525e87d14d195ad59f67477d007b2a7ea3d79127a7",
+      "asset": "4284259d0dd1c893-event-calibration-252.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-253.png",
+      "bytes": 272800,
+      "sha256": "e02e564cfbd0e52ffd064f0a4a38117b0c738ea1badf11258ceb5173a519e8b9",
+      "asset": "e02e564cfbd0e52f-event-calibration-253.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-254.png",
+      "bytes": 278719,
+      "sha256": "0f2bc9c42939104b4edc0e3f8d3ce5511dc4fc72fde4c21b7e6ecc789a85b429",
+      "asset": "0f2bc9c42939104b-event-calibration-254.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-255.png",
+      "bytes": 273191,
+      "sha256": "27ba05df6bce2b8b4f2118d37fab28f0ea1974db4a9832a85ce36ca7d57a2ce7",
+      "asset": "27ba05df6bce2b8b-event-calibration-255.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-256.png",
+      "bytes": 276232,
+      "sha256": "81caab19228c57ce69710dfc262d661f1dfd505ee994b03db6981cc4e4535d00",
+      "asset": "81caab19228c57ce-event-calibration-256.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-257.png",
+      "bytes": 273121,
+      "sha256": "32e2557fd15e0a01e4ded0e21099c0dc4422fc800a0a260ad49162c1e53b5bf5",
+      "asset": "32e2557fd15e0a01-event-calibration-257.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-258.png",
+      "bytes": 275440,
+      "sha256": "3e94700bba749c2071fe9bd79d05c165f07cd54419e2c614e3fbb050f31ef26e",
+      "asset": "3e94700bba749c20-event-calibration-258.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-259.png",
+      "bytes": 272677,
+      "sha256": "619cded02014064c1e321f1c435fd04f5301448f4dff92761a618ca744067de0",
+      "asset": "619cded02014064c-event-calibration-259.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-260.png",
+      "bytes": 277041,
+      "sha256": "c3b6f2a929cc48132bd39d476a55529044bccbbd56e4c725d36a09c87225eea2",
+      "asset": "c3b6f2a929cc4813-event-calibration-260.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-261.png",
+      "bytes": 275739,
+      "sha256": "670b6ab17548393c1c78380c07c1661f835351b6f26f792003ea3665e150a8eb",
+      "asset": "670b6ab17548393c-event-calibration-261.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-262.png",
+      "bytes": 278171,
+      "sha256": "eb8c06daf12c839956da5fa5a499572d9bacef67766836873012beb153da8da1",
+      "asset": "eb8c06daf12c8399-event-calibration-262.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-263.png",
+      "bytes": 276582,
+      "sha256": "15e5502f68778d540cb74bfa070d013cdc31bd7da72c693a35c0fe294bdafdbb",
+      "asset": "15e5502f68778d54-event-calibration-263.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-264.png",
+      "bytes": 273096,
+      "sha256": "125021a8bcbc4d13b05f1b9f3a0f2af1c458771adaf3905ec1f6b56fe9781c00",
+      "asset": "125021a8bcbc4d13-event-calibration-264.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-265.png",
+      "bytes": 273775,
+      "sha256": "f31dfc436fdc83ff9201ac04fe78a58cf92f07cd0cd4a56e665ee62b6a5f663a",
+      "asset": "f31dfc436fdc83ff-event-calibration-265.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-266.png",
+      "bytes": 274980,
+      "sha256": "6b40f4af71f5527998e68b31ad9c33a49f0d44590ba5be2ceb96645271505211",
+      "asset": "6b40f4af71f55279-event-calibration-266.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-267.png",
+      "bytes": 273552,
+      "sha256": "410c9a873d0421674f5a5f1d9746818c93a7a4f688f74038cece3a13cdabd06b",
+      "asset": "410c9a873d042167-event-calibration-267.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-268.png",
+      "bytes": 272493,
+      "sha256": "270dd849bd4edbb31d1712fb857db5cf4204f04339e07270d94ac9ce81ca2154",
+      "asset": "270dd849bd4edbb3-event-calibration-268.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-269.png",
+      "bytes": 274497,
+      "sha256": "1f4acb4b3ee51ff811a657b274129079dcd5ed5ecc509af9693032b93fcb582e",
+      "asset": "1f4acb4b3ee51ff8-event-calibration-269.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-270.png",
+      "bytes": 275768,
+      "sha256": "b86a36d9704fd6a4f80116043a9211b90fb790b31df62b9b012bcd52ac6344f9",
+      "asset": "b86a36d9704fd6a4-event-calibration-270.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-271.png",
+      "bytes": 272259,
+      "sha256": "d222ef35acfad06551c6ef839df021696df59364f1b69698e4376900ff4d73a3",
+      "asset": "d222ef35acfad065-event-calibration-271.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-272.png",
+      "bytes": 272996,
+      "sha256": "f3ed116c6e17f355139d17809fb5b3c817d4614f019ca9d97df2fc49ef3004c9",
+      "asset": "f3ed116c6e17f355-event-calibration-272.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-273.png",
+      "bytes": 276667,
+      "sha256": "b4d2184035cf7fe6609c9d8872a7497a763ecc1e5e0dc75e760e3a457a1fdce8",
+      "asset": "b4d2184035cf7fe6-event-calibration-273.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-274.png",
+      "bytes": 272952,
+      "sha256": "e235bae61973303dd45911a3458527b6728b895736a707682ee7b03c68b87767",
+      "asset": "e235bae61973303d-event-calibration-274.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-275.png",
+      "bytes": 273156,
+      "sha256": "92962347fb0afe0b5f513d74e6b89d3a33d23d1dbc5f8bcbcd6a0700b37780c9",
+      "asset": "92962347fb0afe0b-event-calibration-275.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-276.png",
+      "bytes": 277356,
+      "sha256": "88387f8b0ef909b501c16d03cf5925677cda72244b0867c64da6fea24afc197e",
+      "asset": "88387f8b0ef909b5-event-calibration-276.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-277.png",
+      "bytes": 273623,
+      "sha256": "3c3e2b61171ab18089069d9de6ec3fbd4d4f37c8f6a8e239d0dc2e41bea1e875",
+      "asset": "3c3e2b61171ab180-event-calibration-277.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-278.png",
+      "bytes": 273428,
+      "sha256": "5bdd14027195391439e6af168adb097cc82556d0aa0827cd1e62735082e0f7c5",
+      "asset": "5bdd140271953914-event-calibration-278.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-279.png",
+      "bytes": 276420,
+      "sha256": "8ad305c7b9b4b6d52331ff8fb60972eb396af81bc56f93e0161cec3c18d767ee",
+      "asset": "8ad305c7b9b4b6d5-event-calibration-279.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-280.png",
+      "bytes": 276782,
+      "sha256": "949ce04ca3fc92e733b9717b2b8b06bb93467187e4e40e30e5665e27eeb18d96",
+      "asset": "949ce04ca3fc92e7-event-calibration-280.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-281.png",
+      "bytes": 277732,
+      "sha256": "d0761217749c3c55b7bd9bc4313b2ef5d281ae6acbc17810ee910e14ed22f099",
+      "asset": "d0761217749c3c55-event-calibration-281.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-282.png",
+      "bytes": 272836,
+      "sha256": "d559d84ebfa23fa86d91686b38dd9d0bdd8716678898e7f133a14e214f013210",
+      "asset": "d559d84ebfa23fa8-event-calibration-282.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-283.png",
+      "bytes": 273216,
+      "sha256": "6bd63199b43b0da30e9a2aa7fb0b4fe487ab47cff75dc317d011de8b8d8b9463",
+      "asset": "6bd63199b43b0da3-event-calibration-283.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-284.png",
+      "bytes": 273577,
+      "sha256": "e15d402619f1d1914bf33cc4330e89084b6d323b60622d97e7a52c4e9cc88765",
+      "asset": "e15d402619f1d191-event-calibration-284.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-285.png",
+      "bytes": 276716,
+      "sha256": "f4d30241e6a9bf87c09300dd36cee2ef08539bacb655d64f84b36a56e9c04942",
+      "asset": "f4d30241e6a9bf87-event-calibration-285.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-286.png",
+      "bytes": 273366,
+      "sha256": "d17a0c52c674a4a4d52476c0f95d1c151251274ed5dbefb70c2577a97547c10c",
+      "asset": "d17a0c52c674a4a4-event-calibration-286.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-287.png",
+      "bytes": 275949,
+      "sha256": "9a844a8cc455e869c53f92468624db12da9b671ce7e33042cf7773806c838f28",
+      "asset": "9a844a8cc455e869-event-calibration-287.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-288.png",
+      "bytes": 276125,
+      "sha256": "dde59cf5dd1faa915f7dbbf23fbe96930193d2418a18fc93642d1f7e2a097c9e",
+      "asset": "dde59cf5dd1faa91-event-calibration-288.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-289.png",
+      "bytes": 272527,
+      "sha256": "e0a306b8a58817aec46b700c245ed8e5597f47c48cfad8eac08f4e3a8ae11238",
+      "asset": "e0a306b8a58817ae-event-calibration-289.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-290.png",
+      "bytes": 276235,
+      "sha256": "4ac81ac85d843cb6dd175024567eb37191e14d5c8ee9a6704d29feef6c7762f3",
+      "asset": "4ac81ac85d843cb6-event-calibration-290.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-291.png",
+      "bytes": 273029,
+      "sha256": "f235d496c49520395bab71c6ace39337fe087d2c571817e29510369c86f39be7",
+      "asset": "f235d496c4952039-event-calibration-291.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-292.png",
+      "bytes": 272519,
+      "sha256": "bb3c5d525788008b02e2741facfd377d5d9dac88b38790ef1ae3ee5f0055b72d",
+      "asset": "bb3c5d525788008b-event-calibration-292.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-293.png",
+      "bytes": 275017,
+      "sha256": "d5c6cf28e060ae61d7b9ea0ca9e3b39079b5dd914518718dffe4faa4835905ce",
+      "asset": "d5c6cf28e060ae61-event-calibration-293.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-294.png",
+      "bytes": 272974,
+      "sha256": "2eb4227aef6aa22db9a4a491c412f9c2993330d3e4ca2faaa1171dd43d962af6",
+      "asset": "2eb4227aef6aa22d-event-calibration-294.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-295.png",
+      "bytes": 272680,
+      "sha256": "12e1ebe524baba4127bbb47603ae795a45012ef32bf303e13888f6d1a60f0703",
+      "asset": "12e1ebe524baba41-event-calibration-295.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-296.png",
+      "bytes": 276410,
+      "sha256": "33c3fed24ebfeb82dc8efdc699caab784b9ece26a04f4360c7960999cafd33da",
+      "asset": "33c3fed24ebfeb82-event-calibration-296.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-297.png",
+      "bytes": 272475,
+      "sha256": "b59fab7262b5bb7f4f3cf859118cf5988f4b45040b2eb55522df64b98a0440f4",
+      "asset": "b59fab7262b5bb7f-event-calibration-297.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-298.png",
+      "bytes": 276852,
+      "sha256": "46a0f9763c3dcac077309f7d47d7a9c0e402913115916c4801f31d9d4fa312a5",
+      "asset": "46a0f9763c3dcac0-event-calibration-298.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-299.png",
+      "bytes": 276822,
+      "sha256": "7602ae43265d164b498686641f4e4058fecfe581e4b5fbebba7b30dcc129e4fa",
+      "asset": "7602ae43265d164b-event-calibration-299.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-300.png",
+      "bytes": 276623,
+      "sha256": "d2bbcd7d0ad69cf98b382d20c923d921cb0660e9138769ef9819204247205d8a",
+      "asset": "d2bbcd7d0ad69cf9-event-calibration-300.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-301.png",
+      "bytes": 275884,
+      "sha256": "0313cbe0e797cfcd1eae99109b1502c5e2647e2f9999165a67311b3cfdc081f7",
+      "asset": "0313cbe0e797cfcd-event-calibration-301.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-302.png",
+      "bytes": 272942,
+      "sha256": "12e8e4c9fb7e53b3bfe128148558b9e4854d297113e06c2f717dae2fb2b12d1c",
+      "asset": "12e8e4c9fb7e53b3-event-calibration-302.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-303.png",
+      "bytes": 273902,
+      "sha256": "bb4f3bb5fa0cc4aaf3ba806ffe29180e073facb16bbd102c63f7481518656a42",
+      "asset": "bb4f3bb5fa0cc4aa-event-calibration-303.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-304.png",
+      "bytes": 273658,
+      "sha256": "523264688b7706c45036caf2bd084b657b994487b1539014e0e3dfa0567d8918",
+      "asset": "523264688b7706c4-event-calibration-304.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-305.png",
+      "bytes": 273679,
+      "sha256": "ffc29e512b407254e020aeec8e77319c18ef48525eab6d6c3c6f354da7c1bc76",
+      "asset": "ffc29e512b407254-event-calibration-305.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-306.png",
+      "bytes": 273674,
+      "sha256": "6b5f1f4208352edb86ba62542c3b322a533acc4d36fa0c60643bff4b3bba04fa",
+      "asset": "6b5f1f4208352edb-event-calibration-306.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-307.png",
+      "bytes": 277012,
+      "sha256": "b4dff9a2fafa4b74953ace9cf6396f22a433806f4919ecfba265b10fffc5c032",
+      "asset": "b4dff9a2fafa4b74-event-calibration-307.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-308.png",
+      "bytes": 273469,
+      "sha256": "d3818d3180636653d0c4f9664c900f2a0cc59c47c20edefb7636910c42355356",
+      "asset": "d3818d3180636653-event-calibration-308.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-309.png",
+      "bytes": 278464,
+      "sha256": "8762879f25012569a8e3de0063c9a707b991d9e626b9994f2014298635850b21",
+      "asset": "8762879f25012569-event-calibration-309.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-310.png",
+      "bytes": 273471,
+      "sha256": "48a6d9684230635b3c7dcd19c3fd7d42d0d463272939e2238b1985b1bd9c7f8a",
+      "asset": "48a6d9684230635b-event-calibration-310.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-311.png",
+      "bytes": 272947,
+      "sha256": "5089b6b80d6c1ad2de47e584a41c580f4b9c1a1591fdd85839aeaa000e657553",
+      "asset": "5089b6b80d6c1ad2-event-calibration-311.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-312.png",
+      "bytes": 277298,
+      "sha256": "7df54bb76be7bdd102fe755d4c67634558cacf726edd8132e992c7ab663e65a1",
+      "asset": "7df54bb76be7bdd1-event-calibration-312.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-313.png",
+      "bytes": 273301,
+      "sha256": "b34ccb24eaea052db2b86255f9793a6ef7771514d94e07eb81e00c0556878f9a",
+      "asset": "b34ccb24eaea052d-event-calibration-313.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-314.png",
+      "bytes": 273281,
+      "sha256": "f794a77a0bbdbbdf1f33efbdf2071e8827781963ca555ae5764db96632db6032",
+      "asset": "f794a77a0bbdbbdf-event-calibration-314.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-315.png",
+      "bytes": 273284,
+      "sha256": "990cd93d42ac4f72c1c592f833857e634ed03d4f47c3a2018ff2eaff9e70f602",
+      "asset": "990cd93d42ac4f72-event-calibration-315.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-316.png",
+      "bytes": 276997,
+      "sha256": "eb4d2fcefd9aa7db94a39d08a6561803e4c1a1eea7f0194d71a517cdc27a8a5a",
+      "asset": "eb4d2fcefd9aa7db-event-calibration-316.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-317.png",
+      "bytes": 272718,
+      "sha256": "4fae130fab1a89e26a39a49cd9060d7b2fecd31cec10e5017f53f9328f12dd8c",
+      "asset": "4fae130fab1a89e2-event-calibration-317.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-318.png",
+      "bytes": 272718,
+      "sha256": "4fae130fab1a89e26a39a49cd9060d7b2fecd31cec10e5017f53f9328f12dd8c",
+      "asset": "4fae130fab1a89e2-event-calibration-318.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-319.png",
+      "bytes": 273193,
+      "sha256": "a86026d598ade4d41d56721307ed968766a1302e0ed5e4e7e4e953acd1bd7153",
+      "asset": "a86026d598ade4d4-event-calibration-319.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-320.png",
+      "bytes": 273566,
+      "sha256": "737d1b7844360996f3cce45e521820166801a168835385536dd868a864c43872",
+      "asset": "737d1b7844360996-event-calibration-320.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-321.png",
+      "bytes": 277495,
+      "sha256": "43228c0bfebd0bf66032f46a1d4def7adc74d9a9801a979a080bc80ba8930851",
+      "asset": "43228c0bfebd0bf6-event-calibration-321.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-322.png",
+      "bytes": 273342,
+      "sha256": "805986f8c667e293404843d496304c976e9b3b7a41bfbebae108a28fd6d170a2",
+      "asset": "805986f8c667e293-event-calibration-322.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-323.png",
+      "bytes": 277368,
+      "sha256": "a593678ce44ef03b57a7911bbf9bb44e012ad2d092d12564f48019e8513bb2d3",
+      "asset": "a593678ce44ef03b-event-calibration-323.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-324.png",
+      "bytes": 276337,
+      "sha256": "90624966045f74bc756fbed7ee3cd3959aec512c2b9176593a0b16c97a338d1d",
+      "asset": "90624966045f74bc-event-calibration-324.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-325.png",
+      "bytes": 278448,
+      "sha256": "eadbe3ce4cb4e81dc60beb34823acb98b21e42e23873a667642d7029b3382e17",
+      "asset": "eadbe3ce4cb4e81d-event-calibration-325.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-326.png",
+      "bytes": 272310,
+      "sha256": "fe035eed70cb2d97f9d1416eb9f342f093bcf57b1a64429e2dddfd2aecb452d8",
+      "asset": "fe035eed70cb2d97-event-calibration-326.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-327.png",
+      "bytes": 272867,
+      "sha256": "56887cb5a5976f9a0c0aa73e2f1f2a9afa65467384bfceee111468cd4dae81df",
+      "asset": "56887cb5a5976f9a-event-calibration-327.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-328.png",
+      "bytes": 273083,
+      "sha256": "7e75c0906cb97cd5843f7ea050aa7e45cc6a57841787fb4735abb38f17dc4473",
+      "asset": "7e75c0906cb97cd5-event-calibration-328.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-329.png",
+      "bytes": 273068,
+      "sha256": "57b2b915a17888f1fd369e87201d3051291136ee746daba8730a3a97f0c1a654",
+      "asset": "57b2b915a17888f1-event-calibration-329.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-330.png",
+      "bytes": 273024,
+      "sha256": "7f0298da32452f186d9ae8ac5dc20287918b61a31be4a2c3dbd315119343eeb0",
+      "asset": "7f0298da32452f18-event-calibration-330.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-331.png",
+      "bytes": 278119,
+      "sha256": "5edda7ebb048ea32e9a2a61b1e178c27fba965ada16675a55f39f735305f2b66",
+      "asset": "5edda7ebb048ea32-event-calibration-331.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-332.png",
+      "bytes": 271618,
+      "sha256": "a7087a45164a1b0501d3f88384076a2cca893556e5d454e797119ff1ff3022b8",
+      "asset": "a7087a45164a1b05-event-calibration-332.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-333.png",
+      "bytes": 271618,
+      "sha256": "a7087a45164a1b0501d3f88384076a2cca893556e5d454e797119ff1ff3022b8",
+      "asset": "a7087a45164a1b05-event-calibration-333.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-334.png",
+      "bytes": 274064,
+      "sha256": "7da49bcdfeeb696af4e9ea89295162a65b8a572d5fa6bab5f696ee09f9446ca1",
+      "asset": "7da49bcdfeeb696a-event-calibration-334.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-335.png",
+      "bytes": 272133,
+      "sha256": "eb7b0400877048cc2c48f5580b225ef49c8f40e841858382fd04a9516ee138db",
+      "asset": "eb7b0400877048cc-event-calibration-335.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-336.png",
+      "bytes": 271469,
+      "sha256": "2e0c2bb4580bbe4e76a137fcf2e25ac4db0380039302274f7682087ac5d3bc9e",
+      "asset": "2e0c2bb4580bbe4e-event-calibration-336.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-337.png",
+      "bytes": 275665,
+      "sha256": "13148ac3213018eb06c585ed3046b6c89d1d0f8527c2512473a657c4cc2b7a4f",
+      "asset": "13148ac3213018eb-event-calibration-337.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-338.png",
+      "bytes": 271601,
+      "sha256": "89779d664cf3565bbc5b98d73c43240ff15b75723a17cfe2b5667b3dddbe2f97",
+      "asset": "89779d664cf3565b-event-calibration-338.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-339.png",
+      "bytes": 271601,
+      "sha256": "89779d664cf3565bbc5b98d73c43240ff15b75723a17cfe2b5667b3dddbe2f97",
+      "asset": "89779d664cf3565b-event-calibration-339.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-340.png",
+      "bytes": 275989,
+      "sha256": "74333e0f0dd4f3b7adc6c95c21a8044cd026f2246e3441dad8fbf4c995ae2f4b",
+      "asset": "74333e0f0dd4f3b7-event-calibration-340.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-341.png",
+      "bytes": 271908,
+      "sha256": "41148c647d5bfea1c233396f7a4e67c1dd6f210b935ade2c3d77aab1671c02f7",
+      "asset": "41148c647d5bfea1-event-calibration-341.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-342.png",
+      "bytes": 271942,
+      "sha256": "e1f15f279a0d0d4d192ccd54024201569b952631bdf2fb534fba236ebbdccd87",
+      "asset": "e1f15f279a0d0d4d-event-calibration-342.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-343.png",
+      "bytes": 270791,
+      "sha256": "5899040925cbaa31543cf2081dada82aca5c551809d2ee1b2cf8d9f8a11dcce2",
+      "asset": "5899040925cbaa31-event-calibration-343.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-344.png",
+      "bytes": 274485,
+      "sha256": "212ae6a625fd614ae743d401739ed60dce86a32a6beede0c9ff5487c61cac3bf",
+      "asset": "212ae6a625fd614a-event-calibration-344.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-345.png",
+      "bytes": 270743,
+      "sha256": "5a61f30bac242fb7282e5976193e0df8f73ea31f4678877bf5aa01e30afb263f",
+      "asset": "5a61f30bac242fb7-event-calibration-345.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-346.png",
+      "bytes": 274717,
+      "sha256": "f5303b03607998c6c7b839a2ec64569651b0fc8533338781ebde50c9fdc6cf7c",
+      "asset": "f5303b03607998c6-event-calibration-346.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-347.png",
+      "bytes": 270775,
+      "sha256": "e54f456e118e5f1f3b5a25efc676d3938497aeaef3b82cc367a70eec41eddfce",
+      "asset": "e54f456e118e5f1f-event-calibration-347.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-348.png",
+      "bytes": 274284,
+      "sha256": "fff2bc537bf91983650bddc0e7878d1074149162054d7265670ec177b6295b71",
+      "asset": "fff2bc537bf91983-event-calibration-348.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-349.png",
+      "bytes": 275089,
+      "sha256": "32b961a2045277c85a9077be39717edcd6fb73af78a8e4f7479fa67be12dd8be",
+      "asset": "32b961a2045277c8-event-calibration-349.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-350.png",
+      "bytes": 276106,
+      "sha256": "1529d7aa00467e2b4ceb1150fcf59d90f119383d3412f47ce5fe7e26e0b8ae2f",
+      "asset": "1529d7aa00467e2b-event-calibration-350.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-351.png",
+      "bytes": 274740,
+      "sha256": "d2c773b828f91dcacb74c43578785543bdb9eff1dddb2917c50021441c4ce973",
+      "asset": "d2c773b828f91dca-event-calibration-351.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-352.png",
+      "bytes": 271218,
+      "sha256": "396b31604c3192017e1b982b5c8ef5184630717a695fc16200137f7e8ab076be",
+      "asset": "396b31604c319201-event-calibration-352.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-353.png",
+      "bytes": 271769,
+      "sha256": "c4f80421ae386355914e77f438505f9c4a3b3a66398abb350cde74c1b893ed60",
+      "asset": "c4f80421ae386355-event-calibration-353.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-354.png",
+      "bytes": 275364,
+      "sha256": "5abf194113f8a69f17f45a481b681641cbe0cc7a7d24fbb37c027c23c8fea690",
+      "asset": "5abf194113f8a69f-event-calibration-354.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-355.png",
+      "bytes": 271769,
+      "sha256": "c4f80421ae386355914e77f438505f9c4a3b3a66398abb350cde74c1b893ed60",
+      "asset": "c4f80421ae386355-event-calibration-355.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-356.png",
+      "bytes": 275364,
+      "sha256": "5abf194113f8a69f17f45a481b681641cbe0cc7a7d24fbb37c027c23c8fea690",
+      "asset": "5abf194113f8a69f-event-calibration-356.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-357.png",
+      "bytes": 271769,
+      "sha256": "c4f80421ae386355914e77f438505f9c4a3b3a66398abb350cde74c1b893ed60",
+      "asset": "c4f80421ae386355-event-calibration-357.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-358.png",
+      "bytes": 271776,
+      "sha256": "213efc63839817146fa53520fa88feb13cad4cb8f049340ef3bb13767acb93de",
+      "asset": "213efc6383981714-event-calibration-358.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-359.png",
+      "bytes": 271938,
+      "sha256": "948976043377e36b18e0a9712bd092304481e4ead6384c68bc4f8439a8e37a3b",
+      "asset": "948976043377e36b-event-calibration-359.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-360.png",
+      "bytes": 274607,
+      "sha256": "c0a15c1b9bd80267ce9c6f5fb45c6c99462645efa8878ca8713e190320f5deab",
+      "asset": "c0a15c1b9bd80267-event-calibration-360.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-361.png",
+      "bytes": 271176,
+      "sha256": "764974dbd53b275c82dbeed7aa372400dda79920faec65f9471a4c642284de80",
+      "asset": "764974dbd53b275c-event-calibration-361.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-362.png",
+      "bytes": 275407,
+      "sha256": "6f9c84807b220d4fedeff5027b9a553b4737ccd99823e034243c296f9adfca21",
+      "asset": "6f9c84807b220d4f-event-calibration-362.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-363.png",
+      "bytes": 271117,
+      "sha256": "6af2cfa0e51ff791b80e72f0f122625b1f117cf34ef79888620f8420f11335e7",
+      "asset": "6af2cfa0e51ff791-event-calibration-363.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-364.png",
+      "bytes": 271913,
+      "sha256": "5fbf4606eee4e1cc69cbca2ba7a085ee121619b01150d7158a9b31529c8b9909",
+      "asset": "5fbf4606eee4e1cc-event-calibration-364.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-365.png",
+      "bytes": 271892,
+      "sha256": "1361549e114322e37d6079c911d089bd70d1c713713231eaacfa0a77cd4dfec0",
+      "asset": "1361549e114322e3-event-calibration-365.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-366.png",
+      "bytes": 271925,
+      "sha256": "0d5f737fb5ae3ae0c6be119dcdbd3f980610d39cfda6d2ee3382142cd1d81f24",
+      "asset": "0d5f737fb5ae3ae0-event-calibration-366.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-367.png",
+      "bytes": 275108,
+      "sha256": "dc5273aa37fa585918c0adcfa74f47f9374dadb6afb708c1e7367cccb63863d1",
+      "asset": "dc5273aa37fa5859-event-calibration-367.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-368.png",
+      "bytes": 271741,
+      "sha256": "e1759dd17c9ecfaad0d73faa29787d09d5fcc457de00996f09beb6564f1ac515",
+      "asset": "e1759dd17c9ecfaa-event-calibration-368.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-369.png",
+      "bytes": 274479,
+      "sha256": "fc6512db543b1aaf175a79d35d987a0fe5dc852a8fb850f9ad5f5eb9278c004d",
+      "asset": "fc6512db543b1aaf-event-calibration-369.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-370.png",
+      "bytes": 275332,
+      "sha256": "ce548a56acbd6fb6241edc9738396160aade8a291ff55fce05920f60046ce41b",
+      "asset": "ce548a56acbd6fb6-event-calibration-370.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-371.png",
+      "bytes": 274776,
+      "sha256": "2aa3d2eb9bedb36b5f11a627327a782de5fa88e25b63833fcff3999f6afba0ee",
+      "asset": "2aa3d2eb9bedb36b-event-calibration-371.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-372.png",
+      "bytes": 275642,
+      "sha256": "ab76be29887c792bae0e3606ab1bfbdf531423e19a8d3e9b55c7ad2161dcbec0",
+      "asset": "ab76be29887c792b-event-calibration-372.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-373.png",
+      "bytes": 270706,
+      "sha256": "5576b35f691b72cc5b78198446496083974e0778305126342cdbdf3a288900ee",
+      "asset": "5576b35f691b72cc-event-calibration-373.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-374.png",
+      "bytes": 270997,
+      "sha256": "554d2c5ea404a02546cb94714dd30e20ec40aaef4d5e3bcd26c9d93fcc0004e9",
+      "asset": "554d2c5ea404a025-event-calibration-374.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-375.png",
+      "bytes": 271516,
+      "sha256": "0691b8e201aafa0348045fe3420bf13c3144a5b3690c0e41e1c913fb7c00be81",
+      "asset": "0691b8e201aafa03-event-calibration-375.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-376.png",
+      "bytes": 271508,
+      "sha256": "e16f204483a6cb030461e8a30d3e2986ad217355cf1bee11a780ab492e97603b",
+      "asset": "e16f204483a6cb03-event-calibration-376.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-377.png",
+      "bytes": 271447,
+      "sha256": "8f20e7675efe839472c71ef4dd85d0c4363303a0e71bb1d1745610b2caea35fa",
+      "asset": "8f20e7675efe8394-event-calibration-377.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-378.png",
+      "bytes": 275487,
+      "sha256": "a45ffc9d9c1f984b55da4e2ca57ca9bf92a20cd7c851b83739bac39a189355fa",
+      "asset": "a45ffc9d9c1f984b-event-calibration-378.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-379.png",
+      "bytes": 271271,
+      "sha256": "e0d71c4753b3f2b5c1753e27f3e5658eb2cf04074a09c73e6ef47822e80678c4",
+      "asset": "e0d71c4753b3f2b5-event-calibration-379.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-380.png",
+      "bytes": 271289,
+      "sha256": "40f3c5fbd02a2664b9a100599d74494dc6c64c0f388a989c4301498e11755375",
+      "asset": "40f3c5fbd02a2664-event-calibration-380.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-381.png",
+      "bytes": 271254,
+      "sha256": "7cd309d402d2d435b93a2f25b44f0402bb8c4f83baae771e5d0ad4d6aee78ffe",
+      "asset": "7cd309d402d2d435-event-calibration-381.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-382.png",
+      "bytes": 271273,
+      "sha256": "0e912c4a685cef549b746aec1cf96f8e377382cb9903ce35a975b28913e3bf4e",
+      "asset": "0e912c4a685cef54-event-calibration-382.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-383.png",
+      "bytes": 271260,
+      "sha256": "d26882ee5a56d4e950b1c37790e25f85e840b7cf59e3dca640af91c8b92c004b",
+      "asset": "d26882ee5a56d4e9-event-calibration-383.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-384.png",
+      "bytes": 270264,
+      "sha256": "ac46cbe04c1936ebdf69e5e48dd1fd7bbf594c256239dee2e1a0b2702bbe4e49",
+      "asset": "ac46cbe04c1936eb-event-calibration-384.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-385.png",
+      "bytes": 272846,
+      "sha256": "a8de17c1e17d6cc8284d132c24257d7f9a3df24301ce02994a71215422efa946",
+      "asset": "a8de17c1e17d6cc8-event-calibration-385.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-386.png",
+      "bytes": 270526,
+      "sha256": "ac56d28db6cde6ef8bfb817aeecaa9b16ecc357f85defbd41c47460061054b5b",
+      "asset": "ac56d28db6cde6ef-event-calibration-386.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-387.png",
+      "bytes": 270869,
+      "sha256": "0f67e040189ccbcf99e91c806b3d59e4a1ae36ebf4717865d470ee4565e220b3",
+      "asset": "0f67e040189ccbcf-event-calibration-387.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-388.png",
+      "bytes": 276606,
+      "sha256": "d124b871f751fdb058add5b4c9101c4b7ba796cfe57484732856a5fd1df8d403",
+      "asset": "d124b871f751fdb0-event-calibration-388.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-389.png",
+      "bytes": 271315,
+      "sha256": "b8399c6b510060d5f8183c566b10113245bf19ccc3dfebc11ddd192ad5882b25",
+      "asset": "b8399c6b510060d5-event-calibration-389.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-390.png",
+      "bytes": 271329,
+      "sha256": "5110f79af8da9737aac825e74fb90ed3c0a598aaf888000198a884d341c7b143",
+      "asset": "5110f79af8da9737-event-calibration-390.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-391.png",
+      "bytes": 270778,
+      "sha256": "33600a4f1944ddc6ff9a1a23d4c186c31da92490c520ac282c431b21adb0620d",
+      "asset": "33600a4f1944ddc6-event-calibration-391.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-392.png",
+      "bytes": 269954,
+      "sha256": "fc3371e5dca60cba8c3cf6e8ad30b2c9fa2e8b85a9a78d271a686080deeca64f",
+      "asset": "fc3371e5dca60cba-event-calibration-392.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-393.png",
+      "bytes": 272968,
+      "sha256": "068a4960aafab70f56d5ff26aa890163fa9819cd2552cfbe7402f1a9cfba92d1",
+      "asset": "068a4960aafab70f-event-calibration-393.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-394.png",
+      "bytes": 270353,
+      "sha256": "3ca96cd4c0ec946e02e0c7c929ccc35f03863afd12d8f63ae6a703fb017433dd",
+      "asset": "3ca96cd4c0ec946e-event-calibration-394.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-395.png",
+      "bytes": 269803,
+      "sha256": "31ab49b172fcead2fb8468334c138f852bdeb20f3b480b4e796eeec900d1230c",
+      "asset": "31ab49b172fcead2-event-calibration-395.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-396.png",
+      "bytes": 273434,
+      "sha256": "1f4522e46a0e498114343659c6069e8afc169aa1d644b12ab6d129af76afcc5e",
+      "asset": "1f4522e46a0e4981-event-calibration-396.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-397.png",
+      "bytes": 270164,
+      "sha256": "fa5f46ac3a83cce3eda96b30ff36cce4770ab485fdac340d9c7ef297dfc5006d",
+      "asset": "fa5f46ac3a83cce3-event-calibration-397.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-398.png",
+      "bytes": 275814,
+      "sha256": "4ab7fcf13a71b313c3ac624a35ce4a7829bcbe24cf311e09dfec3f6dc6b9a055",
+      "asset": "4ab7fcf13a71b313-event-calibration-398.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-399.png",
+      "bytes": 269641,
+      "sha256": "3df734ae0ba7c6a97dbce812afae3a58f2d1fe23ad7e25e345e992d1911fd5f4",
+      "asset": "3df734ae0ba7c6a9-event-calibration-399.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-400.png",
+      "bytes": 272252,
+      "sha256": "5db52d146c88d254499a5fc2ca0080936a1db32073cdc303704806db922f735e",
+      "asset": "5db52d146c88d254-event-calibration-400.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-401.png",
+      "bytes": 269611,
+      "sha256": "9ad0f6fbddf18d5ef968d38c1f676fe7b35e32a7ce1db8ac507467f91236fae5",
+      "asset": "9ad0f6fbddf18d5e-event-calibration-401.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-402.png",
+      "bytes": 272931,
+      "sha256": "c2d4c07c7fc86d07a28a2e99cb49e07f759ca06d1e9eda06ab05e6f4e4a76323",
+      "asset": "c2d4c07c7fc86d07-event-calibration-402.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-403.png",
+      "bytes": 273635,
+      "sha256": "c3e7012794cd9242feae5a53004600a7a8ce1cc99b66bfc98d5532f34b6222ea",
+      "asset": "c3e7012794cd9242-event-calibration-403.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-404.png",
+      "bytes": 272842,
+      "sha256": "63b9a79dde9d66210bc380bb90e3c229c50c997e39ae4187269467c23a75b481",
+      "asset": "63b9a79dde9d6621-event-calibration-404.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-405.png",
+      "bytes": 269934,
+      "sha256": "323b2772351c07d5373d778cd5caa7c3bf85b97754b25df21302c23f4c0a26e0",
+      "asset": "323b2772351c07d5-event-calibration-405.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-406.png",
+      "bytes": 270584,
+      "sha256": "1f2cf71b8de2aefece8ea819b4111352664eed5a1179961fd90d1bb120130be9",
+      "asset": "1f2cf71b8de2aefe-event-calibration-406.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-407.png",
+      "bytes": 270726,
+      "sha256": "efca1fc820ad1967e463bdaaa3f59aff846ec7566d40458242ee78cc5cae83cb",
+      "asset": "efca1fc820ad1967-event-calibration-407.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-408.png",
+      "bytes": 270534,
+      "sha256": "e864cadfd5abe3160655714add2394a7f2d99541e82e6a4926d0e88c4808f77b",
+      "asset": "e864cadfd5abe316-event-calibration-408.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-409.png",
+      "bytes": 274255,
+      "sha256": "f8df07c351d9e2ef3663b4b726e4474812943a881aad845b0fbd2af56cbed7a2",
+      "asset": "f8df07c351d9e2ef-event-calibration-409.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-410.png",
+      "bytes": 270413,
+      "sha256": "67ccc7d3e0706ab03970b21ef33ad0951c03ed8bfa5358043d1482429dc0d7b6",
+      "asset": "67ccc7d3e0706ab0-event-calibration-410.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-411.png",
+      "bytes": 273881,
+      "sha256": "2cb50186dff8b4bfdf88f28ce470581761d73ddf36e9a0e2107fa34bbe3e8a2b",
+      "asset": "2cb50186dff8b4bf-event-calibration-411.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-412.png",
+      "bytes": 270306,
+      "sha256": "aba9f400573acc2d02cb11e0a4cec92282b8f0b422b6a7cabfd752b7055627bd",
+      "asset": "aba9f400573acc2d-event-calibration-412.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-413.png",
+      "bytes": 270299,
+      "sha256": "03f345e2a68743aa77306f53bc236d16668d43747f44499506f3aa5c3b106212",
+      "asset": "03f345e2a68743aa-event-calibration-413.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-414.png",
+      "bytes": 272866,
+      "sha256": "1adb9e620ab56e0b314715ca59dc2a9da40e036dbf032a7faa877d59c69f7720",
+      "asset": "1adb9e620ab56e0b-event-calibration-414.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-415.png",
+      "bytes": 269792,
+      "sha256": "e7534ee4961eedca7ce8128c6a507e0b8e309a7ec510d51d420db1c9440ef39b",
+      "asset": "e7534ee4961eedca-event-calibration-415.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-416.png",
+      "bytes": 273742,
+      "sha256": "b91c96d1e36c0b57554fc748de9f1f0046008f68c3ea8161a20738498061b96d",
+      "asset": "b91c96d1e36c0b57-event-calibration-416.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-417.png",
+      "bytes": 270044,
+      "sha256": "b08698ffdfee68b525080cbad198eb5052a42662da294da5d3c88554af4880d0",
+      "asset": "b08698ffdfee68b5-event-calibration-417.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-418.png",
+      "bytes": 270010,
+      "sha256": "8fc152c61e626eebce06c7b6e9f4ffbe0e486b362ea2ba5d04d7da273faf1744",
+      "asset": "8fc152c61e626eeb-event-calibration-418.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-419.png",
+      "bytes": 273769,
+      "sha256": "024dd0d9f0c3e06b58ac48b2cbeb33bf06630e9b52229512bd71a43d61b63c29",
+      "asset": "024dd0d9f0c3e06b-event-calibration-419.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-420.png",
+      "bytes": 270366,
+      "sha256": "68f0b1dd9185305a1770277fb16b83ae03dd747c38889361c9afc0da1e27b681",
+      "asset": "68f0b1dd9185305a-event-calibration-420.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-421.png",
+      "bytes": 273725,
+      "sha256": "2fa77316e95dc88f2c31600a2c27e37b19a3a9de48bb02b9a892df7e3a2319a3",
+      "asset": "2fa77316e95dc88f-event-calibration-421.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-422.png",
+      "bytes": 270483,
+      "sha256": "2614c299ae16bd794abffd5d6da99b5bdc86972905fc883af1385b8697a9760f",
+      "asset": "2614c299ae16bd79-event-calibration-422.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-423.png",
+      "bytes": 270373,
+      "sha256": "882626bf2c021de046bfce7b79ed7e0643c0ef41c9c83f3fd647a87df8beb476",
+      "asset": "882626bf2c021de0-event-calibration-423.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-424.png",
+      "bytes": 269724,
+      "sha256": "3ff01aaf73fa98016fd99aaa778f38ab8add5321f0b6706545681a625b9beb30",
+      "asset": "3ff01aaf73fa9801-event-calibration-424.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-425.png",
+      "bytes": 272436,
+      "sha256": "610724d28a0831d693214d4bf48250c589e9696a73b1baf1f1c5fdb7daa99fb8",
+      "asset": "610724d28a0831d6-event-calibration-425.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-426.png",
+      "bytes": 269617,
+      "sha256": "e9c1b0324141294d2adf1ccce1d32b36809b7fdda14cbbf5d00b662ffd227a70",
+      "asset": "e9c1b0324141294d-event-calibration-426.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-427.png",
+      "bytes": 272813,
+      "sha256": "101470f16be461ff1b5d11ed99b465abbccaf09b2b16aa88383d63ec82586c5e",
+      "asset": "101470f16be461ff-event-calibration-427.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-428.png",
+      "bytes": 269553,
+      "sha256": "b5d145d1193cece9b41cf7acbc92010ff566429f2e8bc5ee90ea652c530b183a",
+      "asset": "b5d145d1193cece9-event-calibration-428.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-429.png",
+      "bytes": 270307,
+      "sha256": "cf8a33c798d6bc3a0d37e1dc05955151eca9c11eb99c38fc1d0f5191be01cb3c",
+      "asset": "cf8a33c798d6bc3a-event-calibration-429.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-430.png",
+      "bytes": 272951,
+      "sha256": "7a577a1bc1bc7c53ebe5b5b971cf9f3403c5e20a8e7b7eecc524f50c8ee9ba08",
+      "asset": "7a577a1bc1bc7c53-event-calibration-430.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-431.png",
+      "bytes": 270233,
+      "sha256": "f414761154a7bc0f43ec4cb054d0a6e0a148a816006012bd2d07bb4d093e227b",
+      "asset": "f414761154a7bc0f-event-calibration-431.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-432.png",
+      "bytes": 272834,
+      "sha256": "74fa4827a4f19ec3aa67d28d46cc223abe8fef3b76aad25ccab4ac039976b430",
+      "asset": "74fa4827a4f19ec3-event-calibration-432.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-433.png",
+      "bytes": 273759,
+      "sha256": "2ad6ca978cdf85aaf93d0ab1f363675eef68b8c4aca285d583c4d3de552e0298",
+      "asset": "2ad6ca978cdf85aa-event-calibration-433.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-434.png",
+      "bytes": 273138,
+      "sha256": "1e5138230c26670a37e39368c7bc897fff4697e8a8a3967ca7b2bf20173a34eb",
+      "asset": "1e5138230c26670a-event-calibration-434.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-435.png",
+      "bytes": 272450,
+      "sha256": "0a0b0c80869a7a1ca7271d19797b808de6ee6de4a9d71464d76271a9edf9cc28",
+      "asset": "0a0b0c80869a7a1c-event-calibration-435.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-436.png",
+      "bytes": 269228,
+      "sha256": "840c45c9d9b74915f2a9703a78cbcbd1335c3b2fe970b796cf653cbee4951e50",
+      "asset": "840c45c9d9b74915-event-calibration-436.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-437.png",
+      "bytes": 270066,
+      "sha256": "80c6308dcf50bba3f453597f3cfeac0754760835173b9504d6a6638379e40315",
+      "asset": "80c6308dcf50bba3-event-calibration-437.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-438.png",
+      "bytes": 269954,
+      "sha256": "53f2eaa61893d51bc5725ed69fd8e157753a78ae683cf093d17036a842503083",
+      "asset": "53f2eaa61893d51b-event-calibration-438.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-439.png",
+      "bytes": 269998,
+      "sha256": "0fb1924c06561e4129911fe0e90cbfa3573cd61098bfdbfeee37c72cc31e1565",
+      "asset": "0fb1924c06561e41-event-calibration-439.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-440.png",
+      "bytes": 269984,
+      "sha256": "40c266173a84a1ec6d2bdde1bb53174af47ea3ed7c16168852a0a35543888874",
+      "asset": "40c266173a84a1ec-event-calibration-440.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-441.png",
+      "bytes": 269870,
+      "sha256": "7a8b68ae968a6c413a7c2c328d5858e08e0912d4697535172715e6c4fcbcd8f2",
+      "asset": "7a8b68ae968a6c41-event-calibration-441.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-442.png",
+      "bytes": 273381,
+      "sha256": "3cd5973e0b98547a4caec9b027b1af4fb0bb056c5fff4b61bcf8c31373ba7e60",
+      "asset": "3cd5973e0b98547a-event-calibration-442.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-443.png",
+      "bytes": 269690,
+      "sha256": "73a532ca8fe3b1ff9e749e383842b3afc6f947d4954133a4171343419c2d8f89",
+      "asset": "73a532ca8fe3b1ff-event-calibration-443.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-444.png",
+      "bytes": 272785,
+      "sha256": "4c4c0f2ad8f343f47b065d999045eb1ee616d6c8e309477240cf3daa4f3e076e",
+      "asset": "4c4c0f2ad8f343f4-event-calibration-444.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-445.png",
+      "bytes": 271718,
+      "sha256": "4283ea5bddacee07eb10bbcd2eb812188a66118d4709556d2abaf0fd53555686",
+      "asset": "4283ea5bddacee07-event-calibration-445.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-446.png",
+      "bytes": 269676,
+      "sha256": "a756652c98a7017d7f84480411faf40ecb4d32dedc4195cead0f50eb5b18823d",
+      "asset": "a756652c98a7017d-event-calibration-446.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-447.png",
+      "bytes": 269798,
+      "sha256": "7db9be1095923f2ad68cfb6b4aa283cfd339a9eb5b889d5201edc6825d21d553",
+      "asset": "7db9be1095923f2a-event-calibration-447.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-448.png",
+      "bytes": 273713,
+      "sha256": "dfc9e486993269ed7d01795b7daa1dcc1aa72c2c51e8ca96ea6c8eb0e34e274c",
+      "asset": "dfc9e486993269ed-event-calibration-448.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-449.png",
+      "bytes": 270259,
+      "sha256": "b6f135afd0fb07f44b0b59ec960b1c4dd2c92fd83f03d68514e4af8079049d35",
+      "asset": "b6f135afd0fb07f4-event-calibration-449.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-450.png",
+      "bytes": 270248,
+      "sha256": "8f1bc15a433b1c3e6989003288113f804594188134b61f182e453b0dbf386d46",
+      "asset": "8f1bc15a433b1c3e-event-calibration-450.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-451.png",
+      "bytes": 270207,
+      "sha256": "9ca33f0b54e9203e222d4cc05be2e7bbc7809a25e6c4c18b80c9bf6df7645159",
+      "asset": "9ca33f0b54e9203e-event-calibration-451.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-452.png",
+      "bytes": 270213,
+      "sha256": "08600be92d6080ec776b9500d537d1b20d4c442536f9ad8491ebff3bfedd539b",
+      "asset": "08600be92d6080ec-event-calibration-452.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-453.png",
+      "bytes": 270241,
+      "sha256": "950d589a937073c078442615fa97ef5b90674a0c67fb4c99ee54d59a477d38c7",
+      "asset": "950d589a937073c0-event-calibration-453.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-454.png",
+      "bytes": 268979,
+      "sha256": "a4b748d032e3a860c7f43ece116c633245a474ce614794ee1a91356e6fb52d1a",
+      "asset": "a4b748d032e3a860-event-calibration-454.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-455.png",
+      "bytes": 271790,
+      "sha256": "1f4087a86c858cd4270c60b02914ba732abe4e8434b509f28e0d15f164976b17",
+      "asset": "1f4087a86c858cd4-event-calibration-455.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-456.png",
+      "bytes": 269483,
+      "sha256": "a0f9f200a4851d12fc72932fafb8eb994ddc23de9758cf7c3ace8583177a54df",
+      "asset": "a0f9f200a4851d12-event-calibration-456.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-457.png",
+      "bytes": 269403,
+      "sha256": "d967ab4440cfb4b05bba9d99dc3b623ef0a43a9a9206f1bcea0c3a362cde9a77",
+      "asset": "d967ab4440cfb4b0-event-calibration-457.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-458.png",
+      "bytes": 268825,
+      "sha256": "037441f09a465d708479ba1000ecd46a7baa59d856e21c85c2b0883b298eb2e8",
+      "asset": "037441f09a465d70-event-calibration-458.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-459.png",
+      "bytes": 273187,
+      "sha256": "0674ea50f07fbeeefc01c329abe219e9ef13b7cc5b15495a86b3e687601cc310",
+      "asset": "0674ea50f07fbeee-event-calibration-459.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-460.png",
+      "bytes": 269190,
+      "sha256": "c0f3f02bbf77609fefc383d3c38d0a6a9aaf7d08201735211d8dcb8def31b736",
+      "asset": "c0f3f02bbf77609f-event-calibration-460.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-461.png",
+      "bytes": 269191,
+      "sha256": "db879c4118c28b4d34d64099e4298e0e534bdb849c099ce9486fb19d62221059",
+      "asset": "db879c4118c28b4d-event-calibration-461.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-462.png",
+      "bytes": 269181,
+      "sha256": "c092748becbb7f34833b785103e3063d526e0cbdf955eba36a44c737e8053fac",
+      "asset": "c092748becbb7f34-event-calibration-462.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-463.png",
+      "bytes": 272287,
+      "sha256": "140ad41feeb539078e876962c12de7f4b6ba57b2ffb6d19d7528f7613ac14118",
+      "asset": "140ad41feeb53907-event-calibration-463.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-464.png",
+      "bytes": 269196,
+      "sha256": "33bc83988dccdd337a0cfec5b61edd21fbb6e854b1bb587c1f0054e7136442d2",
+      "asset": "33bc83988dccdd33-event-calibration-464.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-465.png",
+      "bytes": 269188,
+      "sha256": "45bf3373cc69cc1fbf80964fb7cb7c74200b87e4c9ed6e08c2c6dd23d07d4bf3",
+      "asset": "45bf3373cc69cc1f-event-calibration-465.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-466.png",
+      "bytes": 268347,
+      "sha256": "1d1fae9c825fc3974f022fedf30dca79b8260c39bc79d0ad02e4214b6a0f2e43",
+      "asset": "1d1fae9c825fc397-event-calibration-466.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-467.png",
+      "bytes": 271937,
+      "sha256": "a9557dcc389d7e45809456336790de751d0a128e02c940ae95a99951dbeba2fc",
+      "asset": "a9557dcc389d7e45-event-calibration-467.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-468.png",
+      "bytes": 270749,
+      "sha256": "61e7713099760de0331da2688b4a1aa6cae75f0605fb8b918de610e4175e40eb",
+      "asset": "61e7713099760de0-event-calibration-468.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-469.png",
+      "bytes": 268634,
+      "sha256": "c7e4bb78c14ac604eb689a41da09046f0135ad93072aa237b6b166baa8920686",
+      "asset": "c7e4bb78c14ac604-event-calibration-469.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-470.png",
+      "bytes": 271991,
+      "sha256": "b4c8e63c7536c56df7153ec380a5091e96ddd6888bedce0477ea677470732fb5",
+      "asset": "b4c8e63c7536c56d-event-calibration-470.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-471.png",
+      "bytes": 268857,
+      "sha256": "99c18fc269830365c022a157d4bc98288e1019ddd809007e31085f412ec6e385",
+      "asset": "99c18fc269830365-event-calibration-471.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-472.png",
+      "bytes": 268857,
+      "sha256": "99c18fc269830365c022a157d4bc98288e1019ddd809007e31085f412ec6e385",
+      "asset": "99c18fc269830365-event-calibration-472.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-473.png",
+      "bytes": 274264,
+      "sha256": "b95c58513ba426be7be39faf635d78939980f540e935672666231b233245312c",
+      "asset": "b95c58513ba426be-event-calibration-473.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-474.png",
+      "bytes": 268703,
+      "sha256": "2bb1b170adfed92214a7729899ae23061eacb8d2ad1a5238fb1ceb68ee6f3870",
+      "asset": "2bb1b170adfed922-event-calibration-474.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-475.png",
+      "bytes": 271098,
+      "sha256": "da79ec37efef75c772db1455bfee453eb13856609f92d5baffbe5a457c412509",
+      "asset": "da79ec37efef75c7-event-calibration-475.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-476.png",
+      "bytes": 268613,
+      "sha256": "ea37f64a30b62ffbdd405ebb522a806dd25b439fc28016a29fead73fffe92a7e",
+      "asset": "ea37f64a30b62ffb-event-calibration-476.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-477.png",
+      "bytes": 271751,
+      "sha256": "bd29e644e9df54828e3ec3d8aaad9bc3cf39b1b192bba40a5831642ccb609b74",
+      "asset": "bd29e644e9df5482-event-calibration-477.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-478.png",
+      "bytes": 273918,
+      "sha256": "387cf720e9e902dbbbb79e6cd193eb7ef41999fdda299f643a5d4db959f14cfd",
+      "asset": "387cf720e9e902db-event-calibration-478.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-479.png",
+      "bytes": 272240,
+      "sha256": "2db4e1c0d506666e6a56b29f905b8a78a9fc1104450a7052bd58e58d08b87c01",
+      "asset": "2db4e1c0d506666e-event-calibration-479.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-480.png",
+      "bytes": 269015,
+      "sha256": "87761b5509e1f912481f984118bcf39e0fd9231039f6e7af945b1768453c9b78",
+      "asset": "87761b5509e1f912-event-calibration-480.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-481.png",
+      "bytes": 269675,
+      "sha256": "85881704d451e36d90d14a3d1a55eff9190a547d034ad1cc56c6cbb1e68d1d92",
+      "asset": "85881704d451e36d-event-calibration-481.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-482.png",
+      "bytes": 269800,
+      "sha256": "d1fb91815bcb78140a02d1ac1c17f1542f5dcf9d4b723c538999ecd4c2bf0fd4",
+      "asset": "d1fb91815bcb7814-event-calibration-482.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-483.png",
+      "bytes": 269615,
+      "sha256": "236213f4875f7f92f24ca2f14e76b3f1a5f27363ca55f8ef6241295b4cd97741",
+      "asset": "236213f4875f7f92-event-calibration-483.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-484.png",
+      "bytes": 270763,
+      "sha256": "0a7d72f0a163c4459d23552a8c7e2ec8f43187c284482c57480bdb8e72b33d1a",
+      "asset": "0a7d72f0a163c445-event-calibration-484.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-485.png",
+      "bytes": 272699,
+      "sha256": "539a4e9dd15e5c8ecc78646eaf2713429fb9fe8c2f528eb017fb386ee9f74233",
+      "asset": "539a4e9dd15e5c8e-event-calibration-485.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-486.png",
+      "bytes": 269480,
+      "sha256": "036bdfbc03337ff23798351a31fa225aa49a349d33307abad2baf94aad0fa648",
+      "asset": "036bdfbc03337ff2-event-calibration-486.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-487.png",
+      "bytes": 269476,
+      "sha256": "951ed744849428c463f38862fba26d8a08eaee8a05e0603e1d14ec904025c923",
+      "asset": "951ed744849428c4-event-calibration-487.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-488.png",
+      "bytes": 271665,
+      "sha256": "a52ffc54e98fad985145ea335efd12b3a6ca97d0cb50126c710d735c29fa864c",
+      "asset": "a52ffc54e98fad98-event-calibration-488.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-489.png",
+      "bytes": 272765,
+      "sha256": "88a53058c7952620bc8077e57ca8298934b7f79c4ca252d093b70aab15deebaf",
+      "asset": "88a53058c7952620-event-calibration-489.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-490.png",
+      "bytes": 268679,
+      "sha256": "d6f360d04002423f89a4451d58db879f5119c2a9c15cb61ac91764222071b6d4",
+      "asset": "d6f360d04002423f-event-calibration-490.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-491.png",
+      "bytes": 268679,
+      "sha256": "d6f360d04002423f89a4451d58db879f5119c2a9c15cb61ac91764222071b6d4",
+      "asset": "d6f360d04002423f-event-calibration-491.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-492.png",
+      "bytes": 270253,
+      "sha256": "762a01619544d49d35baf985702c043f2db62b5496fbb8e3c452d9611f34b2c8",
+      "asset": "762a01619544d49d-event-calibration-492.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-493.png",
+      "bytes": 269044,
+      "sha256": "75dab8f5e6f73481b7edb30a4bd4e6e5d4bd3f1841d70d32ef1eed833c800ae0",
+      "asset": "75dab8f5e6f73481-event-calibration-493.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-494.png",
+      "bytes": 269048,
+      "sha256": "fff3458e72eab03ecf789f587e860559e560d3d36c9a2c709c40af683ea7d5dc",
+      "asset": "fff3458e72eab03e-event-calibration-494.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-495.png",
+      "bytes": 272954,
+      "sha256": "d234de8ba6d860066f84b2d153c64c799ab8b360e2789bf5f2de63bfa116ed98",
+      "asset": "d234de8ba6d86006-event-calibration-495.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-496.png",
+      "bytes": 270895,
+      "sha256": "9acb7f43f183b61a93283f3d53bf395c32054e61e67f9e862c8c276a9f1b52f6",
+      "asset": "9acb7f43f183b61a-event-calibration-496.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-497.png",
+      "bytes": 270841,
+      "sha256": "0da5a7f6aa1e4175efbdcf178a1571391160ed71c536bc5dcf20d9be9e3d9934",
+      "asset": "0da5a7f6aa1e4175-event-calibration-497.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-498.png",
+      "bytes": 272025,
+      "sha256": "ca78c5b6e62e40b959c5ee779ff74f461518665556ea65cdef809c9d4507d8e6",
+      "asset": "ca78c5b6e62e40b9-event-calibration-498.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-499.png",
+      "bytes": 268063,
+      "sha256": "7765e5fa3bff83744a9f892f4bee0cecb6e6590c4d1dd108ff71c46101ba1927",
+      "asset": "7765e5fa3bff8374-event-calibration-499.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-500.png",
+      "bytes": 268476,
+      "sha256": "ecabda8870812ad36a87f600f33155a6c3c48f1a1e4b60a7e4c7d8e6ca392890",
+      "asset": "ecabda8870812ad3-event-calibration-500.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-501.png",
+      "bytes": 268799,
+      "sha256": "0ddb16941753b9f28c57f68f15dc34489cc7d329e1ccabac9f46422bbc8d062e",
+      "asset": "0ddb16941753b9f2-event-calibration-501.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-502.png",
+      "bytes": 268804,
+      "sha256": "0259492206c1bd248e449a06405602599c1037e747c2f28996f2f92a34443a2f",
+      "asset": "0259492206c1bd24-event-calibration-502.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-503.png",
+      "bytes": 273113,
+      "sha256": "0b1c1aaa41954836130c156f7faaa77037b3d428e9f203eaf7aedf8d975dc251",
+      "asset": "0b1c1aaa41954836-event-calibration-503.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-504.png",
+      "bytes": 268695,
+      "sha256": "95449c68164ed9d1c0aa7becfd4808eac3bd90ee0422532438341fecc3d25e8f",
+      "asset": "95449c68164ed9d1-event-calibration-504.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-505.png",
+      "bytes": 268781,
+      "sha256": "20228047c72ac0ddb82fac30124560bc9d36bd6c0931efd70bdbd74461d1c791",
+      "asset": "20228047c72ac0dd-event-calibration-505.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-506.png",
+      "bytes": 272654,
+      "sha256": "bc8555204799c1fb5e09616a85b1aec7eb5ba6ddb8522f320a1bf77e2358c71a",
+      "asset": "bc8555204799c1fb-event-calibration-506.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-507.png",
+      "bytes": 269232,
+      "sha256": "ed0d65834f8b277ff457ae8ae850a45fee13487874f31906085fe0aac5f44845",
+      "asset": "ed0d65834f8b277f-event-calibration-507.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-508.png",
+      "bytes": 269223,
+      "sha256": "e7c81de7e95145b4b54f6934d765115ba3a8d58af035663f6129bd100076f207",
+      "asset": "e7c81de7e95145b4-event-calibration-508.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-509.png",
+      "bytes": 269169,
+      "sha256": "cd9e60e2ad5ec7ee950ca822cb02456c622029ff8f9a50236290ddd12f14dea5",
+      "asset": "cd9e60e2ad5ec7ee-event-calibration-509.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-510.png",
+      "bytes": 273284,
+      "sha256": "9d582dcebfdd5e60d1da8b753a50c9ff8733d1b4840e7fe58b37d2c371075eaf",
+      "asset": "9d582dcebfdd5e60-event-calibration-510.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-511.png",
+      "bytes": 269611,
+      "sha256": "0d5dbd6cda859d6c1a180ffef219c65cbff12a04be13bd7104d4fe9b1be46d7f",
+      "asset": "0d5dbd6cda859d6c-event-calibration-511.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-512.png",
+      "bytes": 269649,
+      "sha256": "60acd85fa06262543265be3e0db5a4c563db4f89ae0b05567dcc4fb2b169d300",
+      "asset": "60acd85fa0626254-event-calibration-512.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-513.png",
+      "bytes": 275154,
+      "sha256": "ef929a24cf385abbda5e9df3a9a609755830599757d6fcc363980266ed4baa3a",
+      "asset": "ef929a24cf385abb-event-calibration-513.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-514.png",
+      "bytes": 270248,
+      "sha256": "b3e9b73b6ea383aa37ae32633044585160f38ab5096e4471c6ac3b172ca4aa37",
+      "asset": "b3e9b73b6ea383aa-event-calibration-514.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-515.png",
+      "bytes": 270248,
+      "sha256": "b3e9b73b6ea383aa37ae32633044585160f38ab5096e4471c6ac3b172ca4aa37",
+      "asset": "b3e9b73b6ea383aa-event-calibration-515.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-516.png",
+      "bytes": 275425,
+      "sha256": "dbbb62552e63093b1c511d09743350b245a1968118de8427d2cf2ee373c04f02",
+      "asset": "dbbb62552e63093b-event-calibration-516.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-517.png",
+      "bytes": 270669,
+      "sha256": "f1a66bd499f95a7587371ae71acc327fc62ae61ddb57451e4a661fc56ee58d16",
+      "asset": "f1a66bd499f95a75-event-calibration-517.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-518.png",
+      "bytes": 270670,
+      "sha256": "5ef2a272f6fa9ddee39c44fa0c33b0453428c2b22dc313608af8d29b4a406a26",
+      "asset": "5ef2a272f6fa9dde-event-calibration-518.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-519.png",
+      "bytes": 270673,
+      "sha256": "c92a9b957c7a6a303ea27a0ad7905564ee30c5e5fb0e9b38d38fc11c998f73c3",
+      "asset": "c92a9b957c7a6a30-event-calibration-519.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-520.png",
+      "bytes": 270285,
+      "sha256": "7d84a480c108ee32a8e5ebdf67a84134df9b673939a74d4c9af8f126cf779e53",
+      "asset": "7d84a480c108ee32-event-calibration-520.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-521.png",
+      "bytes": 272954,
+      "sha256": "534d999ab71b2286a4cfcba3139c0b613282e12f7447673b8257060f27c69cf8",
+      "asset": "534d999ab71b2286-event-calibration-521.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-522.png",
+      "bytes": 270728,
+      "sha256": "bc66339fe8c44aac11272fd256d3ab34e2abf885501b3b1937ae42fe7d2fae82",
+      "asset": "bc66339fe8c44aac-event-calibration-522.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-523.png",
+      "bytes": 270672,
+      "sha256": "b53a3335fc92b241344597a2f3d1e36d728dbeece37b89605aba8ff28298010c",
+      "asset": "b53a3335fc92b241-event-calibration-523.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-524.png",
+      "bytes": 270676,
+      "sha256": "3c14235fcb55ca60c157f0343c4a33c9962e94a92e1ede37c0fcebeed690ae4b",
+      "asset": "3c14235fcb55ca60-event-calibration-524.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-525.png",
+      "bytes": 270655,
+      "sha256": "5a30279e64586664a2bdcb682b252f38ed9c778861b2c5f0493db06d5a3cd04b",
+      "asset": "5a30279e64586664-event-calibration-525.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-526.png",
+      "bytes": 268837,
+      "sha256": "be7889d00af8019498a9766cb4ad18d2b121d1761c0b5fb93e343c3339e2b40e",
+      "asset": "be7889d00af80194-event-calibration-526.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-527.png",
+      "bytes": 270168,
+      "sha256": "94cd26e36ea9860fd088a503614d986510882e45caac70bb9691b3f14926b751",
+      "asset": "94cd26e36ea9860f-event-calibration-527.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-528.png",
+      "bytes": 272270,
+      "sha256": "3a2dd8cb3b0e7f000d85ef9524d44e9b27622cd6257bd0c296dc90f2da15bc34",
+      "asset": "3a2dd8cb3b0e7f00-event-calibration-528.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-529.png",
+      "bytes": 273987,
+      "sha256": "f4667569675e57e433b3c196b9b9d3a017cd121f9f6e3759a019f61e21d69cad",
+      "asset": "f4667569675e57e4-event-calibration-529.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-530.png",
+      "bytes": 270576,
+      "sha256": "fd6ec177136326f16801c6565afc457e25bab6e39c9daebde5f5573c65395238",
+      "asset": "fd6ec177136326f1-event-calibration-530.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-531.png",
+      "bytes": 271237,
+      "sha256": "23b29962e6f6391017ae80af3c52045c3078d6b92d57d596f978e654fc6d6c21",
+      "asset": "23b29962e6f63910-event-calibration-531.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-532.png",
+      "bytes": 272378,
+      "sha256": "e6ee8681372903710d094b7a0e38ad3acb5fd3afa95091bfaaf44c952b2d20bc",
+      "asset": "e6ee868137290371-event-calibration-532.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-533.png",
+      "bytes": 271078,
+      "sha256": "4d7b1d2b52faab2956018a66e3b79759240db690fd0dbb0545309d1af0837e40",
+      "asset": "4d7b1d2b52faab29-event-calibration-533.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-534.png",
+      "bytes": 270985,
+      "sha256": "4adb7b704828b29e6c0541a76562b5876f9a616752ec440371e717e01f370537",
+      "asset": "4adb7b704828b29e-event-calibration-534.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-535.png",
+      "bytes": 271009,
+      "sha256": "fab5aff15cdb5530a5cbb641d56064b5891ab0cea5abb608a032b9edd700ff56",
+      "asset": "fab5aff15cdb5530-event-calibration-535.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-536.png",
+      "bytes": 270994,
+      "sha256": "fb3a20580d3d57ad6ba2f08b3c40419dc0baa666bb89443d7c7da32657289716",
+      "asset": "fb3a20580d3d57ad-event-calibration-536.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-537.png",
+      "bytes": 271175,
+      "sha256": "da8eb66da3ae3a1fbd4029fc59f2d2c102e7701a2f342e470df1d3e58ef09354",
+      "asset": "da8eb66da3ae3a1f-event-calibration-537.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-538.png",
+      "bytes": 272794,
+      "sha256": "11705f7b194f8e209470d5429bc8d9f416ec9cfe11cfede830af9018bfebff84",
+      "asset": "11705f7b194f8e20-event-calibration-538.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-539.png",
+      "bytes": 271520,
+      "sha256": "79c147855c4f6f32c02a4400008fecb0b3672403d146c6757f6cd505049ccbca",
+      "asset": "79c147855c4f6f32-event-calibration-539.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-540.png",
+      "bytes": 271509,
+      "sha256": "a37bc58a6b3ef18821b177e7ebaad1b96d0db1ff5bef1fc4ea81c8128365d79f",
+      "asset": "a37bc58a6b3ef188-event-calibration-540.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-541.png",
+      "bytes": 274097,
+      "sha256": "9564b56b8529c6806673c1a323df98e24f8a8bca8c48a0e67daf2c2128bbf578",
+      "asset": "9564b56b8529c680-event-calibration-541.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-542.png",
+      "bytes": 273270,
+      "sha256": "311dfd3788498bcf2044b63095d7bbc3ede3d2f26f68f761a2f90385b6c4585c",
+      "asset": "311dfd3788498bcf-event-calibration-542.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-543.png",
+      "bytes": 274263,
+      "sha256": "157ea4e0ddcffe9238ce3582c256ca37c1ba47912a88f6ed7b8bfc7758dd9190",
+      "asset": "157ea4e0ddcffe92-event-calibration-543.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-544.png",
+      "bytes": 275717,
+      "sha256": "0c1650128f9691793cd131665ece506724f8f876202efe559b5a8cc45fe836aa",
+      "asset": "0c1650128f969179-event-calibration-544.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-545.png",
+      "bytes": 274644,
+      "sha256": "57f58d6838da0c6ac2c4029b425dcefd2f8bbd0aefe4cf7ed52de4a2012ece40",
+      "asset": "57f58d6838da0c6a-event-calibration-545.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-546.png",
+      "bytes": 275414,
+      "sha256": "996fcd27a81772dfec94b985f0985ad82c4b2447f88e84edc2205bcba3ad0929",
+      "asset": "996fcd27a81772df-event-calibration-546.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-547.png",
+      "bytes": 270566,
+      "sha256": "0f87b5029d6a81bded83735c805bc058f065ff59380866672796ea3158c5eb4f",
+      "asset": "0f87b5029d6a81bd-event-calibration-547.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-548.png",
+      "bytes": 271293,
+      "sha256": "eabaa5b71474a6372a27f84659dedb01f146ae0862905f72fbbfebb627a6c9c2",
+      "asset": "eabaa5b71474a637-event-calibration-548.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-549.png",
+      "bytes": 273508,
+      "sha256": "60438ce1270cbe1b44e957cc6d4c04f90e3bdb81538498025805a0430fc8ff9a",
+      "asset": "60438ce1270cbe1b-event-calibration-549.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-550.png",
+      "bytes": 270876,
+      "sha256": "2bab60acebc5d9e31c52a26b4f7e64610f430af09fbac962b1b19f07888b90eb",
+      "asset": "2bab60acebc5d9e3-event-calibration-550.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-551.png",
+      "bytes": 273888,
+      "sha256": "7616b5bca6addd023992522f022f7842d2d4dcd26069349a87050e3e848bab85",
+      "asset": "7616b5bca6addd02-event-calibration-551.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-552.png",
+      "bytes": 271341,
+      "sha256": "cee86c332cfdde9f8a0d7c48928070273c756bf7efbb8fe14d0e9ae45650344a",
+      "asset": "cee86c332cfdde9f-event-calibration-552.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-553.png",
+      "bytes": 271320,
+      "sha256": "ab19697a2c970203769abb2b1d6f161870ef5afef6019c6be2ada117fb6a9a47",
+      "asset": "ab19697a2c970203-event-calibration-553.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-554.png",
+      "bytes": 270841,
+      "sha256": "cfab32904009eaf921b686d525b4db1c44a65dedfde420d6723522f300a44cf3",
+      "asset": "cfab32904009eaf9-event-calibration-554.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-555.png",
+      "bytes": 275075,
+      "sha256": "04309394f6430ea2c754d7e5e4d9c79bea2294f0ebe6c604c3aa386db1e29fb4",
+      "asset": "04309394f6430ea2-event-calibration-555.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-556.png",
+      "bytes": 271252,
+      "sha256": "264946d1c421baa55ee6ea5ce023d2b72163d323283b85cbb6bbe7bb6e4348da",
+      "asset": "264946d1c421baa5-event-calibration-556.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-557.png",
+      "bytes": 271235,
+      "sha256": "457037a3b3de59490a406918e03103fd2298b099a918cb515ec25a8eb2b9ff0b",
+      "asset": "457037a3b3de5949-event-calibration-557.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-558.png",
+      "bytes": 271227,
+      "sha256": "7da6cd49ff1b8611de5e99cedd0a07d55c3fef1b312ab005aec612ed957c8f7a",
+      "asset": "7da6cd49ff1b8611-event-calibration-558.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-559.png",
+      "bytes": 271245,
+      "sha256": "1e3d17200ec98579b8cefe5e59772b75be68534a1c83cf764c16f2fa64485a4f",
+      "asset": "1e3d17200ec98579-event-calibration-559.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-560.png",
+      "bytes": 270950,
+      "sha256": "b1b34bd537351cff0587b902534f63bc5e7cba961f4c6d4ca17ce73e9ebde40e",
+      "asset": "b1b34bd537351cff-event-calibration-560.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-561.png",
+      "bytes": 270794,
+      "sha256": "790d059da32b6721f6877bf04c5a648e8a9ccbc526b9b727e71b4a5b20a653db",
+      "asset": "790d059da32b6721-event-calibration-561.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-562.png",
+      "bytes": 275101,
+      "sha256": "55b199c15a0b4b854843fafa60b65aa33b49deadfac2b84739170a7b1fe5de76",
+      "asset": "55b199c15a0b4b85-event-calibration-562.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-563.png",
+      "bytes": 271240,
+      "sha256": "f659906d057d43289ab9fe9756472d8f2573a8a457bcf6b4294c1dd701834142",
+      "asset": "f659906d057d4328-event-calibration-563.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-564.png",
+      "bytes": 271483,
+      "sha256": "df5f9c73338d0b0a087878c4d7373453c2ee8a641c198dc7f60e28c40cae3939",
+      "asset": "df5f9c73338d0b0a-event-calibration-564.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-565.png",
+      "bytes": 271840,
+      "sha256": "953f40d60d0fb5179671ed6c36c118a5ba6b585c83a03e03fa0c7157e7b9aff9",
+      "asset": "953f40d60d0fb517-event-calibration-565.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-566.png",
+      "bytes": 274409,
+      "sha256": "48458253d9138ad3f47524e4fa790a8d71f2a23bca26aa721dae40adf21bc76a",
+      "asset": "48458253d9138ad3-event-calibration-566.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-567.png",
+      "bytes": 275230,
+      "sha256": "40188c05c0a36dac1053574c5f75868b50461d888712b14064b623cc269f372d",
+      "asset": "40188c05c0a36dac-event-calibration-567.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-568.png",
+      "bytes": 274918,
+      "sha256": "1e1e736db5b94d8f25881cedfcb6a2a382956d3f476eb2d59f90683b82cab71f",
+      "asset": "1e1e736db5b94d8f-event-calibration-568.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-569.png",
+      "bytes": 277131,
+      "sha256": "8e768f8e50a07f4f986f4c20111f2c47d444ab792ff35add120e809ebc99d821",
+      "asset": "8e768f8e50a07f4f-event-calibration-569.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-570.png",
+      "bytes": 274682,
+      "sha256": "a21a84cbaa284d80cf908e9a6352c94a7a65369efc300cc7af05d9cc50ab021b",
+      "asset": "a21a84cbaa284d80-event-calibration-570.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-571.png",
+      "bytes": 270757,
+      "sha256": "bd57825a5a365432a8583b145b29375f1a16b468bcc957d06c5e7874cc927e3d",
+      "asset": "bd57825a5a365432-event-calibration-571.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-572.png",
+      "bytes": 270757,
+      "sha256": "bd57825a5a365432a8583b145b29375f1a16b468bcc957d06c5e7874cc927e3d",
+      "asset": "bd57825a5a365432-event-calibration-572.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-573.png",
+      "bytes": 271534,
+      "sha256": "0e0f27e73ce99b5ba2a07e3d963079e0426ba769f5b5376811ec480a8400210f",
+      "asset": "0e0f27e73ce99b5b-event-calibration-573.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-574.png",
+      "bytes": 271478,
+      "sha256": "26b9c8842ecf45bc811df1e2031d0537f06cd871b85aa6160a5e90fb6b018d5e",
+      "asset": "26b9c8842ecf45bc-event-calibration-574.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-575.png",
+      "bytes": 271438,
+      "sha256": "b31fd3e0efff5b30717b9cd9d9d41fe8fbec09875e393c61b8553b5efd69e3d7",
+      "asset": "b31fd3e0efff5b30-event-calibration-575.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-576.png",
+      "bytes": 274183,
+      "sha256": "a5ce809b5759c54e1883db96f12bddd0de4394d6bbe9cf1ea2614ca579530830",
+      "asset": "a5ce809b5759c54e-event-calibration-576.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-577.png",
+      "bytes": 271309,
+      "sha256": "47e82a0bb71071fb12508641ad6be213afab8adcf587f1e937f1d572275ac0b8",
+      "asset": "47e82a0bb71071fb-event-calibration-577.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-578.png",
+      "bytes": 270688,
+      "sha256": "19d91c7b258814d636b2ee8cc9b4e6e61929285320726a4b171b36bf093fb491",
+      "asset": "19d91c7b258814d6-event-calibration-578.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-579.png",
+      "bytes": 275828,
+      "sha256": "dc511d0ef0a1f415ab80e9e19fa084d77e9125c251c69d9b248ef7f640aa4573",
+      "asset": "dc511d0ef0a1f415-event-calibration-579.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-580.png",
+      "bytes": 271022,
+      "sha256": "50ce39deaca907c1f8562d883bd088838f8ebb06d108aa1b8a460fcc4cc44dbe",
+      "asset": "50ce39deaca907c1-event-calibration-580.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-581.png",
+      "bytes": 271011,
+      "sha256": "844253a859a19f761bb86522072c9d17dbf9cf8200cb4950ea6ff2ec886fbd33",
+      "asset": "844253a859a19f76-event-calibration-581.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-582.png",
+      "bytes": 270562,
+      "sha256": "9c6fc8fac15bd570f0a575db8b2a5ed300ae9d7fc35919c81c36b1414ddb2a63",
+      "asset": "9c6fc8fac15bd570-event-calibration-582.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-583.png",
+      "bytes": 273587,
+      "sha256": "13860333caa451fe539afac89bbc5c7d586e5d1f5dff684096af6a8ac7ce3a40",
+      "asset": "13860333caa451fe-event-calibration-583.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-584.png",
+      "bytes": 271003,
+      "sha256": "e993997d9145408983dd2e464e502eb1d58a6c9513b3cb32ff88f4083d604906",
+      "asset": "e993997d91454089-event-calibration-584.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-585.png",
+      "bytes": 271588,
+      "sha256": "dd8d1c96848bc9bb7b32a29e3156f215505268f826763b1da843cde6963b56b6",
+      "asset": "dd8d1c96848bc9bb-event-calibration-585.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-586.png",
+      "bytes": 271559,
+      "sha256": "de1a27a4440e391cb3abf098218a2bdafbea83d8ed053b1e402f1bb2bebfc439",
+      "asset": "de1a27a4440e391c-event-calibration-586.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-587.png",
+      "bytes": 272693,
+      "sha256": "5efe09d4ac3f6f2cdcda9a43cc12411d66469451eee2db4db63bf5f341274e6f",
+      "asset": "5efe09d4ac3f6f2c-event-calibration-587.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-588.png",
+      "bytes": 271486,
+      "sha256": "8c93131bc25854d7a2e9518719e8a27b65086d110abeb00dda6fe11bf7673966",
+      "asset": "8c93131bc25854d7-event-calibration-588.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-589.png",
+      "bytes": 271405,
+      "sha256": "86dcdedeb4e3f04504ac95d58d8d031d513970d434f048cb17f6c911e768ab56",
+      "asset": "86dcdedeb4e3f045-event-calibration-589.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-590.png",
+      "bytes": 274155,
+      "sha256": "93e02ea156845445aa4d18386e997bb51e52eadde4fc6fce938e2dbef6a79c79",
+      "asset": "93e02ea156845445-event-calibration-590.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-591.png",
+      "bytes": 272755,
+      "sha256": "0079b44a13fbfe375673157437e197ee87d582024dd6b4f7e30ff50c9d91d644",
+      "asset": "0079b44a13fbfe37-event-calibration-591.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-592.png",
+      "bytes": 271303,
+      "sha256": "3e544921b549eb90948c3ade1d7d5dfbf063bc68f3d885af0e6156b2e8047508",
+      "asset": "3e544921b549eb90-event-calibration-592.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-593.png",
+      "bytes": 271303,
+      "sha256": "3e544921b549eb90948c3ade1d7d5dfbf063bc68f3d885af0e6156b2e8047508",
+      "asset": "3e544921b549eb90-event-calibration-593.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-594.png",
+      "bytes": 274381,
+      "sha256": "dffeade1df823c6d6ee6e693d399ce2683684c37b7537d7e2506b888347814a8",
+      "asset": "dffeade1df823c6d-event-calibration-594.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-595.png",
+      "bytes": 275141,
+      "sha256": "3df3db511b0db794b0861abe6bf079e307bef83f647e23210b3cd2905d5df1ba",
+      "asset": "3df3db511b0db794-event-calibration-595.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-596.png",
+      "bytes": 274831,
+      "sha256": "a2f3719cf2db24e71dbb170b17869f09e45b94a0251a6c1f15aaeed40832eeb1",
+      "asset": "a2f3719cf2db24e7-event-calibration-596.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-597.png",
+      "bytes": 277043,
+      "sha256": "1df70f2981cd6e9a303e6c70f8f4ced96c2cb4eddcb0ad864a44f5bec693be62",
+      "asset": "1df70f2981cd6e9a-event-calibration-597.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-598.png",
+      "bytes": 275971,
+      "sha256": "bba42e09ad98f650289352cf135ec5abfe10d2dc0f670109830b9b8d43ac8f08",
+      "asset": "bba42e09ad98f650-event-calibration-598.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-599.png",
+      "bytes": 274491,
+      "sha256": "356463fd3463eb72ca5164ced1f2f3a01fa3705636fa21db0d8c8e9454efac5b",
+      "asset": "356463fd3463eb72-event-calibration-599.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-600.png",
+      "bytes": 270673,
+      "sha256": "c497b0d567894bc986fbdc6ee284be0c509b41977fa5a1a647d8bf53ddaca516",
+      "asset": "c497b0d567894bc9-event-calibration-600.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-601.png",
+      "bytes": 270960,
+      "sha256": "7fa9a0f5af8b66f80ee1f0cc9bc3d91caf8d1d0dfc8b059a70e8bdee75d758af",
+      "asset": "7fa9a0f5af8b66f8-event-calibration-601.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-602.png",
+      "bytes": 271482,
+      "sha256": "ce3f3931e6654c70704bd4f6f0dfaadbca7f795c50d04b671533ab99f7285a76",
+      "asset": "ce3f3931e6654c70-event-calibration-602.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-603.png",
+      "bytes": 271482,
+      "sha256": "7ea11e19fcc5bfc094e2cd1b7d335981202010f233902ad37feacc5b17429c93",
+      "asset": "7ea11e19fcc5bfc0-event-calibration-603.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-604.png",
+      "bytes": 271425,
+      "sha256": "54c10c152900652ea7edb19b091d642690b1ab756a4dd9a6f13b6f47e39c7cf7",
+      "asset": "54c10c152900652e-event-calibration-604.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-605.png",
+      "bytes": 274972,
+      "sha256": "bfc1a709c0d2c372f8398cdd55e08266f5796078682d96713a274a2ea406e09e",
+      "asset": "bfc1a709c0d2c372-event-calibration-605.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-606.png",
+      "bytes": 271271,
+      "sha256": "ecffbee584c7ed3131d6e4ac799d85ccba14506df43e91805ef3c326d4629f73",
+      "asset": "ecffbee584c7ed31-event-calibration-606.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-607.png",
+      "bytes": 271263,
+      "sha256": "f0a0fd20225f71cd4a5c518b0549a64f5b2ffbd1db9755c99e05bd40b582ced9",
+      "asset": "f0a0fd20225f71cd-event-calibration-607.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-608.png",
+      "bytes": 271261,
+      "sha256": "e85ffe859148eef271b6aa8149db8911c163ab0bfe7c25baa9313266c7e12281",
+      "asset": "e85ffe859148eef2-event-calibration-608.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-609.png",
+      "bytes": 271281,
+      "sha256": "1e95fd68cb535c85893ae4927e5efc7a6d69c4aeffa72538844d14bbcc0ef250",
+      "asset": "1e95fd68cb535c85-event-calibration-609.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-610.png",
+      "bytes": 271245,
+      "sha256": "ad218efabe97de6497a0caaa5ce1feacff9ea6c8221e919a46604a6015ee1759",
+      "asset": "ad218efabe97de64-event-calibration-610.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-611.png",
+      "bytes": 271277,
+      "sha256": "d67ae228d2b9b15a05584a2a4fb984fbb09672052028a352848eb1045b980f9b",
+      "asset": "d67ae228d2b9b15a-event-calibration-611.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-612.png",
+      "bytes": 271274,
+      "sha256": "3d71d6be4ced5d3ff8e4b16ab2b5fe0ca630cb7f0268b84370e9c9fc6ba92b8e",
+      "asset": "3d71d6be4ced5d3f-event-calibration-612.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-613.png",
+      "bytes": 271301,
+      "sha256": "b18de9bfe70ae3b3edb668127d520c19a6ad2fa2754ef5a9b363a8fcdb8f4a11",
+      "asset": "b18de9bfe70ae3b3-event-calibration-613.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-614.png",
+      "bytes": 271316,
+      "sha256": "abac4db2ace991d9be1ce5e88908a49fb8d578b3dd3a0c702091c7181036049d",
+      "asset": "abac4db2ace991d9-event-calibration-614.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-615.png",
+      "bytes": 271325,
+      "sha256": "f4d6382a6c81852f7147e58edf124a7d31b070769e94cb3cde222877920a6598",
+      "asset": "f4d6382a6c81852f-event-calibration-615.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-616.png",
+      "bytes": 271274,
+      "sha256": "746a9b15c9748b268665f4d3f7b3259bb43265aba828ba230cb267dbad730001",
+      "asset": "746a9b15c9748b26-event-calibration-616.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-617.png",
+      "bytes": 271293,
+      "sha256": "752cf915f16e3482302e3bb038bb61153af0977c68bfaefecd4a31daf6c258ca",
+      "asset": "752cf915f16e3482-event-calibration-617.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-618.png",
+      "bytes": 271288,
+      "sha256": "8331a7a08470d1b728b5ba1b56e03e606fc7c66819371b4c035c87c9b9f1c7be",
+      "asset": "8331a7a08470d1b7-event-calibration-618.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-619.png",
+      "bytes": 271289,
+      "sha256": "c6bf31ff0f255a66ca0aa66371bccae18ae90eb44191b942265190ac1ec7e5d4",
+      "asset": "c6bf31ff0f255a66-event-calibration-619.png",
+      "class": "recording"
+    },
+    {
+      "name": "event-calibration-620.png",
+      "bytes": 268903,
+      "sha256": "a746f4e1f9ac176aaaea03f7882a21b7afda14461fad8b5c3d740e1877bc7f5a",
+      "asset": "a746f4e1f9ac176a-event-calibration-620.png",
+      "class": "recording"
+    },
+    {
+      "name": "after.png",
+      "bytes": 247656,
+      "sha256": "480449ae87f7933de47dc7795a2a32861a2727eaf5b148ed406b81f5b1a3e635",
+      "asset": "480449ae87f7933d-after.png",
+      "class": "recording"
+    },
+    {
+      "name": "changes.log",
+      "bytes": 2827,
+      "sha256": "d88b1b200c9aab6a785bf6c2c6c35785af1ec50ebb8a122f5622413a38a0a840",
+      "asset": "d88b1b200c9aab6a-changes.log",
+      "class": "log"
+    },
+    {
+      "name": "wine.log",
+      "bytes": 627,
+      "sha256": "b15f6d51d70c5cf3442525695c448db12672f5570f08b5465dd44fac63f75b2c",
+      "asset": "b15f6d51d70c5cf3-wine.log",
+      "class": "log"
+    },
+    {
+      "name": "run.log",
+      "bytes": 107000,
+      "sha256": "333158c09a7cfb353aa92ff239b3884107dc913bbe58855a7e48dd1f575e59c9",
+      "asset": "333158c09a7cfb35-run.log",
+      "class": "log"
+    }
+  ]
+}

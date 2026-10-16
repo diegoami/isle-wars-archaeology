@@ -1,0 +1,26 @@
+{
+  "question": "Q-UI-06",
+  "kind": "capture-attempt-failure",
+  "formal_run_record_written": false,
+  "reason": "outer launch_inner reached the configured 1200-second WALK_BOUND and killed the private namespace before write_records; no formal run record can be recovered from this attempt",
+  "accepted_pass_lines": 27,
+  "candidate_shot_lines": 0,
+  "capture_console_log": {
+    "sha256": "1ab2a8ee08aba978f9222e798436295b73c4f819794c754c63b1f28d922870ba",
+    "class": "log",
+    "availability": "machine-local; durable ignored session checkpoint"
+  },
+  "recovery_console_log": {
+    "sha256": "00dbf5210870e2ed22c5c60d9ecfa7122b951d84d263304e0baaf8d07d5ee0a8",
+    "class": "log",
+    "availability": "machine-local; durable ignored session checkpoint"
+  },
+  "recovery": "interrupted prefix preserved locally; restored existing registry baseline; removed eight Wine-created COM links with reviewed strip_links helper; sync_game copied0 removed0; prefix safety/game-copy checks and baseline bytes all passed; no game launched",
+  "limitations": [
+    "no formal run/1 record or evidence manifest exists for this attempt",
+    "no completion or recovery success is attributed to the killed capture itself",
+    "private temporary frame evidence was lost with the namespace; only console log remains",
+    "no conclusion about absence of random events follows from no candidate shot line",
+    "five candidates in one completed Q-UI-06 record remain unmet"
+  ]
+}
