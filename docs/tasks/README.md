@@ -56,3 +56,4 @@ status; this index carries none.
 | T53 | malpaco's design, the computer opponent: how it plays, and its difficulty levels | #196 | T51 |
 | T52 | malpaco's design, the UI: screens, the board, feedback and sound | #194 | T53 |
 | T55 | The single-exchange sitting: 20+ computer-vs-computer exchanges from a model sitting | #222 | T44 |
+| T56 | Accept exploration and decompilation requests from malpaco | #256 | — |
