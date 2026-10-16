@@ -44,6 +44,7 @@ class CalibrationTest(unittest.TestCase):
         self.assertLessEqual(f['observed_at_s'],f['capture_started_at_s'])
         self.assertLess(f['capture_started_at_s'],f['capture_finished_at_s'])
         self.assertIn('sequential',f['limitation'].lower())
+        self.assertTrue(all(c.args[2].startswith('shot ') for c in shots.call_args_list))
 
     def test_both_regions_changed_one_calibration_frame(self):
         _,shots,frames,_,_=self.watch(both=True)
@@ -58,6 +59,17 @@ class CalibrationTest(unittest.TestCase):
             with self.subTest(opts=opts):
                 _,shots,frames,_,_=self.watch(**opts)
                 shots.assert_not_called();self.assertEqual(frames,[])
+
+    def test_watch_default_without_keyword_creates_no_calibration_frame(self):
+        clock=FakeClock();session=mock.Mock();ctx=r.Ctx(dict(walks.WALKS['Q-UI-06'],qid='Q-UI-06'))
+        with mock.patch.object(r,'CLOCK',clock.clock),mock.patch.object(r,'SLEEP',clock.sleep), \
+                mock.patch.object(r,'read_region',side_effect=lambda *_: b'\xff'*300 if clock.now else b'\0'*300), \
+                mock.patch.object(r,'perform') as perform:
+            r.watch_regions(session,ctx,['board-area'],.25,.25,flashes=True,begun=0,
+                            stop_when=lambda: 'done')
+        perform.assert_not_called()
+        self.assertFalse(any(c.args[2]=='read: event calibration frame'
+                             for c in session.observe.call_args_list))
 
     def test_candidate_count_and_shot_stay_separate(self):
         counts,shots,frames,_,ctx=self.watch(share='large',both=True)
@@ -77,8 +89,19 @@ class CalibrationTest(unittest.TestCase):
         for qids in [['Q-UI-08'],['Q-UI-06','Q-UI-08']]:
             args=r.parse_args([arg for q in qids for arg in ['--question',q]]+['--event-calibration'])
             with self.subTest(qids=qids),self.assertRaises(SystemExit):r.questions_of(args)
+        with self.assertRaises(SystemExit):
+            r.questions_of(r.parse_args(['--batch','events-end','--event-calibration']))
         args=r.parse_args(['--question','Q-UI-06','--question','Q-UI-07','--event-calibration'])
         self.assertEqual(r.questions_of(args),['Q-UI-06','Q-UI-07'])
+
+    def test_event_helper_is_the_only_composite_forwarding_capture_opt_in(self):
+        session=mock.Mock();session.screen_name.return_value='board-menu';session.screen_attack_ready.return_value=True
+        ctx=r.Ctx(dict(walks.WALKS['Q-UI-06'],qid='Q-UI-06',event_calibration=True))
+        with mock.patch.object(r,'place_and_attack',return_value=True), \
+                mock.patch.object(r,'leave_attack_and_pass',return_value=0), \
+                mock.patch.object(r,'watch_regions',return_value=1) as watch:
+            r.composite_event_watch(session,ctx,turns=1,need=1)
+        self.assertTrue(watch.call_args.kwargs['capture_changes'])
 
     def test_inner_forwards_calibration_flag(self):
         args=r.parse_args(['--question','Q-UI-06','--event-calibration'])
@@ -107,3 +130,23 @@ class CalibrationTest(unittest.TestCase):
             entries={o['name']:o['sha256'] for o in manifest['files']}
             for f in frames:self.assertEqual(outputs[f['frame']],entries[f['frame']])
             self.assertTrue(any(o['field']=='event calibration policy' for o in observations))
+
+    def test_capture_failure_uses_existing_abort_and_recovery_lifecycle(self):
+        clock=FakeClock()
+        class CaptureFailureSession(FakeSession):
+            def perform(self,text):
+                if text.startswith('shot event-calibration-'):
+                    raise r.StepFailed('synthetic calibration capture failure')
+                return super().perform(text)
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);locs=fake_locs(root)
+            def factory(*args):return CaptureFailureSession(*args,clock=clock,workdir=root/'work')
+            with mock.patch.object(r,'CLOCK',clock.clock),mock.patch.object(r,'SLEEP',clock.sleep), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                status,recovered=r.run_walk('Q-UI-06',None,locs,':99','0123456789ab','local',
+                    ['--event-calibration'],{'wine':'fake'},root=root,session_factory=factory,
+                    event_calibration=True)
+            self.assertTrue(status.startswith('aborted:'),status)
+            self.assertTrue(recovered)
+            record=json.loads(next((root/'runs/E019/events-end').glob('*.json')).read_text())
+            self.assertTrue(record['status'].startswith('aborted:'))

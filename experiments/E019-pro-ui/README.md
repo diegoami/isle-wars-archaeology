@@ -155,3 +155,25 @@ allowance for each selected event walk and display size; repeated and mixed sele
 This is an operational fallback, not a game-timing guarantee. A genuinely hung process can still
 reach the hard watchdog and lose active namespace evidence before normal recorder cleanup writes a
 record.
+
+## #250 — opt-in event calibration
+
+`--event-calibration` is an explicit, local-only diagnostic mode for a selection containing only
+Q-UI-06 and/or Q-UI-07; an ordinary question or mixed batch is rejected before launch. It is
+forwarded through the inner command and per-walk spec, but only the shared event watcher requests
+it. The default recorder, all other composites, candidate thresholds, candidate counts, and target
+proxies are unchanged.
+
+On each complete shared watch tick where any watched region changes at all, the event watcher keeps
+one full-stage `event-calibration-N.png`, including sub-0.25 changes and changes outside the
+countable region. Both regions changing on one tick still produce one frame. Calibration names and
+counters are separate from `flash-candidate-N`; a calibration frame is not a candidate or event
+identification. The observation records the turn, tick, observed-change time, capture start/end
+offsets from the accepted PASS, changed regions and the frame name. Region reads and the screenshot
+are sequential rather than the identical sampled frame, so the record does not claim animation
+duration or absence. Capture overhead can reduce the observed polling rate; records report actual
+brackets, not nominal fps. A capture failure follows the driver's existing abort/recovery lifecycle.
+
+The images remain machine-local release outputs referenced by hash in the run record and manifest;
+no raw image is committed or overwritten. The mode is calibration instrumentation only and does not
+alter event identity, controls, lifecycle gates, or count targets.
