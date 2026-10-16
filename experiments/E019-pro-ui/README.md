@@ -140,3 +140,18 @@ The implementer writes the recorder, the walk table and the check (T24); the mai
 the walks on the install ([C3]) and the records are turned into the catalogue in T39 (#117), by
 the owner's decision of 2026-10-08 that split T24. No record is ever fabricated: until a walk has run, its question has
 no record, and the check fails naming it.
+
+## #248 — cooperative event-watch budget
+
+Q-UI-06 and Q-UI-07 now account their operational event budget from the recorder context's
+creation, before `Session.execute()` starts driver startup. At a turn boundary, and again after
+placement/setup immediately before PASS, the walk starts another event phase only when the existing
+57-second event-watch allowance still fits inside the ordinary 1200-second walk bound. A completed
+candidate remains counted and recorded when the next turn cannot fit; reaching the target still
+takes priority. Ordinary composites retain the 1200-second allowance.
+
+The outer namespace watchdog adds the configured maximum event turns times the 57-second protocol
+allowance for each selected event walk and display size; repeated and mixed selections are summed.
+This is an operational fallback, not a game-timing guarantee. A genuinely hung process can still
+reach the hard watchdog and lose active namespace evidence before normal recorder cleanup writes a
+record.

@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import test_e019_ui_catalogue as catalogue
 from test_e019_ui_catalogue import FakeClock, FakeSession, fake_locs
 import run_walk as r
 import walks
@@ -95,3 +96,91 @@ class EventBudgetTest(unittest.TestCase):
             self.assertTrue(any(o['field']=='event path stop' and 'budget' in o['value'].lower() for o in record['observations']))
             self.assertTrue(any(o['name']=='after.png' for o in record['outputs']))
             self.assertEqual(len(list((root/'evidence/E019/events-end').glob('*.json'))),1)
+
+    def test_cleanup_failure_stays_aborted_and_unrecovered_after_recording(self):
+        clock = FakeClock()
+
+        class CleanupFailureSession(FakeSession):
+            """A small explicit lifecycle fixture: body, complete, then a failing finish hook."""
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.body_complete = False
+
+            def known_screen(self):
+                super().known_screen()
+                clock.now = r.WALK_BOUND + 1
+
+            def complete(self):
+                self.body_complete = True
+
+            def finish(self):
+                self._engine.status = "aborted: fake: snapshot and reset failed"
+                self.recovered = False
+
+            def execute(self, body):
+                self._engine.started = "2026-10-08T00:00:00Z"
+                try:
+                    body(self)
+                    self.complete()
+                except Exception as exc:
+                    self._engine.status = f"aborted: fake: {type(exc).__name__}: {exc}"
+                self.finish()
+                self.elapsed = round(self.clock.now, 2)
+                self._engine.ended = "2026-10-08T00:01:00Z"
+                return self._engine.status
+
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            locs = fake_locs(root)
+
+            def factory(*args):
+                return CleanupFailureSession(*args, clock=clock, workdir=root / "work")
+
+            with mock.patch.object(r, "CLOCK", clock.clock), mock.patch.object(r, "SLEEP", clock.sleep), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                status, recovered = r.run_walk("Q-UI-06", None, locs, ":99", "0123456789ab", "local", [],
+                                               {"wine": "fake"}, root=root, session_factory=factory)
+            self.assertTrue(status.startswith("aborted:"), status)
+            self.assertFalse(recovered)
+            paths = list((root / "runs/E019/events-end").glob("*.json"))
+            self.assertEqual(len(paths), 1)
+            self.assertTrue(json.loads(paths[0].read_text())["status"].startswith("aborted:"))
+
+    def test_catalogue_rejects_a_completed_record_below_target(self):
+        with catalogue.Copy() as root:
+            path, _ = catalogue.records_of(root, "Q-UI-06")[0]
+
+            def lower(record):
+                for observation in record["observations"]:
+                    if observation["field"] == "count: flash candidates":
+                        observation["value"] = "0"
+
+            catalogue.rewrite(path, lower)
+            errors = catalogue.check(root)
+            self.assertTrue(any(e.startswith("Q-UI-06: count flash candidates reached 0") for e in errors), errors)
+
+    def test_outer_delegates_the_selected_event_and_ordinary_budgets(self):
+        args = object()
+        delegated = {}
+        git_result = mock.Mock(stdout=b"0123456789ab\n")
+        clean_result = mock.Mock(stdout=b"")
+
+        def launch(cmd, env, bound):
+            delegated["bound"] = bound
+            return 0
+
+        with mock.patch.object(r, "questions_of", return_value=["Q-UI-06", "Q-UI-08", "Q-UI-06"]), \
+                mock.patch.object(r.spike, "confined_locations", return_value={
+                    "IWP_PREFIX": "/tmp/fake-prefix", "IWP_DIR": "/tmp/fake-install",
+                }), \
+                mock.patch.object(r.spike, "marked_processes", return_value=[]), \
+                mock.patch.object(r.spike, "prefix_processes", return_value=[]), \
+                mock.patch.object(r.spike.prefixlib, "prefix_problems", return_value=[]), \
+                mock.patch.object(r.spike, "must", side_effect=[git_result, clean_result]), \
+                mock.patch.object(r.sessionlib, "free_display", return_value=":99"), \
+                mock.patch.object(r.secrets, "token_hex", return_value="a" * 32), \
+                mock.patch.object(r, "launch_inner", side_effect=launch), \
+                mock.patch.object(r, "reap_invocation", return_value=[]):
+            self.assertEqual(r.outer(args, ["--question", "Q-UI-06"]), 0)
+
+        self.assertEqual(delegated["bound"], 2 * (r.WALK_BOUND + 30 * r.EVENT_WATCH_SECONDS) + r.WALK_BOUND)
