@@ -80,6 +80,21 @@ class Q06BoundedContractTest(unittest.TestCase):
                     self.cite(root, status=status)
                     self.assertTrue(self.errors(root))
 
+    def test_conflicting_duplicate_sections_cannot_bypass_positive_target(self):
+        import re
+        for first in ('unestablished', 'narrowed'):
+            with self.subTest(first=first), tempfile.TemporaryDirectory() as root:
+                self.make(root)
+                f020 = self.cite(root)
+                bounded = re.sub(r'`([0-9a-f]{64})`',
+                                 lambda m: '`' + m[1][:16] + '…`', f020.read_text())
+                positive = '\n'.join(line for line in bounded.replace(
+                    '**Observation**: unestablished', '**Observation**: narrowed').splitlines()
+                    if 'Interrupted attempt' not in line)
+                sections = (bounded, positive) if first == 'unestablished' else (positive, bounded)
+                f020.write_text('\n'.join(sections))
+                self.assertTrue(self.errors(root), 'conflicting Q06 sections must fail closed')
+
     def test_records_only_retains_target(self):
         with tempfile.TemporaryDirectory() as root:
             self.make(root)
