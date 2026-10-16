@@ -177,3 +177,18 @@ brackets, not nominal fps. A capture failure follows the driver's existing abort
 The images remain machine-local release outputs referenced by hash in the run record and manifest;
 no raw image is committed or overwritten. The mode is calibration instrumentation only and does not
 alter event identity, controls, lifecycle gates, or count targets.
+
+## #252 — bounded Q-UI-06 result
+
+For Q-UI-06 only, an `unestablished` catalogue outcome may use at least three distinct completed
+runs that pass the existing record, seal, manifest and output checks and share the known artifact,
+binary identity, Wine platform, normal speed and measured `800x600x24` display. The Q-UI-06 F020
+section must cite every contributing record by its path and matching hash, a manifest-backed PNG
+recording hash for each run, and the preserved interrupted-attempt metadata by relative path and
+matching hash. That metadata is provenance only and never contributes a completed run.
+
+The exception does not lower the five-event aspiration, alter raw counts or the `0.25` candidate
+threshold, aggregate candidates, or identify an event. Zero-candidate completed records remain
+valid raw data. Positive, narrowed and observed outcomes, records-only checks, Q-UI-07 and every
+other catalogue question retain their existing count gates. Random-event identity and animation
+timing remain unmeasured by this bounded result.
