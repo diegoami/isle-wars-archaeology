@@ -115,3 +115,33 @@
 - No game run, install, prefix, bundle, screenshot capture, review, subagent, merge or worktree
   removal was performed. Main alone performed the repository checks; unreviewed tests used the
   6G/no-swap memory cap.
+
+# RUN-NOTES — #252 rework
+
+## Plan
+
+- Fix only the reproduced duplicate-Q06-section status/parser mismatch in PR253.
+- Explicitly reject duplicate Q-UI-06 F020 sections, preserving the existing parser and all
+  positive-status, no-F020, Q-UI-07, Q-UI-16, integrity and target gates.
+- Run both seeded duplicate-section orderings before and after the fix, the 13-test Q06 suite, the
+  160-test focused E019 suite, safety/link/diff checks, and an independent reverse mutation with
+  exact byte restoration.
+- Append progress and END notes, push checkpoint and final commits, and update PR253 only.
+
+## Progress
+
+- Read the complete rework brief, the independent M3 review, the main reproduction, current
+  checker/tests/RUN-NOTES, and the new seeded regression commit `5b01257`. No original install,
+  prefix, bundle, screenshot or game evidence was accessed.
+- Before the fix, the seeded duplicate-section test failed for the first=`unestablished`,
+  last=`narrowed` ordering because the checker returned `[]`; the opposite ordering was also
+  covered by the seed and remains part of the rework verification.
+
+## Progress
+
+- Added the narrow fail-closed duplicate-Q06-section guard; no parser-wide rewrite or policy,
+  runtime, raw-data, catalogue, target, task or CI change was made.
+- After the fix, both seeded duplicate-section orderings pass, the Q06 suite passes 13 tests, and
+  the focused E019 suite passes 160 tests.
+- Independently reversed the duplicate-section guard; the seeded duplicate regression failed with
+  the reproduced empty-error result. The exact saved checker bytes were restored in `finally`.

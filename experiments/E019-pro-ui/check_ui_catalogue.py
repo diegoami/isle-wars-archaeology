@@ -599,9 +599,12 @@ def run_checks(root, questions_path=QUESTIONS, inventory_path=INVENTORY, f020_pa
     q06_unestablished = False
     if f020 and f020_path.is_file():
         f020_text = f020_path.read_text(encoding="utf-8")
-        q06_section = next((m.group(2) for m in re.finditer(
+        q06_sections = [m.group(2) for m in re.finditer(
             r"^#### (Q-[A-Z]+-\d+).*?\n(.*?)(?=^#{2,4} |\Z)",
-            f020_text, re.S | re.M) if m.group(1) == Q06), None)
+            f020_text, re.S | re.M) if m.group(1) == Q06]
+        if len(q06_sections) > 1:
+            errors.append("Q-UI-06: F020 has duplicate question sections")
+        q06_section = q06_sections[0] if q06_sections else None
         q06_status = re.search(r"-\s*\*\*Observation\*\*:\s*([a-z-]+)", q06_section or "")
         q06_unestablished = bool(q06_status and q06_status.group(1) == "unestablished")
 
