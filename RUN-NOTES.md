@@ -155,3 +155,35 @@
 - No original install, prefix, bundle, screenshot, game run, capture, review, subagent, merge or
   worktree removal was performed. Raw measurements, records, manifests and failure metadata remain
   unchanged. Unreviewed tests used the 6G/no-swap memory cap.
+
+# RUN-NOTES — T39 Q-UI-06 catalogue
+
+## Plan
+
+- Update only `findings/F020-pro-ui-observations.md` for the owner-approved Q-UI-06 bounded
+  `unestablished` result, and append this plan/progress/END block.
+- Cite all three completed Q-UI-06 records and manifests, at least one recording PNG hash per run,
+  and the intervening interrupted-attempt metadata; preserve the original five-event aspiration,
+  the 0.25 threshold, and all raw measurements.
+- Run the Q-UI-06 checker gate, global integrity checks, link/original/path/diff checks, then make
+  one final CI-triggering commit. No game run, original install, prefix, bundle, screenshot or
+  review is authorized for this editorial handoff.
+
+## Progress
+
+- Read the supplied Q-UI-06 brief, repository `CLAUDE.md`, existing F020 and append-only RUN-NOTES.
+  Main's handoff was used as the sole source for the bounded visual readings; no original install,
+  prefix, bundle or screenshot was accessed.
+- Updated only F020's Q-UI-06 editorial section, the narrowly affected method wording, and the
+  Board/End/Loss notice catalogue rows. Q-UI-11, Q-UI-14 and Q-UI-21 remain pending; no checker,
+  runtime, walk, raw record, manifest or failure metadata was changed.
+
+## END
+
+- Q-UI-06 selected checker gate passed: `python3 -c 'import sys; sys.path.insert(0,"experiments/E019-pro-ui"); import check_ui_catalogue as c; q=sys.argv[1]; b=c.walks.WALKS[q]["batch"]; c.walks.BATCHES[b]=[q]; e=c.run_checks(c.ROOT,batch=b); print("\\n".join(e) or "ok"); raise SystemExit(bool(e))' Q-UI-06` → `ok`.
+- `python3 tools/check_no_originals.py` → `no original files tracked (2392 files checked)`.
+- `python3 tools/check_links.py` → `links and JSON ok (2392 files)`.
+- `git diff --check` → passed; required machine-path grep over `findings`, `experiments/E019-pro-ui`,
+  `runs/E019` and `evidence/E019` → no output.
+- Only `findings/F020-pro-ui-observations.md` and the append-only `RUN-NOTES.md` are modified. Raw
+  records, manifests, failure metadata, checker/runtime/walk files and task files are unchanged.
