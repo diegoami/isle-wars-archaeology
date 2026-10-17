@@ -55,6 +55,7 @@ status; this index carries none.
 | T51 | malpaco's design, variety: cards, island bonuses, production centres and events | #193 | T50 |
 | T53 | malpaco's design, the computer opponent: how it plays, and its difficulty levels | #196 | T51 |
 | T52 | malpaco's design, the UI: screens, the board, feedback and sound | #194 | T53 |
+| T54 | F011 C3 model-driven playing agent (Wine + xdotool, Q-CMB/MOV/OWN cells) | #219 | T13, T37, T38 |
 | T55 | The single-exchange sitting: 20+ computer-vs-computer exchanges from a model sitting | #222 | T44 |
 | T56 | Accept exploration and decompilation requests from malpaco | #256 | — |
 | T57 | Pro map presentation: crossing endpoints and interaction cues | #255 | — |
