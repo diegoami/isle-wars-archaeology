@@ -349,7 +349,7 @@
     },
     {
       "id": "production-site-colour-cue",
-      "description": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral on territory 2 is a bounded visible example. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
+      "description": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Territory 2 has a white numeral in this frame, contrary to r1. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
       "observations": [
         "O17"
       ],

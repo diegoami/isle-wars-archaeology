@@ -132,6 +132,9 @@ def validate(atlas, inventory, survey, root=ROOT):
         need(feature.get("observations"), "missing visual features: evidence absent")
         for oid in feature["observations"]:
             need(oid in observations, "feature observation absent")
+            observation = observations[oid][1]
+            need(feature["description"] == observation["text"], "feature description differs from active visual survey")
+            need(any(claims[c]["text"] == observation["text"] and any(sources[s]["kind"] == "local-visual" for s in claims[c].get("sources", [])) for c in feature["claims"]), "feature lacks matching locally observed claim")
             accounted.append(oid)
     need(set(accounted) == set(observations), "missing visual features: survey observations unaccounted")
     annotations = unique(atlas.get("annotations", []), "annotations")
@@ -163,7 +166,7 @@ def validate(atlas, inventory, survey, root=ROOT):
 
 def load(root=ROOT):
     return (read_json(root / "manual/pro/atlas.json"), read_json(root / "manual/pro/inventory.json"),
-            read_json(root / "docs/prototypes/T63/visual-source-survey-r1.json"))
+            read_json(root / "docs/prototypes/T63/visual-source-survey-r2.json"))
 
 
 def self_test():
@@ -185,7 +188,9 @@ def self_test():
             survey["frames"].append({"id": fid, "record": "record.json", "manifest": "manifest.json", "asset": f"{i}.png", "sha256": str(i) * 64, "width": 80, "height": 60, "state": f"Distinct synthetic state {i}", "observations": [{"id": oid, "text": "Invented visible feature description.", "basis": "Synthetic observation basis only.", "confidence": "Synthetic bounded confidence.", "region": [1, 2, 20, 10]}]})
             atlas["views"].append({"id": fid, "role": "full-board" if i == 1 else "interaction-state", "caption": "Synthetic frame caption with bounded scope.", "claims": ["C-appearance"]})
             atlas["annotations"].append({"id": f"A{i}", "frame": fid, "observation": oid, "rect": [1, 2, 20, 10], "label": "Synthetic visible region callout."})
-            inventory["visual_features"].append({"id": f"F{i}", "description": "Synthetic visible feature description.", "observations": [oid], "claims": ["C-appearance"]})
+            claims.append({"id": f"VC{i}", "text": "Invented visible feature description.", "layer": "appearance", "confidence": "high-bounded", "sources": ["S"], "section": "Map"})
+            inventory["visual_features"].append({"id": f"F{i}", "description": "Invented visible feature description.", "observations": [oid], "claims": [f"VC{i}"]})
+        (root / "atlas.md").write_text("\n".join(f"**{c['id']}** {c['text']}" for c in claims))
         validate(atlas, inventory, survey, root)
         controls = [
             ("missing visual feature", "missing visual features", lambda a, i, s: i["visual_features"].pop()),
@@ -197,6 +202,7 @@ def self_test():
             ("reused image state", "image/manifest mismatch", lambda a, i, s: s["frames"][2].update(sha256=s["frames"][1]["sha256"])),
             ("absent manual subject", "inventory incomplete", lambda a, i, s: i["subjects"].append(dict(i["subjects"][0], id="extra"))),
             ("placeholder prose", "placeholder", lambda a, i, s: a["claims"][0].update(text="TODO placeholder missing a substantive description.")),
+            ("stale observation inventory", "active visual survey", lambda a, i, s: s["frames"][0]["observations"][0].update(text="Corrected synthetic observation after local inspection.")),
         ]
         for name, expected, mutate in controls:
             a, i, s = copy.deepcopy((atlas, inventory, survey))

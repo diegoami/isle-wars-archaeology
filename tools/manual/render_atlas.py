@@ -10,6 +10,7 @@ import struct
 import subprocess
 import tempfile
 import zlib
+import xml.etree.ElementTree as ET
 
 from check_atlas import ROOT, load, need, validate
 
@@ -58,8 +59,16 @@ def svg(image_name, frame, annotations, box=None):
     width, height = frame["width"], frame["height"]
     view = box or [0, 0, width, height]
     vb = " ".join(str(v) for v in view)
-    result = [f'<svg role="img" aria-label="{escape(frame["state"], quote=True)}" viewBox="{vb}" xmlns="http://www.w3.org/2000/svg">',
-              f'<image href="images/{image_name}" width="{width}" height="{height}"/>']
+    result = [f'<svg role="img" aria-label="{escape(frame["state"], quote=True)}" viewBox="{vb}" xmlns="http://www.w3.org/2000/svg">']
+    clip_attribute = ""
+    if box is not None:
+        # viewBox sets the transform, but letterboxing can expose pixels beyond it.
+        # Clip the image itself in the same native source-coordinate space.
+        clip_id = "detail-" + hashlib.sha256(f"{image_name}:{vb}".encode()).hexdigest()[:16]
+        x, y, w, h = box
+        result.append(f'<defs><clipPath id="{clip_id}" clipPathUnits="userSpaceOnUse"><rect x="{x}" y="{y}" width="{w}" height="{h}"/></clipPath></defs>')
+        clip_attribute = f' clip-path="url(#{clip_id})"'
+    result.append(f'<image href="images/{image_name}" width="{width}" height="{height}"{clip_attribute}/>')
     if box is None:
         for index, annotation in enumerate(annotations, 1):
             x, y, w, h = annotation["rect"]
@@ -89,7 +98,7 @@ def html_edition(atlas, inventory, survey, names):
             out.append(f'<li><strong>{escape(annotation["label"])}</strong> {escape(obs["text"])} <small>Confidence: {escape(obs["confidence"])}. Basis: {escape(obs["basis"])}</small></li>')
         out.append('</ol><h3>Bounded detail views</h3><div class="detail-grid">')
         for annotation in annotations:
-            out += ['<figure>', svg(names[fid], frame, [], annotation["rect"]), f'<figcaption>{escape(annotation["label"])} · source region {escape(str(annotation["rect"]))}. Same unchanged source image, SVG viewport only.</figcaption></figure>']
+            out += ['<figure>', svg(names[fid], frame, [], annotation["rect"]), f'<figcaption>{escape(annotation["label"])} · source region {escape(str(annotation["rect"]))}. Same unchanged source image, explicitly clipped in native coordinates.</figcaption></figure>']
         out.append('</div></section>')
     out.append('<section id="prose"><h2>Evidence and prose</h2>')
     for section in ("Map", "Reading the board", "Interaction states", "Evidence boundaries"):
@@ -127,7 +136,47 @@ def render(atlas, inventory, survey, mapping, output, roots):
     return output / "index.html"
 
 
+def assert_detail_clip(markup, expected):
+    """Synthetic oracle: verify the image binding, units and exact clipping extent."""
+    tree = ET.fromstring(markup)
+    ns = {"s": "http://www.w3.org/2000/svg"}
+    images = tree.findall("s:image", ns)
+    need(len(images) == 1, "detail must contain one source image")
+    reference = images[0].get("clip-path", "")
+    need(reference.startswith("url(#") and reference.endswith(")"), "detail image is not bound to a clip")
+    clip_id = reference[5:-1]
+    clips = [node for node in tree.findall("s:defs/s:clipPath", ns) if node.get("id") == clip_id]
+    need(len(clips) == 1 and clips[0].get("clipPathUnits") == "userSpaceOnUse", "detail clip is missing or not in native user space")
+    rects = clips[0].findall("s:rect", ns)
+    need(len(rects) == 1 and len(list(clips[0])) == 1, "detail clip must be a single rectangle")
+    actual = [float(rects[0].get(key, "nan")) for key in ("x", "y", "width", "height")]
+    need(actual == expected, "detail clip extent differs from observed region")
+
+
+def clipping_controls():
+    frame = {"width": 100, "height": 80, "state": "Synthetic clipping fixture"}
+    for box in ([10, 20, 60, 5], [20, 10, 5, 60]):
+        markup = svg("synthetic.png", frame, [], box)
+        assert_detail_clip(markup, box)
+        # Controls operate on generated markup: unused defs cannot satisfy the oracle.
+        controls = [
+            ("unbound image", markup.replace(' clip-path="url(', ' unused="url(')),
+            ("missing definition", markup.replace('<clipPath ', '<unused ').replace('</clipPath>', '</unused>')),
+            ("wrong coordinate space", markup.replace('userSpaceOnUse', 'objectBoundingBox')),
+            ("exposed surrounding pixels", markup.replace(f'width="{box[2]}" height="{box[3]}"', f'width="{box[2]+1}" height="{box[3]}"')),
+        ]
+        for label, mutated in controls:
+            try:
+                assert_detail_clip(mutated, box)
+            except ValueError:
+                pass
+            else:
+                raise ValueError(f"detail clipping control escaped: {label}")
+    print("PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.")
+
+
 def self_test():
+    clipping_controls()
     with tempfile.TemporaryDirectory(prefix="T63-render-controls-") as name:
         tmp = Path(name)
         checkout = tmp / "checkout"

@@ -1,0 +1,220 @@
+{
+  "schema": "T63-main-visual-verification/1",
+  "result": "needs-correction",
+  "edition": "T63-r1 (local only, outside every checkout)",
+  "render_receipt": {
+    "schema": "pro-atlas-render/1",
+    "images": [
+      {
+        "id": "V01",
+        "sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V02",
+        "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V03",
+        "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V04",
+        "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V05",
+        "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V06",
+        "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "html_sha256": "2a8c26c868f3f1d3c10432c1e866b5d8d2b44deea810002f27c549d514c4b73d",
+    "annotation_count": 17,
+    "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."
+  },
+  "browser_receipt": {
+    "rows": [
+      {
+        "id": "V01",
+        "screenshot_sha256": "68c8f7979586eef03eb7cb1f90eac842fe199852f60a3836116f3a4a13045a1c",
+        "svg_count": 11,
+        "callout_count": 10
+      },
+      {
+        "id": "V02",
+        "screenshot_sha256": "dcd8cc979cb7742bebb97736564671bf992b57c9f4c64e2de197d1e315e9c8f1",
+        "svg_count": 2,
+        "callout_count": 1
+      },
+      {
+        "id": "V03",
+        "screenshot_sha256": "24e78c4a9eb788ae4ed42f977477893eb07ab60fc15697bf29001fbe875d6f16",
+        "svg_count": 3,
+        "callout_count": 2
+      },
+      {
+        "id": "V04",
+        "screenshot_sha256": "81ec3afc4c58319f4e38395041304002c3fa83a7d72199cb8295de312caa37aa",
+        "svg_count": 3,
+        "callout_count": 2
+      },
+      {
+        "id": "V05",
+        "screenshot_sha256": "9f771e8b74b60e2e8322fff03d0c067e881d7eb54d72de488bf00c1f88b2d9c8",
+        "svg_count": 2,
+        "callout_count": 1
+      },
+      {
+        "id": "V06",
+        "screenshot_sha256": "7dadd399f3f3e8ce97f37947c350297447dcda023c8dabf3e1acb2f5177eab21",
+        "svg_count": 2,
+        "callout_count": 1
+      }
+    ],
+    "images": [
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V02-480ec09a4122b12d.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V02-480ec09a4122b12d.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V05-40c2a0ef169bc360.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V05-40c2a0ef169bc360.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V06-34775bc4d7595235.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V06-34775bc4d7595235.png",
+        "width": "800",
+        "height": "600"
+      }
+    ],
+    "errors": []
+  },
+  "visual_inspection": "Main opened all six browser-rendered section captures, plus the native V06 image. Full board and interaction callouts aligned, but detail clipping and O17 colour identification failed. No pass claimed.",
+  "findings": [
+    {
+      "id": "MV1",
+      "description": "SVG viewBox changes coordinates but letterboxed viewport still paints original pixels outside labelled detail rectangle. Explicit user-space clipping required."
+    },
+    {
+      "id": "MV2",
+      "description": "Main survey O17 identifies territory 2 as cyan; it is white. V06 shows cyan 3 on territory18 and9, and cyan1 on46. Corrected example is territory18 in immutable survey-r2."
+    }
+  ],
+  "local_setup": "Host Chromium and dedicated headless shell timed out during screenshot capture. Installed Playwright v1.63.0 container with networking disabled captured all six sections, no browser errors. Binary-name and empty MCP setup mistakes were corrected before respective launch.",
+  "originals_boundary": "All original PNGs, generated HTML and browser screenshots remain outside every checkout. No original image/text bytes or install paths in this record."
+}

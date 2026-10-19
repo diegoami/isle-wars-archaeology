@@ -101,9 +101,9 @@
     },
     {
       "id": "V-survey",
-      "path": "docs/prototypes/T63/visual-source-survey-r1.json",
+      "path": "docs/prototypes/T63/visual-source-survey-r2.json",
       "kind": "local-visual",
-      "scope": "Main alone inspected the five preserved images and original manual subject structure; bounded regions are observational callouts."
+      "scope": "Main alone inspected the six preserved images and original manual subject structure; bounded regions are observational callouts."
     },
     {
       "id": "R-tool",
@@ -269,7 +269,7 @@
     },
     {
       "id": "E-render",
-      "text": "The local edition places unchanged, hash-verified PNG files behind code-native SVG rectangles and detail viewports. This describes the atlas renderer only; it supplies no evidence for how the original game stores or draws its map.",
+      "text": "The local edition places unchanged, hash-verified PNG files behind code-native SVG rectangles and detail images explicitly clipped to their observed native-coordinate rectangles. This describes the atlas renderer only; it supplies no evidence for how the original game stores or draws its map.",
       "layer": "rendering",
       "confidence": "high-bounded",
       "section": "Evidence boundaries",
@@ -517,7 +517,7 @@
     },
     {
       "id": "V-O17",
-      "text": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral on territory 2 is a bounded visible example. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
+      "text": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Territory 2 has a white numeral in this frame, contrary to r1. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
       "layer": "appearance",
       "confidence": "moderate-bounded",
       "section": "Reading the board",
@@ -777,10 +777,10 @@
       "frame": "V06",
       "observation": "O17",
       "rect": [
-        28,
-        228,
-        52,
-        65
+        300,
+        130,
+        40,
+        45
       ],
       "label": "Production site colour cue — O17"
     }
