@@ -1,0 +1,660 @@
+{
+  "schema": "T64-main-visual-verification/1",
+  "recorded_utc": "2026-10-19T10:26:45.448650+00:00",
+  "result": "pass",
+  "supersedes": "docs/prototypes/T64/local-visual-verification-r1.json",
+  "edition": "T64-r3; original PNGs/generated HTML/browser images local outside Git",
+  "render_receipt": {
+    "schema": "pro-atlas-render/1",
+    "images": [
+      {
+        "id": "V01",
+        "sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V02",
+        "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V03",
+        "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V04",
+        "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V05",
+        "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V06",
+        "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G01",
+        "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G02",
+        "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G03",
+        "sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G04",
+        "sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G05",
+        "sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G06",
+        "sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G08",
+        "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G09",
+        "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G10",
+        "sha256": "8b4b45428393e5b5ead7f2ae298a1f49d75a84d1b2d51a2a046d47fd66789bc4",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G11",
+        "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G12",
+        "sha256": "2944f60e1ee969ae4086b0508157d87b4294273e370545c0bc613d00a165f94d",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G13",
+        "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "G14",
+        "sha256": "980953ca5a9d651060cc4f732506cdce48dd92bc96755ebe72b07d1b997420fc",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "html_sha256": "2ab88ef3fae7286a07254f609d9a8d20b42862e8c909cd058a4f6ee95847407c",
+    "annotation_count": 17,
+    "boundary": "Local receipt only; no original bytes or paths belong in repository evidence.",
+    "atlas_html_sha256": "5e1134c374b2a89cad869795c6812d2d2e7a6ae040031c3a15693e82da9f6496",
+    "guide_annotation_count": 21,
+    "guide_image_count": 13,
+    "walkthrough_frames": [
+      "G08",
+      "G09",
+      "G10",
+      "G11",
+      "G12",
+      "G13",
+      "G14"
+    ]
+  },
+  "browser_receipt": {
+    "rows": [
+      {
+        "id": "G01",
+        "sha256": "e427ef99414665cf8673f1d262769837c9330d3eec98473cae7dff5c62d5c956",
+        "callouts": 2
+      },
+      {
+        "id": "G02",
+        "sha256": "19c07f0ae6ecb1cf0ff1b6d6b62965262e71af874afd7c8cd5740bf6d00a1b98",
+        "callouts": 2
+      },
+      {
+        "id": "G03",
+        "sha256": "3d33c5c658a90d4c7050da13028243e157fe41a09141a019eafdf845e9544edd",
+        "callouts": 2
+      },
+      {
+        "id": "G04",
+        "sha256": "b3e1fbb73a78f6286b067af713ede4e1b1e83475863537f3a390fc8a308b271b",
+        "callouts": 2
+      },
+      {
+        "id": "G05",
+        "sha256": "d894b2a56f3badb3b4f6f87864421648a30c233f94f7288c1531cb1561580630",
+        "callouts": 1
+      },
+      {
+        "id": "G06",
+        "sha256": "a54c3ad09e62c17c47c30408373c123565fa9dfeb3f50c9ab16b15b67794bf67",
+        "callouts": 2
+      },
+      {
+        "id": "G08",
+        "sha256": "b7e336c8ff51652d627cf463b546572095be13743e69c9168b4803d67d86d01d",
+        "callouts": 1
+      },
+      {
+        "id": "G09",
+        "sha256": "2ee25af62fbe537be2d60924ae243336cb000116b4eca0d6d94ced2cab576e29",
+        "callouts": 1
+      },
+      {
+        "id": "G10",
+        "sha256": "8c1c7bc05e94c77964e9b023dcf3876ec29ea3ba3b1be375cacea46df01ab8d0",
+        "callouts": 2
+      },
+      {
+        "id": "G11",
+        "sha256": "19f6353387adf99e2d1d0ff891a9f5b317a5006b902039ffa8e11c103d2b0cb9",
+        "callouts": 1
+      },
+      {
+        "id": "G12",
+        "sha256": "14b0b12217d760acebf9e3d307d345af650fc70ddfeb336d797430d124fbdb75",
+        "callouts": 2
+      },
+      {
+        "id": "G13",
+        "sha256": "3e51453f9e6a6d3679bce40ebe088f53bc6ed58ae8868672635806b65fe6ac59",
+        "callouts": 1
+      },
+      {
+        "id": "G14",
+        "sha256": "539157ce2a67cb8b948092a0c9915cd84c31aff6e2b07d619dd0324dca1061cc",
+        "callouts": 2
+      }
+    ],
+    "pages": {
+      "index.html": {
+        "ids": [
+          "topic-setup-options",
+          "topic-board-panels",
+          "topic-placement",
+          "topic-attack-capture",
+          "topic-movement",
+          "topic-cards-trade",
+          "topic-end-turn",
+          "topic-cancel-confirm",
+          "topic-help-navigation",
+          "topic-save-load",
+          "topic-concession-results",
+          "topic-registration",
+          "screens",
+          "G01",
+          "detail-99e1ea9f6db8ad2b",
+          "detail-be568b03ce194039",
+          "G02",
+          "detail-b14ca9f411108c5d",
+          "detail-f337e99145de5201",
+          "G03",
+          "detail-c80f9121078cb180",
+          "detail-f025d1d8bee0130a",
+          "G04",
+          "detail-27d917ce09d18124",
+          "detail-bf1d40399e08621f",
+          "G05",
+          "detail-f3f5b6fbb3dcde33",
+          "G06",
+          "detail-7ba08d580325b8b1",
+          "detail-a5a3247ef1d73192",
+          "walkthrough",
+          "G08",
+          "detail-de18bb7f9988d872",
+          "G09",
+          "detail-1023dc85df2639e7",
+          "G10",
+          "detail-f4873f59b734eca9",
+          "detail-6e84c529db4d8811",
+          "G11",
+          "detail-a82dbe1fb938f36f",
+          "G12",
+          "detail-76100ab3340368df",
+          "detail-0311a5106a0fee4d",
+          "G13",
+          "detail-dfda6fc0994e5309",
+          "G14",
+          "detail-8ed789f5faaac74c",
+          "detail-ac5acdd0dc36879e",
+          "provenance",
+          "source-V-guide",
+          "source-F019-options",
+          "source-F019-gates",
+          "source-F019-save",
+          "source-F011-move",
+          "source-F011-combat",
+          "source-F011-capture",
+          "source-F012-turn",
+          "source-F012-surrender",
+          "source-F014-trade",
+          "source-F014-limit",
+          "source-D-setup",
+          "source-D-registration",
+          "source-L-catalogue",
+          "source-L-atlas",
+          "source-F013-place",
+          "source-D-trade"
+        ],
+        "links": [
+          "#topic-setup-options",
+          "#topic-board-panels",
+          "#topic-placement",
+          "#topic-attack-capture",
+          "#topic-movement",
+          "#topic-cards-trade",
+          "#topic-end-turn",
+          "#topic-cancel-confirm",
+          "#topic-help-navigation",
+          "#topic-save-load",
+          "#topic-concession-results",
+          "#topic-registration",
+          "#screens",
+          "#walkthrough",
+          "atlas.html",
+          "#source-V-guide",
+          "#source-F019-options",
+          "#source-F019-gates",
+          "#source-D-setup",
+          "#source-F019-options",
+          "#G02",
+          "#G03",
+          "#",
+          "#source-V-guide",
+          "#source-F012-turn",
+          "#source-F011-move",
+          "#source-V-guide",
+          "#source-L-atlas",
+          "#source-L-catalogue",
+          "#G08",
+          "#G10",
+          "#G14",
+          "#",
+          "#source-V-guide",
+          "#source-F013-place",
+          "#source-F012-turn",
+          "#source-V-guide",
+          "#source-F013-place",
+          "#G08",
+          "#G09",
+          "#G10",
+          "#",
+          "#source-V-guide",
+          "#source-F011-combat",
+          "#source-V-guide",
+          "#source-F011-combat",
+          "#source-F011-capture",
+          "#G11",
+          "#G12",
+          "#",
+          "#source-L-catalogue",
+          "#source-F011-move",
+          "#source-F011-move",
+          "#source-F012-turn",
+          "#source-L-catalogue",
+          "#",
+          "#source-L-catalogue",
+          "#source-F014-trade",
+          "#source-F014-limit",
+          "#source-F014-trade",
+          "#source-F014-trade",
+          "#source-D-trade",
+          "#",
+          "#source-V-guide",
+          "#source-F012-turn",
+          "#source-F011-combat",
+          "#source-V-guide",
+          "#source-L-catalogue",
+          "#G13",
+          "#G14",
+          "#",
+          "#source-V-guide",
+          "#source-F011-combat",
+          "#source-V-guide",
+          "#source-L-catalogue",
+          "#source-L-atlas",
+          "#G08",
+          "#G10",
+          "#G11",
+          "#G13",
+          "#",
+          "#source-V-guide",
+          "#source-F019-options",
+          "#source-V-guide",
+          "#source-L-catalogue",
+          "#G01",
+          "#G04",
+          "#G05",
+          "#",
+          "#source-L-catalogue",
+          "#source-F019-save",
+          "#source-F019-save",
+          "#source-L-catalogue",
+          "#G02",
+          "#G03",
+          "#",
+          "#source-V-guide",
+          "#source-F012-surrender",
+          "#source-F012-surrender",
+          "#source-L-catalogue",
+          "#G05",
+          "#G06",
+          "#",
+          "#source-V-guide",
+          "#source-F019-gates",
+          "#source-D-registration",
+          "#source-L-catalogue",
+          "#G01",
+          "#G02",
+          "#G03",
+          "#",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#G08",
+          "#G09",
+          "#G10",
+          "#G11",
+          "#G12",
+          "#G13",
+          "#G14",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html",
+          "#",
+          "#walkthrough",
+          "atlas.html"
+        ],
+        "title": "Pro player guide and worked turn \u2014 local illustrated edition"
+      },
+      "atlas.html": {
+        "ids": [
+          "V01",
+          "detail-40c08c3bd9b7cc93",
+          "detail-76cbe2a046a20c07",
+          "detail-1ffe356eb46bc2bb",
+          "detail-f8d53c998570a25f",
+          "detail-723ec3653e3a96c9",
+          "detail-02a85371b4f0f0fa",
+          "detail-ca491c8519b955e4",
+          "detail-2a3891e17eb5b48b",
+          "detail-1ad3cf56de984c18",
+          "detail-7889c659b2ca36f6",
+          "V02",
+          "detail-48d5b0163991a34c",
+          "V03",
+          "detail-74351ebb7f21954f",
+          "detail-e10bdc9cbb319e0c",
+          "V04",
+          "detail-2e28d015fb1896be",
+          "detail-bcf44ececeaeb62c",
+          "V05",
+          "detail-09c37f519e490d8c",
+          "V06",
+          "detail-e824bc4741c64fbe",
+          "prose",
+          "M-size",
+          "M-groups",
+          "M-objective",
+          "M-links",
+          "M-fixed",
+          "B-look",
+          "B-numbers",
+          "B-centres",
+          "B-totals",
+          "B-crossings",
+          "V-O01",
+          "V-O02",
+          "V-O03",
+          "V-O04",
+          "V-O05",
+          "V-O06",
+          "V-O07",
+          "V-O08",
+          "V-O09",
+          "V-O10",
+          "V-O17",
+          "I-selected",
+          "I-allocation",
+          "I-combat",
+          "I-return",
+          "V-O11",
+          "V-O12",
+          "V-O13",
+          "V-O14",
+          "V-O16",
+          "V-O15",
+          "E-hit",
+          "E-render",
+          "E-scope",
+          "U-islands",
+          "U-hit",
+          "U-mechanism",
+          "U-neighbours",
+          "U-events",
+          "U-registration"
+        ],
+        "links": [
+          "index.html",
+          "index.html#walkthrough",
+          "#V01",
+          "#V02",
+          "#V03",
+          "#V04",
+          "#V05",
+          "#V06",
+          "#prose"
+        ],
+        "title": "Pro map and UI atlas \u2014 local illustrated edition"
+      }
+    },
+    "errors": [],
+    "local_link_failures": [],
+    "viewport": {
+      "width": 1180,
+      "height": 1000
+    },
+    "route": "Installed Playwright1.63.0 container, networking disabled, source images unchanged"
+  },
+  "inspection": "Main opened guide overview, all13 G sections and atlasV01 rendered captures from T64-r2. Found mistaken main GO17 and corrected it through immutable survey-r2. Main reopened nativeG12 and changed final r3 G12 browser capture: panel4v2 and mapcountry18=2 match; added board detail accurately shows2. All21 guide regions align and clip. Source-controlled screenshot text is not copied into this record.",
+  "unchanged_final_image_sections_verified_by_html": [
+    "G01",
+    "G02",
+    "G03",
+    "G04",
+    "G05",
+    "G06",
+    "G08",
+    "G09",
+    "G10",
+    "G11",
+    "G13",
+    "G14"
+  ],
+  "equivalence_limits": "Those12 final image sections have identical HTML to the already visually inspected r2 sections, and mapped original PNG hashes remain exact. Browser capture hashes can differ through subpixel rendering; no pixel-identity claim for those screenshots. Guide pages/chapter links checked afresh in final browser receipt.",
+  "inputs_sha256": {
+    "tools/manual/check_guide.py": "ab8dc888a62b189fdb4d7e6d56446610e543b9b1d13fceafb31f02926c242d66",
+    "tools/manual/check_atlas.py": "84c92396c177c96a9d3a5164987dcebc3116a14dd87e57b1e6f97b340b4827bc",
+    "tools/manual/render_atlas.py": "d1bdc8b31dd1ca3acc2ca426bb0d908ab1a81a87d9ca91402e0ce3867cd2d237",
+    "tools/manual/guide_html.py": "30552d2e6af5c8242e740d3a9cf3109bf371cb0512deb5af82546bda7e6a3247",
+    "manual/pro/guide.json": "6303576b0f39878f61a4640091d7e2ff124dad45a127e266c6be976db2d4d51f",
+    "manual/pro/atlas.json": "9edc8ad796ccd7fd36487ba90364ea88e4d5fee0d017e43eecd91abe4dc5b3c3",
+    "docs/prototypes/T64/visual-source-survey-r2.json": "43dd85f049b4327552e1b599251150617ebbfd465a99a9aa3d6330184893c95e"
+  },
+  "execution": "All checks and copied mutants inherit systemd6G/no-swap scope. Synthetic TMPDIR deliberately inside task checkout. No tracked code mutated. Browser container networking disabled, own6G cap.",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_guide.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 12 topics \u00d7 4 evidence-qualified aspects; 13 distinct images, 21 observations/annotations; 7 same-record placement-to-pass steps. Prose/appearance require independent review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_guide.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\nPASS control: valid manifest entry with non-image class rejected (G11: image/manifest mismatch)\nPASS control: image absent from manifest rejected (G11: image/manifest mismatch)\nPASS control: image from incomplete record rejected (G11: image/record mismatch)\nPASS control: image absent from completed record rejected (G11: image/record mismatch)\nPASS control: missing annotation rejected (guide annotations missing observations)\nPASS control: out-of-bounds annotation rejected (GA1: invalid annotation bounds)\nPASS: synthetic baseline and 17 guide negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\nPASS control: reused state with valid distinct image rejected (states must use distinct states and image bytes)\nPASS control: absent manual subject rejected (manual subject inventory incomplete)\nPASS control: placeholder prose rejected (C-appearance: placeholder)\nPASS control: stale observation inventory rejected (feature description differs from active visual survey)\nPASS: synthetic baseline and 11 atlas negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/render_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic guide/atlas edition retains both pages, all chapter/step links and image references; bad guide hash refused before copying.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit_code": 0,
+      "stdout": "no original files tracked (2474 files checked)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "stdout": "links and JSON ok (2475 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "omission": "minimum10",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "FAIL: control escaped: coherent below-ten image set\n",
+      "expected": "meaningful coherent control escapes when guard removed; suite fails"
+    },
+    {
+      "omission": "duplicate bytes",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\n",
+      "stderr": "FAIL: control escaped: duplicated image with valid provenance\n",
+      "expected": "meaningful coherent control escapes when guard removed; suite fails"
+    },
+    {
+      "omission": "same record",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\n",
+      "stderr": "FAIL: control escaped: mixed valid walkthrough record\n",
+      "expected": "meaningful coherent control escapes when guard removed; suite fails"
+    }
+  ],
+  "limitations": [
+    "Only thirteen guide frames and six retained atlas references, not every possible screen. Movement/capture/cards/concession/victory gaps are explicitly described through source-qualified rules or unknowns.",
+    "Same-record seven-step turn is sampled, not continuous timing evidence. Setup/navigation and atlas example deals are separate.",
+    "No keyboard/touch/accessibility/mobile audit claimed; native800x600 images inspected at1180px browser viewport.",
+    "Production-colour conflict#278 and apparent/logical island issue#259 remain disclosed. No registered-build behavior inferred."
+  ]
+}

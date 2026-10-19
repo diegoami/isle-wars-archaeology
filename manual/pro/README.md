@@ -154,3 +154,11 @@ verification record under `docs/prototypes/T64/` with source/HTML/capture hashes
 dimensions, alignment/link checks and limitations. Rendering success alone is not a
 visual verification pass. Preserve each local failed/intermediate output and use a
 new edition path for any rerender.
+
+The [passing T64 local verification](../../docs/prototypes/T64/local-visual-verification-r2.json)
+records the final T64-r3 edition, all thirteen guide sections, twenty-one callouts,
+chapter/step/atlas links and retained image dimensions/hashes. Main reopened the
+corrected G12 browser/native view; the other twelve final image sections have the
+same HTML as the previously inspected sections. This is not a claim of identical
+browser screenshot pixels. Earlier needs-correction and source-survey revisions
+remain unchanged.
