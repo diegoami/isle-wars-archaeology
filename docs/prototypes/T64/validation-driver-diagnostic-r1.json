@@ -1,0 +1,6 @@
+{
+  "schema": "T64-validation-driver-diagnostic/1",
+  "scope": "Synthetic copied-checker mutation driver only; no worktree source or original pixels changed.",
+  "failed_attempt": "All eight normal checks passed. The first four omission controls behaved as intended; deleting the sole statement in an unknown-field if branch produced IndentationError. No guard-test success is claimed for that invalid mutant.",
+  "correction": "Replace the selected guard statement with pass at the same indentation, preserving valid control flow. Rerun every omission control before recording validation-r1. Saved copied-script bytes restored in finally."
+}

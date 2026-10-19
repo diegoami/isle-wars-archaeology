@@ -29,6 +29,9 @@ def validate(guide, survey, root=ROOT):
             need(source["anchor"] in slugs, f"{sid}: missing source anchor")
     topics = unique(guide.get("topics", []), "guide topics")
     need(set(topics) == TOPICS, "missing or unexpected required topics")
+    declared_unknowns = guide.get("unknown_fields", [])
+    actual_unknowns = {f"{tid}.{aspect}" for tid, topic in topics.items() for aspect in ASPECTS if topic.get(aspect, {}).get("basis") == "unobserved"}
+    need(isinstance(declared_unknowns, list) and len(declared_unknowns) == len(set(declared_unknowns)) and set(declared_unknowns) == actual_unknowns, "fabricated visual proof for unknown: gap registry mismatch")
     frames = unique(survey.get("frames", []), "guide survey frames")
     images = unique(guide.get("images", []), "guide images")
     need(set(images) == set(frames), "guide images do not reconcile survey")
@@ -90,15 +93,14 @@ def validate(guide, survey, root=ROOT):
             if basis == "unobserved":
                 need(field.get("confidence") == "unknown" and not refs and limits and not image_refs and not obs_refs, "fabricated visual proof for unknown")
             else:
-                need(refs, f"{tid}/{aspect}: missing sources")
+                source_kind = {"local-visual": "local-visual", "static": "static", "documented": "documented", "unsupported": "static"}[basis]
+                need(refs and any(sources[s]["kind"] == source_kind for s in refs), f"{tid}/{aspect}: missing sources or mismatched evidence kind")
                 if basis == "local-visual":
                     need(field.get("confidence") == "observed-bounded", "visual confidence")
                     need(image_refs and obs_refs and all(f in frames for f in image_refs) and all(o in notes and notes[o]["frame"] in image_refs for o in obs_refs), "visual field lacks observed image evidence")
-                    need(any(sources[s]["kind"] == "local-visual" for s in refs), "visual field source missing")
                 else:
                     need(not image_refs and not obs_refs, "nonvisual field claims visual proof")
                     need(field.get("confidence") == {"static": "static-bounded", "documented": "documented", "unsupported": "unsupported"}[basis], "nonvisual confidence")
-                    need(any(sources[s]["kind"] == ("static" if basis == "unsupported" else basis) for s in refs), "nonvisual source kind mismatch")
     walk = guide.get("walkthrough", {})
     expected = survey.get("walkthrough", {})
     need(walk.get("frames") == expected.get("frames") and walk.get("stages") == expected.get("stages"), "walkthrough differs from surveyed order")
@@ -131,8 +133,11 @@ def synthetic_fixture(root):
     entries = [{"name": f"{n}.png", "asset": f"{n}.png", "sha256": f"{n:064x}", "class": "recording"} for n in range(1, 12)]
     (root / "record.json").write_text(json.dumps({"status": "completed", "outputs": entries}))
     (root / "manifest.json").write_text(json.dumps({"files": entries}))
+    (root / "non-image-manifest.json").write_text(json.dumps({"files": [dict(e, **{"class": "log"}) for e in entries]}))
     # A second, valid record permits a provenance mutation to reach the same-record rule.
     (root / "other-record.json").write_text(json.dumps({"status": "completed", "outputs": entries}))
+    (root / "record-without-last.json").write_text(json.dumps({"status": "completed", "outputs": entries[:-1]}))
+    (root / "incomplete-record.json").write_text(json.dumps({"status": "interrupted", "outputs": entries}))
     survey = {"frames": [], "walkthrough": {"record": "record.json", "frames": [f"G{n:02}" for n in range(1, 8)], "stages": list(STAGES)}}
     guide = {"schema": "pro-guide/1", "text_path": "guide.md", "scope": "Synthetic unregistered scope only; #259 and #278 remain boundaries.", "sources": [{"id": "S", "path": "source.md", "kind": "static", "scope": "Synthetic static source description."}, {"id": "V", "path": "source.md", "kind": "local-visual", "scope": "Synthetic observation source description."}], "topics": [], "images": [], "visual_notes": [], "annotations": []}
     for n in range(1, 12):
@@ -148,6 +153,7 @@ def synthetic_fixture(root):
             topic[aspect] = {"text": f"Synthetic static description of {tid} {aspect}.", "basis": "static", "confidence": "static-bounded", "sources": ["S"]}
         guide["topics"].append(topic)
     guide["topics"][0]["cancel"] = {"text": "Synthetic unobserved cancellation boundary.", "basis": "unobserved", "confidence": "unknown", "sources": [], "limitation_sources": ["S"]}
+    guide["unknown_fields"] = [guide["topics"][0]["id"] + ".cancel"]
     guide["walkthrough"] = dict(copy.deepcopy(survey["walkthrough"]), introduction="Synthetic ordered sequence, no original gameplay.", steps=[{"frame": f, "text": f"Synthetic walkthrough step for {f}."} for f in survey["walkthrough"]["frames"]])
     prose = [f["text"] for t in guide["topics"] for f in [t[a] for a in ASPECTS]]
     prose += [guide["walkthrough"]["introduction"]] + [s["text"] for s in guide["walkthrough"]["steps"]]
@@ -160,16 +166,28 @@ def self_test():
         root = Path(directory)
         guide, survey = synthetic_fixture(root)
         validate(guide, survey, root)
+        def below_ten(g, s):
+            # Remove two non-walkthrough frames and all their dependent references.
+            s["frames"] = s["frames"][:9]
+            for key in ("images", "visual_notes", "annotations"):
+                g[key] = g[key][:9]
         controls = [
+            ("coherent below-ten image set", "at least ten distinct", below_ten),
             ("missing topic", "required topics", lambda g, s: g["topics"].pop()),
             ("missing source", "missing sources", lambda g, s: g["topics"][0]["actions"].update(sources=[])),
             ("stale observation", "stale guide observation", lambda g, s: g["visual_notes"][0].update(text="A stale synthetic visual description.")),
             ("fabricated visual proof for unknown", "fabricated visual proof for unknown", lambda g, s: g["topics"][0]["cancel"].update(frames=["G01"], observations=["GO01"])),
+            ("promoted unknown with valid visual references", "fabricated visual proof for unknown", lambda g, s: g["topics"][0]["cancel"].update(basis="local-visual", confidence="observed-bounded", sources=["V"], frames=["G01"], observations=["GO01"])),
             ("duplicated image with valid provenance", "duplicate guide image", lambda g, s: s["frames"][9].update(asset=s["frames"][10]["asset"], sha256=s["frames"][10]["sha256"])),
             ("mixed valid walkthrough record", "mixes records", lambda g, s: s["frames"][2].update(record="other-record.json")),
             ("changed walkthrough order", "surveyed order", lambda g, s: g["walkthrough"]["frames"].reverse()),
-            ("jointly reversed walkthrough provenance", "order is incoherent", lambda g, s: (g["walkthrough"]["frames"].reverse(), s["walkthrough"]["frames"].reverse())),
+            ("jointly reversed walkthrough provenance", "order is incoherent", lambda g, s: (g["walkthrough"]["frames"].reverse(), s["walkthrough"]["frames"].reverse(), g["walkthrough"]["steps"].reverse())),
             ("missing image hash", "image hash absent", lambda g, s: s["frames"][0].pop("sha256")),
+            ("valid manifest entry with non-image class", "image/manifest mismatch", lambda g, s: s["frames"][-1].update(manifest="non-image-manifest.json")),
+            ("image absent from manifest", "image/manifest mismatch", lambda g, s: s["frames"][-1].update(asset="absent.png")),
+            ("image from incomplete record", "image/record mismatch", lambda g, s: s["frames"][-1].update(record="incomplete-record.json")),
+            ("image absent from completed record", "image/record mismatch", lambda g, s: s["frames"][-1].update(record="record-without-last.json")),
+            ("missing annotation", "annotations missing observations", lambda g, s: g["annotations"].pop()),
             ("out-of-bounds annotation", "invalid annotation bounds", lambda g, s: g["annotations"][0].update(rect=[79, 1, 2, 2])),
         ]
         for label, expected, mutate in controls:

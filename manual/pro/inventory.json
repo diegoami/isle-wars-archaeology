@@ -13,7 +13,11 @@
       ],
       "claims": [
         "E-scope"
-      ]
+      ],
+      "guide_topics": [
+        "registration"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M02",
@@ -26,7 +30,11 @@
       ],
       "claims": [
         "M-objective"
-      ]
+      ],
+      "guide_topics": [
+        "concession-results"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M03",
@@ -37,7 +45,12 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "The atlas shows board appearance and one allocation sequence only; setup rules, deal, order and resource calculation belong to T64."
+      "boundary": "The atlas shows board appearance and one allocation sequence only; setup rules, deal, order and resource calculation belong to T64.",
+      "guide_topics": [
+        "setup-options",
+        "board-panels"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M04",
@@ -54,7 +67,11 @@
         "V-O11",
         "V-O12"
       ],
-      "boundary": "T63 illustrates selected placement states; full reinforcement rules and instructions belong to T64."
+      "boundary": "T63 illustrates selected placement states; full reinforcement rules and instructions belong to T64.",
+      "guide_topics": [
+        "placement"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M05",
@@ -70,7 +87,12 @@
         "I-return",
         "V-O14"
       ],
-      "boundary": "T63 illustrates pair feedback and controls; combat rules and a full worked turn belong to T64."
+      "boundary": "T63 illustrates pair feedback and controls; combat rules and a full worked turn belong to T64.",
+      "guide_topics": [
+        "attack-capture",
+        "cancel-confirm"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M06",
@@ -81,7 +103,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "No relocation frame is included here; later instructions need their own cited evidence."
+      "boundary": "No relocation frame is included here; later instructions need their own cited evidence.",
+      "guide_topics": [
+        "movement"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M07",
@@ -92,7 +118,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Turn-menu appearance is shown, but the complete turn-ending procedure is later T64 material."
+      "boundary": "Turn-menu appearance is shown, but the complete turn-ending procedure is later T64 material.",
+      "guide_topics": [
+        "end-turn"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M08",
@@ -103,7 +133,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Leaving combat is visibly represented in V04; exhaustive cancellation behavior and other phases remain later T64 work."
+      "boundary": "Leaving combat is visibly represented in V04; exhaustive cancellation behavior and other phases remain later T64 work.",
+      "guide_topics": [
+        "cancel-confirm"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M09",
@@ -114,7 +148,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Player card totals are visible; card awards, effects and hand operations need later T65 coverage."
+      "boundary": "Player card totals are visible; card awards, effects and hand operations need later T65 coverage.",
+      "guide_topics": [
+        "cards-trade"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M10",
@@ -125,7 +163,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "The atlas does not illustrate or establish a card set exchange; T65 must retain missing visual evidence explicitly."
+      "boundary": "The atlas does not illustrate or establish a card set exchange; T65 must retain missing visual evidence explicitly.",
+      "guide_topics": [
+        "cards-trade"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M11",
@@ -136,7 +178,9 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "V06 covers a colour cue with qualified interpretation only. Event identity, production rules and animations belong to T65; U-events remains unknown here."
+      "boundary": "V06 covers a colour cue with qualified interpretation only. Event identity, production rules and animations belong to T65; U-events remains unknown here.",
+      "guide_topics": [],
+      "guide_boundary": "T64 adds no event/centre procedures; T63 colour-cue limitations remain and detailed rules/reference belong to T65."
     },
     {
       "id": "M12",
@@ -147,7 +191,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "No game-ending frame is included; ending and result handling need later T65 evidence."
+      "boundary": "No game-ending frame is included; ending and result handling need later T65 evidence.",
+      "guide_topics": [
+        "concession-results"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M13",
@@ -161,7 +209,12 @@
       "claims": [
         "V-O10"
       ],
-      "boundary": "T63 inventories the persistent navigation row visually; complete help/options/scores/navigation instructions are later T65 material."
+      "boundary": "T63 inventories the persistent navigation row visually; complete help/options/scores/navigation instructions are later T65 material.",
+      "guide_topics": [
+        "help-navigation",
+        "save-load"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M14",
@@ -172,7 +225,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "U-registration: registered-edition behavior is not established by unregistered stills. T65 must distinguish documentation from observation."
+      "boundary": "U-registration: registered-edition behavior is not established by unregistered stills. T65 must distinguish documentation from observation.",
+      "guide_topics": [
+        "registration"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     },
     {
       "id": "M15",
@@ -183,7 +240,11 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Historical context only; no original appendix transcription and no present-day purchase recommendation."
+      "boundary": "Historical context only; no original appendix transcription and no present-day purchase recommendation.",
+      "guide_topics": [
+        "help-navigation"
+      ],
+      "guide_boundary": "T64 guide covers source-qualified screen/procedure information and explicit visual gaps; detailed rules/reference remain T65 material."
     }
   ],
   "visual_features": [
@@ -357,5 +418,6 @@
         "V-O17"
       ]
     }
-  ]
+  ],
+  "guide_path": "manual/pro/guide.json"
 }

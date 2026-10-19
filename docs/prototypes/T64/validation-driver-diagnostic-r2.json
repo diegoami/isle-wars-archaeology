@@ -1,0 +1,6 @@
+{
+  "schema": "T64-validation-driver-diagnostic/1",
+  "scope": "Synthetic copied-checker mutation driver only; worktree source never mutated.",
+  "failed_attempt": "With syntactically valid pass mutations, nine core omissions failed as intended. Omitting manifest validation for a wholly absent entry produced an IndexError at the later lookup; no accepted-forgery claim is made for that mutant.",
+  "correction": "Add a separately valid manifest entry classified as log, with valid image hash/record membership. Test this earlier than the absent-entry fixture so omitting the image-membership/class guard lets the intended control escape rather than crashing at an empty lookup."
+}
