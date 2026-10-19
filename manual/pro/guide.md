@@ -1,6 +1,6 @@
 # Pro player guide and worked turn
 
-This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. The accompanying reference supplies detailed rules; #265 remains open.
+This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. The accompanying reference supplies detailed rules; Parent acceptance is tracked under #265; main owns final acceptance.
 
 Read [the map/UI atlas](atlas.md) for map vocabulary and its open evidence questions. The [local edition instructions](README.md) describe the illustrated guide and atlas; the repository prose below remains useful without original pixels.
 

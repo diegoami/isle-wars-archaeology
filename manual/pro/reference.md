@@ -1,6 +1,6 @@
 # Isle Wars Pro rules and reference
 
-Own-word Isle Wars Pro 2.0 unregistered reference. Static rules are not observed play; registered screens remain unseen. #259 and #278 remain unresolved. Historical DOS evidence is segregated. Parent #265 requires independent acceptance after T65.
+Own-word Isle Wars Pro 2.0 unregistered reference. Static rules are not observed play; registered screens remain unseen. #259 and #278 remain unresolved. Historical DOS evidence is segregated. Parent acceptance is tracked under #265; main owns final acceptance.
 
 Read the [player guide](guide.md), [worked turn](guide.md#a-sampled-placement-to-pass-turn), [atlas](atlas.md), [coverage register](coverage.md) and [planning checklist](checklist.md).
 

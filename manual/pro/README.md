@@ -216,11 +216,13 @@ These are structural controls. The independent reviewer audits numerical rules a
 conflicts, and main checks the illustrated edition and full parent acceptance.
 
 
-The manual checker binds each reference paragraph to its canonical evidence line
-(basis, confidence and source IDs), and checks whole subject-range rows,
-screen-state rows and conflict bullets in the Markdown. This protects the
-GitHub-readable edition alongside JSON-generated HTML. Unknown paragraphs use
-“Limitation sources” in both editions. Synthetic controls corrupt those lines,
-exercise valid and invalid source anchors, and test each scope/adoption boundary term.
+The manual checker requires exact equality with the complete canonical reference,
+coverage and checklist documents rendered from JSON. This includes every section,
+heading, paragraph, evidence line, spec/subject/screen row and checklist field;
+added, duplicated, removed or misplaced prose is rejected. Unknown paragraphs use
+“Limitation sources” in both editions. Synthetic controls corrupt full documents
+and exercise each metadata source/section-reference context, coverage set and
+substantive field. The copied-omission ledger identifies its exact guard scope and
+separates a meaningful escaped control from masking or redundant protections.
 These checks compare declared provenance and stored prose; coordinated JSON/Markdown
 changes still require independent semantic review and do not prove a claim true.
