@@ -287,6 +287,9 @@ def guide_render_controls(tmp, positive_frame, positive_atlas, original):
     for name in book_names:
         need(book_receipt["pages_sha256"][name] == hashlib.sha256((complete / name).read_bytes()).hexdigest(), "complete-book page hash mismatch")
     need(len(book_receipt["images"]) == 12, "complete-book image set omitted")
+    reference_markup = (complete / "reference.html").read_text()
+    unknown_count = sum(b["basis"] == "unknown" for sec in manual["sections"] for b in sec["blocks"])
+    need(reference_markup.count("<summary>Limitation sources: unknown · unknown</summary>") == unknown_count and "<summary>Evidence: unknown" not in reference_markup, "unknown limitation sources labelled as evidence")
     import copy
     bad_manual = copy.deepcopy(manual)
     bad_manual["spec_areas"][0]["sections"] = ["absent-section"]

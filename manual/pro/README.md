@@ -214,3 +214,13 @@ proof claims, local visual proof, record/manifest digests, surveyed walkthrough 
 step prose and retained scope boundaries; copied omissions must make self-test fail.
 These are structural controls. The independent reviewer audits numerical rules and
 conflicts, and main checks the illustrated edition and full parent acceptance.
+
+
+The manual checker binds each reference paragraph to its canonical evidence line
+(basis, confidence and source IDs), and checks whole subject-range rows,
+screen-state rows and conflict bullets in the Markdown. This protects the
+GitHub-readable edition alongside JSON-generated HTML. Unknown paragraphs use
+“Limitation sources” in both editions. Synthetic controls corrupt those lines,
+exercise valid and invalid source anchors, and test each scope/adoption boundary term.
+These checks compare declared provenance and stored prose; coordinated JSON/Markdown
+changes still require independent semantic review and do not prove a claim true.

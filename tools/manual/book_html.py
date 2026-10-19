@@ -18,7 +18,7 @@ def evidence(refs):
 
 
 def sources(data):
-    return '<section id="sources"><h2>Sources and scope</h2><p>Repository source paths are provenance identifiers, not links to local original files.</p><ul>'+''.join('<li id="source-'+e(s['id'])+'"><strong>'+e(s['id'])+'</strong> <code>'+e(s['path'])+'</code> — '+e(s['scope'])+'</li>' for s in data['sources'])+'</ul></section>'
+    return '<section id="sources"><h2>Sources and scope</h2><p>Repository source paths are provenance identifiers, not links to local original files.</p><ul>'+''.join('<li id="source-'+e(s['id'])+'"><strong>'+e(s['id'])+'</strong> <code>'+e(s['path']+('#'+s['anchor'] if s.get('anchor') else ''))+'</code> — '+e(s['scope'])+'</li>' for s in data['sources'])+'</ul></section>'
 
 
 def book_pages(data):
@@ -28,7 +28,8 @@ def book_pages(data):
     for s in data['sections']:
         ref+='<section id="'+e(s['id'])+'"><h2>'+e(s['title'])+'</h2>'
         for b in s['blocks']:
-            ref+='<p>'+e(b['text'])+'</p><details><summary>Evidence: '+e(b['basis'])+' · '+e(b['confidence'])+'</summary><p>'+evidence(b.get('sources',b.get('limitation_sources',[])))+'</p></details>'
+            label = 'Limitation sources' if b['basis']=='unknown' else 'Evidence'
+            ref+='<p>'+e(b['text'])+'</p><details><summary>'+label+': '+e(b['basis'])+' · '+e(b['confidence'])+'</summary><p>'+evidence(b.get('sources',b.get('limitation_sources',[])))+'</p></details>'
         ref+='<p><a href="index.html">Contents</a> · <a href="#">Reference sections</a></p></section>'
     checklist='<p class="boundary">Planning only after 0.1.x for <a href="https://github.com/diegoami/malpaco/issues/191">malpaco #191</a>. Owner selection/approval of a concrete design proposal and separately authorized/prioritized implementation are required. No adoption or original asset transfer is implied.</p>'
     for x in data['checklist']:

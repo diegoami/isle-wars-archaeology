@@ -54,7 +54,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "The atlas shows board appearance and one allocation sequence only; setup, deal, turn order and resource calculation are covered by the guide/reference pointers.",
       "guide_topics": [
         "setup-options",
         "board-panels"
@@ -81,7 +81,7 @@
         "V-O11",
         "V-O12"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "T63 illustrates selected placement states; guide/reference pointers supply instructions and reinforcement arithmetic without inventing additional screens.",
       "guide_topics": [
         "placement"
       ],
@@ -105,7 +105,7 @@
         "I-return",
         "V-O14"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "T63 illustrates pair feedback and controls; the guide adds a sampled defender decrement, while capture dialogue remains unobserved and rules are source-qualified in the reference.",
       "guide_topics": [
         "attack-capture",
         "cancel-confirm"
@@ -126,7 +126,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "No relocation frame is included in the atlas. The guide/reference pointers supply source-qualified instructions; completed-movement feedback remains unobserved.",
       "guide_topics": [
         "movement"
       ],
@@ -145,7 +145,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "Turn-menu appearance is shown in the atlas; guide/reference pointers explain the recorded pass and early hand-off without claiming a full computer turn.",
       "guide_topics": [
         "end-turn"
       ],
@@ -164,7 +164,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "Leaving combat is visibly represented in V04; exhaustive cancellation behaviour and other phases remain bounded in the guide/reference pointers.",
       "guide_topics": [
         "cancel-confirm"
       ],
@@ -184,7 +184,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "Player card totals are visible in the atlas; guide/reference pointers explain static card awards and effects, while hand operations lack illustrated proof.",
       "guide_topics": [
         "cards-trade"
       ],
@@ -204,7 +204,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "The atlas does not illustrate or establish a card set exchange; guide/reference pointers retain missing visual evidence explicitly alongside static rules.",
       "guide_topics": [
         "cards-trade"
       ],
@@ -223,7 +223,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "V06 covers a colour cue with qualified interpretation only. U-events remains unknown in the atlas; reference pointers explain static production/events rules without animation proof.",
       "guide_topics": [],
       "guide_boundary": "The guide supplies bounded screen procedures and explicit visual gaps; the reference supplies source-qualified rules without inventing missing screens.",
       "reference_sections": [
@@ -241,7 +241,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "No game-ending frame is included in the atlas; the guide adds a clipped loss notice, while concession/victory dialogues remain unobserved and reference pointers qualify the ending rules.",
       "guide_topics": [
         "concession-results"
       ],
@@ -264,7 +264,7 @@
       "claims": [
         "V-O10"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "T63 inventories the persistent navigation row visually; guide/reference pointers cover recorded help/options/scores and the limits of other navigation procedures.",
       "guide_topics": [
         "help-navigation",
         "save-load"
@@ -285,7 +285,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "U-registration: registered-edition behaviour is not established by unregistered stills. Guide/reference pointers distinguish documentation and static gates from observed UI.",
       "guide_topics": [
         "registration"
       ],
@@ -305,7 +305,7 @@
         "D-whole",
         "V-survey"
       ],
-      "boundary": "Atlas-only coverage remains bounded; see guide_topics and reference_sections for the subject’s instructions, rules and explicit gaps. Registered screens, events and capture/move/trade dialogues are not invented.",
+      "boundary": "Historical context only; no original appendix transcription and no present-day purchase recommendation.",
       "guide_topics": [
         "help-navigation"
       ],

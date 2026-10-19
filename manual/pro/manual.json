@@ -18,7 +18,8 @@
       "id": "F013",
       "path": "findings/F013-pro-reinforcement-rules.md",
       "kind": "static",
-      "scope": "Reviewed Pro unregistered static finding; runtime reachability and presentation remain bounded by its limitations."
+      "scope": "Reviewed Pro unregistered static finding; runtime reachability and presentation remain bounded by its limitations.",
+      "anchor": "answer"
     },
     {
       "id": "F014",
@@ -361,7 +362,7 @@
       "blocks": [
         {
           "id": "income-1",
-          "text": "At the start of a seat’s turn, income = max(floor(countries / 3), 2) + bonuses for every complete island. The minimum applies only to the country component. Thus one to five countries earn 2 before bonuses; holding the complete three-country first island earns 2 + 2 = 4. Production centres add no passive income, and difficulty and existing army stacks add no term.",
+          "text": "At the start of a seat’s turn, income = max(floor(countries / 3), 2) + bonuses for every complete island. The minimum applies only to the country component. Thus one to eight countries earn 2 before bonuses, and nine earn 3; holding the complete three-country first island earns 2 + 2 = 4. Production centres add no passive income, and difficulty and existing army stacks add no term.",
           "basis": "static",
           "confidence": "static-bounded",
           "sources": [

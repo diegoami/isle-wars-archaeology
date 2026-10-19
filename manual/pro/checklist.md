@@ -42,7 +42,7 @@ Player benefit: Players can commit the intended reinforcement split and notice w
 
 Observable scenario: Choose part of a pool, cancel a selection, then commit; distinguish chooser amount, country count and remaining pool, including 998 plus 2.
 
-Evidence: derived planning consideration; [GUIDE](../../manual/pro/guide.json), [F013](../../findings/F013-pro-reinforcement-rules.md). Reference: [income](reference.md#income).
+Evidence: derived planning consideration; [GUIDE](../../manual/pro/guide.json), [F013](../../findings/F013-pro-reinforcement-rules.md#answer). Reference: [income](reference.md#income).
 
 Planning input only for malpaco #191 after 0.1.x; owner approves proposal and separately authorizes implementation. No original assets or exact presentation transfer.
 
@@ -86,7 +86,7 @@ Player benefit: Players avoid expecting passive centre income or treating event 
 
 Observable scenario: Before and after a hypothetical eligible transition, state passive income unchanged and possible capped centre doubling; no original event screen is supplied.
 
-Evidence: derived planning consideration; [F013](../../findings/F013-pro-reinforcement-rules.md), [F015](../../findings/F015-pro-centres-hazards-rules.md), [V3](../../docs/prototypes/T63/visual-source-survey-r3.json). Reference: [centres](reference.md#centres), [events](reference.md#events).
+Evidence: derived planning consideration; [F013](../../findings/F013-pro-reinforcement-rules.md#answer), [F015](../../findings/F015-pro-centres-hazards-rules.md), [V3](../../docs/prototypes/T63/visual-source-survey-r3.json). Reference: [centres](reference.md#centres), [events](reference.md#events).
 
 Planning input only for malpaco #191 after 0.1.x; owner approves proposal and separately authorizes implementation. No original assets or exact presentation transfer.
 
@@ -122,4 +122,3 @@ Observable scenario: Compare unregistered setup with stated locks, then locate k
 Evidence: derived planning consideration; [F019](../../findings/F019-pro-setup-rules.md), [GUIDE](../../manual/pro/guide.json). Reference: [setup](reference.md#setup), [history](reference.md#history), [interface](reference.md#interface).
 
 Planning input only for malpaco #191 after 0.1.x; owner approves proposal and separately authorizes implementation. No original assets or exact presentation transfer.
-

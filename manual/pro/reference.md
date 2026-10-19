@@ -51,7 +51,7 @@ Evidence: static · static-bounded; [F017](../../findings/F017-pro-board-rules.m
 
 Full ownership earns these fixed bonuses: countries 1–3: 2; 4–8: 4; 9–13: 4; 14–23: 8; 24–26: 2; 27–33: 5; 34–36: 2; 37–43: 5; 44–46: 3. Partial control earns zero. The bonuses sum to 35; they are constants, not a size formula to recompute.
 
-Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md), [F017](../../findings/F017-pro-board-rules.md), [S-island-bonuses](../../spec/island-bonuses.md).
+Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md#answer), [F017](../../findings/F017-pro-board-rules.md), [S-island-bonuses](../../spec/island-bonuses.md).
 
 Use the atlas to distinguish coloured land, country numerals, ownership and selection cues from the logical border graph. Twenty-three key countries matter to computer choices; they are not an extra kind of human move. Board coordinates used for labels do not define coastline geometry or clickable areas.
 
@@ -59,26 +59,26 @@ Evidence: derived · conditional; [ATLAS](../../manual/pro/atlas.json), [F017](.
 
 #259 remains unresolved: the nine logical bonus groups do not by themselves establish the number of apparent physical island clusters. Neither the map drawing mechanism nor exact input hit areas has been reconstructed. An illustrated observation rectangle is not a hitbox.
 
-Evidence: unknown · unknown; [ATLAS](../../manual/pro/atlas.json), [F022](../../findings/F022-pro-map-presentation.md).
+Limitation sources: unknown · unknown; [ATLAS](../../manual/pro/atlas.json), [F022](../../findings/F022-pro-map-presentation.md).
 
 <a id="income"></a>
 ## Calculate income and place every army
 
-At the start of a seat’s turn, income = max(floor(countries / 3), 2) + bonuses for every complete island. The minimum applies only to the country component. Thus one to five countries earn 2 before bonuses; holding the complete three-country first island earns 2 + 2 = 4. Production centres add no passive income, and difficulty and existing army stacks add no term.
+At the start of a seat’s turn, income = max(floor(countries / 3), 2) + bonuses for every complete island. The minimum applies only to the country component. Thus one to eight countries earn 2 before bonuses, and nine earn 3; holding the complete three-country first island earns 2 + 2 = 4. Production centres add no passive income, and difficulty and existing army stacks add no term.
 
-Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md), [S-reinforcement](../../spec/reinforcement.md).
+Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md#answer), [S-reinforcement](../../spec/reinforcement.md).
 
 Income is calculated once for the new turn, before any card trade. Capturing an island later does not recalculate this turn’s pool. A trade can add 5, 8 or 15, double the whole pool including island bonuses, or bomb without adding armies. For example a pool of 7 becomes 14 under doubling; it is not merely the country component that doubles.
 
-Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md), [F014](../../findings/F014-pro-cards-rules.md).
+Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md#answer), [F014](../../findings/F014-pro-cards-rules.md).
 
 Place the entire pool on your own countries, in any split and order. The chooser’s plus cannot exceed the remaining pool; minus stops at zero; All chooses the remainder. Place commits the allocation, subtracts it from the pool and resets the chooser. You cannot carry unused armies to another turn or leave placement early with a positive pool.
 
-Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md), [GUIDE](../../manual/pro/guide.json).
+Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md#answer), [GUIDE](../../manual/pro/guide.json).
 
 A country’s stored stack is capped at 999 after addition. Allocating 2 onto 998 therefore credits only 1, while consuming both allocated armies. The computer likewise credits its pool, although an internal pool variable may stay nonzero in one split branch; the next turn resets and recomputes it, so that is not carryover.
 
-Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md).
+Evidence: static · static-bounded; [F013](../../findings/F013-pro-reinforcement-rules.md#answer).
 
 <a id="turns"></a>
 ## Take a turn and finish it deliberately
@@ -123,7 +123,7 @@ Evidence: static · static-bounded; [F011](../../findings/F011-pro-combat-rules.
 
 Human zero-choice reachability remains open because the intended positive chooser limits do not prove every score path enforces them. This book does not assert that a zero transfer is either a usable procedure or exhaustively impossible. No retained illustration shows the capture split dialogue.
 
-Evidence: unknown · unknown; [S-ownership](../../spec/ownership.md), [GUIDE](../../manual/pro/guide.json).
+Limitation sources: unknown · unknown; [S-ownership](../../spec/ownership.md), [GUIDE](../../manual/pro/guide.json).
 
 You may stop an attack and return to the action menu while the human source is still viable. If it falls to one army on the human battle path, the forfeit branch gives that source country to the defender’s owner with one army and ends the turn. It also clears the capture-card flag, even if you captured another country earlier that turn. This is more costly than voluntarily backing out.
 
@@ -187,14 +187,14 @@ Evidence: static · static-bounded; [F014](../../findings/F014-pro-cards-rules.m
 
 The computer bomb candidate code indexes army values by a candidate count rather than the candidate country in part of its filtering. Actual selection behaviour for empty or out-of-range candidate cases is unknown. Do not turn the static suspicion into a reliable targeting strategy or a visually verified error.
 
-Evidence: unknown · unknown; [F014](../../findings/F014-pro-cards-rules.md).
+Limitation sources: unknown · unknown; [F014](../../findings/F014-pro-cards-rules.md).
 
 <a id="centres"></a>
 ## Production locations are event opportunities
 
 There are three distinct production locations, chosen anew after the deal from shuffled country positions 12, 24 and 37. There is no spacing, island or owner constraint. They do not grant passive armies during turn income. Their benefit is the production-increase event: all three current centre stacks double, whoever owns them, capped at 999 each.
 
-Evidence: static · static-bounded; [F015](../../findings/F015-pro-centres-hazards-rules.md), [F013](../../findings/F013-pro-reinforcement-rules.md), [S-production-centres](../../spec/production-centres.md).
+Evidence: static · static-bounded; [F015](../../findings/F015-pro-centres-hazards-rules.md), [F013](../../findings/F013-pro-reinforcement-rules.md#answer), [S-production-centres](../../spec/production-centres.md).
 
 The move-centres event replaces all three with fresh distinct countries; overlap with earlier locations is possible. Capture and rebellion change ownership without moving or destroying a centre. A centre’s potential future increase therefore passes with its country, not through a separate captured-site inventory.
 
@@ -229,7 +229,7 @@ Evidence: static · static-bounded; [F015](../../findings/F015-pro-centres-hazar
 
 No retained guide illustration establishes an event announcement, damage animation, production doubling feedback or centre relocation dialogue. The reference supplies static effects and bounds, not fabricated examples of those screens. Their exact display ordering and timing remain unobserved here.
 
-Evidence: unknown · unknown; [GUIDE](../../manual/pro/guide.json), [F015](../../findings/F015-pro-centres-hazards-rules.md).
+Limitation sources: unknown · unknown; [GUIDE](../../manual/pro/guide.json), [F015](../../findings/F015-pro-centres-hazards-rules.md).
 
 <a id="ai"></a>
 ## What the computer changes
@@ -289,11 +289,11 @@ Evidence: observed · observed-bounded; [GUIDE](../../manual/pro/guide.json), [A
 
 Selection cancellation is state-specific. Backing out of an attack target or amount selection can return to an earlier panel, while committing placement consumes the chosen pool and committing an ordinary move ends the turn. Neither a return arrow nor a menu transition universally means undo. The guide distinguishes each supported instruction from an unrecorded dialogue.
 
-Evidence: derived · conditional; [GUIDE](../../manual/pro/guide.json), [F011](../../findings/F011-pro-combat-rules.md), [F013](../../findings/F013-pro-reinforcement-rules.md).
+Evidence: derived · conditional; [GUIDE](../../manual/pro/guide.json), [F011](../../findings/F011-pro-combat-rules.md), [F013](../../findings/F013-pro-reinforcement-rules.md#answer).
 
 Keyboard shortcuts, exact disabled-control feedback, all confirmation prompts, full help paging, event presentation, capture/move/card dialogues, registered screens, audio and original-renderer timing are not exhaustively observed. The screen coverage register keeps these gaps explicit. Static handler names and visible shapes do not fill them in.
 
-Evidence: unknown · unknown; [GUIDE](../../manual/pro/guide.json), [ATLAS](../../manual/pro/atlas.json), [F020](../../findings/F020-pro-ui-observations.md), [F022](../../findings/F022-pro-map-presentation.md).
+Limitation sources: unknown · unknown; [GUIDE](../../manual/pro/guide.json), [ATLAS](../../manual/pro/atlas.json), [F020](../../findings/F020-pro-ui-observations.md), [F022](../../findings/F022-pro-map-presentation.md).
 
 <a id="history"></a>
 ## Historical appendix and evidence boundary
@@ -313,4 +313,3 @@ Evidence: derived · conditional; [S-runtime](../../spec/runtime.md), [F019](../
 The malpaco checklist is research handoff for planning only after 0.1.x. Consumer issue #191 may use it to prepare concrete design proposals or optional unscheduled backlog; the owner selects and approves a proposal, then separately authorizes and prioritizes implementation. No adoption, design decision, asset transfer or code change in malpaco is authorized by this manual.
 
 Evidence: derived · conditional; [ATLAS](../../manual/pro/atlas.json), [GUIDE](../../manual/pro/guide.json).
-
