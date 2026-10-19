@@ -17,9 +17,10 @@ hash-verified Q-UI-02 centre images: both show cyan digits on 9, 18 and 46, with
 white digits on 2, 3 and 30. This conflicts with F020's first-image list; follow-up
 [#278](https://github.com/diegoami/isle-wars-archaeology/issues/278) tracks that
 out-of-scope finding correction. V06 annotates territory 18's cyan 3; production-site
-meaning remains source-qualified. The [r2 local verification](../../docs/prototypes/T63/local-visual-verification-r2.json)
-records the earlier clipping correction; the revised source disclosure requires a
-fresh local edition verification.
+meaning remains source-qualified. The [r3 local verification](../../docs/prototypes/T63/local-visual-verification-r3.json)
+confirms the explicit source-conflict disclosure, neutral arrow label and preserved
+clipping across all six views and seventeen callout/detail regions. Earlier local
+verification records remain unchanged.
 #259's physical/visual island-count discrepancy remains open in the prose.
 
 ## Repository-only checks
