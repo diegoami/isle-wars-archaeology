@@ -85,7 +85,7 @@ export function nameOf(config, id) {
  * never carry a model past the family rule (Luna's R1 on PR 17).
  * Returns { config, name, entry, before, after } or throws with the reason.
  */
-export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false, sessionFamily = 'claude' }) {
+export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false, sessionFamily = 'claude', backend }) {
   if (!ROLES.includes(role)) throw new Error(`--role must be one of ${ROLES.join(', ')}; got ${role}`);
   if (role === 'implementer') return planImplementer(config, id, sessionFamily);
   // `variant` has no default: a model that offers no variants (MiniMax-M2.7) must switch without
@@ -103,7 +103,10 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
   if (family && known && canonicalFamily(family) !== known) {
     throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; the family rule compares vendors${force ? ', and --force does not override it' : ''}. Drop --family.`);
   }
-  const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: known ?? canonicalFamily(family ?? existing?.family ?? familyOf(id)), ...(existing?.note ? { note: existing.note } : {}) };
+  backend ??= existing?.backend ?? 'opencode';
+  if (!['opencode', 'claude'].includes(backend)) throw new Error('Unknown review backend.');
+  if (backend === 'claude' && !/^anthropic\/claude-/.test(id)) throw new Error('Claude backend requires anthropic/claude-* identity.');
+  const entry = { id, ...(backend === 'claude' ? { backend } : {}), ...(variant !== undefined && variant !== null ? { variant } : {}), family: known ?? canonicalFamily(family ?? existing?.family ?? familyOf(id)), ...(existing?.note ? { note: existing.note } : {}) };
   const blocked = blockedBy(config, entry) ?? (known ? blockedBy(config, { family: known }) : null);
   if (blocked) throw new Error(`Refused: ${blocked}.`);
   const own = canonicalFamily(sessionFamily);

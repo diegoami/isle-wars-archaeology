@@ -44,9 +44,11 @@ b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
-0128c4b4edbcede1f9a437c2de4fbe8c1f8073b3625b0f8ceabb2c4d0e236991  tools/harness/lib/switch.mjs
+95ec0e478a89d60625e21f755046af53700dec27aadcf3b74654db08e11b7d19  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-b79f0f221b4f54a4a2922ca03d21fd7c6c06b434decf47523eb2a5343046d337  tools/harness/switch-model.mjs
+772ad3a9b43b71640cd15ff15498a09bbeb0bd28a65263ae8ca24ebc68dcd5f9  tools/harness/switch-model.mjs
 
 adapt tools/harness/opencode.mjs, lib/opencode.mjs, lib/common.mjs, review.mjs, switch-model.mjs, peek.sh, .claude/hooks/session-start.sh, CLAUDE.md, docs/process.md (Codex session detection and supported CLI backup selection; model runs never automatically replayed)
+
+adapt tools/harness/review.mjs, switch-model.mjs, lib/switch.mjs, lib/claude.mjs, lib/review-dependencies.mjs, peek.sh (T60 #267: native Claude CLI port from malpaco eddc62a and dependency preparation 00a944e; IWA OpenCode backup selector, static boundaries and default retained)

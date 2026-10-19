@@ -58,3 +58,4 @@ status; this index carries none.
 | T55 | The single-exchange sitting: 20+ computer-vs-computer exchanges from a model sitting | #222 | T44 |
 | T56 | Accept exploration and decompilation requests from malpaco | #256 | — |
 | T57 | Pro map presentation: crossing endpoints and interaction cues | #255 | — |
+| [T60](T60.md) | Native Claude CLI review backend | #267 | — |

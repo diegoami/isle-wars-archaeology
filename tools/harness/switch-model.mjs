@@ -31,6 +31,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
+import { resolveClaude, validateClaudeEnvironment } from './lib/claude.mjs';
 import { runOpenCodeWatched, selectOpenCode, OpenCodeInfraError, modelVariants } from './lib/opencode.mjs';
 import { planSwitch, planBlock, showRoles, defaultVariant } from './lib/switch.mjs';
 import { sh, repoPaths, loadConfig, parseArgs, prepareOpenCode, sessionFamily } from './lib/common.mjs';
@@ -38,7 +39,7 @@ import { sh, repoPaths, loadConfig, parseArgs, prepareOpenCode, sessionFamily } 
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['show', 'probe', 'dry-run', 'force'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['show', 'probe', 'dry-run', 'force', 'register-only'] });
 const top = sh('git', ['rev-parse', '--show-toplevel']);
 const file = path.join(top, 'harness.json');
 const config = loadConfig(top);
@@ -59,6 +60,8 @@ if (a.block || a.unblock) {
   process.exit(0);
 }
 if (!a.role || !a.model) die(2, 'Usage: switch-model.mjs --role implementer|reviewer --model ... [--probe] [--dry-run], --block X, --unblock X, or --show');
+if (a['register-only'] && a.role !== 'reviewer') die(2, '--register-only is for reviewer registration. Nothing written.');
+if (a.backend && a.role !== 'reviewer') die(2, '--backend is for reviewers. Nothing written.');
 if (a.role === 'implementer') {
   let plan;
   try { plan = planSwitch(config, { role: 'implementer', id: a.model, sessionFamily: own }); } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
@@ -70,11 +73,21 @@ if (!own) die(1, `The session's family cannot be told from ANTHROPIC_BASE_URL=${
 let plan;
 try {
   plan = planSwitch(config, {
-    role: a.role, id: a.model, variant: a.variant ?? defaultVariant(a.model, null), name: a.name, family: a.family, force: a.force, sessionFamily: own,
+    role: a.role, id: a.model, variant: a.variant ?? defaultVariant(a.model, null), name: a.name, family: a.family, force: a.force, sessionFamily: own, backend: a.backend,
   });
 } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
 say(`${a.role}: ${plan.name} = ${plan.entry.id} (${plan.entry.variant ?? 'no variant'}, family ${plan.entry.family})`);
 
+if (plan.entry.backend === 'claude') {
+  validateClaudeEnvironment(process.env, plan.entry.id.slice('anthropic/'.length));
+  const cli = resolveClaude();
+  say(`Claude CLI: ${cli.version}; exact identity is checked again on every review.`);
+  if (a.probe) die(2, 'For Claude, run an explicit review to probe the selected actual model; no separate unrecorded probe. Nothing written.');
+  if (a['register-only']) plan.config.reviewer.default = config.reviewer.default;
+  write(plan.config, plan.before, a['register-only'] ? `registered ${plan.name}; default unchanged` : plan.after);
+  process.exit(0);
+}
+if (a['register-only']) die(2, '--register-only is supported for the Claude backend. Nothing written.');
 let opencode;
 try { opencode = await selectOpenCode(process.env, { cwd: top, log: say }); } catch (e) {
   if (e instanceof OpenCodeInfraError) die(3, `OpenCode unavailable: ${e.message} Nothing written.`);
