@@ -103,6 +103,13 @@
       "family": "claude",
       "variant": "high",
       "note": "Opt-in native Claude CLI; exact model observed in Malpaco retained trials, checked against init and responses on every run. docs/harness-claude.md."
+    },
+    "claude-opus": {
+      "id": "anthropic/claude-opus-5-5",
+      "backend": "claude",
+      "variant": "medium",
+      "family": "claude",
+      "note": "Owner-selected native Opus medium for T63; exact claude-opus-5-5 observed in retained live CLI discovery and checked on each review. Default unchanged."
     }
   },
   "jail": {

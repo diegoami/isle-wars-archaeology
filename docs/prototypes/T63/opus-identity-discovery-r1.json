@@ -1,0 +1,17 @@
+{
+  "schema": "T63-model-identity/1",
+  "purpose": "Owner-selected native Opus Medium review; explicit CLI alias discovery before exact-ID registration; no originals supplied and tools disabled.",
+  "cli": "2.1.292 (Claude Code)",
+  "effort": "medium",
+  "selection_alias": "opus",
+  "init_model": "claude-opus-5-5",
+  "assistant_models": [
+    "claude-opus-5-5"
+  ],
+  "session_id": "f7cc67e7-24a2-4f31-b503-4d9359b33cf1",
+  "result": "OK",
+  "result_success": true,
+  "raw_stream_sha256": "7d4e993eddb3071d4faf1c7cb9ad2c19a00b0f39f8dd9e7f62eed815a31ab4f7",
+  "initial_launch_failure": "MCP configuration used {} instead of {mcpServers:{}}. CLI rejected it before model initialization. Corrected the empty MCP configuration; no model/provider change.",
+  "default_changed": false
+}

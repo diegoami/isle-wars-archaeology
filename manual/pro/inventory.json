@@ -1,0 +1,361 @@
+{
+  "schema": "pro-manual-inventory/1",
+  "purpose": "Inventory for the complete own-word manual, with T63 visual coverage bounded and T64/T65 content explicitly assigned.",
+  "subjects": [
+    {
+      "id": "M01",
+      "description": "Manual subject: Front-matter and version identity.",
+      "milestone": "T63",
+      "coverage": "atlas",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "claims": [
+        "E-scope"
+      ]
+    },
+    {
+      "id": "M02",
+      "description": "Manual subject: Winning condition.",
+      "milestone": "T63",
+      "coverage": "atlas",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "claims": [
+        "M-objective"
+      ]
+    },
+    {
+      "id": "M03",
+      "description": "Manual subject: New-game setup, starting state and turn resources.",
+      "milestone": "T64",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "The atlas shows board appearance and one allocation sequence only; setup rules, deal, order and resource calculation belong to T64."
+    },
+    {
+      "id": "M04",
+      "description": "Manual subject: Placing reinforcements.",
+      "milestone": "T63",
+      "coverage": "atlas",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "claims": [
+        "I-selected",
+        "I-allocation",
+        "V-O11",
+        "V-O12"
+      ],
+      "boundary": "T63 illustrates selected placement states; full reinforcement rules and instructions belong to T64."
+    },
+    {
+      "id": "M05",
+      "description": "Manual subject: Combat selection and exchanges.",
+      "milestone": "T63",
+      "coverage": "atlas",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "claims": [
+        "I-combat",
+        "I-return",
+        "V-O14"
+      ],
+      "boundary": "T63 illustrates pair feedback and controls; combat rules and a full worked turn belong to T64."
+    },
+    {
+      "id": "M06",
+      "description": "Manual subject: Troop relocation step.",
+      "milestone": "T64",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "No relocation frame is included here; later instructions need their own cited evidence."
+    },
+    {
+      "id": "M07",
+      "description": "Manual subject: Ending a turn.",
+      "milestone": "T64",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "Turn-menu appearance is shown, but the complete turn-ending procedure is later T64 material."
+    },
+    {
+      "id": "M08",
+      "description": "Manual subject: Backing out of a selection.",
+      "milestone": "T64",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "Leaving combat is visibly represented in V04; exhaustive cancellation behavior and other phases remain later T64 work."
+    },
+    {
+      "id": "M09",
+      "description": "Manual subject: Card awards and effects.",
+      "milestone": "T65",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "Player card totals are visible; card awards, effects and hand operations need later T65 coverage."
+    },
+    {
+      "id": "M10",
+      "description": "Manual subject: Exchanging sets of cards.",
+      "milestone": "T65",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "The atlas does not illustrate or establish a card set exchange; T65 must retain missing visual evidence explicitly."
+    },
+    {
+      "id": "M11",
+      "description": "Manual subject: Random events and production locations.",
+      "milestone": "T65",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "V06 covers a colour cue with qualified interpretation only. Event identity, production rules and animations belong to T65; U-events remains unknown here."
+    },
+    {
+      "id": "M12",
+      "description": "Manual subject: Game ending and result handling.",
+      "milestone": "T65",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "No game-ending frame is included; ending and result handling need later T65 evidence."
+    },
+    {
+      "id": "M13",
+      "description": "Manual subject: Persistent game navigation controls.",
+      "milestone": "T63",
+      "coverage": "atlas",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "claims": [
+        "V-O10"
+      ],
+      "boundary": "T63 inventories the persistent navigation row visually; complete help/options/scores/navigation instructions are later T65 material."
+    },
+    {
+      "id": "M14",
+      "description": "Manual subject: Registered-edition distinctions.",
+      "milestone": "T65",
+      "coverage": "explicit-unknown",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "U-registration: registered-edition behavior is not established by unregistered stills. T65 must distinguish documentation from observation."
+    },
+    {
+      "id": "M15",
+      "description": "Manual subject: Historical ordering appendix, not gameplay or current purchase advice.",
+      "milestone": "T65",
+      "coverage": "later-part",
+      "sources": [
+        "D-whole",
+        "V-survey"
+      ],
+      "boundary": "Historical context only; no original appendix transcription and no present-day purchase recommendation."
+    }
+  ],
+  "visual_features": [
+    {
+      "id": "overall-composition",
+      "description": "The map occupies almost the full width above the lower control strip. Irregular land clusters are separated by blue water; the entire scene has a silver-blue beveled surround.",
+      "observations": [
+        "O01"
+      ],
+      "claims": [
+        "V-O01"
+      ]
+    },
+    {
+      "id": "terrain-coastline",
+      "description": "Land has a strongly embossed, mottled relief appearance with jagged bright coastlines and a cyan-white coastal glow. This is visible artwork; no claim is made about 3D geometry or how the original engine stores it.",
+      "observations": [
+        "O02"
+      ],
+      "claims": [
+        "V-O02"
+      ]
+    },
+    {
+      "id": "water-background",
+      "description": "The sea has a mottled square-like blue texture, with brighter blue around the coast; it is visually distinct from the coloured relief land.",
+      "observations": [
+        "O03"
+      ],
+      "claims": [
+        "V-O03"
+      ]
+    },
+    {
+      "id": "sea-links",
+      "description": "Solid pale straight strokes span water between land areas; their ends meet or disappear against the coastal artwork. No arrowheads, path animation, exact endpoint construction or procedural midpoint rule is established by this still frame.",
+      "observations": [
+        "O04"
+      ],
+      "claims": [
+        "V-O04"
+      ]
+    },
+    {
+      "id": "territory-boundaries",
+      "description": "Territory regions carry red, green, yellow/ochre and blue/purple tints. Dark relief seams and colour transitions partition the land. The screenshot does not establish the logical grouping or adjacency of every apparent cluster.",
+      "observations": [
+        "O05"
+      ],
+      "claims": [
+        "V-O05"
+      ]
+    },
+    {
+      "id": "territory-id-and-army-count",
+      "description": "Small black circular labels with fine white identifiers are visually separate from much larger light army-count digits over the territories. The two text scales make identity and army strength distinct.",
+      "observations": [
+        "O06"
+      ],
+      "claims": [
+        "V-O06"
+      ]
+    },
+    {
+      "id": "player-summary",
+      "description": "A black framed overlay in the upper-left lists four colour-coded player rows, each with a territory total and a card total. A small pale pointer marks the top player row in this image.",
+      "observations": [
+        "O07"
+      ],
+      "claims": [
+        "V-O07"
+      ]
+    },
+    {
+      "id": "title-and-edition-notice",
+      "description": "A large light title is centered toward the upper-right, with a smaller publisher/edition notice at the top-right. These are reference-image branding, not reusable malpaco assets.",
+      "observations": [
+        "O08"
+      ],
+      "claims": [
+        "V-O08"
+      ]
+    },
+    {
+      "id": "bottom-panel-layout",
+      "description": "Three framed panels run along the bottom: instruction/context at left, phase-dependent controls at center, and player/phase information at right. Their dark blue backgrounds and bright text separate them from the board.",
+      "observations": [
+        "O09"
+      ],
+      "claims": [
+        "V-O09"
+      ]
+    },
+    {
+      "id": "persistent-navigation",
+      "description": "A persistent row of six text navigation choices runs along the bottom edge beneath the phase panels; the board remains visible above them.",
+      "observations": [
+        "O10"
+      ],
+      "claims": [
+        "V-O10"
+      ]
+    },
+    {
+      "id": "selection-and-allocation",
+      "description": "The left panel identifies the selected territory; the central panel becomes an allocation amount with an all-available choice, increment/decrement controls and a placement confirmation. The right panel reports the remaining allocation. The amount is zero in this frame.",
+      "observations": [
+        "O11"
+      ],
+      "claims": [
+        "V-O11"
+      ]
+    },
+    {
+      "id": "allocation-feedback",
+      "description": "The same allocation panel now displays an amount of two, with the all-available control highlighted. The right panel still reports two available armies. This is an allocation-choice view, not proof that those armies have already been committed.",
+      "observations": [
+        "O12"
+      ],
+      "claims": [
+        "V-O12"
+      ]
+    },
+    {
+      "id": "visible-arrow",
+      "description": "A yellow rightward arrow with a red outline is visible just to the right of the player overlay. Its visual presence is established; this still image alone does not prove its timing, animation or hit area.",
+      "observations": [
+        "O13"
+      ],
+      "claims": [
+        "V-O13"
+      ]
+    },
+    {
+      "id": "combat-panel",
+      "description": "The center panel changes to a prominent red attack control and a yellow control for leaving that mode. The side panels identify the two selected countries and display their opposing army totals; this is a pre-attack/attack-ready view, not a capture result.",
+      "observations": [
+        "O14"
+      ],
+      "claims": [
+        "V-O14"
+      ]
+    },
+    {
+      "id": "board-persistence-across-states",
+      "description": "Across V02–V05 the same board deal remains recognizable while the bottom controls and status texts change. V01 and V06 come from other records/deals and must not be presented as before/after frames of that sequence.",
+      "observations": [
+        "O16"
+      ],
+      "claims": [
+        "V-O16"
+      ]
+    },
+    {
+      "id": "turn-menu",
+      "description": "The central bottom panel instead presents five compact phase/action choices, visibly using red, cyan, white, green and yellow surfaces. This is a distinct turn-menu state, not the allocation or attack-ready panel.",
+      "observations": [
+        "O15"
+      ],
+      "claims": [
+        "V-O15"
+      ]
+    },
+    {
+      "id": "production-site-colour-cue",
+      "description": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Main inspected both hash-verified Q-UI-02 centre images: both show cyan digits on territories 9, 18 and 46, and white digits on 2, 3 and 30. This conflicts with F020 Q-UI-02, which assigns 2, 3 and 30 to this first image; correction is tracked in #278. The production-site interpretation remains source-qualified to the manual and F020, not established by colour alone; no flashing animation is proved.",
+      "observations": [
+        "O17"
+      ],
+      "claims": [
+        "V-O17"
+      ]
+    }
+  ]
+}

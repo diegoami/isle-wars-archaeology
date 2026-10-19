@@ -1,0 +1,72 @@
+{
+  "schema": "T63-implementation-validation/1",
+  "recorded_utc": "2026-10-19T09:05:05.010423+00:00",
+  "execution": "All subprocesses inherit systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 /tmp/T63-validate-r2.py",
+  "scope": "Correct detail-image clipping and main-supplied corrected O17 survey r2. Prior surveys/measurements retained unchanged; no original image reads.",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image state rejected (V3: image/manifest mismatch)\nPASS control: absent manual subject rejected (manual subject inventory incomplete)\nPASS control: placeholder prose rejected (C-appearance: placeholder)\nPASS control: stale observation inventory rejected (feature description differs from active visual survey)\nPASS: synthetic baseline and 10 atlas negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/render_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit_code": 0,
+      "stdout": "no original files tracked (2453 files checked)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "stdout": "links and JSON ok (2456 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "omission_control": {
+    "mutation": "Copied renderer omits image clip-path binding while preserving clip definition. Worktree source not mutated.",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "FAIL: detail image is not bound to a clip\n",
+    "expected": "Rejected: detail image is not bound to a clip"
+  }
+}

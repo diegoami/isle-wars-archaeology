@@ -1,0 +1,279 @@
+{
+  "schema": "T63-main-visual-verification/1",
+  "recorded_utc": "2026-10-19T09:06:20.004645+00:00",
+  "result": "pass",
+  "supersedes": "docs/prototypes/T63/local-visual-verification-r1.json",
+  "edition": "T63-r2; local owner-host illustrated HTML and captures outside every checkout",
+  "commands": [
+    "systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --bundle-map <local-only-map> --output <new-owner-host-directory-outside-checkouts>",
+    "Offline installed Playwright v1.63.0 container, --network none --memory 6g --memory-swap 6g, under systemd 6G scope; browser opens local HTML and captures each section."
+  ],
+  "render_receipt": {
+    "schema": "pro-atlas-render/1",
+    "images": [
+      {
+        "id": "V01",
+        "sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V02",
+        "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V03",
+        "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V04",
+        "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V05",
+        "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V06",
+        "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "html_sha256": "6f72c3bf89ef65d9a20c1db302fd7a4914c1018a4f8bb8faf99427c9cfaf8349",
+    "annotation_count": 17,
+    "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."
+  },
+  "browser_receipt": {
+    "rows": [
+      {
+        "id": "V01",
+        "screenshot_sha256": "5e7516e4cc3ee49b35326452dc93eb0b0ca768d9ce01ca6881ede8041d2f0da8",
+        "svg_count": 11,
+        "callout_count": 10
+      },
+      {
+        "id": "V02",
+        "screenshot_sha256": "6f3ee9dff7f11952374308d584dc3fbd0f35deb53ffb5b0770aae4660b3f028b",
+        "svg_count": 2,
+        "callout_count": 1
+      },
+      {
+        "id": "V03",
+        "screenshot_sha256": "b8644241119125e392e3ea4f50a3b8b00b000de2157a6ec5046821ad53735e56",
+        "svg_count": 3,
+        "callout_count": 2
+      },
+      {
+        "id": "V04",
+        "screenshot_sha256": "8f70aaf3744ac7b3d0b3cdae6afa111f47945c5a5290eb8292c5805656067268",
+        "svg_count": 3,
+        "callout_count": 2
+      },
+      {
+        "id": "V05",
+        "screenshot_sha256": "2d5e912290a2a8f3e37d6d9c883dce05ea3ddac4252920c6d2f05aab15b39626",
+        "svg_count": 2,
+        "callout_count": 1
+      },
+      {
+        "id": "V06",
+        "screenshot_sha256": "7415dd771edf68fa1845c0df2423554786ad058e758b6ac4c4da77ad66ffc4fc",
+        "svg_count": 2,
+        "callout_count": 1
+      }
+    ],
+    "images": [
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V02-480ec09a4122b12d.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V02-480ec09a4122b12d.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V05-40c2a0ef169bc360.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V05-40c2a0ef169bc360.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V06-34775bc4d7595235.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V06-34775bc4d7595235.png",
+        "width": "800",
+        "height": "600"
+      }
+    ],
+    "errors": []
+  },
+  "inspected_by": "Main session opened all six r2 browser-rendered section captures with image viewer; inspected full boards, all17 callouts and bounded details, captions and prose.",
+  "checks": [
+    {
+      "view": "V01",
+      "observations": "Full board visible; 10 approximate callouts align with composition, terrain/coast, water, crossing, tints/seams, identifier versus army, player overlay, branding, panel strip and navigation. Detail images now paint only the named native rectangles; black letterboxing retained without surrounding-image spill."
+    },
+    {
+      "view": "V02",
+      "observations": "Selected-territory lower panel and zero chosen amount readable. Bounded lower-strip detail excludes surrounding board and navigation."
+    },
+    {
+      "view": "V03",
+      "observations": "Chosen amount2, highlighted all-available choice and yellow arrow correctly identified in two callouts; chosen versus committed distinction clear."
+    },
+    {
+      "view": "V04",
+      "observations": "Combat-ready controls/opposing totals and persistent board visible. Existing clipped original lower line remains clipped; prose does not reconstruct it. Both detail regions clip correctly."
+    },
+    {
+      "view": "V05",
+      "observations": "Five action surfaces visible; callout and bounded detail align. Caption distinguishes menu from completed turn."
+    },
+    {
+      "view": "V06",
+      "observations": "Corrected callout [300,130,40,45] contains territory18 identifier and cyan numeral3; clipped detail displays those pixels only. Native V06 also confirms territory2 numeral is white. Production-centre meaning remains source-qualified."
+    }
+  ],
+  "independent_byte_check": [
+    {
+      "name": "V01-97c26acddb43d158.png",
+      "sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78"
+    },
+    {
+      "name": "V02-480ec09a4122b12d.png",
+      "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff"
+    },
+    {
+      "name": "V03-fc13a7505e755551.png",
+      "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d"
+    },
+    {
+      "name": "V04-ecd0ce15458e533f.png",
+      "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac"
+    },
+    {
+      "name": "V05-40c2a0ef169bc360.png",
+      "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a"
+    },
+    {
+      "name": "V06-34775bc4d7595235.png",
+      "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5"
+    }
+  ],
+  "limitations": [
+    "Visual checks use 1180px-wide browser captures; no mobile/accessibility audit claimed. Full views carry readable controls; wide strip details remain small in multi-column grid and can be read in full view.",
+    "Regions are approximate observed rectangles, not measured hitboxes. Stills do not prove timing, animations, sound, victory or complete game rules.",
+    "V01 and V06 are separate deals; V02\u2013V05 share a record. Logical versus apparent island-count discrepancy #259 and original map rendering mechanism remain unknown.",
+    "Host Chromium screenshot capture timed out; visual verification used the successful installed offline container route.",
+    "Original pixels, generated HTML and browser screenshots remain local outside every checkout; only own-word descriptions, hashes and metadata are committed."
+  ],
+  "inputs_sha256": {
+    "tools/manual/render_atlas.py": "071595c2558f5ec9cbb821cbed711d2a83c90c04a0f09da79514d8f6b2e28ace",
+    "tools/manual/check_atlas.py": "9dabd44835b6e6e1aa6f81cbf65cb020d532e5f18f08548b935305b7ba0510da",
+    "manual/pro/atlas.json": "75131a1a486bb806ae92e6e8417e2b32164829c11e54a2931088cb48239700c5",
+    "docs/prototypes/T63/visual-source-survey-r2.json": "7cac1fb5f96987bffa1580fde51374a2da9d0e590d870b0d392bd92c4f1aca7a"
+  }
+}

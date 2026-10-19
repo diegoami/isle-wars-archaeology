@@ -1,0 +1,107 @@
+{
+  "schema": "T63-implementation-validation/1",
+  "recorded_utc": "2026-10-19T09:28:28.510457+00:00",
+  "execution": "All subprocesses inherit systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 /tmp/T63-validate-rework.py",
+  "scope": "Native Opus review R1\u2013R6 rework, no original image reads. Prior measurements unchanged.",
+  "review_fixes": {
+    "R1": "Active unchanged main survey r3; both-image local colour conflict with F020 disclosed in O17, B-centres and README; follow-up #278.",
+    "R2": "Separate valid-provenance duplicated-byte and duplicated-state controls; copied checker guard omission controls below. Five synthetic frames avoid the minimum-state count masking omitted distinctness checks.",
+    "R3": "Both tools explicitly put fixtures in /tmp; renderer tested with inherited TMPDIR inside task checkout.",
+    "R4": "Comment/docs narrowed: copy-time mismatch aborts before index and retains partial bytes; synthetic control verifies that behavior, no atomic publication change.",
+    "R5": "Neutral visible-arrow label/feature, matching main survey r3.",
+    "R6": "Unused D-combat source removed; main active-survey task/roster note retained unchanged."
+  },
+  "results": [
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\nPASS control: reused state with valid distinct image rejected (states must use distinct states and image bytes)\nPASS control: absent manual subject rejected (manual subject inventory incomplete)\nPASS control: placeholder prose rejected (C-appearance: placeholder)\nPASS control: stale observation inventory rejected (feature description differs from active visual survey)\nPASS: synthetic baseline and 11 atlas negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/render_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit_code": 0,
+      "stdout": "no original files tracked (2458 files checked)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "stdout": "links and JSON ok (2484 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "omission_controls": [
+    {
+      "mutation": "whole distinctness guard omitted",
+      "exit_code": 1,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\n",
+      "stderr": "FAIL: control escaped: reused image bytes with valid provenance\n",
+      "expected": "self-test fails: control escaped: reused image bytes with valid provenance"
+    },
+    {
+      "mutation": "image-byte guard omitted",
+      "exit_code": 1,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\n",
+      "stderr": "FAIL: control escaped: reused image bytes with valid provenance\n",
+      "expected": "self-test fails: control escaped: reused image bytes with valid provenance"
+    },
+    {
+      "mutation": "state-name guard omitted",
+      "exit_code": 1,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\n",
+      "stderr": "FAIL: control escaped: reused state with valid distinct image\n",
+      "expected": "self-test fails: control escaped: reused state with valid distinct image"
+    }
+  ],
+  "in_checkout_tmpdir_control": {
+    "command": [
+      "python3",
+      "tools/manual/render_atlas.py",
+      "--self-test"
+    ],
+    "TMPDIR": "task-checkout/.cache/T63/inherited-tmp",
+    "exit_code": 0,
+    "stdout": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.\n",
+    "stderr": ""
+  }
+}

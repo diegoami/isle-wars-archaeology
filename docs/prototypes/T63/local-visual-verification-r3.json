@@ -1,0 +1,311 @@
+{
+  "schema": "T63-main-visual-verification/1",
+  "recorded_utc": "2026-10-19T09:30:01.905505+00:00",
+  "result": "pass",
+  "supersedes": "docs/prototypes/T63/local-visual-verification-r2.json",
+  "edition": "T63-r3; local outside every checkout",
+  "render_receipt": {
+    "schema": "pro-atlas-render/1",
+    "images": [
+      {
+        "id": "V01",
+        "sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V02",
+        "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V03",
+        "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V04",
+        "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V05",
+        "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "V06",
+        "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "html_sha256": "ef41f00f4bbd8be279d830a466f1752f542e8364f4e3b4f6efa3cfd2a9fa8023",
+    "annotation_count": 17,
+    "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."
+  },
+  "browser_receipt": {
+    "rows": [
+      {
+        "id": "V01",
+        "screenshot_sha256": "5e7516e4cc3ee49b35326452dc93eb0b0ca768d9ce01ca6881ede8041d2f0da8",
+        "svg_count": 11,
+        "callout_count": 10
+      },
+      {
+        "id": "V02",
+        "screenshot_sha256": "6f3ee9dff7f11952374308d584dc3fbd0f35deb53ffb5b0770aae4660b3f028b",
+        "svg_count": 2,
+        "callout_count": 1
+      },
+      {
+        "id": "V03",
+        "screenshot_sha256": "dcd0867f050604aa792ef17ae9c8fa5169f63c5975cd476e917cfb57535f4272",
+        "svg_count": 3,
+        "callout_count": 2
+      },
+      {
+        "id": "V04",
+        "screenshot_sha256": "8f70aaf3744ac7b3d0b3cdae6afa111f47945c5a5290eb8292c5805656067268",
+        "svg_count": 3,
+        "callout_count": 2
+      },
+      {
+        "id": "V05",
+        "screenshot_sha256": "2d5e912290a2a8f3e37d6d9c883dce05ea3ddac4252920c6d2f05aab15b39626",
+        "svg_count": 2,
+        "callout_count": 1
+      },
+      {
+        "id": "V06",
+        "screenshot_sha256": "8bec2d5e71d893830dc32eb7030e1aaa8fadc8536d11fe2c6221e1aa3ffa7416",
+        "svg_count": 2,
+        "callout_count": 1
+      }
+    ],
+    "images": [
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V01-97c26acddb43d158.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V02-480ec09a4122b12d.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V02-480ec09a4122b12d.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V03-fc13a7505e755551.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V04-ecd0ce15458e533f.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V05-40c2a0ef169bc360.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V05-40c2a0ef169bc360.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V06-34775bc4d7595235.png",
+        "width": "800",
+        "height": "600"
+      },
+      {
+        "href": "images/V06-34775bc4d7595235.png",
+        "width": "800",
+        "height": "600"
+      }
+    ],
+    "errors": []
+  },
+  "visual_inspection": "Main opened changed V03 and V06 r3 section captures: neutral arrow label, explicit F020 conflict/#278 and correct cyan territory18 example visible; clipping and layout remain correct. Other four r3 captures have identical SHA256 to main-inspected r2 captures. All6 sections captured in offline Playwright1.63.0 container, no browser errors.",
+  "final_input_consistency": "Recomputed HTML with final source/data byte-identical to locally rendered HTML. Checker self-test fixture expanded after rendering; no HTML/production behaviour change. Final hashes below identify current files.",
+  "inputs_sha256": {
+    "tools/manual/check_atlas.py": "84c92396c177c96a9d3a5164987dcebc3116a14dd87e57b1e6f97b340b4827bc",
+    "tools/manual/render_atlas.py": "764f5843a375e3cbc8d5488f262886f4b9e0a8e1cf3fe1762ed81680494bf64d",
+    "manual/pro/atlas.json": "9edc8ad796ccd7fd36487ba90364ea88e4d5fee0d017e43eecd91abe4dc5b3c3",
+    "docs/prototypes/T63/visual-source-survey-r3.json": "c44502f68af7fd1e0d8bf86716567757fb458543143165d3dcd4311bee015016"
+  },
+  "execution": "This entire script and all child tests ran under systemd6G/no-swap scope. TMPDIR explicitly inside task checkout for normal self-tests; mutants use /tmp and never modify worktree files.",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\nPASS control: reused state with valid distinct image rejected (states must use distinct states and image bytes)\nPASS control: absent manual subject rejected (manual subject inventory incomplete)\nPASS control: placeholder prose rejected (C-appearance: placeholder)\nPASS control: stale observation inventory rejected (feature description differs from active visual survey)\nPASS: synthetic baseline and 11 atlas negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/render_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit_code": 0,
+      "stdout": "no original files tracked (2460 files checked)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "stdout": "links and JSON ok (2485 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "mutation": "whole distinctness guard",
+      "exit_code": 1,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\n",
+      "stderr": "FAIL: control escaped: reused image bytes with valid provenance\n",
+      "expected": "duplicate control escapes and suite fails"
+    },
+    {
+      "mutation": "bytes check removed",
+      "exit_code": 1,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\n",
+      "stderr": "FAIL: control escaped: reused image bytes with valid provenance\n",
+      "expected": "duplicate control escapes and suite fails"
+    },
+    {
+      "mutation": "state check removed",
+      "exit_code": 1,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\n",
+      "stderr": "FAIL: control escaped: reused state with valid distinct image\n",
+      "expected": "duplicate control escapes and suite fails"
+    }
+  ],
+  "review_resolution": {
+    "R1": "Both originals hash-checked and inspected; survey-r3/atlas/README disclose F020 conflict; follow-up #278.",
+    "R2": "Valid duplicate bytes/state controls rejected; independently removed whole/bytes/state guard in copied scripts and each self-test fails.",
+    "R3": "Renderer self-test passes with inherited TMPDIR inside checkout; fixtures pinned to /tmp.",
+    "R4": "Comment/doc guarantee narrowed to abort before index.html with partial diagnostics retained; synthetic copy-time failure test passes.",
+    "R5": "Visible arrow neutral label confirmed in browser.",
+    "R6": "Unused D-combat removed, current survey in contract, native Opus roster note added."
+  },
+  "limitations": [
+    "This is the map/UI milestone, not the full manual. T64/T65 remain.",
+    "Source conflict is disclosed, not silently corrected in out-of-scope F020. Production-centre meaning remains source-qualified; #259/rendering mechanism/hitboxes unknown.",
+    "Original PNGs, HTML and browser captures remain outside Git; only own-word observations, hashes and metadata are recorded."
+  ]
+}
