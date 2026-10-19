@@ -27,7 +27,7 @@ jobs:
       - run: python3 -m unittest tools.tests.test_e022_single_exchange
       # The copied harness tools run here (harness.lock pins them).
       - run: node tools/harness/review.mjs --self-test
-      - run: node --test tests/harness_clients.test.mjs
+      - run: node --test tests/harness_clients.test.mjs tools/harness/test/claude.test.mjs
       # Citation discipline for the findings with runs (T25, Done-when 2/4). The list is
       # explicit, not findings/F*.md: F001 and F004 are purely static and F010+ are out of
       # scope at the pinned 1bcdb70 tool, so a glob over all findings could never be green.

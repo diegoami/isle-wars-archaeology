@@ -12,6 +12,24 @@ set -eu
 target=${1:?usage: peek.sh ses_XXXX|<run log> [-n N]}; shift
 n=20
 [ "${1:-}" = -n ] && n=$2
+# Claude stream files are self-contained and need no provider database or auth.
+if [ -f "$target" ] && head -30 "$target" | grep -q '"session_id"'; then
+  node --input-type=module - "$target" "$n" <<'JS'
+import fs from 'node:fs';
+const steps=[];
+for(const line of fs.readFileSync(process.argv[2],'utf8').split('\n')) {
+  let e;try{e=JSON.parse(line);}catch{continue;}
+  if(e.type==='system'&&e.subtype==='init')steps.push(`Claude ${e.model} · ${e.session_id}`);
+  if(e.type==='assistant'&&Array.isArray(e.message?.content))for(const p of e.message.content) {
+    if(p.type==='tool_use')steps.push(`tool ${p.name}: ${JSON.stringify(p.input).slice(0,180)}`);
+    if(p.type==='text')steps.push(`says: ${p.text.slice(0,240)}`);
+  }
+  if(e.type==='result')steps.push(`result ${e.subtype}: ${String(e.result??'').slice(0,240)}`);
+}
+console.log(steps.slice(-Number(process.argv[3])).join('\n'));
+JS
+  exit 0
+fi
 sid=$target
 if [ -f "$target" ]; then
   sid=$(grep -o 'session ses_[A-Za-z0-9]* started' "$target" | tail -1 | cut -d' ' -f2)

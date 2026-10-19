@@ -1,0 +1,38 @@
+✖ real review entry selects Claude without OpenCode, publishes once, refuses failed gates (243.488133ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 295.053178
+
+✖ failing tests:
+
+test at tools/harness/test/claude.test.mjs:62:1
+✖ real review entry selects Claude without OpenCode, publishes once, refuses failed gates (243.488133ms)
+  AssertionError [ERR_ASSERTION]: ok
+  implemented by: openai (the detected session's family)
+  claude: 2.1.292 (Claude Code)
+  attempt: claude
+  worktree: /tmp/claude-entry-xeTeMS/repo/work/1-review-4587990d at 5e9fe9596f517435c2f6d2879a93e1cb4a881d91
+  claude: launcher has no node_modules directory; continuing with the existing dependency setup
+  claude: evidence /tmp/claude-entry-xeTeMS/repo/.cache/review-evidence/pr1-5b63589e1add; worktree retained after completion
+  retained worktree: /tmp/claude-entry-xeTeMS/repo/work/1-review-4587990d
+  
+  No review from claude: Claude must emit exactly one init and one final result. Evidence retained: /tmp/claude-entry-xeTeMS/repo/.cache/review-evidence/pr1-5b63589e1add. Nothing posted. Read the run's final message (CLAUDE.md rule 25) and fix the cause; another reviewer is the user's call.
+  
+  
+  3 !== 0
+  
+      at TestContext.<anonymous> (file:///home/diego/projects/isle-wars-archaeology/.claude/worktrees/T60-claude-cli/tools/harness/test/claude.test.mjs:87:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

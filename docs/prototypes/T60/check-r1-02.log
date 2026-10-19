@@ -1,0 +1,10 @@
+✔ coverage is explicit per changed file; generated evidence grouping cannot hide code (3.780951ms)
+✔ real review entry selects Claude without OpenCode, publishes once, refuses failed gates (1989.163327ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2048.531558

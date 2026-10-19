@@ -35,6 +35,12 @@ jobs. Reviewer selection follows CLAUDE.md rule 6. Model ids come from `harness.
 See CLAUDE.md's Codex compatibility section for tool mapping and backup selection.
 
 
+Native Claude CLI is an optional review transport through the same entry point; see
+[the operator guide](harness-claude.md). Select `--reviewer claude-sonnet` explicitly;
+the default remains unchanged. Its identity, denial, retained-evidence and coverage
+checks precede the existing poster and Done-when approval checks.
+
+
 ## 2. Task files
 
 `docs/tasks/T<nn>.md`, 150–400 words, from `docs/tasks/TEMPLATE.md`: Kind, Evidence, Owns,

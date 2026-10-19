@@ -1,0 +1,141 @@
+{
+  "method": "Offline fake CLI tests; no live model call. Real entry point, isolated fixture Git and publishing trace. Five omitted-behavior controls restored byte-for-byte.",
+  "checks": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=identity|provider",
+        "tools/harness/test/claude.test.mjs"
+      ],
+      "exit": 0,
+      "sha256": "dbd5c81d5a656ddb0664d081b1464ec5180580d05019dc055e863260b911edd9"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=coverage|entry",
+        "tools/harness/test/claude.test.mjs"
+      ],
+      "exit": 0,
+      "sha256": "2594ddd3ba547777b27c7eb0ecb594ef4e881251098a2572f29f3c3bc8c10e04"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=watched",
+        "tools/harness/test/claude.test.mjs"
+      ],
+      "exit": 0,
+      "sha256": "157e032025b423e93932562c59865d26f97b73eaa732913d09f685a7cf0e102e"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=dependency|denials",
+        "tools/harness/test/claude.test.mjs"
+      ],
+      "exit": 0,
+      "sha256": "ac1d3246722256704b110920dfacc97d6cb80ef0f715d3f035cf912c7f75c5d0"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "tools/harness/test/claude.test.mjs",
+        "tests/harness_clients.test.mjs"
+      ],
+      "exit": 0,
+      "sha256": "25eaa2d5d8f4104cf46f09114e8c6dfa400127d680f007cb8edd3fb7a61602a3"
+    },
+    {
+      "argv": [
+        "node",
+        "tools/harness/review.mjs",
+        "--self-test"
+      ],
+      "exit": 0,
+      "sha256": "8e60202e23ff8d0c7c57b02b9280ecb44e30d5e7d86336399e96be9f318f2f20"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit": 0,
+      "sha256": "55d3b45d6d9fde422431ed86e20439d337337325b0b17895ebb4f8ae886069e3"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit": 0,
+      "sha256": "90d215f7c104a70063adc5bebd39071aee996e229c546ca698c98eff7e3af850"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "mutations": [
+    {
+      "control": "identity",
+      "file": "tools/harness/lib/claude.mjs",
+      "replacement": [
+        "  if (init[0].model !== model || init[0].session_id !== sessionId || results[0].session_id !== sessionId)",
+        "  if (false)"
+      ],
+      "exit": 1,
+      "sha256": "af96fda2642b55307744763e17dfa1777fb6586ddf2d0bf2f04d69dc5d74b516"
+    },
+    {
+      "control": "denials",
+      "file": "tools/harness/lib/claude.mjs",
+      "replacement": [
+        "  if (!Array.isArray(result.permission_denials) || result.permission_denials.length)",
+        "  if (false)"
+      ],
+      "exit": 1,
+      "sha256": "717c8e030d062fe07a36ccb238738a6ae59206b6c0815aefd16d2ef261596d0e"
+    },
+    {
+      "control": "provider",
+      "file": "tools/harness/lib/claude.mjs",
+      "replacement": [
+        "export function validateClaudeEnvironment(env, model) {",
+        "export function validateClaudeEnvironment(env, model) { return;"
+      ],
+      "exit": 1,
+      "sha256": "1f05ea180846115efc8ab5ef06deb9c633e281f3a4274dfce4ae3a5e763bef98"
+    },
+    {
+      "control": "scope",
+      "file": "tools/harness/lib/claude.mjs",
+      "replacement": [
+        "export function scopeProblems(review, files) {",
+        "export function scopeProblems(review, files) { return [];"
+      ],
+      "exit": 1,
+      "sha256": "aed9d945a553c5e783f123f145a5ee1a4d432cac78e05c0e5d633b9473a4bd1d"
+    },
+    {
+      "control": "dependency-preparation",
+      "file": "tools/harness/review.mjs",
+      "replacement": [
+        "reviewDependencies = materializeReviewDependencies({",
+        "reviewDependencies = null && materializeReviewDependencies({"
+      ],
+      "exit": 1,
+      "sha256": "beecbcc5ce2651ecc3211ed29d26549cdc4d0df62b5efeb869c26be860bd7cc6"
+    }
+  ]
+}

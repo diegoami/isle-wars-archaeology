@@ -1,0 +1,11 @@
+✔ Claude dependency materialization makes an independent real copy and preserves relative .bin links (3.372355ms)
+✔ Claude dependency materialization skips absent installs and refuses outside, overlapping, or existing destinations (2.097181ms)
+✔ native Claude command denials cover OpenCode publishing policy without a second Bash parser (0.491557ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 54.611431
