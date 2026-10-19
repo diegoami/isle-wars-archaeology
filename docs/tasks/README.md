@@ -60,6 +60,7 @@ status; this index carries none.
 | T57 | Pro map presentation: crossing endpoints and interaction cues | #255 | — |
 | [T60](T60.md) | Native Claude CLI review backend | #267 | — |
 | [T61](T61.md) | Claude Code and Codex workflow compatibility audit | #268 | T60 |
+| [T62](T62.md) | Honor owner-selected models across Claude and Codex | #270 | T61 |
 | [T63](T63.md) | Pro manual: illustrated map and UI atlas | #274; Refs #265 | T61 |
 | [T64](T64.md) | Pro manual: screen guide and illustrated turn walkthrough | #275; Refs #265 | T63 |
 | [T65](T65.md) | Pro manual: complete reference, coverage and malpaco handoff | #276; Refs #265, #280 | T64 |
