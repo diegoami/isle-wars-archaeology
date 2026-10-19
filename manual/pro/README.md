@@ -15,7 +15,9 @@ Appearance, graph topology, input areas and original rendering are kept separate
 The active visual survey is r2; r1 is retained unchanged with its superseded colour
 identification. V06 now annotates the cyan 3 at territory 18 rather than territory 2,
 whose numeral is white. Main’s first local verification records the correction and
-the detail-clipping defect; a new local edition must pass visual verification.
+the detail-clipping defect; [r2 local verification](../../docs/prototypes/T63/local-visual-verification-r2.json)
+confirms the corrected clipping and colour example across all six views and seventeen
+callout/detail regions.
 #259's physical/visual island-count discrepancy remains open in the prose.
 
 ## Repository-only checks
