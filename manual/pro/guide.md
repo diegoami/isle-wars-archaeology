@@ -8,7 +8,7 @@ Read [the map/UI atlas](atlas.md) for map vocabulary and its open evidence quest
 
 **What you can see.** Open the settings before starting. The setup and options pages group starting armies, the four seats, difficulty, event/message frequency and speed. Their footers differ: setup offers a start-play control, while options offers a return control. A highlighted choice is not proof that every alternative is enabled.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** In this unregistered build you play Blue against three computers. F019 reads the seat switches, starting-army quantity and event frequency as locked; strength and speed remain adjustable. Use the setup play control to begin. The preference-default control stores options, not the current board.
 
@@ -26,7 +26,7 @@ Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019
 
 **What you can see.** Read the selected-country information and remaining armies in the lower side panels, with the current action controls between them. The player summary marks the active row. In the worked example that marker later moves from Blue to Yellow.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** Follow the current turn stage. Placement comes before the free-action menu; that menu offers attacks, movement, passing and cards. An ordinary troop move ends the turn, so it is not a way to rearrange armies and then resume attacking.
 
@@ -34,7 +34,7 @@ Evidence: static; confidence: static-bounded. [F012-turn](../../findings/F012-pr
 
 **What changes.** The lower centre changes from a quantity chooser to a five-choice action menu, then to combat controls. The panel state tells you what is being chosen; simply seeing the action menu again does not mean your turn is over.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **Back out and confirm.** Use the separate atlas for the map’s visual vocabulary. This guide does not provide measured country hitboxes, keyboard equivalents, a complete legal-target overlay, or an undo procedure for arbitrary board clicks.
 
@@ -44,7 +44,7 @@ Evidence: unobserved; confidence: unknown. [L-atlas](../../manual/pro/atlas.md#e
 
 **What you can see.** The example starts with country 17 selected, 2 armies already on it, 0 chosen for placement and 2 available. The chosen amount is a separate number from the armies already on the board.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** Place your turn’s reinforcement pool on your own countries before using the action menu. Select a country, choose an amount with the quantity controls, and commit it with the placement confirmation. The sampled all-available choice is illustrated below; it is not a fixed income of 2 for every turn.
 
@@ -52,7 +52,7 @@ Evidence: static; confidence: static-bounded. [F013-place](../../findings/F013-p
 
 **What changes.** Choosing all available changes the allocation display to 2 while country 17 still shows 2. After commitment, country 17 shows 4 and the action menu replaces the placement controls. Chosen allocation and committed placement are different states.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **Back out and confirm.** Adjust the chosen amount before committing it. F013 reads the plus/minus/all controls and no early Done, Pass or Cancel exit while reinforcement armies remain. This is a placement commitment, not the separate captured-country move-in confirmation. Reversing an already committed placement is not demonstrated here.
 
@@ -62,15 +62,15 @@ Evidence: static; confidence: static-bounded. [F013-place](../../findings/F013-p
 
 **What you can see.** The attack-ready example names source 17 and target 18, compares 4 against 3, and shows attack and leave-combat controls. The lowest source line is clipped in the original frame; no missing wording is reconstructed.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** Choose the enemy target first, then your own bordering source. The human source must hold at least 2 armies and at least as many as the target. Continue with the battle control while the game permits it. F011 warns that being reduced to 1 forfeits the attacking country and ends the human turn.
 
 Evidence: static; confidence: static-bounded. [F011-combat](../../findings/F011-pro-combat-rules.md#combat).
 
-**What changes.** The next sampled result panel compares 4 against 2, while country 18 still shows 3 on the map in that frame. This is observed panel feedback, not proof of immediate map reconciliation or capture. The sequence contains no capture/move-in screen.
+**What changes.** The sampled result panel now compares 4 against 2, and country 18 also shows 2 on the board, down from 3 in the attack-ready frame. Source 17 remains at 4 and ownership is unchanged. This illustrates one defender decrement, not a territory capture or a timing measurement; no capture/move-in screen is shown.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **Back out and confirm.** The leave-combat control returns from the battle mode without itself ending the turn. On an actual capture, F011 describes a separate choice of how many armies to move into the conquered country, leaving at least one behind; this guide has no capture-screen illustration or tested capture-cancel procedure.
 
@@ -116,7 +116,7 @@ Evidence: static; confidence: static-bounded. [F014-trade](../../findings/F014-p
 
 **What you can see.** The action menu returns after the sampled combat exchange. In the after-pass frame, Yellow is marked active and the right panel shows country-counting feedback; the central action area is blank. This is an early next-turn state, not a completed computer turn.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** Choose Pass when you have finished attacking and do not want the optional ordinary troop move. Placement must be completed first. F012 reads both Pass and the completed move as turn-ending paths; a failed human attack is another way to lose the rest of the turn.
 
@@ -124,7 +124,7 @@ Evidence: static; confidence: static-bounded. [F012-turn](../../findings/F012-pr
 
 **What changes.** The worked sequence ends at the first captured hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **Back out and confirm.** The evidence does not demonstrate a Pass confirmation dialog or a way to take back Pass. Do not invent an extra confirmation step or promise that turn-ending actions can be undone.
 
@@ -134,7 +134,7 @@ Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro
 
 **What you can see.** Read the current panel before choosing a confirmation: allocation has quantity controls, attack readiness has a leave-combat control, and the action menu has a backing-out choice. These are different contexts, not one universal confirmation dialog.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** F011 reads quit-attack and cancel paths as returns to the human action screen without ending the turn. Use a confirmation only for the action it names. Placement, captured-country move-in, ordinary relocation and card trade have different commitments; this guide does not imply a global undo.
 
@@ -142,7 +142,7 @@ Evidence: static; confidence: static-bounded. [F011-combat](../../findings/F011-
 
 **What changes.** After leaving the sampled combat mode, the five-choice action menu is visible again. That visible return is narrower evidence than a claim that the entire battle or its losses were reversed.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **Back out and confirm.** No exhaustive illegal-input/cancellation study is available here. A button’s picture is not a measured hit area, and no still proves keyboard shortcuts, confirmation prompts for every action, or recovery after a committed move or trade.
 
@@ -152,7 +152,7 @@ Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro
 
 **What you can see.** The title page retains six bottom navigation choices. Help opens an inset document with a scrollbar and a green return control. The ordinary score view also has a return control. Original help prose is visible only in the local edition and is not transcribed into the repository.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** The bottom menu routes to new game, options, publisher material, scores, quit and help. Use the help page’s return control to leave it. This guide does not follow publisher website/order-form actions or provide current purchasing advice.
 
@@ -160,7 +160,7 @@ Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019
 
 **What changes.** Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content while retaining the landscape backdrop. Check the screen context rather than assuming a fixed footer action.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **Back out and confirm.** Scrollbar appearance does not establish keyboard scrolling, every help-page transition or precise clickable geometry. The guide illustrates one help page and does not claim all navigation routes were re-tested.
 
@@ -188,7 +188,7 @@ Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro
 
 **What you can see.** The score page shows difficulty rows with win/loss/percentage columns; all totals are zero in this sample. The separate loss-notice frame has a continuation control and a clipped cyan line about crediting a loss. Its complete threshold and subsequent persistence cannot be read from that still.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** For the unregistered Blue human, F012 reads New Game during a live weak position of 1–9 countries as a credited-loss route. This threshold comes from the static reading, not the clipped picture. The collective computer-concession offer is a different route: accepting ends with a human win; refusing continues play. No concession-offer screen is illustrated here.
 
@@ -206,7 +206,7 @@ Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro
 
 **What you can see.** The title page identifies the unregistered edition. The settings stills show Blue as the human and three computer seats, but visible choices alone do not prove that they can all be changed.
 
-Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r1.json).
+Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
 **What to do.** F019 reads the unregistered build as locking the seat switches, starting armies and event frequency, while leaving strength and speed available. A registration notice is feedback to a locked action; this guide does not supply registration codes or a bypass procedure.
 
@@ -232,7 +232,7 @@ Follow one preserved human turn from placement selection to the immediate hand-o
 
 4. **G11** Read the opposing pair before attacking: source 17 and target 18 are compared as 4 against 3. The picture shows attack readiness and a leave-combat control; the lowest source text is partly clipped.
 
-5. **G12** Inspect the sampled result panel: it now compares 4 against 2. Country 18 still has a 3 on the map in this frame, so the picture is not used to assert an immediate map update or capture.
+5. **G12** Inspect both feedback locations: the result panel compares 4 against 2 and country 18 now shows 2 on the map, down from 3. Source 17 remains 4. This sampled defender decrement does not establish a capture, a complete battle or update latency.
 
 6. **G13** Return to the action menu. Seeing those choices again means the combat panel has been left; it does not mean that the turn has ended or that a territory was captured.
 
@@ -252,8 +252,8 @@ Follow one preserved human turn from placement selection to the immediate hand-o
 | G09 | Worked turn, step 2: allocation 2 chosen; the board country and available pool still show 2. |
 | G10 | Worked turn, step 3: placement committed; country 17 shows 4 and the action menu is visible. |
 | G11 | Worked turn, step 4: attack-ready source 17 versus target 18, compared as 4 against 3. Readiness is not capture. |
-| G12 | Worked turn, step 5: comparison panel changes to 4 against 2 while the map numeral at country 18 remains 3 in this still. |
+| G12 | Worked turn, step 5: the comparison changes to 4 against 2 and country 18 now shows 2 on the board. Source 17 remains 4; ownership is unchanged. |
 | G13 | Worked turn, step 6: action menu returned. No whole-turn completion or captured-country transfer is inferred. |
 | G14 | Worked turn, step 7: immediately after Pass, Yellow is active and country-counting feedback is shown. No completed computer turn is depicted. |
 
-Every one of the twenty survey observations is retained verbatim from main’s own-word [visual survey](../../docs/prototypes/T64/visual-source-survey-r1.json) in [guide.json](guide.json), with a bounded annotation. The local edition adds those observations and unchanged screenshots; their original help text is not transcribed here. Sources establish distinct evidence tiers, not a promise that every procedure has been visually tested.
+Every one of the twenty-one survey observations is retained verbatim from main’s own-word [visual survey](../../docs/prototypes/T64/visual-source-survey-r2.json) in [guide.json](guide.json), with a bounded annotation. The local edition adds those observations and unchanged screenshots; their original help text is not transcribed here. Sources establish distinct evidence tiers, not a promise that every procedure has been visually tested.

@@ -125,7 +125,7 @@ def validate(guide, survey, root=ROOT):
 
 
 def load(root=ROOT):
-    return read_json(root / "manual/pro/guide.json"), read_json(root / "docs/prototypes/T64/visual-source-survey-r1.json")
+    return read_json(root / "manual/pro/guide.json"), read_json(root / "docs/prototypes/T64/visual-source-survey-r2.json")
 
 
 def synthetic_fixture(root):

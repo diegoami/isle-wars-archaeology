@@ -1,0 +1,532 @@
+{
+  "schema": "T64-visual-survey/1",
+  "recorded_utc": "2026-10-19T10:01:43.227422+00:00",
+  "observer": "Main session",
+  "scope": "Own-word visual survey of13 hash-verified E019 screenshots, actually opened in image viewer. No new game run. Exact image bytes matched retained repo manifest; dimensions read from PNG IHDR. Source pixels remain outside every checkout.",
+  "frames": [
+    {
+      "id": "G01",
+      "record": "runs/E019/title-options/E019-r0013.json",
+      "record_sha256": "afc5dcc036d567979bd92585b085175e437f27281c8e42b684713fda8224846e",
+      "manifest": "evidence/E019/title-options/E019-r0013.manifest.json",
+      "manifest_sha256": "edfbf72af520839113b8002ae25f867d29131af586080aaac47e6af6450ad2c3",
+      "asset": "ae6e98d28d379bb4-title.png",
+      "output_name": "title.png",
+      "sha256": "ae6e98d28d379bb4d2a9c4793ce5aac51222be771f1c666d8a614c26758bab83",
+      "width": 800,
+      "height": 600,
+      "state": "title",
+      "role": "context",
+      "observations": [
+        {
+          "id": "GO01",
+          "text": "A landscape backdrop fills the title screen, with a large central game title and a smaller cyan unregistered-edition notice. This is reference branding, never a malpaco asset.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            8,
+            8,
+            784,
+            554
+          ],
+          "feature": "go01"
+        },
+        {
+          "id": "GO02",
+          "text": "Six text navigation choices remain along the bottom edge; their positions provide access to starting, help, options, other publisher titles, scores and exit. This still shows appearance, not measured hitboxes.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            42,
+            573,
+            694,
+            25
+          ],
+          "feature": "go02"
+        }
+      ]
+    },
+    {
+      "id": "G02",
+      "record": "runs/E019/title-options/E019-r0013.json",
+      "record_sha256": "afc5dcc036d567979bd92585b085175e437f27281c8e42b684713fda8224846e",
+      "manifest": "evidence/E019/title-options/E019-r0013.manifest.json",
+      "manifest_sha256": "edfbf72af520839113b8002ae25f867d29131af586080aaac47e6af6450ad2c3",
+      "asset": "426d77e724d793dd-options.png",
+      "output_name": "options.png",
+      "sha256": "426d77e724d793ddbe78a94bd79c173145b7be35d56b9a0ae211f0e74f81b693",
+      "width": 800,
+      "height": 600,
+      "state": "options",
+      "role": "screen",
+      "observations": [
+        {
+          "id": "GO03",
+          "text": "The options overlay groups initial army quantity, four player-colour seats, starting-strength difficulty, message frequency and playing speed into separated rows. Three is the red quantity choice; blue is marked human and the other three seats computer; middle choices are red in the remaining rows. Appearance alone does not prove every choice is enabled in this build.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            137,
+            29,
+            520,
+            473
+          ],
+          "feature": "go03"
+        },
+        {
+          "id": "GO04",
+          "text": "Below the settings panel are a preference-default saving control, an ear-shaped icon and a green return control. Saving defaults concerns preferences; this image provides no save-current-game or load-game control.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            135,
+            511,
+            523,
+            44
+          ],
+          "feature": "go04"
+        }
+      ]
+    },
+    {
+      "id": "G03",
+      "record": "runs/E019/title-options/E019-r0013.json",
+      "record_sha256": "afc5dcc036d567979bd92585b085175e437f27281c8e42b684713fda8224846e",
+      "manifest": "evidence/E019/title-options/E019-r0013.manifest.json",
+      "manifest_sha256": "edfbf72af520839113b8002ae25f867d29131af586080aaac47e6af6450ad2c3",
+      "asset": "154143a1bd739503-newgame-setup.png",
+      "output_name": "newgame-setup.png",
+      "sha256": "154143a1bd7395030190cf571e5fe055ffb47316f6fbbfcb016af5be8c575c52",
+      "width": 800,
+      "height": 600,
+      "state": "newgame-setup",
+      "role": "screen",
+      "observations": [
+        {
+          "id": "GO05",
+          "text": "The new-game settings screen has the same five-row arrangement as options, with blue marked human, three computer seats, three-army starting choice and middle difficulty/frequency/speed choices highlighted red.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            137,
+            29,
+            520,
+            473
+          ],
+          "feature": "go05"
+        },
+        {
+          "id": "GO06",
+          "text": "The new-game footer has a preference-default control and ear-shaped icon, while the green right-hand control starts play rather than returning from options. This is a setup state, not a second board layout.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            135,
+            511,
+            523,
+            44
+          ],
+          "feature": "go06"
+        }
+      ]
+    },
+    {
+      "id": "G04",
+      "record": "runs/E019/title-options/E019-r0013.json",
+      "record_sha256": "afc5dcc036d567979bd92585b085175e437f27281c8e42b684713fda8224846e",
+      "manifest": "evidence/E019/title-options/E019-r0013.manifest.json",
+      "manifest_sha256": "edfbf72af520839113b8002ae25f867d29131af586080aaac47e6af6450ad2c3",
+      "asset": "390756985586a01d-help-page-1.png",
+      "output_name": "help-page-1.png",
+      "sha256": "390756985586a01d20b8967b7f83e357de33278eea9d64a4b8b38e625d70a11b",
+      "width": 800,
+      "height": 600,
+      "state": "help-first-page",
+      "role": "screen",
+      "observations": [
+        {
+          "id": "GO07",
+          "text": "An inset help document overlays the landscape. Its visible opening material covers an objective and early game instructions, with a vertical scrollbar on the right; original document text is not transcribed here.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            27,
+            22,
+            747,
+            480
+          ],
+          "feature": "go07"
+        },
+        {
+          "id": "GO08",
+          "text": "A large green return control sits below the help document. No keyboard scrolling or measured hit area is established by this still.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            294,
+            516,
+            190,
+            44
+          ],
+          "feature": "go08"
+        }
+      ]
+    },
+    {
+      "id": "G05",
+      "record": "runs/E019/title-options/E019-r0013.json",
+      "record_sha256": "afc5dcc036d567979bd92585b085175e437f27281c8e42b684713fda8224846e",
+      "manifest": "evidence/E019/title-options/E019-r0013.manifest.json",
+      "manifest_sha256": "edfbf72af520839113b8002ae25f867d29131af586080aaac47e6af6450ad2c3",
+      "asset": "d816d6fb3ee277b0-scores.png",
+      "output_name": "scores.png",
+      "sha256": "d816d6fb3ee277b05fe2492cd2c4884f52ced5a9893354038587ae29ce877961",
+      "width": 800,
+      "height": 600,
+      "state": "scores-navigation",
+      "role": "screen",
+      "observations": [
+        {
+          "id": "GO09",
+          "text": "The score panel has three difficulty rows and win/loss/percentage columns. All visible totals are zero in this frame; a small resetting control is inside the panel and a green return control lies below it. The still does not establish persistence or reset confirmation behaviour.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            133,
+            39,
+            526,
+            434
+          ],
+          "feature": "go09"
+        }
+      ]
+    },
+    {
+      "id": "G06",
+      "record": "runs/E019/title-options/E019-r0013.json",
+      "record_sha256": "afc5dcc036d567979bd92585b085175e437f27281c8e42b684713fda8224846e",
+      "manifest": "evidence/E019/title-options/E019-r0013.manifest.json",
+      "manifest_sha256": "edfbf72af520839113b8002ae25f867d29131af586080aaac47e6af6450ad2c3",
+      "asset": "5ad6d9012cdce6b9-loss-notice.png",
+      "output_name": "loss-notice.png",
+      "sha256": "5ad6d9012cdce6b975f4302ea17c8ab9f6228962ff071628f7cf9e71e8abce11",
+      "width": 800,
+      "height": 600,
+      "state": "loss-notice",
+      "role": "screen",
+      "observations": [
+        {
+          "id": "GO10",
+          "text": "A score-panel view still shows zero values in all three difficulty rows, with a grey continuation control below. The resetting control from the ordinary score screen is not visible.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            132,
+            39,
+            526,
+            435
+          ],
+          "feature": "go10"
+        },
+        {
+          "id": "GO11",
+          "text": "A cyan line at the extreme bottom begins a notice about crediting a loss and a low territory count, but the line is clipped by the frame edge. Its complete wording and exact threshold must not be reconstructed from this image.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            9,
+            572,
+            780,
+            28
+          ],
+          "feature": "go11"
+        }
+      ]
+    },
+    {
+      "id": "G08",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "480ec09a4122b12d-place-selected.png",
+      "output_name": "place-selected.png",
+      "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+      "width": 800,
+      "height": 600,
+      "state": "placement-selection",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO12",
+          "text": "The left panel identifies selected country17; the centre allocation amount is0 with quantity controls and a confirmation control; the right panel reports2 armies available. Country17 on the board shows2 armies at this point.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            8,
+            500,
+            784,
+            65
+          ],
+          "feature": "go12"
+        }
+      ]
+    },
+    {
+      "id": "G09",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "fc13a7505e755551-place-all.png",
+      "output_name": "place-all.png",
+      "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+      "width": 800,
+      "height": 600,
+      "state": "allocation-chosen",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO13",
+          "text": "The allocation amount is now2 and the all-available choice is highlighted. The right-hand pool still reports2 and country17 still shows2 on the map; allocation choice is distinct from committed placement.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            264,
+            501,
+            275,
+            62
+          ],
+          "feature": "go13"
+        }
+      ]
+    },
+    {
+      "id": "G10",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "8b4b45428393e5b5-place-done.png",
+      "output_name": "place-done.png",
+      "sha256": "8b4b45428393e5b5ead7f2ae298a1f49d75a84d1b2d51a2a046d47fd66789bc4",
+      "width": 800,
+      "height": 600,
+      "state": "placement-committed",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO14",
+          "text": "Country17 now displays4 armies, up from2 in the earlier selected/allocation frames. This is the observed placement-committed board change in the same-record sequence.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            319,
+            99,
+            42,
+            29
+          ],
+          "feature": "go14"
+        },
+        {
+          "id": "GO15",
+          "text": "The lower centre panel now presents five compact action choices for attacking, moving, passing, cards and backing out. The selection/allocation controls are no longer displayed.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            263,
+            502,
+            276,
+            62
+          ],
+          "feature": "go15"
+        }
+      ]
+    },
+    {
+      "id": "G11",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "ecd0ce15458e533f-attack-ready.png",
+      "output_name": "attack-ready.png",
+      "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+      "width": 800,
+      "height": 600,
+      "state": "attack-ready",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO16",
+          "text": "The lower side panels identify source country17 and target18 with a4-against3 comparison. The centre has a red attack control and a yellow leave-combat control. The lowest line at left is clipped; this is readiness, not capture.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            8,
+            500,
+            784,
+            65
+          ],
+          "feature": "go16"
+        }
+      ]
+    },
+    {
+      "id": "G12",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "2944f60e1ee969ae-status-attack-result.png",
+      "output_name": "status-attack-result.png",
+      "sha256": "2944f60e1ee969ae4086b0508157d87b4294273e370545c0bc613d00a165f94d",
+      "width": 800,
+      "height": 600,
+      "state": "attack-result",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO17",
+          "text": "The lower-right comparison changes from4-against3 to4-against2 while the attack and leave-combat controls remain. Country18 also displays2 on the board in this frame. These visible values agree at capture time; this is one sampled defender decrement, not a territory capture or a timing/latency measurement.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            545,
+            505,
+            238,
+            53
+          ],
+          "feature": "go17"
+        },
+        {
+          "id": "GO21",
+          "text": "Country18 on the red territory now shows2 armies, whereas the attack-ready frame G11 showed3. Source country17 still shows4. Ownership colour is unchanged; no capture or movement is illustrated.",
+          "basis": "Main reopened the native hash-verified G12 PNG at original detail and compared it with the rendered browser section and G11.",
+          "confidence": "high-bounded",
+          "region": [
+            300,
+            130,
+            40,
+            45
+          ],
+          "feature": "defender-board-decrement"
+        }
+      ]
+    },
+    {
+      "id": "G13",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "40c2a0ef169bc360-status-turn-menu.png",
+      "output_name": "status-turn-menu.png",
+      "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+      "width": 800,
+      "height": 600,
+      "state": "turn-menu-return",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO18",
+          "text": "The five-choice turn menu is visible again instead of the combat controls. Returning to this panel does not itself end the human turn or establish that a capture occurred.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            263,
+            502,
+            276,
+            62
+          ],
+          "feature": "go18"
+        }
+      ]
+    },
+    {
+      "id": "G14",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "980953ca5a9d6510-status-after-pass.png",
+      "output_name": "status-after-pass.png",
+      "sha256": "980953ca5a9d651060cc4f732506cdce48dd92bc96755ebe72b07d1b997420fc",
+      "width": 800,
+      "height": 600,
+      "state": "after-pass",
+      "role": "walkthrough",
+      "observations": [
+        {
+          "id": "GO19",
+          "text": "The player-summary pointer has moved to the yellow computer row. The blue human row is no longer marked active.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            14,
+            14,
+            211,
+            100
+          ],
+          "feature": "go19"
+        },
+        {
+          "id": "GO20",
+          "text": "The right lower panel displays a yellow-country-counting status, and the central action panel is empty. This frame is early computer-turn feedback after passing, not a completed computer turn or a game ending.",
+          "basis": "Main directly opened the hash-verified preserved PNG; within-record comparisons are stated explicitly.",
+          "confidence": "high-bounded",
+          "region": [
+            545,
+            505,
+            238,
+            53
+          ],
+          "feature": "go20"
+        }
+      ]
+    }
+  ],
+  "walkthrough": {
+    "id": "W01",
+    "record": "runs/E019/play/E019-r0026.json",
+    "frames": [
+      "G08",
+      "G09",
+      "G10",
+      "G11",
+      "G12",
+      "G13",
+      "G14"
+    ],
+    "stages": [
+      "placement-selection",
+      "allocation-chosen",
+      "placement-committed",
+      "attack-ready",
+      "attack-result",
+      "turn-menu-return",
+      "after-pass"
+    ],
+    "scope": "Preserved sampled steps of one human placement-to-pass turn, not a continuous video or complete game.",
+    "limitations": [
+      "Setup/navigation images come from r0013 and are not the setup of the r0026 deal.",
+      "r0026 before.png is a title screen; it is deliberately omitted rather than presented as an initial board.",
+      "No move/card trade screen or victory outcome is demonstrated by this sequence.",
+      "G12 panel and board both show defender2 at the sampled frame. No latency measurement, capture or complete battle inferred."
+    ]
+  },
+  "limitations": [
+    "Callout regions are approximate visual bounds, not input hit areas.",
+    "Stills do not prove enabled states, input actions, timing, sound, persistence or rules. Use source-qualified documented/static findings for procedures and explicit unknowns for missing evidence.",
+    "The help image contains original directions only locally; text is not transcribed into the survey.",
+    "Loss notice is partly clipped. Original full wording/threshold and scoreboard persistence cannot be inferred from this still.",
+    "Only unregistered Windows Pro evidence. No registered-build unlocks claimed.",
+    "F020 pending/narrowed entries are not promoted; existing colour conflict #278 and island-group discrepancy #259 remain explicit."
+  ],
+  "supersedes": {
+    "path": "docs/prototypes/T64/visual-source-survey-r1.json",
+    "sha256": "2f3a89037137fe57b07a088b2575def3b28285172f52295f2d5f7c15d44a5f61",
+    "reason": "Main initial GO17 misread the board army digit in G12. Browser/native reinspection shows country18 displays2, matching the4-against2 result panel; preserve r1 and correct the interpretation."
+  },
+  "corrected_utc": "2026-10-19T10:18:55.128989+00:00"
+}

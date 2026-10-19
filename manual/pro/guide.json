@@ -5,7 +5,7 @@
   "sources": [
     {
       "id": "V-guide",
-      "path": "docs/prototypes/T64/visual-source-survey-r1.json",
+      "path": "docs/prototypes/T64/visual-source-survey-r2.json",
       "kind": "local-visual",
       "scope": "Main inspected thirteen preserved PNGs and reported bounded regions; stills do not prove procedures or timing."
     },
@@ -308,7 +308,7 @@
         ]
       },
       "feedback": {
-        "text": "The next sampled result panel compares 4 against 2, while country 18 still shows 3 on the map in that frame. This is observed panel feedback, not proof of immediate map reconciliation or capture. The sequence contains no capture/move-in screen.",
+        "text": "The sampled result panel now compares 4 against 2, and country 18 also shows 2 on the board, down from 3 in the attack-ready frame. Source 17 remains at 4 and ownership is unchanged. This illustrates one defender decrement, not a territory capture or a timing measurement; no capture/move-in screen is shown.",
         "basis": "local-visual",
         "confidence": "observed-bounded",
         "sources": [
@@ -318,7 +318,8 @@
           "G12"
         ],
         "observations": [
-          "GO17"
+          "GO17",
+          "GO21"
         ]
       },
       "cancel": {
@@ -793,7 +794,7 @@
     },
     {
       "id": "G12",
-      "caption": "Worked turn, step 5: comparison panel changes to 4 against 2 while the map numeral at country 18 remains 3 in this still.",
+      "caption": "Worked turn, step 5: the comparison changes to 4 against 2 and country 18 now shows 2 on the board. Source 17 remains 4; ownership is unchanged.",
       "topics": [
         "attack-capture"
       ]
@@ -915,7 +916,7 @@
     {
       "id": "GO17",
       "frame": "G12",
-      "text": "The lower-right comparison changes from4-against3 to4-against2 while the attack and leave-combat controls remain. Country18 still visibly carries a3 on the board in this frame; the changed result panel alone does not prove immediate map reconciliation or capture.",
+      "text": "The lower-right comparison changes from4-against3 to4-against2 while the attack and leave-combat controls remain. Country18 also displays2 on the board in this frame. These visible values agree at capture time; this is one sampled defender decrement, not a territory capture or a timing/latency measurement.",
       "source": "V-guide"
     },
     {
@@ -934,6 +935,12 @@
       "id": "GO20",
       "frame": "G14",
       "text": "The right lower panel displays a yellow-country-counting status, and the central action panel is empty. This frame is early computer-turn feedback after passing, not a completed computer turn or a game ending.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO21",
+      "frame": "G12",
+      "text": "Country18 on the red territory now shows2 armies, whereas the attack-ready frame G11 showed3. Source country17 still shows4. Ownership colour is unchanged; no capture or movement is illustrated.",
       "source": "V-guide"
     }
   ],
@@ -1140,7 +1147,7 @@
         238,
         53
       ],
-      "label": "Result comparison only"
+      "label": "Result comparison"
     },
     {
       "id": "A-GO18",
@@ -1177,6 +1184,18 @@
         53
       ],
       "label": "Early next-turn feedback"
+    },
+    {
+      "id": "A-GO21",
+      "frame": "G12",
+      "observation": "GO21",
+      "rect": [
+        300,
+        130,
+        40,
+        45
+      ],
+      "label": "Defender board decrement"
     }
   ],
   "walkthrough": {
@@ -1204,8 +1223,8 @@
     "limitations": [
       "Setup/navigation images come from r0013 and are not the setup of the r0026 deal.",
       "r0026 before.png is a title screen; it is deliberately omitted rather than presented as an initial board.",
-      "G12 result-panel change does not establish immediate board counter update, capture or battle probabilities.",
-      "No move/card trade screen or victory outcome is demonstrated by this sequence."
+      "No move/card trade screen or victory outcome is demonstrated by this sequence.",
+      "G12 panel and board both show defender2 at the sampled frame. No latency measurement, capture or complete battle inferred."
     ],
     "introduction": "Follow one preserved human turn from placement selection to the immediate hand-off after Pass. All seven pictures come from E019-r0026 in the recorded order. The setup/help/result pictures come from r0013 and are separate context, not earlier moments of this deal. These samples are not a continuous recording, a capture example or a completed game.",
     "steps": [
@@ -1227,7 +1246,7 @@
       },
       {
         "frame": "G12",
-        "text": "Inspect the sampled result panel: it now compares 4 against 2. Country 18 still has a 3 on the map in this frame, so the picture is not used to assert an immediate map update or capture."
+        "text": "Inspect both feedback locations: the result panel compares 4 against 2 and country 18 now shows 2 on the map, down from 3. Source 17 remains 4. This sampled defender decrement does not establish a capture, a complete battle or update latency."
       },
       {
         "frame": "G13",

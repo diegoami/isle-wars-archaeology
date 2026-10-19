@@ -3,9 +3,9 @@
 Read the [player guide and worked turn](guide.md) for starting a game, selecting
 and confirming actions, ending a turn and distinguishing observed screens from
 static-only or unsupported procedures. Its twelve chapters cover all T64 topics;
-thirteen distinct E019 images and twenty callouts include seven ordered steps from
+thirteen distinct E019 images and twenty-one callouts include seven ordered steps from
 one placement-to-pass turn. Setup/help/result pictures belong to another record.
-The sample result panel changes while its map numeral does not; no capture, movement,
+The sampled defender decrement appears in both panel and map; no territory capture, movement,
 card-trade screen or game-save procedure is invented.
 
 The [guide data](guide.json) carries a source, confidence and evidence basis for each
@@ -128,13 +128,13 @@ chapter, source, walkthrough and atlas return link and a bad guide hash before a
 copy. Fixture directories explicitly use `/tmp`, independently of inherited TMPDIR.
 
 Main alone prepares a combined local bundle map with all six atlas `V` IDs and all
-thirteen `G` IDs in the [T64 survey](../../docs/prototypes/T64/visual-source-survey-r1.json).
+thirteen `G` IDs in the [T64 survey](../../docs/prototypes/T64/visual-source-survey-r2.json).
 The IDs deliberately omit G07: the source’s `before.png` is a title screen, so it
 is not presented as a board or counted again. Keep every PNG and the bundle map
 outside all checkouts. The source files use the survey’s hash-prefixed asset names.
 
 ```sh
-systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --include-guide --bundle-map /outside-checkouts/combined-map.json --output /outside-checkouts/pro-guide-r1
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --include-guide --bundle-map /outside-checkouts/combined-map.json --output /outside-checkouts/pro-guide-r3
 ```
 
 `index.html` contains clickable chapter navigation, all thirteen annotated screen
@@ -144,10 +144,10 @@ hash/dimension/location checked before output is created; the original pixels re
 unchanged. The receipt records guide and atlas HTML hashes, nineteen image references,
 the separate atlas/guide annotation counts and the ordered walkthrough IDs.
 
-Main opens both pages, checks all chapter and return links, all twenty new callouts
+Main opens both pages, checks all chapter and return links, all twenty-one new callouts
 and detail regions, the same-record step order, separate-deal captions and the retained
 atlas. In particular, the original loss notice and source line remain clipped, the
-result-panel/map discrepancy stays explicit, preference saving is distinguished from
+sampled panel/map agreement is bounded to one defender decrement, preference saving is distinguished from
 a game save, and no static-only procedure is presented as visually demonstrated.
 Main keeps browser captures outside every checkout and commits only an own-word
 verification record under `docs/prototypes/T64/` with source/HTML/capture hashes,
