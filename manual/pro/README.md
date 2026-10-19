@@ -214,13 +214,3 @@ proof claims, local visual proof, record/manifest digests, surveyed walkthrough 
 step prose and retained scope boundaries; copied omissions must make self-test fail.
 These are structural controls. The independent reviewer audits numerical rules and
 conflicts, and main checks the illustrated edition and full parent acceptance.
-
-
-The [passing T65 local verification](../../docs/prototypes/T65/local-visual-verification-r1.json)
-records the final six-page T65-r1 edition, all chapter links, source/image/page hashes
-and main’s reference/checklist readability inspection. All thirteen guide and six
-atlas illustrated sections have identical HTML to the previously inspected T64-r3
-sections; main reopened G12 and V01 and verified image hashes again. Whole chapter
-identity is not claimed because the prose changed. The record includes main’s parent
-acceptance accounting, with independent review and green CI still required before
-parent #265 closes. Known screen gaps, #259 and #278 remain explicit.

@@ -1,0 +1,18 @@
+{
+  "schema": "T65-finalization-checks/1",
+  "basis": "Removed only citation-only README addition after main preference; README now exactly equals render-time snapshot. Every inputs_sha256 entry in main local record matches final current files. Main record unchanged. Earlier finalization-r1 preserved as historical measurement. No code/data/render-affecting prose changes. Commands inherit systemd6G/no-swap scope; no originals accessed.",
+  "input_hash_alignment": "PASS all 16 recorded manual/tool inputs",
+  "checks": [
+    {
+      "command": "python3 tools/check_links.py",
+      "exit": 0,
+      "output": "links and JSON ok (2489 files)"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "main_record_sha256": "189e766ae05cf1e63edd9946815140cc851b5e3b0e08653fc5a0ddee669af28d"
+}
