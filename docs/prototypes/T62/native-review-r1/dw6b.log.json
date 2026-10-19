@@ -1,0 +1,5 @@
+{
+  "source": "/tmp/iwa-r284/dw6b.log",
+  "sha256": "d641353319e8272019609f95cdb35aae651d04902f2d6e3fa874dfea0f6bee1f",
+  "output": "Running as unit: run-p68767-i69398.scope; invocation ID: 02502cfa194b4e2880b9486e6d823ecb\n............\n----------------------------------------------------------------------\nRan 12 tests in 0.390s\n\nOK\n"
+}

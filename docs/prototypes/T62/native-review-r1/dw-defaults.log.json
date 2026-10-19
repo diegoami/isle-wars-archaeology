@@ -1,0 +1,5 @@
+{
+  "source": "/tmp/iwa-r284/dw-defaults:.log",
+  "sha256": "4f166e597835e59e53a86555dd50ce356c4ceedb844b01799cd056a4c20f9dff",
+  "output": "Running as unit: run-p68362-i68993.scope; invocation ID: 05a1b5af0fc7404bbb3f18d71e9faf22\n\u2714 defaults: planned changes preserve inputs, roster defaults and variant metadata (1.825377ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 56.555376\n"
+}

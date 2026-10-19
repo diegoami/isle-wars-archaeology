@@ -1,0 +1,5 @@
+{
+  "source": "/tmp/iwa-r284/dw-selection:.log",
+  "sha256": "a670cea08dcc48ae6f728092f0590e2ae7c2a8bdf774661018a4577796ffa114",
+  "output": "Running as unit: run-p68284-i68913.scope; invocation ID: 45272e0d8a554aebafb59fd5f2f539fd\n\u2714 selection: same-family registration and review preserve both real client identities (2.198374ms)\n\u2714 selection: legacy blocked families and ID fragments do not reject an explicit choice (0.740514ms)\n\u2714 selection: implementer aliases and legacy default listing remain selectable (0.320739ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 61.644414\n"
+}

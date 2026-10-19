@@ -1,0 +1,5 @@
+{
+  "source": "/tmp/iwa-r284/selftest.log",
+  "sha256": "c2c6e53c8334c07490383b41528449fa3c23a1557368e1602798324d36dcc841",
+  "output": "Running as unit: run-p65478-i66105.scope; invocation ID: 1373d92e0b69411487bd7dd95d6fc3ad\nself-test: 35 of 35 samples read as expected\nself-test: model families, all 81 checks passed\n"
+}
