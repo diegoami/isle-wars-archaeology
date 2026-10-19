@@ -18,12 +18,12 @@
 //    every run): an unknown id or a missing login exits 3 with the command that fixes it.
 // 2. Unless --variant is given, the effort is high for a light model and low (else medium, else its
 //    lowest) for a heavy one, from the efforts OpenCode offers (L54); max is refused (L27). The
-//    family comes from the id unless given; the session's family and the blocked list are refused.
+//    family comes from the id unless given; same-family and legacy-blocked choices are permitted.
 // 3. --probe sends a one-word prompt through the watched runner at that variant, in a throwaway
 //    git directory under the work root. It is one small billed call, and a failure stops the switch.
 // 4. reviewer.default becomes this model; other models stay for an explicit --reviewer.
-// --block adds a family ("deepseek") or an id fragment to harness.json's blocked list, which
-// review.mjs and this script refuse; --unblock removes it. --dry-run prints and writes nothing.
+// --block adds a family ("deepseek") or an id fragment to harness.json's legacy metadata, which
+// does not restrict selection; --unblock removes it. --dry-run prints and writes nothing.
 //
 // Exit 0: switched (or shown, or a dry run). Exit 1: refused. Exit 2: usage. Exit 3: OpenCode, the
 // login or the probe failed; nothing written.
@@ -68,7 +68,7 @@ if (a.role === 'implementer') {
   write(plan.config, plan.before, plan.after);
   process.exit(0);
 }
-if (!own) die(1, `The session's family cannot be told from ANTHROPIC_BASE_URL=${process.env.ANTHROPIC_BASE_URL}: set HARNESS_SESSION_FAMILY, so the reviewer can be kept out of it.`);
+if (!own) die(1, `The session's family cannot be told from ANTHROPIC_BASE_URL=${process.env.ANTHROPIC_BASE_URL}: set HARNESS_SESSION_FAMILY, to record the actual session identity.`);
 
 let plan;
 try {

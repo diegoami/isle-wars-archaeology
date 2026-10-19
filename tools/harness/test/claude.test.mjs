@@ -37,10 +37,10 @@ test('coverage is explicit per changed file; generated evidence grouping cannot 
  assert.ok(scopeProblems(complete.replace('SCOPE: complete','SCOPE: incomplete'),files).length);
  const config={models:{claude:{id:'anthropic/'+id,family:'claude',backend:'claude'}},blocked:[]};
  assert.equal(namedModel(config,'claude',{},()=>assert.fail()),'claude');
- assert.ok(reviewRefusal(config.models,'claude',[],{HARNESS_SESSION_FAMILY:'claude'}));
+ assert.equal(reviewRefusal(config.models,'claude',[],{HARNESS_CLIENT:'claude'}),null);
  assert.equal(reviewRefusal(config.models,'claude',[],{HARNESS_SESSION_FAMILY:'openai'}),null);
  const switched=planSwitch(config,{id:'anthropic/'+id,backend:'claude',name:'claude',sessionFamily:'openai',variant:'high'});assert.equal(switched.entry.backend,'claude');assert.equal(planSwitch(switched.config,{id:'anthropic/'+id,sessionFamily:'openai'}).entry.backend,'claude');assert.throws(()=>planSwitch(config,{id:'openai/gpt-x',backend:'claude',sessionFamily:'minimax'}));
- config.blocked=['claude'];assert.throws(()=>namedModel(config,'claude',{},(c,m)=>{throw Error(m)}));
+ config.blocked=['claude'];assert.equal(namedModel(config,'claude',{},()=>assert.fail()),'claude');
  const plan=planPost({read:readReview(final.result,'T69 review (Claude)'),header:'T69 review (Claude)',doneWhen:2,source:'test',signature:'test'});assert.equal(plan.code,4);assert.equal(plan.label,null);
 });
 test('watched subprocess retains success, failure and timeout evidence, kills its own group',async()=>{
@@ -76,20 +76,21 @@ test('real review entry selects Claude without OpenCode, publishes once, refuses
  fs.writeFileSync(gh,`import fs from 'node:fs'; const a=process.argv.slice(2);if(a.includes('--version')){console.log('gh fake');}else if(a[0]==='pr'&&a[1]==='view'){console.log(a.includes('headRefOid,baseRefOid')?JSON.stringify({headRefOid:process.env.HEAD_SHA,baseRefOid:process.env.BASE_SHA}):'');}else{fs.appendFileSync(process.env.TRACE,JSON.stringify(a)+'\\n');if(a.includes('--body-file'))fs.writeFileSync(process.env.TRACE+'.body',fs.readFileSync(a[a.indexOf('--body-file')+1]));}`);
  fs.writeFileSync(cli,`import fs from 'node:fs';import path from 'node:path';const a=process.argv.slice(2);if(a.includes('--version')){console.log('2.1.292 (Claude Code)');process.exit(0);}const copied=path.join(process.cwd(),'node_modules','fake-dependency','index.js');if(process.env.CASE!=='absent'){if(!fs.existsSync(copied))throw Error('private dependencies not prepared before Claude launch');const bin=path.join(process.cwd(),'node_modules','.bin','fake-dependency');if(fs.readlinkSync(bin)!=='../fake-dependency/cli.mjs'||!fs.realpathSync(bin).startsWith(path.join(process.cwd(),'node_modules')+path.sep))throw Error('relative .bin link not preserved');fs.writeFileSync(copied,'review-owned mutation');}else if(fs.existsSync(copied))throw Error('absent install was fabricated');const v=k=>a[a.indexOf(k)+1];if(v('--setting-sources')!=='')throw Error('settings not isolated');const dir=path.dirname(v('--settings'));const s=JSON.parse(fs.readFileSync(v('--settings')));if(!s.hooks.PreToolUse.length)throw Error('no guard');const inv=JSON.parse(fs.readFileSync(path.join(dir,'inventory.json')));if(JSON.stringify(inv.files)!==JSON.stringify(['a.txt']))throw Error('diff included unrelated base branch changes');if(!fs.readFileSync(path.join(dir,'full.diff'),'utf8').includes('+head'))throw Error('no local diff');const mode=process.env.CASE;console.log(JSON.stringify({type:'system',subtype:'init',session_id:v('--session-id'),model:mode==='wrong'?'glm-5.3':v('--model')}));if(mode==='missing')process.exit(0);const r=['T69 review (Claude)','approve',mode==='dw'?'DW1: not run — fixture':'DW1: ran git diff --check → passed',...(mode==='scope'?[]:inv.files.map(f=>'FILE: '+f)),'SCOPE: complete','R1: test full findings survive flags','Final pass done','approve'].join('\\n');console.log(JSON.stringify({type:'result',subtype:'success',is_error:false,session_id:v('--session-id'),permission_denials:mode==='denied'?[{tool_name:'Bash'}]:[],result:r}));if(mode==='exit')process.exitCode=7;`);
  const seenEvidence=new Set();
- for(const mode of ['ok','absent','scope','dw','wrong','missing','denied','exit','jail']){
+ for(const mode of ['ok','same-claude','absent','scope','dw','wrong','missing','denied','exit','jail']){
   fs.writeFileSync(trace,'');
   if(mode==='absent')fs.renameSync(path.join(repo,'node_modules'),path.join(repo,'saved-node_modules'));
   else if(fs.existsSync(path.join(repo,'saved-node_modules')))fs.renameSync(path.join(repo,'saved-node_modules'),path.join(repo,'node_modules'));
   const cfgPath=path.join(repo,'harness.json');const cfg=JSON.parse(fs.readFileSync(cfgPath));cfg.jail={enabled:mode==='jail'};fs.writeFileSync(cfgPath,JSON.stringify(cfg));
-  const env={...process.env,HARNESS_GH_EXE:gh,HARNESS_CLAUDE_EXE:cli,HARNESS_OPENCODE_EXE:'/does/not/exist',HARNESS_SESSION_FAMILY:'openai',HEAD_SHA:head,BASE_SHA:base,TRACE:trace,CASE:mode};
+  const env={...process.env,HARNESS_GH_EXE:gh,HARNESS_CLAUDE_EXE:cli,HARNESS_OPENCODE_EXE:'/does/not/exist',HARNESS_CLIENT:mode==='same-claude'?'claude':'codex',HEAD_SHA:head,BASE_SHA:base,TRACE:trace,CASE:mode};
+  delete env.HARNESS_SESSION_FAMILY;
   for(const k of Object.keys(env))if(k.startsWith('ANTHROPIC_')||k.startsWith('CLAUDE_CODE_USE_'))delete env[k];
   const r=spawnSync(process.execPath,[path.resolve('tools/harness/review.mjs'),'--pr','1','--brief',brief,'--issue','2','--apply-label'],{cwd:repo,env,encoding:'utf8',timeout:15000});
-  assert.equal(r.status,['ok','absent'].includes(mode)?0:['scope','dw'].includes(mode)?4:3,mode+'\n'+r.stdout+'\n'+r.stderr);
+  assert.equal(r.status,['ok','same-claude','absent'].includes(mode)?0:['scope','dw'].includes(mode)?4:3,mode+'\n'+r.stdout+'\n'+r.stderr);
   if(mode==='jail'){assert.match(r.stderr,/does not support the optional credential jail/);assert.ok(fs.readFileSync(trace,'utf8').split('\n').filter(Boolean).map(JSON.parse).every(a=>a[1]==='view'));continue;}
   const evidenceRoot=path.join(repo,'.cache/review-evidence');const fresh=fs.readdirSync(evidenceRoot).find(n=>!seenEvidence.has(n));assert.ok(fresh);seenEvidence.add(fresh);const receipt=JSON.parse(fs.readFileSync(path.join(evidenceRoot,fresh,'receipt.json')));assert.equal(receipt.actualModel,mode==='wrong'?'glm-5.3':id);
   const writes=fs.readFileSync(trace,'utf8').split('\n').filter(Boolean).map(JSON.parse);
-  assert.equal(writes.filter(a=>a[0]==='pr'&&a[1]==='comment').length,['ok','absent','scope','dw'].includes(mode)?1:0,mode);
-  assert.equal(writes.some(a=>a.includes('--add-label')),['ok','absent'].includes(mode),mode);
+  assert.equal(writes.filter(a=>a[0]==='pr'&&a[1]==='comment').length,['ok','same-claude','absent','scope','dw'].includes(mode)?1:0,mode);
+  assert.equal(writes.some(a=>a.includes('--add-label')),['ok','same-claude','absent'].includes(mode),mode);
   if(['scope','dw'].includes(mode))assert.match(fs.readFileSync(trace+'.body','utf8'),/R1: test full findings survive flags/);
  }
  const registrationCfg=JSON.parse(fs.readFileSync(path.join(repo,'harness.json')));registrationCfg.reviewer.default='luna';registrationCfg.models.luna={id:'openai/gpt-5.6-luna',family:'openai',variant:'high'};fs.writeFileSync(path.join(repo,'harness.json'),JSON.stringify(registrationCfg));

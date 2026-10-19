@@ -1,0 +1,79 @@
+{
+  "checks": [
+    {
+      "command": [
+        "node",
+        "tools/harness/review.mjs",
+        "--self-test"
+      ],
+      "exit": 0,
+      "output": "self-test: 35 of 35 samples read as expected\nself-test: model families, all 81 checks passed\n"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "tests/harness_clients.test.mjs",
+        "tools/harness/test/claude.test.mjs",
+        "tools/harness/test/owner-selection.test.mjs",
+        "tools/harness/test/owner-dispatch.test.mjs"
+      ],
+      "exit": 0,
+      "output": "\u2714 Codex markers and explicit client preserve Claude endpoint routing (0.774467ms)\n\u2714 broken, missing, unsupported and hanging primary use supported backup; healthy primary stays (517.484902ms)\n\u2714 plain and versioned sibling backups are discovered (5.741372ms)\n\u2714 direct read failure retries without corrupt output; model run never replays (212.861491ms)\n\u2714 provider/model review titles create flat files before CLI startup (2.699621ms)\n\u2714 identity: actual selected model and real final required, not exit0 or quoted content (1.670338ms)\n\u2714 provider/remapped model cannot reach Claude billing; credentials not in errors (1.226636ms)\n\u2714 coverage is explicit per changed file; generated evidence grouping cannot hide code (3.376962ms)\n\u2714 watched subprocess retains success, failure and timeout evidence, kills its own group (671.877491ms)\n\u2714 real review entry selects Claude without OpenCode, publishes once, refuses failed gates (2418.403374ms)\n\u2714 Claude dependency materialization makes an independent real copy and preserves relative .bin links (2.96857ms)\n\u2714 Claude dependency materialization skips absent installs and refuses outside, overlapping, or existing destinations (2.24791ms)\n\u2714 native Claude command denials cover OpenCode publishing policy without a second Bash parser (0.958596ms)\n\u2714 same-family choices complete fake OpenCode dispatch from both actual clients with labels and exclude (10901.56107ms)\n\u2714 selection: same-family registration and review preserve both real client identities (2.791266ms)\n\u2714 selection: legacy blocked families and ID fragments do not reject an explicit choice (0.782133ms)\n\u2714 selection: implementer aliases and legacy default listing remain selectable (0.351172ms)\n\u2714 identity: explicit contradictory and unknown raw identities remain rejected (0.725496ms)\n\u2714 identity: actual clients and endpoint detection cannot be silently spoofed (0.150956ms)\n\u2714 transport: native direct-provider and remapping safeguards still reject unsafe routes (0.339071ms)\n\u2714 transport: exact model/session, clean final and permission outcomes remain mandatory (0.815806ms)\n\u2714 transport: coverage and missing Done-when never become automatic approval (1.596957ms)\n\u2714 defaults: planned changes preserve inputs, roster defaults and variant metadata (0.477169ms)\n\u2139 tests 23\n\u2139 suites 0\n\u2139 pass 23\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 10953.728333\n"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit": 0,
+      "output": "links and JSON ok (2502 files)\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "origin/main"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "before_dispatch": {
+    "runtime": "55789d7",
+    "exit": 1,
+    "output": "\u2716 same-family choices complete fake OpenCode dispatch from both actual clients with labels and exclude (110.99638ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 155.664563\n\n\u2716 failing tests:\n\ntest at tools/harness/test/owner-dispatch.test.mjs:9:1\n\u2716 same-family choices complete fake OpenCode dispatch from both actual clients with labels and exclude (110.99638ms)\n  AssertionError [ERR_ASSERTION]: \n  claude-sonnet: claude is blocked in harness.json (switch-model.mjs --unblock claude lifts it) (CLAUDE.md rule 6).\n  \n  \n  2 !== 0\n  \n      at TestContext.<anonymous> (file:///tmp/T62-dispatch-before-xyalx70p/tools/harness/test/owner-dispatch.test.mjs:33:14)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 2,\n    expected: 0,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+  },
+  "source_sha256": {
+    "tools/harness/lib/claude.mjs": "e4c07291178c019fe76b2b2f309d97820e3f1a7a06997810fca4ecd5379e3135",
+    "tools/harness/lib/review-dependencies.mjs": "894cd7466db023baaf79a4994301a73058cbc259dce57dfc2c35eb5584e6018c",
+    "tools/harness/lib/jev.mjs": "b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af",
+    "tools/harness/lib/claim.mjs": "b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1",
+    "tools/harness/lib/post.mjs": "5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c",
+    "tools/harness/lib/opencode.mjs": "b23e8fba36fd6dca374646dc7c50d002e1cf9f701491898c031e473e31b3f31e",
+    "tools/harness/lib/common.mjs": "0b1f4c06637144fc5ade82e10b3ec44d3a223af64111b26ef09e4d4a7ee47568",
+    "tools/harness/lib/chain.mjs": "92b1bfdb94cdf85b9f67db13794ad3744439d8698f352a24213e2fb66f81397d",
+    "tools/harness/lib/family.mjs": "2721a3c66252df3be6ccb406427dbe7280b24b2a0c7619238442dfdd72e648ef",
+    "tools/harness/lib/jail.mjs": "2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a",
+    "tools/harness/lib/switch.mjs": "baaacb31a2dc22efad2353a9b7c85e37fdc82c397b31351d8ee201555439313b",
+    "tools/harness/lib/models.mjs": "a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7",
+    "tools/harness/lib/choice-selftest.mjs": "eace3f8c635a197cacb6b48098ea4b1ece0ca5b2048bb73057ccf77f7e9da050",
+    "tools/harness/lib/review-selftest.mjs": "66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452",
+    "tools/harness/lib/guard.mjs": "411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1",
+    "tools/harness/review.mjs": "557624cd26cf01f09f77c9a09ea5c6c863077c7b914654e1b76a2322cf33ed37",
+    "tools/harness/switch-model.mjs": "4877740c8771afdc2d6afce500a341921748e1ceb3bdd1e78fd7f9c4d185db60",
+    "tools/harness/test/owner-dispatch.test.mjs": "ec94f76d46dc17cae5bacd9d01c883dcd59275758c98cc0a28e529f121920584",
+    "tools/harness/test/owner-selection.test.mjs": "2638c8d8ec19758205d394459c057b730308c59eeed9e716293c9ac9b5c00902",
+    "tools/harness/test/claude.test.mjs": "b4154e68d5b6271bc65aa6e2ed2d470a771a43352695a926467196d6b1762ed1"
+  },
+  "earlier_evidence": "final-validation-r1.json retains full unit, grant, originals, links and mutation results before the final offline dispatch extension.",
+  "setup_corrections": [
+    "Initial full fake dispatch used implicit default reviewer, which rewrote the synthetic header; fixed by explicit --reviewer matching owner-selected invocation.",
+    "Initial fake CLI preflight inherited standard harness data/auth path checks (reported already current); no credential contents printed, no global changes. Fixture now isolates HARNESS_OPENCODE_HOME and nonexistent HARNESS_OPENCODE_AUTH_SOURCE under /tmp."
+  ],
+  "limits": [
+    "All provider/GitHub executables used by added dispatch tests are fake. No paid availability or independent live review is claimed.",
+    "Native reviewer must independently challenge copied fixtures and main must verify CI and primary selection before merge."
+  ]
+}

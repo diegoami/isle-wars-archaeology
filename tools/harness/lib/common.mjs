@@ -122,9 +122,9 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
 // the same endpoint). Claude sessions use the Anthropic environment variables: with
 // ANTHROPIC_BASE_URL unset or at anthropic.com it is Claude; when Claude's tokens are out the owner
 // points it at another provider that speaks the same API: Z.AI's GLM, MiniMax, or Moonshot's Kimi
-// (the owner, 2026-10-12), and the family rule must then keep that family out of the reviewer's
-// seat. The names match the families the reviewer models get (glm, minimax, kimi). HARNESS_SESSION_FAMILY
-// overrides the guess; an endpoint this list does not know returns null, and the caller refuses
+// (the owner, 2026-10-12), and that family remains part of the review metadata. The names match
+// the reviewer families (glm, minimax, kimi). HARNESS_SESSION_FAMILY
+// overrides detection; an endpoint this list does not know returns null, and the caller refuses
 // to review until it is set.
 // Matched on the parsed URL's hostname only, never on its path or query string (Sol's R5 on PR 189),
 // and only as an exact domain or a bounded suffix of one (host === d or host ends with '.' + d; Sol's
@@ -156,28 +156,14 @@ export function sessionFamily(env = process.env) {
   return ENDPOINT_FAMILIES.find(([d]) => host === d || host.endsWith(`.${d}`))?.[1] ?? null;
 }
 
-// harness.json's `blocked` list, changed with switch-model.mjs --block/--unblock: a family name
-// ("deepseek") or a piece of a model id ("deepseek-v4"), case-insensitive. The reason a model may
-// not run, or null. The family the id names is checked too, whatever family was declared or saved
-// (Sol's re-review R2 on PR 189).
-export function blockedReason(config, { id, family }) {
-  const fams = [family, id ? knownFamilyOf(id) : null].map(canonicalFamily).filter(Boolean);
-  for (const b of config.blocked ?? []) {
-    const needle = String(b).toLowerCase();
-    if (fams.includes(canonicalFamily(needle))) return `${family} is blocked in harness.json (switch-model.mjs --unblock ${b} lifts it)`;
-    if (id && id.toLowerCase().includes(needle)) return `${id} matches "${b}", blocked in harness.json (switch-model.mjs --unblock ${b} lifts it)`;
-  }
-  return null;
-}
-
 export const ocArgs = (worktree, agent, model) =>
   ['run', '--dir', worktree, '--agent', agent, '--model', model.id, ...(model.variant ? ['--variant', model.variant] : [])];
 
 // The model named for a run (CLAUDE.md rule 6): a harness.json key, or any OpenCode id
-// `provider/model`. Its family decides the reviewer-family rule, so it is never taken on trust (Sol's
+// `provider/model`. Family remains identity metadata, never taken on trust (Sol's
 // R1 and re-review R1 on PR 164): a registered id keeps its registered family; a new id's family
 // comes from a single-family provider or an unambiguous model name, else the id is refused; a
-// declared --family is only a cross-check. harness.json's blocked list is refused.
+// declared --family is only a cross-check. Legacy blocked metadata does not restrict selection.
 export const FAMILIES = ['claude', 'openai', 'glm', 'mimo', 'minimax', 'kimi', 'qwen', 'deepseek'];
 // Providers that serve one family only: their prefix alone fixes the family. Every other route
 // (openrouter, opencode-go, alibaba-token-plan, …) serves several, so the model name must say it.
@@ -195,7 +181,7 @@ export function familyFromId(id) {
 }
 // A registered entry's family: the family its id names wherever that is known (knownFamilyOf), and
 // the saved family only where the id says nothing, so a declared or force-saved family never
-// carries a model past the family rule or the blocked list (Sol's re-review R1/R2 on PR 189).
+// misidentifies the model (Sol's re-review R1/R2 on PR 189).
 export const entryFamily = (entry) => (entry ? knownFamilyOf(entry.id) ?? canonicalFamily(entry.family) : null);
 // The family a name stands for: a harness.json key, a registered id, a provider/model id, or a
 // family name. Null when it cannot be established (Sol's R2 on PR 164).
@@ -214,8 +200,6 @@ export function namedModel(config, name, { family, variant } = {}, die) {
   if (!entry && !name.includes('/')) die(2, `Unknown model ${name}: not a harness.json key, and not an OpenCode id provider/model.`);
   const id = entry ? entry.id : name;
   const known = entry ? entryFamily(entry) : familyFromId(id);
-  const blocked = blockedReason(config, { id, family: known });
-  if (blocked) die(2, `${name}: ${blocked} (CLAUDE.md rule 6).`);
   // The family is never taken from --family alone: an unknown one is refused (re-review R1 on PR 164).
   if (!known) die(2, `${name}: its family cannot be established from its provider or its name. Register it in harness.json with its family (via /switch-model), then name it.`);
   if (family && canonicalFamily(family) !== known) die(2, `${name} is of the ${known} family; --family ${family} disagrees.`);
@@ -233,7 +217,7 @@ export function namedModel(config, name, { family, variant } = {}, die) {
   return name;
 }
 
-// The implementer's families, for the reviewer-family rule: every name must resolve to a family.
+// Implementation provenance: every name must resolve to a family.
 // The session's own family (sessionFamily) is ALWAYS among them, whatever --exclude or a `model:`
 // label adds: the main session or an agent it spawned implements, since 2026-10-11 (Sol's R1 on PR
 // 189; round-3 R1 on PR 164). An endpoint whose family cannot be told is refused, also when names
@@ -247,14 +231,13 @@ export function implementerFamilies(models, names, env = process.env) {
   return { families: [...new Set([own, ...given.map((n) => familyOf(models, n))])] };
 }
 
-// review.mjs's decision (CLAUDE.md rule 6): the reason the named reviewer may not review work by
-// `names` (and always by the session's family), or null. Kept here so that the self-test runs the
+// review.mjs's identity check (CLAUDE.md rule 6.3): same-family choices are permitted;
+// reviewer and implementation metadata must still resolve, or the run is refused. Kept here so that the self-test runs the
 // very decision review.mjs enforces. `reviewer` is a harness.json key (namedModel's answer).
 export function reviewRefusal(models, reviewer, names, env = process.env) {
   const fams = implementerFamilies(models, names, env);
   if (fams.refuse) return fams.refuse;
   const fam = familyOf(models, reviewer);
   if (!fam) return `${reviewer}: its family cannot be established`;
-  if (fams.families.includes(fam)) return `${reviewer} is the implementer's model family (${fams.families.join(', ')})`;
   return null;
 }

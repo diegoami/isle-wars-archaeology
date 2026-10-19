@@ -1,0 +1,165 @@
+{
+  "method": "All commands and copied-fixture mutations execute under the enclosing systemd 6G/no-swap scope. Source originals are never mutated; scratch retained under /tmp.",
+  "seed_sha256": "2638c8d8ec19758205d394459c057b730308c59eeed9e716293c9ac9b5c00902",
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=selection:",
+        "tools/harness/test/owner-selection.test.mjs"
+      ],
+      "exit": 0,
+      "output": "\u2714 selection: same-family registration and review preserve both real client identities (2.140588ms)\n\u2714 selection: legacy blocked families and ID fragments do not reject an explicit choice (0.687616ms)\n\u2714 selection: implementer aliases and legacy default listing remain selectable (0.375856ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 87.430935\n"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=identity:",
+        "tools/harness/test/owner-selection.test.mjs"
+      ],
+      "exit": 0,
+      "output": "\u2714 identity: explicit contradictory and unknown raw identities remain rejected (1.8143ms)\n\u2714 identity: actual clients and endpoint detection cannot be silently spoofed (0.159337ms)\n\u2139 tests 2\n\u2139 suites 0\n\u2139 pass 2\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 68.836459\n"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=transport:",
+        "tools/harness/test/owner-selection.test.mjs"
+      ],
+      "exit": 0,
+      "output": "\u2714 transport: native direct-provider and remapping safeguards still reject unsafe routes (2.605287ms)\n\u2714 transport: exact model/session, clean final and permission outcomes remain mandatory (0.809387ms)\n\u2714 transport: coverage and missing Done-when never become automatic approval (2.498424ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 76.159016\n"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=defaults:",
+        "tools/harness/test/owner-selection.test.mjs"
+      ],
+      "exit": 0,
+      "output": "\u2714 defaults: planned changes preserve inputs, roster defaults and variant metadata (2.265654ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 77.602489\n"
+    },
+    {
+      "command": [
+        "node",
+        "tools/harness/review.mjs",
+        "--self-test"
+      ],
+      "exit": 0,
+      "output": "self-test: 35 of 35 samples read as expected\nself-test: model families, all 81 checks passed\n"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "tests/harness_clients.test.mjs",
+        "tools/harness/test/claude.test.mjs",
+        "tools/harness/test/owner-selection.test.mjs"
+      ],
+      "exit": 0,
+      "output": "\u2714 Codex markers and explicit client preserve Claude endpoint routing (0.886067ms)\n\u2714 broken, missing, unsupported and hanging primary use supported backup; healthy primary stays (583.718908ms)\n\u2714 plain and versioned sibling backups are discovered (8.93829ms)\n\u2714 direct read failure retries without corrupt output; model run never replays (228.978337ms)\n\u2714 provider/model review titles create flat files before CLI startup (3.396636ms)\n\u2714 identity: actual selected model and real final required, not exit0 or quoted content (2.830676ms)\n\u2714 provider/remapped model cannot reach Claude billing; credentials not in errors (2.158367ms)\n\u2714 coverage is explicit per changed file; generated evidence grouping cannot hide code (4.011682ms)\n\u2714 watched subprocess retains success, failure and timeout evidence, kills its own group (715.085044ms)\n\u2714 real review entry selects Claude without OpenCode, publishes once, refuses failed gates (2612.763142ms)\n\u2714 Claude dependency materialization makes an independent real copy and preserves relative .bin links (2.844546ms)\n\u2714 Claude dependency materialization skips absent installs and refuses outside, overlapping, or existing destinations (2.248973ms)\n\u2714 native Claude command denials cover OpenCode publishing policy without a second Bash parser (0.435006ms)\n\u2714 selection: same-family registration and review preserve both real client identities (3.113045ms)\n\u2714 selection: legacy blocked families and ID fragments do not reject an explicit choice (1.193568ms)\n\u2714 selection: implementer aliases and legacy default listing remain selectable (0.572423ms)\n\u2714 identity: explicit contradictory and unknown raw identities remain rejected (0.594836ms)\n\u2714 identity: actual clients and endpoint detection cannot be silently spoofed (0.187769ms)\n\u2714 transport: native direct-provider and remapping safeguards still reject unsafe routes (0.525587ms)\n\u2714 transport: exact model/session, clean final and permission outcomes remain mandatory (0.580894ms)\n\u2714 transport: coverage and missing Done-when never become automatic approval (2.489521ms)\n\u2714 defaults: planned changes preserve inputs, roster defaults and variant metadata (0.578355ms)\n\u2139 tests 22\n\u2139 suites 0\n\u2139 pass 22\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 3426.435704\n"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_reviewer_grant.py"
+      ],
+      "exit": 0,
+      "output": "check_reviewer_grant: /home/diego/projects/isle-wars-archaeology-work/* granted (allow)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "tools.tests.test_check_reviewer_grant"
+      ],
+      "exit": 0,
+      "output": "............\n----------------------------------------------------------------------\nRan 12 tests in 0.415s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests"
+      ],
+      "exit": 0,
+      "output": "\nWARNING: tests/test_iw_dos_seal.py: SAFETY TEST NOT RUN: the temporary directory is inside a checkout (TMPDIR=''), and the code under test refuses every location inside one; set TMPDIR to a directory outside every checkout, or this run verifies nothing of the seal\n\nWARNING: tests/test_static.py: SAFETY TEST NOT RUN: the temporary directory is inside a checkout (TMPDIR=''), and the code under test refuses every location inside one; set TMPDIR to a directory outside every checkout, or this run verifies nothing\n.......................................................................................................................................................................................................................................................E018 recorder: Q-SET-04 (claim C-SET-04)\n  count_target: 7\n  run_id: E018-r0015\n  recorder: SETOptionsRecorder\n  per_arm seed: {'controls_listed': 0}\n  [C3] This script is the recorder. The main session runs the game cycles.\n  plan (E002 steps):\n    click! 320 585\n    shot options-controls\n  re-exec through the driver's inner wrapper (IWP_CYCLE_INNER unset)\nE018 recorder: Q-SET-04 (claim C-SET-04)\n  count_target: 7\n  run_id: E018-r0015\n  recorder: SETOptionsRecorder\n  per_arm seed: {'controls_listed': 0}\n  [C3] This script is the recorder. The main session runs the game cycles.\n  plan (E002 steps):\n    click! 320 585\n    shot options-controls\n  wrote record: runs/E018/combat/E018-r0015.json\n  status: running\nE018 recorder: Q-SET-04 (claim C-SET-04)\n  count_target: 1\n  run_id: E018-r0015\n  recorder: SETOptionsRecorder\n  per_arm seed: {'controls_listed': 0}\n  [C3] This script is the recorder. The main session runs the game cycles.\n  plan (E002 steps):\n    click! 320 585\n    shot options-controls\n  wrote record: runs/E018/combat/E018-r0015.json\n  status: running\nE018 recorder: Q-SET-04 (claim C-SET-04)\n  count_target: 1\n  run_id: E018-r0015\n  recorder: SETOptionsRecorder\n  per_arm seed: {'controls_listed': 0}\n  [C3] This script is the recorder. The main session runs the game cycles.\n  plan (E002 steps):\n    click! 320 585\n    shot options-controls\n  re-exec through the driver's inner wrapper (IWP_CYCLE_INNER unset)\nE018 recorder: Q-SET-04 (claim C-SET-04)\n  count_target: 1\n  run_id: E018-r0015\n  recorder: SETOptionsRecorder\n  per_arm seed: {'controls_listed': 0}\n  [C3] This script is the recorder. The main session runs the game cycles.\n  plan (E002 steps):\n    click! 320 585\n    shot options-controls\n  wrote record: runs/E018/combat/E018-r0015.json\n  status: running\nE018 recorder: Q-SET-04 (claim C-SET-04)\n  count_target: 1\n  run_id: E018-r0015\n  recorder: SETOptionsRecorder\n  per_arm seed: {'controls_listed': 0}\n  [C3] This script is the recorder. The main session runs the game cycles.\n  plan (E002 steps):\n    click! 320 585\n    shot options-controls\n  re-exec through the driver's inner wrapper (IWP_CYCLE_INNER unset)\n.............sssssssssssssssss........sss..............sssssssssssssssssssssssssssssssssssssssssssssssssssssss........ssssss.sssssssssssssssss...sss.sssssssssssss....sssssssssssssss..ssssssssssssssssssssssssssss......ssssssssssssssssss.ssssssssssssssssssssssss..ssssssssssss..ssssssssssssss..ssssssss...sssssss...ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss......sssssssssssssssssssssssssssssssss....................................................................ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss....ssssssss...s....ss.............................sssssssssssssssss.........................ssss..........................................................sssssss..........................................\n----------------------------------------------------------------------\nRan 1065 tests in 42.085s\n\nOK (skipped=506)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit": 0,
+      "output": "no original files tracked (2500 files checked)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit": 0,
+      "output": "links and JSON ok (2501 files)\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "origin/main"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "mutations": [
+    {
+      "label": "same-family reinstated",
+      "file": "tools/harness/lib/common.mjs",
+      "before": "  const fam = familyOf(models, reviewer);",
+      "after": "  if (fams.families.includes(familyOf(models, reviewer))) return 'legacy family refusal';\n  const fam = familyOf(models, reviewer);",
+      "exit": 1,
+      "output": "\u2716 selection: same-family registration and review preserve both real client identities (2.390705ms)\n\u2714 selection: legacy blocked families and ID fragments do not reject an explicit choice (1.005094ms)\n\u2714 selection: implementer aliases and legacy default listing remain selectable (0.361981ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 2\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 61.828949\n\n\u2716 failing tests:\n\ntest at tools/harness/test/owner-selection.test.mjs:25:1\n\u2716 selection: same-family registration and review preserve both real client identities (2.390705ms)\n  AssertionError [ERR_ASSERTION]: Claude\n  + actual - expected\n  \n  + 'legacy family refusal'\n  - null\n  \n      at TestContext.<anonymous> (file:///tmp/T62-mutation-hsb3oejf/tools/harness/test/owner-selection.test.mjs:29:12)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 'legacy family refusal',\n    expected: null,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+    },
+    {
+      "label": "blocked refusal reinstated",
+      "file": "tools/harness/lib/common.mjs",
+      "before": "  const known = entry ? entryFamily(entry) : familyFromId(id);",
+      "after": "  const known = entry ? entryFamily(entry) : familyFromId(id);\n  if (config.blocked?.length) die(2, 'legacy blocked refusal');",
+      "exit": 1,
+      "output": "\u2714 selection: same-family registration and review preserve both real client identities (1.893193ms)\n\u2716 selection: legacy blocked families and ID fragments do not reject an explicit choice (0.360164ms)\n\u2716 selection: implementer aliases and legacy default listing remain selectable (0.309169ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 2\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 60.47989\n\n\u2716 failing tests:\n\ntest at tools/harness/test/owner-selection.test.mjs:38:1\n\u2716 selection: legacy blocked families and ID fragments do not reject an explicit choice (0.360164ms)\n  Error: legacy blocked refusal\n      at die (file:///tmp/T62-mutation-6odfysej/tools/harness/test/owner-selection.test.mjs:19:54)\n      at namedModel (file:///tmp/T62-mutation-6odfysej/tools/harness/lib/common.mjs:203:31)\n      at TestContext.<anonymous> (file:///tmp/T62-mutation-6odfysej/tools/harness/test/owner-selection.test.mjs:42:20)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    code: 2\n  }\n\ntest at tools/harness/test/owner-selection.test.mjs:51:1\n\u2716 selection: implementer aliases and legacy default listing remain selectable (0.309169ms)\n  Error: legacy blocked refusal\n      at die (file:///tmp/T62-mutation-6odfysej/tools/harness/test/owner-selection.test.mjs:19:54)\n      at namedModel (file:///tmp/T62-mutation-6odfysej/tools/harness/lib/common.mjs:203:31)\n      at TestContext.<anonymous> (file:///tmp/T62-mutation-6odfysej/tools/harness/test/owner-selection.test.mjs:58:16)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    code: 2\n  }\n"
+    },
+    {
+      "label": "contradictory identity check removed",
+      "file": "tools/harness/lib/common.mjs",
+      "before": "  if (family && canonicalFamily(family) !== known) die(2, `${name} is of the ${known} family; --family ${family} disagrees.`);",
+      "after": "",
+      "exit": 1,
+      "output": "\u2716 identity: explicit contradictory and unknown raw identities remain rejected (1.324614ms)\n\u2714 identity: actual clients and endpoint detection cannot be silently spoofed (0.257148ms)\n\u2139 tests 2\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 49.889976\n\n\u2716 failing tests:\n\ntest at tools/harness/test/owner-selection.test.mjs:61:1\n\u2716 identity: explicit contradictory and unknown raw identities remain rejected (1.324614ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (file:///tmp/T62-mutation-wff4vguc/tools/harness/test/owner-selection.test.mjs:63:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: undefined,\n    operator: 'throws',\n    diff: 'simple'\n  }\n"
+    },
+    {
+      "label": "native direct endpoint check removed",
+      "file": "tools/harness/lib/claude.mjs",
+      "before": "    if (url.origin !== 'https://api.anthropic.com' || url.username || url.password || url.search || url.hash || !['', '/', '/v1', '/v1/'].includes(url.pathname)) fail('Claude requires the direct Anthropic endpoint; provider override refused (value withheld).');",
+      "after": "",
+      "exit": 1,
+      "output": "\u2716 transport: native direct-provider and remapping safeguards still reject unsafe routes (1.377284ms)\n\u2714 transport: exact model/session, clean final and permission outcomes remain mandatory (0.614488ms)\n\u2714 transport: coverage and missing Done-when never become automatic approval (1.863628ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 2\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 53.443187\n\n\u2716 failing tests:\n\ntest at tools/harness/test/owner-selection.test.mjs:88:1\n\u2716 transport: native direct-provider and remapping safeguards still reject unsafe routes (1.377284ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (file:///tmp/T62-mutation-7o3zl6lb/tools/harness/test/owner-selection.test.mjs:92:46)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: undefined,\n    operator: 'throws',\n    diff: 'simple'\n  }\n"
+    }
+  ]
+}

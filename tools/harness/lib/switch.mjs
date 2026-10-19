@@ -7,8 +7,8 @@
 //   where the provider cannot spawn one. Either runs through the session's Anthropic environment,
 //   so its family is the session's (lib/common.mjs sessionFamily).
 // - reviewer.default: a harness.json key, the OpenCode model that reviews unless the user names
-//   another; never the session's family.
-// - blocked: families or id fragments that never run (--block / --unblock).
+//   another; same-family choices are permitted.
+// - blocked: legacy metadata, editable with --block / --unblock; it does not restrict choices.
 
 import { canonicalFamily } from './family.mjs';
 
@@ -16,7 +16,7 @@ export const ROLES = ['implementer', 'reviewer'];
 export const IMPLEMENTER_ALIASES = ['sonnet', 'opus', 'haiku', 'fable'];
 export const IMPLEMENTER_CHOICES = ['session', ...IMPLEMENTER_ALIASES];
 
-// A model's family, from its id: the family rule (L3) compares these. "opencode-go/gpt-6-luna" and
+// A model's family, from its id: identity metadata uses these. "opencode-go/gpt-6-luna" and
 // "openai/gpt-6-luna" are both openai: the vendor, not the route. Claude models are `claude`, the
 // name sessionFamily and review.mjs use (lib/family.mjs, Sol's R2 on PR 189).
 const FAMILIES = [
@@ -41,7 +41,7 @@ export function familyOf(id) {
 
 // Heavy models run at `low`, or `medium` at most; light ones at `high` (L54, #83). Heavy: Sol, GLM-5.3
 // (not Flash), DeepSeek V4 Pro, MiMo V2.6 Pro, Opus, wherever they are served from (DeepSeek is
-// blacklisted since 2026-10-09, but still recognised).
+// historically blocked, now selectable under rule 6.3).
 // Exactly the models the rule names (Sol's R2 on PR 94): another GLM or DeepSeek release is not heavy.
 // A dated suffix is the same model, not a release: deepseek-v4-pro-0813 (the only Alibaba id with
 // the night discount) is the named DeepSeek V4 Pro.
@@ -80,9 +80,8 @@ export function nameOf(config, id) {
 /**
  * The new harness.json for making `id` the default reviewer: the entry is added or updated,
  * reviewer.default becomes its name, and every other model stays for an explicit --reviewer. A
- * model of the session's family (`sessionFamily`, the implementer's) or on the blocked list is
- * refused. A `family` that contradicts a known vendor in the id is refused too, so --family can
- * never carry a model past the family rule (Luna's R1 on PR 17).
+ * same-family or legacy-blocked model is selectable under rule 6.3. A `family` that contradicts
+ * a known vendor in the id is still refused: model selection never changes identity.
  * Returns { config, name, entry, before, after } or throws with the reason.
  */
 export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false, sessionFamily = 'claude', backend }) {
@@ -101,17 +100,12 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
   // the family from the id (lib/common.mjs entryFamily) for entries saved before.
   const known = knownFamilyOf(id);
   if (family && known && canonicalFamily(family) !== known) {
-    throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; the family rule compares vendors${force ? ', and --force does not override it' : ''}. Drop --family.`);
+    throw new Error(`Refused: --family ${family} contradicts ${id}, whose vendor is ${known}; identity must match the id${force ? ', and --force does not override it' : ''}. Drop --family.`);
   }
   backend ??= existing?.backend ?? 'opencode';
   if (!['opencode', 'claude'].includes(backend)) throw new Error('Unknown review backend.');
   if (backend === 'claude' && !/^anthropic\/claude-/.test(id)) throw new Error('Claude backend requires anthropic/claude-* identity.');
   const entry = { id, ...(backend === 'claude' ? { backend } : {}), ...(variant !== undefined && variant !== null ? { variant } : {}), family: known ?? canonicalFamily(family ?? existing?.family ?? familyOf(id)), ...(existing?.note ? { note: existing.note } : {}) };
-  const blocked = blockedBy(config, entry) ?? (known ? blockedBy(config, { family: known }) : null);
-  if (blocked) throw new Error(`Refused: ${blocked}.`);
-  const own = canonicalFamily(sessionFamily);
-  const same = [entry.family, known].map(canonicalFamily).filter(Boolean).some((f) => f === own);
-  if (same) throw new Error(`Refused: ${id} is of the session's family (${own}), which implements; the reviewer is never the implementer's family. Set HARNESS_SESSION_FAMILY if the session runs elsewhere.`);
   const next = structuredClone(config);
   next.models = { ...next.models, [n]: entry };
   next.reviewer = { ...next.reviewer, default: n };
@@ -120,9 +114,8 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
 
 // The implementer's default: the implementer subagent on a Claude Code alias or a model id the
 // session's provider serves, or `session` (the main session implements directly). A model id is
-// taken as given: the next run shows whether the provider honours it. A blocked model is refused,
-// as for the reviewer (Sol's R4 on PR 189): by its id and the family the id names, and an alias or
-// `session` by the session's family, through whose endpoint it runs.
+// taken as given: the next run shows whether the provider honours it. Legacy blocked metadata
+// does not restrict the implementer's alias, id or session selection (rule 6.3).
 function planImplementer(config, choice, sessionFamily = null) {
   const c = String(choice ?? '').trim();
   const lower = c.toLowerCase();
@@ -130,25 +123,12 @@ function planImplementer(config, choice, sessionFamily = null) {
     throw new Error(`--model for the implementer is session, one of ${IMPLEMENTER_ALIASES.join(', ')}, or a model id the session's provider serves; got ${choice}`);
   }
   const value = IMPLEMENTER_CHOICES.includes(lower) ? lower : c;
-  const family = IMPLEMENTER_CHOICES.includes(value) ? canonicalFamily(sessionFamily) : knownFamilyOf(value);
-  const blocked = blockedBy(config, { id: value, family });
-  if (blocked) throw new Error(`Refused: ${blocked}.`);
   const next = structuredClone(config);
   next.implementer = { ...next.implementer, default: value };
   return { config: next, name: value, entry: { id: value }, before: describeImplementer(config), after: describeImplementer(next) };
 }
 
-// harness.json's blocked list: a family or an id fragment, case-insensitive. The reason, or null.
-export function blockedBy(config, entry) {
-  for (const b of config.blocked ?? []) {
-    const needle = String(b).toLowerCase();
-    if (entry.family && canonicalFamily(entry.family) === canonicalFamily(needle)) return `${entry.family} is blocked in harness.json ("${b}"; --unblock ${b} lifts it)`;
-    if (entry.id?.toLowerCase().includes(needle)) return `${entry.id} matches "${b}", blocked in harness.json (--unblock ${b} lifts it)`;
-  }
-  return null;
-}
-
-// --block / --unblock: the new harness.json, or throws when nothing changes.
+// --block / --unblock edit legacy metadata, including entries naming the current default.
 export function planBlock(config, { block, unblock }) {
   const list = [...(config.blocked ?? [])];
   const has = (x) => list.some((b) => b.toLowerCase() === x.toLowerCase());
@@ -161,9 +141,7 @@ export function planBlock(config, { block, unblock }) {
     list.splice(list.findIndex((b) => b.toLowerCase() === unblock.toLowerCase()), 1);
   }
   const next = { ...structuredClone(config), blocked: list };
-  const hit = next.reviewer?.default && next.models?.[next.reviewer.default] ? blockedBy(next, next.models[next.reviewer.default]) : null;
-  if (hit) throw new Error(`Refused: the default reviewer would be blocked (${hit}); switch the reviewer first.`);
-  return { config: next, before: `blocked: ${(config.blocked ?? []).join(', ') || 'nothing'}`, after: `blocked: ${list.join(', ') || 'nothing'}` };
+  return { config: next, before: `legacy blocked metadata (no selection restriction): ${(config.blocked ?? []).join(', ') || 'nothing'}`, after: `legacy blocked metadata (no selection restriction): ${list.join(', ') || 'nothing'}` };
 }
 
 const describeReviewer = (c) => {
@@ -184,7 +162,7 @@ export function showRoles(config, { sessionFamily = null } = {}) {
   return [
     `session: family ${sessionFamily ?? 'unknown (set HARNESS_SESSION_FAMILY)'}, from the detected client and provider environment`,
     describeImplementer(config), describeReviewer(config),
-    `blocked: ${(config.blocked ?? []).join(', ') || 'nothing'}`,
+    `legacy blocked metadata (no selection restriction): ${(config.blocked ?? []).join(', ') || 'nothing'}`,
     ...(others.length ? [`also registered, for --reviewer: ${others.join(', ')}`] : []),
   ].join('\n');
 }

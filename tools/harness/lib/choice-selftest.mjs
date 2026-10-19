@@ -1,19 +1,8 @@
-// The model-choice self-test (CLAUDE.md rule 6): run by `node tools/harness/review.mjs --self-test`,
-// so CI runs it. No model is called. It pins Sol's findings on PR 164: a model's family is never
-// taken from a declaration (R1 of both rounds) and an implementer name always resolves to a family
-// (R2); the 2026-10-11 default: no implementer named means the session's family implemented, read
-// from the Anthropic environment; and harness.json's blocked list. Sol's review of PR 189 added the
-// decisions themselves, each case failing when its decision is deleted (rule 9): review.mjs's
-// refusal (reviewRefusal, with the session's family always excluded, R1), planSwitch's same-family
-// and blocked refusals (one family name for Claude, R2; the id's family over --family/--force, R3),
-// planImplementer's blocked refusal (R4), and the session's family from the URL's host only (R5).
-
+// Offline model identity and owner-selection regressions, run by review.mjs --self-test.
+// Legacy policy refusals are intentionally absent; identity remains mandatory (rule 6.3).
 import { spawnSync } from 'node:child_process';
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { namedModel, familyOf, implementerFamilies, sessionFamily, reviewRefusal, blockedReason } from './common.mjs';
+import { namedModel, familyOf, implementerFamilies, sessionFamily, reviewRefusal } from './common.mjs';
 import { planSwitch } from './switch.mjs';
 
 const BLOCKED = ['deepseek', 'gpt-5.6'];
@@ -35,8 +24,8 @@ const NAMED = [
   ['multi-family route, recognised name', 'openrouter/xiaomi/mimo-v2.6-pro', {}, 'mimo'],
   ['multi-family route, unrecognised name, declared family', 'openrouter/acme/zeta-1', { family: 'zeta' }, 'refused'],
   ['unknown provider, unrecognised name', 'acme/zeta-1', {}, 'refused'],
-  ['a blocked family on any route', 'openrouter/deepseek/deepseek-v4-pro', {}, 'refused'],
-  ['a blocked id fragment', 'openai/gpt-5.6-luna', {}, 'refused'],
+  ['a legacy-blocked family on any route', 'openrouter/deepseek/deepseek-v4-pro', {}, 'deepseek'],
+  ['a legacy-blocked id fragment', 'openai/gpt-5.6-luna', {}, 'openai'],
   ['Alibaba, no flag needed', 'ali-glm', {}, 'glm'],
   ['not a key, not an id', 'nonsense', {}, 'refused'],
 ];
@@ -69,31 +58,31 @@ const ZAI = { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic' };
 const UNKNOWN = { ANTHROPIC_BASE_URL: 'https://proxy.example/v1' };
 // review.mjs's decision: [label, reviewer key, --exclude names, env, 'refused' or 'allowed']
 const REVIEW = [
-  ['GLM session, --exclude claude, GLM reviewer (R1)', 'zai-glm', ['claude'], ZAI, 'refused'],
-  ['GLM session, nothing named, GLM reviewer', 'zai-glm', [], ZAI, 'refused'],
+  ['GLM session, --exclude claude, GLM reviewer (R1)', 'zai-glm', ['claude'], ZAI, 'allowed'],
+  ['GLM session, nothing named, GLM reviewer', 'zai-glm', [], ZAI, 'allowed'],
   ['GLM session, --exclude claude, OpenAI reviewer', 'luna', ['claude'], ZAI, 'allowed'],
   ['unknown endpoint, --exclude claude (R1)', 'luna', ['claude'], UNKNOWN, 'refused'],
   ['unknown endpoint, override glm', 'luna', ['claude'], { ...UNKNOWN, HARNESS_SESSION_FAMILY: 'glm' }, 'allowed'],
-  ['Claude session, an entry that says anthropic (R2)', 'old-claude', [], {}, 'refused'],
-  ['Claude session, --exclude openai, OpenAI reviewer', 'luna', ['openai'], {}, 'refused'],
+  ['Claude session, an entry that says anthropic (R2)', 'old-claude', [], {}, 'allowed'],
+  ['Claude session, --exclude openai, OpenAI reviewer', 'luna', ['openai'], {}, 'allowed'],
   ['Claude session, OpenAI reviewer', 'luna', [], {}, 'allowed'],
 ];
 // planSwitch: [label, config's blocked list, options, 'refused' or the written family]
 const SWITCH = [
-  ['GLM session, GLM reviewer', [], { id: 'zai-coding-plan/glm-5.3', variant: 'low', sessionFamily: 'glm' }, 'refused'],
-  ['Claude session, a Claude reviewer', [], { id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'claude' }, 'refused'],
+  ['GLM session, GLM reviewer', [], { id: 'zai-coding-plan/glm-5.3', variant: 'low', sessionFamily: 'glm' }, 'glm'],
+  ['Claude session, a Claude reviewer', [], { id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'claude' }, 'claude'],
   ['GLM session, a Claude reviewer is written as claude (R2)', [], { id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'glm' }, 'claude'],
   ['Claude session, OpenAI reviewer', ['deepseek'], { id: 'openai/gpt-6.1-sol', variant: 'low', sessionFamily: 'claude' }, 'openai'],
-  ['a blocked reviewer on any route', ['deepseek'], { id: 'openrouter/deepseek/deepseek-v4-pro', variant: 'low', sessionFamily: 'claude' }, 'refused'],
-  ['a blocked family behind --family --force (R3)', ['openai'], { id: 'opencode-go/gpt-6-luna', variant: 'high', family: 'qwen', force: true, sessionFamily: 'claude' }, 'refused'],
-  ['the session family behind --family --force (R3)', [], { id: 'zai-coding-plan/glm-5.3', variant: 'low', family: 'qwen', force: true, sessionFamily: 'glm' }, 'refused'],
+  ['a blocked reviewer on any route', ['deepseek'], { id: 'openrouter/deepseek/deepseek-v4-pro', variant: 'low', sessionFamily: 'claude' }, 'deepseek'],
+  ['contradictory identity with legacy metadata and --force', ['openai'], { id: 'opencode-go/gpt-6-luna', variant: 'high', family: 'qwen', force: true, sessionFamily: 'claude' }, 'refused'],
+  ['contradictory session-family declaration with --force', [], { id: 'zai-coding-plan/glm-5.3', variant: 'low', family: 'qwen', force: true, sessionFamily: 'glm' }, 'refused'],
   ['a contradicting --family, even with --force (re-review R1)', [], { id: 'opencode-go/gpt-6-luna', variant: 'high', family: 'qwen', force: true, sessionFamily: 'claude' }, 'refused'],
 ];
 // planImplementer: [label, blocked list, choice, session family, 'refused' or 'allowed'] (R4)
 const IMPLEMENTER_CHOICE = [
-  ['a blocked model id', ['deepseek'], 'deepseek-v4-pro', 'claude', 'refused'],
-  ['a blocked family by its id', ['qwen'], 'qwen3.8-max', 'claude', 'refused'],
-  ['an alias through a blocked session family', ['deepseek'], 'sonnet', 'deepseek', 'refused'],
+  ['a blocked model id', ['deepseek'], 'deepseek-v4-pro', 'claude', 'allowed'],
+  ['a blocked family by its id', ['qwen'], 'qwen3.8-max', 'claude', 'allowed'],
+  ['an alias through a blocked session family', ['deepseek'], 'sonnet', 'deepseek', 'allowed'],
   ['an alias', ['deepseek'], 'sonnet', 'claude', 'allowed'],
   ['a model id', ['deepseek'], 'glm-5.3-flash', 'glm', 'allowed'],
 ];
@@ -113,33 +102,18 @@ function checkDecisions(failures) {
     }
     if (got !== want) failures.push(`planSwitch: ${label}: ${got}, expected ${want}`);
   }
-  // R2's path end to end: a Claude reviewer switched in from a GLM session, then reviewing from a
-  // Claude session, is refused by review.mjs's decision.
-  const plan = planSwitch({ models: MODELS(), blocked: [], reviewer: { default: 'luna' } }, { id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'glm' });
-  if (!reviewRefusal(plan.config.models, plan.name, [], {})) failures.push('switch then review: a switched-in Claude reviewer reviews Claude work');
-  if (!reviewRefusal(plan.config.models, plan.name, [], { HARNESS_SESSION_FAMILY: 'anthropic' })) failures.push('switch then review: HARNESS_SESSION_FAMILY=anthropic is not claude');
-  // Sol's re-review R1/R2 on PR 189: an entry saved with a family its id contradicts (a force-saved
-  // qwen on an OpenAI id, as an older harness.json may hold) is judged by its id at review time:
-  // refused from an openai session, and refused once openai is blocked.
+  // Old saved identity metadata never changes the ID's inferred family.
   const forced = () => ({ ...MODELS(), forced: { id: 'opencode-go/gpt-6-luna', family: 'qwen' } });
-  if (!reviewRefusal(forced(), 'forced', ['claude'], { HARNESS_SESSION_FAMILY: 'openai' })) failures.push('reviewRefusal: a force-saved qwen family on an OpenAI id reviews from an openai session (re-review R1)');
-  let blockedForced = false;
-  try { namedModel({ models: forced(), blocked: ['openai'] }, 'forced', {}, (c, m) => { throw Object.assign(new Error(m), { refused: c }); }); } catch (e) {
-    if (e.refused === undefined) throw e;
-    blockedForced = true;
-  }
-  if (!blockedForced) failures.push('namedModel: a force-saved qwen family on an OpenAI id passes --block openai (re-review R2)');
-  if (!blockedReason({ blocked: ['openai'] }, { id: 'opencode-go/gpt-6-luna', family: 'qwen' })) failures.push('blockedReason: a declared qwen family hides an OpenAI id from --block openai (re-review R2)');
+  if (familyOf(forced(), 'forced') !== 'openai') failures.push('saved family contradicts actual model identity');
+  if (reviewRefusal(forced(), 'forced', ['claude'], { HARNESS_SESSION_FAMILY: 'openai' })) failures.push('same-family saved entry refused');
+  const chosen = { models: forced(), blocked: ['openai'] };
+  if (namedModel(chosen, 'forced', {}, (c, m) => { throw new Error(m); }) !== 'forced') failures.push('legacy metadata restricts saved entry');
   // Re-switching that saved entry without --family saves the id's family, not the saved one.
   const resaved = { models: { ...MODELS(), 'gpt-6-luna': { id: 'opencode-go/gpt-6-luna', family: 'qwen' } }, reviewer: { default: 'luna' } };
   const again = planSwitch({ ...resaved, blocked: [] }, { id: 'opencode-go/gpt-6-luna', variant: 'high', sessionFamily: 'claude' });
   if (again.entry.family !== 'openai') failures.push(`planSwitch: re-switching a force-saved qwen entry keeps ${again.entry.family}, expected openai`);
-  let resavedBlocked = false;
-  try { planSwitch({ ...resaved, blocked: ['openai'] }, { id: 'opencode-go/gpt-6-luna', variant: 'high', sessionFamily: 'claude' }); } catch (e) {
-    if (!/^Refused/.test(e.message)) throw e;
-    resavedBlocked = true;
-  }
-  if (!resavedBlocked) failures.push('planSwitch: a force-saved qwen entry passes --block openai when re-switched');
+  const legacy = planSwitch({ ...resaved, blocked: ['openai'] }, { id: 'opencode-go/gpt-6-luna', variant: 'high', sessionFamily: 'openai' });
+  if (legacy.entry.family !== 'openai') failures.push('legacy metadata alters re-saved identity');
   for (const [label, blocked, choice, own, want] of IMPLEMENTER_CHOICE) {
     let got = 'allowed';
     try { planSwitch({ models: MODELS(), blocked, implementer: { default: 'sonnet' } }, { role: 'implementer', id: choice, sessionFamily: own }); } catch (e) {
@@ -185,7 +159,7 @@ function checkNamed(failures) {
     if (got !== want) failures.push(`sessionFamily: ${label}: ${got}, expected ${want}`);
   }
   const glm = implementerFamilies(MODELS(), [], { ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic' });
-  if (glm.families?.[0] !== 'glm') failures.push('implementerFamilies: a GLM-backed session excludes glm');
+  if (glm.families?.[0] !== 'glm') failures.push('implementerFamilies: a GLM-backed session records glm');
   const unknown = implementerFamilies(MODELS(), [], { ANTHROPIC_BASE_URL: 'https://proxy.example/v1' });
   if (!unknown.refuse) failures.push('implementerFamilies: an unknown endpoint is refused');
   for (const [label, names, want] of GUARD) {
@@ -211,26 +185,11 @@ function checkNamed(failures) {
   }
 }
 
-// review.mjs itself enforces the refusal (Sol's re-review R4 on PR 189): run as a child from a Z.AI
-// session with a GLM reviewer and --exclude (so it reads no PR labels), it must exit 1 with
-// "Refused". OpenCode points at a path that does not exist, so a run past the guard stops at exit 3
-// before any model is called; nothing reaches the network.
+// The immutable main-seeded assertions run through this existing CI entry without recursion.
 function checkReviewRunner(failures) {
-  const script = fileURLToPath(new URL('../review.mjs', import.meta.url));
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'iwa-choice-selftest-'));
-  try {
-    const brief = path.join(dir, 'brief.md');
-    fs.writeFileSync(brief, 'PR 1 review (self-test)\n');
-    const env = { ...process.env, HARNESS_CLIENT: 'claude', ANTHROPIC_BASE_URL: 'https://api.z.ai/api/anthropic', HARNESS_OPENCODE_EXE: path.join(dir, 'no-opencode') };
-    delete env.HARNESS_SESSION_FAMILY;
-    const r = spawnSync(process.execPath, [script, '--pr', '1', '--brief', brief, '--reviewer', 'zai-coding-plan/glm-5.3', '--exclude', 'claude'],
-      { cwd: path.dirname(script), env, encoding: 'utf8', timeout: 60_000 });
-    if (r.status !== 1 || !/Refused/.test(r.stderr)) {
-      failures.push(`review.mjs: a GLM reviewer from a Z.AI session was not refused (exit ${r.status}: ${(r.stderr || r.stdout || '').trim().split('\n').at(-1)})`);
-    }
-  } finally {
-    fs.rmSync(dir, { recursive: true, force: true });
-  }
+  const suite = fileURLToPath(new URL('../test/owner-selection.test.mjs', import.meta.url));
+  const r = spawnSync(process.execPath, ['--test', suite, fileURLToPath(new URL('../test/owner-dispatch.test.mjs', import.meta.url))], { encoding: 'utf8', timeout: 60_000 });
+  if (r.status !== 0) failures.push(`seeded owner-selection suite: ${r.stdout} ${r.stderr}`);
 }
 
 export function choiceSelfTest() {
@@ -238,6 +197,6 @@ export function choiceSelfTest() {
   checkNamed(failures);
   checkDecisions(failures);
   checkReviewRunner(failures);
-  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length + 19
-    + REVIEW.length + SWITCH.length + 2 + 5 + IMPLEMENTER_CHOICE.length + 1 };
+  return { failures, count: GUARD.length + NAMED.length + VARIANTS.length + IMPLEMENTERS.length
+    + 17 + REVIEW.length + SWITCH.length + 4 + IMPLEMENTER_CHOICE.length + 10 };
 }
