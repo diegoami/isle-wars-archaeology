@@ -1,5 +1,18 @@
 # Pro illustrated reference
 
+Read the [player guide and worked turn](guide.md) for starting a game, selecting
+and confirming actions, ending a turn and distinguishing observed screens from
+static-only or unsupported procedures. Its twelve chapters cover all T64 topics;
+thirteen distinct E019 images and twenty-one callouts include seven ordered steps from
+one placement-to-pass turn. Setup/help/result pictures belong to another record.
+The sampled defender decrement appears in both panel and map; no territory capture, movement,
+card-trade screen or game-save procedure is invented.
+
+The [guide data](guide.json) carries a source, confidence and evidence basis for each
+chapter’s visible information, actions, feedback and cancellation. Missing visual
+proof remains explicit, including a registry of unobserved fields. T65 supplies the
+detailed rules/reference and final coverage handoff; this guide does not close #265.
+
 Read the own-word [map/UI atlas](atlas.md), its [claim and annotation data](atlas.json),
 and the [complete-manual subject/feature inventory](inventory.json). This is the T63
 map and UI part of #265. T64 (#275) and T65 (#276) cover later manual material.
@@ -96,3 +109,56 @@ Keep screenshots of this local visual check outside every checkout. Commit an ow
 verification record under `docs/prototypes/T63/` with image hashes/dimensions, edition
 HTML hash, screenshot hashes, observations and limitations; no pixels or local install
 paths. A successful renderer receipt is not a substitute for this visual verification.
+
+## Player guide, worked turn and retained atlas
+
+Add the guide checks to the repository-only commands above:
+
+```sh
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/check_guide.py
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/check_guide.py --self-test
+```
+
+Guide controls use invented metadata and images only. They reject missing topics or
+sources, a coherent set below ten images, stale observations, invented visual proof
+for a registered gap, reused image bytes with valid manifest/record provenance,
+and inconsistent or reversed walkthrough provenance. Both the old atlas checks and
+renderer controls remain required. Synthetic combined rendering also checks every
+chapter, source, walkthrough and atlas return link and a bad guide hash before any
+copy. Fixture directories explicitly use `/tmp`, independently of inherited TMPDIR.
+
+Main alone prepares a combined local bundle map with all six atlas `V` IDs and all
+thirteen `G` IDs in the [T64 survey](../../docs/prototypes/T64/visual-source-survey-r2.json).
+The IDs deliberately omit G07: the source’s `before.png` is a title screen, so it
+is not presented as a board or counted again. Keep every PNG and the bundle map
+outside all checkouts. The source files use the survey’s hash-prefixed asset names.
+
+```sh
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --include-guide --bundle-map /outside-checkouts/combined-map.json --output /outside-checkouts/pro-guide-r3
+```
+
+`index.html` contains clickable chapter navigation, all thirteen annotated screen
+sections and the seven illustrated walkthrough steps. `atlas.html` retains the
+six atlas views and links back to the guide/walkthrough. Every referenced image is
+hash/dimension/location checked before output is created; the original pixels remain
+unchanged. The receipt records guide and atlas HTML hashes, nineteen image references,
+the separate atlas/guide annotation counts and the ordered walkthrough IDs.
+
+Main opens both pages, checks all chapter and return links, all twenty-one new callouts
+and detail regions, the same-record step order, separate-deal captions and the retained
+atlas. In particular, the original loss notice and source line remain clipped, the
+sampled panel/map agreement is bounded to one defender decrement, preference saving is distinguished from
+a game save, and no static-only procedure is presented as visually demonstrated.
+Main keeps browser captures outside every checkout and commits only an own-word
+verification record under `docs/prototypes/T64/` with source/HTML/capture hashes,
+dimensions, alignment/link checks and limitations. Rendering success alone is not a
+visual verification pass. Preserve each local failed/intermediate output and use a
+new edition path for any rerender.
+
+The [passing T64 local verification](../../docs/prototypes/T64/local-visual-verification-r2.json)
+records the final T64-r3 edition, all thirteen guide sections, twenty-one callouts,
+chapter/step/atlas links and retained image dimensions/hashes. Main reopened the
+corrected G12 browser/native view; the other twelve final image sections have the
+same HTML as the previously inspected sections. This is not a claim of identical
+browser screenshot pixels. Earlier needs-correction and source-survey revisions
+remain unchanged.

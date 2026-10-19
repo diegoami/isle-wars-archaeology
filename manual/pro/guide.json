@@ -1,0 +1,1274 @@
+{
+  "schema": "pro-guide/1",
+  "text_path": "manual/pro/guide.md",
+  "scope": "This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. T65 supplies detailed rules/reference; #265 remains open.",
+  "sources": [
+    {
+      "id": "V-guide",
+      "path": "docs/prototypes/T64/visual-source-survey-r2.json",
+      "kind": "local-visual",
+      "scope": "Main inspected thirteen preserved PNGs and reported bounded regions; stills do not prove procedures or timing."
+    },
+    {
+      "id": "F019-options",
+      "path": "findings/F019-pro-setup-rules.md",
+      "kind": "static",
+      "scope": "Q-SET-01 options handlers and defaults; inherited bounded code reading.",
+      "anchor": "the-options-screen"
+    },
+    {
+      "id": "F019-gates",
+      "path": "findings/F019-pro-setup-rules.md",
+      "kind": "static",
+      "scope": "Q-SET-02 unregistered locks; no registered-build run.",
+      "anchor": "the-registration-gates"
+    },
+    {
+      "id": "F019-save",
+      "path": "findings/F019-pro-setup-rules.md",
+      "kind": "static",
+      "scope": "Q-SET-05 file/menu census finds preferences, scores and registration, no position save/load.",
+      "anchor": "no-save-no-load"
+    },
+    {
+      "id": "F011-move",
+      "path": "findings/F011-pro-combat-rules.md",
+      "kind": "static",
+      "scope": "Q-MOV-01/02/03 human movement selection, source/destination restrictions and end of turn.",
+      "anchor": "movement"
+    },
+    {
+      "id": "F011-combat",
+      "path": "findings/F011-pro-combat-rules.md",
+      "kind": "static",
+      "scope": "Q-CMB-01/08/09/10 attack prerequisites, withdrawal and failure; frame order remains bounded.",
+      "anchor": "combat"
+    },
+    {
+      "id": "F011-capture",
+      "path": "findings/F011-pro-combat-rules.md",
+      "kind": "static",
+      "scope": "Q-OWN-01 human move-in choice, separate from ordinary end-turn relocation.",
+      "anchor": "ownership-change"
+    },
+    {
+      "id": "F012-turn",
+      "path": "findings/F012-pro-turn-victory-rules.md",
+      "kind": "static",
+      "scope": "Q-TRN-01/02 order and turn-end paths; no claim every frame has been inspected.",
+      "anchor": "turn-sequence"
+    },
+    {
+      "id": "F012-surrender",
+      "path": "findings/F012-pro-turn-victory-rules.md",
+      "kind": "static",
+      "scope": "Q-SUR-01/04/05 concession and leaving a game; user guide distinguishes this from seen screens.",
+      "anchor": "surrender"
+    },
+    {
+      "id": "F014-trade",
+      "path": "findings/F014-pro-cards-rules.md",
+      "kind": "static",
+      "scope": "Q-BON-07 human card selection, skip and one top-of-turn trade opportunity; not a visual walkthrough.",
+      "anchor": "matches-and-trade-ins"
+    },
+    {
+      "id": "F014-limit",
+      "path": "findings/F014-pro-cards-rules.md",
+      "kind": "static",
+      "scope": "Q-BON-06 five-slot hand and forced discard branch, not an inspected hand screen here.",
+      "anchor": "the-hand-limit"
+    },
+    {
+      "id": "D-setup",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "T04 publisher directions describe intended setup and the unregistered human/computer split.",
+      "anchor": "setup"
+    },
+    {
+      "id": "D-registration",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "T04 registration claims are publisher intent, not observed registered-build capability.",
+      "anchor": "registration"
+    },
+    {
+      "id": "L-catalogue",
+      "path": "findings/F020-pro-ui-observations.md",
+      "kind": "limitation",
+      "scope": "Pending/narrowed input, card-management, sound and event entries must not become visual proof.",
+      "anchor": "what-this-does-not-establish"
+    },
+    {
+      "id": "L-atlas",
+      "path": "manual/pro/atlas.md",
+      "kind": "limitation",
+      "scope": "T63 retains #259, #278, unknown rendering, hit-area and legal-neighbour feedback boundaries.",
+      "anchor": "evidence-boundaries"
+    },
+    {
+      "id": "F013-place",
+      "path": "findings/F013-pro-reinforcement-rules.md",
+      "kind": "static",
+      "scope": "Q-REI-03 owned-country selection, quantity control, commitment and no early placement exit; bounded code reading.",
+      "anchor": "placement"
+    },
+    {
+      "id": "D-trade",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "T04 directions state top-of-turn mandatory trade wording; documented intent, contrasted with F014 static skip path.",
+      "anchor": "trading-in-cards"
+    }
+  ],
+  "topics": [
+    {
+      "id": "setup-options",
+      "title": "Start a game and adjust options",
+      "visible": {
+        "text": "Open the settings before starting. The setup and options pages group starting armies, the four seats, difficulty, event/message frequency and speed. Their footers differ: setup offers a start-play control, while options offers a return control. A highlighted choice is not proof that every alternative is enabled.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G02",
+          "G03"
+        ],
+        "observations": [
+          "GO03",
+          "GO04",
+          "GO05",
+          "GO06"
+        ]
+      },
+      "actions": {
+        "text": "In this unregistered build you play Blue against three computers. F019 reads the seat switches, starting-army quantity and event frequency as locked; strength and speed remain adjustable. Use the setup play control to begin. The preference-default control stores options, not the current board.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F019-options",
+          "F019-gates"
+        ]
+      },
+      "feedback": {
+        "text": "The publisher lists setup choices and describes one human Blue seat in the unregistered edition. Treat that as intended behavior; a locked-control response is not illustrated by this guide’s settings stills.",
+        "basis": "documented",
+        "confidence": "documented",
+        "sources": [
+          "D-setup"
+        ]
+      },
+      "cancel": {
+        "text": "Use the green return control shown on the options page to leave that page. The green control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F019-options"
+        ]
+      }
+    },
+    {
+      "id": "board-panels",
+      "title": "Read the board and changing panels",
+      "visible": {
+        "text": "Read the selected-country information and remaining armies in the lower side panels, with the current action controls between them. The player summary marks the active row. In the worked example that marker later moves from Blue to Yellow.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G08",
+          "G14"
+        ],
+        "observations": [
+          "GO12",
+          "GO19",
+          "GO20"
+        ]
+      },
+      "actions": {
+        "text": "Follow the current turn stage. Placement comes before the free-action menu; that menu offers attacks, movement, passing and cards. An ordinary troop move ends the turn, so it is not a way to rearrange armies and then resume attacking.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F012-turn",
+          "F011-move"
+        ]
+      },
+      "feedback": {
+        "text": "The lower centre changes from a quantity chooser to a five-choice action menu, then to combat controls. The panel state tells you what is being chosen; simply seeing the action menu again does not mean your turn is over.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G08",
+          "G10",
+          "G11",
+          "G13"
+        ],
+        "observations": [
+          "GO12",
+          "GO15",
+          "GO16",
+          "GO18"
+        ]
+      },
+      "cancel": {
+        "text": "Use the separate atlas for the map’s visual vocabulary. This guide does not provide measured country hitboxes, keyboard equivalents, a complete legal-target overlay, or an undo procedure for arbitrary board clicks.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-atlas",
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "placement",
+      "title": "Choose and commit reinforcements",
+      "visible": {
+        "text": "The example starts with country 17 selected, 2 armies already on it, 0 chosen for placement and 2 available. The chosen amount is a separate number from the armies already on the board.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G08"
+        ],
+        "observations": [
+          "GO12"
+        ]
+      },
+      "actions": {
+        "text": "Place your turn’s reinforcement pool on your own countries before using the action menu. Select a country, choose an amount with the quantity controls, and commit it with the placement confirmation. The sampled all-available choice is illustrated below; it is not a fixed income of 2 for every turn.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F013-place",
+          "F012-turn"
+        ]
+      },
+      "feedback": {
+        "text": "Choosing all available changes the allocation display to 2 while country 17 still shows 2. After commitment, country 17 shows 4 and the action menu replaces the placement controls. Chosen allocation and committed placement are different states.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G09",
+          "G10"
+        ],
+        "observations": [
+          "GO13",
+          "GO14",
+          "GO15"
+        ]
+      },
+      "cancel": {
+        "text": "Adjust the chosen amount before committing it. F013 reads the plus/minus/all controls and no early Done, Pass or Cancel exit while reinforcement armies remain. This is a placement commitment, not the separate captured-country move-in confirmation. Reversing an already committed placement is not demonstrated here.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F013-place"
+        ]
+      }
+    },
+    {
+      "id": "attack-capture",
+      "title": "Select a battle and recognize its result",
+      "visible": {
+        "text": "The attack-ready example names source 17 and target 18, compares 4 against 3, and shows attack and leave-combat controls. The lowest source line is clipped in the original frame; no missing wording is reconstructed.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G11"
+        ],
+        "observations": [
+          "GO16"
+        ]
+      },
+      "actions": {
+        "text": "Choose the enemy target first, then your own bordering source. The human source must hold at least 2 armies and at least as many as the target. Continue with the battle control while the game permits it. F011 warns that being reduced to 1 forfeits the attacking country and ends the human turn.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F011-combat"
+        ]
+      },
+      "feedback": {
+        "text": "The sampled result panel now compares 4 against 2, and country 18 also shows 2 on the board, down from 3 in the attack-ready frame. Source 17 remains at 4 and ownership is unchanged. This illustrates one defender decrement, not a territory capture or a timing measurement; no capture/move-in screen is shown.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G12"
+        ],
+        "observations": [
+          "GO17",
+          "GO21"
+        ]
+      },
+      "cancel": {
+        "text": "The leave-combat control returns from the battle mode without itself ending the turn. On an actual capture, F011 describes a separate choice of how many armies to move into the conquered country, leaving at least one behind; this guide has no capture-screen illustration or tested capture-cancel procedure.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F011-combat",
+          "F011-capture"
+        ]
+      }
+    },
+    {
+      "id": "movement",
+      "title": "Relocate armies at the end of a turn",
+      "visible": {
+        "text": "No ordinary movement-selection or movement-quantity screen is illustrated in this evidence set. The action menu has a movement choice, but that alone is not a visual walkthrough of a completed move.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      },
+      "actions": {
+        "text": "F011 reads the human flow as selecting an owned source with more than one army and an owned adjacent destination, then choosing a quantity. Leave at least one army at the source. A completed ordinary move ends the turn; movement after capture is a separate choice.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F011-move"
+        ]
+      },
+      "feedback": {
+        "text": "The static flow returns through the same turn-ending routes as Pass: it may show a card award if the capture flag was earned, or advance to the next seat. This describes the code reading, not a sampled movement transition in the pictures below.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F011-move",
+          "F012-turn"
+        ]
+      },
+      "cancel": {
+        "text": "No movement cancellation or confirmation still has been inspected for this guide. The code reading establishes the quantity-confirmation path, but the evidence does not justify inventing its full button layout, keyboard controls or an undo-after-move procedure.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "cards-trade",
+      "title": "Inspect cards and distinguish a trade",
+      "visible": {
+        "text": "There is no illustrated hand, trade-selection or discard screen here. The action menu’s card choice does not prove the shape of those screens. Do not read any battle result in this walkthrough as a card award.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      },
+      "actions": {
+        "text": "F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects belong to the later rules reference.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F014-trade"
+        ]
+      },
+      "feedback": {
+        "text": "The hand has five slots. F014 reads a full-hand draw as requiring a chosen discard before the new card arrives. For trading, a valid set is consumed; an invalid three-card selection gives no bonus and consumes nothing before continuing to placement. These are static results, not observed feedback in this guide’s stills.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F014-limit",
+          "F014-trade"
+        ]
+      },
+      "cancel": {
+        "text": "Before a trade is confirmed, selected cards can be toggled off. F014 identifies a skip-trade exit that leaves the hand intact and proceeds to placement. The directions’ wording about mandatory trades does not substitute for this code reading; a visual test of trade/skip behavior is still missing.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F014-trade",
+          "D-trade"
+        ]
+      }
+    },
+    {
+      "id": "end-turn",
+      "title": "Pass control to the next player",
+      "visible": {
+        "text": "The action menu returns after the sampled combat exchange. In the after-pass frame, Yellow is marked active and the right panel shows country-counting feedback; the central action area is blank. This is an early next-turn state, not a completed computer turn.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G13",
+          "G14"
+        ],
+        "observations": [
+          "GO18",
+          "GO19",
+          "GO20"
+        ]
+      },
+      "actions": {
+        "text": "Choose Pass when you have finished attacking and do not want the optional ordinary troop move. Placement must be completed first. F012 reads both Pass and the completed move as turn-ending paths; a failed human attack is another way to lose the rest of the turn.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F012-turn",
+          "F011-combat"
+        ]
+      },
+      "feedback": {
+        "text": "The worked sequence ends at the first captured hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G14"
+        ],
+        "observations": [
+          "GO19",
+          "GO20"
+        ]
+      },
+      "cancel": {
+        "text": "The evidence does not demonstrate a Pass confirmation dialog or a way to take back Pass. Do not invent an extra confirmation step or promise that turn-ending actions can be undone.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "cancel-confirm",
+      "title": "Back out before committing a choice",
+      "visible": {
+        "text": "Read the current panel before choosing a confirmation: allocation has quantity controls, attack readiness has a leave-combat control, and the action menu has a backing-out choice. These are different contexts, not one universal confirmation dialog.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G08",
+          "G11",
+          "G10"
+        ],
+        "observations": [
+          "GO12",
+          "GO16",
+          "GO15"
+        ]
+      },
+      "actions": {
+        "text": "F011 reads quit-attack and cancel paths as returns to the human action screen without ending the turn. Use a confirmation only for the action it names. Placement, captured-country move-in, ordinary relocation and card trade have different commitments; this guide does not imply a global undo.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F011-combat"
+        ]
+      },
+      "feedback": {
+        "text": "After leaving the sampled combat mode, the five-choice action menu is visible again. That visible return is narrower evidence than a claim that the entire battle or its losses were reversed.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G13"
+        ],
+        "observations": [
+          "GO18"
+        ]
+      },
+      "cancel": {
+        "text": "No exhaustive illegal-input/cancellation study is available here. A button’s picture is not a measured hit area, and no still proves keyboard shortcuts, confirmation prompts for every action, or recovery after a committed move or trade.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue",
+          "L-atlas"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "help-navigation",
+      "title": "Find help and return to play",
+      "visible": {
+        "text": "The title page retains six bottom navigation choices. Help opens an inset document with a scrollbar and a green return control. The ordinary score view also has a return control. Original help prose is visible only in the local edition and is not transcribed into the repository.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G01",
+          "G04",
+          "G05"
+        ],
+        "observations": [
+          "GO02",
+          "GO07",
+          "GO08",
+          "GO09"
+        ]
+      },
+      "actions": {
+        "text": "The bottom menu routes to new game, options, publisher material, scores, quit and help. Use the help page’s return control to leave it. This guide does not follow publisher website/order-form actions or provide current purchasing advice.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F019-options"
+        ]
+      },
+      "feedback": {
+        "text": "Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content while retaining the landscape backdrop. Check the screen context rather than assuming a fixed footer action.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G02",
+          "G03",
+          "G04",
+          "G05"
+        ],
+        "observations": [
+          "GO04",
+          "GO06",
+          "GO07",
+          "GO09"
+        ]
+      },
+      "cancel": {
+        "text": "Scrollbar appearance does not establish keyboard scrolling, every help-page transition or precise clickable geometry. The guide illustrates one help page and does not claim all navigation routes were re-tested.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "save-load",
+      "title": "Separate preferences from a saved game",
+      "visible": {
+        "text": "No save-current-position or load-position screen is included. The default-saving control pictured in options/setup is a preferences control, not evidence of a resumable game.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      },
+      "actions": {
+        "text": "F019’s bounded file/menu census finds no position-saving or position-loading handler in this unregistered build. It accounts for preferences, score tallies and registration files instead. Do not rely on leaving and reopening the program to resume the board.",
+        "basis": "unsupported",
+        "confidence": "unsupported",
+        "sources": [
+          "F019-save"
+        ]
+      },
+      "feedback": {
+        "text": "Saving defaults writes option values; scorekeeping stores results. Neither is a board position, move history or visible seed. This is the static file reading, not a persistence test performed by the guide.",
+        "basis": "unsupported",
+        "confidence": "unsupported",
+        "sources": [
+          "F019-save"
+        ]
+      },
+      "cancel": {
+        "text": "A save/load cancellation or overwrite dialog has no evidenced procedure here. Registered-build possibilities and unknown runtime behavior do not justify inventing one.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "concession-results",
+      "title": "Leave a game and interpret result screens",
+      "visible": {
+        "text": "The score page shows difficulty rows with win/loss/percentage columns; all totals are zero in this sample. The separate loss-notice frame has a continuation control and a clipped cyan line about crediting a loss. Its complete threshold and subsequent persistence cannot be read from that still.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G05",
+          "G06"
+        ],
+        "observations": [
+          "GO09",
+          "GO10",
+          "GO11"
+        ]
+      },
+      "actions": {
+        "text": "For the unregistered Blue human, F012 reads New Game during a live weak position of 1–9 countries as a credited-loss route. This threshold comes from the static reading, not the clipped picture. The collective computer-concession offer is a different route: accepting ends with a human win; refusing continues play. No concession-offer screen is illustrated here.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F012-surrender"
+        ]
+      },
+      "feedback": {
+        "text": "F012 reads refusal of the concession offer as disabling later offers for that game. It also distinguishes leaving a game from elimination and from all-country victory. A visible score table is not proof that a particular result has been written, and this guide does not reconstruct missing terminal screens.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F012-surrender"
+        ]
+      },
+      "cancel": {
+        "text": "The selected loss notice does not establish its continuation’s full follow-up, a cancel-resignation dialog, or every quit/exit confirmation. Treat abandoning the current board as distinct from backing out of a battle selection; no resumable-game guarantee is offered.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "id": "registration",
+      "title": "Understand the unregistered build boundary",
+      "visible": {
+        "text": "The title page identifies the unregistered edition. The settings stills show Blue as the human and three computer seats, but visible choices alone do not prove that they can all be changed.",
+        "basis": "local-visual",
+        "confidence": "observed-bounded",
+        "sources": [
+          "V-guide"
+        ],
+        "frames": [
+          "G01",
+          "G02",
+          "G03"
+        ],
+        "observations": [
+          "GO01",
+          "GO03",
+          "GO05"
+        ]
+      },
+      "actions": {
+        "text": "F019 reads the unregistered build as locking the seat switches, starting armies and event frequency, while leaving strength and speed available. A registration notice is feedback to a locked action; this guide does not supply registration codes or a bypass procedure.",
+        "basis": "static",
+        "confidence": "static-bounded",
+        "sources": [
+          "F019-gates"
+        ]
+      },
+      "feedback": {
+        "text": "The publisher describes additional human players and option control in the registered edition. Those are documented promises, not proof of a tested registered build, extra maps or changed combat rules.",
+        "basis": "documented",
+        "confidence": "documented",
+        "sources": [
+          "D-registration"
+        ]
+      },
+      "cancel": {
+        "text": "No registered-build entry, confirmation or successful-unlock sequence is illustrated. Nothing here extends the unregistered observations to DOS Isle Wars or establishes current registration availability.",
+        "basis": "unobserved",
+        "confidence": "unknown",
+        "limitation_sources": [
+          "L-catalogue"
+        ],
+        "sources": []
+      }
+    }
+  ],
+  "images": [
+    {
+      "id": "G01",
+      "caption": "Title context from r0013; original branding remains local. This is not the starting board of the worked r0026 turn.",
+      "topics": [
+        "help-navigation",
+        "registration"
+      ]
+    },
+    {
+      "id": "G02",
+      "caption": "Options from r0013. Saving defaults means preferences; enabled-state and persistence claims need separate evidence.",
+      "topics": [
+        "setup-options",
+        "save-load",
+        "registration"
+      ]
+    },
+    {
+      "id": "G03",
+      "caption": "New-game setup from r0013; the green footer starts play. This screen belongs to another record, not the setup of the walkthrough deal.",
+      "topics": [
+        "setup-options",
+        "save-load",
+        "registration"
+      ]
+    },
+    {
+      "id": "G04",
+      "caption": "One help page from r0013. The local original prose is not transcribed; scrolling and keyboard controls remain bounded.",
+      "topics": [
+        "help-navigation"
+      ]
+    },
+    {
+      "id": "G05",
+      "caption": "Ordinary score navigation from r0013. The displayed zeros are sample values, not proof of a stored game result.",
+      "topics": [
+        "concession-results",
+        "help-navigation"
+      ]
+    },
+    {
+      "id": "G06",
+      "caption": "Loss-notice view from r0013. The bottom line is clipped; no exact threshold is reconstructed from its pixels.",
+      "topics": [
+        "concession-results"
+      ]
+    },
+    {
+      "id": "G08",
+      "caption": "Worked turn, step 1: country 17 selected; board total 2, allocation 0, available pool 2.",
+      "topics": [
+        "placement",
+        "board-panels",
+        "cancel-confirm"
+      ]
+    },
+    {
+      "id": "G09",
+      "caption": "Worked turn, step 2: allocation 2 chosen; the board country and available pool still show 2.",
+      "topics": [
+        "placement"
+      ]
+    },
+    {
+      "id": "G10",
+      "caption": "Worked turn, step 3: placement committed; country 17 shows 4 and the action menu is visible.",
+      "topics": [
+        "placement",
+        "board-panels",
+        "cancel-confirm"
+      ]
+    },
+    {
+      "id": "G11",
+      "caption": "Worked turn, step 4: attack-ready source 17 versus target 18, compared as 4 against 3. Readiness is not capture.",
+      "topics": [
+        "attack-capture",
+        "cancel-confirm"
+      ]
+    },
+    {
+      "id": "G12",
+      "caption": "Worked turn, step 5: the comparison changes to 4 against 2 and country 18 now shows 2 on the board. Source 17 remains 4; ownership is unchanged.",
+      "topics": [
+        "attack-capture"
+      ]
+    },
+    {
+      "id": "G13",
+      "caption": "Worked turn, step 6: action menu returned. No whole-turn completion or captured-country transfer is inferred.",
+      "topics": [
+        "end-turn",
+        "cancel-confirm"
+      ]
+    },
+    {
+      "id": "G14",
+      "caption": "Worked turn, step 7: immediately after Pass, Yellow is active and country-counting feedback is shown. No completed computer turn is depicted.",
+      "topics": [
+        "end-turn",
+        "board-panels"
+      ]
+    }
+  ],
+  "visual_notes": [
+    {
+      "id": "GO01",
+      "frame": "G01",
+      "text": "A landscape backdrop fills the title screen, with a large central game title and a smaller cyan unregistered-edition notice. This is reference branding, never a malpaco asset.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO02",
+      "frame": "G01",
+      "text": "Six text navigation choices remain along the bottom edge; their positions provide access to starting, help, options, other publisher titles, scores and exit. This still shows appearance, not measured hitboxes.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO03",
+      "frame": "G02",
+      "text": "The options overlay groups initial army quantity, four player-colour seats, starting-strength difficulty, message frequency and playing speed into separated rows. Three is the red quantity choice; blue is marked human and the other three seats computer; middle choices are red in the remaining rows. Appearance alone does not prove every choice is enabled in this build.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO04",
+      "frame": "G02",
+      "text": "Below the settings panel are a preference-default saving control, an ear-shaped icon and a green return control. Saving defaults concerns preferences; this image provides no save-current-game or load-game control.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO05",
+      "frame": "G03",
+      "text": "The new-game settings screen has the same five-row arrangement as options, with blue marked human, three computer seats, three-army starting choice and middle difficulty/frequency/speed choices highlighted red.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO06",
+      "frame": "G03",
+      "text": "The new-game footer has a preference-default control and ear-shaped icon, while the green right-hand control starts play rather than returning from options. This is a setup state, not a second board layout.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO07",
+      "frame": "G04",
+      "text": "An inset help document overlays the landscape. Its visible opening material covers an objective and early game instructions, with a vertical scrollbar on the right; original document text is not transcribed here.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO08",
+      "frame": "G04",
+      "text": "A large green return control sits below the help document. No keyboard scrolling or measured hit area is established by this still.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO09",
+      "frame": "G05",
+      "text": "The score panel has three difficulty rows and win/loss/percentage columns. All visible totals are zero in this frame; a small resetting control is inside the panel and a green return control lies below it. The still does not establish persistence or reset confirmation behaviour.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO10",
+      "frame": "G06",
+      "text": "A score-panel view still shows zero values in all three difficulty rows, with a grey continuation control below. The resetting control from the ordinary score screen is not visible.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO11",
+      "frame": "G06",
+      "text": "A cyan line at the extreme bottom begins a notice about crediting a loss and a low territory count, but the line is clipped by the frame edge. Its complete wording and exact threshold must not be reconstructed from this image.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO12",
+      "frame": "G08",
+      "text": "The left panel identifies selected country17; the centre allocation amount is0 with quantity controls and a confirmation control; the right panel reports2 armies available. Country17 on the board shows2 armies at this point.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO13",
+      "frame": "G09",
+      "text": "The allocation amount is now2 and the all-available choice is highlighted. The right-hand pool still reports2 and country17 still shows2 on the map; allocation choice is distinct from committed placement.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO14",
+      "frame": "G10",
+      "text": "Country17 now displays4 armies, up from2 in the earlier selected/allocation frames. This is the observed placement-committed board change in the same-record sequence.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO15",
+      "frame": "G10",
+      "text": "The lower centre panel now presents five compact action choices for attacking, moving, passing, cards and backing out. The selection/allocation controls are no longer displayed.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO16",
+      "frame": "G11",
+      "text": "The lower side panels identify source country17 and target18 with a4-against3 comparison. The centre has a red attack control and a yellow leave-combat control. The lowest line at left is clipped; this is readiness, not capture.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO17",
+      "frame": "G12",
+      "text": "The lower-right comparison changes from4-against3 to4-against2 while the attack and leave-combat controls remain. Country18 also displays2 on the board in this frame. These visible values agree at capture time; this is one sampled defender decrement, not a territory capture or a timing/latency measurement.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO18",
+      "frame": "G13",
+      "text": "The five-choice turn menu is visible again instead of the combat controls. Returning to this panel does not itself end the human turn or establish that a capture occurred.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO19",
+      "frame": "G14",
+      "text": "The player-summary pointer has moved to the yellow computer row. The blue human row is no longer marked active.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO20",
+      "frame": "G14",
+      "text": "The right lower panel displays a yellow-country-counting status, and the central action panel is empty. This frame is early computer-turn feedback after passing, not a completed computer turn or a game ending.",
+      "source": "V-guide"
+    },
+    {
+      "id": "GO21",
+      "frame": "G12",
+      "text": "Country18 on the red territory now shows2 armies, whereas the attack-ready frame G11 showed3. Source country17 still shows4. Ownership colour is unchanged; no capture or movement is illustrated.",
+      "source": "V-guide"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "A-GO01",
+      "frame": "G01",
+      "observation": "GO01",
+      "rect": [
+        8,
+        8,
+        784,
+        554
+      ],
+      "label": "Title and edition"
+    },
+    {
+      "id": "A-GO02",
+      "frame": "G01",
+      "observation": "GO02",
+      "rect": [
+        42,
+        573,
+        694,
+        25
+      ],
+      "label": "Navigation choices"
+    },
+    {
+      "id": "A-GO03",
+      "frame": "G02",
+      "observation": "GO03",
+      "rect": [
+        137,
+        29,
+        520,
+        473
+      ],
+      "label": "Options groups"
+    },
+    {
+      "id": "A-GO04",
+      "frame": "G02",
+      "observation": "GO04",
+      "rect": [
+        135,
+        511,
+        523,
+        44
+      ],
+      "label": "Options footer"
+    },
+    {
+      "id": "A-GO05",
+      "frame": "G03",
+      "observation": "GO05",
+      "rect": [
+        137,
+        29,
+        520,
+        473
+      ],
+      "label": "New-game settings"
+    },
+    {
+      "id": "A-GO06",
+      "frame": "G03",
+      "observation": "GO06",
+      "rect": [
+        135,
+        511,
+        523,
+        44
+      ],
+      "label": "Start-play footer"
+    },
+    {
+      "id": "A-GO07",
+      "frame": "G04",
+      "observation": "GO07",
+      "rect": [
+        27,
+        22,
+        747,
+        480
+      ],
+      "label": "Help document"
+    },
+    {
+      "id": "A-GO08",
+      "frame": "G04",
+      "observation": "GO08",
+      "rect": [
+        294,
+        516,
+        190,
+        44
+      ],
+      "label": "Help return"
+    },
+    {
+      "id": "A-GO09",
+      "frame": "G05",
+      "observation": "GO09",
+      "rect": [
+        133,
+        39,
+        526,
+        434
+      ],
+      "label": "Score navigation"
+    },
+    {
+      "id": "A-GO10",
+      "frame": "G06",
+      "observation": "GO10",
+      "rect": [
+        132,
+        39,
+        526,
+        435
+      ],
+      "label": "Loss view"
+    },
+    {
+      "id": "A-GO11",
+      "frame": "G06",
+      "observation": "GO11",
+      "rect": [
+        9,
+        572,
+        780,
+        28
+      ],
+      "label": "Clipped loss notice"
+    },
+    {
+      "id": "A-GO12",
+      "frame": "G08",
+      "observation": "GO12",
+      "rect": [
+        8,
+        500,
+        784,
+        65
+      ],
+      "label": "Selection and pool"
+    },
+    {
+      "id": "A-GO13",
+      "frame": "G09",
+      "observation": "GO13",
+      "rect": [
+        264,
+        501,
+        275,
+        62
+      ],
+      "label": "Chosen allocation"
+    },
+    {
+      "id": "A-GO14",
+      "frame": "G10",
+      "observation": "GO14",
+      "rect": [
+        319,
+        99,
+        42,
+        29
+      ],
+      "label": "Committed board total"
+    },
+    {
+      "id": "A-GO15",
+      "frame": "G10",
+      "observation": "GO15",
+      "rect": [
+        263,
+        502,
+        276,
+        62
+      ],
+      "label": "Action choices"
+    },
+    {
+      "id": "A-GO16",
+      "frame": "G11",
+      "observation": "GO16",
+      "rect": [
+        8,
+        500,
+        784,
+        65
+      ],
+      "label": "Combat readiness"
+    },
+    {
+      "id": "A-GO17",
+      "frame": "G12",
+      "observation": "GO17",
+      "rect": [
+        545,
+        505,
+        238,
+        53
+      ],
+      "label": "Result comparison"
+    },
+    {
+      "id": "A-GO18",
+      "frame": "G13",
+      "observation": "GO18",
+      "rect": [
+        263,
+        502,
+        276,
+        62
+      ],
+      "label": "Action menu returned"
+    },
+    {
+      "id": "A-GO19",
+      "frame": "G14",
+      "observation": "GO19",
+      "rect": [
+        14,
+        14,
+        211,
+        100
+      ],
+      "label": "Next active row"
+    },
+    {
+      "id": "A-GO20",
+      "frame": "G14",
+      "observation": "GO20",
+      "rect": [
+        545,
+        505,
+        238,
+        53
+      ],
+      "label": "Early next-turn feedback"
+    },
+    {
+      "id": "A-GO21",
+      "frame": "G12",
+      "observation": "GO21",
+      "rect": [
+        300,
+        130,
+        40,
+        45
+      ],
+      "label": "Defender board decrement"
+    }
+  ],
+  "walkthrough": {
+    "id": "W01",
+    "record": "runs/E019/play/E019-r0026.json",
+    "frames": [
+      "G08",
+      "G09",
+      "G10",
+      "G11",
+      "G12",
+      "G13",
+      "G14"
+    ],
+    "stages": [
+      "placement-selection",
+      "allocation-chosen",
+      "placement-committed",
+      "attack-ready",
+      "attack-result",
+      "turn-menu-return",
+      "after-pass"
+    ],
+    "scope": "Preserved sampled steps of one human placement-to-pass turn, not a continuous video or complete game.",
+    "limitations": [
+      "Setup/navigation images come from r0013 and are not the setup of the r0026 deal.",
+      "r0026 before.png is a title screen; it is deliberately omitted rather than presented as an initial board.",
+      "No move/card trade screen or victory outcome is demonstrated by this sequence.",
+      "G12 panel and board both show defender2 at the sampled frame. No latency measurement, capture or complete battle inferred."
+    ],
+    "introduction": "Follow one preserved human turn from placement selection to the immediate hand-off after Pass. All seven pictures come from E019-r0026 in the recorded order. The setup/help/result pictures come from r0013 and are separate context, not earlier moments of this deal. These samples are not a continuous recording, a capture example or a completed game.",
+    "steps": [
+      {
+        "frame": "G08",
+        "text": "Check the selection: country 17 has 2 armies, the chosen placement amount is 0 and the pool is 2. The side panels and quantity chooser describe the current choice."
+      },
+      {
+        "frame": "G09",
+        "text": "Choose the available allocation. The quantity becomes 2, but the map still shows 2 at country 17. Choosing the amount has not yet committed it."
+      },
+      {
+        "frame": "G10",
+        "text": "Commit placement. Country 17 now shows 4 and the centre panel offers the turn actions. These displayed numbers belong to this deal, not every turn."
+      },
+      {
+        "frame": "G11",
+        "text": "Read the opposing pair before attacking: source 17 and target 18 are compared as 4 against 3. The picture shows attack readiness and a leave-combat control; the lowest source text is partly clipped."
+      },
+      {
+        "frame": "G12",
+        "text": "Inspect both feedback locations: the result panel compares 4 against 2 and country 18 now shows 2 on the map, down from 3. Source 17 remains 4. This sampled defender decrement does not establish a capture, a complete battle or update latency."
+      },
+      {
+        "frame": "G13",
+        "text": "Return to the action menu. Seeing those choices again means the combat panel has been left; it does not mean that the turn has ended or that a territory was captured."
+      },
+      {
+        "frame": "G14",
+        "text": "End with Pass. Yellow is now marked active, the lower right shows country-counting feedback and the central action panel is blank. Stop this example at that early hand-off; do not infer the rest of the computer turn."
+      }
+    ]
+  },
+  "unknown_fields": [
+    "board-panels.cancel",
+    "movement.visible",
+    "movement.cancel",
+    "cards-trade.visible",
+    "end-turn.cancel",
+    "cancel-confirm.cancel",
+    "help-navigation.cancel",
+    "save-load.visible",
+    "save-load.cancel",
+    "concession-results.cancel",
+    "registration.cancel"
+  ]
+}

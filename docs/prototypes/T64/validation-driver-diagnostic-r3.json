@@ -1,0 +1,6 @@
+{
+  "schema": "T64-validation-driver-diagnostic/1",
+  "scope": "Synthetic copied-checker driver only, no worktree mutation or original reads.",
+  "failed_attempt": "Manifest-class omission control now escapes as intended. The missing-record-output control exposed the analogous empty lookup when its guard was omitted; no acceptance claim is made for that invalid mutant.",
+  "correction": "Use a separate incomplete record with all output entries intact before the absent-output control. Removing record acceptance then permits the incomplete-record fixture and makes self-test fail by the intended escaped control."
+}

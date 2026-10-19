@@ -1,0 +1,170 @@
+{
+  "schema": "T64-implementation-validation/1",
+  "recorded_utc": "2026-10-19T10:13:47.422871+00:00",
+  "execution": "All subprocesses inherit systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 /tmp/T64-validate-r1.py",
+  "scope": "Repository and synthetic controls only; no original images, manual, bundlemap, install or spec inspected. Main owns local rendering/visual checks.",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_guide.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 12 topics \u00d7 4 evidence-qualified aspects; 13 distinct images, 20 observations/annotations; 7 same-record placement-to-pass steps. Prose/appearance require independent review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_guide.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\nPASS control: valid manifest entry with non-image class rejected (G11: image/manifest mismatch)\nPASS control: image absent from manifest rejected (G11: image/manifest mismatch)\nPASS control: image from incomplete record rejected (G11: image/record mismatch)\nPASS control: image absent from completed record rejected (G11: image/record mismatch)\nPASS control: missing annotation rejected (guide annotations missing observations)\nPASS control: out-of-bounds annotation rejected (GA1: invalid annotation bounds)\nPASS: synthetic baseline and 17 guide negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/check_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\nPASS control: reused state with valid distinct image rejected (states must use distinct states and image bytes)\nPASS control: absent manual subject rejected (manual subject inventory incomplete)\nPASS control: placeholder prose rejected (C-appearance: placeholder)\nPASS control: stale observation inventory rejected (feature description differs from active visual survey)\nPASS: synthetic baseline and 11 atlas negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/manual/render_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic guide/atlas edition retains both pages, all chapter/step links and image references; bad guide hash refused before copying.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit_code": 0,
+      "stdout": "no original files tracked (2464 files checked)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "stdout": "links and JSON ok (2470 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "omission_controls": [
+    {
+      "removed": "topic coverage",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\n",
+      "stderr": "FAIL: control escaped: missing topic\n",
+      "expected": "self-test fails: control escaped: missing topic"
+    },
+    {
+      "removed": "minimum ten images",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "FAIL: control escaped: coherent below-ten image set\n",
+      "expected": "self-test fails: control escaped: coherent below-ten image set"
+    },
+    {
+      "removed": "paragraph source requirement",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\n",
+      "stderr": "FAIL: control escaped: missing source\n",
+      "expected": "self-test fails: control escaped: missing source"
+    },
+    {
+      "removed": "survey observation equality",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\n",
+      "stderr": "FAIL: control escaped: stale observation\n",
+      "expected": "self-test fails: control escaped: stale observation"
+    },
+    {
+      "removed": "unknown visual proof guard",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\n",
+      "stderr": "FAIL: control escaped: fabricated visual proof for unknown\n",
+      "expected": "self-test fails: control escaped: fabricated visual proof for unknown"
+    },
+    {
+      "removed": "unknown registry consistency",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\n",
+      "stderr": "FAIL: control escaped: promoted unknown with valid visual references\n",
+      "expected": "self-test fails: control escaped: promoted unknown with valid visual references"
+    },
+    {
+      "removed": "image byte uniqueness",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\n",
+      "stderr": "FAIL: control escaped: duplicated image with valid provenance\n",
+      "expected": "self-test fails: control escaped: duplicated image with valid provenance"
+    },
+    {
+      "removed": "walkthrough same record",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\n",
+      "stderr": "FAIL: control escaped: mixed valid walkthrough record\n",
+      "expected": "self-test fails: control escaped: mixed valid walkthrough record"
+    },
+    {
+      "removed": "walkthrough chronological provenance",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\n",
+      "stderr": "FAIL: control escaped: jointly reversed walkthrough provenance\n",
+      "expected": "self-test fails: control escaped: jointly reversed walkthrough provenance"
+    },
+    {
+      "removed": "image manifest membership",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\n",
+      "stderr": "FAIL: control escaped: valid manifest entry with non-image class\n",
+      "expected": "self-test fails: control escaped: valid manifest entry with non-image class"
+    },
+    {
+      "removed": "image record membership",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\nPASS control: valid manifest entry with non-image class rejected (G11: image/manifest mismatch)\nPASS control: image absent from manifest rejected (G11: image/manifest mismatch)\n",
+      "stderr": "FAIL: control escaped: image from incomplete record\n",
+      "expected": "self-test fails: control escaped: image from incomplete record"
+    },
+    {
+      "removed": "annotation coverage",
+      "exit_code": 1,
+      "stdout": "PASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\nPASS control: valid manifest entry with non-image class rejected (G11: image/manifest mismatch)\nPASS control: image absent from manifest rejected (G11: image/manifest mismatch)\nPASS control: image from incomplete record rejected (G11: image/record mismatch)\nPASS control: image absent from completed record rejected (G11: image/record mismatch)\n",
+      "stderr": "FAIL: control escaped: missing annotation\n",
+      "expected": "self-test fails: control escaped: missing annotation"
+    }
+  ]
+}

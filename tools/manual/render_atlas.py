@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 from html import escape
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import shutil
@@ -120,20 +121,34 @@ def html_edition(atlas, inventory, survey, names):
     return "\n".join(out)
 
 
-def render(atlas, inventory, survey, mapping, output, roots):
+def render(atlas, inventory, survey, mapping, output, roots, guide_data=None):
     # Complete structural, location, hash and dimension checks before creating output.
-    output, paths = preflight(survey["frames"], mapping, output, roots)
+    frames = survey["frames"] + (guide_data[1]["frames"] if guide_data else [])
+    need(len({f["id"] for f in frames}) == len(frames), "guide/atlas image IDs collide")
+    output, paths = preflight(frames, mapping, output, roots)
     names = {fid: f'{fid}-{hashlib.sha256(path.read_bytes()).hexdigest()[:16]}.png' for fid, path in paths.items()}
-    document = html_edition(atlas, inventory, survey, names)
+    atlas_document = html_edition(atlas, inventory, survey, names)
+    document = atlas_document
+    if guide_data:
+        from guide_html import html_guide
+        document = html_guide(*guide_data, names, svg)
+        atlas_document = atlas_document.replace('<h1>Pro map and UI atlas</h1>', '<nav><a href="index.html">Player guide</a> · <a href="index.html#walkthrough">Worked turn</a></nav><h1>Pro map and UI atlas</h1>')
     output.mkdir(parents=True)
     (output / "images").mkdir()
     for fid, path in paths.items():
         shutil.copyfile(path, output / "images" / names[fid])
         # Detect bytes changing after preflight; abort before writing index.html.
         # Retain the partial output and copied bytes for diagnosis; this is not atomic publication.
-        need(hashlib.sha256((output / "images" / names[fid]).read_bytes()).hexdigest() == next(f["sha256"] for f in survey["frames"] if f["id"] == fid), f"{fid}: image changed during copy")
+        need(hashlib.sha256((output / "images" / names[fid]).read_bytes()).hexdigest() == next(f["sha256"] for f in frames if f["id"] == fid), f"{fid}: image changed during copy")
+    if guide_data:
+        (output / "atlas.html").write_text(atlas_document, encoding="utf-8")
     (output / "index.html").write_text(document, encoding="utf-8")
-    receipt = {"schema": "pro-atlas-render/1", "images": [{"id": f["id"], "sha256": f["sha256"], "width": f["width"], "height": f["height"]} for f in survey["frames"]], "html_sha256": hashlib.sha256(document.encode()).hexdigest(), "annotation_count": len(atlas["annotations"]), "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."}
+    receipt = {"schema": "pro-atlas-render/1", "images": [{"id": f["id"], "sha256": f["sha256"], "width": f["width"], "height": f["height"]} for f in frames], "html_sha256": hashlib.sha256(document.encode()).hexdigest(), "annotation_count": len(atlas["annotations"]), "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."}
+    if guide_data:
+        receipt["atlas_html_sha256"] = hashlib.sha256(atlas_document.encode()).hexdigest()
+        receipt["guide_annotation_count"] = len(guide_data[0]["annotations"])
+        receipt["guide_image_count"] = len(guide_data[1]["frames"])
+        receipt["walkthrough_frames"] = guide_data[0]["walkthrough"]["frames"]
     (output / "render-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
     return output / "index.html"
 
@@ -175,6 +190,68 @@ def clipping_controls():
             else:
                 raise ValueError(f"detail clipping control escaped: {label}")
     print("PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.")
+
+
+def guide_render_controls(tmp, positive_frame, positive_atlas, original):
+    """Exercise the complete companion edition using only invented PNG files."""
+    from check_guide import synthetic_fixture, validate as validate_guide
+    fixture = tmp / "guide-fixture"
+    fixture.mkdir()
+    guide, guide_survey = synthetic_fixture(fixture)
+    mapping = {"V": str(original)}
+    entries = []
+    for n, frame in enumerate(guide_survey["frames"], 1):
+        def chunk(kind, data):
+            return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xffffffff)
+        pixels = (b"\x00" + bytes([n, 0, 0]) * 80) * 60
+        data = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 80, 60, 8, 2, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(pixels)) + chunk(b"IEND", b"")
+        path = fixture / frame["asset"]
+        path.write_bytes(data)
+        frame["sha256"] = hashlib.sha256(data).hexdigest()
+        mapping[frame["id"]] = str(path)
+        entries.append({"name": frame["asset"], "asset": frame["asset"], "sha256": frame["sha256"], "class": "recording"})
+    for name in ("record.json", "other-record.json"):
+        (fixture / name).write_text(json.dumps({"status": "completed", "outputs": entries}))
+    (fixture / "manifest.json").write_text(json.dumps({"files": entries}))
+    validate_guide(guide, guide_survey, fixture)
+    atlas_survey = {"frames": [positive_frame], "limitations": ["Synthetic only."]}
+    output = tmp / "combined-edition"
+    render(positive_atlas, {"subjects": []}, atlas_survey, mapping, output, [], (guide, guide_survey))
+    class Links(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.ids, self.hrefs = set(), []
+        def handle_starttag(self, tag, attrs):
+            attrs = dict(attrs)
+            if "id" in attrs:
+                need(attrs["id"] not in self.ids, "duplicate HTML chapter/frame ID")
+                self.ids.add(attrs["id"])
+            if tag == "a":
+                self.hrefs.append(attrs.get("href", ""))
+    documents = {}
+    for name in ("index.html", "atlas.html"):
+        parser = Links()
+        parser.feed((output / name).read_text())
+        documents[name] = parser
+    for name, parser in documents.items():
+        for href in parser.hrefs:
+            target, _, fragment = href.partition("#")
+            need((target or name) in documents, "broken local companion-page link")
+            if fragment:
+                need(fragment in documents[target or name].ids, "broken chapter/walkthrough link")
+    need({"topic-" + t["id"] for t in guide["topics"]} <= documents["index.html"].ids and "walkthrough" in documents["index.html"].ids, "guide chapters/walkthrough missing")
+    need(set(guide["walkthrough"]["frames"]) <= documents["index.html"].ids, "illustrated walkthrough missing")
+    receipt = json.loads((output / "render-receipt.json").read_text())
+    need(receipt["guide_image_count"] == 11 and len(receipt["images"]) == 12, "companion image set missing")
+    guide_survey["frames"][-1]["sha256"] = "a" * 64
+    rejected = tmp / "bad-companion-edition"
+    try:
+        render(positive_atlas, {"subjects": []}, atlas_survey, mapping, rejected, [], (guide, guide_survey))
+    except ValueError as error:
+        need("bad image hash" in str(error) and not rejected.exists(), "guide pre-copy refusal failed")
+    else:
+        raise ValueError("bad companion image hash escaped preflight")
+    print("PASS: synthetic guide/atlas edition retains both pages, all chapter/step links and image references; bad guide hash refused before copying.")
 
 
 def self_test():
@@ -248,6 +325,7 @@ def self_test():
         need(len(partial_images) == 1 and partial_images[0].read_bytes() == b"synthetic copy-time change", "copy-time failure discarded diagnostic bytes")
         print("PASS: synthetic copy-time hash failure preserves partial output and omits index.html.")
         print("PASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.")
+        guide_render_controls(tmp, positive_frame, positive_atlas, original)
         print("PASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.")
 
 
@@ -256,6 +334,7 @@ def main():
     parser.add_argument("--bundle-map", type=Path, help="local JSON object mapping survey frame IDs to absolute PNG paths")
     parser.add_argument("--output", type=Path, help="new directory outside every checkout")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--include-guide", action="store_true", help="add the player guide and walkthrough as index.html; retain atlas.html")
     args = parser.parse_args()
     try:
         if args.self_test:
@@ -264,8 +343,13 @@ def main():
         need(args.bundle_map is not None and args.output is not None, "--bundle-map and --output required")
         atlas, inventory, survey = load()
         print(validate(atlas, inventory, survey))
+        guide_data = None
+        if args.include_guide:
+            from check_guide import load as load_guide, validate as validate_guide
+            guide_data = load_guide()
+            print(validate_guide(*guide_data))
         mapping = json.loads(args.bundle_map.read_text())
-        print(f"Rendered verified local edition: {render(atlas, inventory, survey, mapping, args.output, checkout_roots())}")
+        print(f"Rendered verified local edition: {render(atlas, inventory, survey, mapping, args.output, checkout_roots(), guide_data)}")
     except (ValueError, OSError, KeyError, TypeError, json.JSONDecodeError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"FAIL: {error}\n")
 
