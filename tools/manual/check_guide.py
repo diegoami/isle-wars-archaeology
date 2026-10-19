@@ -152,6 +152,7 @@ def synthetic_fixture(root):
         for aspect in ASPECTS:
             topic[aspect] = {"text": f"Synthetic static description of {tid} {aspect}.", "basis": "static", "confidence": "static-bounded", "sources": ["S"]}
         guide["topics"].append(topic)
+    guide["topics"][0]["visible"].update(basis="local-visual", confidence="observed-bounded", sources=["V"], frames=["G01"], observations=["GO01"])
     guide["topics"][0]["cancel"] = {"text": "Synthetic unobserved cancellation boundary.", "basis": "unobserved", "confidence": "unknown", "sources": [], "limitation_sources": ["S"]}
     guide["unknown_fields"] = [guide["topics"][0]["id"] + ".cancel"]
     guide["walkthrough"] = dict(copy.deepcopy(survey["walkthrough"]), introduction="Synthetic ordered sequence, no original gameplay.", steps=[{"frame": f, "text": f"Synthetic walkthrough step for {f}."} for f in survey["walkthrough"]["frames"]])
@@ -171,7 +172,21 @@ def self_test():
             s["frames"] = s["frames"][:9]
             for key in ("images", "visual_notes", "annotations"):
                 g[key] = g[key][:9]
+        def alternate_walk_record(g, s):
+            g["walkthrough"]["record"] = "other-record.json"
+            for frame in s["frames"]:
+                if frame["id"] in g["walkthrough"]["frames"]:
+                    frame["record"] = "other-record.json"
         controls = [
+            ("missing source anchor", "missing source anchor", lambda g, s: g["sources"][0].update(anchor="absent-heading")),
+            ("topic prose absent from document", "prose mismatch", lambda g, s: g["topics"][0]["actions"].update(text="Synthetic paragraph absent from the stored document.")),
+            ("nonvisual field with visual proof", "nonvisual field claims visual proof", lambda g, s: g["topics"][0]["actions"].update(frames=["G01"], observations=["GO01"])),
+            ("local visual field without image evidence", "visual field lacks observed image evidence", lambda g, s: g["topics"][0]["visible"].update(observations=[])),
+            ("bad record digest", "record digest mismatch", lambda g, s: s["frames"][-1].update(record_sha256="a"*64)),
+            ("bad manifest digest", "manifest digest mismatch", lambda g, s: s["frames"][-1].update(manifest_sha256="a"*64)),
+            ("coherent record different from survey", "record differs from survey", alternate_walk_record),
+            ("step prose absent from document", "step prose missing", lambda g, s: g["walkthrough"]["steps"][0].update(text="Synthetic step absent from the stored document.")),
+            ("scope without retained unknown", "build/unknown boundaries missing", lambda g, s: g.update(scope="Synthetic unregistered scope with #259 but missing the other retained issue.")),
             ("coherent below-ten image set", "at least ten distinct", below_ten),
             ("missing topic", "required topics", lambda g, s: g["topics"].pop()),
             ("missing source", "missing sources", lambda g, s: g["topics"][0]["actions"].update(sources=[])),

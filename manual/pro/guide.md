@@ -18,7 +18,7 @@ Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019
 
 Evidence: documented; confidence: documented. [D-setup](../../sources/iwp-islepro-txt.md#setup).
 
-**Back out and confirm.** Use the green return control shown on the options page to leave that page. The green control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.
+**Back out and confirm.** Use the return control shown on the options page to leave that page. The start-play control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.
 
 Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019-pro-setup-rules.md#the-options-screen).
 
@@ -122,7 +122,7 @@ Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/proto
 
 Evidence: static; confidence: static-bounded. [F012-turn](../../findings/F012-pro-turn-victory-rules.md#turn-sequence), [F011-combat](../../findings/F011-pro-combat-rules.md#combat).
 
-**What changes.** The worked sequence ends at the first captured hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.
+**What changes.** The worked sequence ends at the first recorded hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.
 
 Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
@@ -158,7 +158,7 @@ Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/proto
 
 Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019-pro-setup-rules.md#the-options-screen).
 
-**What changes.** Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content while retaining the landscape backdrop. Check the screen context rather than assuming a fixed footer action.
+**What changes.** Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content. Check the screen context rather than assuming a fixed footer action.
 
 Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 

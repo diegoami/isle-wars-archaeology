@@ -1,0 +1,65 @@
+{
+  "schema": "T65-guide-controls/1",
+  "basis": "Synthetic fixtures only; copied checker omissions outside checkouts. Host process wrapped in systemd 6G/no-swap scope. Structural controls do not prove prose truth.",
+  "review": "#280 R1\u2013R4",
+  "checks": [
+    {
+      "command": "python3 tools/manual/check_guide.py",
+      "exit": 0,
+      "output": "PASS: 12 topics \u00d7 4 evidence-qualified aspects; 13 distinct images, 21 observations/annotations; 7 same-record placement-to-pass steps. Prose/appearance require independent review."
+    },
+    {
+      "command": "python3 tools/manual/check_guide.py --self-test",
+      "exit": 0,
+      "output": "PASS control: missing source anchor rejected (S: missing source anchor)\nPASS control: topic prose absent from document rejected (attack-capture/actions: prose mismatch)\nPASS control: nonvisual field with visual proof rejected (nonvisual field claims visual proof)\nPASS control: local visual field without image evidence rejected (visual field lacks observed image evidence)\nPASS control: bad record digest rejected (G11: record digest mismatch)\nPASS control: bad manifest digest rejected (G11: manifest digest mismatch)\nPASS control: coherent record different from survey rejected (walkthrough record differs from survey)\nPASS control: step prose absent from document rejected (walkthrough step prose missing)\nPASS control: scope without retained unknown rejected (guide build/unknown boundaries missing)\nPASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\nPASS control: valid manifest entry with non-image class rejected (G11: image/manifest mismatch)\nPASS control: image absent from manifest rejected (G11: image/manifest mismatch)\nPASS control: image from incomplete record rejected (G11: image/record mismatch)\nPASS control: image absent from completed record rejected (G11: image/record mismatch)\nPASS control: missing annotation rejected (guide annotations missing observations)\nPASS control: out-of-bounds annotation rejected (GA1: invalid annotation bounds)\nPASS: synthetic baseline and 26 guide negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/manual/render_atlas.py --self-test",
+      "exit": 0,
+      "output": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic guide/atlas edition retains both pages, all chapter/step links and image references; bad guide hash refused before copying.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used."
+    }
+  ],
+  "copied_guard_omissions": [
+    {
+      "omitted_guard": "anchor",
+      "exit": 1,
+      "result": "FAIL: control escaped: missing source anchor"
+    },
+    {
+      "omitted_guard": "prose",
+      "exit": 1,
+      "result": "FAIL: control escaped: topic prose absent from document"
+    },
+    {
+      "omitted_guard": "nonvisual",
+      "exit": 1,
+      "result": "FAIL: control escaped: nonvisual field with visual proof"
+    },
+    {
+      "omitted_guard": "localvisual",
+      "exit": 1,
+      "result": "FAIL: control escaped: local visual field without image evidence"
+    },
+    {
+      "omitted_guard": "digests",
+      "exit": 1,
+      "result": "FAIL: control escaped: bad record digest"
+    },
+    {
+      "omitted_guard": "walk-record",
+      "exit": 1,
+      "result": "FAIL: control escaped: coherent record different from survey"
+    },
+    {
+      "omitted_guard": "step-prose",
+      "exit": 1,
+      "result": "FAIL: control escaped: step prose absent from document"
+    },
+    {
+      "omitted_guard": "scope",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope without retained unknown"
+    }
+  ],
+  "checker_sha256": "70e4ef973569960ba90a182e6c5361cb201928c33fb1d6aef208cbf2198d3d36"
+}

@@ -162,7 +162,7 @@
         ]
       },
       "cancel": {
-        "text": "Use the green return control shown on the options page to leave that page. The green control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.",
+        "text": "Use the return control shown on the options page to leave that page. The start-play control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.",
         "basis": "static",
         "confidence": "static-bounded",
         "sources": [
@@ -440,7 +440,7 @@
         ]
       },
       "feedback": {
-        "text": "The worked sequence ends at the first captured hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.",
+        "text": "The worked sequence ends at the first recorded hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.",
         "basis": "local-visual",
         "confidence": "observed-bounded",
         "sources": [
@@ -549,7 +549,7 @@
         ]
       },
       "feedback": {
-        "text": "Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content while retaining the landscape backdrop. Check the screen context rather than assuming a fixed footer action.",
+        "text": "Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content. Check the screen context rather than assuming a fixed footer action.",
         "basis": "local-visual",
         "confidence": "observed-bounded",
         "sources": [
