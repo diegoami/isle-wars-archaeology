@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import zlib
 import xml.etree.ElementTree as ET
+from unittest.mock import patch
 
 from check_atlas import ROOT, load, need, validate
 
@@ -128,7 +129,8 @@ def render(atlas, inventory, survey, mapping, output, roots):
     (output / "images").mkdir()
     for fid, path in paths.items():
         shutil.copyfile(path, output / "images" / names[fid])
-        # Detect a concurrent local source change; never leave a published edition with wrong bytes.
+        # Detect bytes changing after preflight; abort before writing index.html.
+        # Retain the partial output and copied bytes for diagnosis; this is not atomic publication.
         need(hashlib.sha256((output / "images" / names[fid]).read_bytes()).hexdigest() == next(f["sha256"] for f in survey["frames"] if f["id"] == fid), f"{fid}: image changed during copy")
     (output / "index.html").write_text(document, encoding="utf-8")
     receipt = {"schema": "pro-atlas-render/1", "images": [{"id": f["id"], "sha256": f["sha256"], "width": f["width"], "height": f["height"]} for f in survey["frames"]], "html_sha256": hashlib.sha256(document.encode()).hexdigest(), "annotation_count": len(atlas["annotations"]), "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."}
@@ -177,7 +179,7 @@ def clipping_controls():
 
 def self_test():
     clipping_controls()
-    with tempfile.TemporaryDirectory(prefix="T63-render-controls-") as name:
+    with tempfile.TemporaryDirectory(prefix="T63-render-controls-", dir="/tmp") as name:
         tmp = Path(name)
         checkout = tmp / "checkout"
         checkout.mkdir()
@@ -231,6 +233,20 @@ def self_test():
         copied = list((output / "images").iterdir())
         need(len(copied) == 1 and copied[0].read_bytes() == original.read_bytes(), "render changed image bytes")
         need((output / "render-receipt.json").is_file(), "render receipt missing")
+        interrupted = tmp / "interrupted-edition"
+        def changed_copy(source, destination):
+            Path(destination).write_bytes(b"synthetic copy-time change")
+        with patch.object(shutil, "copyfile", side_effect=changed_copy):
+            try:
+                render(positive_atlas, {"subjects": []}, {"frames": [positive_frame], "limitations": ["Synthetic only."]}, {"V": str(original)}, interrupted, [checkout])
+            except ValueError as error:
+                need("image changed during copy" in str(error), "copy-time control failed for wrong reason")
+            else:
+                raise ValueError("copy-time changed image was accepted")
+        need(not (interrupted / "index.html").exists(), "copy-time failure wrote an index")
+        partial_images = list((interrupted / "images").iterdir())
+        need(len(partial_images) == 1 and partial_images[0].read_bytes() == b"synthetic copy-time change", "copy-time failure discarded diagnostic bytes")
+        print("PASS: synthetic copy-time hash failure preserves partial output and omits index.html.")
         print("PASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.")
         print("PASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.")
 

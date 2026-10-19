@@ -166,24 +166,24 @@ def validate(atlas, inventory, survey, root=ROOT):
 
 def load(root=ROOT):
     return (read_json(root / "manual/pro/atlas.json"), read_json(root / "manual/pro/inventory.json"),
-            read_json(root / "docs/prototypes/T63/visual-source-survey-r2.json"))
+            read_json(root / "docs/prototypes/T63/visual-source-survey-r3.json"))
 
 
 def self_test():
     """All inputs are invented metadata and tiny text files, never original images."""
-    with tempfile.TemporaryDirectory(prefix="T63-atlas-controls-") as name:
+    with tempfile.TemporaryDirectory(prefix="T63-atlas-controls-", dir="/tmp") as name:
         root = Path(name)
         (root / "source.md").write_text("# Synthetic source\nInvented metadata for validation.\n")
         digest = "a" * 64
-        (root / "record.json").write_text(json.dumps({"status": "completed", "outputs": [{"name": f"{i}.png", "sha256": str(i) * 64} for i in range(1, 5)]}))
-        (root / "manifest.json").write_text(json.dumps({"files": [{"name": f"{i}.png", "asset": f"{i}.png", "sha256": str(i) * 64, "class": "recording"} for i in range(1, 5)]}))
+        (root / "record.json").write_text(json.dumps({"status": "completed", "outputs": [{"name": f"{i}.png", "sha256": str(i) * 64} for i in range(1, 6)]}))
+        (root / "manifest.json").write_text(json.dumps({"files": [{"name": f"{i}.png", "asset": f"{i}.png", "sha256": str(i) * 64, "class": "recording"} for i in range(1, 6)]}))
         claims = [{"id": f"C-{layer}", "text": f"Synthetic bounded description of {layer}.", "layer": layer, "confidence": "high-bounded", "sources": ["S"], "section": "Map"} for layer in sorted(LAYERS)]
         claims += [{"id": uid, "text": f"Unknown synthetic boundary for {uid}, including #259 where relevant.", "layer": "scope", "confidence": "unknown", "sources": [], "limitation_sources": ["S"], "section": "Evidence boundaries"} for uid in sorted(UNKNOWN_IDS)]
         (root / "atlas.md").write_text("\n".join(f"**{c['id']}** {c['text']}" for c in claims))
         atlas = {"schema": "pro-atlas/1", "text_path": "atlas.md", "sources": [{"id": "S", "path": "source.md", "kind": "local-visual", "scope": "Synthetic source, no game material."}], "claims": claims, "views": [], "annotations": []}
         survey = {"method": "Synthetic metadata only, no image reads.", "limitations": ["Invented."], "frames": [], "manual_source": {"sha256": digest, "line_count": 10, "subjects": [{"id": "M", "line_start": 1, "line_end": 10}]}}
         inventory = {"schema": "pro-manual-inventory/1", "visual_features": [], "subjects": [{"id": "M", "description": "Synthetic subject inventory description.", "milestone": "T63", "coverage": "atlas", "sources": ["S"], "claims": ["C-appearance"]}]}
-        for i in range(1, 5):
+        for i in range(1, 6):
             fid, oid = f"V{i}", f"O{i}"
             survey["frames"].append({"id": fid, "record": "record.json", "manifest": "manifest.json", "asset": f"{i}.png", "sha256": str(i) * 64, "width": 80, "height": 60, "state": f"Distinct synthetic state {i}", "observations": [{"id": oid, "text": "Invented visible feature description.", "basis": "Synthetic observation basis only.", "confidence": "Synthetic bounded confidence.", "region": [1, 2, 20, 10]}]})
             atlas["views"].append({"id": fid, "role": "full-board" if i == 1 else "interaction-state", "caption": "Synthetic frame caption with bounded scope.", "claims": ["C-appearance"]})
@@ -199,7 +199,8 @@ def self_test():
             ("claimed evidence for unknown", "claimed evidence for unknown", lambda a, i, s: next(c for c in a["claims"] if c["id"] == "U-mechanism").update(sources=["S"])),
             ("promoted unknown", "claimed evidence for unknown", lambda a, i, s: next(c for c in a["claims"] if c["id"] == "U-mechanism").update(confidence="high-bounded", sources=["S"])),
             ("missing image hash", "bad/missing hash", lambda a, i, s: s["frames"][0].pop("sha256")),
-            ("reused image state", "image/manifest mismatch", lambda a, i, s: s["frames"][2].update(sha256=s["frames"][1]["sha256"])),
+            ("reused image bytes with valid provenance", "distinct states", lambda a, i, s: s["frames"][2].update(asset=s["frames"][1]["asset"], sha256=s["frames"][1]["sha256"])),
+            ("reused state with valid distinct image", "distinct states", lambda a, i, s: s["frames"][2].update(state=s["frames"][1]["state"])),
             ("absent manual subject", "inventory incomplete", lambda a, i, s: i["subjects"].append(dict(i["subjects"][0], id="extra"))),
             ("placeholder prose", "placeholder", lambda a, i, s: a["claims"][0].update(text="TODO placeholder missing a substantive description.")),
             ("stale observation inventory", "active visual survey", lambda a, i, s: s["frames"][0]["observations"][0].update(text="Corrected synthetic observation after local inspection.")),

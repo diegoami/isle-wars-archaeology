@@ -10,13 +10,6 @@
       "anchor": "objective"
     },
     {
-      "id": "D-combat",
-      "path": "sources/iwp-islepro-txt.md",
-      "kind": "documented",
-      "scope": "Directions lines 56–73 describe the turn actions and adjacency, not measured controls or outcomes.",
-      "anchor": "attack-and-combat"
-    },
-    {
       "id": "D-centres",
       "path": "sources/iwp-islepro-txt.md",
       "kind": "documented",
@@ -101,7 +94,7 @@
     },
     {
       "id": "V-survey",
-      "path": "docs/prototypes/T63/visual-source-survey-r2.json",
+      "path": "docs/prototypes/T63/visual-source-survey-r3.json",
       "kind": "local-visual",
       "scope": "Main alone inspected the six preserved images and original manual subject structure; bounded regions are observational callouts."
     },
@@ -185,13 +178,14 @@
     },
     {
       "id": "B-centres",
-      "text": "The directions associate light-blue army totals with production centres. F020 Q-UI-02 separately reports three cyan digits in each of two inspected centre frames and rates that interpretation about 80% likely. V06 separately shows a cyan numeral, while centre identity remains an interpretation qualified by those sources; neither a centre flash nor a mechanical effect is established by the stills.",
+      "text": "The directions associate light-blue army totals with production centres, and F020 Q-UI-02 rates its colour interpretation about 80% likely. Its per-image country list conflicts with main’s new hash-verified reading: both centre images show cyan digits on 9, 18 and 46, and white digits on 2, 3 and 30; F020 assigns 2, 3 and 30 to the first image. This source conflict is recorded in survey r3 and tracked by #278. V06 illustrates the cyan numeral at territory 18; colour alone establishes neither centre mechanics nor a flash.",
       "layer": "appearance",
       "confidence": "moderate-bounded",
       "section": "Reading the board",
       "sources": [
         "D-centres",
-        "F020-board"
+        "F020-board",
+        "V-survey"
       ]
     },
     {
@@ -517,7 +511,7 @@
     },
     {
       "id": "V-O17",
-      "text": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Territory 2 has a white numeral in this frame, contrary to r1. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
+      "text": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Main inspected both hash-verified Q-UI-02 centre images: both show cyan digits on territories 9, 18 and 46, and white digits on 2, 3 and 30. This conflicts with F020 Q-UI-02, which assigns 2, 3 and 30 to this first image; correction is tracked in #278. The production-site interpretation remains source-qualified to the manual and F020, not established by colour alone; no flashing animation is proved.",
       "layer": "appearance",
       "confidence": "moderate-bounded",
       "section": "Reading the board",
@@ -734,7 +728,7 @@
         35,
         30
       ],
-      "label": "Phase arrow — O13"
+      "label": "Visible arrow — O13"
     },
     {
       "id": "A-O14",

@@ -108,7 +108,8 @@
       "id": "anthropic/claude-opus-5-5",
       "backend": "claude",
       "variant": "medium",
-      "family": "claude"
+      "family": "claude",
+      "note": "Owner-selected native Opus medium for T63; exact claude-opus-5-5 observed in retained live CLI discovery and checked on each review. Default unchanged."
     }
   },
   "jail": {

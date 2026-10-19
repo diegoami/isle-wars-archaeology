@@ -12,12 +12,14 @@ It adds seventeen callouts and bounded detail views. V01 and V06 are separate de
 they are not before/after frames of V02–V05. Every claim carries a source and bounded
 confidence; unknowns carry limitation references instead of affirmative evidence.
 Appearance, graph topology, input areas and original rendering are kept separate.
-The active visual survey is r2; r1 is retained unchanged with its superseded colour
-identification. V06 now annotates the cyan 3 at territory 18 rather than territory 2,
-whose numeral is white. Main’s first local verification records the correction and
-the detail-clipping defect; [r2 local verification](../../docs/prototypes/T63/local-visual-verification-r2.json)
-confirms the corrected clipping and colour example across all six views and seventeen
-callout/detail regions.
+The active visual survey is r3; r1/r2 remain unchanged. Main reopened both
+hash-verified Q-UI-02 centre images: both show cyan digits on 9, 18 and 46, with
+white digits on 2, 3 and 30. This conflicts with F020's first-image list; follow-up
+[#278](https://github.com/diegoami/isle-wars-archaeology/issues/278) tracks that
+out-of-scope finding correction. V06 annotates territory 18's cyan 3; production-site
+meaning remains source-qualified. The [r2 local verification](../../docs/prototypes/T63/local-visual-verification-r2.json)
+records the earlier clipping correction; the revised source disclosure requires a
+fresh local edition verification.
 #259's physical/visual island-count discrepancy remains open in the prose.
 
 ## Repository-only checks
@@ -34,7 +36,9 @@ The checker reconciles claims, text, inventory, survey observations, image manif
 records and annotation rectangles. Synthetic controls remove a feature/source, corrupt
 bounds, promote an unknown, alter hashes, remove a subject and introduce filler prose.
 The renderer uses an invented two-pixel PNG for its location/hash/dimension refusal
-controls. No original image is needed by these checks or by the reviewer. Wide and tall detail
+controls. Synthetic fixtures use `/tmp` explicitly, so an inherited `TMPDIR` inside a checkout
+does not make the renderer refusal controls reject their own baseline. No original
+image is needed by these checks or by the reviewer. Wide and tall detail
 controls also verify that the source image binds to an exact `userSpaceOnUse`
 clip rectangle, and reject eight mutations that remove its binding/definition, change
 its coordinate space or expose surrounding pixels.
@@ -48,7 +52,7 @@ Independent prose review and main's local visual check are required.
 Keep E019 bundles and output outside **every** checkout. Do not fetch, unpack or copy
 original images into a worktree. Main alone prepares a local JSON object mapping survey
 frame IDs to absolute PNG paths. Use the hash-prefixed `asset` names in the
-[visual survey](../../docs/prototypes/T63/visual-source-survey-r2.json) to identify files;
+[visual survey](../../docs/prototypes/T63/visual-source-survey-r3.json) to identify files;
 paths in the following example are illustrative and do not name an install:
 
 ```json
@@ -63,7 +67,7 @@ paths in the following example are illustrative and do not name an install:
 Choose a new, nonexistent output directory, also outside every checkout:
 
 ```sh
-systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --bundle-map /outside-checkouts/bundle-map.json --output /outside-checkouts/pro-atlas-r2
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --bundle-map /outside-checkouts/bundle-map.json --output /outside-checkouts/pro-atlas-r3
 ```
 
 Before creating output or copying any image, the renderer validates all atlas metadata,
@@ -72,7 +76,11 @@ rejects paths within registered worktrees, and detects another checkout through 
 `.git` marker. Missing/bad hashes, wrong dimensions and in-checkout output all fail
 before copying. An existing output is refused so editions are not overwritten.
 
-The output contains `index.html`, unchanged images and `render-receipt.json`. HTML uses
+The output contains `index.html`, unchanged images and `render-receipt.json`. If a
+source changes after preflight, the copy-time hash check aborts before writing
+`index.html`; the partial output and copied bytes remain for diagnosis. This is not
+atomic publication. Preserve that failed directory and choose a new output path for
+a retry. HTML uses
 code-native SVG overlays and detail images clipped explicitly to their observed native
 coordinate rectangles over the same original image files; it
 performs no pixel editing, image generation, original extraction or map reconstruction.

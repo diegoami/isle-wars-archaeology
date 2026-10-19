@@ -1,0 +1,487 @@
+{
+  "schema": "T63-visual-survey/1",
+  "observer": "main session, direct local visual inspection",
+  "recorded_utc": "2026-10-19T08:53:47.691171+00:00",
+  "scope": "Own-word source survey for an illustrated reference; no originals or screenshot pixels in this record. No new game run or cast/score decode.",
+  "frames": [
+    {
+      "id": "V01",
+      "record": "runs/E019/board-pieces/E019-r0014.json",
+      "record_sha256": "b1e03cfc0e3cf79b9f7d7b63c8e2e863822a3d8563358cb84c6ad570c76c1892",
+      "manifest": "evidence/E019/board-pieces/E019-r0014.manifest.json",
+      "manifest_sha256": "09382b8666956960da869a4fd817b1fa91275ed9d7c91e4a63e729a9029ee868",
+      "asset": "97c26acddb43d158-board-1.png",
+      "output_name": "board-1.png",
+      "sha256": "97c26acddb43d1581d94e390fc68fb1668576dff2987bb650c1ab15013ca8f78",
+      "width": 800,
+      "height": 600,
+      "state": "initial-placement-separate-deal",
+      "inspection": "Main session directly viewed this exact local PNG through the permitted OpenAI image-reading tool; hash and PNG header checked locally.",
+      "observations": [
+        {
+          "id": "O01",
+          "text": "The map occupies almost the full width above the lower control strip. Irregular land clusters are separated by blue water; the entire scene has a silver-blue beveled surround.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            8,
+            8,
+            784,
+            488
+          ],
+          "feature": "overall-composition",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O02",
+          "text": "Land has a strongly embossed, mottled relief appearance with jagged bright coastlines and a cyan-white coastal glow. This is visible artwork; no claim is made about 3D geometry or how the original engine stores it.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            100,
+            105,
+            420,
+            195
+          ],
+          "feature": "terrain-coastline",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O03",
+          "text": "The sea has a mottled square-like blue texture, with brighter blue around the coast; it is visually distinct from the coloured relief land.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            270,
+            360,
+            35,
+            50
+          ],
+          "feature": "water-background",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O04",
+          "text": "Solid pale straight strokes span water between land areas; their ends meet or disappear against the coastal artwork. No arrowheads, path animation, exact endpoint construction or procedural midpoint rule is established by this still frame.",
+          "basis": "direct visual observation; rendering mechanism remains unknown",
+          "confidence": "high",
+          "region": [
+            78,
+            110,
+            184,
+            65
+          ],
+          "feature": "sea-links",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O05",
+          "text": "Territory regions carry red, green, yellow/ochre and blue/purple tints. Dark relief seams and colour transitions partition the land. The screenshot does not establish the logical grouping or adjacency of every apparent cluster.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            280,
+            40,
+            245,
+            205
+          ],
+          "feature": "territory-boundaries",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O06",
+          "text": "Small black circular labels with fine white identifiers are visually separate from much larger light army-count digits over the territories. The two text scales make identity and army strength distinct.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            410,
+            90,
+            90,
+            125
+          ],
+          "feature": "territory-id-and-army-count",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O07",
+          "text": "A black framed overlay in the upper-left lists four colour-coded player rows, each with a territory total and a card total. A small pale pointer marks the top player row in this image.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            14,
+            14,
+            210,
+            100
+          ],
+          "feature": "player-summary",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O08",
+          "text": "A large light title is centered toward the upper-right, with a smaller publisher/edition notice at the top-right. These are reference-image branding, not reusable malpaco assets.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            412,
+            6,
+            378,
+            52
+          ],
+          "feature": "title-and-edition-notice",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O09",
+          "text": "Three framed panels run along the bottom: instruction/context at left, phase-dependent controls at center, and player/phase information at right. Their dark blue backgrounds and bright text separate them from the board.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            8,
+            499,
+            784,
+            66
+          ],
+          "feature": "bottom-panel-layout",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O10",
+          "text": "A persistent row of six text navigation choices runs along the bottom edge beneath the phase panels; the board remains visible above them.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            47,
+            573,
+            690,
+            26
+          ],
+          "feature": "persistent-navigation",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        }
+      ]
+    },
+    {
+      "id": "V02",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "480ec09a4122b12d-place-selected.png",
+      "output_name": "place-selected.png",
+      "sha256": "480ec09a4122b12d8b647bcb053aeca80767d81417683c12bcb118385a8bc5ff",
+      "width": 800,
+      "height": 600,
+      "state": "placement-selection",
+      "inspection": "Main session directly viewed this exact local PNG through the permitted OpenAI image-reading tool; hash and PNG header checked locally.",
+      "observations": [
+        {
+          "id": "O11",
+          "text": "The left panel identifies the selected territory; the central panel becomes an allocation amount with an all-available choice, increment/decrement controls and a placement confirmation. The right panel reports the remaining allocation. The amount is zero in this frame.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            8,
+            500,
+            784,
+            65
+          ],
+          "feature": "selection-and-allocation",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        }
+      ]
+    },
+    {
+      "id": "V03",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "fc13a7505e755551-place-all.png",
+      "output_name": "place-all.png",
+      "sha256": "fc13a7505e7555513b5f0cf83a396a0296e95ea99f1da961eab2801c74ce1c9d",
+      "width": 800,
+      "height": 600,
+      "state": "placement-allocation-chosen",
+      "inspection": "Main session directly viewed this exact local PNG through the permitted OpenAI image-reading tool; hash and PNG header checked locally.",
+      "observations": [
+        {
+          "id": "O12",
+          "text": "The same allocation panel now displays an amount of two, with the all-available control highlighted. The right panel still reports two available armies. This is an allocation-choice view, not proof that those armies have already been committed.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            264,
+            501,
+            275,
+            62
+          ],
+          "feature": "allocation-feedback",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O13",
+          "text": "A yellow rightward arrow with a red outline is visible just to the right of the player overlay. Its visual presence is established; this still image alone does not prove its timing, animation or hit area.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            216,
+            78,
+            35,
+            30
+          ],
+          "feature": "visible-arrow",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        }
+      ]
+    },
+    {
+      "id": "V04",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "ecd0ce15458e533f-attack-ready.png",
+      "output_name": "attack-ready.png",
+      "sha256": "ecd0ce15458e533f565491babce975d3d004ff09f43207ecf5de8139034920ac",
+      "width": 800,
+      "height": 600,
+      "state": "attack-ready",
+      "inspection": "Main session directly viewed this exact local PNG through the permitted OpenAI image-reading tool; hash and PNG header checked locally.",
+      "observations": [
+        {
+          "id": "O14",
+          "text": "The center panel changes to a prominent red attack control and a yellow control for leaving that mode. The side panels identify the two selected countries and display their opposing army totals; this is a pre-attack/attack-ready view, not a capture result.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            8,
+            500,
+            784,
+            65
+          ],
+          "feature": "combat-panel",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        },
+        {
+          "id": "O16",
+          "text": "Across V02\u2013V05 the same board deal remains recognizable while the bottom controls and status texts change. V01 and V06 come from other records/deals and must not be presented as before/after frames of that sequence.",
+          "basis": "main visual comparison of the named same-record frames",
+          "confidence": "medium",
+          "region": [
+            8,
+            8,
+            784,
+            488
+          ],
+          "feature": "board-persistence-across-states",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        }
+      ]
+    },
+    {
+      "id": "V05",
+      "record": "runs/E019/play/E019-r0026.json",
+      "record_sha256": "186d6a83dc8512c6a6e469a50b448ff65cf90a148bd1b0458e57b5ab3b63ba25",
+      "manifest": "evidence/E019/play/E019-r0026.manifest.json",
+      "manifest_sha256": "b8eb271b01d746bceadd4ebf54cb35be2af98f34cdd09b172fd590442fcf803b",
+      "asset": "40c2a0ef169bc360-status-turn-menu.png",
+      "output_name": "status-turn-menu.png",
+      "sha256": "40c2a0ef169bc360931355d67dc1a3d1b582c252ab5a0ca296fe68ef688ae86a",
+      "width": 800,
+      "height": 600,
+      "state": "turn-menu",
+      "inspection": "Main session directly viewed this exact local PNG through the permitted OpenAI image-reading tool; hash and PNG header checked locally.",
+      "observations": [
+        {
+          "id": "O15",
+          "text": "The central bottom panel instead presents five compact phase/action choices, visibly using red, cyan, white, green and yellow surfaces. This is a distinct turn-menu state, not the allocation or attack-ready panel.",
+          "basis": "direct visual observation",
+          "confidence": "high",
+          "region": [
+            263,
+            502,
+            276,
+            62
+          ],
+          "feature": "turn-menu",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        }
+      ]
+    },
+    {
+      "id": "V06",
+      "record": "runs/E019/board-pieces/E019-r0015.json",
+      "record_sha256": "ea0f689e5a7f5c4a3ecd02dcfa82b10e5825143b51382cbacba9488b32618088",
+      "manifest": "evidence/E019/board-pieces/E019-r0015.manifest.json",
+      "manifest_sha256": "37484089aaa7a22ac73d44e09222f9f31c955867a99db22d9e2ff5d9f674f846",
+      "asset": "34775bc4d7595235-board-with-centres-1.png",
+      "output_name": "board-with-centres-1.png",
+      "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+      "width": 800,
+      "height": 600,
+      "state": "centre-colour-reference-separate-deal",
+      "inspection": "Main session directly viewed this exact local PNG through the permitted OpenAI image-reading tool; hash and PNG header checked locally.",
+      "observations": [
+        {
+          "id": "O17",
+          "text": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Main inspected both hash-verified Q-UI-02 centre images: both show cyan digits on territories 9, 18 and 46, and white digits on 2, 3 and 30. This conflicts with F020 Q-UI-02, which assigns 2, 3 and 30 to this first image; correction is tracked in #278. The production-site interpretation remains source-qualified to the manual and F020, not established by colour alone; no flashing animation is proved.",
+          "basis": "direct colour observation; interpretation inherited with limitations from F020 Q-UI-02",
+          "confidence": "medium",
+          "region": [
+            300,
+            130,
+            40,
+            45
+          ],
+          "feature": "production-site-colour-cue",
+          "geometry_note": "Approximate native-pixel visual region, not a measured hitbox, precise boundary or rendering coordinate table."
+        }
+      ]
+    }
+  ],
+  "manual_source": {
+    "source_note": "sources/iwp-islepro-txt.md",
+    "sha256": "f1e71098a0fb83c17891ed7a5d95acd0a129e1a0712cba3e8148f70c5ca7b4b7",
+    "line_count": 252,
+    "method": "Local file hash and uppercase heading locations checked. Subjects paraphrase the document structure; they do not claim every rule has been re-read or validated. Existing T04 quote checker passed: 38 quotes, 24.6%; no new original quotations are added here.",
+    "subjects": [
+      {
+        "id": "M01",
+        "own_word_subject": "front-matter and version identity",
+        "line_start": 1,
+        "line_end": 7
+      },
+      {
+        "id": "M02",
+        "own_word_subject": "winning condition",
+        "line_start": 8,
+        "line_end": 16
+      },
+      {
+        "id": "M03",
+        "own_word_subject": "new-game setup, starting state and turn resources",
+        "line_start": 17,
+        "line_end": 38
+      },
+      {
+        "id": "M04",
+        "own_word_subject": "placing reinforcements",
+        "line_start": 39,
+        "line_end": 50
+      },
+      {
+        "id": "M05",
+        "own_word_subject": "combat selection and exchanges",
+        "line_start": 51,
+        "line_end": 92
+      },
+      {
+        "id": "M06",
+        "own_word_subject": "troop relocation step",
+        "line_start": 93,
+        "line_end": 98
+      },
+      {
+        "id": "M07",
+        "own_word_subject": "ending a turn",
+        "line_start": 99,
+        "line_end": 104
+      },
+      {
+        "id": "M08",
+        "own_word_subject": "backing out of a selection",
+        "line_start": 105,
+        "line_end": 110
+      },
+      {
+        "id": "M09",
+        "own_word_subject": "card awards and effects",
+        "line_start": 111,
+        "line_end": 137
+      },
+      {
+        "id": "M10",
+        "own_word_subject": "exchanging sets of cards",
+        "line_start": 138,
+        "line_end": 163
+      },
+      {
+        "id": "M11",
+        "own_word_subject": "random events and production locations",
+        "line_start": 164,
+        "line_end": 185
+      },
+      {
+        "id": "M12",
+        "own_word_subject": "game ending and result handling",
+        "line_start": 186,
+        "line_end": 198
+      },
+      {
+        "id": "M13",
+        "own_word_subject": "persistent game navigation controls",
+        "line_start": 199,
+        "line_end": 220
+      },
+      {
+        "id": "M14",
+        "own_word_subject": "registered-edition distinctions",
+        "line_start": 221,
+        "line_end": 234
+      },
+      {
+        "id": "M15",
+        "own_word_subject": "historical ordering appendix, not gameplay or current purchase advice",
+        "line_start": 235,
+        "line_end": 252
+      }
+    ]
+  },
+  "limitations": [
+    "All regions are approximate observation areas, not measured layout/hitbox constants.",
+    "No physical island count is newly asserted; #259 apparent land clusters versus logical groups remains unresolved.",
+    "Sea-link construction, exact crossing clearance rules and cast/score representation remain unknown (F022).",
+    "No live animation, timing, sound, keyboard mapping, illegal-action hitboxes or game rule is proved by these stills.",
+    "No original manual text, screenshot pixels or machine-local install path is included. The full manual remains later T64/T65 work."
+  ],
+  "supersedes": {
+    "path": "docs/prototypes/T63/visual-source-survey-r2.json",
+    "sha256": "7cac1fb5f96987bffa1580fde51374a2da9d0e590d870b0d392bd92c4f1aca7a",
+    "reason": "Opus R1 requires explicit disclosure that local colour reading conflicts with F020 per-file list; R5 uses neutral arrow label."
+  },
+  "correction_recorded_utc": "2026-10-19T09:27:02.182990+00:00",
+  "centre_image_crosscheck": {
+    "method": "Main reopened both local PNG files in the image viewer and verified SHA256 against E019-r0015 manifest. No new game run.",
+    "images": [
+      {
+        "asset": "34775bc4d7595235-board-with-centres-1.png",
+        "sha256": "34775bc4d7595235dea2c9302b4ae7f62ab9aa4b9a8407ad3f77419868654dc5",
+        "cyan_territories": [
+          9,
+          18,
+          46
+        ],
+        "white_examples": [
+          2,
+          3,
+          30
+        ]
+      },
+      {
+        "asset": "15e194a5c6c9b0bb-board-with-centres-2.png",
+        "sha256": "15e194a5c6c9b0bb8ec77f118f77b44bd1b84057610a4503b9df780f47669c7b",
+        "cyan_territories": [
+          9,
+          18,
+          46
+        ],
+        "white_examples": [
+          2,
+          3,
+          30
+        ]
+      }
+    ],
+    "conflict": "F020 Q-UI-02 per-file list for first image differs; explicit disclosure rather than silently editing out-of-scope finding. Follow-up #278."
+  }
+}

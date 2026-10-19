@@ -308,7 +308,7 @@
       ]
     },
     {
-      "id": "phase-arrow",
+      "id": "visible-arrow",
       "description": "A yellow rightward arrow with a red outline is visible just to the right of the player overlay. Its visual presence is established; this still image alone does not prove its timing, animation or hit area.",
       "observations": [
         "O13"
@@ -349,7 +349,7 @@
     },
     {
       "id": "production-site-colour-cue",
-      "description": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Territory 2 has a white numeral in this frame, contrary to r1. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
+      "description": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Main inspected both hash-verified Q-UI-02 centre images: both show cyan digits on territories 9, 18 and 46, and white digits on 2, 3 and 30. This conflicts with F020 Q-UI-02, which assigns 2, 3 and 30 to this first image; correction is tracked in #278. The production-site interpretation remains source-qualified to the manual and F020, not established by colour alone; no flashing animation is proved.",
       "observations": [
         "O17"
       ],

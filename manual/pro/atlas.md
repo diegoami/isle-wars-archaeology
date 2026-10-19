@@ -36,9 +36,9 @@ Layer: appearance; confidence: high-bounded. Sources: [F020-board](../../finding
 
 Layer: appearance; confidence: high-bounded. Sources: [F020-board](../../findings/F020-pro-ui-observations.md#board-and-pieces).
 
-**B-centres** The directions associate light-blue army totals with production centres. F020 Q-UI-02 separately reports three cyan digits in each of two inspected centre frames and rates that interpretation about 80% likely. V06 separately shows a cyan numeral, while centre identity remains an interpretation qualified by those sources; neither a centre flash nor a mechanical effect is established by the stills.
+**B-centres** The directions associate light-blue army totals with production centres, and F020 Q-UI-02 rates its colour interpretation about 80% likely. Its per-image country list conflicts with main’s new hash-verified reading: both centre images show cyan digits on 9, 18 and 46, and white digits on 2, 3 and 30; F020 assigns 2, 3 and 30 to the first image. This source conflict is recorded in survey r3 and tracked by #278. V06 illustrates the cyan numeral at territory 18; colour alone establishes neither centre mechanics nor a flash.
 
-Layer: appearance; confidence: moderate-bounded. Sources: [D-centres](../../sources/iwp-islepro-txt.md#situations-disasters-and-production-centres), [F020-board](../../findings/F020-pro-ui-observations.md#board-and-pieces).
+Layer: appearance; confidence: moderate-bounded. Sources: [D-centres](../../sources/iwp-islepro-txt.md#situations-disasters-and-production-centres), [F020-board](../../findings/F020-pro-ui-observations.md#board-and-pieces), [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **B-totals** F020 Q-UI-08 describes a persistent upper-left box with four colour-coded player rows, territory/card figures and an active-row marker. Its figures belong to the captured deal; neither their displayed values nor the active row are atlas constants.
 
@@ -50,47 +50,47 @@ Layer: appearance; confidence: high-bounded. Sources: [F022](../../findings/F022
 
 **V-O01** The map occupies almost the full width above the lower control strip. Irregular land clusters are separated by blue water; the entire scene has a silver-blue beveled surround.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O02** Land has a strongly embossed, mottled relief appearance with jagged bright coastlines and a cyan-white coastal glow. This is visible artwork; no claim is made about 3D geometry or how the original engine stores it.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O03** The sea has a mottled square-like blue texture, with brighter blue around the coast; it is visually distinct from the coloured relief land.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O04** Solid pale straight strokes span water between land areas; their ends meet or disappear against the coastal artwork. No arrowheads, path animation, exact endpoint construction or procedural midpoint rule is established by this still frame.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O05** Territory regions carry red, green, yellow/ochre and blue/purple tints. Dark relief seams and colour transitions partition the land. The screenshot does not establish the logical grouping or adjacency of every apparent cluster.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O06** Small black circular labels with fine white identifiers are visually separate from much larger light army-count digits over the territories. The two text scales make identity and army strength distinct.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O07** A black framed overlay in the upper-left lists four colour-coded player rows, each with a territory total and a card total. A small pale pointer marks the top player row in this image.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O08** A large light title is centered toward the upper-right, with a smaller publisher/edition notice at the top-right. These are reference-image branding, not reusable malpaco assets.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O09** Three framed panels run along the bottom: instruction/context at left, phase-dependent controls at center, and player/phase information at right. Their dark blue backgrounds and bright text separate them from the board.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O10** A persistent row of six text navigation choices runs along the bottom edge beneath the phase panels; the board remains visible above them.
 
-Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
-**V-O17** Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Territory 2 has a white numeral in this frame, contrary to r1. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.
+**V-O17** Some large army-count numerals are pale cyan rather than ordinary light white; the numeral 3 on territory 18 is a bounded visible example. Main inspected both hash-verified Q-UI-02 centre images: both show cyan digits on territories 9, 18 and 46, and white digits on 2, 3 and 30. This conflicts with F020 Q-UI-02, which assigns 2, 3 and 30 to this first image; correction is tracked in #278. The production-site interpretation remains source-qualified to the manual and F020, not established by colour alone; no flashing animation is proved.
 
-Layer: appearance; confidence: moderate-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: appearance; confidence: moderate-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 ## Interaction states
 
@@ -112,33 +112,33 @@ Layer: interaction; confidence: high-bounded. Sources: [F020-play](../../finding
 
 **V-O11** The left panel identifies the selected territory; the central panel becomes an allocation amount with an all-available choice, increment/decrement controls and a placement confirmation. The right panel reports the remaining allocation. The amount is zero in this frame.
 
-Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O12** The same allocation panel now displays an amount of two, with the all-available control highlighted. The right panel still reports two available armies. This is an allocation-choice view, not proof that those armies have already been committed.
 
-Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O13** A yellow rightward arrow with a red outline is visible just to the right of the player overlay. Its visual presence is established; this still image alone does not prove its timing, animation or hit area.
 
-Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O14** The center panel changes to a prominent red attack control and a yellow control for leaving that mode. The side panels identify the two selected countries and display their opposing army totals; this is a pre-attack/attack-ready view, not a capture result.
 
-Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O16** Across V02–V05 the same board deal remains recognizable while the bottom controls and status texts change. V01 and V06 come from other records/deals and must not be presented as before/after frames of that sequence.
 
-Layer: interaction; confidence: moderate-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: interaction; confidence: moderate-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 **V-O15** The central bottom panel instead presents five compact phase/action choices, visibly using red, cyan, white, green and yellow surfaces. This is a distinct turn-menu state, not the allocation or attack-ready panel.
 
-Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json).
+Layer: interaction; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json).
 
 ## Evidence boundaries
 
 **E-hit** The annotated rectangles are approximate native-pixel regions observed by main in preserved screenshots. They are viewing aids only. A drawn button, a country marker, and the actual active input area are three different things; the atlas supplies no measured hitboxes.
 
-Layer: hit-area; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r2.json), [F017-fixed](../../findings/F017-pro-board-rules.md#one-board-fixed).
+Layer: hit-area; confidence: high-bounded. Sources: [V-survey](../../docs/prototypes/T63/visual-source-survey-r3.json), [F017-fixed](../../findings/F017-pro-board-rules.md#one-board-fixed).
 
 **E-render** The local edition places unchanged, hash-verified PNG files behind code-native SVG rectangles and detail images explicitly clipped to their observed native-coordinate rectangles. This describes the atlas renderer only; it supplies no evidence for how the original game stores or draws its map.
 
@@ -183,4 +183,4 @@ Layer: scope; confidence: unknown. Limitation references: [F020-limits](../../fi
 | V05 | turn-menu | interaction-state |
 | V06 | centre-colour-reference-separate-deal | detail-reference |
 
-Every observation in main’s [immutable visual survey](../../docs/prototypes/T63/visual-source-survey-r2.json) is represented as a visual feature in [inventory.json](inventory.json), an appearance/interaction claim above, and a rectangular annotation in [atlas.json](atlas.json). This is completeness relative to the inspected survey, not a claim to have found every feature or screen in the game. The manual subjects cover all fifteen paraphrased document ranges; later-part assignments are evidence boundaries, not finished chapters.
+Every observation in main’s [immutable visual survey](../../docs/prototypes/T63/visual-source-survey-r3.json) is represented as a visual feature in [inventory.json](inventory.json), an appearance/interaction claim above, and a rectangular annotation in [atlas.json](atlas.json). This is completeness relative to the inspected survey, not a claim to have found every feature or screen in the game. The manual subjects cover all fifteen paraphrased document ranges; later-part assignments are evidence boundaries, not finished chapters.
