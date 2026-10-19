@@ -1,21 +1,27 @@
-# Pro illustrated reference
+# Pro manual: guide, atlas and rules
 
-Read the [player guide and worked turn](guide.md) for starting a game, selecting
-and confirming actions, ending a turn and distinguishing observed screens from
-static-only or unsupported procedures. Its twelve chapters cover all T64 topics;
-thirteen distinct E019 images and twenty-one callouts include seven ordered steps from
-one placement-to-pass turn. Setup/help/result pictures belong to another record.
-The sampled defender decrement appears in both panel and map; no territory capture, movement,
-card-trade screen or game-save procedure is invented.
+Begin with the [player guide and worked turn](guide.md), then consult the substantive
+[rules/reference](reference.md), [coverage and gaps](coverage.md), and
+[UI/map planning checklist](checklist.md). The reference has eighteen sections,
+covering all fifteen original-manual subject ranges and nineteen Pro spec areas.
+Each paragraph identifies its sources, evidence tier and confidence. Coverage
+includes missing screens; it never turns an unobserved procedure into visual proof.
 
-The [guide data](guide.json) carries a source, confidence and evidence basis for each
-chapter’s visible information, actions, feedback and cancellation. Missing visual
-proof remains explicit, including a registry of unobserved fields. T65 supplies the
-detailed rules/reference and final coverage handoff; this guide does not close #265.
+The checklist gives eleven player benefits and observable comparison scenarios.
+It is planning input only for [malpaco #191](https://github.com/diegoami/malpaco/issues/191)
+after 0.1.x: the owner must approve a proposal and separately authorize implementation.
+No adoption, design or original-asset transfer is implied. Main alone accepts and
+closes parent #265 after review and its full acceptance audit.
+
+The guide covers twelve topics and thirteen distinct recorded screens with twenty-one
+callouts, including seven ordered placement-to-pass steps. Context pictures belong
+to a separate record. Its [data](guide.json) keeps per-aspect evidence and unknowns.
+The [manual data](manual.json) carries reference paragraphs, subject/spec/screen
+coverage, conflicts and checklist entries. Documentation intent, static behaviour,
+observed stills, conditional calculations and unresolved gaps remain separate.
 
 Read the own-word [map/UI atlas](atlas.md), its [claim and annotation data](atlas.json),
-and the [complete-manual subject/feature inventory](inventory.json). This is the T63
-map and UI part of #265. T64 (#275) and T65 (#276) cover later manual material.
+and the [complete-manual subject/feature inventory](inventory.json). The atlas retains the T63 map/UI scope alongside the T64 guide and T65 reference.
 Subject ranges derive from main's local reading of the original directions structure;
 the repository contains paraphrases and existing T04 source notes only.
 
@@ -162,3 +168,49 @@ corrected G12 browser/native view; the other twelve final image sections have th
 same HTML as the previously inspected sections. This is not a claim of identical
 browser screenshot pixels. Earlier needs-correction and source-survey revisions
 remain unchanged.
+
+
+## Complete local book — main session only
+
+The default renderer builds the atlas alone. `--include-guide` builds the guide and
+atlas companion edition. **Use `--complete-book` for the complete manual**; it implies
+the guide and preflights its thirteen frames plus the atlas’s six references before
+creating output or copying originals. It also validates the reference/coverage/checklist.
+Use the same private combined V/G bundle map, with a new output outside every checkout:
+
+```sh
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/render_atlas.py --complete-book --bundle-map /outside-checkouts/combined-map.json --output /outside-checkouts/pro-complete-r1
+```
+
+The six pages are `index.html` (contents), `guide.html` (chapters and
+`#walkthrough`), `atlas.html`, `reference.html`, `coverage.html` and `checklist.html`.
+Every page has book navigation; the contents links to all eighteen reference sections.
+Source identifiers on the text chapters point to on-page scope notes, with repository
+paths as provenance identifiers. The receipt records every page’s SHA-256, retained
+image hashes/dimensions, guide and atlas callout counts and walkthrough order.
+No new screen is reconstructed. Prior local edition and measurement directories
+remain unchanged, including failed/intermediate editions.
+
+Main opens all six pages, all chapter/section links, reference paragraphs and checklist
+scenarios, and confirms retained annotated illustrations and detail clipping. New
+screenshots remain outside all checkouts. Main commits a new own-word verification
+under `docs/prototypes/T65/`; renderer success is not visual or semantic proof. The
+stable owner-host preview remains outside Git and is published by main only.
+
+Add these synthetic/repository checks:
+
+```sh
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/check_manual.py
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 -- python3 tools/manual/check_manual.py --self-test
+```
+
+The manual controls reject omitted topics/subjects/spec areas/screens, missing
+citations, promoted unknowns, stale ranges, absent checklist benefits/scenarios,
+broken section references and silently resolved discrepancies. Synthetic combined-book
+rendering verifies six pages, every chapter link, retained illustrations and page hashes,
+and refuses invalid reference data before copying. All fixtures use `/tmp` explicitly.
+The T65 guide refinement controls also cover source anchors, stored prose, nonvisual
+proof claims, local visual proof, record/manifest digests, surveyed walkthrough record,
+step prose and retained scope boundaries; copied omissions must make self-test fail.
+These are structural controls. The independent reviewer audits numerical rules and
+conflicts, and main checks the illustrated edition and full parent acceptance.

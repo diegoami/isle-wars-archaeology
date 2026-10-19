@@ -144,7 +144,7 @@ Layer: hit-area; confidence: high-bounded. Sources: [V-survey](../../docs/protot
 
 Layer: rendering; confidence: high-bounded. Sources: [R-tool](../../tools/manual/render_atlas.py).
 
-**E-scope** This atlas covers preserved unregistered Windows Pro evidence. It makes no DOS, registered-build, native-Windows accessibility, sound-content or complete-game claim. T64 and T65 carry later manual material; an inventoried subject is not a claim that its chapter has already been written.
+**E-scope** This atlas covers preserved unregistered Windows Pro evidence. It makes no DOS, registered-build, native-Windows accessibility, sound-content or complete-game claim. The guide and reference carry the remaining manual material; an inventoried subject is not a claim that every associated screen has been observed.
 
 Layer: scope; confidence: high-bounded. Sources: [D-whole](../../sources/iwp-islepro-txt.md), [F020-limits](../../findings/F020-pro-ui-observations.md#what-this-does-not-establish).
 
@@ -183,4 +183,6 @@ Layer: scope; confidence: unknown. Limitation references: [F020-limits](../../fi
 | V05 | turn-menu | interaction-state |
 | V06 | centre-colour-reference-separate-deal | detail-reference |
 
-Every observation in main’s [immutable visual survey](../../docs/prototypes/T63/visual-source-survey-r3.json) is represented as a visual feature in [inventory.json](inventory.json), an appearance/interaction claim above, and a rectangular annotation in [atlas.json](atlas.json). This is completeness relative to the inspected survey, not a claim to have found every feature or screen in the game. The manual subjects cover all fifteen paraphrased document ranges; the inventory’s guide_topics link the T64 screen/procedure coverage, while detailed rules/reference remain T65 material. See the [player guide](guide.md) for the sampled placement-to-pass turn.
+Every observation in main’s [immutable visual survey](../../docs/prototypes/T63/visual-source-survey-r3.json) is represented as a visual feature in [inventory.json](inventory.json), an appearance/interaction claim above, and a rectangular annotation in [atlas.json](atlas.json). This is completeness relative to the inspected survey, not a claim to have found every feature or screen in the game. The manual subjects cover all fifteen paraphrased document ranges; the inventory’s guide_topics link the T64 screen/procedure coverage, and reference_sections link the source-qualified rules and explicit gaps. See the [player guide](guide.md) for the sampled placement-to-pass turn.
+
+Consult the [rules/reference](reference.md), [coverage register](coverage.md) and [planning checklist](checklist.md) alongside the retained atlas.

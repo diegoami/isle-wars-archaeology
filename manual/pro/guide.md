@@ -1,6 +1,6 @@
 # Pro player guide and worked turn
 
-This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. T65 supplies detailed rules/reference; #265 remains open.
+This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. The accompanying reference supplies detailed rules; #265 remains open.
 
 Read [the map/UI atlas](atlas.md) for map vocabulary and its open evidence questions. The [local edition instructions](README.md) describe the illustrated guide and atlas; the repository prose below remains useful without original pixels.
 
@@ -100,7 +100,7 @@ Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro
 
 Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro-ui-observations.md#what-this-does-not-establish).
 
-**What to do.** F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects belong to the later rules reference.
+**What to do.** F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects are in the accompanying rules reference.
 
 Evidence: static; confidence: static-bounded. [F014-trade](../../findings/F014-pro-cards-rules.md#matches-and-trade-ins).
 
@@ -257,3 +257,5 @@ Follow one preserved human turn from placement selection to the immediate hand-o
 | G14 | Worked turn, step 7: immediately after Pass, Yellow is active and country-counting feedback is shown. No completed computer turn is depicted. |
 
 Every one of the twenty-one survey observations is retained verbatim from main’s own-word [visual survey](../../docs/prototypes/T64/visual-source-survey-r2.json) in [guide.json](guide.json), with a bounded annotation. The local edition adds those observations and unchanged screenshots; their original help text is not transcribed here. Sources establish distinct evidence tiers, not a promise that every procedure has been visually tested.
+
+Read the [rules/reference](reference.md), [coverage and gaps](coverage.md) and [planning checklist](checklist.md) for the full manual context.
