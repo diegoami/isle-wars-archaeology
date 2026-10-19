@@ -110,7 +110,7 @@ Evidence: static; confidence: static-bounded. [F014-limit](../../findings/F014-p
 
 **Back out and confirm.** Before a trade is confirmed, selected cards can be toggled off. F014 identifies a skip-trade exit that leaves the hand intact and proceeds to placement. The directions’ wording about mandatory trades does not substitute for this code reading; a visual test of trade/skip behavior is still missing.
 
-Evidence: static; confidence: static-bounded. [F014-trade](../../findings/F014-pro-cards-rules.md#matches-and-trade-ins).
+Evidence: static; confidence: static-bounded. [F014-trade](../../findings/F014-pro-cards-rules.md#matches-and-trade-ins), [D-trade](../../sources/iwp-islepro-txt.md#trading-in-cards).
 
 ## Pass control to the next player
 

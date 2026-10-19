@@ -113,6 +113,13 @@
       "kind": "static",
       "scope": "Q-REI-03 owned-country selection, quantity control, commitment and no early placement exit; bounded code reading.",
       "anchor": "placement"
+    },
+    {
+      "id": "D-trade",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "T04 directions state top-of-turn mandatory trade wording; documented intent, contrasted with F014 static skip path.",
+      "anchor": "trading-in-cards"
     }
   ],
   "topics": [
@@ -397,7 +404,8 @@
         "basis": "static",
         "confidence": "static-bounded",
         "sources": [
-          "F014-trade"
+          "F014-trade",
+          "D-trade"
         ]
       }
     },
