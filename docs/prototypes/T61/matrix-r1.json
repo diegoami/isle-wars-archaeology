@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "baseline": "cdde67142ffc15d7af7432f89b24aabcd16b9b70",
+  "observed_date": "2026-10-19",
+  "claim": "Bounded local workflow audit; not a universal compatibility certification.",
+  "artifacts": {
+    "preflight-r1.json": "a11282b69ff06aafbdf0672c76e59d48a4cd5db1f5b59445773a700c41f9296e",
+    "codex-smoke-r1.json": "525bf090c601d71ed6f52a6b208898670367ef36b413884c0e11cacc988ef4a2",
+    "export-diagnostic-r1.json": "8405a8dccda04f50746470c0a3556cabc70ef0bbb7fc08eb496bf344deaa847e",
+    "codex-smoke-prompt.txt": "e432f0d0be3044bb9fca6896431d4da4ffdd9a665cf851a345b3c87d9663f28e",
+    "codex-smoke-schema.json": "66caa58f610f4b3586b0b342512bf4057ae5e3e00e47e8c5c3109646a3e6952b"
+  },
+  "areas": [
+    {
+      "area": "instructions",
+      "disposition": "works",
+      "claude": "Shared CLAUDE.md is the project rules entry point. Native review additionally receives the full task contract.",
+      "codex": "AGENTS.md points to CLAUDE.md. Live readonly exec actually read both and returned the required rules.",
+      "operator_action": "Read CLAUDE.md and docs/process.md before acting; AGENTS.md stays a pointer.",
+      "evidence": [
+        "preflight-r1.json",
+        "codex-smoke-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "skills",
+      "disposition": "explicit-equivalent",
+      "claude": "Repository skills are in .claude/skills. Older model-choice prose has drifted.",
+      "codex": "No repository .agents/skills entries: use the explicitly documented manual reading of .claude/skills/<name>/SKILL.md; no automatic Claude slash commands.",
+      "operator_action": "Use available native tools and the shared process; read the named skill manually. Do not pretend its Claude-only tool syntax exists. Model-selection prose needs #270.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": "#270"
+    },
+    {
+      "area": "agent-tools",
+      "disposition": "explicit-equivalent",
+      "claude": "Claude Agent calls and profiles are available only in a Claude session that exposes them.",
+      "codex": "This main Codex session implements directly in its isolated worktree; no Claude Agent tool is assumed.",
+      "operator_action": "Honor the owner-selected implementer and reviewer. An available tool is not permission to spawn extra implementers.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": "#268"
+    },
+    {
+      "area": "worktrees",
+      "disposition": "works",
+      "claude": "Use an isolated implementer/reviewer worktree. Native Claude reviews retain their own tree.",
+      "codex": "The main session created task/T61-client-compatibility in .claude/worktrees/T61-client-compatibility. Live smoke confirms the own-worktree rule.",
+      "operator_action": "Create a dedicated branch/worktree; never stash or clean another session. A sandbox may need approval to create sibling worktrees.",
+      "evidence": [
+        "preflight-r1.json",
+        "codex-smoke-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "permissions-hooks",
+      "disposition": "explicit-equivalent",
+      "claude": "Agent profiles have hooks; the native CLI backend uses trusted generated settings and a hook for Read/Grep/Glob plus native Bash permissions.",
+      "codex": "Claude hooks and agent grants do not load into Codex. Its actual sandbox/approvals apply. A sandbox-denied systemctl check worked after explicit host escalation in T60.",
+      "operator_action": "Use the actual client permissions; never bypass them to imitate another client. Tests inherit the required memory cap. Native Bash safeguards are not an OS sandbox.",
+      "evidence": [
+        "preflight-r1.json",
+        "codex-smoke-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "client-provider",
+      "disposition": "works",
+      "claude": "HARNESS_CLIENT=claude preserves endpoint-based detection even with inherited Codex markers.",
+      "codex": "CODEX_THREAD_ID/CODEX_SESSION_ID or HARNESS_CLIENT=codex identify OpenAI. CODEX_HOME alone does not.",
+      "operator_action": "Set HARNESS_CLIENT to the actual orchestrator for detached jobs. Never falsify HARNESS_SESSION_FAMILY to evade an old filter.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "headless-supervision",
+      "disposition": "works",
+      "claude": "Installed CLI 2.1.292 exposes noninteractive output/effort/settings options. The native review below is the live Claude check, not this preflight.",
+      "codex": "Installed CLI 0.163.0 supports read-only exec, JSON events, ephemeral mode and output schemas; live read-only smoke completed.",
+      "operator_action": "Use run-unit.sh with closed stdin and 6G cap, one watch.sh monitor, and retained output. SSH on this host does not require desktop forwarding.",
+      "evidence": [
+        "preflight-r1.json",
+        "codex-smoke-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "monitoring",
+      "disposition": "broken",
+      "claude": "Native Claude can be observed using its stdout.jsonl file through peek.sh. This is exercised by the owner-selected review, not inferred from a version string.",
+      "codex": "OpenCode export for the previous live MiniMax session exits zero with malformed JSON; peek.sh fails although watch.sh SQLite progress remains usable.",
+      "operator_action": "Use watch.sh --opencode-log plus a targeted read-only SQLite final query under rule 25 for this known failure; never rerun a healthy model merely because peek failed. Do not use the export helper as a required gate until #261 is fixed.",
+      "evidence": [
+        "preflight-r1.json",
+        "export-diagnostic-r1.json"
+      ],
+      "follow_up": "#261"
+    },
+    {
+      "area": "discovery-auth",
+      "disposition": "explicit-equivalent",
+      "claude": "CLI version/help works; auth status was checked separately in T60. Catalogue availability is not an authenticated review. Exact native identity is verified on every actual run.",
+      "codex": "codex login status reported ChatGPT login; the bounded exec call actually completed. No auth/config contents were read.",
+      "operator_action": "Discover exact model IDs live where supported; distinguish discovery from an actual successful call. Cloud startup incorrectly equates model listings with login (#271).",
+      "evidence": [
+        "preflight-r1.json",
+        "codex-smoke-r1.json"
+      ],
+      "follow_up": "#271"
+    },
+    {
+      "area": "implementation",
+      "disposition": "works",
+      "claude": "The owner can select the main session or an available isolated implementer. Only the main session merges.",
+      "codex": "The owner selected this main Codex session; it created, committed and pushed this audit branch.",
+      "operator_action": "Write RUN-NOTES.md without overwriting inherited notes, commit/push each meaningful step, open a PR. A question alone does not authorize edits.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "review",
+      "disposition": "explicit-equivalent",
+      "claude": "Use the native backend with --reviewer claude-sonnet --variant medium for this owner selection. No default change. Live review outcome and receipt are attached to the PR after this snapshot.",
+      "codex": "Codex main plus native Claude is an allowed route in the current runner. T60 live MiniMax review also demonstrated the existing route from Codex.",
+      "operator_action": "Record the selection, pin the PR head in a full brief, run the chosen reviewer once, inspect the full final and denials. Identity/coverage/DW holds remain mandatory. No live Claude result is claimed by this pre-review snapshot.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": "#268"
+    },
+    {
+      "area": "publication-ci",
+      "disposition": "works",
+      "claude": "Reviewers return findings; the trusted parent posts and labels. Approving review and green CI precede merge.",
+      "codex": "T60 Codex main opened PR #269, relayed the full M3 review and merged the exact approved head after CI and rerun. Current scripts share the poster.",
+      "operator_action": "Use gh from the parent only for authorized publication. The current audit has not tested every client as a publisher; shared poster tests and the T60 run establish the described route.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "local-research",
+      "disposition": "explicit-equivalent",
+      "claude": "Local original-game access is subject to rules 18\u201324 and permitted API routes. Native CLI does not itself make a session local or safe for originals.",
+      "codex": "The connected host has static and E019 capture directories. This audit probes existence only; it does not run the game or inspect originals.",
+      "operator_action": "Keep binaries/assets/saves/captures/derived code under their stated boundaries. Static first; local captures via the responsible main session. Do not transfer them to cloud or malpaco.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": null
+    },
+    {
+      "area": "cloud",
+      "disposition": "untested",
+      "claude": "Session-start hook is web-only, not this SSH preflight; its metadata defects are #271. No live web runtime tested.",
+      "codex": "This is an SSH-connected local host, not evidence of a cloud environment. No cloud originals/runtime tested.",
+      "operator_action": "Perform clean cloud-only checks separately, without originals. Do not run the install-capable web hook as a local smoke test.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": "#271"
+    },
+    {
+      "area": "model-choice-policy",
+      "disposition": "broken",
+      "claude": "Current runtime rejects a same-family reviewer even when explicitly owner-selected, contrary to rule 6.3.",
+      "codex": "Current runtime also rejects blocked-list choices; same-family OpenAI reviews from Codex are refused. Offline probes reproduce both.",
+      "operator_action": "Until #270 lands, use a genuinely allowed alternative selected by the owner or the permitted external reviewer/post-review route with honest identity metadata. Do not alter family markers or claim the runner supports unrestricted choices.",
+      "evidence": [
+        "preflight-r1.json"
+      ],
+      "follow_up": "#270"
+    }
+  ],
+  "official_sources": [
+    "https://learn.chatgpt.com/docs/agent-configuration/agents-md",
+    "https://learn.chatgpt.com/docs/non-interactive-mode",
+    "https://learn.chatgpt.com/docs/build-skills"
+  ]
+}

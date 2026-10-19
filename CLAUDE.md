@@ -35,6 +35,9 @@ indexed in `docs/tasks/README.md`.
 
 ## Codex compatibility
 
+For the bounded local audit, known gaps and operating steps, read
+[`docs/client-compatibility.md`](docs/client-compatibility.md).
+
 `AGENTS.md` remains a pointer to this file: Claude and Codex share these rules.
 Codex may be the main session and implement directly in its own worktree after the
 rule 6.1 question. Claude's Agent tool, hooks and slash commands are Claude-specific;
