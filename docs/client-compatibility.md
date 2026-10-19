@@ -6,6 +6,10 @@ The [machine-readable matrix](prototypes/T61/matrix-r2.json) and [preflight evid
 
 ## Compatibility matrix
 
+Historical T61 snapshot at the pinned baseline above. The model-choice guidance and #270
+workarounds in this table are superseded by [Owner-selected models after T62](#owner-selected-models-after-t62).
+The recorded T61 observations and evidence remain unchanged.
+
 | Area | Disposition | Claude Code | Codex | Operator action | Alternative/limitation | Follow-up |
 | --- | --- | --- | --- | --- | --- | --- |
 | instructions | works | Shared CLAUDE.md is the project rules entry point. Native review additionally receives the full task contract. | AGENTS.md points to CLAUDE.md. Live readonly exec actually read both and returned the required rules. | Read CLAUDE.md and docs/process.md before acting; AGENTS.md stays a pointer. | — | — |
