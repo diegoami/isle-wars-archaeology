@@ -1,0 +1,15 @@
+{
+  "expectedModel": "claude-sonnet-5-5",
+  "actualModel": "claude-sonnet-5-5",
+  "assistantModels": [
+    "claude-sonnet-5-5"
+  ],
+  "sessionId": "d343cad9-c750-42c3-b732-64a38017b8a4",
+  "exitCode": 0,
+  "seconds": 63.607,
+  "failure": null,
+  "requested_effort": "medium",
+  "raw_receipt_sha256": "29930b8b212d051edb3772b1e8772426a2e77c44bf73725b371bd3af709aae13",
+  "raw_stream_sha256": "5a61b394b8a8b02c14d8fbed787782ecfa3b5b3a930af76077ba32c063c89c8b",
+  "scope": "Safe selected receipt metadata only; raw stream/settings remain local in retained worktree."
+}

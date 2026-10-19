@@ -1,0 +1,21 @@
+✔ Codex markers and explicit client preserve Claude endpoint routing (0.813429ms)
+✔ broken, missing, unsupported and hanging primary use supported backup; healthy primary stays (499.792437ms)
+✔ plain and versioned sibling backups are discovered (8.717641ms)
+✔ direct read failure retries without corrupt output; model run never replays (208.318613ms)
+✔ provider/model review titles create flat files before CLI startup (2.666396ms)
+✔ identity: actual selected model and real final required, not exit0 or quoted content (2.182112ms)
+✔ provider/remapped model cannot reach Claude billing; credentials not in errors (1.202354ms)
+✔ coverage is explicit per changed file; generated evidence grouping cannot hide code (2.426475ms)
+✔ watched subprocess retains success, failure and timeout evidence, kills its own group (663.225372ms)
+✔ real review entry selects Claude without OpenCode, publishes once, refuses failed gates (2022.845317ms)
+✔ Claude dependency materialization makes an independent real copy and preserves relative .bin links (3.146176ms)
+✔ Claude dependency materialization skips absent installs and refuses outside, overlapping, or existing destinations (2.088836ms)
+✔ native Claude command denials cover OpenCode publishing policy without a second Bash parser (0.373769ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2750.467498

@@ -1,0 +1,86 @@
+{
+  "scope": "rework verification, no model or original-game request",
+  "checks": [
+    {
+      "argv": [
+        "python3",
+        "docs/prototypes/T61/preflight.py",
+        "--output",
+        "/tmp/iwa-T61-preflight.json"
+      ],
+      "exit": 0,
+      "sha256": "44e1426f5409cef6f3903503334a33523411410cf450142fbe6d3c9a032ffc8d"
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/prototypes/T61/check_report.py"
+      ],
+      "exit": 0,
+      "sha256": "6fc777dd70b1cb18fd3bd4d95bffb481379395ce7767a9259303802b9f09e09d"
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/prototypes/T61/check_report.py",
+        "--self-test"
+      ],
+      "exit": 0,
+      "sha256": "05cb23af4f97338507f9e2d78dd0cafe1c4eebfef59fd4a4e19937892570cce4"
+    },
+    {
+      "argv": [
+        "python3",
+        "-O",
+        "docs/prototypes/T61/check_report.py",
+        "--self-test"
+      ],
+      "exit": 0,
+      "sha256": "05cb23af4f97338507f9e2d78dd0cafe1c4eebfef59fd4a4e19937892570cce4"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "tests/harness_clients.test.mjs",
+        "tools/harness/test/claude.test.mjs"
+      ],
+      "exit": 0,
+      "sha256": "278b467c48ce46f4d8e79d0f27f0574250fa904bde6f84b8b2f8faab2b37d4c0"
+    },
+    {
+      "argv": [
+        "node",
+        "tools/harness/review.mjs",
+        "--self-test"
+      ],
+      "exit": 0,
+      "sha256": "8e60202e23ff8d0c7c57b02b9280ecb44e30d5e7d86336399e96be9f318f2f20"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/check_no_originals.py"
+      ],
+      "exit": 0,
+      "sha256": "4ed77e7854edf2519d96fb78e4ddc3369227b41200be3e777c0c18ed69a0359c"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit": 0,
+      "sha256": "a7e168df3b98ea89bb0a3fbb6854644c73b2cc4af14d5342742f30367df3b84b"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
