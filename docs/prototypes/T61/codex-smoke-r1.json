@@ -1,0 +1,53 @@
+{
+  "client": "codex-cli 0.163.0",
+  "method": "Live ephemeral read-only codex exec, ignore-user-config; default model not pinned or identity-verified. No implementation or review delegated.",
+  "prompt": "codex-smoke-prompt.txt",
+  "schema": "codex-smoke-schema.json",
+  "raw_log_sha256": "41ff84442983736d124d4acb65143b35c226ff364f6adb2b4c88a6e03e234b45",
+  "events": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a15342-ad4c-7bd2-a8b6-1ad70295d4bd"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed"
+    },
+    {
+      "type": "item.started"
+    },
+    {
+      "type": "item.completed",
+      "item_type": "command_execution",
+      "exit_code": 0,
+      "command": "/bin/bash -lc 'cat AGENTS.md'"
+    },
+    {
+      "type": "item.started"
+    },
+    {
+      "type": "item.completed",
+      "item_type": "command_execution",
+      "exit_code": 0,
+      "command": "/bin/bash -lc 'cat CLAUDE.md'"
+    },
+    {
+      "type": "item.completed"
+    },
+    {
+      "type": "turn.completed"
+    }
+  ],
+  "final": {
+    "instruction_file": "CLAUDE.md",
+    "worktree_rule": "Implementers work in isolated worktrees; the main session implements in its own worktree, never the main checkout.",
+    "claude_hooks_in_codex": false,
+    "originals_in_git": false,
+    "files_read": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  }
+}

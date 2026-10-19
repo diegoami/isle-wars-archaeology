@@ -1,0 +1,22 @@
+{
+  "session": "ses_eacd90fbfffe1LMtOO081t48Wz",
+  "command": [
+    "node",
+    "tools/harness/opencode.mjs",
+    "export",
+    "ses_eacd90fbfffe1LMtOO081t48Wz"
+  ],
+  "selected_cli": "OpenCode 1.18.32 backup",
+  "cwd": "/tmp",
+  "exit": 0,
+  "stdout_characters": 146032,
+  "json_error": {
+    "message": "Unterminated string starting at",
+    "position": 131565,
+    "line": 998,
+    "column": 25
+  },
+  "interpretation": "Invalid/truncated JSON despite exit zero. Underlying cause not established. Only structural diagnostic metadata retained; session contents omitted.",
+  "workaround": "watch.sh uses read-only SQLite progress; parent can read only the named session final under rule 25.",
+  "follow_up": "#261"
+}

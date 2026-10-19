@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "scope": "read-only offline client preflight; no model request or universal compatibility claim",
+  "host_scope": "local owner host over SSH; not cloud",
+  "baseline": "cdde67142ffc15d7af7432f89b24aabcd16b9b70",
+  "source_head": "d337adfa1789e65e4927f31228b4e8eb5adb9e4c",
+  "preflight_sha256": "b60508b0998dc4bce5bdba79d54a4d501ce06d07b3bca1079b5088710ca85300",
+  "runtime_files_unchanged_from_baseline": true,
+  "repo_layout": {
+    "claude_skills": true,
+    "codex_repo_skills": false
+  },
+  "instruction_pointer": true,
+  "probes": {
+    "node": {
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "exit": 0,
+      "version": [
+        "v24.21.0"
+      ],
+      "diagnostic_present": false
+    },
+    "python": {
+      "argv": [
+        "python3",
+        "--version"
+      ],
+      "exit": 0,
+      "version": [
+        "Python 3.14.4"
+      ],
+      "diagnostic_present": false
+    },
+    "git": {
+      "argv": [
+        "git",
+        "--version"
+      ],
+      "exit": 0,
+      "version": [
+        "git version 2.53.0"
+      ],
+      "diagnostic_present": false
+    },
+    "gh": {
+      "argv": [
+        "gh",
+        "--version"
+      ],
+      "exit": 0,
+      "version": [
+        "gh version 2.102.0 (2026-09-30)"
+      ],
+      "diagnostic_present": false
+    },
+    "codex": {
+      "argv": [
+        "codex",
+        "--version"
+      ],
+      "exit": 0,
+      "version": [
+        "codex-cli 0.163.0"
+      ],
+      "diagnostic_present": false,
+      "help_exit": 0,
+      "flags": {
+        "--sandbox": true,
+        "--json": true,
+        "--ephemeral": true,
+        "--output-schema": true
+      }
+    },
+    "claude": {
+      "argv": [
+        "claude",
+        "--version"
+      ],
+      "exit": 0,
+      "version": [
+        "2.1.292 (Claude Code)"
+      ],
+      "diagnostic_present": false,
+      "help_exit": 0,
+      "flags": {
+        "--effort": true,
+        "--setting-sources": true,
+        "--permission-mode": true,
+        "--output-format": true
+      }
+    }
+  },
+  "detection": {
+    "samples": [
+      {
+        "env": {},
+        "client": "claude",
+        "family": "claude"
+      },
+      {
+        "env": {
+          "CODEX_THREAD_ID": "fixture"
+        },
+        "client": "codex",
+        "family": "openai"
+      },
+      {
+        "env": {
+          "HARNESS_CLIENT": "codex"
+        },
+        "client": "codex",
+        "family": "openai"
+      },
+      {
+        "env": {
+          "HARNESS_CLIENT": "claude",
+          "CODEX_THREAD_ID": "fixture",
+          "ANTHROPIC_BASE_URL": "https://api.z.ai"
+        },
+        "client": "claude",
+        "family": "glm"
+      },
+      {
+        "env": {
+          "CODEX_HOME": "/fixture"
+        },
+        "client": "claude",
+        "family": "claude"
+      },
+      {
+        "env": {
+          "HARNESS_CLIENT": "codex",
+          "HARNESS_SESSION_FAMILY": "claude"
+        },
+        "client": "codex",
+        "family": "claude"
+      }
+    ],
+    "sameFamilyRejected": true,
+    "sameFamilyRejectedOpenAI": true,
+    "codexCanSelectClaude": true,
+    "blockedRejected": true
+  },
+  "tests": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "tests/harness_clients.test.mjs",
+        "tools/harness/test/claude.test.mjs"
+      ],
+      "exit": 0,
+      "summary": [
+        "\u2139 tests 13",
+        "\u2139 suites 0",
+        "\u2139 pass 13",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 2644.379957"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "tools/harness/review.mjs",
+        "--self-test"
+      ],
+      "exit": 0,
+      "summary": [
+        "self-test: 35 of 35 samples read as expected",
+        "self-test: model families, all 77 checks passed"
+      ]
+    }
+  ],
+  "user_service_manager": {
+    "exit": 0,
+    "state": "running"
+  },
+  "local_research_directories": {
+    "static": true,
+    "E019-bundles": true
+  },
+  "tracked_and_untracked_status_unchanged": true,
+  "completed": true
+}

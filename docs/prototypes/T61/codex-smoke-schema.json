@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"properties":{"instruction_file":{"type":"string"},"worktree_rule":{"type":"string"},"claude_hooks_in_codex":{"type":"boolean"},"originals_in_git":{"type":"boolean"},"files_read":{"type":"array","items":{"type":"string"}}},"required":["instruction_file","worktree_rule","claude_hooks_in_codex","originals_in_git","files_read"]}

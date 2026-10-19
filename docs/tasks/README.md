@@ -59,3 +59,4 @@ status; this index carries none.
 | T56 | Accept exploration and decompilation requests from malpaco | #256 | — |
 | T57 | Pro map presentation: crossing endpoints and interaction cues | #255 | — |
 | [T60](T60.md) | Native Claude CLI review backend | #267 | — |
+| [T61](T61.md) | Claude Code and Codex workflow compatibility audit | #268 | T60 |

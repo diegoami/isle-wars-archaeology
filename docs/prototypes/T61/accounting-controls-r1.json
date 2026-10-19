@@ -1,0 +1,21 @@
+{
+  "scope": "Structural evidence-accounting controls only; not runtime compatibility proof.",
+  "controls": [
+    {
+      "control": "missing-area",
+      "caught": true
+    },
+    {
+      "control": "missing-evidence",
+      "caught": true
+    },
+    {
+      "control": "tampered-digest",
+      "caught": true
+    },
+    {
+      "control": "untriaged-broken-route",
+      "caught": true
+    }
+  ]
+}

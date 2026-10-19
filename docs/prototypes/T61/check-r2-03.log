@@ -1,0 +1,57 @@
+{
+  "scope": "reproducible structural controls, not universal runtime proof",
+  "controls": [
+    {
+      "control": "missing-area",
+      "caught": true
+    },
+    {
+      "control": "missing-evidence",
+      "caught": true
+    },
+    {
+      "control": "tampered-digest",
+      "caught": true
+    },
+    {
+      "control": "untriaged-broken-route",
+      "caught": true
+    },
+    {
+      "control": "invalid-issue-reference",
+      "caught": true
+    },
+    {
+      "control": "missing-alternative",
+      "caught": true
+    },
+    {
+      "control": "placeholder-action",
+      "caught": true
+    },
+    {
+      "control": "contradictory-disposition",
+      "caught": true
+    },
+    {
+      "control": "prompt-only-evidence",
+      "caught": true
+    },
+    {
+      "control": "placeholder-claude-text",
+      "caught": true
+    },
+    {
+      "control": "missing-guide-area",
+      "caught": true
+    },
+    {
+      "control": "wrong-guide-disposition",
+      "caught": true
+    },
+    {
+      "control": "missing-guide-issue",
+      "caught": true
+    }
+  ]
+}
