@@ -1,0 +1,788 @@
+{
+  "schema": "pro-atlas/1",
+  "text_path": "manual/pro/atlas.md",
+  "sources": [
+    {
+      "id": "D-objective",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "Publisher directions, source-note lines 10; intended objective only.",
+      "anchor": "objective"
+    },
+    {
+      "id": "D-combat",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "Directions lines 56–73 describe the turn actions and adjacency, not measured controls or outcomes.",
+      "anchor": "attack-and-combat"
+    },
+    {
+      "id": "D-centres",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "Directions lines 167–178 associate centres with light-blue army totals; documentation only.",
+      "anchor": "situations-disasters-and-production-centres"
+    },
+    {
+      "id": "D-whole",
+      "path": "sources/iwp-islepro-txt.md",
+      "kind": "documented",
+      "scope": "T04 source notes establish intended manual subjects; no original text reproduced."
+    },
+    {
+      "id": "F017-size",
+      "path": "findings/F017-pro-board-rules.md",
+      "kind": "static",
+      "scope": "F017 Q-MAP-02/Q-MAP-14: bytecode-checked table size, not a fresh screen count.",
+      "anchor": "the-boards-size"
+    },
+    {
+      "id": "F017-groups",
+      "path": "findings/F017-pro-board-rules.md",
+      "kind": "static",
+      "scope": "F017 Q-MAP-03/Q-MAP-11: nine logical groups and their fixed memberships.",
+      "anchor": "the-islands"
+    },
+    {
+      "id": "F017-links",
+      "path": "findings/F017-pro-board-rules.md",
+      "kind": "static",
+      "scope": "F017 Q-MAP-04/Q-MAP-05/Q-MAP-12: graph and click-validation reading.",
+      "anchor": "adjacency"
+    },
+    {
+      "id": "F017-fixed",
+      "path": "findings/F017-pro-board-rules.md",
+      "kind": "static",
+      "scope": "F017 Q-MAP-06/Q-MAP-08: fixed marker-coordinate tables; visual construction not proved.",
+      "anchor": "one-board-fixed"
+    },
+    {
+      "id": "F020-board",
+      "path": "findings/F020-pro-ui-observations.md",
+      "kind": "reported-visual",
+      "scope": "Completed/narrowed Q-UI-01/02/03/05/20 observations only; no pending question promoted.",
+      "anchor": "board-and-pieces"
+    },
+    {
+      "id": "F020-play",
+      "path": "findings/F020-pro-ui-observations.md",
+      "kind": "reported-visual",
+      "scope": "Completed/narrowed Q-UI-08/Q-UI-12 panel sequences; values differ between deals.",
+      "anchor": "play"
+    },
+    {
+      "id": "F020-limits",
+      "path": "findings/F020-pro-ui-observations.md",
+      "kind": "limitation",
+      "scope": "Catalogue boundaries and individually pending entries, including inputs/sounds.",
+      "anchor": "what-this-does-not-establish"
+    },
+    {
+      "id": "F022",
+      "path": "findings/F022-pro-map-presentation.md",
+      "kind": "reported-visual",
+      "scope": "Bounded crossing examples and selected-country/pair feedback; not a complete census.",
+      "anchor": "answers"
+    },
+    {
+      "id": "F022-limits",
+      "path": "findings/F022-pro-map-presentation.md",
+      "kind": "limitation",
+      "scope": "Unknown crossing construction, universal endpoint rules and general legal-target overlay.",
+      "anchor": "limitations"
+    },
+    {
+      "id": "F022-audit",
+      "path": "findings/F022-pro-map-presentation.md",
+      "kind": "limitation",
+      "scope": "Explicit mismatch between visual land-mass description and nine logical groups.",
+      "anchor": "affected-claims"
+    },
+    {
+      "id": "V-survey",
+      "path": "docs/prototypes/T63/visual-source-survey-r1.json",
+      "kind": "local-visual",
+      "scope": "Main alone inspected the five preserved images and original manual subject structure; bounded regions are observational callouts."
+    },
+    {
+      "id": "R-tool",
+      "path": "tools/manual/render_atlas.py",
+      "kind": "implementation",
+      "scope": "Atlas assembly implementation; does not establish original game rendering."
+    }
+  ],
+  "claims": [
+    {
+      "id": "M-size",
+      "text": "Treat a country as the numbered unit that owns armies. F017 counts 46 such units in the fixed board tables; this is a static result, not a new visual census.",
+      "layer": "topology",
+      "confidence": "static-high",
+      "section": "Map",
+      "sources": [
+        "F017-size"
+      ]
+    },
+    {
+      "id": "M-groups",
+      "text": "The rules partition those countries into nine logical island groups. Their sizes are 3, 5, 5, 10, 3, 7, 3, 7 and 3; complete-group ownership is a rules concept, so use the recorded memberships rather than counting separated land silhouettes.",
+      "layer": "topology",
+      "confidence": "static-high",
+      "section": "Map",
+      "sources": [
+        "F017-groups"
+      ]
+    },
+    {
+      "id": "M-objective",
+      "text": "The publisher describes taking control of all nine island groups as the objective. That is documented intent; the atlas does not re-test victory handling.",
+      "layer": "scope",
+      "confidence": "documented",
+      "section": "Map",
+      "sources": [
+        "D-objective"
+      ]
+    },
+    {
+      "id": "M-links",
+      "text": "F017 tabulates 80 undirected border links, represented by 160 directed entries. Every link is reciprocal and the graph is connected. A water crossing uses the ordinary adjacency relation; the tables do not label a special sea-movement category.",
+      "layer": "topology",
+      "confidence": "static-high",
+      "section": "Map",
+      "sources": [
+        "F017-links"
+      ]
+    },
+    {
+      "id": "M-fixed",
+      "text": "F017 finds one fixed board and fixed per-country marker positions in this unregistered build. A new deal can change owners and armies without supplying another layout. Marker coordinates locate a selection cue; they do not define a country outline or its click region.",
+      "layer": "topology",
+      "confidence": "static-high",
+      "section": "Map",
+      "sources": [
+        "F017-fixed"
+      ]
+    },
+    {
+      "id": "B-look",
+      "text": "F020 reports relief-textured country fills above the lower control panels, with pale straight strokes crossing blue water. The fills use blue, yellow, red and green ownership tints. These are reported visual observations of the preserved Pro screens, not reusable map artwork.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "F020-board"
+      ]
+    },
+    {
+      "id": "B-numbers",
+      "text": "Distinguish the small country-index circles from the larger army digits. F020 describes ordinary army digits as white with dark outlines; these labels answer different questions: which country is this, and how many armies does it display?",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "F020-board"
+      ]
+    },
+    {
+      "id": "B-centres",
+      "text": "The directions associate light-blue army totals with production centres. F020 Q-UI-02 separately reports three cyan digits in each of two inspected centre frames and rates that interpretation about 80% likely. V06 separately shows a cyan numeral, while centre identity remains an interpretation qualified by those sources; neither a centre flash nor a mechanical effect is established by the stills.",
+      "layer": "appearance",
+      "confidence": "moderate-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "D-centres",
+        "F020-board"
+      ]
+    },
+    {
+      "id": "B-totals",
+      "text": "F020 Q-UI-08 describes a persistent upper-left box with four colour-coded player rows, territory/card figures and an active-row marker. Its figures belong to the captured deal; neither their displayed values nor the active row are atlas constants.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "F020-play"
+      ]
+    },
+    {
+      "id": "B-crossings",
+      "text": "A visible water stroke is a route cue, while graph legality comes from the border tables. F022 identifies shore contact, straight continuation and nearby country-index circles as useful cues in selected examples; it does not establish that every endpoint is equally clear.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "F022",
+        "F017-links"
+      ]
+    },
+    {
+      "id": "I-selected",
+      "text": "A selected-country arrow and lower-panel country identifier are evidenced placement feedback in F020 Q-UI-08 and F022. They identify a selected country; they do not establish a display of every legal neighbour.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "F020-play",
+        "F022"
+      ]
+    },
+    {
+      "id": "I-allocation",
+      "text": "F020 Q-UI-08 distinguishes the quantity allocated in the lower controls from the armies already displayed on the selected country. In its recorded example the allocation changes before the committed-placement frame changes the board total. This is one observed sequence, not a general timing guarantee.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "F020-play"
+      ]
+    },
+    {
+      "id": "I-combat",
+      "text": "The recorded attack-ready panel identifies an attacking country and a defending country, presents battle controls and compares their stacks. F020 Q-UI-08 notes a clipped lower line; the atlas does not reconstruct obscured wording or treat every line as readable.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "F020-play"
+      ]
+    },
+    {
+      "id": "I-return",
+      "text": "F020 Q-UI-08/Q-UI-12 show a return from combat-side feedback to the turn-action panel. Returning to that panel does not by itself mean that the whole human turn or game has finished.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "F020-play"
+      ]
+    },
+    {
+      "id": "E-hit",
+      "text": "The annotated rectangles are approximate native-pixel regions observed by main in preserved screenshots. They are viewing aids only. A drawn button, a country marker, and the actual active input area are three different things; the atlas supplies no measured hitboxes.",
+      "layer": "hit-area",
+      "confidence": "high-bounded",
+      "section": "Evidence boundaries",
+      "sources": [
+        "V-survey",
+        "F017-fixed"
+      ]
+    },
+    {
+      "id": "E-render",
+      "text": "The local edition places unchanged, hash-verified PNG files behind code-native SVG rectangles and detail viewports. This describes the atlas renderer only; it supplies no evidence for how the original game stores or draws its map.",
+      "layer": "rendering",
+      "confidence": "high-bounded",
+      "section": "Evidence boundaries",
+      "sources": [
+        "R-tool"
+      ]
+    },
+    {
+      "id": "E-scope",
+      "text": "This atlas covers preserved unregistered Windows Pro evidence. It makes no DOS, registered-build, native-Windows accessibility, sound-content or complete-game claim. T64 and T65 carry later manual material; an inventoried subject is not a claim that its chapter has already been written.",
+      "layer": "scope",
+      "confidence": "high-bounded",
+      "section": "Evidence boundaries",
+      "sources": [
+        "D-whole",
+        "F020-limits"
+      ]
+    },
+    {
+      "id": "U-islands",
+      "text": "The relationship between visually separated land masses and the nine logical groups remains unresolved under #259. F020 describes ten apparent islands; the atlas retains that discrepancy instead of silently changing the static group count or presenting a new visual census.",
+      "layer": "topology",
+      "confidence": "unknown",
+      "section": "Evidence boundaries",
+      "limitation_sources": [
+        "F022-audit"
+      ],
+      "sources": []
+    },
+    {
+      "id": "U-hit",
+      "text": "Exact country/button hit regions, keyboard alternatives and exhaustive illegal-input feedback remain unestablished here. Pending F020 input walks and the original score layout cannot be replaced by the atlas callout rectangles.",
+      "layer": "hit-area",
+      "confidence": "unknown",
+      "section": "Evidence boundaries",
+      "limitation_sources": [
+        "F020-limits",
+        "F017-fixed"
+      ],
+      "sources": []
+    },
+    {
+      "id": "U-mechanism",
+      "text": "Whether individual water strokes are baked into background artwork, independent score objects, or another rendering arrangement remains unknown. Straight appearance and fixed adjacency cannot select a storage mechanism or prove a coastline-midpoint algorithm.",
+      "layer": "rendering",
+      "confidence": "unknown",
+      "section": "Evidence boundaries",
+      "limitation_sources": [
+        "F022-limits"
+      ],
+      "sources": []
+    },
+    {
+      "id": "U-neighbours",
+      "text": "A comprehensive legal-target overlay and crossing-specific selection feedback remain unestablished. The cited sampled pair feedback does not prove that such overlays never occur in another phase, nor demonstrate a cross-water interaction.",
+      "layer": "interaction",
+      "confidence": "unknown",
+      "section": "Evidence boundaries",
+      "limitation_sources": [
+        "F022-limits"
+      ],
+      "sources": []
+    },
+    {
+      "id": "U-events",
+      "text": "Random-event identity, event animation durations and event-history presentation are not established by these six atlas frames. Candidate pixel changes in narrowed F020 watches are not identified disasters; pending catalogue entries remain pending.",
+      "layer": "interaction",
+      "confidence": "unknown",
+      "section": "Evidence boundaries",
+      "limitation_sources": [
+        "F020-limits"
+      ],
+      "sources": []
+    },
+    {
+      "id": "U-registration",
+      "text": "The atlas does not establish the registered build or every locked-option transition. The directions list registration features, but a documented possibility is not an observed control state in this unregistered evidence.",
+      "layer": "scope",
+      "confidence": "unknown",
+      "section": "Evidence boundaries",
+      "limitation_sources": [
+        "F020-limits"
+      ],
+      "sources": []
+    },
+    {
+      "id": "V-O01",
+      "text": "The map occupies almost the full width above the lower control strip. Irregular land clusters are separated by blue water; the entire scene has a silver-blue beveled surround.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O02",
+      "text": "Land has a strongly embossed, mottled relief appearance with jagged bright coastlines and a cyan-white coastal glow. This is visible artwork; no claim is made about 3D geometry or how the original engine stores it.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O03",
+      "text": "The sea has a mottled square-like blue texture, with brighter blue around the coast; it is visually distinct from the coloured relief land.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O04",
+      "text": "Solid pale straight strokes span water between land areas; their ends meet or disappear against the coastal artwork. No arrowheads, path animation, exact endpoint construction or procedural midpoint rule is established by this still frame.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O05",
+      "text": "Territory regions carry red, green, yellow/ochre and blue/purple tints. Dark relief seams and colour transitions partition the land. The screenshot does not establish the logical grouping or adjacency of every apparent cluster.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O06",
+      "text": "Small black circular labels with fine white identifiers are visually separate from much larger light army-count digits over the territories. The two text scales make identity and army strength distinct.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O07",
+      "text": "A black framed overlay in the upper-left lists four colour-coded player rows, each with a territory total and a card total. A small pale pointer marks the top player row in this image.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O08",
+      "text": "A large light title is centered toward the upper-right, with a smaller publisher/edition notice at the top-right. These are reference-image branding, not reusable malpaco assets.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O09",
+      "text": "Three framed panels run along the bottom: instruction/context at left, phase-dependent controls at center, and player/phase information at right. Their dark blue backgrounds and bright text separate them from the board.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O10",
+      "text": "A persistent row of six text navigation choices runs along the bottom edge beneath the phase panels; the board remains visible above them.",
+      "layer": "appearance",
+      "confidence": "high-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O11",
+      "text": "The left panel identifies the selected territory; the central panel becomes an allocation amount with an all-available choice, increment/decrement controls and a placement confirmation. The right panel reports the remaining allocation. The amount is zero in this frame.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O12",
+      "text": "The same allocation panel now displays an amount of two, with the all-available control highlighted. The right panel still reports two available armies. This is an allocation-choice view, not proof that those armies have already been committed.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O13",
+      "text": "A yellow rightward arrow with a red outline is visible just to the right of the player overlay. Its visual presence is established; this still image alone does not prove its timing, animation or hit area.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O14",
+      "text": "The center panel changes to a prominent red attack control and a yellow control for leaving that mode. The side panels identify the two selected countries and display their opposing army totals; this is a pre-attack/attack-ready view, not a capture result.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O16",
+      "text": "Across V02–V05 the same board deal remains recognizable while the bottom controls and status texts change. V01 and V06 come from other records/deals and must not be presented as before/after frames of that sequence.",
+      "layer": "interaction",
+      "confidence": "moderate-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O15",
+      "text": "The central bottom panel instead presents five compact phase/action choices, visibly using red, cyan, white, green and yellow surfaces. This is a distinct turn-menu state, not the allocation or attack-ready panel.",
+      "layer": "interaction",
+      "confidence": "high-bounded",
+      "section": "Interaction states",
+      "sources": [
+        "V-survey"
+      ]
+    },
+    {
+      "id": "V-O17",
+      "text": "Some large army-count numerals are pale cyan rather than ordinary light white; the numeral on territory 2 is a bounded visible example. The production-site interpretation is source-qualified to F020 Q-UI-02 and the manual; the screenshot alone does not establish that mechanism or a flashing animation.",
+      "layer": "appearance",
+      "confidence": "moderate-bounded",
+      "section": "Reading the board",
+      "sources": [
+        "V-survey"
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "V01",
+      "role": "full-board",
+      "caption": "Full-board overview from E019-r0014. This is a different deal from V02–V05; read its composition and labels without treating it as their starting state.",
+      "claims": [
+        "B-look",
+        "B-numbers",
+        "B-totals"
+      ]
+    },
+    {
+      "id": "V02",
+      "role": "interaction-state",
+      "caption": "Placement selection from E019-r0026: the quantity controls are visible before any amount has been chosen in this frame.",
+      "claims": [
+        "I-selected",
+        "I-allocation"
+      ]
+    },
+    {
+      "id": "V03",
+      "role": "interaction-state",
+      "caption": "Allocation choice in the same E019-r0026 sequence: the displayed amount is chosen; it is not evidence of committed armies.",
+      "claims": [
+        "I-allocation"
+      ]
+    },
+    {
+      "id": "V04",
+      "role": "interaction-state",
+      "caption": "Attack-ready panel from E019-r0026. The board is retained while the lower panels identify the opposing pair and battle controls.",
+      "claims": [
+        "I-combat"
+      ]
+    },
+    {
+      "id": "V05",
+      "role": "interaction-state",
+      "caption": "Turn-action menu in E019-r0026, distinct from allocation and combat controls. This does not mean the whole turn is over.",
+      "claims": [
+        "I-return"
+      ]
+    },
+    {
+      "id": "V06",
+      "role": "detail-reference",
+      "caption": "Separate-deal colour reference from E019-r0015. Cyan numeral appearance is visible; production-centre meaning retains its source qualification.",
+      "claims": [
+        "B-centres"
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "id": "A-O01",
+      "frame": "V01",
+      "observation": "O01",
+      "rect": [
+        8,
+        8,
+        784,
+        488
+      ],
+      "label": "Overall composition — O01"
+    },
+    {
+      "id": "A-O02",
+      "frame": "V01",
+      "observation": "O02",
+      "rect": [
+        100,
+        105,
+        420,
+        195
+      ],
+      "label": "Terrain coastline — O02"
+    },
+    {
+      "id": "A-O03",
+      "frame": "V01",
+      "observation": "O03",
+      "rect": [
+        270,
+        360,
+        35,
+        50
+      ],
+      "label": "Water background — O03"
+    },
+    {
+      "id": "A-O04",
+      "frame": "V01",
+      "observation": "O04",
+      "rect": [
+        78,
+        110,
+        184,
+        65
+      ],
+      "label": "Sea links — O04"
+    },
+    {
+      "id": "A-O05",
+      "frame": "V01",
+      "observation": "O05",
+      "rect": [
+        280,
+        40,
+        245,
+        205
+      ],
+      "label": "Territory boundaries — O05"
+    },
+    {
+      "id": "A-O06",
+      "frame": "V01",
+      "observation": "O06",
+      "rect": [
+        410,
+        90,
+        90,
+        125
+      ],
+      "label": "Territory id and army count — O06"
+    },
+    {
+      "id": "A-O07",
+      "frame": "V01",
+      "observation": "O07",
+      "rect": [
+        14,
+        14,
+        210,
+        100
+      ],
+      "label": "Player summary — O07"
+    },
+    {
+      "id": "A-O08",
+      "frame": "V01",
+      "observation": "O08",
+      "rect": [
+        412,
+        6,
+        378,
+        52
+      ],
+      "label": "Title and edition notice — O08"
+    },
+    {
+      "id": "A-O09",
+      "frame": "V01",
+      "observation": "O09",
+      "rect": [
+        8,
+        499,
+        784,
+        66
+      ],
+      "label": "Bottom panel layout — O09"
+    },
+    {
+      "id": "A-O10",
+      "frame": "V01",
+      "observation": "O10",
+      "rect": [
+        47,
+        573,
+        690,
+        26
+      ],
+      "label": "Persistent navigation — O10"
+    },
+    {
+      "id": "A-O11",
+      "frame": "V02",
+      "observation": "O11",
+      "rect": [
+        8,
+        500,
+        784,
+        65
+      ],
+      "label": "Selection and allocation — O11"
+    },
+    {
+      "id": "A-O12",
+      "frame": "V03",
+      "observation": "O12",
+      "rect": [
+        264,
+        501,
+        275,
+        62
+      ],
+      "label": "Allocation feedback — O12"
+    },
+    {
+      "id": "A-O13",
+      "frame": "V03",
+      "observation": "O13",
+      "rect": [
+        216,
+        78,
+        35,
+        30
+      ],
+      "label": "Phase arrow — O13"
+    },
+    {
+      "id": "A-O14",
+      "frame": "V04",
+      "observation": "O14",
+      "rect": [
+        8,
+        500,
+        784,
+        65
+      ],
+      "label": "Combat panel — O14"
+    },
+    {
+      "id": "A-O16",
+      "frame": "V04",
+      "observation": "O16",
+      "rect": [
+        8,
+        8,
+        784,
+        488
+      ],
+      "label": "Board persistence across states — O16"
+    },
+    {
+      "id": "A-O15",
+      "frame": "V05",
+      "observation": "O15",
+      "rect": [
+        263,
+        502,
+        276,
+        62
+      ],
+      "label": "Turn menu — O15"
+    },
+    {
+      "id": "A-O17",
+      "frame": "V06",
+      "observation": "O17",
+      "rect": [
+        28,
+        228,
+        52,
+        65
+      ],
+      "label": "Production site colour cue — O17"
+    }
+  ]
+}

@@ -42,6 +42,7 @@ def preflight(frames, mapping, output, roots):
     for frame in frames:
         fid = frame["id"]
         need(fid in mapping, f"{fid}: missing bundle-map entry")
+        need(isinstance(mapping[fid], str) and Path(mapping[fid]).is_absolute(), f"{fid}: bundle path must be absolute")
         path = outside_checkouts(Path(mapping[fid]), roots)
         need(path.is_file(), f"{fid}: missing local image")
         expected = frame.get("sha256", "")
@@ -173,7 +174,16 @@ def self_test():
         else:
             raise ValueError("in-checkout source control escaped")
         need(not output.exists(), "negative controls created output")
-        print("PASS: synthetic PNG baseline and 8 renderer negative controls; no originals used.")
+        positive_frame = dict(frame, state="Synthetic visible state", asset="synthetic.png", observations=[{"id": "O", "text": "Invented feature for rendering.", "confidence": "synthetic", "basis": "Synthetic input only."}])
+        positive_atlas = {"claims": [], "sources": [], "views": [{"id": "V", "caption": "Synthetic render baseline."}], "annotations": [{"id": "A", "frame": "V", "observation": "O", "rect": [0, 0, 1, 1], "label": "Synthetic feature"}]}
+        html_path = render(positive_atlas, {"subjects": []}, {"frames": [positive_frame], "limitations": ["Synthetic only."]}, {"V": str(original)}, output, [checkout])
+        document = html_path.read_text()
+        need(document.count("<svg ") == 2 and 'class="callout"' in document and 'viewBox="0 0 1 1"' in document, "rendered full image/annotation/detail missing")
+        copied = list((output / "images").iterdir())
+        need(len(copied) == 1 and copied[0].read_bytes() == original.read_bytes(), "render changed image bytes")
+        need((output / "render-receipt.json").is_file(), "render receipt missing")
+        print("PASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.")
+        print("PASS: synthetic PNG baselines and 8 renderer negative controls; no originals used.")
 
 
 def main():

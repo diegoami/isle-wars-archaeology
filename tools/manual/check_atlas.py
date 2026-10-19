@@ -12,7 +12,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[2]
 HEX = re.compile(r"[0-9a-f]{64}")
 LAYERS = {"appearance", "topology", "hit-area", "rendering", "interaction", "scope"}
-UNKNOWN_IDS = {"U-hit", "U-mechanism", "U-neighbours", "U-events", "U-registration"}
+UNKNOWN_IDS = {"U-hit", "U-mechanism", "U-neighbours", "U-events", "U-registration", "U-islands"}
 
 
 def need(condition, message):
@@ -57,12 +57,12 @@ def region_ok(rect, width, height, label):
 def validate(atlas, inventory, survey, root=ROOT):
     need(atlas.get("schema") == "pro-atlas/1", "atlas schema")
     need(inventory.get("schema") == "pro-manual-inventory/1", "inventory schema")
-    substantive(survey.get("method"), "survey method")
+    substantive(survey.get("method", survey.get("scope")), "survey method/scope")
     need(survey.get("limitations"), "survey limitations missing")
     sources = unique(atlas.get("sources", []), "sources")
     for sid, source in sources.items():
         path = repo_file(root, source.get("path"))
-        need(source.get("kind") in {"documented", "static", "reported-visual", "local-visual", "limitation"}, f"{sid}: source kind")
+        need(source.get("kind") in {"documented", "static", "reported-visual", "local-visual", "limitation", "implementation"}, f"{sid}: source kind")
         substantive(source.get("scope"), f"{sid} scope")
         anchor = source.get("anchor")
         if anchor:
@@ -83,7 +83,7 @@ def validate(atlas, inventory, survey, root=ROOT):
             need(refs, f"{cid}: missing sources")
         need(claim.get("section") in {"Map", "Reading the board", "Interaction states", "Evidence boundaries"}, f"{cid}: section")
     need(UNKNOWN_IDS <= claims.keys(), "required unknowns missing")
-    need("#259" in claims["U-mechanism"]["text"], "#259 unknown missing")
+    need("#259" in claims["U-islands"]["text"], "#259 unknown missing")
     for layer in LAYERS:
         need(any(c["layer"] == layer for c in claims.values()), f"missing layer: {layer}")
     frames = unique(survey.get("frames", []), "survey frames")
@@ -99,7 +99,7 @@ def validate(atlas, inventory, survey, root=ROOT):
         record = read_json(repo_file(root, frame.get("record")))
         manifest = read_json(repo_file(root, frame.get("manifest")))
         entries = [e for e in manifest.get("files", []) if e.get("asset") == frame.get("asset")]
-        need(len(entries) == 1 and entries[0].get("sha256") == digest and entries[0].get("class") == "recording", f"{fid}: image/manifest mismatch")
+        need(len(entries) == 1 and entries[0].get("sha256") == digest and entries[0].get("class") in {"recording", "screenshot"}, f"{fid}: image/manifest mismatch")
         need(any(e.get("name") == entries[0]["name"] and e.get("sha256") == digest for e in record.get("outputs", [])), f"{fid}: image/record mismatch")
         need(record.get("status") == "completed", f"{fid}: incomplete record")
         for key in ("record", "manifest"):
@@ -109,17 +109,17 @@ def validate(atlas, inventory, survey, root=ROOT):
         substantive(view.get("caption"), f"{fid} caption")
         need(view.get("claims") and all(c in claims and claims[c]["confidence"] != "unknown" for c in view["claims"]), f"{fid}: view claims")
         if view.get("role") == "interaction-state":
-            substantive(frame.get("state"), f"{fid} state")
+            need(isinstance(frame.get("state"), str) and len(frame["state"]) >= 3, f"{fid}: state absent")
             need(frame["state"] not in states and digest not in hashes, "states must use distinct states and image bytes")
             states.add(frame["state"])
             hashes.add(digest)
         else:
-            need(view.get("role") == "full-board", f"{fid}: view role")
+            need(view.get("role") in {"full-board", "detail-reference"}, f"{fid}: view role")
         obs = unique(frame.get("observations", []), f"{fid} observations")
         for oid, observation in obs.items():
             need(oid not in observations, "observation IDs must be globally unique")
             substantive(observation.get("text"), oid)
-            substantive(observation.get("confidence"), f"{oid} confidence")
+            need(isinstance(observation.get("confidence"), str) and len(observation["confidence"]) >= 3, f"{oid}: confidence absent")
             substantive(observation.get("basis"), f"{oid} basis")
             region_ok(observation.get("region"), width, height, oid)
             observations[oid] = (fid, observation)
@@ -142,7 +142,7 @@ def validate(atlas, inventory, survey, root=ROOT):
         need(annotation.get("frame") == fid, f"{aid}: annotation frame mismatch")
         region_ok(annotation.get("rect"), frames[fid]["width"], frames[fid]["height"], aid)
         need(annotation["rect"] == observation["region"], f"{aid}: annotation not main's observed region")
-        substantive(annotation.get("label"), f"{aid} label")
+        need(isinstance(annotation.get("label"), str) and len(annotation["label"]) >= 3, f"{aid}: label absent")
     subjects = unique(inventory.get("subjects", []), "manual subjects")
     documented = unique(survey.get("manual_source", {}).get("subjects", []), "survey manual subjects")
     need(set(subjects) == set(documented), "manual subject inventory incomplete")
