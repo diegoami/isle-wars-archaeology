@@ -62,3 +62,4 @@ status; this index carries none.
 | [T61](T61.md) | Claude Code and Codex workflow compatibility audit | #268 | T60 |
 | [T63](T63.md) | Pro manual: illustrated map and UI atlas | #274; Refs #265 | T61 |
 | [T64](T64.md) | Pro manual: screen guide and illustrated turn walkthrough | #275; Refs #265 | T63 |
+| [T65](T65.md) | Pro manual: complete reference, coverage and malpaco handoff | #276; Refs #265, #280 | T64 |

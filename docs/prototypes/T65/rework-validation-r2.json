@@ -1,0 +1,94 @@
+{
+  "schema": "T65-rework-validation/2",
+  "review": "Native Opus Medium round2 R1\u2013R3 implementation. Main owns subsequent audit-scope wording, review labels, approval and existing #282 CI follow-up.",
+  "basis": "All child processes inherit enclosing systemd6G/no-swap scope. Synthetic fixtures and copied guards explicitly under /tmp. No originals, new runs or new numerical/visual claims. Every prior presence-only Markdown guard was superseded by exact complete-document equality. Metadata controls synchronize their Markdown so prose equality cannot mask semantic omission tests. Invalid-ref display markers allow synthetic controls to reach semantic guards; valid production metadata is always checked before documents/HTML publish. Earlier records retained unchanged.",
+  "prior_suite": {
+    "commands": [
+      {
+        "command": "python3 tools/manual/check_manual.py",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/manual/check_manual.py --self-test",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/manual/check_guide.py",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/manual/check_guide.py --self-test",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/manual/check_atlas.py",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/manual/check_atlas.py --self-test",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/manual/render_atlas.py --self-test",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/check_no_originals.py",
+        "exit": 0
+      }
+    ],
+    "basis": "Sequential return-code assertions completed for all eight commands in /tmp/T65-second-rework-checks.py before check_links stopped the report writer on an untracked raw review Markdown artifact. Captured per-command stdout was not persisted by that interrupted writer; no verbatim outputs are reconstructed. Product code/data did not change afterward.",
+    "manual_negative_controls": 117
+  },
+  "environment_link_failure": {
+    "command": "python3 tools/check_links.py",
+    "exit": 1,
+    "reason": "Untracked raw review Markdown contained an ellipsis in a link destination. Main retained the entire directory externally, verified all37 file hashes unchanged and replaced the original cache path with a directory symlink. No checker or evidence content was edited; subsequent links check passes."
+  },
+  "final_checks": [
+    {
+      "command": "python3 tools/check_links.py",
+      "exit": 0,
+      "output": "links and JSON ok (2527 files)"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": "git diff --check 41a97e7f788b4d3ede4afeba96765cd77401eb28",
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "omission_scope": {
+    "expressions": 51,
+    "unique_assignments": 10,
+    "meaningful_control_escaped": 61,
+    "self_test_passed": 0,
+    "masking_only_or_other_failures": 0,
+    "secondary_overlap": "Three omitted sites also produced wrong-reason/masked outcomes for other controls; every one still had an independent actual escaped control. The full ledger retains those outcomes. This is call-site coverage, not a proof of every Boolean subexpression or coordinated claim truth.",
+    "ledger": "docs/prototypes/T65/complete-guard-sweep-r1.json"
+  },
+  "source_sha256": {
+    "manual/pro/README.md": "977f8cd4dbc5db02e067985d846105766b063482249ee6951250fca89656a17e",
+    "manual/pro/atlas.json": "be14dd61da5fa39a402144aacd8d111220df2bab7d6d5f4bbcf98223774569fe",
+    "manual/pro/atlas.md": "7b75be5afbf00fe78ad0554ec1aa3dff6ba7299d9051a6a86df7debe81fd8fba",
+    "manual/pro/checklist.md": "4b9420171ccd5a3cbb59f296f3ed50d89166f0980af5eddb387c68e0b13a7d55",
+    "manual/pro/coverage.md": "05b94279ca370c0c04d0940bebd35a924e5cde3699463e4c1e771cf6d4b6dc61",
+    "manual/pro/guide.json": "662895157b52dd9c196eda357486d89264f5afd1af03e578e6c4632f29c1893c",
+    "manual/pro/guide.md": "405eb2564abbc6cc33e1aa4afe7ac4e23ed63e97ff371888fb5bcd57beccf6bd",
+    "manual/pro/inventory.json": "7f6e7305cf7e6d24b855ceab9e962e427ffb8fa3245ae9f126e482718a6b13f7",
+    "manual/pro/manual.json": "92b811229d706b2cf36496bbec1c6215b771723f4194a333c925ebee5baf8be3",
+    "manual/pro/reference.md": "ba7e1563e55e41d3d67ff35e6d4951491ec421b46bbaab8922b67b9472456975",
+    "tools/manual/book_html.py": "e66e165cacc588d33aab1628c737ae9d4338ea17e2f6bc74aae85b016ae47884",
+    "tools/manual/check_atlas.py": "84c92396c177c96a9d3a5164987dcebc3116a14dd87e57b1e6f97b340b4827bc",
+    "tools/manual/check_guide.py": "70e4ef973569960ba90a182e6c5361cb201928c33fb1d6aef208cbf2198d3d36",
+    "tools/manual/check_manual.py": "c76e38763f9a3c846d1a69d2180eac10106795b04dcc18d48652f2020dcd1b36",
+    "tools/manual/guide_html.py": "30552d2e6af5c8242e740d3a9cf3109bf371cb0512deb5af82546bda7e6a3247",
+    "tools/manual/manual_controls.py": "402f13de53f7e57870162c4b0dc8b9f4a48306c546fa9029bf1a153410dceea0",
+    "tools/manual/manual_markdown.py": "fb76c7360d51d80cb29ce0ae32ef9b6eef3ec36d00136796e9b6b6f42002d96b",
+    "tools/manual/render_atlas.py": "b0d7c3c20d0847f01913b9b4142bfeceda2664ca0f47100f87faad3e1a782cf0"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "T65-finalization-checks/1",
+  "basis": "Final main record and README pass link only; production source/data/renderer frozen at 5c35508dcbc49f87122570a8324bf16482abc993. Checks inherit systemd6G/no-swap scope. Main record input hashes were verified before README link update; original record retained unchanged. No original asset access. File counts precede addition of this report.",
+  "checks": [
+    {
+      "command": "python3 tools/check_no_originals.py",
+      "exit": 0,
+      "output": "no original files tracked (2487 files checked)"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "exit": 0,
+      "output": "links and JSON ok (2488 files)"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "main_record_sha256": "189e766ae05cf1e63edd9946815140cc851b5e3b0e08653fc5a0ddee669af28d"
+}

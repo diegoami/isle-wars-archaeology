@@ -1,0 +1,828 @@
+{
+  "schema": "T65-guard-sweep/1",
+  "scope": "Every need/refs/section_refs/substantive expression in validate including nested helpers, plus each unique collection assignment. Complete AST call-site enumeration, not a subset of prior reviewer findings. Imported helper internals and arbitrary Boolean-expression submutations are not claimed exhaustively.",
+  "source_sha256": "c76e38763f9a3c846d1a69d2180eac10106795b04dcc18d48652f2020dcd1b36",
+  "guard_sites": 61,
+  "counts": {
+    "meaningful-control-escaped": 61,
+    "self-test-passed": 0,
+    "masked-or-other-failure": 0
+  },
+  "results": [
+    {
+      "line": 28,
+      "kind": "expression",
+      "guard": "need(data.get('schema') == 'pro-manual/1', 'manual schema')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: wrong schema"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: wrong schema"
+    },
+    {
+      "line": 30,
+      "kind": "expression",
+      "guard": "need(isinstance(scope,str) and all(t in scope for t in ('unregistered','#259','#278','DOS','#265')), 'manual scope boundaries')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: scope lacks unregistered",
+        "FAIL control escaped: scope lacks #259",
+        "FAIL control escaped: scope lacks #278",
+        "FAIL control escaped: scope lacks DOS",
+        "FAIL control escaped: scope lacks #265"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: scope lacks unregistered, scope lacks #259, scope lacks #278, scope lacks DOS, scope lacks #265"
+    },
+    {
+      "line": 31,
+      "kind": "collection",
+      "guard": "sources = unique(data.get('sources',[]),'manual sources')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate sources"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate sources"
+    },
+    {
+      "line": 34,
+      "kind": "expression",
+      "guard": "need(src.get('kind') in {'static','documented','observed'}, f'{sid}: source kind')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: invalid source kind"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: invalid source kind"
+    },
+    {
+      "line": 35,
+      "kind": "expression",
+      "guard": "substantive(src.get('scope'), f'{sid}: source scope')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: source scope absent",
+        "FAIL control escaped: source scope filler"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: source scope absent, source scope filler"
+    },
+    {
+      "line": 38,
+      "kind": "expression",
+      "guard": "need(src['anchor'] in slugs, f'{sid}: source anchor missing')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: invalid source anchor"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: invalid source anchor"
+    },
+    {
+      "line": 39,
+      "kind": "collection",
+      "guard": "sections = unique(data.get('sections',[]),'reference sections')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate sections"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate sections"
+    },
+    {
+      "line": 40,
+      "kind": "expression",
+      "guard": "need(set(sections) == SECTIONS, 'missing reference topics')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: coherent missing reference topic"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: coherent missing reference topic"
+    },
+    {
+      "line": 42,
+      "kind": "expression",
+      "guard": "need(isinstance(values,list) and values and all(isinstance(v,str) and v in sources for v in values), label+': absent sources')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: unknown block absent limitation refs",
+        "FAIL control escaped: known block absent support refs",
+        "FAIL control escaped: unknown registry absent limitation refs",
+        "FAIL control escaped: unknown block invalid limitation refs",
+        "FAIL control escaped: known block invalid support refs",
+        "FAIL control escaped: unknown registry invalid limitation refs",
+        "FAIL control escaped: subject absent source",
+        "FAIL control escaped: subject invalid source",
+        "FAIL control escaped: screen absent sources",
+        "FAIL control escaped: screen invalid sources",
+        "FAIL control escaped: conflict invalid sources",
+        "FAIL control escaped: checklist absent sources",
+        "FAIL control escaped: checklist invalid sources"
+      ],
+      "masking_or_wrong_refusal": [
+        "FAIL control: conflict absent sources: wrong refusal: conflict lacks both sources"
+      ],
+      "stderr": "FAIL: control escaped: unknown block absent limitation refs, known block absent support refs, unknown registry absent limitation refs, unknown block invalid limitation refs, known block invalid support refs, unknown registry invalid limitation refs, subject absent source, subject invalid source, screen absent sources, screen invalid sources, conflict invalid sources, checklist absent sources, checklist invalid sources"
+    },
+    {
+      "line": 44,
+      "kind": "expression",
+      "guard": "need(isinstance(values,list) and values and all(isinstance(v,str) and v in sections for v in values), label+': broken section references')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: registry absent section refs",
+        "FAIL control escaped: registry invalid section refs",
+        "FAIL control escaped: subject absent section refs",
+        "FAIL control escaped: subject invalid section refs",
+        "FAIL control escaped: spec absent section refs",
+        "FAIL control escaped: spec invalid section refs",
+        "FAIL control escaped: screen absent section refs",
+        "FAIL control escaped: screen invalid section refs",
+        "FAIL control escaped: conflict absent section refs",
+        "FAIL control escaped: conflict invalid section refs",
+        "FAIL control escaped: checklist absent section refs",
+        "FAIL control escaped: checklist invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: registry absent section refs, registry invalid section refs, subject absent section refs, subject invalid section refs, spec absent section refs, spec invalid section refs, screen absent section refs, screen invalid section refs, conflict absent section refs, conflict invalid section refs, checklist absent section refs, checklist invalid section refs"
+    },
+    {
+      "line": 47,
+      "kind": "expression",
+      "guard": "substantive(section.get('title'),sid+' title')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: section title absent",
+        "FAIL control escaped: section title filler"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: section title absent, section title filler"
+    },
+    {
+      "line": 48,
+      "kind": "collection",
+      "guard": "entries = unique(section.get('blocks',[]),sid+' paragraphs')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate paragraph in section"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate paragraph in section"
+    },
+    {
+      "line": 49,
+      "kind": "expression",
+      "guard": "need(len(entries)>=2 and sum(len(x.get('text','').split()) for x in entries.values())>=70, sid+': substantive reference missing')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: single paragraph section",
+        "FAIL control escaped: section below seventy words"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: single paragraph section, section below seventy words"
+    },
+    {
+      "line": 51,
+      "kind": "expression",
+      "guard": "need(bid not in blocks,'duplicate reference paragraph')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: paragraph ID repeated across sections"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: paragraph ID repeated across sections"
+    },
+    {
+      "line": 53,
+      "kind": "expression",
+      "guard": "substantive(block.get('text'),bid)",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: paragraph filler with enough words"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: paragraph filler with enough words"
+    },
+    {
+      "line": 54,
+      "kind": "expression",
+      "guard": "need(len(block['text'].split())>=25, bid+': thin reference paragraph')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: thin individual paragraph"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: thin individual paragraph"
+    },
+    {
+      "line": 56,
+      "kind": "expression",
+      "guard": "need(basis in BASES and block.get('confidence')==BASES[basis], bid+': evidence tier mismatch')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: invalid evidence basis",
+        "FAIL control escaped: invalid evidence confidence"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: invalid evidence basis, invalid evidence confidence"
+    },
+    {
+      "line": 58,
+      "kind": "expression",
+      "guard": "need(not block.get('sources') and not block.get('frames') and not block.get('observations'), 'unknown promoted to evidence')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: unknown claims sources",
+        "FAIL control escaped: unknown claims frames",
+        "FAIL control escaped: unknown claims observations"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: unknown claims sources, unknown claims frames, unknown claims observations"
+    },
+    {
+      "line": 59,
+      "kind": "expression",
+      "guard": "refs(block.get('limitation_sources'),bid+' limitation')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: unknown block absent limitation refs",
+        "FAIL control escaped: unknown block invalid limitation refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: unknown block absent limitation refs, unknown block invalid limitation refs"
+    },
+    {
+      "line": 61,
+      "kind": "expression",
+      "guard": "refs(block.get('sources'),bid+' support')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: known block absent support refs",
+        "FAIL control escaped: known block invalid support refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: known block absent support refs, known block invalid support refs"
+    },
+    {
+      "line": 63,
+      "kind": "expression",
+      "guard": "need(any(sources.get(s,{}).get('kind')==basis for s in block['sources']), bid+': mismatched source tier')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: static source tier mismatch"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: static source tier mismatch"
+    },
+    {
+      "line": 64,
+      "kind": "collection",
+      "guard": "unknowns = unique(data.get('unknowns',[]),'manual unknowns')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate unknowns"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate unknowns"
+    },
+    {
+      "line": 66,
+      "kind": "expression",
+      "guard": "need(set(unknowns)==actual==UNKNOWN_BLOCKS, 'unknown promotion or missing gap registry')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: missing unknown registry entry",
+        "FAIL control escaped: unknown tier promotion"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: missing unknown registry entry, unknown tier promotion"
+    },
+    {
+      "line": 68,
+      "kind": "expression",
+      "guard": "need(u.get('status')=='unresolved','unknown status promoted')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: unknown registry resolved"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: unknown registry resolved"
+    },
+    {
+      "line": 69,
+      "kind": "expression",
+      "guard": "refs(u.get('limitation_sources'),u['id']+' registry limitation')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: unknown registry absent limitation refs",
+        "FAIL control escaped: unknown registry invalid limitation refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: unknown registry absent limitation refs, unknown registry invalid limitation refs"
+    },
+    {
+      "line": 70,
+      "kind": "expression",
+      "guard": "section_refs(u.get('sections'),u['id']+' registry')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: registry absent section refs",
+        "FAIL control escaped: registry invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: registry absent section refs, registry invalid section refs"
+    },
+    {
+      "line": 71,
+      "kind": "collection",
+      "guard": "subjects = unique(data.get('subjects',[]),'manual subjects')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate subjects"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate subjects"
+    },
+    {
+      "line": 72,
+      "kind": "collection",
+      "guard": "expected = unique(survey.get('manual_source',{}).get('subjects',[]),'survey subjects')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate surveyed subject"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate surveyed subject"
+    },
+    {
+      "line": 73,
+      "kind": "expression",
+      "guard": "need(set(subjects)==set(expected)=={f'M{n:02}' for n in range(1,16)}, 'missing manual subject coverage')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: missing manual subject"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: missing manual subject"
+    },
+    {
+      "line": 75,
+      "kind": "expression",
+      "guard": "need(all(x.get(k)==expected[sid].get(k) for k in ('own_word_subject','line_start','line_end')), 'stale manual subject range')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: stale subject range"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: stale subject range"
+    },
+    {
+      "line": 76,
+      "kind": "expression",
+      "guard": "section_refs(x.get('sections'),sid+' subject')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: subject absent section refs",
+        "FAIL control escaped: subject invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: subject absent section refs, subject invalid section refs"
+    },
+    {
+      "line": 77,
+      "kind": "expression",
+      "guard": "refs([x.get('source')],sid+' subject')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: subject absent source",
+        "FAIL control escaped: subject invalid source"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: subject absent source, subject invalid source"
+    },
+    {
+      "line": 78,
+      "kind": "expression",
+      "guard": "substantive(x.get('boundary'),sid+' boundary')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: subject boundary absent",
+        "FAIL control escaped: subject boundary filler"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: subject boundary absent, subject boundary filler"
+    },
+    {
+      "line": 79,
+      "kind": "collection",
+      "guard": "areas = unique(data.get('spec_areas',[]),'Pro spec areas')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate spec_areas"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate spec_areas"
+    },
+    {
+      "line": 80,
+      "kind": "expression",
+      "guard": "need(set(areas)==AREAS,'missing Pro spec coverage')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: missing Pro area"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: missing Pro area"
+    },
+    {
+      "line": 82,
+      "kind": "expression",
+      "guard": "section_refs(x.get('sections'),aid+' spec')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: spec absent section refs",
+        "FAIL control escaped: spec invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: spec absent section refs, spec invalid section refs"
+    },
+    {
+      "line": 86,
+      "kind": "expression",
+      "guard": "need(source.get('path')=='spec/'+aid+'.md','spec area source mismatch')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: wrong valid spec source",
+        "FAIL control escaped: absent spec source",
+        "FAIL control escaped: invalid spec source"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: wrong valid spec source, absent spec source, invalid spec source"
+    },
+    {
+      "line": 87,
+      "kind": "expression",
+      "guard": "need('Pro' in x.get('scope','') and 'DOS' in x['scope'],'Pro/DOS area boundary missing')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: spec scope lacks Pro",
+        "FAIL control escaped: spec scope lacks DOS"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: spec scope lacks Pro, spec scope lacks DOS"
+    },
+    {
+      "line": 88,
+      "kind": "collection",
+      "guard": "screens = unique(data.get('screens',[]),'major screens')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate screens"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate screens"
+    },
+    {
+      "line": 89,
+      "kind": "expression",
+      "guard": "need(set(screens)==SCREENS,'missing major screen coverage')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: missing major screen"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: missing major screen"
+    },
+    {
+      "line": 91,
+      "kind": "expression",
+      "guard": "need(x.get('status') in {'recorded','partial','unobserved','unsupported'},'screen evidence state')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: invalid screen evidence enum"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: invalid screen evidence enum"
+    },
+    {
+      "line": 93,
+      "kind": "expression",
+      "guard": "need(x['status']=='unobserved','unseen screen promoted')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: unseen event recorded"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: unseen event recorded"
+    },
+    {
+      "line": 95,
+      "kind": "expression",
+      "guard": "need(x['status']=='unsupported','position save support invented')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: position save invented"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: position save invented"
+    },
+    {
+      "line": 96,
+      "kind": "expression",
+      "guard": "section_refs(x.get('sections'),sid+' screen')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: screen absent section refs",
+        "FAIL control escaped: screen invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: screen absent section refs, screen invalid section refs"
+    },
+    {
+      "line": 97,
+      "kind": "expression",
+      "guard": "refs(x.get('sources'),sid+' screen')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: screen absent sources",
+        "FAIL control escaped: screen invalid sources"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: screen absent sources, screen invalid sources"
+    },
+    {
+      "line": 98,
+      "kind": "expression",
+      "guard": "substantive(x.get('boundary'),sid+' screen boundary')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: screen boundary absent",
+        "FAIL control escaped: screen boundary filler"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: screen boundary absent, screen boundary filler"
+    },
+    {
+      "line": 99,
+      "kind": "collection",
+      "guard": "conflicts = unique(data.get('conflicts',[]),'source discrepancies')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate conflicts"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate conflicts"
+    },
+    {
+      "line": 100,
+      "kind": "expression",
+      "guard": "need(set(conflicts)==CONFLICTS,'missing source conflict')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: missing conflict"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: missing conflict"
+    },
+    {
+      "line": 102,
+      "kind": "expression",
+      "guard": "need(x.get('status')=='unresolved-source-discrepancy','source discrepancy silently resolved')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: conflict status resolved"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: conflict status resolved"
+    },
+    {
+      "line": 103,
+      "kind": "expression",
+      "guard": "substantive(x.get('statement'),cid)",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: conflict statement absent",
+        "FAIL control escaped: conflict statement filler"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: conflict statement absent, conflict statement filler"
+    },
+    {
+      "line": 104,
+      "kind": "expression",
+      "guard": "refs(x.get('sources'),cid+' conflict')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: conflict invalid sources"
+      ],
+      "masking_or_wrong_refusal": [
+        "FAIL control: conflict absent sources: wrong refusal: conflict lacks both sources"
+      ],
+      "stderr": "FAIL: control escaped: conflict invalid sources"
+    },
+    {
+      "line": 105,
+      "kind": "expression",
+      "guard": "section_refs(x.get('sections'),cid+' conflict')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: conflict absent section refs",
+        "FAIL control escaped: conflict invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: conflict absent section refs, conflict invalid section refs"
+    },
+    {
+      "line": 106,
+      "kind": "expression",
+      "guard": "need(len(x['sources'])>=2,'conflict lacks both sources')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: conflict has one source"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: conflict has one source"
+    },
+    {
+      "line": 107,
+      "kind": "collection",
+      "guard": "checklist = unique(data.get('checklist',[]),'planning checklist')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: duplicate checklist"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: duplicate checklist"
+    },
+    {
+      "line": 108,
+      "kind": "expression",
+      "guard": "need(set(checklist)==CHECKLIST,'missing UI/map checklist quality')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: missing checklist quality"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: missing checklist quality"
+    },
+    {
+      "line": 111,
+      "kind": "expression",
+      "guard": "substantive(x.get(key),f'{cid}: checklist {key}')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: checklist title absent",
+        "FAIL control escaped: checklist title filler",
+        "FAIL control escaped: checklist boundary filler",
+        "FAIL control escaped: checklist benefit filler",
+        "FAIL control escaped: checklist scenario filler"
+      ],
+      "masking_or_wrong_refusal": [
+        "FAIL control: checklist boundary absent: wrong refusal: handoff adoption boundary missing",
+        "FAIL control: checklist benefit absent: wrong refusal: country-readability: checklist benefit missing/thin",
+        "FAIL control: checklist scenario absent: wrong refusal: country-readability: checklist scenario missing/thin"
+      ],
+      "stderr": "FAIL: control escaped: checklist title absent, checklist title filler, checklist boundary filler, checklist benefit filler, checklist scenario filler"
+    },
+    {
+      "line": 113,
+      "kind": "expression",
+      "guard": "need(len(x[key].split())>=minimum, f'{cid}: checklist {key} missing/thin')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: checklist benefit thin",
+        "FAIL control escaped: checklist scenario thin"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: checklist benefit thin, checklist scenario thin"
+    },
+    {
+      "line": 114,
+      "kind": "expression",
+      "guard": "section_refs(x.get('sections'),cid+' checklist')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: checklist absent section refs",
+        "FAIL control escaped: checklist invalid section refs"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: checklist absent section refs, checklist invalid section refs"
+    },
+    {
+      "line": 115,
+      "kind": "expression",
+      "guard": "refs(x.get('sources'),cid+' checklist')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: checklist absent sources",
+        "FAIL control escaped: checklist invalid sources"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: checklist absent sources, checklist invalid sources"
+    },
+    {
+      "line": 116,
+      "kind": "expression",
+      "guard": "need(x.get('basis')=='derived' and all(t in x['boundary'].lower() for t in ('planning','#191','proposal','implementation')), 'handoff adoption boundary missing')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: checklist adoption asserted",
+        "FAIL control escaped: checklist boundary lacks planning",
+        "FAIL control escaped: checklist boundary lacks #191",
+        "FAIL control escaped: checklist boundary lacks proposal",
+        "FAIL control escaped: checklist boundary lacks implementation"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: checklist adoption asserted, checklist boundary lacks planning, checklist boundary lacks #191, checklist boundary lacks proposal, checklist boundary lacks implementation"
+    },
+    {
+      "line": 121,
+      "kind": "expression",
+      "guard": "need(document == canonical, name+': complete Markdown mismatch')",
+      "category": "meaningful-control-escaped",
+      "exit": 1,
+      "escaped_controls": [
+        "FAIL control escaped: added unknown/conflict-resolving claim",
+        "FAIL control escaped: duplicate capture row recorded",
+        "FAIL control escaped: deleted board spec row",
+        "FAIL control escaped: deleted cards spec row",
+        "FAIL control escaped: checklist benefit prefix",
+        "FAIL control escaped: checklist title drift",
+        "FAIL control escaped: checklist boundary drift",
+        "FAIL control escaped: checklist scenario drift",
+        "FAIL control escaped: paragraph moved to wrong section",
+        "FAIL control escaped: missing reference heading",
+        "FAIL control escaped: missing reference anchor",
+        "FAIL control escaped: unknown evidence promotion",
+        "FAIL control escaped: subject range drift",
+        "FAIL control escaped: conflict resolved prefix",
+        "FAIL control escaped: registration status drift"
+      ],
+      "masking_or_wrong_refusal": [],
+      "stderr": "FAIL: control escaped: added unknown/conflict-resolving claim, duplicate capture row recorded, deleted board spec row, deleted cards spec row, checklist benefit prefix, checklist title drift, checklist boundary drift, checklist scenario drift, paragraph moved to wrong section, missing reference heading, missing reference anchor, unknown evidence promotion, subject range drift, conflict resolved prefix, registration status drift"
+    }
+  ]
+}

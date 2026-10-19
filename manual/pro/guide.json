@@ -1,7 +1,7 @@
 {
   "schema": "pro-guide/1",
   "text_path": "manual/pro/guide.md",
-  "scope": "This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. T65 supplies detailed rules/reference; #265 remains open.",
+  "scope": "This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. The accompanying reference supplies detailed rules; Parent acceptance is tracked under #265; main owns final acceptance.",
   "sources": [
     {
       "id": "V-guide",
@@ -162,7 +162,7 @@
         ]
       },
       "cancel": {
-        "text": "Use the green return control shown on the options page to leave that page. The green control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.",
+        "text": "Use the return control shown on the options page to leave that page. The start-play control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.",
         "basis": "static",
         "confidence": "static-bounded",
         "sources": [
@@ -384,7 +384,7 @@
         "sources": []
       },
       "actions": {
-        "text": "F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects belong to the later rules reference.",
+        "text": "F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects are in the accompanying rules reference.",
         "basis": "static",
         "confidence": "static-bounded",
         "sources": [
@@ -440,7 +440,7 @@
         ]
       },
       "feedback": {
-        "text": "The worked sequence ends at the first captured hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.",
+        "text": "The worked sequence ends at the first recorded hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.",
         "basis": "local-visual",
         "confidence": "observed-bounded",
         "sources": [
@@ -549,7 +549,7 @@
         ]
       },
       "feedback": {
-        "text": "Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content while retaining the landscape backdrop. Check the screen context rather than assuming a fixed footer action.",
+        "text": "Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content. Check the screen context rather than assuming a fixed footer action.",
         "basis": "local-visual",
         "confidence": "observed-bounded",
         "sources": [

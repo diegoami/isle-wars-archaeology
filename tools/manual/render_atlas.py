@@ -121,8 +121,12 @@ def html_edition(atlas, inventory, survey, names):
     return "\n".join(out)
 
 
-def render(atlas, inventory, survey, mapping, output, roots, guide_data=None):
+def render(atlas, inventory, survey, mapping, output, roots, guide_data=None, manual_data=None, manual_root=ROOT):
     # Complete structural, location, hash and dimension checks before creating output.
+    if manual_data:
+        from check_manual import validate as validate_manual
+        need(guide_data is not None, "complete book requires guide and atlas")
+        validate_manual(*manual_data, manual_root)
     frames = survey["frames"] + (guide_data[1]["frames"] if guide_data else [])
     need(len({f["id"] for f in frames}) == len(frames), "guide/atlas image IDs collide")
     output, paths = preflight(frames, mapping, output, roots)
@@ -133,6 +137,15 @@ def render(atlas, inventory, survey, mapping, output, roots, guide_data=None):
         from guide_html import html_guide
         document = html_guide(*guide_data, names, svg)
         atlas_document = atlas_document.replace('<h1>Pro map and UI atlas</h1>', '<nav><a href="index.html">Player guide</a> · <a href="index.html#walkthrough">Worked turn</a></nav><h1>Pro map and UI atlas</h1>')
+    documents = {"index.html": document}
+    if guide_data:
+        documents["atlas.html"] = atlas_document
+    if manual_data:
+        from book_html import book_pages, add_book_nav
+        documents = book_pages(manual_data[0])
+        documents["guide.html"] = add_book_nav(document)
+        documents["atlas.html"] = add_book_nav(atlas_document.replace("index.html", "guide.html"))
+        document = documents["index.html"]
     output.mkdir(parents=True)
     (output / "images").mkdir()
     for fid, path in paths.items():
@@ -140,15 +153,19 @@ def render(atlas, inventory, survey, mapping, output, roots, guide_data=None):
         # Detect bytes changing after preflight; abort before writing index.html.
         # Retain the partial output and copied bytes for diagnosis; this is not atomic publication.
         need(hashlib.sha256((output / "images" / names[fid]).read_bytes()).hexdigest() == next(f["sha256"] for f in frames if f["id"] == fid), f"{fid}: image changed during copy")
-    if guide_data:
-        (output / "atlas.html").write_text(atlas_document, encoding="utf-8")
-    (output / "index.html").write_text(document, encoding="utf-8")
+    for filename, content in documents.items():
+        (output / filename).write_text(content, encoding="utf-8")
     receipt = {"schema": "pro-atlas-render/1", "images": [{"id": f["id"], "sha256": f["sha256"], "width": f["width"], "height": f["height"]} for f in frames], "html_sha256": hashlib.sha256(document.encode()).hexdigest(), "annotation_count": len(atlas["annotations"]), "boundary": "Local receipt only; no original bytes or paths belong in repository evidence."}
     if guide_data:
         receipt["atlas_html_sha256"] = hashlib.sha256(atlas_document.encode()).hexdigest()
         receipt["guide_annotation_count"] = len(guide_data[0]["annotations"])
         receipt["guide_image_count"] = len(guide_data[1]["frames"])
         receipt["walkthrough_frames"] = guide_data[0]["walkthrough"]["frames"]
+    receipt["pages_sha256"] = {name: hashlib.sha256(content.encode()).hexdigest() for name, content in documents.items()}
+    receipt["complete_book"] = bool(manual_data)
+    if manual_data:
+        receipt["atlas_html_sha256"] = receipt["pages_sha256"]["atlas.html"]
+        receipt["manual_section_count"] = len(manual_data[0]["sections"])
     (output / "render-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
     return output / "index.html"
 
@@ -243,7 +260,55 @@ def guide_render_controls(tmp, positive_frame, positive_atlas, original):
     need(set(guide["walkthrough"]["frames"]) <= documents["index.html"].ids, "illustrated walkthrough missing")
     receipt = json.loads((output / "render-receipt.json").read_text())
     need(receipt["guide_image_count"] == 11 and len(receipt["images"]) == 12, "companion image set missing")
+    from check_manual import synthetic_fixture as manual_fixture
+    manual, manual_survey = manual_fixture(fixture / "manual-fixture")
+    complete = tmp / "complete-book"
+    render(positive_atlas, {"subjects": []}, atlas_survey, mapping, complete, [], (guide, guide_survey), (manual, manual_survey), fixture / "manual-fixture")
+    book_names = ("index.html", "guide.html", "atlas.html", "reference.html", "coverage.html", "checklist.html")
+    book_docs = {}
+    for name in book_names:
+        parser = Links()
+        parser.feed((complete / name).read_text())
+        book_docs[name] = parser
+    for name, parser in book_docs.items():
+        need(set(book_names) <= {href.partition("#")[0] for href in parser.hrefs}, "complete-book chapter navigation omitted")
+        for href in parser.hrefs:
+            if href.startswith("https://"):
+                continue
+            target, _, fragment = href.partition("#")
+            need((target or name) in book_docs, "broken complete-book page link")
+            if fragment:
+                need(fragment in book_docs[target or name].ids, "broken complete-book section link")
+    need({s["id"] for s in manual["sections"]} <= book_docs["reference.html"].ids, "complete-book reference omitted")
+    need({x["id"] for x in manual["checklist"]} <= book_docs["checklist.html"].ids, "complete-book checklist omitted")
+    need("walkthrough" in book_docs["guide.html"].ids and "V" in book_docs["atlas.html"].ids, "complete-book illustrated chapters omitted")
+    book_receipt = json.loads((complete / "render-receipt.json").read_text())
+    need(set(book_receipt["pages_sha256"]) == set(book_names) and book_receipt["complete_book"], "complete-book receipt missing pages")
+    for name in book_names:
+        need(book_receipt["pages_sha256"][name] == hashlib.sha256((complete / name).read_bytes()).hexdigest(), "complete-book page hash mismatch")
+    need(len(book_receipt["images"]) == 12, "complete-book image set omitted")
+    reference_markup = (complete / "reference.html").read_text()
+    unknown_count = sum(b["basis"] == "unknown" for sec in manual["sections"] for b in sec["blocks"])
+    need(reference_markup.count("<summary>Limitation sources: unknown · unknown</summary>") == unknown_count and "<summary>Evidence: unknown" not in reference_markup, "unknown limitation sources labelled as evidence")
+    import copy
+    bad_manual = copy.deepcopy(manual)
+    bad_manual["spec_areas"][0]["sections"] = ["absent-section"]
+    rejected_book = tmp / "bad-reference-book"
+    try:
+        render(positive_atlas, {"subjects": []}, atlas_survey, mapping, rejected_book, [], (guide, guide_survey), (bad_manual, manual_survey), fixture / "manual-fixture")
+    except ValueError as error:
+        need("broken section references" in str(error) and not rejected_book.exists(), "manual pre-copy refusal failed")
+    else:
+        raise ValueError("invalid manual escaped complete-book preflight")
+    print("PASS: synthetic six-page complete book retains guide/walkthrough/atlas, reference, coverage, checklist and all chapter links/page hashes; bad manual refused before copying.")
     guide_survey["frames"][-1]["sha256"] = "a" * 64
+    rejected_full = tmp / "bad-guide-complete-book"
+    try:
+        render(positive_atlas, {"subjects": []}, atlas_survey, mapping, rejected_full, [], (guide, guide_survey), (manual, manual_survey), fixture / "manual-fixture")
+    except ValueError as error:
+        need("bad image hash" in str(error) and not rejected_full.exists(), "complete-book guide pre-copy refusal failed")
+    else:
+        raise ValueError("bad guide image escaped complete-book preflight")
     rejected = tmp / "bad-companion-edition"
     try:
         render(positive_atlas, {"subjects": []}, atlas_survey, mapping, rejected, [], (guide, guide_survey))
@@ -334,6 +399,7 @@ def main():
     parser.add_argument("--bundle-map", type=Path, help="local JSON object mapping survey frame IDs to absolute PNG paths")
     parser.add_argument("--output", type=Path, help="new directory outside every checkout")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--complete-book", action="store_true", help="build contents, guide/walkthrough, atlas, rules, coverage and planning checklist; implies --include-guide")
     parser.add_argument("--include-guide", action="store_true", help="add the player guide and walkthrough as index.html; retain atlas.html")
     args = parser.parse_args()
     try:
@@ -344,12 +410,17 @@ def main():
         atlas, inventory, survey = load()
         print(validate(atlas, inventory, survey))
         guide_data = None
-        if args.include_guide:
+        if args.include_guide or args.complete_book:
             from check_guide import load as load_guide, validate as validate_guide
             guide_data = load_guide()
             print(validate_guide(*guide_data))
+        manual_data = None
+        if args.complete_book:
+            from check_manual import load as load_manual, validate as validate_manual
+            manual_data = load_manual()
+            print(validate_manual(*manual_data))
         mapping = json.loads(args.bundle_map.read_text())
-        print(f"Rendered verified local edition: {render(atlas, inventory, survey, mapping, args.output, checkout_roots(), guide_data)}")
+        print(f"Rendered verified local edition: {render(atlas, inventory, survey, mapping, args.output, checkout_roots(), guide_data, manual_data)}")
     except (ValueError, OSError, KeyError, TypeError, json.JSONDecodeError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"FAIL: {error}\n")
 

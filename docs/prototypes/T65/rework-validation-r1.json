@@ -1,0 +1,238 @@
+{
+  "schema": "T65-rework-validation/1",
+  "review": "PR281 native Opus Medium R1,R2,R4\u2013R8; R3 metadata main-owned, R9 follow-up #282 main-owned.",
+  "basis": "All child processes inherit enclosing systemd user scope MemoryMax6G/MemorySwapMax0. Copied scripts and synthetic witnesses explicitly under /tmp; no original asset access. These controls test declared provenance and JSON/Markdown consistency, never semantic truth of coordinated edits. Prior measurements immutable.",
+  "checks": [
+    {
+      "command": "python3 tools/manual/check_manual.py",
+      "exit": 0,
+      "output": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    },
+    {
+      "command": "python3 tools/manual/check_manual.py --self-test",
+      "exit": 0,
+      "output": "PASS control: missing reference topic rejected (missing reference topics)\nPASS control: thin reference rejected (objective: substantive reference missing)\nPASS control: absent sources rejected (objective-1: absent sources)\nPASS control: unknown visual proof rejected (unknown promoted to evidence)\nPASS control: unknown tier promotion rejected (unknown promotion or missing gap registry)\nPASS control: missing manual subject rejected (missing manual subject coverage)\nPASS control: stale subject range rejected (stale manual subject range)\nPASS control: missing Pro area rejected (missing Pro spec coverage)\nPASS control: broken section reference rejected (broken section references)\nPASS control: missing major screen rejected (missing major screen coverage)\nPASS control: unseen screen promoted rejected (unseen screen promoted)\nPASS control: missing source conflict rejected (missing source conflict)\nPASS control: silent conflict resolution rejected (source discrepancy silently resolved)\nPASS control: missing checklist benefit rejected (country-readability: checklist benefit missing/thin)\nPASS control: missing checklist scenario rejected (country-readability: checklist scenario missing/thin)\nPASS control: adoption asserted rejected (handoff adoption boundary missing)\nPASS control: mismatched evidence tier rejected (objective-1: evidence tier mismatch)\nPASS control: untracked prose change rejected (objective-1: reference prose mismatch)\nPASS control: unknown registry resolved rejected (unknown status promoted)\nPASS control: position save invented rejected (position save support invented)\nPASS control: source kind mismatches static claim rejected (objective-1: mismatched source tier)\nPASS control: DOS segregation absent rejected (Pro/DOS area boundary missing)\nPASS control: conflict with only one source rejected (conflict lacks both sources)\nPASS control: conflict statement absent from prose rejected (conflict prose missing)\nPASS control: wrong valid spec source rejected (spec area source mismatch)\nPASS control: thin individual paragraph rejected (objective-1: thin reference paragraph)\nPASS control: screen boundary absent from prose rejected (screen prose coverage missing)\nPASS control: unknown registry lacks limitation sources rejected (board-4: absent sources)\nPASS control: invalid source anchor rejected (F011: source anchor missing)\nPASS control: scope lacks unregistered rejected (manual scope boundaries)\nPASS control: scope lacks #259 rejected (manual scope boundaries)\nPASS control: scope lacks #278 rejected (manual scope boundaries)\nPASS control: scope lacks DOS rejected (manual scope boundaries)\nPASS control: scope lacks #265 rejected (manual scope boundaries)\nPASS control: checklist boundary lacks planning rejected (handoff adoption boundary missing)\nPASS control: checklist boundary lacks #191 rejected (handoff adoption boundary missing)\nPASS control: checklist boundary lacks proposal rejected (handoff adoption boundary missing)\nPASS control: checklist boundary lacks implementation rejected (handoff adoption boundary missing)\nPASS control: Markdown unknown promoted rejected (board-4: reference evidence span mismatch)\nPASS control: Markdown confidence drift rejected (board-4: reference evidence span mismatch)\nPASS control: Markdown source-ID drift rejected (board-4: reference evidence span mismatch)\nPASS control: Markdown capture screen recorded rejected (screen prose coverage missing)\nPASS control: Markdown registration recorded rejected (screen prose coverage missing)\nPASS control: Markdown subject range drift rejected (subject prose coverage missing)\nPASS control: Markdown conflict resolved prefix rejected (conflict prose missing)\nPASS control: Markdown missing section anchor rejected (reference section anchor missing)\nPASS: synthetic baseline and 46 manual negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/manual/check_guide.py",
+      "exit": 0,
+      "output": "PASS: 12 topics \u00d7 4 evidence-qualified aspects; 13 distinct images, 21 observations/annotations; 7 same-record placement-to-pass steps. Prose/appearance require independent review."
+    },
+    {
+      "command": "python3 tools/manual/check_guide.py --self-test",
+      "exit": 0,
+      "output": "PASS control: missing source anchor rejected (S: missing source anchor)\nPASS control: topic prose absent from document rejected (attack-capture/actions: prose mismatch)\nPASS control: nonvisual field with visual proof rejected (nonvisual field claims visual proof)\nPASS control: local visual field without image evidence rejected (visual field lacks observed image evidence)\nPASS control: bad record digest rejected (G11: record digest mismatch)\nPASS control: bad manifest digest rejected (G11: manifest digest mismatch)\nPASS control: coherent record different from survey rejected (walkthrough record differs from survey)\nPASS control: step prose absent from document rejected (walkthrough step prose missing)\nPASS control: scope without retained unknown rejected (guide build/unknown boundaries missing)\nPASS control: coherent below-ten image set rejected (at least ten distinct guide images required)\nPASS control: missing topic rejected (missing or unexpected required topics)\nPASS control: missing source rejected (attack-capture/actions: missing sources or mismatched evidence kind)\nPASS control: stale observation rejected (stale guide observation)\nPASS control: fabricated visual proof for unknown rejected (fabricated visual proof for unknown)\nPASS control: promoted unknown with valid visual references rejected (fabricated visual proof for unknown: gap registry mismatch)\nPASS control: duplicated image with valid provenance rejected (duplicate guide image bytes with valid provenance)\nPASS control: mixed valid walkthrough record rejected (walkthrough provenance mixes records)\nPASS control: changed walkthrough order rejected (walkthrough differs from surveyed order)\nPASS control: jointly reversed walkthrough provenance rejected (walkthrough provenance order is incoherent)\nPASS control: missing image hash rejected (G01: image hash absent)\nPASS control: valid manifest entry with non-image class rejected (G11: image/manifest mismatch)\nPASS control: image absent from manifest rejected (G11: image/manifest mismatch)\nPASS control: image from incomplete record rejected (G11: image/record mismatch)\nPASS control: image absent from completed record rejected (G11: image/record mismatch)\nPASS control: missing annotation rejected (guide annotations missing observations)\nPASS control: out-of-bounds annotation rejected (GA1: invalid annotation bounds)\nPASS: synthetic baseline and 26 guide negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/manual/check_atlas.py",
+      "exit": 0,
+      "output": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review."
+    },
+    {
+      "command": "python3 tools/manual/check_atlas.py --self-test",
+      "exit": 0,
+      "output": "PASS control: missing visual feature rejected (missing visual features: survey observations unaccounted)\nPASS control: missing source rejected (C-appearance: missing sources)\nPASS control: invalid annotation bounds rejected (A1: invalid annotation bounds)\nPASS control: claimed evidence for unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: promoted unknown rejected (U-mechanism: claimed evidence for unknown)\nPASS control: missing image hash rejected (V1: bad/missing hash)\nPASS control: reused image bytes with valid provenance rejected (states must use distinct states and image bytes)\nPASS control: reused state with valid distinct image rejected (states must use distinct states and image bytes)\nPASS control: absent manual subject rejected (manual subject inventory incomplete)\nPASS control: placeholder prose rejected (C-appearance: placeholder)\nPASS control: stale observation inventory rejected (feature description differs from active visual survey)\nPASS: synthetic baseline and 11 atlas negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/manual/render_atlas.py --self-test",
+      "exit": 0,
+      "output": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic six-page complete book retains guide/walkthrough/atlas, reference, coverage, checklist and all chapter links/page hashes; bad manual refused before copying.\nPASS: synthetic guide/atlas edition retains both pages, all chapter/step links and image references; bad guide hash refused before copying.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/check_no_originals.py",
+      "exit": 0,
+      "output": "no original files tracked (2489 files checked)"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "exit": 0,
+      "output": "links and JSON ok (2521 files)"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": "git diff --check 41a97e7f788b4d3ede4afeba96765cd77401eb28",
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "copied_guard_omissions": [
+    {
+      "omitted_guard": "unknown-status",
+      "exit": 1,
+      "result": "FAIL: control escaped: unknown registry resolved"
+    },
+    {
+      "omitted_guard": "position-save-support",
+      "exit": 1,
+      "result": "FAIL: control escaped: position save invented"
+    },
+    {
+      "omitted_guard": "source-tier",
+      "exit": 1,
+      "result": "FAIL: control escaped: source kind mismatches static claim"
+    },
+    {
+      "omitted_guard": "Pro-DOS-boundary",
+      "exit": 1,
+      "result": "FAIL: control escaped: DOS segregation absent"
+    },
+    {
+      "omitted_guard": "conflict-two-sources",
+      "exit": 1,
+      "result": "FAIL: control escaped: conflict with only one source"
+    },
+    {
+      "omitted_guard": "conflict-prose",
+      "exit": 1,
+      "result": "FAIL: control escaped: conflict statement absent from prose"
+    },
+    {
+      "omitted_guard": "scope-boundaries",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope lacks unregistered"
+    },
+    {
+      "omitted_guard": "spec-source-path",
+      "exit": 1,
+      "result": "FAIL: control escaped: wrong valid spec source"
+    },
+    {
+      "omitted_guard": "checklist-adoption",
+      "exit": 1,
+      "result": "FAIL: control escaped: adoption asserted"
+    },
+    {
+      "omitted_guard": "paragraph-length",
+      "exit": 1,
+      "result": "FAIL: control escaped: thin individual paragraph"
+    },
+    {
+      "omitted_guard": "section-anchor",
+      "exit": 1,
+      "result": "FAIL: control escaped: Markdown missing section anchor"
+    },
+    {
+      "omitted_guard": "screen-prose",
+      "exit": 1,
+      "result": "FAIL: control escaped: screen boundary absent from prose"
+    },
+    {
+      "omitted_guard": "unknown-limitation-refs",
+      "exit": 1,
+      "result": "FAIL: control escaped: unknown registry lacks limitation sources"
+    },
+    {
+      "omitted_guard": "source-anchor",
+      "exit": 1,
+      "result": "FAIL: control escaped: invalid source anchor"
+    },
+    {
+      "omitted_guard": "reference-evidence-span",
+      "exit": 1,
+      "result": "FAIL: control escaped: Markdown unknown promoted"
+    },
+    {
+      "omitted_guard": "subject-whole-row",
+      "exit": 1,
+      "result": "FAIL: control escaped: Markdown subject range drift"
+    },
+    {
+      "omitted_guard": "scope-token-unregistered",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope lacks unregistered"
+    },
+    {
+      "omitted_guard": "scope-token-#259",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope lacks #259"
+    },
+    {
+      "omitted_guard": "scope-token-#278",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope lacks #278"
+    },
+    {
+      "omitted_guard": "scope-token-DOS",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope lacks DOS"
+    },
+    {
+      "omitted_guard": "scope-token-#265",
+      "exit": 1,
+      "result": "FAIL: control escaped: scope lacks #265"
+    },
+    {
+      "omitted_guard": "adoption-token-planning",
+      "exit": 1,
+      "result": "FAIL: control escaped: checklist boundary lacks planning"
+    },
+    {
+      "omitted_guard": "adoption-token-#191",
+      "exit": 1,
+      "result": "FAIL: control escaped: checklist boundary lacks #191"
+    },
+    {
+      "omitted_guard": "adoption-token-proposal",
+      "exit": 1,
+      "result": "FAIL: control escaped: checklist boundary lacks proposal"
+    },
+    {
+      "omitted_guard": "adoption-token-implementation",
+      "exit": 1,
+      "result": "FAIL: control escaped: checklist boundary lacks implementation"
+    },
+    {
+      "omitted_guard": "unknown HTML limitation label",
+      "exit": 1,
+      "result": "FAIL: unknown limitation sources labelled as evidence"
+    }
+  ],
+  "individual_Markdown_omission_controls": [
+    {
+      "case": "unknown-tier",
+      "production_refusal": "board-4: reference evidence span mismatch",
+      "omitted_guard": "reference-evidence-span",
+      "copied_checker_result": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    },
+    {
+      "case": "capture-recorded",
+      "production_refusal": "screen prose coverage missing",
+      "omitted_guard": "screen-prose",
+      "copied_checker_result": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    },
+    {
+      "case": "registration-recorded",
+      "production_refusal": "screen prose coverage missing",
+      "omitted_guard": "screen-prose",
+      "copied_checker_result": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    },
+    {
+      "case": "subject-range",
+      "production_refusal": "subject prose coverage missing",
+      "omitted_guard": "subject-whole-row",
+      "copied_checker_result": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    },
+    {
+      "case": "resolved-conflict",
+      "production_refusal": "conflict prose missing",
+      "omitted_guard": "conflict-prose",
+      "copied_checker_result": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    }
+  ],
+  "source_sha256": {
+    "tools/manual/check_manual.py": "f77b620984369421789196fc0ac7d7186178375a1a2fea367dee8b73b747d909",
+    "tools/manual/manual_markdown.py": "7f259b706c20930dafe18f7b2c4dc06fb91942dcf91686a53d77b5ad1faf3e62",
+    "tools/manual/book_html.py": "e66e165cacc588d33aab1628c737ae9d4338ea17e2f6bc74aae85b016ae47884",
+    "tools/manual/render_atlas.py": "b0d7c3c20d0847f01913b9b4142bfeceda2664ca0f47100f87faad3e1a782cf0",
+    "manual/pro/manual.json": "e8a71b0f38a83fcf36ec7c144dab92ce5de1fee417743b46f39256e5962b48d0",
+    "manual/pro/reference.md": "32fdf900cf04360ad4ecc8b8a2d1fa46f46142be38874544448b8e995ae42b79",
+    "manual/pro/coverage.md": "05b94279ca370c0c04d0940bebd35a924e5cde3699463e4c1e771cf6d4b6dc61",
+    "manual/pro/checklist.md": "4b9420171ccd5a3cbb59f296f3ed50d89166f0980af5eddb387c68e0b13a7d55",
+    "manual/pro/inventory.json": "7f6e7305cf7e6d24b855ceab9e962e427ffb8fa3245ae9f126e482718a6b13f7",
+    "manual/pro/README.md": "9677b4a47c5c0b925d392e36ed78a86c6bd73bebdc6b7dcb88d3166b558b811a"
+  }
+}

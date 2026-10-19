@@ -1,6 +1,6 @@
 # Pro player guide and worked turn
 
-This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. T65 supplies detailed rules/reference; #265 remains open.
+This guide covers preserved unregistered Windows Pro screens and source-qualified human procedures. It supplies no DOS or registered-build claims, exhaustive hitboxes, sound/timing proof or invented missing screens. #259 visual-island grouping and #278 centre-colour source conflict remain explicit in the retained atlas. The accompanying reference supplies detailed rules; Parent acceptance is tracked under #265; main owns final acceptance.
 
 Read [the map/UI atlas](atlas.md) for map vocabulary and its open evidence questions. The [local edition instructions](README.md) describe the illustrated guide and atlas; the repository prose below remains useful without original pixels.
 
@@ -18,7 +18,7 @@ Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019
 
 Evidence: documented; confidence: documented. [D-setup](../../sources/iwp-islepro-txt.md#setup).
 
-**Back out and confirm.** Use the green return control shown on the options page to leave that page. The green control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.
+**Back out and confirm.** Use the return control shown on the options page to leave that page. The start-play control on the new-game page starts play instead, so check which screen you are on before confirming. Keyboard alternatives and exact hit areas are not measured here.
 
 Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019-pro-setup-rules.md#the-options-screen).
 
@@ -100,7 +100,7 @@ Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro
 
 Evidence: unobserved; confidence: unknown. [L-catalogue](../../findings/F020-pro-ui-observations.md#what-this-does-not-establish).
 
-**What to do.** F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects belong to the later rules reference.
+**What to do.** F014 places a possible three-card trade at the top of the human turn, before placement. A matching set may use up to two wildcards for detection. Clicks toggle eligible card selections, and three selections arm the trade control. The anti-bomb is not a trade selection. Detailed card effects are in the accompanying rules reference.
 
 Evidence: static; confidence: static-bounded. [F014-trade](../../findings/F014-pro-cards-rules.md#matches-and-trade-ins).
 
@@ -122,7 +122,7 @@ Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/proto
 
 Evidence: static; confidence: static-bounded. [F012-turn](../../findings/F012-pro-turn-victory-rules.md#turn-sequence), [F011-combat](../../findings/F011-pro-combat-rules.md#combat).
 
-**What changes.** The worked sequence ends at the first captured hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.
+**What changes.** The worked sequence ends at the first recorded hand-off frame. The active-row pointer and country-counting status show a change of seat; they do not time the computer’s thinking, identify all later actions or establish a game result.
 
 Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
@@ -158,7 +158,7 @@ Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/proto
 
 Evidence: static; confidence: static-bounded. [F019-options](../../findings/F019-pro-setup-rules.md#the-options-screen).
 
-**What changes.** Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content while retaining the landscape backdrop. Check the screen context rather than assuming a fixed footer action.
+**What changes.** Options and new-game settings look similar but their green footer controls have different purposes. Help and score pages replace the central content. Check the screen context rather than assuming a fixed footer action.
 
 Evidence: local-visual; confidence: observed-bounded. [V-guide](../../docs/prototypes/T64/visual-source-survey-r2.json).
 
@@ -257,3 +257,5 @@ Follow one preserved human turn from placement selection to the immediate hand-o
 | G14 | Worked turn, step 7: immediately after Pass, Yellow is active and country-counting feedback is shown. No completed computer turn is depicted. |
 
 Every one of the twenty-one survey observations is retained verbatim from main’s own-word [visual survey](../../docs/prototypes/T64/visual-source-survey-r2.json) in [guide.json](guide.json), with a bounded annotation. The local edition adds those observations and unchanged screenshots; their original help text is not transcribed here. Sources establish distinct evidence tiers, not a promise that every procedure has been visually tested.
+
+Read the [rules/reference](reference.md), [coverage and gaps](coverage.md) and [planning checklist](checklist.md) for the full manual context.
