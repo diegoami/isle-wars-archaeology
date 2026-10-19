@@ -1,0 +1,54 @@
+{
+  "schema": "T65-validation/1",
+  "change": "Broaden derived definition to cover source-qualified synthesis and conditional calculations. Existing prose/data equality and evidence-tier checks remain enforced; checker comment clarifies unchanged conditional confidence. Trade paragraph now labels its documented/static comparison as derived synthesis and explicitly attributes skip/submission behaviour to F014 static reading. No numerical rule, source, image or renderer behaviour changed.",
+  "basis": "All subprocesses inherit enclosing systemd user scope MemoryMax=6G, MemorySwapMax=0. Synthetic controls only, no original asset access. Earlier guide-controls-r1 and validation-r1/r2 remain immutable; their copied omission evidence still applies.",
+  "checks": [
+    {
+      "command": "python3 tools/manual/check_manual.py",
+      "exit": 0,
+      "output": "PASS: 18 substantive sections/64 qualified paragraphs; 15 manual subjects, 19 Pro areas, 17 screen classes, 11 benefit/scenario checklist entries. Structural accounting only; independent semantic/visual review required."
+    },
+    {
+      "command": "python3 tools/manual/check_manual.py --self-test",
+      "exit": 0,
+      "output": "PASS control: missing reference topic rejected (missing reference topics)\nPASS control: thin reference rejected (objective: substantive reference missing)\nPASS control: absent sources rejected (objective-1: absent sources)\nPASS control: unknown visual proof rejected (unknown promoted to evidence)\nPASS control: unknown tier promotion rejected (unknown promotion or missing gap registry)\nPASS control: missing manual subject rejected (missing manual subject coverage)\nPASS control: stale subject range rejected (stale manual subject range)\nPASS control: missing Pro area rejected (missing Pro spec coverage)\nPASS control: broken section reference rejected (broken section references)\nPASS control: missing major screen rejected (missing major screen coverage)\nPASS control: unseen screen promoted rejected (unseen screen promoted)\nPASS control: missing source conflict rejected (missing source conflict)\nPASS control: silent conflict resolution rejected (source discrepancy silently resolved)\nPASS control: missing checklist benefit rejected (country-readability: checklist benefit missing/thin)\nPASS control: missing checklist scenario rejected (country-readability: checklist scenario missing/thin)\nPASS control: adoption asserted rejected (handoff adoption boundary missing)\nPASS control: mismatched evidence tier rejected (objective-1: evidence tier mismatch)\nPASS control: untracked prose change rejected (objective-1: reference prose mismatch)\nPASS: synthetic baseline and 18 manual negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/manual/render_atlas.py --self-test",
+      "exit": 0,
+      "output": "PASS: wide/tall details bind source images to exact native-space clips; 8 clipping mutations rejected.\nPASS control: bad hash refused before copying\nPASS control: missing hash refused before copying\nPASS control: wrong dimensions refused before copying\nPASS control: missing map entry refused before copying\nPASS control: in-checkout output refused before copying\nPASS control: unregistered checkout output refused before copying\nPASS control: symlink into checkout refused before copying\nPASS control: in-checkout image refused before copying\nPASS: synthetic copy-time hash failure preserves partial output and omits index.html.\nPASS: synthetic positive edition has unchanged PNG, full view, callout, bounded detail and receipt.\nPASS: synthetic six-page complete book retains guide/walkthrough/atlas, reference, coverage, checklist and all chapter links/page hashes; bad manual refused before copying.\nPASS: synthetic guide/atlas edition retains both pages, all chapter/step links and image references; bad guide hash refused before copying.\nPASS: synthetic PNG baselines and 8 renderer negative controls; no originals used."
+    },
+    {
+      "command": "python3 tools/manual/check_guide.py",
+      "exit": 0,
+      "output": "PASS: 12 topics \u00d7 4 evidence-qualified aspects; 13 distinct images, 21 observations/annotations; 7 same-record placement-to-pass steps. Prose/appearance require independent review."
+    },
+    {
+      "command": "python3 tools/manual/check_atlas.py",
+      "exit": 0,
+      "output": "PASS: 40 claims, 15 manual subjects, 17 visual features, 6 images, 17 annotations; 4 distinct interaction states. Semantic prose and alignment require independent/local review."
+    },
+    {
+      "command": "python3 tools/check_no_originals.py",
+      "exit": 0,
+      "output": "no original files tracked (2484 files checked)"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "exit": 0,
+      "output": "links and JSON ok (2486 files)"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "source_sha256": {
+    "manual/pro/manual.json": "88c6ee5d4a267b79299e689b9cf114acd173cad26a4daf64daa4e74503eccb50",
+    "manual/pro/reference.md": "17da0de438a81305924db9480eae6c419dc47c3b2590c39562df9854f9e8410e",
+    "tools/manual/check_manual.py": "c3f800fea31b7fe229fc42b3320343390f65e01d42c2abbcd143df7355134f7a",
+    "tools/manual/render_atlas.py": "ed795403b64eabea443a401c6ee7bf7daebe54b3945dd4514d89a0e945fd38a0",
+    "tools/manual/book_html.py": "918eb87a26e2a02dc4f9bc78c87be75d820fa858353e027f231e7a774d20d86c"
+  }
+}

@@ -230,7 +230,7 @@
         },
         {
           "id": "objective-2",
-          "text": "Start with the player guide for screen actions and the worked placement-to-pass turn. Use this reference for arithmetic and exceptions, and the atlas for map appearance. Here, documented means the directions say it; static means handlers or tables support it; observed means an identified recorded view supports only the visible state; derived means stated arithmetic assumptions; unknown means evidence is missing.",
+          "text": "Start with the player guide for screen actions and the worked placement-to-pass turn. Use this reference for arithmetic and exceptions, and the atlas for map appearance. Here, documented means the directions say it; static means handlers or tables support it; observed means an identified recorded view supports only the visible state; derived means a source-qualified synthesis or a calculation with stated assumptions; unknown means evidence is missing.",
           "basis": "derived",
           "confidence": "conditional",
           "sources": [
@@ -605,9 +605,9 @@
         },
         {
           "id": "trades-2",
-          "text": "The directions describe trade-in as mandatory when a match is held, but F014 finds a human skip path. Keep this discrepancy visible: documentation intent and static behaviour differ. Human card choices toggle; submitting an invalid triple consumes no cards, grants nothing and proceeds to placement rather than offering unlimited retries. This guide has no recorded trade screen to settle all input paths.",
-          "basis": "documented",
-          "confidence": "documented",
+          "text": "The directions describe trade-in as mandatory when a match is held; F014’s static reading instead includes a human skip path. Keep this discrepancy visible: documentation intent and static behaviour differ. On that static path, human card choices toggle; submitting an invalid triple consumes no cards, grants nothing and proceeds to placement rather than offering unlimited retries. This guide has no recorded trade screen to settle all input paths.",
+          "basis": "derived",
+          "confidence": "conditional",
           "sources": [
             "T04",
             "F014"

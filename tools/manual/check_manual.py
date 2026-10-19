@@ -14,6 +14,7 @@ UNSEEN = {'capture-dialog','movement-dialog','cards-dialog','events-screen','pro
 UNKNOWN_BLOCKS = {'board-4','capture-2','bombs-3','events-6','interface-3'}
 CONFLICTS = {'mandatory-trade','event-cooldown','island-count','centre-colour'}
 CHECKLIST = {'country-readability','topology','active-phase','allocation','combat-feedback','movement-boundary','cards-effects','centre-events','results-persistence','navigation','limits'}
+# Derived confidence is conditional on cited source bounds or stated calculation assumptions.
 BASES = {'static':'static-bounded','documented':'documented','observed':'observed-bounded','derived':'conditional','unknown':'unknown'}
 
 

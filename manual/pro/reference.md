@@ -11,7 +11,7 @@ Win by taking all 46 countries. There is also a computer concession route when t
 
 Evidence: static · static-bounded; [F012](../../findings/F012-pro-turn-victory-rules.md), [S-victory](../../spec/victory.md).
 
-Start with the player guide for screen actions and the worked placement-to-pass turn. Use this reference for arithmetic and exceptions, and the atlas for map appearance. Here, documented means the directions say it; static means handlers or tables support it; observed means an identified recorded view supports only the visible state; derived means stated arithmetic assumptions; unknown means evidence is missing.
+Start with the player guide for screen actions and the worked placement-to-pass turn. Use this reference for arithmetic and exceptions, and the atlas for map appearance. Here, documented means the directions say it; static means handlers or tables support it; observed means an identified recorded view supports only the visible state; derived means a source-qualified synthesis or a calculation with stated assumptions; unknown means evidence is missing.
 
 Evidence: derived · conditional; [GUIDE](../../manual/pro/guide.json), [ATLAS](../../manual/pro/atlas.json).
 
@@ -166,9 +166,9 @@ After income and before placement, a match is three of one tradeable kind, allow
 
 Evidence: static · static-bounded; [F014](../../findings/F014-pro-cards-rules.md).
 
-The directions describe trade-in as mandatory when a match is held, but F014 finds a human skip path. Keep this discrepancy visible: documentation intent and static behaviour differ. Human card choices toggle; submitting an invalid triple consumes no cards, grants nothing and proceeds to placement rather than offering unlimited retries. This guide has no recorded trade screen to settle all input paths.
+The directions describe trade-in as mandatory when a match is held; F014’s static reading instead includes a human skip path. Keep this discrepancy visible: documentation intent and static behaviour differ. On that static path, human card choices toggle; submitting an invalid triple consumes no cards, grants nothing and proceeds to placement rather than offering unlimited retries. This guide has no recorded trade screen to settle all input paths.
 
-Evidence: documented · documented; [T04](../../sources/iwp-islepro-txt.md), [F014](../../findings/F014-pro-cards-rules.md).
+Evidence: derived · conditional; [T04](../../sources/iwp-islepro-txt.md), [F014](../../findings/F014-pro-cards-rules.md).
 
 The computer tries +15, +8, doubling, +5 and bomb in that priority order; it does not compare the resulting reinforcement payoff. Human matching and computer removal are asymmetric: the computer’s detector caps wildcard contribution at two, but its removal takes the first three qualifying cards without that cap. A hand ordered wildcard, wildcard, wildcard, +15, empty can detect +15 using two wildcards and +15, yet remove the three wildcards and retain +15.
 
