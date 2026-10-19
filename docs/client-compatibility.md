@@ -6,6 +6,10 @@ The [machine-readable matrix](prototypes/T61/matrix-r2.json) and [preflight evid
 
 ## Compatibility matrix
 
+Historical T61 snapshot at the pinned baseline above. The model-choice guidance and #270
+workarounds in this table are superseded by [Owner-selected models after T62](#owner-selected-models-after-t62).
+The recorded T61 observations and evidence remain unchanged.
+
 | Area | Disposition | Claude Code | Codex | Operator action | Alternative/limitation | Follow-up |
 | --- | --- | --- | --- | --- | --- | --- |
 | instructions | works | Shared CLAUDE.md is the project rules entry point. Native review additionally receives the full task contract. | AGENTS.md points to CLAUDE.md. Live readonly exec actually read both and returned the required rules. | Read CLAUDE.md and docs/process.md before acting; AGENTS.md stays a pointer. | — | — |
@@ -24,12 +28,29 @@ The [machine-readable matrix](prototypes/T61/matrix-r2.json) and [preflight evid
 | cloud | untested | Session-start hook is web-only, not this SSH preflight; its metadata defects are #271. No live web runtime tested. | This is an SSH-connected local host, not evidence of a cloud environment. No cloud originals/runtime tested. | Perform clean cloud-only checks separately, without originals. Do not run the install-capable web hook as a local smoke test. | No clean cloud session was exercised; retain the local path and prohibit uploading originals there. | [#271](https://github.com/diegoami/isle-wars-archaeology/issues/271) |
 | model-choice-policy | broken | Current runtime rejects a same-family reviewer even when explicitly owner-selected, contrary to rule 6.3. | Retained probes directly show OpenAI same-family rejection from Codex, Claude same-family rejection from Claude, and a synthetic blocked-list refusal. | Until #270 lands, use a genuinely allowed alternative selected by the owner or the permitted external reviewer/post-review route with honest identity metadata. Do not alter family markers or claim the runner supports unrestricted choices. | Use an honestly identified owner-selected alternative route; unrestricted native same-family dispatch needs the separate fix. | [#270](https://github.com/diegoami/isle-wars-archaeology/issues/270) |
 
+## Owner-selected models after T62
+
+T62 aligns current registration and dispatch with CLAUDE.md rule 6.3: an owner-selected
+reviewer may share the implementer's family, and legacy `blocked` family/fragment metadata
+never prevents selecting an implementer or reviewer. Editing that list remains supported,
+including entries naming the default. Alibaba needs no additional selection question.
+Model identity must still resolve; contradictory declarations and unknown raw identities
+are refused. The actual client and endpoint remain provenance, including labels/`--exclude`.
+Do not change them to obtain a choice. Native Claude still requires its exact direct-Anthropic
+transport, model/session identity, clean permission outcomes and complete approval evidence.
+
+The operator still enforces originals restrictions and privacy clearance: private code never
+goes to providers that train on prompts. There is no automatic training-provider guard in the
+harness. Selection acceptance does not establish that clearance or live model availability.
+Defaults are unchanged. The audit matrix and retained T61 probes above describe their pinned
+historical runtime; their #270 workaround is superseded for the T62 runtime.
+
 ## Running a task from either client
 
 1. Read [CLAUDE.md](../CLAUDE.md) and [process.md](process.md). Honor the owner’s existing implementer/reviewer selection; ask only when that required selection is missing. Read a relevant `.claude/skills/<name>/SKILL.md` manually in Codex; do not invoke Claude-only slash commands or Agent syntax.
 2. Start in your own branch/worktree. This audit uses `.claude/worktrees/T61-client-compatibility`. Preserve inherited notes and uncommitted work; never stash or remove other worktrees. Keep measurements under the task’s owned tracked path, originals excluded.
 3. Use the actual client sandbox and approval system. Claude permissions/hooks are not inherited by Codex. A blocked host service/socket check needs the normal escalation flow, not a permission bypass. Do not run original-game observations as part of this preflight.
-4. Set `HARNESS_CLIENT=codex` or `HARNESS_CLIENT=claude` to the real orchestrator for detached jobs. `HARNESS_SESSION_FAMILY` is an honest exceptional override, not a way around #270. For Claude, the endpoint determines the family; inherited Codex markers alone must not be allowed to misidentify it.
+4. Set `HARNESS_CLIENT=codex` or `HARNESS_CLIENT=claude` to the real orchestrator for detached jobs. `HARNESS_SESSION_FAMILY` is an honest exceptional override for unresolved endpoint identity. For Claude, the endpoint determines the family; inherited Codex markers alone must not be allowed to misidentify it.
 5. Run meaningful task checks. The main session commits/pushes, opens the PR, pastes the full task contract and process review requirements into the review brief, and pins the exact PR head after pushing.
 6. Start one memory-capped review unit with closed stdin and one monitor. This owner selected native Claude Sonnet medium, so invoke:
 
@@ -39,7 +60,7 @@ HARNESS_CLIENT=codex tools/harness/run-unit.sh review-PR /tmp/iwa-review-PR.log 
   --reviewer claude-sonnet --variant medium --issue ISSUE --apply-label
 ```
 
-The variant override copies the model entry for this invocation; it does not change `harness.json`. See [native Claude operations](harness-claude.md) for direct-provider, identity, settings, scope and evidence gates. For a Claude orchestrator, set the actual client and select a route the current runner accepts; unrestricted owner selection still needs #270.
+The variant override copies the model entry for this invocation; it does not change `harness.json`. See [native Claude operations](harness-claude.md) for direct-provider, identity, settings, scope and evidence gates. For a Claude orchestrator, set `HARNESS_CLIENT=claude`; same-family native review is permitted with the same transport checks.
 
 7. For native Claude, watch the run log and the printed `stdout.jsonl` path; `tools/harness/peek.sh <stdout.jsonl> -n 20` reads it without a provider database. For OpenCode, use `watch.sh --opencode-log <run-log>` for SQLite progress. The previous T60 session’s export is malformed despite exit zero ([structural diagnostic](prototypes/T61/export-diagnostic-r1.json)); use only the named session’s read-only final query from CLAUDE.md rule 25 when necessary. A failed progress display is not a reason to pay for another review.
 8. Read the complete final and all findings, including a failed run’s final, before acting. No approval from identity mismatches, denied tools, incomplete scope or missing Done-when checks. The parent alone publishes. Merge only after approval and green CI, with a final rerun of the principal check. Retain evidence and worktrees.
@@ -62,7 +83,7 @@ The live Claude check for this task is the owner-selected Sonnet medium PR revie
 
 ## Boundaries and follow-up work
 
-- [#270](https://github.com/diegoami/isle-wars-archaeology/issues/270): align the runtime/skill model-choice policy with rule 6.3. The pure preflight reproduces the old same-family and blocked-list filters; no identity is falsified to get past them.
+- [#270](https://github.com/diegoami/isle-wars-archaeology/issues/270): T62 aligns runtime model choice with rule 6.3. The retained T61 preflight reproduces the historical filters; broad operational skill/template cleanup is tracked in [#283](https://github.com/diegoami/isle-wars-archaeology/issues/283). No identity override is needed for a same-family choice.
 - [#261](https://github.com/diegoami/isle-wars-archaeology/issues/261): validate complete session export and monitoring during the OpenCode migration. The retained diagnostic establishes malformed output, not its underlying cause.
 - [#271](https://github.com/diegoami/isle-wars-archaeology/issues/271): truthful, client-aware cloud startup metadata. The hook currently labels model catalogue entries as logged in; it is web-only and can install tools. It was inspected but never run as this local preflight.
 

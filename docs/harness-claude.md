@@ -5,15 +5,25 @@ the same review entry point as OpenCode. The existing Luna default remains uncha
 
 ```bash
 mkdir -p .cache/harness-tmp
-TMPDIR="$PWD/.cache/harness-tmp" HARNESS_SESSION_FAMILY=openai tools/harness/run-unit.sh review-PR /tmp/review-PR.log -- \
+TMPDIR="$PWD/.cache/harness-tmp" HARNESS_CLIENT=codex tools/harness/run-unit.sh review-PR /tmp/review-PR.log -- \
   node tools/harness/review.mjs --pr PR --brief /tmp/review-brief.md \
   --reviewer claude-sonnet --issue ISSUE --apply-label
 ```
 
-Set `HARNESS_SESSION_FAMILY` to the actual implementer/orchestrator family; the example is for
-Codex. Do not override it to bypass independence. Existing blocked-list, stale-head, task
-Done-when parsing, final-review parsing, posting and status-label rules apply to both backends.
-The main session still records the owner selection before dispatch. This port retains the existing runtime family checks; the broader Claude/Codex workflow audit is tracked in #268. Do not change defaults without the owner's choice.
+Set `HARNESS_CLIENT` to the actual orchestrator (`codex` or `claude`) for detached jobs.
+`HARNESS_SESSION_FAMILY` is an honest exceptional override when endpoint detection cannot
+establish the family. Owner-selected same-family reviewers and models named by legacy
+`blocked` metadata are permitted under CLAUDE.md rule 6.3. The list remains editable metadata,
+including entries naming the default; it does not filter registration or dispatch.
+The main session records the owner's selection before dispatch. Defaults change only through
+an authorized switch. Identity, stale-head, Done-when, final-review, posting and status-label
+checks still apply to both backends.
+
+Model selection does not establish privacy clearance. The operator must enforce rule 18's
+originals restrictions and rule 6.3's prohibition on sending private code to providers that
+train on prompts. The harness has no automatic training-provider guard. Native Claude's
+direct-Anthropic requirement verifies this transport's identity; it is not a general provider
+selection restriction or a privacy certification.
 
 The registered exact model was observed in Malpaco's retained CLI init events:
 `anthropic/claude-sonnet-5-5`. The `anthropic/` prefix is the harness identity; Claude receives
@@ -104,8 +114,8 @@ prints the posting plan instead of publishing. Wrong identity, nonzero CLI exit,
 stream, missing/duplicate init/final, denied tools or hook rejection cannot approve code.
 
 Validation: `node --test tools/harness/test/claude.test.mjs` includes the real entry point with
-fake Claude/GitHub executables, family/blocked gates, scope/DW holds, error streams, retained
-failures and startup/idle/total cleanup. The repository CI runs it alongside `tests/harness_clients.test.mjs`. Malpaco issue #155 carries the real
+fake Claude/GitHub executables, owner-selected same-family dispatch, scope/DW holds, error streams, retained
+failures and startup/idle/total cleanup. The repository CI runs it alongside `tests/harness_clients.test.mjs`; `review.mjs --self-test` also runs the seeded owner-selection and offline OpenCode dispatch suites. Malpaco issue #155 carries the real
 backend trial and adoption findings. This repository's validation in `docs/prototypes/T60/` is offline and does not establish live Claude availability. Other projects can port the Claude module and entry-point
 branch, switch-model support, peek support, roster entry and tests together; preserve their own
 guard, labels, family configuration and default reviewer. No agy dependency is needed.

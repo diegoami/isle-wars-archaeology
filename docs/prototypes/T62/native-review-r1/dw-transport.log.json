@@ -1,0 +1,5 @@
+{
+  "source": "/tmp/iwa-r284/dw-transport:.log",
+  "sha256": "3060ed8ea8ee56e5905b9aeaa6d54184fe5e248bd48651901c1a884818e0d9e0",
+  "output": "Running as unit: run-p68348-i68979.scope; invocation ID: 047cd40b18c24e52a9e4d8aceb10eb8e\n\u2714 transport: native direct-provider and remapping safeguards still reject unsafe routes (1.009685ms)\n\u2714 transport: exact model/session, clean final and permission outcomes remain mandatory (0.497033ms)\n\u2714 transport: coverage and missing Done-when never become automatic approval (1.957913ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 59.433324\n"
+}

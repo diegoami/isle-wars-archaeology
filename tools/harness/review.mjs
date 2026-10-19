@@ -7,12 +7,10 @@
 //
 // One reviewer, one run (the owner, 2026-10-11: no chains, no second opinion, no quota check).
 // --reviewer is a harness.json key or an OpenCode id provider/model; without it, harness.json's
-// reviewer.default runs. The reviewer is never the implementer's model family: --exclude names the
-// implementer (a harness.json key, an id or a family), else a model:<name> label on the PR or
-// --issue, else the session's own family: the main session or an agent it spawned implements by
-// default, and lib/common.mjs sessionFamily reads that family from ANTHROPIC_BASE_URL (or
-// HARNESS_SESSION_FAMILY). Runs use the scripts' own OpenCode data directory. harness.json's
-// blocked list is refused (switch-model.mjs --block/--unblock).
+// reviewer.default runs. Owner-selected same-family and legacy-blocked choices are permitted
+// (CLAUDE.md rule 6.3). --exclude, model:<name> labels and the detected session family retain
+// implementation provenance; they never exclude the selected reviewer. Identity must resolve.
+// Runs use the scripts' own OpenCode data directory.
 //
 // The brief's first line is the review header the model prints, e.g. "T07 review (Luna)". The
 // model never writes to GitHub (the agent file denies it); this script is the only writer.
@@ -81,7 +79,7 @@ const config = loadConfig(top0);
 const { top, workRoot } = repoPaths(config);
 const rev = config.reviewer;
 
-// The implementer's family never reviews.
+// Collect implementation provenance without restricting the owner's reviewer choice.
 const labelsOf = (kind, n) => sh('gh', [kind, 'view', String(n), '--json', 'labels', '--jq', '.labels[].name'], { cwd: top, allowFail: true }).split('\n');
 const implementedBy = a.exclude ? a.exclude.split(',').map((s) => s.trim()).filter(Boolean)
   : [...labelsOf('pr', a.pr), ...(a.issue ? labelsOf('issue', a.issue) : [])]
@@ -89,9 +87,8 @@ const implementedBy = a.exclude ? a.exclude.split(',').map((s) => s.trim()).filt
 // The reviewer: the one named, else harness.json's reviewer.default (CLAUDE.md rule 6).
 if (!a.reviewer && !rev.default) die(2, 'No reviewer: pass --reviewer, or set reviewer.default in harness.json.');
 const reviewer = namedModel(config, a.reviewer ?? rev.default, { family: a.family, variant: a.variant }, die);
-// Every implementer name resolves to a family, or the review is refused (Sol's R2 on PR 164); none
-// named means the session's family implemented (lib/common.mjs implementerFamilies).
-// The session's family is always excluded too (Sol's R1 on PR 189).
+// Every implementation name and the actual session family must resolve for truthful metadata.
+// Same-family choices are permitted (CLAUDE.md rule 6.3).
 const refusal = reviewRefusal(config.models, reviewer, implementedBy);
 if (refusal) die(1, `Refused: ${refusal}. Nothing posted.`);
 const fams = implementerFamilies(config.models, implementedBy);

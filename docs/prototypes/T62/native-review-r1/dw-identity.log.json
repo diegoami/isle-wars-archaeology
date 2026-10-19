@@ -1,0 +1,5 @@
+{
+  "source": "/tmp/iwa-r284/dw-identity:.log",
+  "sha256": "509c35644475413f258bbc2b0913fa35a124ad890788c1ab7ae0f86a27992213",
+  "output": "Running as unit: run-p68329-i68958.scope; invocation ID: 521215cee17a4b56a7e448da0e428b80\n\u2714 identity: explicit contradictory and unknown raw identities remain rejected (1.726155ms)\n\u2714 identity: actual clients and endpoint detection cannot be silently spoofed (0.144508ms)\n\u2139 tests 2\n\u2139 suites 0\n\u2139 pass 2\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 55.729353\n"
+}
